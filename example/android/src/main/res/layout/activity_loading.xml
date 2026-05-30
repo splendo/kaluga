@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.mobileshared.viewmodel.hud.HudViewModel" />
+            type="com.splendo.kaluga.example.feature.hud.HudViewModel" />
     </data>
     <androidx.core.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"

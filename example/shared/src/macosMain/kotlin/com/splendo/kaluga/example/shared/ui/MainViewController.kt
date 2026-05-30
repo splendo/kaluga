@@ -17,25 +17,19 @@
 
 package com.splendo.kaluga.example.shared.ui
 
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import com.splendo.kaluga.example.arch.AppRootScreen
 
 /**
- * Entry point for the macOS demo. CMP on macOS owns the NSApplication lifecycle, so the Swift
- * `@main` calls this from `applicationDidFinishLaunching`. The composable creates the NSWindow
- * internally.
- *
- * Only macOS-capable features are listed. Anything unmigrated is reported through
- * [onUnmigratedFeatureSelected] (defensive — should never fire on macOS).
+ * macOS framework entry point. CMP owns the NSApplication lifecycle so the Swift `@main` calls
+ * this from `applicationDidFinishLaunching`. macOS has no native-launched contributions (only
+ * macOS-capable feature modules are linked into the framework for the macOS target), so
+ * `onNativeLaunch` defaults to a no-op.
  */
-fun startMainWindow(onUnmigratedFeatureSelected: (Feature) -> Unit = {}) {
+fun startMainWindow() {
     Window(title = "Kaluga Example", size = DpSize(800.dp, 640.dp)) {
-        val features = remember { Feature.entries.filter { it.availableOnMacOS } }
-        AppRootScreen(
-            features = features,
-            onUnmigratedFeatureSelected = onUnmigratedFeatureSelected,
-        )
+        AppRootScreen()
     }
 }

@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		79E538BE535BEECCF74F6A96 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC30BE14C2065F9F61C4E6E /* main.swift */; };
-		9BD890B94517FA0285C0CC3F /* KalugaExampleShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFDF8536ECB2510C466FF9C4 /* KalugaExampleShared.framework */; };
+		9BD890B94517FA0285C0CC3F /* KalugaExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFDF8536ECB2510C466FF9C4 /* KalugaExample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3A226E443F31E591F7687A46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		58BAC8E5CE873219C0FD0BB9 /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
-		BFDF8536ECB2510C466FF9C4 /* KalugaExampleShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KalugaExampleShared.framework; path = "../shared/build/xcode-frameworks/Debug/macosx/KalugaExampleShared.framework"; sourceTree = "<group>"; };
+		BFDF8536ECB2510C466FF9C4 /* KalugaExample.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KalugaExample.framework; path = "../shared/build/xcode-frameworks/Debug/macosx/KalugaExample.framework"; sourceTree = "<group>"; };
 		CFC30BE14C2065F9F61C4E6E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E158E1D8DDD5F3DC89B171A3 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -24,7 +24,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BD890B94517FA0285C0CC3F /* KalugaExampleShared.framework in Frameworks */,
+				9BD890B94517FA0285C0CC3F /* KalugaExample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34,7 +34,7 @@
 		18FA0598227D3E7EB5276256 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BFDF8536ECB2510C466FF9C4 /* KalugaExampleShared.framework */,
+				BFDF8536ECB2510C466FF9C4 /* KalugaExample.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

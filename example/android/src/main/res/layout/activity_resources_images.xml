@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.mobileshared.viewmodel.resources.ImagesViewModel" />
+            type="com.splendo.kaluga.example.feature.resources.ImagesViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"

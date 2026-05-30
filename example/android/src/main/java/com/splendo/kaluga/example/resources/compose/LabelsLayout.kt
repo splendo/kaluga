@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.mobileshared.viewmodel.resources.LabelViewModel
+import com.splendo.kaluga.example.feature.resources.LabelViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import org.koin.compose.viewmodel.koinViewModel
 

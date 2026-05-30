@@ -16,7 +16,7 @@
 
 import UIKit
 import AVKit
-import KalugaMobileShared
+import KalugaExample
 import MediaPlayer
 
 /// A view that displays the visual contents of a player object.

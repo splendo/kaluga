@@ -15,7 +15,7 @@
 //
 
 import UIKit
-import KalugaMobileShared
+import KalugaExample
 
 class MediaListViewController: UITableViewController {
 

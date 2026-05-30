@@ -20,7 +20,7 @@ package com.splendo.kaluga.example.datetimepicker.xml
 import android.os.Bundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityDateTimePickerBinding
-import com.splendo.kaluga.example.mobileshared.viewmodel.datetimepicker.DateTimePickerViewModel
+import com.splendo.kaluga.example.feature.datetimepicker.DateTimePickerViewModel
 import org.koin.android.ext.android.inject
 
 class XMLDateTimePickerActivity : KalugaViewModelActivity<DateTimePickerViewModel>() {

@@ -18,13 +18,15 @@
 package com.splendo.kaluga.example.shared.ui
 
 import androidx.compose.ui.window.ComposeUIViewController
+import com.splendo.kaluga.example.arch.AppRootScreen
 import platform.UIKit.UIViewController
 
 /**
- * Returns a [UIViewController] containing the CMP app root. iOS hosts wrap this in their own
- * navigation chrome and provide the [onFeatureSelected] callback to launch native screens for
- * features that have not yet been migrated to CMP.
+ * iOS framework entry point. The Swift host wraps this controller in its own navigation chrome.
+ * `onNativeLaunch` is invoked with a contribution id whenever a non-compose feature
+ * (mobile-only `:mobileshared` features) is selected — the Swift side routes by id to the
+ * corresponding UIKit/SwiftUI screen.
  */
-fun MainViewController(onUnmigratedFeatureSelected: (Feature) -> Unit): UIViewController = ComposeUIViewController {
-    AppRootScreen(features = Feature.entries, onUnmigratedFeatureSelected = onUnmigratedFeatureSelected)
+fun MainViewController(onNativeLaunch: (String) -> Unit): UIViewController = ComposeUIViewController {
+    AppRootScreen(onNativeLaunch = onNativeLaunch)
 }

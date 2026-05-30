@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.mobileshared.viewmodel.keyboard.KeyboardViewModel" />
+            type="com.splendo.kaluga.example.feature.keyboard.KeyboardViewModel" />
     </data>
     <androidx.core.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,23 +17,33 @@
 
 package com.splendo.kaluga.example.shared.di
 
-import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.location.LocationStateRepoBuilder
-import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
+import com.splendo.kaluga.example.feature.alerts.alertsFeatureModule
+import com.splendo.kaluga.example.feature.architecture.architectureFeatureModule
+import com.splendo.kaluga.example.feature.beacons.beaconsFeatureModule
+import com.splendo.kaluga.example.feature.datetimepicker.datetimepickerFeatureModule
+import com.splendo.kaluga.example.feature.hud.hudFeatureModule
+import com.splendo.kaluga.example.feature.keyboard.keyboardFeatureModule
+import com.splendo.kaluga.example.feature.media.mediaFeatureModule
+import com.splendo.kaluga.example.feature.resources.resourcesFeatureModule
+import com.splendo.kaluga.example.koin.initKoin as initCoreKoin
 import org.koin.core.module.Module
-import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.module
 
-internal val iosModule = module {
-    single { NetworkStateRepoBuilder() }
-}
-
-fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
-    iosModule,
-    { LocationStateRepoBuilder(permissionsBuilder = it) },
-    { BluetoothBuilder(permissionsBuilder = it) },
-    customModules,
+/**
+ * iOS bootstrap. Loads [sharedFeaturesModule] (macOS-capable feature contributions) plus the
+ * common Koin module of every mobile-only feature (which exposes the FeatureContribution and any
+ * iOS-relevant singletons). iOS ViewModels are constructed by Swift directly, so no per-feature
+ * `viewModel { … }` registries are loaded here.
+ */
+fun initKoin(customModules: List<Module> = emptyList()) = initCoreKoin(
+    customModules = listOf(
+        sharedFeaturesModule,
+        alertsFeatureModule,
+        architectureFeatureModule,
+        beaconsFeatureModule,
+        datetimepickerFeatureModule,
+        hudFeatureModule,
+        keyboardFeatureModule,
+        mediaFeatureModule,
+        resourcesFeatureModule,
+    ) + customModules,
 )
-
-internal actual val appDeclaration: KoinAppDeclaration = {
-}

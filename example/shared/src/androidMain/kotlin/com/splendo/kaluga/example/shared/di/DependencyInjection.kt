@@ -1,5 +1,5 @@
 /*
- Copyright 2025 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,39 +15,56 @@
 
  */
 
-@file:JvmName("AndroidDependencyInjection")
+@file:JvmName("AndroidSharedDependencyInjection")
 
 package com.splendo.kaluga.example.shared.di
 
-import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.location.DefaultLocationManager
-import com.splendo.kaluga.location.GoogleLocationProvider
-import com.splendo.kaluga.location.LocationStateRepoBuilder
-import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
-import org.koin.android.ext.koin.androidContext
+import com.splendo.kaluga.example.feature.alerts.alertsFeatureAndroidModule
+import com.splendo.kaluga.example.feature.alerts.alertsFeatureModule
+import com.splendo.kaluga.example.feature.architecture.architectureFeatureAndroidModule
+import com.splendo.kaluga.example.feature.architecture.architectureFeatureModule
+import com.splendo.kaluga.example.feature.beacons.beaconsFeatureAndroidModule
+import com.splendo.kaluga.example.feature.beacons.beaconsFeatureModule
+import com.splendo.kaluga.example.feature.datetimepicker.datetimepickerFeatureAndroidModule
+import com.splendo.kaluga.example.feature.datetimepicker.datetimepickerFeatureModule
+import com.splendo.kaluga.example.feature.hud.hudFeatureAndroidModule
+import com.splendo.kaluga.example.feature.hud.hudFeatureModule
+import com.splendo.kaluga.example.feature.keyboard.keyboardFeatureModule
+import com.splendo.kaluga.example.feature.media.mediaFeatureAndroidModule
+import com.splendo.kaluga.example.feature.media.mediaFeatureModule
+import com.splendo.kaluga.example.feature.permissions.permissionsFeatureAndroidModule
+import com.splendo.kaluga.example.feature.resources.resourcesFeatureAndroidModule
+import com.splendo.kaluga.example.feature.resources.resourcesFeatureModule
+import com.splendo.kaluga.example.koin.initKoin as initCoreKoin
 import org.koin.core.module.Module
-import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.module
 
-internal val androidModule = module {
-    single { NetworkStateRepoBuilder() }
-}
-
-fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
-    androidModule,
-    {
-        LocationStateRepoBuilder(
-            locationManagerBuilder = DefaultLocationManager.Builder(
-                googleLocationProviderSettings = GoogleLocationProvider.Settings(),
-            ),
-            permissionsBuilder = it,
-        )
-    },
-    { BluetoothBuilder(permissionsBuilder = it) },
-    customModules,
+/**
+ * Android bootstrap. Loads every macOS-capable feature's Koin module via [sharedFeaturesModule]
+ * plus each mobile-only feature's common Koin module (FeatureContribution + cross-platform
+ * singletons) plus its Android-only `viewModel { … }` registry. Each `:feature-<mobile>` module
+ * ships its own `xxxFeatureAndroidModule` so the `viewModel` factories live next to the
+ * ViewModels they construct.
+ */
+fun initKoin(customModules: List<Module> = emptyList()) = initCoreKoin(
+    customModules = listOf(
+        sharedFeaturesModule,
+        // Mobile-only feature contributions + common Koin singletons:
+        alertsFeatureModule,
+        architectureFeatureModule,
+        beaconsFeatureModule,
+        datetimepickerFeatureModule,
+        hudFeatureModule,
+        keyboardFeatureModule,
+        mediaFeatureModule,
+        resourcesFeatureModule,
+        // Android-only ViewModel registries:
+        alertsFeatureAndroidModule,
+        architectureFeatureAndroidModule,
+        beaconsFeatureAndroidModule,
+        datetimepickerFeatureAndroidModule,
+        hudFeatureAndroidModule,
+        mediaFeatureAndroidModule,
+        permissionsFeatureAndroidModule,
+        resourcesFeatureAndroidModule,
+    ) + customModules,
 )
-
-internal actual val appDeclaration: KoinAppDeclaration = {
-    androidContext(ApplicationHolder.applicationContext)
-}

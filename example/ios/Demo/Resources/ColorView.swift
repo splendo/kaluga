@@ -15,7 +15,7 @@
 //
 
 import SwiftUI
-import KalugaMobileShared
+import KalugaExample
 
 struct ColorView: View, Equatable {
     

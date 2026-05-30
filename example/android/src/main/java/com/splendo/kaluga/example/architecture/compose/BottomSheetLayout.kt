@@ -28,8 +28,8 @@ import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavi
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetNavigation
-import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetViewModel
+import com.splendo.kaluga.example.feature.architecture.BottomSheetNavigation
+import com.splendo.kaluga.example.feature.architecture.BottomSheetViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.compose.viewmodel.koinViewModel

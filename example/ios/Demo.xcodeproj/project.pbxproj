@@ -532,7 +532,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :mobileshared:embedAndSignAppleFrameworkForXcode\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -732,7 +732,6 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
-					"$(SRCROOT)/../mobileshared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
 				INFOPLIST_FILE = Demo/Info.plist;
@@ -744,9 +743,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
-					KalugaMobileShared,
-					"-framework",
-					KalugaExampleShared,
+					KalugaExample,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -889,7 +886,6 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
-					"$(SRCROOT)/../mobileshared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
 				INFOPLIST_FILE = Demo/Info.plist;
@@ -901,9 +897,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
-					KalugaMobileShared,
-					"-framework",
-					KalugaExampleShared,
+					KalugaExample,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -47,5 +47,5 @@ targets:
       # `embed: false` — the gradle task handles embed + sign itself, so we only need the link
       # entry here. The path is a stable reference used for Xcode indexing; the actual binary
       # comes from FRAMEWORK_SEARCH_PATHS at compile time and the script phase at build time.
-      - framework: ../shared/build/xcode-frameworks/Debug/macosx/KalugaExampleShared.framework
+      - framework: ../shared/build/xcode-frameworks/Debug/macosx/KalugaExample.framework
         embed: false

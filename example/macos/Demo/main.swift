@@ -15,7 +15,7 @@
 */
 
 import AppKit
-import KalugaExampleShared
+import KalugaExample
 
 /// Compose Multiplatform on macOS owns the NSApplication lifecycle and creates its own NSWindow,
 /// so the entry point is a plain AppKit app rather than SwiftUI's `@main App`. The delegate boots
@@ -24,9 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         DependencyInjectionKt.doInitKoin(customModules: [])
-        MainViewControllerKt.startMainWindow { feature in
-            NSLog("Feature \(feature.name) is not available on macOS")
-        }
+        MainViewControllerKt.startMainWindow()
     }
 
     func application(_ application: NSApplication,

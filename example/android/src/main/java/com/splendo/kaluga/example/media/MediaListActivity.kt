@@ -27,9 +27,9 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityMediaListBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
-import com.splendo.kaluga.example.mobileshared.viewmodel.media.Media
-import com.splendo.kaluga.example.mobileshared.viewmodel.media.MediaListNavigationAction
-import com.splendo.kaluga.example.mobileshared.viewmodel.media.MediaListViewModel
+import com.splendo.kaluga.example.feature.media.Media
+import com.splendo.kaluga.example.feature.media.MediaListNavigationAction
+import com.splendo.kaluga.example.feature.media.MediaListViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

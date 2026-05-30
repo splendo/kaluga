@@ -22,8 +22,8 @@ import android.app.Application
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.example.keyboard.compose.composeKeyboardViewModel
 import com.splendo.kaluga.example.keyboard.xml.XMLKeyboardActivity
-import com.splendo.kaluga.example.mobileshared.di.initKoin
-import com.splendo.kaluga.example.mobileshared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.shared.di.initKoin
+import com.splendo.kaluga.example.feature.keyboard.KeyboardViewModel
 import com.splendo.kaluga.keyboard.ViewKeyboardManager
 import com.splendo.kaluga.keyboard.compose.ComposeKeyboardManager
 import org.koin.androidx.viewmodel.dsl.viewModel

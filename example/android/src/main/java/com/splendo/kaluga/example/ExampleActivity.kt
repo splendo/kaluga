@@ -24,16 +24,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import com.splendo.kaluga.example.alerts.AlertsActivity
+import com.splendo.kaluga.example.arch.AppRootScreen
+import com.splendo.kaluga.example.arch.DeepLinkBus
 import com.splendo.kaluga.example.architecture.ArchitectureActivity
 import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.media.MediaListActivity
+import com.splendo.kaluga.example.shared.MobileFeatureIds
 import com.splendo.kaluga.example.resources.ResourcesActivity
-import com.splendo.kaluga.example.shared.ui.AppRootScreen
-import com.splendo.kaluga.example.shared.ui.DeepLinkBus
-import com.splendo.kaluga.example.shared.ui.Feature
 
 class ExampleActivity : ComponentActivity() {
 
@@ -42,10 +42,7 @@ class ExampleActivity : ComponentActivity() {
         intent.postDeepLink()
         setContent {
             MaterialTheme {
-                AppRootScreen(
-                    features = Feature.entries,
-                    onUnmigratedFeatureSelected = ::launchFeature,
-                )
+                AppRootScreen(onNativeLaunch = ::launchFeature)
             }
         }
     }
@@ -59,23 +56,17 @@ class ExampleActivity : ComponentActivity() {
         intent.postDeepLink()
     }
 
-    private fun launchFeature(feature: Feature) {
-        val cls = when (feature) {
-            Feature.Alerts -> AlertsActivity::class.java
-            Feature.Architecture -> ArchitectureActivity::class.java
-            Feature.Beacons -> BeaconsActivity::class.java
-            Feature.DateTimePicker -> DateTimePickerActivity::class.java
-            Feature.Keyboard -> KeyboardActivity::class.java
-            Feature.LoadingIndicator -> LoadingActivity::class.java
-            Feature.Media -> MediaListActivity::class.java
-            Feature.Resources -> ResourcesActivity::class.java
-            Feature.Bluetooth,
-            Feature.DateTime,
-            Feature.Links,
-            Feature.Location,
-            Feature.Permissions,
-            Feature.Scientific,
-            Feature.System -> error("Feature.${feature.name} is handled inside the CMP nav graph")
+    private fun launchFeature(id: String) {
+        val cls = when (id) {
+            MobileFeatureIds.ALERTS -> AlertsActivity::class.java
+            MobileFeatureIds.ARCHITECTURE -> ArchitectureActivity::class.java
+            MobileFeatureIds.BEACONS -> BeaconsActivity::class.java
+            MobileFeatureIds.DATE_TIME_PICKER -> DateTimePickerActivity::class.java
+            MobileFeatureIds.KEYBOARD -> KeyboardActivity::class.java
+            MobileFeatureIds.HUD -> LoadingActivity::class.java
+            MobileFeatureIds.MEDIA -> MediaListActivity::class.java
+            MobileFeatureIds.RESOURCES -> ResourcesActivity::class.java
+            else -> error("Native launch for unknown feature id: $id")
         }
         startActivity(Intent(this, cls))
     }

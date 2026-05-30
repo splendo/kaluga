@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityBeaconsBinding
-import com.splendo.kaluga.example.mobileshared.viewmodel.beacons.BeaconsListViewModel
+import com.splendo.kaluga.example.feature.beacons.BeaconsListViewModel
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

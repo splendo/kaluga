@@ -16,21 +16,19 @@
 
 import UIKit
 import SwiftUI
-import KalugaExampleShared
-import KalugaMobileShared
+import KalugaExample
 
-/// Hosts the Compose Multiplatform root from `:shared`. Features that are not yet migrated to CMP
-/// (Alerts, Architecture, Beacons, DateTimePicker, Keyboard, LoadingIndicator, Media, Resources)
-/// arrive via `onUnmigratedFeatureSelected` and are launched as SwiftUI screens (wrapped in
-/// `UIHostingController`) or — for Beacons and Media — programmatic UIKit screens from
-/// `:mobileshared`.
+/// Hosts the Compose Multiplatform root from `:shared`. Mobile-only `FeatureContribution`s
+/// (registered in `:mobileshared`'s `mobileSharedContributionsModule` with `isCompose = false`)
+/// arrive here as their string id via `onNativeLaunch`; we route those ids to the corresponding
+/// SwiftUI screen (wrapped in `UIHostingController`) or programmatic UIKit controller.
 class ExampleViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let host = MainViewControllerKt.MainViewController { [weak self] feature in
-            self?.launchMobileFeature(feature)
+        let host = MainViewControllerKt.MainViewController { [weak self] id in
+            self?.launchMobileFeature(id: id)
         }
         addChild(host)
         host.view.translatesAutoresizingMaskIntoConstraints = false
@@ -44,19 +42,19 @@ class ExampleViewController: UIViewController {
         host.didMove(toParent: self)
     }
 
-    private func launchMobileFeature(_ feature: Feature) {
+    private func launchMobileFeature(id: String) {
         let target: UIViewController
-        switch feature {
-        case .alerts: target = UIHostingController(rootView: AlertsView())
-        case .architecture: target = UIHostingController(rootView: ArchitectureView())
-        case .beacons: target = BeaconsViewController()
-        case .datetimepicker: target = UIHostingController(rootView: DateTimePickerView())
-        case .keyboard: target = UIHostingController(rootView: KeyboardManagerView())
-        case .loadingindicator: target = UIHostingController(rootView: LoadingView())
-        case .media: target = MediaListViewController()
-        case .resources: target = UIHostingController(rootView: ResourcesListView())
+        switch id {
+        case MobileFeatureIds.shared.ALERTS: target = UIHostingController(rootView: AlertsView())
+        case MobileFeatureIds.shared.ARCHITECTURE: target = UIHostingController(rootView: ArchitectureView())
+        case MobileFeatureIds.shared.BEACONS: target = BeaconsViewController()
+        case MobileFeatureIds.shared.DATE_TIME_PICKER: target = UIHostingController(rootView: DateTimePickerView())
+        case MobileFeatureIds.shared.KEYBOARD: target = UIHostingController(rootView: KeyboardManagerView())
+        case MobileFeatureIds.shared.HUD: target = UIHostingController(rootView: LoadingView())
+        case MobileFeatureIds.shared.MEDIA: target = MediaListViewController()
+        case MobileFeatureIds.shared.RESOURCES: target = UIHostingController(rootView: ResourcesListView())
         default:
-            assertionFailure("Feature \(feature.name) is supposed to be handled inside CMP")
+            assertionFailure("Feature \(id) is supposed to be handled inside CMP")
             return
         }
         navigationController?.pushViewController(target, animated: true)

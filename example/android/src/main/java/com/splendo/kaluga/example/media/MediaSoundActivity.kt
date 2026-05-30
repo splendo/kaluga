@@ -20,7 +20,7 @@ package com.splendo.kaluga.example.media
 import android.os.Bundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityMediaSoundBinding
-import com.splendo.kaluga.example.mobileshared.viewmodel.media.MediaSoundViewModel
+import com.splendo.kaluga.example.feature.media.MediaSoundViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaSoundActivity : KalugaViewModelActivity<MediaSoundViewModel>()  {

@@ -40,7 +40,7 @@ import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.mobileshared.viewmodel.datetimepicker.DateTimePickerViewModel
+import com.splendo.kaluga.example.feature.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import org.koin.compose.viewmodel.koinViewModel
 

@@ -17,8 +17,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 */
 
 import UIKit
-import KalugaExampleShared
-import KalugaMobileShared
+import KalugaExample
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

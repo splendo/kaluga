@@ -26,8 +26,26 @@ dependencyResolutionManagement {
 
 rootProject.name = "Kaluga Example"
 include(":android")
+include(":core-arch")
+include(":core-koin")
+include(":core-stylable")
+include(":feature-alerts")
+include(":feature-architecture")
+include(":feature-beacons")
+include(":feature-bluetooth")
+include(":feature-datetime")
+include(":feature-datetimepicker")
+include(":feature-hud")
+include(":feature-info")
+include(":feature-keyboard")
+include(":feature-links")
+include(":feature-location")
+include(":feature-media")
+include(":feature-permissions")
+include(":feature-resources")
+include(":feature-scientific")
+include(":feature-system")
 include(":shared")
-include(":mobileshared")
 
 if (embedding.embeddingMode is EmbeddingMode.Composite) {
     includeBuild("../")
