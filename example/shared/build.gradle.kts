@@ -7,8 +7,9 @@ plugins {
     id(libs.plugins.compose.get().pluginId)
 }
 
-/** Project deps wired only into the iOS + Android variants of the framework — these modules
- *  target Android+iOS only (no macOS), so they cannot be declared in `common` or `apple`. */
+/** Mobile-only feature modules. Wired into iOS + Android variants of the framework (not macOS
+ *  — they have no macOS targets) and exported only from the iOS framework, since Swift
+ *  constructs their ViewModels directly (Compose isn't used for these features on iOS). */
 val mobileFeatureProjects = listOf(
     ":feature-alerts",
     ":feature-architecture",
@@ -20,23 +21,40 @@ val mobileFeatureProjects = listOf(
     ":feature-resources",
 )
 
+/** Kaluga library modules whose types appear in the public API of the mobile-feature ViewModels
+ *  Swift consumes (`Navigator<X>` constructor parameters, `AlertPresenter.Builder`, etc.).
+ *  Exported only on iOS for the same reason as `mobileFeatureProjects`. */
+val mobileKalugaModules = listOf(
+    "alerts",
+    "architecture",
+    "base",
+    "beacons",
+    "date-time-picker",
+    "hud",
+    "keyboard",
+    "media",
+    "resources",
+)
+
 kaluga {
     moduleName = "example.shared"
     supportMacOS = true
     appleFramework {
         baseName = "KalugaExample"
         isStatic = false
-        transitiveExport = true
+        // `transitiveExport = false`: only the projects + modules explicitly listed below appear
+        // in the framework's public Obj-C header. This is both architectural hygiene (the
+        // macOS-capable features render their UI inside Compose, so Swift never references their
+        // types) and the only practical defence against `kaluga.scientific.unit.Pascal` leaking
+        // in transitively — its `+pascal` selector collides with clang's reserved `pascal`
+        // calling-convention keyword under Xcode 26.x.
+        transitiveExport = false
+        // Cross-platform foundation — used by Swift on both iOS and macOS hosts.
         export(project(":core-arch"))
         export(project(":core-koin"))
-        export(project(":feature-bluetooth"))
-        export(project(":feature-datetime"))
-        export(project(":feature-info"))
-        export(project(":feature-links"))
-        export(project(":feature-location"))
-        export(project(":feature-permissions"))
-        export(project(":feature-scientific"))
-        export(project(":feature-system"))
+        // macOS-capable feature modules render entirely in Compose; their classes stay linked in
+        // the framework (so their Koin contributions register at startup) but are *not* exported
+        // — Swift never references `BluetoothListScreen`, `LocationScreen`, `LinksScreen`, etc.
     }
     dependencies {
         android {
@@ -59,22 +77,28 @@ kaluga {
                 api(project(":feature-links"))
                 api(project(":feature-location"))
                 api(project(":feature-permissions"))
-                api(project(":feature-scientific"))
+                // `:feature-scientific` is linked-but-hidden via `implementation` so its public
+                // types (QuantityDetails, converters) — which expose `kaluga.scientific.unit.*`
+                // in their signatures — never leak into the framework header. Scientific UI is
+                // Compose-only; Swift never references its types.
+                implementation(project(":feature-scientific"))
                 api(project(":feature-system"))
             }
         }
     }
 }
 
-// Mobile feature modules have no macOS target, so they can only be exported from the iOS
-// variant of the single KalugaExample framework. `appleFramework {}` runs the same lambda for
-// both iOS and macOS frameworks, so the iOS-only exports are added here after the kaluga plugin
-// has created the framework binaries in its own afterEvaluate.
+// iOS-only exports: mobile feature modules (their Swift-consumed ViewModels) + the Kaluga
+// libraries whose types appear in those ViewModels' public APIs. `appleFramework {}` runs the
+// same lambda for both iOS and macOS frameworks, so target-specific exports are added here.
 afterEvaluate {
     kotlin.targets.withType<KotlinNativeTarget>().configureEach {
         if (konanTarget.family == Family.IOS) {
             binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework>().configureEach {
                 mobileFeatureProjects.forEach { export(project(it)) }
+                mobileKalugaModules.forEach {
+                    export("com.splendo.kaluga:$it:${project.rootProject.version}")
+                }
             }
         }
     }

@@ -14,7 +14,10 @@ kaluga {
                 api(project(":core-koin"))
                 api(project(":feature-permissions"))
                 api("com.splendo.kaluga:bluetooth:${project.rootProject.version}")
-                api("com.splendo.kaluga:scientific:${project.rootProject.version}")
+                // `scientific` is only used inside `BluetoothServerScreen` (BeatsPerMinute
+                // literals). Keeping it implementation-only avoids exporting `Pascal` and other
+                // unit classes from the framework, which would collide with clang keywords.
+                implementation("com.splendo.kaluga:scientific:${project.rootProject.version}")
             }
         }
     }

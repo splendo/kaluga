@@ -24,6 +24,8 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModuleBuilder
@@ -170,6 +172,12 @@ sealed class USCustomaryPressure :
     override val quantity = PhysicalQuantity.Pressure
 }
 
+// Renamed in Obj-C from `Pascal` (default Kotlin name) because `+pascal` collides with clang's
+// reserved `pascal` calling-convention keyword and Xcode 26+ rejects the default selector during
+// Swift framework `.pcm` precompilation. Kotlin call sites and the Swift class name are
+// unaffected — only the underlying Obj-C class/selector changes.
+@OptIn(ExperimentalObjCName::class)
+@ObjCName("PascalUnit")
 @Serializable
 data object Pascal : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure> {
     override val symbol: String = "P"
