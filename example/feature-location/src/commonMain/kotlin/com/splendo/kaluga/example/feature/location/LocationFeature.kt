@@ -46,9 +46,7 @@ class LocationContribution : FeatureContribution {
 
 /** Platform-specific [LocationStateRepoBuilder] factory — Android needs a `DefaultLocationManager.Builder`
  *  while Apple variants take only the permissions lambda. */
-internal expect fun newLocationStateRepoBuilder(
-    permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-): LocationStateRepoBuilder
+internal expect fun newLocationStateRepoBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): LocationStateRepoBuilder
 
 val locationFeatureModule: Module = module {
     single {

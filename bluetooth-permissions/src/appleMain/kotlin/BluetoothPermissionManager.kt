@@ -56,8 +56,7 @@ actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPer
         // Kaluga's deployment targets are both above that, so the legacy
         // `CBPeripheralManager.authorizationStatus()` fallback is no longer needed (and
         // `CBPeripheralManager.authorizationStatus()` itself doesn't exist on macOS).
-        private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus =
-            CBManager.authorization.toAuthorizationStatus()
+        private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus = CBManager.authorization.toAuthorizationStatus()
     }
 
     private class Provider : CurrentAuthorizationStatusProvider {

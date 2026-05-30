@@ -32,9 +32,7 @@ import com.splendo.kaluga.lifecycle.LifecycleSubscribable
  *
  * @param subscribables the subscribables to drive when [AttachToCompose] is invoked.
  */
-abstract class LifecycleViewModel(
-    val subscribables: List<LifecycleSubscribable> = emptyList(),
-) : ViewModel()
+abstract class LifecycleViewModel(val subscribables: List<LifecycleSubscribable> = emptyList()) : ViewModel()
 
 /**
  * Drives every [LifecycleSubscribable] held by [this] view model from the current Compose host.

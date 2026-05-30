@@ -129,11 +129,7 @@ private fun Field(label: String, value: String) {
 }
 
 @Composable
-private fun LocalePickerDialog(
-    locales: List<KalugaLocale>,
-    onDismiss: () -> Unit,
-    onSelect: (KalugaLocale) -> Unit,
-) {
+private fun LocalePickerDialog(locales: List<KalugaLocale>, onDismiss: () -> Unit, onSelect: (KalugaLocale) -> Unit) {
     var query by remember { mutableStateOf("") }
     val filtered = remember(query, locales) {
         if (query.isBlank()) {
@@ -183,17 +179,14 @@ private fun LocalePickerDialog(
     )
 }
 
-private fun formatInteger(locale: KalugaLocale, value: Long): String =
-    NumberFormatter(locale, NumberFormatStyle.Integer()).format(value)
+private fun formatInteger(locale: KalugaLocale, value: Long): String = NumberFormatter(locale, NumberFormatStyle.Integer()).format(value)
 
 private fun formatDecimal(locale: KalugaLocale, value: Double): String =
     NumberFormatter(locale, NumberFormatStyle.Decimal(minFractionDigits = 2U, maxFractionDigits = 4U)).format(value)
 
-private fun formatPercent(locale: KalugaLocale, value: Double): String =
-    NumberFormatter(locale, NumberFormatStyle.Percentage(maxFractionDigits = 2U)).format(value)
+private fun formatPercent(locale: KalugaLocale, value: Double): String = NumberFormatter(locale, NumberFormatStyle.Percentage(maxFractionDigits = 2U)).format(value)
 
-private fun formatPermille(locale: KalugaLocale, value: Double): String =
-    NumberFormatter(locale, NumberFormatStyle.Permillage(maxFractionDigits = 2U)).format(value)
+private fun formatPermille(locale: KalugaLocale, value: Double): String = NumberFormatter(locale, NumberFormatStyle.Permillage(maxFractionDigits = 2U)).format(value)
 
 private fun formatCurrency(locale: KalugaLocale, value: Double, code: String? = null): String =
     NumberFormatter(locale, NumberFormatStyle.Currency(currencyCode = code)).format(value)

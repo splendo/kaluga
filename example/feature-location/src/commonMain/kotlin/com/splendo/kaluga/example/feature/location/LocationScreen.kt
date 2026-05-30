@@ -71,6 +71,7 @@ fun LocationScreen(modifier: Modifier = Modifier) {
 
 private fun format(location: Location): String = when (location) {
     is Location.KnownLocation -> "${location.latitudeDMS} ${location.longitudeDMS}"
+
     is Location.UnknownLocation -> {
         val lastKnown = (location as? Location.UnknownLocation.WithLastLocation)?.let {
             " Last Known Location: ${it.lastKnownLocation.latitudeDMS} ${it.lastKnownLocation.longitudeDMS}"

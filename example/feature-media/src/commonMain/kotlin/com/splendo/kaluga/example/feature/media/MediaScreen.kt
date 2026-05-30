@@ -91,7 +91,9 @@ fun MediaScreen(modifier: Modifier = Modifier) {
                 MediaViewModel.ViewState.NO_MEDIA_SELECTED -> {
                     if (isPreparing) CircularProgressIndicator() else Text("No Media Selected")
                 }
+
                 MediaViewModel.ViewState.AUDIO -> Text("Audio")
+
                 MediaViewModel.ViewState.VIDEO -> MediaSurfaceContainer(
                     provider = viewModel.surfaceProvider,
                     modifier = Modifier.fillMaxSize(),
@@ -216,12 +218,7 @@ fun MediaScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SelectMediaDialog(
-    onDismiss: () -> Unit,
-    onSelectAudio: () -> Unit,
-    onSelectVideo: () -> Unit,
-    onSelectRemote: () -> Unit,
-) {
+private fun SelectMediaDialog(onDismiss: () -> Unit, onSelectAudio: () -> Unit, onSelectVideo: () -> Unit, onSelectRemote: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {},
@@ -250,12 +247,7 @@ private fun RemoteUrlDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit) 
 }
 
 @Composable
-private fun <T> OptionsDialog(
-    title: String,
-    options: List<Pair<String, T>>,
-    onDismiss: () -> Unit,
-    onSelect: (T) -> Unit,
-) {
+private fun <T> OptionsDialog(title: String, options: List<Pair<String, T>>, onDismiss: () -> Unit, onSelect: (T) -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {},

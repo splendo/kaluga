@@ -177,18 +177,17 @@ fun BluetoothServerScreen(modifier: Modifier = Modifier) {
     if (pickerVisible) {
         SensorPositionDialog(
             current = sensor,
-            onPick = { picked -> position.value = picked; pickerVisible = false },
+            onPick = { picked ->
+                position.value = picked
+                pickerVisible = false
+            },
             onDismiss = { pickerVisible = false },
         )
     }
 }
 
 @Composable
-private fun SensorPositionDialog(
-    current: BluetoothSpec.SensorLocation?,
-    onPick: (BluetoothSpec.SensorLocation?) -> Unit,
-    onDismiss: () -> Unit,
-) {
+private fun SensorPositionDialog(current: BluetoothSpec.SensorLocation?, onPick: (BluetoothSpec.SensorLocation?) -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Select Position") },

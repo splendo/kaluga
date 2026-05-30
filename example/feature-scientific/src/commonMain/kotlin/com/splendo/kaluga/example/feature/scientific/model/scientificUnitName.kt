@@ -70,48 +70,92 @@ val ScientificUnit<*>.name: String get() = when (this) {
     // the same `speed = Meter per Second` / `per = Second` overrides. Only the combined variants
     // can be rendered via the compound formula; the named ones fall through to their class name.
     is CombinedMetricAcceleration -> "${speed.name} per ${per.name}"
+
     is CombinedImperialAcceleration -> "${speed.name} per ${per.name}"
+
     is MetricMetricAndImperialAccelerationWrapper -> "${metricAndImperial.name} (Metric)"
+
     is ImperialMetricAndImperialAccelerationWrapper -> "${metricAndImperial.name} (Imperial)"
+
     is Action -> "${energy.name}-${time.name}"
+
     is AngularAcceleration -> "${angularVelocity.name} per ${per.name}"
+
     is AngularVelocity -> "${angle.name} per ${per.name}"
+
     is AreaDensity -> "${weight.name} per ${per.name}"
+
     is Density -> "${weight.name} per ${per.name}"
+
     is DynamicViscosity -> "${pressure.name}-${time.name}"
+
     is ImperialMetricAndImperialEnergyWrapper -> "${metricAndImperialEnergy.name} (Imperial)"
+
     is ImperialMetricAndImperialPowerWrapper -> "${metricAndImperialPower.name} (Imperial)"
+
     is HeatCapacity -> "${energy.name} per ${per.name}"
+
     is Jolt -> "${acceleration.name} per ${per.name}"
+
     is KinematicViscosity -> "${area.name} per ${time.name}"
+
     is LinearMassDensity -> "${weight.name} per ${per.name}"
+
     is LuminousEnergy -> "${luminousFlux.name}-${time.name}"
+
     is LuminousExposure -> "${illuminance.name}-${time.name}"
+
     is MassFlowRate -> "${weight.name} per ${per.name}"
+
     is Molality -> "${amountOfSubstance.name} per ${per.name}"
+
     is MolarEnergy -> "${energy.name} per ${per.name}"
+
     is Molarity -> "${amountOfSubstance.name} per ${per.name}"
+
     is MolarMass -> "${weight.name} per ${per.name}"
+
     is MolarVolume -> "${volume.name} per ${per.name}"
+
     is Momentum -> "${mass.name}-${speed.name}"
+
     is MetricMetricAndImperialEnergyWrapper -> "${metricAndImperialEnergy.name} (Metric)"
+
     is MetricMetricAndImperialPowerWrapper -> "${metricAndImperialPower.name} (Metric)"
+
     is SpecificEnergy -> "${energy.name} per ${per.name}"
+
     is SpecificHeatCapacity -> "${heatCapacity.name} per ${perWeight.name}"
+
     is SpecificVolume -> "${volume.name} per ${per.name}"
+
     is Speed -> "${distance.name} per ${per.name}"
+
     is SurfaceTension -> "${force.name} per ${per.name}"
+
     is ThermalResistance -> "${temperature.name} per ${per.name}"
+
     is USCustomaryImperialForceWrapper -> "${imperial.name} (US)"
+
     is USCustomaryImperialPressureWrapper -> "${imperial.name} (US)"
+
     is USCustomaryImperialVolumeWrapper -> "${imperial.name} (US)"
+
     is USCustomaryImperialWeightWrapper -> "${imperial.name} (US)"
+
     is UKImperialImperialForceWrapper -> "${imperial.name} (UK)"
+
     is UKImperialPressureWrapper -> "${imperial.name} (UK)"
+
     is UKImperialImperialVolumeWrapper -> "${imperial.name} (UK)"
+
     is UKImperialImperialWeightWrapper -> "${imperial.name} (UK)"
+
     is VolumetricFlow -> "${volume.name} per ${per.name}"
+
     is VolumetricFlux -> "${volumetricFlow.name}-${per.name}"
+
     is Yank -> "${force.name} per ${per.name}"
+
     else -> this::class.simpleName ?: ""
 }

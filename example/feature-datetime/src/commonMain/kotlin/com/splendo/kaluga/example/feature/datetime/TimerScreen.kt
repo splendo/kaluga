@@ -98,9 +98,12 @@ fun TimerScreen(modifier: Modifier = Modifier) {
             onClick = {
                 when (timerState) {
                     is Timer.State.NotRunning.Paused -> scope.launch { timer.start() }
+
                     is Timer.State.NotRunning.Finished ->
                         timer = RecurringTimer(1.minutes, coroutineScope = scope)
+
                     is Timer.State.Running -> scope.launch { timer.pause() }
+
                     null -> Unit
                 }
             },
@@ -124,7 +127,10 @@ fun TimerScreen(modifier: Modifier = Modifier) {
 
     if (pickerVisible) {
         TimeZonePickerDialog(
-            onPick = { timeZone = it; pickerVisible = false },
+            onPick = {
+                timeZone = it
+                pickerVisible = false
+            },
             onDismiss = { pickerVisible = false },
         )
     }

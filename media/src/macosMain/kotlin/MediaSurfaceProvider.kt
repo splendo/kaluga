@@ -34,7 +34,6 @@ class NSViewMediaSurfaceProvider(initialView: NSView?) : BaseMediaSurfaceProvide
 }
 
 /** A [BaseMediaSurfaceProvider] that takes an [AVPlayerView] directly. */
-class AVPlayerViewMediaSurfaceProvider(initialView: AVPlayerView?) :
-    BaseMediaSurfaceProvider<AVPlayerView>(initialView) {
+class AVPlayerViewMediaSurfaceProvider(initialView: AVPlayerView?) : BaseMediaSurfaceProvider<AVPlayerView>(initialView) {
     override fun AVPlayerView.asMediaSurface(): MediaSurface = MediaSurface(this)
 }

@@ -50,5 +50,4 @@ open class DefaultViewControllerLifecycleSubscribable : ViewControllerLifecycleS
 }
 
 /** Subscribe with a raw [UIViewController]. */
-fun ViewControllerLifecycleSubscribable.subscribe(viewController: UIViewController) =
-    subscribe(ViewControllerLifecycleSubscribable.LifecycleManager(viewController))
+fun ViewControllerLifecycleSubscribable.subscribe(viewController: UIViewController) = subscribe(ViewControllerLifecycleSubscribable.LifecycleManager(viewController))

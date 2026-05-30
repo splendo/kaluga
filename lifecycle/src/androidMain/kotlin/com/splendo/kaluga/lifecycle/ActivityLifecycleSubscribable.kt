@@ -74,8 +74,7 @@ open class DefaultActivityLifecycleSubscribable : ActivityLifecycleSubscribable 
 }
 
 /** Convenience: subscribe an [AppCompatActivity] using its default [LifecycleOwner] and [FragmentManager]. */
-fun ActivityLifecycleSubscribable.subscribe(activity: AppCompatActivity) =
-    subscribe(activity, activity, activity.supportFragmentManager)
+fun ActivityLifecycleSubscribable.subscribe(activity: AppCompatActivity) = subscribe(activity, activity, activity.supportFragmentManager)
 
 /** Convenience: subscribe a [Fragment] using its default [LifecycleOwner] and [FragmentManager]s. */
 fun ActivityLifecycleSubscribable.subscribe(fragment: Fragment) = subscribe(
@@ -90,11 +89,6 @@ fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: Lifecycl
     subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, owner, fragmentManager))
 
 /** Subscribe a [LifecycleOwner] with an inner [FragmentManager]. */
-fun ActivityLifecycleSubscribable.subscribe(
-    activity: Activity?,
-    owner: LifecycleOwner,
-    parentFragmentManager: FragmentManager,
-    childFragmentManager: FragmentManager,
-) = subscribe(
+fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, parentFragmentManager: FragmentManager, childFragmentManager: FragmentManager) = subscribe(
     ActivityLifecycleSubscribable.LifecycleManager(activity, owner, parentFragmentManager, childFragmentManager),
 )

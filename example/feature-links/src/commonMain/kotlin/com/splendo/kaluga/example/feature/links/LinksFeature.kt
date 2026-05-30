@@ -40,12 +40,11 @@ class LinksContribution : FeatureContribution {
         }
     }
 
-    override fun parseDeepLink(url: String): DeepLink? =
-        if (url.startsWith("https://kaluga-links.web.app")) {
-            DeepLink(targetId = id, payload = mapOf("url" to url))
-        } else {
-            null
-        }
+    override fun parseDeepLink(url: String): DeepLink? = if (url.startsWith("https://kaluga-links.web.app")) {
+        DeepLink(targetId = id, payload = mapOf("url" to url))
+    } else {
+        null
+    }
 }
 
 val linksFeatureModule: Module = module {

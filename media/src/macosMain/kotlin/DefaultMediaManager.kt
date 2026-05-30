@@ -127,13 +127,19 @@ private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let
         it.trackID,
         when (it.mediaType) {
             AVMediaTypeAudio -> TrackInfo.Type.AUDIO
+
             AVMediaTypeClosedCaption -> TrackInfo.Type.SUBTITLE
+
             AVMediaTypeMetadata -> TrackInfo.Type.METADATA
+
             // AVMediaTypeMetadataObject is iOS-only; metadata-objects don't exist as a separate
             // media type on macOS.
             AVMediaTypeSubtitle -> TrackInfo.Type.SUBTITLE
+
             AVMediaTypeText -> TrackInfo.Type.TIMED_TEXT
+
             AVMediaTypeVideo -> TrackInfo.Type.VIDEO
+
             else -> TrackInfo.Type.UNKNOWN
         },
         it.languageCode.orEmpty(),

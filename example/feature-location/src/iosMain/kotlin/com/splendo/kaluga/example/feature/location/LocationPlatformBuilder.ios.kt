@@ -21,6 +21,5 @@ import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlin.coroutines.CoroutineContext
 
-internal actual fun newLocationStateRepoBuilder(
-    permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-): LocationStateRepoBuilder = LocationStateRepoBuilder(permissionsBuilder = permissionsBuilder)
+internal actual fun newLocationStateRepoBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): LocationStateRepoBuilder =
+    LocationStateRepoBuilder(permissionsBuilder = permissionsBuilder)

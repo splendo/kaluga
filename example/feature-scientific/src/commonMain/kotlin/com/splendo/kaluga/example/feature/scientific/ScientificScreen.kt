@@ -82,11 +82,7 @@ fun ScientificScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun QuantityPicker(
-    quantities: List<QuantityDetails<*>>,
-    selected: QuantityDetails<*>?,
-    onSelected: (QuantityDetails<*>) -> Unit,
-) {
+private fun QuantityPicker(quantities: List<QuantityDetails<*>>, selected: QuantityDetails<*>?, onSelected: (QuantityDetails<*>) -> Unit) {
     SearchablePicker(
         label = "Quantity",
         items = quantities,
@@ -145,11 +141,7 @@ private fun <Q : PhysicalQuantity> QuantitySection(details: QuantityDetails<Q>) 
 }
 
 @Composable
-private fun ConverterCard(
-    converter: QuantityConverter<*, *>,
-    leftValue: com.splendo.kaluga.base.utils.Decimal?,
-    leftUnit: ScientificUnit<*>,
-) {
+private fun ConverterCard(converter: QuantityConverter<*, *>, leftValue: com.splendo.kaluga.base.utils.Decimal?, leftUnit: ScientificUnit<*>) {
     var expanded by remember(converter) { mutableStateOf(false) }
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -170,11 +162,7 @@ private fun ConverterCard(
 }
 
 @Composable
-private fun SingleConverterBody(
-    converter: QuantityConverter.Single<*, *>,
-    leftValue: com.splendo.kaluga.base.utils.Decimal?,
-    leftUnit: ScientificUnit<*>,
-) {
+private fun SingleConverterBody(converter: QuantityConverter.Single<*, *>, leftValue: com.splendo.kaluga.base.utils.Decimal?, leftUnit: ScientificUnit<*>) {
     val result = if (leftValue == null) {
         "Enter a value above"
     } else {
@@ -185,11 +173,7 @@ private fun SingleConverterBody(
 }
 
 @Composable
-private fun WithOperatorConverterBody(
-    converter: QuantityConverter.WithOperator<*, *, *>,
-    leftValue: com.splendo.kaluga.base.utils.Decimal?,
-    leftUnit: ScientificUnit<*>,
-) {
+private fun WithOperatorConverterBody(converter: QuantityConverter.WithOperator<*, *, *>, leftValue: com.splendo.kaluga.base.utils.Decimal?, leftUnit: ScientificUnit<*>) {
     val rightDetails = remember(converter) {
         (converter.rightQuantity as PhysicalQuantity).quantityDetails
     }
@@ -269,14 +253,7 @@ private fun <Q : PhysicalQuantity> UnitPicker(
  * the locale and time-zone pickers.
  */
 @Composable
-private fun <T> SearchablePicker(
-    label: String,
-    items: List<T>,
-    selected: T?,
-    labelOf: (T) -> String,
-    keyOf: (T) -> Any,
-    onSelected: (T) -> Unit,
-) {
+private fun <T> SearchablePicker(label: String, items: List<T>, selected: T?, labelOf: (T) -> String, keyOf: (T) -> Any, onSelected: (T) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     Button(
         modifier = Modifier.fillMaxWidth(),

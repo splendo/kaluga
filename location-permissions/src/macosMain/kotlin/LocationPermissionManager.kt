@@ -45,12 +45,8 @@ private const val NS_LOCATION_USAGE_DESCRIPTION = "NSLocationUsageDescription"
  * the resolved status from [CLLocationManager.authorizationStatus]; the `background` and
  * `precise` fields of [LocationPermission] are ignored on macOS.
  */
-actual class DefaultLocationPermissionManager(
-    private val bundle: NSBundle,
-    locationPermission: LocationPermission,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
+actual class DefaultLocationPermissionManager(private val bundle: NSBundle, locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val locationManager = MainCLLocationManagerAccessor { /* no per-permission config on macOS */ }
@@ -90,9 +86,13 @@ actual class LocationPermissionManagerBuilder actual constructor(private val con
 
 private fun CLAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     kCLAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     kCLAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     kCLAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     kCLAuthorizationStatusAuthorizedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     else -> {
         error("LocationPermissionManager", "Unknown CLAuthorizationStatus $this")
         IOSPermissionsHelper.AuthorizationStatus.Denied

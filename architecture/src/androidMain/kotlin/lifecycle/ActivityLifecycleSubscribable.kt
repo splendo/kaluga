@@ -73,8 +73,7 @@ fun ActivityLifecycleSubscribable.subscribe(fragment: Fragment) = lifecycleSubsc
         "com.splendo.kaluga.lifecycle.subscribe",
     ),
 )
-fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, fragmentManager: FragmentManager) =
-    lifecycleSubscribe(activity, owner, fragmentManager)
+fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, fragmentManager: FragmentManager) = lifecycleSubscribe(activity, owner, fragmentManager)
 
 @Deprecated(
     message = "Moved to :lifecycle. Import com.splendo.kaluga.lifecycle.subscribe instead.",
@@ -83,9 +82,5 @@ fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: Lifecycl
         "com.splendo.kaluga.lifecycle.subscribe",
     ),
 )
-fun ActivityLifecycleSubscribable.subscribe(
-    activity: Activity?,
-    owner: LifecycleOwner,
-    parentFragmentManager: FragmentManager,
-    childFragmentManager: FragmentManager,
-) = lifecycleSubscribe(activity, owner, parentFragmentManager, childFragmentManager)
+fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, parentFragmentManager: FragmentManager, childFragmentManager: FragmentManager) =
+    lifecycleSubscribe(activity, owner, parentFragmentManager, childFragmentManager)

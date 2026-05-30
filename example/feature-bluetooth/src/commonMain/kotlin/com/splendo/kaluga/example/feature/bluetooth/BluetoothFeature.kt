@@ -64,9 +64,7 @@ class BluetoothContribution : FeatureContribution {
 /** [BluetoothBuilder] is an `expect class` — its constructor differs per platform, so the
  *  factory must live in each platform's source set. The Android variant pulls in
  *  `applicationContext` defaults while the Apple variants do not. */
-internal expect fun newBluetoothBuilder(
-    permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-): BluetoothBuilder
+internal expect fun newBluetoothBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): BluetoothBuilder
 
 /**
  * Owns the singletons for the Bluetooth feature: the [BluetoothBuilder] (which wires the

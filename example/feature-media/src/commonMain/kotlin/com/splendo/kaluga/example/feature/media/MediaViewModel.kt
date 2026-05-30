@@ -56,10 +56,8 @@ import kotlin.time.Duration.Companion.milliseconds
  * - [DefaultMediaPlayer] is wired with that provider, so a [MediaSurfaceContainer] composed in the
  *   screen pushes its native surface straight into the player.
  */
-class MediaViewModel private constructor(
-    val surfaceProvider: ComposeMediaSurfaceProvider,
-    builder: BaseMediaManager.Builder,
-) : LifecycleViewModel(subscribables = listOf(surfaceProvider)) {
+class MediaViewModel private constructor(val surfaceProvider: ComposeMediaSurfaceProvider, builder: BaseMediaManager.Builder) :
+    LifecycleViewModel(subscribables = listOf(surfaceProvider)) {
 
     constructor(builder: BaseMediaManager.Builder) : this(ComposeMediaSurfaceProvider(), builder)
 

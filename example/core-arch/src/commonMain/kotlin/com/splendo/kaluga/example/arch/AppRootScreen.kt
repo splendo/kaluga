@@ -56,10 +56,7 @@ object Routes {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppRootScreen(
-    onNativeLaunch: (id: String) -> Unit = {},
-    modifier: Modifier = Modifier,
-) {
+fun AppRootScreen(onNativeLaunch: (id: String) -> Unit = {}, modifier: Modifier = Modifier) {
     val contributions = remember {
         KoinPlatformTools.defaultContext().get().getAll<FeatureContribution>().sortedBy { it.label }
     }
@@ -85,8 +82,11 @@ fun AppRootScreen(
             RootScaffold(
                 contributions = contributions,
                 onSelected = { contribution ->
-                    if (contribution.isCompose) navController.navigate(contribution.id)
-                    else onNativeLaunch(contribution.id)
+                    if (contribution.isCompose) {
+                        navController.navigate(contribution.id)
+                    } else {
+                        onNativeLaunch(contribution.id)
+                    }
                 },
             )
         }
@@ -98,10 +98,7 @@ fun AppRootScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RootScaffold(
-    contributions: List<FeatureContribution>,
-    onSelected: (FeatureContribution) -> Unit,
-) {
+private fun RootScaffold(contributions: List<FeatureContribution>, onSelected: (FeatureContribution) -> Unit) {
     Scaffold(topBar = { TopAppBar(title = { Text("Kaluga Example") }) }) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding).fillMaxSize(),

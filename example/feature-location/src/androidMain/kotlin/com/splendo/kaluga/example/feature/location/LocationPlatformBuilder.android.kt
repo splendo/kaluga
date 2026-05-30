@@ -23,9 +23,7 @@ import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlin.coroutines.CoroutineContext
 
-internal actual fun newLocationStateRepoBuilder(
-    permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-): LocationStateRepoBuilder = LocationStateRepoBuilder(
+internal actual fun newLocationStateRepoBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): LocationStateRepoBuilder = LocationStateRepoBuilder(
     locationManagerBuilder = DefaultLocationManager.Builder(
         googleLocationProviderSettings = GoogleLocationProvider.Settings(),
     ),

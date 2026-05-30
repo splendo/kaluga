@@ -50,5 +50,4 @@ open class DefaultWindowLifecycleSubscribable : WindowLifecycleSubscribable {
 }
 
 /** Subscribe with a raw [NSWindow]. */
-fun WindowLifecycleSubscribable.subscribe(window: NSWindow) =
-    subscribe(WindowLifecycleSubscribable.LifecycleManager(window))
+fun WindowLifecycleSubscribable.subscribe(window: NSWindow) = subscribe(WindowLifecycleSubscribable.LifecycleManager(window))

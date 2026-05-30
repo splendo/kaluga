@@ -33,7 +33,6 @@ class UIViewMediaSurfaceProvider(initialView: UIView?) : BaseMediaSurfaceProvide
 }
 
 /** A [BaseMediaSurfaceProvider] that takes an [AVPlayerViewController] directly. */
-class AVPlayerViewControllerMediaSurfaceProvider(initialViewController: AVPlayerViewController?) :
-    BaseMediaSurfaceProvider<AVPlayerViewController>(initialViewController) {
+class AVPlayerViewControllerMediaSurfaceProvider(initialViewController: AVPlayerViewController?) : BaseMediaSurfaceProvider<AVPlayerViewController>(initialViewController) {
     override fun AVPlayerViewController.asMediaSurface(): MediaSurface = MediaSurface(this)
 }

@@ -21,6 +21,4 @@ import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlin.coroutines.CoroutineContext
 
-internal actual fun newBluetoothBuilder(
-    permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-): BluetoothBuilder = BluetoothBuilder(permissionsBuilder = permissionsBuilder)
+internal actual fun newBluetoothBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): BluetoothBuilder = BluetoothBuilder(permissionsBuilder = permissionsBuilder)

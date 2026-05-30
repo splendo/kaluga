@@ -58,8 +58,11 @@ fun InfoScreen(modifier: Modifier = Modifier) {
                 onClick = {
                     when (entry) {
                         InfoEntry.About -> aboutDialogVisible = true
+
                         InfoEntry.Website -> PlatformActions.openUrl("https://kaluga.splendo.com")
+
                         InfoEntry.GitHub -> PlatformActions.openUrl("https://github.com/splendo/kaluga")
+
                         InfoEntry.Mail -> PlatformActions.openMail(
                             recipients = listOf("info@splendo.com"),
                             subject = "Question about Kaluga",

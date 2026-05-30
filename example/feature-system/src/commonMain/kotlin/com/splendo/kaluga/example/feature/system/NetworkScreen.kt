@@ -43,12 +43,16 @@ private val networkScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 private fun describe(type: NetworkConnectionType): String = when (type) {
     is NetworkConnectionType.Unknown.WithoutLastNetwork ->
         "Network's state is Unknown and without the last available connection."
+
     is NetworkConnectionType.Unknown.WithLastNetwork ->
         "Network's state is Unknown and with last known connection as ${type.lastKnown}."
+
     is NetworkConnectionType.Known.Cellular ->
         "Network's state is Available through Cellular."
+
     is NetworkConnectionType.Known.Wifi ->
         "Network's state is Available through WIFI."
+
     is NetworkConnectionType.Known.Absent ->
         "Network's state is Absent."
 }

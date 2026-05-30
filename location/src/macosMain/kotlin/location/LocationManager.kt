@@ -51,8 +51,7 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
      * Builder for creating a [DefaultLocationManager]
      */
     class Builder : BaseLocationManager.Builder {
-        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager =
-            DefaultLocationManager(settings, coroutineScope)
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager = DefaultLocationManager(settings, coroutineScope)
     }
 
     private class Delegate(private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>) :
