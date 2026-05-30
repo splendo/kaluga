@@ -102,4 +102,8 @@ actual data class KalugaLocale internal constructor(val nsLocale: NSLocale) : Ba
     actual override val quotationEnd: String = nsLocale.quotationEndDelimiter
     actual override val alternateQuotationStart: String = nsLocale.alternateQuotationBeginDelimiter
     actual override val alternateQuotationEnd: String = nsLocale.alternateQuotationEndDelimiter
+
+    // `data class` would otherwise auto-generate a useless `KalugaLocale(nsLocale=…)` toString
+    // that shadows the parent's `lang_country_variant` formatting. Delegate back to it.
+    override fun toString(): String = super.toString()
 }

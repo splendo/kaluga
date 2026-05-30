@@ -54,6 +54,10 @@ actual data class KalugaLocale internal constructor(internal val tag: String) : 
     actual override val alternateQuotationStart: String = "\""
     actual override val alternateQuotationEnd: String = "\""
 
+    // `data class` would otherwise auto-generate a useless `KalugaLocale(tag=…)` toString
+    // that shadows the parent's `lang_country_variant` formatting. Delegate back to it.
+    override fun toString(): String = super.toString()
+
     actual companion object {
 
         actual fun createLocale(language: String): KalugaLocale = build(language, "", "")

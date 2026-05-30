@@ -19,14 +19,20 @@ package com.splendo.kaluga.example.feature.datetime
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -79,7 +85,7 @@ fun TimerScreen(modifier: Modifier = Modifier) {
     }
 
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        modifier = modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
@@ -112,6 +118,8 @@ fun TimerScreen(modifier: Modifier = Modifier) {
             Text(timeZone.displayName(TimeZoneNameStyle.Long))
         }
         Text(formattedNow, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+
+        TimeZoneDetails(timeZone)
     }
 
     if (pickerVisible) {
@@ -123,20 +131,71 @@ fun TimerScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
+private fun TimeZoneDetails(timeZone: KalugaTimeZone) {
+    HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+    Text("Time Zone", style = MaterialTheme.typography.titleMedium)
+    Field("Identifier", timeZone.identifier)
+    Field("Offset from GMT", formatOffset(timeZone.offsetFromGMT))
+    Field("Uses DST (now)", if (timeZone.usesDaylightSavingsTime()) "Yes" else "No")
+    Field("DST offset", formatOffset(timeZone.daylightSavingsOffset))
+    Field("Name (long)", timeZone.displayName(TimeZoneNameStyle.Long, withDaylightSavings = false))
+    Field("Name (short)", timeZone.displayName(TimeZoneNameStyle.Short, withDaylightSavings = false))
+    Field("Name (long, DST)", timeZone.displayName(TimeZoneNameStyle.Long, withDaylightSavings = true))
+    Field("Name (short, DST)", timeZone.displayName(TimeZoneNameStyle.Short, withDaylightSavings = true))
+}
+
+@Composable
+private fun Field(label: String, value: String) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(label, style = MaterialTheme.typography.bodyMedium)
+        Text(value, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+private fun formatOffset(duration: Duration): String = duration.toComponents { hours, minutes, _, _ ->
+    val sign = if (hours < 0 || minutes < 0) "-" else "+"
+    val h = if (hours < 0) -hours else hours
+    val m = if (minutes < 0) -minutes else minutes
+    "${sign}${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}"
+}
+
+@Composable
 private fun TimeZonePickerDialog(onPick: (KalugaTimeZone) -> Unit, onDismiss: () -> Unit) {
     val zones = remember {
         KalugaTimeZone.availableIdentifiers.mapNotNull(KalugaTimeZone::get)
+    }
+    var query by remember { mutableStateOf("") }
+    val filtered = remember(query, zones) {
+        if (query.isBlank()) {
+            zones
+        } else {
+            val q = query.trim().lowercase()
+            zones.filter { tz ->
+                tz.identifier.lowercase().contains(q) ||
+                    tz.displayName(TimeZoneNameStyle.Long).lowercase().contains(q) ||
+                    tz.displayName(TimeZoneNameStyle.Short).lowercase().contains(q)
+            }
+        }
     }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Select Time Zone") },
         text = {
-            LazyColumn {
-                items(zones, key = { it.identifier }) { tz ->
-                    TextButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onPick(tz) },
-                    ) { Text(tz.displayName(TimeZoneNameStyle.Long)) }
+            Column(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    placeholder = { Text("Search identifier or name") },
+                )
+                LazyColumn {
+                    items(filtered, key = { it.identifier }) { tz ->
+                        TextButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { onPick(tz) },
+                        ) { Text("${tz.identifier} — ${tz.displayName(TimeZoneNameStyle.Long)}") }
+                    }
                 }
             }
         },

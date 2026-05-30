@@ -79,6 +79,7 @@ kaluga {
                 api(project(":feature-datetime"))
                 api(project(":feature-info"))
                 api(project(":feature-links"))
+                api(project(":feature-localization"))
                 api(project(":feature-location"))
                 api(project(":feature-media"))
                 api(project(":feature-permissions"))

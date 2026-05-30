@@ -21,17 +21,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -83,44 +81,20 @@ fun ScientificScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun QuantityPicker(
     quantities: List<QuantityDetails<*>>,
     selected: QuantityDetails<*>?,
     onSelected: (QuantityDetails<*>) -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-        OutlinedTextField(
-            value = selected?.quantity?.name ?: "",
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Quantity") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.fillMaxWidth().menuAnchor(),
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth().heightIn(max = 320.dp),
-            scrollState = rememberScrollState(),
-        ) {
-            // `DropdownMenu` measures its content with intrinsic measurements to size itself; a
-            // `LazyColumn` here would throw "Asking for intrinsic measurements of SubcomposeLayout
-            // layouts is not supported". The quantity list is finite (~60 entries) so iterating
-            // eagerly inside the menu's built-in scroll container is fine.
-            quantities.forEach { details ->
-                DropdownMenuItem(
-                    text = { Text(details.quantity.name) },
-                    onClick = {
-                        onSelected(details)
-                        expanded = false
-                    },
-                )
-            }
-        }
-    }
+    SearchablePicker(
+        label = "Quantity",
+        items = quantities,
+        selected = selected,
+        labelOf = { it.quantity.name },
+        keyOf = { it.quantity.name },
+        onSelected = onSelected,
+    )
 }
 
 @Composable
@@ -272,7 +246,6 @@ private fun Row2(left: @Composable () -> Unit, right: @Composable () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun <Q : PhysicalQuantity> UnitPicker(
     label: String,
@@ -280,31 +253,76 @@ private fun <Q : PhysicalQuantity> UnitPicker(
     selected: AbstractScientificUnit<Q>?,
     onSelected: (AbstractScientificUnit<Q>) -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-        OutlinedTextField(
-            value = (selected as? ScientificUnit<*>)?.name.orEmpty(),
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(label) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.fillMaxWidth().menuAnchor(),
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth().heightIn(max = 320.dp),
-            scrollState = rememberScrollState(),
-        ) {
-            units.forEach { unit ->
-                DropdownMenuItem(
-                    text = { Text((unit as ScientificUnit<*>).name) },
-                    onClick = {
-                        onSelected(unit)
-                        expanded = false
-                    },
-                )
+    SearchablePicker(
+        label = label,
+        items = units,
+        selected = selected,
+        labelOf = { (it as ScientificUnit<*>).name },
+        keyOf = { (it as ScientificUnit<*>).name },
+        onSelected = onSelected,
+    )
+}
+
+/**
+ * Generic "tap to open a searchable list dialog" picker. The trigger is an [OutlinedButton]
+ * styled as a labeled field; the dialog itself reuses the same search + [LazyColumn] pattern as
+ * the locale and time-zone pickers.
+ */
+@Composable
+private fun <T> SearchablePicker(
+    label: String,
+    items: List<T>,
+    selected: T?,
+    labelOf: (T) -> String,
+    keyOf: (T) -> Any,
+    onSelected: (T) -> Unit,
+) {
+    var showDialog by remember { mutableStateOf(false) }
+    Button(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { showDialog = true },
+    ) {
+        Text("$label: ${selected?.let(labelOf) ?: "—"}")
+    }
+    if (showDialog) {
+        var query by remember { mutableStateOf("") }
+        val filtered = remember(query, items) {
+            if (query.isBlank()) {
+                items
+            } else {
+                val q = query.trim().lowercase()
+                items.filter { labelOf(it).lowercase().contains(q) }
             }
         }
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Select $label") },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
+            },
+            text = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = query,
+                        onValueChange = { query = it },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        placeholder = { Text("Search") },
+                    )
+                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                        items(filtered, key = keyOf) { item ->
+                            TextButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = {
+                                    onSelected(item)
+                                    showDialog = false
+                                },
+                            ) { Text(labelOf(item)) }
+                        }
+                    }
+                }
+            },
+        )
     }
 }
