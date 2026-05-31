@@ -141,15 +141,6 @@ class DateFormatterTest {
     }
 }
 
-/**
- * Medium-style time format produced for the French locale (after NBSP/NNBSP normalisation).
- * Newer CLDR data emits 24-hour `13:37:42`; Android API 24's data emits 12-hour `1:37:42 PM`.
- */
 expect val expectedFrenchMediumTime: String
 
-/**
- * Tolerance applied to [KalugaDateFormatter.parse] round-trips that rely on parsing a timezone
- * abbreviation (`z` pattern). Android API 24's historical timezone data interprets the `PST`
- * abbreviation around the 1970 epoch off by one hour; every other platform parses it exactly.
- */
 expect val parseAbbreviationTolerance: Duration

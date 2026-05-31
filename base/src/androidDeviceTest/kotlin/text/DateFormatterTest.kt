@@ -25,8 +25,6 @@ actual val USDForNL: String = "US$"
 actual val JPYForUS: String = "¥"
 actual val JPYForNL: String = "JP¥"
 
-// API 24 ships an older CLDR/tz data set than later releases. Switch the expected values
-// for the affected formatters when running on N (API 24); newer devices match every other platform.
 private val isLegacyAndroidI18n: Boolean = Build.VERSION.SDK_INT <= Build.VERSION_CODES.N
 
 actual val expectedFrenchMediumTime: String = if (isLegacyAndroidI18n) "1:37:42 PM" else "13:37:42"

@@ -543,9 +543,4 @@ class StringFormatterTest {
     }
 }
 
-/**
- * Short-name representation produced by `%tZ` for the Dutch locale on `America/Los_Angeles` during DST.
- * Newer CLDR data has the localised abbreviation `PDT`; Android API 24's Dutch data lacks it and
- * falls back to the GMT offset `GMT-07:00`.
- */
 expect val expectedNlPdtZoneName: String
