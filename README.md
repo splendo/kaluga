@@ -107,10 +107,13 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [hud](hud/)                                                 | Used for showing a Loading indicator HUD                                           | com.splendo.kaluga:hud                         |
 | [keyboard](keyboard/)                                       | Used for showing and hiding the keyboard                                           | com.splendo.kaluga:keyboard                    |
 | [keyboard-compose](keyboard-compose/)                       | Compose extensions for keyboard                                                    | com.splendo.kaluga:keyboard-compose            |
+| [lifecycle](lifecycle/)                                     | Platform-host lifecycle bindings for service builders                              | com.splendo.kaluga:lifecycle                   |
+| [lifecycle-compose](lifecycle-compose/)                     | Compose extensions for lifecycle                                                   | com.splendo.kaluga:lifecycle-compose           |
 | [links](links/)                                             | Used for decoding url into an object                                               | com.splendo.kaluga:links                       |
 | [location](location/)                                       | Provides the User' geolocation                                                     | com.splendo.kaluga:location                    |
 | [logging](logging/)                                         | Shared console logging                                                             | com.splendo.kaluga:logging                     |
 | [media](media/)                                             | Playing audio/video                                                                | com.splendo.kaluga:media                       |
+| [media-compose](media-compose/)                             | Compose extensions for media                                                       | com.splendo.kaluga:media-compose               |
 | [base-permissions](base-permissions/)                       | Managing permissions, used in conjunction with modules below                       | com.splendo.kaluga:base-permissions            |
 | [bluetooth-permissions](bluetooth-permissions/)             | Managing bluetooth permissions                                                     | com.splendo.kaluga:bluetooth-permissions       |
 | [calendar-permissions](calendar-permissions/)               | Managing calendar permissions                                                      | com.splendo.kaluga:calendar-permissions        |

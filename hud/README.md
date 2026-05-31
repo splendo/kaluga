@@ -61,7 +61,7 @@ The `HUD.Builder` class can be used to build HUDs.
 The `HUD.Builder` object should be created from the platform side.
 
 ### Android
-On Android the builder is an `ActivityLifecycleSubscribable` (see Architecture) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the HUD.
+On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../lifecycle)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the HUD.
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 
 ```kotlin
