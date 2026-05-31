@@ -1,5 +1,5 @@
 /*
- Copyright 2026 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,17 +21,29 @@ import com.splendo.kaluga.lifecycle.LifecycleSubscribable
 import platform.StoreKit.SKStoreReviewController
 
 /**
- * macOS implementation of [ReviewManager]. macOS 10.14+ ships `SKStoreReviewController`, which
- * takes no window argument — the system schedules the request against the active scene — so
- * the [Builder] only needs to be the [LifecycleSubscribable] marker (no [WindowLifecycleSubscribable]
- * implementation required for the prompt itself).
+ * Apple implementation of [ReviewManager]. Shared across iOS (10.3+) and macOS (10.14+), both of
+ * which ship `SKStoreReviewController.requestReview()`. The OS schedules the prompt against the
+ * active scene/window itself, so the [Builder] only needs the [LifecycleSubscribable] marker —
+ * no platform-specific lifecycle subscription is required for the request to dispatch.
  */
 actual class ReviewManager {
 
+    /**
+     * Builder for creating a [ReviewManager]
+     */
     actual class Builder : LifecycleSubscribable {
+
+        /**
+         * Creates a [ReviewManager]
+         * @return the created [ReviewManager]
+         */
         actual fun create() = ReviewManager()
     }
 
+    /**
+     * Attempts to show a dialog that asks the user to submit a review of the app.
+     * This method does not guarantee such a dialog will be shown as the OS may block it.
+     */
     actual suspend fun attemptToRequestReview() {
         SKStoreReviewController.requestReview()
     }

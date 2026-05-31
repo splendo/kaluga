@@ -19,8 +19,8 @@ package com.splendo.kaluga.keyboard
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleManagerObserver
 import kotlinx.coroutines.CoroutineScope
 
 /**

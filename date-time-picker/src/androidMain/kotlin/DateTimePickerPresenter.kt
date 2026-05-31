@@ -22,8 +22,8 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.uses24HourClock
 import kotlinx.coroutines.CoroutineScope
