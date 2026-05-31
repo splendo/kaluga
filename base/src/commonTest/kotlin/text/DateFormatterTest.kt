@@ -18,17 +18,19 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.utc
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 class DateFormatterTest {
@@ -97,7 +99,7 @@ class DateFormatterTest {
         // (and historically U+00A0 NO-BREAK SPACE on some platforms) instead of a regular space.
         // Normalise so the assertion isn't whitespace-sensitive.
         assertEquals("1:37:42 PM", usFormatter.format(March181988).replace(" ", " ").replace(" ", " "))
-        assertEquals("13:37:42", frFormatter.format(March181988))
+        assertEquals(expectedFrenchMediumTime, frFormatter.format(March181988).replace(' ', ' ').replace(' ', ' '))
     }
 
     @Test
@@ -124,8 +126,30 @@ class DateFormatterTest {
         assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInUtc))
         assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInPst))
         assertEquals(epochInUtc, utcFormatter.parse(utcFormatter.format(epochInUtc)))
-        assertEquals(epochInUtc, utcFormatter.parse(pstFormatter.format(epochInPst)))
+        assertSameInstantWithinTolerance(epochInUtc, utcFormatter.parse(pstFormatter.format(epochInPst)))
         assertEquals(epochInPst, pstFormatter.parse(utcFormatter.format(epochInUtc)))
         assertEquals(epochInPst, pstFormatter.parse(pstFormatter.format(epochInPst)))
     }
+
+    private fun assertSameInstantWithinTolerance(expected: KalugaDate, actual: KalugaDate?) {
+        assertNotNull(actual)
+        val delta = expected.durationSinceEpoch - actual.durationSinceEpoch
+        assertTrue(
+            delta.absoluteValue <= parseAbbreviationTolerance,
+            "Expected $expected within $parseAbbreviationTolerance of $actual (delta=$delta)",
+        )
+    }
 }
+
+/**
+ * Medium-style time format produced for the French locale (after NBSP/NNBSP normalisation).
+ * Newer CLDR data emits 24-hour `13:37:42`; Android API 24's data emits 12-hour `1:37:42 PM`.
+ */
+expect val expectedFrenchMediumTime: String
+
+/**
+ * Tolerance applied to [KalugaDateFormatter.parse] round-trips that rely on parsing a timezone
+ * abbreviation (`z` pattern). Android API 24's historical timezone data interprets the `PST`
+ * abbreviation around the 1970 epoch off by one hour; every other platform parses it exactly.
+ */
+expect val parseAbbreviationTolerance: Duration

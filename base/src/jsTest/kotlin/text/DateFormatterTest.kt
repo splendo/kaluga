@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.base.text
 
+import kotlin.time.Duration
+
 actual val USDForNL: String = "US$"
 actual val JPYForUS: String = "¥"
 actual val JPYForNL: String = "JP¥"
+
+actual val expectedFrenchMediumTime: String = "13:37:42"
+actual val parseAbbreviationTolerance: Duration = Duration.ZERO
+actual val expectedNlPdtZoneName: String = "PDT"

@@ -539,6 +539,13 @@ class StringFormatterTest {
         val time = "%1\$tA %1\$tB %1\$te, %1\$tY at %1\$tH:%1\$tM:%1\$tS in %1\$tZ".format(date, locale = locale)
         assertEquals("Thursday July 23, 2020 at 08:45:20 in PDT", time)
         val timeNL = "%1\$tA %1\$tB %1\$te, %1\$tY at %1\$tH:%1\$tM:%1\$tS in %1\$tZ".format(date, locale = localeNL)
-        assertEquals("donderdag juli 23, 2020 at 08:45:20 in PDT", timeNL)
+        assertEquals("donderdag juli 23, 2020 at 08:45:20 in $expectedNlPdtZoneName", timeNL)
     }
 }
+
+/**
+ * Short-name representation produced by `%tZ` for the Dutch locale on `America/Los_Angeles` during DST.
+ * Newer CLDR data has the localised abbreviation `PDT`; Android API 24's Dutch data lacks it and
+ * falls back to the GMT offset `GMT-07:00`.
+ */
+expect val expectedNlPdtZoneName: String
