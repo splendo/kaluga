@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -25,7 +25,7 @@ abstract class com.splendo.kaluga.alerts/BaseAlertPresenter : com.splendo.kaluga
     open fun showAsync(kotlin/Boolean, kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.alerts/BaseAlertPresenter.showAsync|showAsync(kotlin.Boolean;kotlin.Function0<kotlin.Unit>){}[0]
     open suspend fun show(kotlin/Boolean): com.splendo.kaluga.alerts/Alert.Action? // com.splendo.kaluga.alerts/BaseAlertPresenter.show|show(kotlin.Boolean){}[0]
 
-    abstract class Builder : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.alerts/BaseAlertPresenter.Builder|null[0]
+    abstract class Builder : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.alerts/BaseAlertPresenter.Builder|null[0]
         constructor <init>() // com.splendo.kaluga.alerts/BaseAlertPresenter.Builder.<init>|<init>(){}[0]
 
         abstract fun create(com.splendo.kaluga.alerts/Alert, com.splendo.kaluga.logging/Logger = ..., kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.alerts/BaseAlertPresenter // com.splendo.kaluga.alerts/BaseAlertPresenter.Builder.create|create(com.splendo.kaluga.alerts.Alert;com.splendo.kaluga.logging.Logger;kotlinx.coroutines.CoroutineScope){}[0]

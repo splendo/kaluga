@@ -17,42 +17,33 @@
 
 package com.splendo.kaluga.test.keyboard
 
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.base.UIThreadTest
 import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class MockKeyboardManagerTest : UIThreadViewModelTest<MockKeyboardManagerTest.TestContext, MockKeyboardManagerTest.ViewModel>() {
+class MockKeyboardManagerTest : UIThreadTest<MockKeyboardManagerTest.TestContext>() {
 
-    class ViewModel(keyboardManagerBuilder: MockKeyboardManager.Builder<MockFocusHandler>, val focusHandler: MockFocusHandler) : BaseLifecycleViewModel(keyboardManagerBuilder) {
-
-        val keyboardManager = keyboardManagerBuilder.create(coroutineScope)
-
-        fun show() = keyboardManager.show(focusHandler)
-        fun hide() = keyboardManager.hide()
-    }
-
-    class TestContext : ViewModelTestContext<ViewModel> {
+    class TestContext(coroutineScope: CoroutineScope) : UIThreadTest.TestContext {
         val mockFocusHandler = MockFocusHandler()
         val keyboardManagerBuilder = MockKeyboardManager.Builder<MockFocusHandler>()
-        override val viewModel: ViewModel = ViewModel(keyboardManagerBuilder, mockFocusHandler)
+        val keyboardManager = keyboardManagerBuilder.create(coroutineScope)
     }
 
-    override val createTestContext: suspend (scope: CoroutineScope) -> TestContext = { TestContext() }
+    override val createTestContext: suspend (scope: CoroutineScope) -> TestContext = { TestContext(it) }
 
     @Test
     fun testMockKeyboardManager() = testOnUIThread {
         keyboardManagerBuilder.createMock.verify()
-        val keyboardManager = keyboardManagerBuilder.builtKeyboardManagers.first()
         assertFalse(mockFocusHandler.isFocused)
-        viewModel.show()
+
+        keyboardManager.show(mockFocusHandler)
         keyboardManager.showMock.verify()
         assertTrue(mockFocusHandler.isFocused)
 
-        viewModel.hide()
+        keyboardManager.hide()
         keyboardManager.hideMock.verify()
         assertFalse(mockFocusHandler.isFocused)
     }

@@ -1,6 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
-// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosSimulatorArm64, js, macosArm64]
+// Alias: apple => [iosSimulatorArm64, macosArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -438,7 +438,7 @@ abstract class com.splendo.kaluga.base.utils/KalugaDate : kotlin/Comparable<com.
     constructor <init>() // com.splendo.kaluga.base.utils/KalugaDate.<init>|<init>(){}[0]
 
     abstract val date // com.splendo.kaluga.base.utils/KalugaDate.date|{}date[0]
-        // Targets: [ios]
+        // Targets: [apple]
         abstract fun <get-date>(): platform.Foundation/NSDate // com.splendo.kaluga.base.utils/KalugaDate.date.<get-date>|<get-date>(){}[0]
 
         // Targets: [js]
@@ -720,7 +720,7 @@ final class com.splendo.kaluga.base.text/KalugaDateFormatter : com.splendo.kalug
         final fun patternFormat(kotlin/String, com.splendo.kaluga.base.utils/KalugaTimeZone = ..., com.splendo.kaluga.base.utils/KalugaLocale = ...): com.splendo.kaluga.base.text/KalugaDateFormatter // com.splendo.kaluga.base.text/KalugaDateFormatter.Companion.patternFormat|patternFormat(kotlin.String;com.splendo.kaluga.base.utils.KalugaTimeZone;com.splendo.kaluga.base.utils.KalugaLocale){}[0]
         final fun timeFormat(com.splendo.kaluga.base.text/DateFormatStyle = ..., com.splendo.kaluga.base.utils/KalugaTimeZone = ..., com.splendo.kaluga.base.utils/KalugaLocale = ...): com.splendo.kaluga.base.text/KalugaDateFormatter // com.splendo.kaluga.base.text/KalugaDateFormatter.Companion.timeFormat|timeFormat(com.splendo.kaluga.base.text.DateFormatStyle;com.splendo.kaluga.base.utils.KalugaTimeZone;com.splendo.kaluga.base.utils.KalugaLocale){}[0]
 
-        // Targets: [ios]
+        // Targets: [apple]
         final fun createDateFormatter(com.splendo.kaluga.base.text/DateFormatStyle?, com.splendo.kaluga.base.text/DateFormatStyle?, com.splendo.kaluga.base.utils/KalugaTimeZone, com.splendo.kaluga.base.utils/KalugaLocale): com.splendo.kaluga.base.text/KalugaDateFormatter // com.splendo.kaluga.base.text/KalugaDateFormatter.Companion.createDateFormatter|createDateFormatter(com.splendo.kaluga.base.text.DateFormatStyle?;com.splendo.kaluga.base.text.DateFormatStyle?;com.splendo.kaluga.base.utils.KalugaTimeZone;com.splendo.kaluga.base.utils.KalugaLocale){}[0]
     }
 }
@@ -806,7 +806,7 @@ final class com.splendo.kaluga.base.text/StringFormatter { // com.splendo.kaluga
 
 final class com.splendo.kaluga.base.utils/DefaultKalugaDate : com.splendo.kaluga.base.utils/KalugaDate { // com.splendo.kaluga.base.utils/DefaultKalugaDate|null[0]
     final val date // com.splendo.kaluga.base.utils/DefaultKalugaDate.date|{}date[0]
-        // Targets: [ios]
+        // Targets: [apple]
         final fun <get-date>(): platform.Foundation/NSDate // com.splendo.kaluga.base.utils/DefaultKalugaDate.date.<get-date>|<get-date>(){}[0]
 
         // Targets: [js]
@@ -870,7 +870,7 @@ final class com.splendo.kaluga.base.utils/DefaultKalugaDate : com.splendo.kaluga
         final fun now(kotlin.time/Duration = ..., com.splendo.kaluga.base.utils/KalugaTimeZone = ..., com.splendo.kaluga.base.utils/KalugaLocale = ...): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.base.utils/DefaultKalugaDate.Companion.now|now(kotlin.time.Duration;com.splendo.kaluga.base.utils.KalugaTimeZone;com.splendo.kaluga.base.utils.KalugaLocale){}[0]
     }
 
-    // Targets: [ios]
+    // Targets: [apple]
     final fun toString(): kotlin/String // com.splendo.kaluga.base.utils/DefaultKalugaDate.toString|toString(){}[0]
 }
 
@@ -880,28 +880,21 @@ final class com.splendo.kaluga.base.utils/FiniteDecimal : kotlin/Comparable<com.
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.utils/FiniteDecimal.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.base.utils/FiniteDecimal.toString|toString(){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     constructor <init>(platform.Foundation/NSDecimalNumber) // com.splendo.kaluga.base.utils/FiniteDecimal.<init>|<init>(platform.Foundation.NSDecimalNumber){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final val nsDecimal // com.splendo.kaluga.base.utils/FiniteDecimal.nsDecimal|{}nsDecimal[0]
         final fun <get-nsDecimal>(): platform.Foundation/NSDecimalNumber // com.splendo.kaluga.base.utils/FiniteDecimal.nsDecimal.<get-nsDecimal>|<get-nsDecimal>(){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final fun component1(): platform.Foundation/NSDecimalNumber // com.splendo.kaluga.base.utils/FiniteDecimal.component1|component1(){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final fun copy(platform.Foundation/NSDecimalNumber = ...): com.splendo.kaluga.base.utils/FiniteDecimal // com.splendo.kaluga.base.utils/FiniteDecimal.copy|copy(platform.Foundation.NSDecimalNumber){}[0]
 
     // Targets: [js]
     constructor <init>(com.splendo.kaluga.base.utils/BigDecimal) // com.splendo.kaluga.base.utils/FiniteDecimal.<init>|<init>(com.splendo.kaluga.base.utils.BigDecimal){}[0]
-
-    // Targets: [js]
-    final val bd // com.splendo.kaluga.base.utils/FiniteDecimal.bd|{}bd[0]
-        final fun <get-bd>(): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/FiniteDecimal.bd.<get-bd>|<get-bd>(){}[0]
-
-    // Targets: [js]
-    final fun component1(): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/FiniteDecimal.component1|component1(){}[0]
 
     // Targets: [js]
     final fun copy(com.splendo.kaluga.base.utils/BigDecimal = ...): com.splendo.kaluga.base.utils/FiniteDecimal // com.splendo.kaluga.base.utils/FiniteDecimal.copy|copy(com.splendo.kaluga.base.utils.BigDecimal){}[0]
@@ -947,27 +940,12 @@ final class com.splendo.kaluga.base.utils/KalugaLocale : com.splendo.kaluga.base
         final fun createLocale(kotlin/String, kotlin/String, kotlin/String): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.base.utils/KalugaLocale.Companion.createLocale|createLocale(kotlin.String;kotlin.String;kotlin.String){}[0]
     }
 
-    // Targets: [ios]
+    // Targets: [apple]
     final val nsLocale // com.splendo.kaluga.base.utils/KalugaLocale.nsLocale|{}nsLocale[0]
         final fun <get-nsLocale>(): platform.Foundation/NSLocale // com.splendo.kaluga.base.utils/KalugaLocale.nsLocale.<get-nsLocale>|<get-nsLocale>(){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final fun component1(): platform.Foundation/NSLocale // com.splendo.kaluga.base.utils/KalugaLocale.component1|component1(){}[0]
-
-    // Targets: [js]
-    final fun component1(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.component1|component1(){}[0]
-
-    // Targets: [js]
-    final fun component2(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.component2|component2(){}[0]
-
-    // Targets: [js]
-    final fun component3(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.component3|component3(){}[0]
-
-    // Targets: [js]
-    final fun component4(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.component4|component4(){}[0]
-
-    // Targets: [js]
-    final fun component5(): com.splendo.kaluga.base.utils/UnitSystem // com.splendo.kaluga.base.utils/KalugaLocale.component5|component5(){}[0]
 }
 
 final class com.splendo.kaluga.base.utils/KalugaTimeZone : com.splendo.kaluga.base.utils/BaseTimeZone { // com.splendo.kaluga.base.utils/KalugaTimeZone|null[0]
@@ -981,6 +959,7 @@ final class com.splendo.kaluga.base.utils/KalugaTimeZone : com.splendo.kaluga.ba
     final fun copy(): com.splendo.kaluga.base.utils/KalugaTimeZone // com.splendo.kaluga.base.utils/KalugaTimeZone.copy|copy(){}[0]
     final fun displayName(com.splendo.kaluga.base.utils/TimeZoneNameStyle, kotlin/Boolean, com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/KalugaTimeZone.displayName|displayName(com.splendo.kaluga.base.utils.TimeZoneNameStyle;kotlin.Boolean;com.splendo.kaluga.base.utils.KalugaLocale){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.utils/KalugaTimeZone.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.utils/KalugaTimeZone.hashCode|hashCode(){}[0]
     final fun offsetFromGMTAtDate(com.splendo.kaluga.base.utils/KalugaDate): kotlin.time/Duration // com.splendo.kaluga.base.utils/KalugaTimeZone.offsetFromGMTAtDate|offsetFromGMTAtDate(com.splendo.kaluga.base.utils.KalugaDate){}[0]
     final fun usesDaylightSavingsTime(com.splendo.kaluga.base.utils/KalugaDate): kotlin/Boolean // com.splendo.kaluga.base.utils/KalugaTimeZone.usesDaylightSavingsTime|usesDaylightSavingsTime(com.splendo.kaluga.base.utils.KalugaDate){}[0]
 
@@ -992,12 +971,9 @@ final class com.splendo.kaluga.base.utils/KalugaTimeZone : com.splendo.kaluga.ba
         final fun get(kotlin/String): com.splendo.kaluga.base.utils/KalugaTimeZone? // com.splendo.kaluga.base.utils/KalugaTimeZone.Companion.get|get(kotlin.String){}[0]
     }
 
-    // Targets: [ios]
+    // Targets: [apple]
     final val timeZone // com.splendo.kaluga.base.utils/KalugaTimeZone.timeZone|{}timeZone[0]
         final fun <get-timeZone>(): platform.Foundation/NSTimeZone // com.splendo.kaluga.base.utils/KalugaTimeZone.timeZone.<get-timeZone>|<get-timeZone>(){}[0]
-
-    // Targets: [ios]
-    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.utils/KalugaTimeZone.hashCode|hashCode(){}[0]
 }
 
 final class com.splendo.kaluga.base/KalugaThread { // com.splendo.kaluga.base/KalugaThread|null[0]
@@ -1016,20 +992,20 @@ final class com.splendo.kaluga.base/KalugaThread { // com.splendo.kaluga.base/Ka
             final fun <get-currentThread>(): com.splendo.kaluga.base/KalugaThread // com.splendo.kaluga.base/KalugaThread.Companion.currentThread.<get-currentThread>|<get-currentThread>(){}[0]
     }
 
-    // Targets: [ios]
+    // Targets: [apple]
     constructor <init>(platform.Foundation/NSThread) // com.splendo.kaluga.base/KalugaThread.<init>|<init>(platform.Foundation.NSThread){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final val thread // com.splendo.kaluga.base/KalugaThread.thread|{}thread[0]
         final fun <get-thread>(): platform.Foundation/NSThread // com.splendo.kaluga.base/KalugaThread.thread.<get-thread>|<get-thread>(){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final fun component1(): platform.Foundation/NSThread // com.splendo.kaluga.base/KalugaThread.component1|component1(){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final fun copy(platform.Foundation/NSThread = ...): com.splendo.kaluga.base/KalugaThread // com.splendo.kaluga.base/KalugaThread.copy|copy(platform.Foundation.NSThread){}[0]
 
-    // Targets: [ios]
+    // Targets: [apple]
     final fun toString(): kotlin/String // com.splendo.kaluga.base/KalugaThread.toString|toString(){}[0]
 
     // Targets: [js]
@@ -2901,7 +2877,24 @@ final suspend inline fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).co
 final suspend inline fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.base.flow/collectUntilLast(kotlin/Boolean = ..., kotlinx.coroutines.flow/FlowCollector<#A>) // com.splendo.kaluga.base.flow/collectUntilLast|collectUntilLast@kotlinx.coroutines.flow.Flow<0:0>(kotlin.Boolean;kotlinx.coroutines.flow.FlowCollector<0:0>){0§<kotlin.Any?>}[0]
 final suspend inline fun <#A: reified kotlin/Any?> (kotlinx.coroutines.flow/Flow<*>).com.splendo.kaluga.base.utils/firstInstance(): #A? // com.splendo.kaluga.base.utils/firstInstance|firstInstance@kotlinx.coroutines.flow.Flow<*>(){0§<kotlin.Any?>}[0]
 
-// Targets: [ios]
+// Targets: [apple]
+final val com.splendo.kaluga.base.utils/nsRange // com.splendo.kaluga.base.utils/nsRange|@kotlin.ranges.IntRange{}nsRange[0]
+    final fun (kotlin.ranges/IntRange).<get-nsRange>(): kotlinx.cinterop/CValue<platform.Foundation/_NSRange> // com.splendo.kaluga.base.utils/nsRange.<get-nsRange>|<get-nsRange>@kotlin.ranges.IntRange(){}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.base.utils/range // com.splendo.kaluga.base.utils/range|@kotlinx.cinterop.CValue<platform.Foundation._NSRange>{}range[0]
+    final fun (kotlinx.cinterop/CValue<platform.Foundation/_NSRange>).<get-range>(): kotlin.ranges/IntRange // com.splendo.kaluga.base.utils/range.<get-range>|<get-range>@kotlinx.cinterop.CValue<platform.Foundation._NSRange>(){}[0]
+
+// Targets: [apple]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.utils/toNSData(): platform.Foundation/NSData // com.splendo.kaluga.base.utils/toNSData|toNSData@kotlin.ByteArray(){}[0]
+
+// Targets: [apple]
+final fun (platform.Foundation/NSData).com.splendo.kaluga.base.utils/toByteArray(): kotlin/ByteArray // com.splendo.kaluga.base.utils/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
+
+// Targets: [apple]
+final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/ULong = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.ULong){0§<kotlin.Any?>}[0]
+
+// Targets: [iosSimulatorArm64]
 final class com.splendo.kaluga.base/IOSVersion : kotlin/Comparable<com.splendo.kaluga.base/IOSVersion> { // com.splendo.kaluga.base/IOSVersion|null[0]
     constructor <init>(kotlin/Int, kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.base/IOSVersion.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 
@@ -2927,68 +2920,46 @@ final class com.splendo.kaluga.base/IOSVersion : kotlin/Comparable<com.splendo.k
     }
 }
 
-// Targets: [ios]
-final val com.splendo.kaluga.base.utils/nsRange // com.splendo.kaluga.base.utils/nsRange|@kotlin.ranges.IntRange{}nsRange[0]
-    final fun (kotlin.ranges/IntRange).<get-nsRange>(): kotlinx.cinterop/CValue<platform.Foundation/_NSRange> // com.splendo.kaluga.base.utils/nsRange.<get-nsRange>|<get-nsRange>@kotlin.ranges.IntRange(){}[0]
-
-// Targets: [ios]
-final val com.splendo.kaluga.base.utils/range // com.splendo.kaluga.base.utils/range|@kotlinx.cinterop.CValue<platform.Foundation._NSRange>{}range[0]
-    final fun (kotlinx.cinterop/CValue<platform.Foundation/_NSRange>).<get-range>(): kotlin.ranges/IntRange // com.splendo.kaluga.base.utils/range.<get-range>|<get-range>@kotlinx.cinterop.CValue<platform.Foundation._NSRange>(){}[0]
-
-// Targets: [ios]
-final fun (kotlin/ByteArray).com.splendo.kaluga.base.utils/toNSData(): platform.Foundation/NSData // com.splendo.kaluga.base.utils/toNSData|toNSData@kotlin.ByteArray(){}[0]
-
-// Targets: [ios]
-final fun (platform.Foundation/NSData).com.splendo.kaluga.base.utils/toByteArray(): kotlin/ByteArray // com.splendo.kaluga.base.utils/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
-
-// Targets: [ios]
-final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/ULong = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.ULong){0§<kotlin.Any?>}[0]
-
 // Targets: [js]
 final class com.splendo.kaluga.base.utils/BigDecimal { // com.splendo.kaluga.base.utils/BigDecimal|null[0]
-    constructor <init>(kotlin/Any, kotlin/Any) // com.splendo.kaluga.base.utils/BigDecimal.<init>|<init>(kotlin.Any;kotlin.Any){}[0]
+    constructor <init>(dynamic, kotlin/Int) // com.splendo.kaluga.base.utils/BigDecimal.<init>|<init>(<dynamic>;kotlin.Int){}[0]
 
-    final var exponent // com.splendo.kaluga.base.utils/BigDecimal.exponent|{}exponent[0]
-        final fun <get-exponent>(): kotlin/Any // com.splendo.kaluga.base.utils/BigDecimal.exponent.<get-exponent>|<get-exponent>(){}[0]
-        final fun <set-exponent>(kotlin/Any) // com.splendo.kaluga.base.utils/BigDecimal.exponent.<set-exponent>|<set-exponent>(kotlin.Any){}[0]
-    final var significand // com.splendo.kaluga.base.utils/BigDecimal.significand|{}significand[0]
-        final fun <get-significand>(): kotlin/Any // com.splendo.kaluga.base.utils/BigDecimal.significand.<get-significand>|<get-significand>(){}[0]
-        final fun <set-significand>(kotlin/Any) // com.splendo.kaluga.base.utils/BigDecimal.significand.<set-significand>|<set-significand>(kotlin.Any){}[0]
+    final val isNegative // com.splendo.kaluga.base.utils/BigDecimal.isNegative|{}isNegative[0]
+        final fun <get-isNegative>(): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.isNegative.<get-isNegative>|<get-isNegative>(){}[0]
+    final val isZero // com.splendo.kaluga.base.utils/BigDecimal.isZero|{}isZero[0]
+        final fun <get-isZero>(): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.isZero.<get-isZero>|<get-isZero>(){}[0]
+    final val scale // com.splendo.kaluga.base.utils/BigDecimal.scale|{}scale[0]
+        final fun <get-scale>(): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.scale.<get-scale>|<get-scale>(){}[0]
+    final val significand // com.splendo.kaluga.base.utils/BigDecimal.significand|{}significand[0]
+        final fun <get-significand>(): dynamic // com.splendo.kaluga.base.utils/BigDecimal.significand.<get-significand>|<get-significand>(){}[0]
 
-    final fun toFixed(kotlin/Int, kotlin/String = ...): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.toFixed|toFixed(kotlin.Int;kotlin.String){}[0]
+    final fun add(com.splendo.kaluga.base.utils/BigDecimal): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.add|add(com.splendo.kaluga.base.utils.BigDecimal){}[0]
+    final fun compareTo(com.splendo.kaluga.base.utils/BigDecimal): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.compareTo|compareTo(com.splendo.kaluga.base.utils.BigDecimal){}[0]
+    final fun divide(com.splendo.kaluga.base.utils/BigDecimal, kotlin/Int, com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.divide|divide(com.splendo.kaluga.base.utils.BigDecimal;kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.hashCode|hashCode(){}[0]
+    final fun multiply(com.splendo.kaluga.base.utils/BigDecimal, kotlin/Int? = ..., com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.multiply|multiply(com.splendo.kaluga.base.utils.BigDecimal;kotlin.Int?;com.splendo.kaluga.base.utils.RoundingMode){}[0]
+    final fun pow(kotlin/Int, kotlin/Int = ..., com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.pow|pow(kotlin.Int;kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
+    final fun round(kotlin/Int, com.splendo.kaluga.base.utils/RoundingMode): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.round|round(kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
+    final fun setScale(kotlin/Int, com.splendo.kaluga.base.utils/RoundingMode): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.setScale|setScale(kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
+    final fun stringValue(): kotlin/String // com.splendo.kaluga.base.utils/BigDecimal.stringValue|stringValue(){}[0]
+    final fun stripTrailingZeros(): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.stripTrailingZeros|stripTrailingZeros(){}[0]
+    final fun subtract(com.splendo.kaluga.base.utils/BigDecimal): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.subtract|subtract(com.splendo.kaluga.base.utils.BigDecimal){}[0]
+    final fun toDouble(): kotlin/Double // com.splendo.kaluga.base.utils/BigDecimal.toDouble|toDouble(){}[0]
+    final fun toInt(): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // com.splendo.kaluga.base.utils/BigDecimal.toLong|toLong(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.base.utils/BigDecimal.toString|toString(){}[0]
+    final fun unaryMinus(): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.unaryMinus|unaryMinus(){}[0]
 
     final object Companion { // com.splendo.kaluga.base.utils/BigDecimal.Companion|null[0]
-        final fun BigDecimal(kotlin/Any): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.BigDecimal|BigDecimal(kotlin.Any){}[0]
-        final fun add(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/Rounding? = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.add|add(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.Rounding?){}[0]
-        final fun compare(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.Companion.compare|compare(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal){}[0]
-        final fun divide(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/Rounding? = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.divide|divide(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.Rounding?){}[0]
-        final fun equal(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.Companion.equal|equal(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal){}[0]
-        final fun greaterThan(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.Companion.greaterThan|greaterThan(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal){}[0]
-        final fun lessThan(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.Companion.lessThan|lessThan(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal){}[0]
-        final fun multiply(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/Rounding? = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.multiply|multiply(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.Rounding?){}[0]
-        final fun round(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/Rounding? = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.round|round(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.Rounding?){}[0]
-        final fun subtract(com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/BigDecimal, com.splendo.kaluga.base.utils/Rounding? = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.subtract|subtract(com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.BigDecimal;com.splendo.kaluga.base.utils.Rounding?){}[0]
-        final fun toNumber(com.splendo.kaluga.base.utils/BigDecimal): kotlin/Double // com.splendo.kaluga.base.utils/BigDecimal.Companion.toNumber|toNumber(com.splendo.kaluga.base.utils.BigDecimal){}[0]
+        final val ONE // com.splendo.kaluga.base.utils/BigDecimal.Companion.ONE|{}ONE[0]
+            final fun <get-ONE>(): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.ONE.<get-ONE>|<get-ONE>(){}[0]
+        final val ZERO // com.splendo.kaluga.base.utils/BigDecimal.Companion.ZERO|{}ZERO[0]
+            final fun <get-ZERO>(): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.ZERO.<get-ZERO>|<get-ZERO>(){}[0]
+
+        final fun fromDouble(kotlin/Double): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.fromDouble|fromDouble(kotlin.Double){}[0]
+        final fun fromInt(kotlin/Int): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.fromInt|fromInt(kotlin.Int){}[0]
+        final fun fromLong(kotlin/Long): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.fromLong|fromLong(kotlin.Long){}[0]
+        final fun fromString(kotlin/String): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.fromString|fromString(kotlin.String){}[0]
     }
-}
-
-// Targets: [js]
-final class com.splendo.kaluga.base.utils/Rounding { // com.splendo.kaluga.base.utils/Rounding|null[0]
-    constructor <init>(kotlin/Int? = ..., kotlin/String = ..., kotlin/Int = ...) // com.splendo.kaluga.base.utils/Rounding.<init>|<init>(kotlin.Int?;kotlin.String;kotlin.Int){}[0]
-
-    final val maximumFractionDigits // com.splendo.kaluga.base.utils/Rounding.maximumFractionDigits|{}maximumFractionDigits[0]
-        final fun <get-maximumFractionDigits>(): kotlin/Int? // com.splendo.kaluga.base.utils/Rounding.maximumFractionDigits.<get-maximumFractionDigits>|<get-maximumFractionDigits>(){}[0]
-    final val maximumSignificantDigits // com.splendo.kaluga.base.utils/Rounding.maximumSignificantDigits|{}maximumSignificantDigits[0]
-        final fun <get-maximumSignificantDigits>(): kotlin/Int // com.splendo.kaluga.base.utils/Rounding.maximumSignificantDigits.<get-maximumSignificantDigits>|<get-maximumSignificantDigits>(){}[0]
-    final val roundingMode // com.splendo.kaluga.base.utils/Rounding.roundingMode|{}roundingMode[0]
-        final fun <get-roundingMode>(): kotlin/String // com.splendo.kaluga.base.utils/Rounding.roundingMode.<get-roundingMode>|<get-roundingMode>(){}[0]
-
-    final fun component1(): kotlin/Int? // com.splendo.kaluga.base.utils/Rounding.component1|component1(){}[0]
-    final fun component2(): kotlin/String // com.splendo.kaluga.base.utils/Rounding.component2|component2(){}[0]
-    final fun component3(): kotlin/Int // com.splendo.kaluga.base.utils/Rounding.component3|component3(){}[0]
-    final fun copy(kotlin/Int? = ..., kotlin/String = ..., kotlin/Int = ...): com.splendo.kaluga.base.utils/Rounding // com.splendo.kaluga.base.utils/Rounding.copy|copy(kotlin.Int?;kotlin.String;kotlin.Int){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.utils/Rounding.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.utils/Rounding.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.splendo.kaluga.base.utils/Rounding.toString|toString(){}[0]
 }

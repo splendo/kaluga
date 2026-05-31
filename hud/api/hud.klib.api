@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -30,7 +30,7 @@ abstract class com.splendo.kaluga.hud/BaseHUD : kotlinx.coroutines/CoroutineScop
     abstract suspend fun dismiss(kotlin/Boolean = ...) // com.splendo.kaluga.hud/BaseHUD.dismiss|dismiss(kotlin.Boolean){}[0]
     abstract suspend fun present(kotlin/Boolean = ...): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud/BaseHUD.present|present(kotlin.Boolean){}[0]
 
-    abstract class Builder : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.hud/BaseHUD.Builder|null[0]
+    abstract class Builder : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.hud/BaseHUD.Builder|null[0]
         constructor <init>() // com.splendo.kaluga.hud/BaseHUD.Builder.<init>|<init>(){}[0]
 
         abstract fun create(com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud/BaseHUD.Builder.create|create(com.splendo.kaluga.hud.HudConfig;kotlinx.coroutines.CoroutineScope){}[0]

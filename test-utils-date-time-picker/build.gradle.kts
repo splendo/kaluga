@@ -9,6 +9,7 @@ kaluga {
             main {
                 api(project(":date-time-picker"))
                 api(project(":test-utils-base"))
+                api(project(":test-utils-lifecycle"))
             }
         }
     }

@@ -139,6 +139,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils-hud](test-utils-hud/)                           | Enables easier testing of HUD module                                               | com.splendo.kaluga:test-utils-hud              |
 | [test-utils-keyboard](test-utils-keyboard/)                 | Enables easier testing of Keyboard module                                          | com.splendo.kaluga:test-utils-keyboard         |
 | [test-utils-koin](test-utils-koin/)                         | Enables easier testing with Koin                                                   | com.splendo:kaluga.test-utils-koin             |
+| [test-utils-lifecycle](test-utils-lifecycle/)               | Activity-cached helpers for the Lifecycle module                                   | com.splendo.kaluga:test-utils-lifecycle        |
 | [test-utils-location](test-utils-location/)                 | Enables easier testing of Location module                                          | com.splendo.kaluga:test-utils-location         |
 | [test-utils-permissions](test-utils-permissions/)           | Enables easier testing of Permissions modules                                      | com.splendo.kaluga:test-utils-permissions      |
 | [test-utils-resources](test-utils-resources/)               | Enables easier testing of Resources module                                         | com.splendo.kaluga:test-utils-resources        |

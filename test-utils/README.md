@@ -10,6 +10,7 @@ Modules:
  - [HUD](../test-utils-hud) provides support for mocking the [`hud` module](../hud)
  - [Keyboard](../test-utils-keyboard) provides support for mocking the [`keyboard` module](../keyboard)
  - [Koin](../test-utils-koin) adds support for testing with [Koin](https://www.insert-koin.io)
+ - [Lifecycle](../test-utils-lifecycle) provides Activity-cached lifecycle helpers for the [`lifecycle` module](../lifecycle)
  - [Location](../test-utils-location) provides support for mocking the [`location` module](../location)
  - [Permissions](../test-utils-permissions) provides support for mocking the [`permissions` modules](../base-permissions)
  - [Resources](../test-utils-resources) provides support for mocking the [`resources` module](../resources)

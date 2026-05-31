@@ -14,5 +14,10 @@ kaluga {
                 api(libs.androidx.fragment)
             }
         }
+        common {
+            test {
+                implementation(project(":test-utils-base", ""))
+            }
+        }
     }
 }

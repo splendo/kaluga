@@ -16,13 +16,13 @@
  */
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.scientificSerializationModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json

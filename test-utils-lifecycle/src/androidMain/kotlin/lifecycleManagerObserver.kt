@@ -1,5 +1,5 @@
 /*
- Copyright 2023 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
 
  */
 
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.test.lifecycle
 
 import androidx.appcompat.app.AppCompatActivity
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.subscribe
+import com.splendo.kaluga.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.lifecycle.subscribe
 
 /**
  * @return The [LifecycleManagerObserver] that only reports the lifecycle of this [AppCompatActivity].

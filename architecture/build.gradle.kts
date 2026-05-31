@@ -29,6 +29,7 @@ kaluga {
             }
             test {
                 implementation(project(":test-utils-architecture", ""))
+                implementation(project(":test-utils-lifecycle", ""))
             }
         }
         js {

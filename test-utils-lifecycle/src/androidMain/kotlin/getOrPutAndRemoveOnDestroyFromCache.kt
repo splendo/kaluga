@@ -1,5 +1,5 @@
 /*
- Copyright 2023 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.test.lifecycle
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver

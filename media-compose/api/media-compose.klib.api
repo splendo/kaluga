@@ -1,0 +1,19 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64, macosArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:media-compose>
+final class com.splendo.kaluga.media.compose/ComposeMediaSurfaceProvider : com.splendo.kaluga.media/MediaSurfaceProvider { // com.splendo.kaluga.media.compose/ComposeMediaSurfaceProvider|null[0]
+    constructor <init>() // com.splendo.kaluga.media.compose/ComposeMediaSurfaceProvider.<init>|<init>(){}[0]
+
+    final val surface // com.splendo.kaluga.media.compose/ComposeMediaSurfaceProvider.surface|{}surface[0]
+        final fun <get-surface>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaSurface?> // com.splendo.kaluga.media.compose/ComposeMediaSurfaceProvider.surface.<get-surface>|<get-surface>(){}[0]
+}
+
+final val com.splendo.kaluga.media.compose/com_splendo_kaluga_media_compose_ComposeMediaSurfaceProvider$stableprop // com.splendo.kaluga.media.compose/com_splendo_kaluga_media_compose_ComposeMediaSurfaceProvider$stableprop|#static{}com_splendo_kaluga_media_compose_ComposeMediaSurfaceProvider$stableprop[0]
+
+final fun com.splendo.kaluga.media.compose/MediaSurfaceContainer(com.splendo.kaluga.media.compose/ComposeMediaSurfaceProvider, androidx.compose.ui/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.splendo.kaluga.media.compose/MediaSurfaceContainer|MediaSurfaceContainer(com.splendo.kaluga.media.compose.ComposeMediaSurfaceProvider;androidx.compose.ui.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.splendo.kaluga.media.compose/com_splendo_kaluga_media_compose_ComposeMediaSurfaceProvider$stableprop_getter(): kotlin/Int // com.splendo.kaluga.media.compose/com_splendo_kaluga_media_compose_ComposeMediaSurfaceProvider$stableprop_getter|com_splendo_kaluga_media_compose_ComposeMediaSurfaceProvider$stableprop_getter(){}[0]

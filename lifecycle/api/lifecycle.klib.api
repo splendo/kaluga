@@ -1,0 +1,83 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64, js, macosArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:lifecycle>
+abstract interface com.splendo.kaluga.lifecycle/LifecycleSubscribable // com.splendo.kaluga.lifecycle/LifecycleSubscribable|null[0]
+
+// Targets: [iosSimulatorArm64]
+abstract interface com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable|null[0]
+    abstract val manager // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.manager|{}manager[0]
+        abstract fun <get-manager>(): com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager? // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.manager.<get-manager>|<get-manager>(){}[0]
+
+    abstract fun subscribe(com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager) // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.subscribe|subscribe(com.splendo.kaluga.lifecycle.ViewControllerLifecycleSubscribable.LifecycleManager){}[0]
+    abstract fun unsubscribe() // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.unsubscribe|unsubscribe(){}[0]
+
+    final class LifecycleManager { // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager|null[0]
+        constructor <init>(platform.UIKit/UIViewController) // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.<init>|<init>(platform.UIKit.UIViewController){}[0]
+
+        final val viewController // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.viewController|{}viewController[0]
+            final fun <get-viewController>(): platform.UIKit/UIViewController // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.viewController.<get-viewController>|<get-viewController>(){}[0]
+
+        final fun component1(): platform.UIKit/UIViewController // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.component1|component1(){}[0]
+        final fun copy(platform.UIKit/UIViewController = ...): com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.copy|copy(platform.UIKit.UIViewController){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager.toString|toString(){}[0]
+    }
+}
+
+// Targets: [iosSimulatorArm64]
+open class com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable : com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable { // com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable|null[0]
+    constructor <init>() // com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable.<init>|<init>(){}[0]
+
+    open var manager // com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable.manager|{}manager[0]
+        open fun <get-manager>(): com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager? // com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable.manager.<get-manager>|<get-manager>(){}[0]
+        open fun <set-manager>(com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager?) // com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable.manager.<set-manager>|<set-manager>(com.splendo.kaluga.lifecycle.ViewControllerLifecycleSubscribable.LifecycleManager?){}[0]
+
+    open fun subscribe(com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable.LifecycleManager) // com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable.subscribe|subscribe(com.splendo.kaluga.lifecycle.ViewControllerLifecycleSubscribable.LifecycleManager){}[0]
+    open fun unsubscribe() // com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribable.unsubscribe|unsubscribe(){}[0]
+}
+
+// Targets: [iosSimulatorArm64]
+final fun (com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable).com.splendo.kaluga.lifecycle/subscribe(platform.UIKit/UIViewController) // com.splendo.kaluga.lifecycle/subscribe|subscribe@com.splendo.kaluga.lifecycle.ViewControllerLifecycleSubscribable(platform.UIKit.UIViewController){}[0]
+
+// Targets: [macosArm64]
+abstract interface com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable|null[0]
+    abstract val manager // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.manager|{}manager[0]
+        abstract fun <get-manager>(): com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager? // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.manager.<get-manager>|<get-manager>(){}[0]
+
+    abstract fun subscribe(com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager) // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.subscribe|subscribe(com.splendo.kaluga.lifecycle.WindowLifecycleSubscribable.LifecycleManager){}[0]
+    abstract fun unsubscribe() // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.unsubscribe|unsubscribe(){}[0]
+
+    final class LifecycleManager { // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager|null[0]
+        constructor <init>(platform.AppKit/NSWindow) // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.<init>|<init>(platform.AppKit.NSWindow){}[0]
+
+        final val window // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.window|{}window[0]
+            final fun <get-window>(): platform.AppKit/NSWindow // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.window.<get-window>|<get-window>(){}[0]
+
+        final fun component1(): platform.AppKit/NSWindow // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.component1|component1(){}[0]
+        final fun copy(platform.AppKit/NSWindow = ...): com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.copy|copy(platform.AppKit.NSWindow){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager.toString|toString(){}[0]
+    }
+}
+
+// Targets: [macosArm64]
+open class com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable : com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable { // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable|null[0]
+    constructor <init>() // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.<init>|<init>(){}[0]
+
+    open var manager // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.manager|{}manager[0]
+        open fun <get-manager>(): com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager? // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.manager.<get-manager>|<get-manager>(){}[0]
+        open fun <set-manager>(com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager?) // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.manager.<set-manager>|<set-manager>(com.splendo.kaluga.lifecycle.WindowLifecycleSubscribable.LifecycleManager?){}[0]
+
+    open fun subscribe(com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager) // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.subscribe|subscribe(com.splendo.kaluga.lifecycle.WindowLifecycleSubscribable.LifecycleManager){}[0]
+    open fun unsubscribe() // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.unsubscribe|unsubscribe(){}[0]
+}
+
+// Targets: [macosArm64]
+final fun (com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable).com.splendo.kaluga.lifecycle/subscribe(platform.AppKit/NSWindow) // com.splendo.kaluga.lifecycle/subscribe|subscribe@com.splendo.kaluga.lifecycle.WindowLifecycleSubscribable(platform.AppKit.NSWindow){}[0]

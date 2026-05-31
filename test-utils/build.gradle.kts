@@ -15,6 +15,7 @@ kaluga {
                 api(project(":test-utils-hud"))
                 api(project(":test-utils-keyboard"))
                 api(project(":test-utils-koin"))
+                api(project(":test-utils-lifecycle"))
                 api(project(":test-utils-location"))
                 api(project(":test-utils-media"))
                 api(project(":test-utils-permissions"))

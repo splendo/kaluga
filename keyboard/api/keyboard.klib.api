@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -10,7 +10,7 @@ abstract interface <#A: com.splendo.kaluga.keyboard/FocusHandler> com.splendo.ka
     abstract fun hide() // com.splendo.kaluga.keyboard/BaseKeyboardManager.hide|hide(){}[0]
     abstract fun show(#A) // com.splendo.kaluga.keyboard/BaseKeyboardManager.show|show(1:0){}[0]
 
-    abstract interface <#A1: com.splendo.kaluga.keyboard/FocusHandler> Builder : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.keyboard/BaseKeyboardManager.Builder|null[0]
+    abstract interface <#A1: com.splendo.kaluga.keyboard/FocusHandler> Builder : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.keyboard/BaseKeyboardManager.Builder|null[0]
         abstract fun create(kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.keyboard/BaseKeyboardManager<#A1> // com.splendo.kaluga.keyboard/BaseKeyboardManager.Builder.create|create(kotlinx.coroutines.CoroutineScope){}[0]
     }
 }

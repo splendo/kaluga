@@ -1,6 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
-// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosSimulatorArm64, js]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -44,7 +43,7 @@ abstract interface <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.ob
 
 abstract interface <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.observable/MutableDefaultInitialized : com.splendo.kaluga.architecture.observable/DefaultInitialized<#A, #B?>, com.splendo.kaluga.architecture.observable/WithMutableState<#A> // com.splendo.kaluga.architecture.observable/MutableDefaultInitialized|null[0]
 
-abstract interface <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/Navigator : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.architecture.navigation/Navigator|null[0]
+abstract interface <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/Navigator : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.architecture.navigation/Navigator|null[0]
     abstract fun navigate(#A) // com.splendo.kaluga.architecture.navigation/Navigator.navigate|navigate(1:0){}[0]
 }
 
@@ -86,8 +85,6 @@ abstract interface <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/
     abstract val valueDelegate // com.splendo.kaluga.architecture.observable/WithState.valueDelegate|{}valueDelegate[0]
         abstract fun <get-valueDelegate>(): kotlin.properties/ReadOnlyProperty<kotlin/Any?, #A> // com.splendo.kaluga.architecture.observable/WithState.valueDelegate.<get-valueDelegate>|<get-valueDelegate>(){}[0]
 }
-
-abstract interface com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable // com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable|null[0]
 
 abstract interface com.splendo.kaluga.architecture.observable/Disposable { // com.splendo.kaluga.architecture.observable/Disposable|null[0]
     abstract fun addTo(com.splendo.kaluga.architecture.observable/DisposeBag) // com.splendo.kaluga.architecture.observable/Disposable.addTo|addTo(com.splendo.kaluga.architecture.observable.DisposeBag){}[0]
@@ -460,7 +457,7 @@ open class <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.observable
 }
 
 open class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel : com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel { // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel|null[0]
-    constructor <init>(com.splendo.kaluga.architecture.navigation/Navigator<#A>, kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.<init>|<init>(com.splendo.kaluga.architecture.navigation.Navigator<1:0>;kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    constructor <init>(com.splendo.kaluga.architecture.navigation/Navigator<#A>, kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.<init>|<init>(com.splendo.kaluga.architecture.navigation.Navigator<1:0>;kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
 
     final val navigator // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.navigator|{}navigator[0]
         final fun <get-navigator>(): com.splendo.kaluga.architecture.navigation/Navigator<#A> // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.navigator.<get-navigator>|<get-navigator>(){}[0]
@@ -549,15 +546,15 @@ open class com.splendo.kaluga.architecture.navigation/NavigationException : kotl
 }
 
 open class com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel : com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel { // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel|null[0]
-    constructor <init>(kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.<init>|<init>(kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    constructor <init>(kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.<init>|<init>(kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
 
     final val activeLifecycleSubscribables // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.activeLifecycleSubscribables|{}activeLifecycleSubscribables[0]
-        final fun <get-activeLifecycleSubscribables>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Set<com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>> // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.activeLifecycleSubscribables.<get-activeLifecycleSubscribables>|<get-activeLifecycleSubscribables>(){}[0]
+        final fun <get-activeLifecycleSubscribables>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Set<com.splendo.kaluga.lifecycle/LifecycleSubscribable>> // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.activeLifecycleSubscribables.<get-activeLifecycleSubscribables>|<get-activeLifecycleSubscribables>(){}[0]
 
-    final fun addLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.addLifecycleSubscribables|addLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    final fun addLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.addLifecycleSubscribables|addLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
     final fun didPause() // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.didPause|didPause(){}[0]
     final fun didResume() // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.didResume|didResume(){}[0]
-    final fun removeLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.removeLifecycleSubscribables|removeLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    final fun removeLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.removeLifecycleSubscribables|removeLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
     open fun onPause() // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.onPause|onPause(){}[0]
     open fun onResume(kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.onResume|onResume(kotlinx.coroutines.CoroutineScope){}[0]
 }
@@ -1089,7 +1086,7 @@ final fun <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/observabl
 final fun <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/subjectOf(#A): com.splendo.kaluga.architecture.observable/SimpleInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/subjectOf|subjectOf(0:0){0§<kotlin.Any?>}[0]
 final inline fun <#A: reified #B, #B: kotlin/Any?> (com.splendo.kaluga.architecture.observable/ObservableOptional<#B>).com.splendo.kaluga.architecture.observable/resultValueOrDefault(#A): #A // com.splendo.kaluga.architecture.observable/resultValueOrDefault|resultValueOrDefault@com.splendo.kaluga.architecture.observable.ObservableOptional<0:1>(0:0){0§<0:1>;1§<kotlin.Any?>}[0]
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 abstract class com.splendo.kaluga.architecture.observable/BaseSimpleDisposable : com.splendo.kaluga.architecture.observable/Disposable, kotlinx.atomicfu.locks/SynchronizedObject { // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable|null[0]
     constructor <init>(kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.<init>|<init>(kotlin.Function0<kotlin.Unit>){}[0]
 
@@ -1098,7 +1095,7 @@ abstract class com.splendo.kaluga.architecture.observable/BaseSimpleDisposable :
     open fun dispose() // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.dispose|dispose(){}[0]
 }
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/DefaultNavigator : com.splendo.kaluga.architecture.navigation/Navigator<#A> { // com.splendo.kaluga.architecture.navigation/DefaultNavigator|null[0]
     constructor <init>(kotlin/Function1<#A, kotlin/Unit>) // com.splendo.kaluga.architecture.navigation/DefaultNavigator.<init>|<init>(kotlin.Function1<1:0,kotlin.Unit>){}[0]
 
@@ -1108,14 +1105,14 @@ final class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>>
     final fun navigate(#A) // com.splendo.kaluga.architecture.navigation/DefaultNavigator.navigate|navigate(1:0){}[0]
 }
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/ViewControllerNavigator : com.splendo.kaluga.architecture.navigation/Navigator<#A> { // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator|null[0]
     constructor <init>(platform.UIKit/UIViewController, kotlin/Function1<#A, com.splendo.kaluga.architecture.navigation/NavigationSpec>) // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator.<init>|<init>(platform.UIKit.UIViewController;kotlin.Function1<1:0,com.splendo.kaluga.architecture.navigation.NavigationSpec>){}[0]
 
     final fun navigate(#A) // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator.navigate|navigate(1:0){}[0]
 }
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final class com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException { // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException|null[0]
     constructor <init>(kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType>) // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.<init>|<init>(kotlin.collections.Set<com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType>){}[0]
 
@@ -1129,7 +1126,7 @@ final class com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvaila
     final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.toString|toString(){}[0]
 }
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final class com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException { // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException|null[0]
     constructor <init>(platform.UIKit/UIImagePickerControllerSourceType) // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.<init>|<init>(platform.UIKit.UIImagePickerControllerSourceType){}[0]
 
@@ -1143,12 +1140,12 @@ final class com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvail
     final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.toString|toString(){}[0]
 }
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final class com.splendo.kaluga.architecture.viewmodel/LifecycleManager { // com.splendo.kaluga.architecture.viewmodel/LifecycleManager|null[0]
     final fun unbind() // com.splendo.kaluga.architecture.viewmodel/LifecycleManager.unbind|unbind(){}[0]
 }
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 sealed class com.splendo.kaluga.architecture.navigation/NavigationSpec { // com.splendo.kaluga.architecture.navigation/NavigationSpec|null[0]
     final class Browser : com.splendo.kaluga.architecture.navigation/NavigationSpec { // com.splendo.kaluga.architecture.navigation/NavigationSpec.Browser|null[0]
         constructor <init>(platform.Foundation/NSURL, com.splendo.kaluga.architecture.navigation/NavigationSpec.Browser.Type) // com.splendo.kaluga.architecture.navigation/NavigationSpec.Browser.<init>|<init>(platform.Foundation.NSURL;com.splendo.kaluga.architecture.navigation.NavigationSpec.Browser.Type){}[0]
@@ -1791,19 +1788,19 @@ sealed class com.splendo.kaluga.architecture.navigation/NavigationSpec { // com.
     }
 }
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final object com.splendo.kaluga.architecture.navigation/MailNotSupportedNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/MailNotSupportedNavigationException|null[0]
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final object com.splendo.kaluga.architecture.navigation/MissingNavigationControllerNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/MissingNavigationControllerNavigationException|null[0]
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final object com.splendo.kaluga.architecture.navigation/MissingViewControllerNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/MissingViewControllerNavigationException|null[0]
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final object com.splendo.kaluga.architecture.navigation/TextNotSupportedNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/TextNotSupportedNavigationException|null[0]
 
-// Targets: [ios]
+// Targets: [iosSimulatorArm64]
 final fun <#A: com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel> (#A).com.splendo.kaluga.architecture.viewmodel/addLifecycleManager(platform.UIKit/UIViewController, kotlin/Function0<kotlin.collections/List<com.splendo.kaluga.architecture.observable/Disposable>>): com.splendo.kaluga.architecture.viewmodel/LifecycleManager // com.splendo.kaluga.architecture.viewmodel/addLifecycleManager|addLifecycleManager@0:0(platform.UIKit.UIViewController;kotlin.Function0<kotlin.collections.List<com.splendo.kaluga.architecture.observable.Disposable>>){0§<com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel>}[0]
 
 // Targets: [js]

@@ -9,6 +9,7 @@ kaluga {
             main {
                 api(project(":keyboard"))
                 api(project(":test-utils-base"))
+                api(project(":test-utils-lifecycle"))
             }
         }
     }

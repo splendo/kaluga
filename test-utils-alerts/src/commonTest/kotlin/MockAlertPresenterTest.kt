@@ -18,12 +18,10 @@
 package com.splendo.kaluga.test.alerts
 
 import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.base.UIThreadTest
 import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.CoroutineScope
@@ -32,13 +30,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.TestContext, MockAlertPresenterTest.ViewModel>() {
+class MockAlertPresenterTest : UIThreadTest<MockAlertPresenterTest.TestContext>() {
 
-    class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel(alertBuilder)
-
-    class TestContext : ViewModelTestContext<ViewModel> {
+    class TestContext : UIThreadTest.TestContext {
         val mockAlertBuilder = MockAlertPresenter.Builder()
-        override val viewModel: ViewModel = ViewModel(mockAlertBuilder)
     }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> TestContext = { TestContext() }
@@ -48,7 +43,7 @@ class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.Test
         val done = EmptyCompletableDeferred()
         withTimeout(2.seconds) {
             // we can use alertBuilder from our viewModel
-            viewModel.alertBuilder.buildAlert(this) {
+            mockAlertBuilder.buildAlert(this) {
                 setTitle("foo")
                 setPositiveButton("OK")
             }.showAsync {
