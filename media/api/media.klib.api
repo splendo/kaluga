@@ -1,5 +1,7 @@
 // Klib ABI Dump
-// Targets: [iosSimulatorArm64, macosArm64]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Alias: macos => [macosArm64, macosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -875,28 +877,28 @@ final fun com.splendo.kaluga.media/mediaSourceFromLocalFile(kotlin/String, kotli
 final fun com.splendo.kaluga.media/mediaSourceFromUrl(kotlin/String): com.splendo.kaluga.media/MediaSource? // com.splendo.kaluga.media/mediaSourceFromUrl|mediaSourceFromUrl(kotlin.String){}[0]
 final suspend fun (com.splendo.kaluga.media/MediaPlayer).com.splendo.kaluga.media/play(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ..., kotlin/Boolean = ...) // com.splendo.kaluga.media/play|play@com.splendo.kaluga.media.MediaPlayer(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;kotlin.Boolean){}[0]
 
-// Targets: [iosSimulatorArm64]
+// Targets: [ios]
 final class com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerViewController> { // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider|null[0]
     constructor <init>(platform.AVKit/AVPlayerViewController?) // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerViewController?){}[0]
 }
 
-// Targets: [iosSimulatorArm64]
+// Targets: [ios]
 final class com.splendo.kaluga.media/UIViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.UIKit/UIView> { // com.splendo.kaluga.media/UIViewMediaSurfaceProvider|null[0]
     constructor <init>(platform.UIKit/UIView?) // com.splendo.kaluga.media/UIViewMediaSurfaceProvider.<init>|<init>(platform.UIKit.UIView?){}[0]
 }
 
-// Targets: [iosSimulatorArm64]
+// Targets: [ios]
 final fun com.splendo.kaluga.media/MediaSurface(platform.AVKit/AVPlayerViewController): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.media/MediaSurface|MediaSurface(platform.AVKit.AVPlayerViewController){}[0]
 
-// Targets: [macosArm64]
+// Targets: [macos]
 final class com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerView> { // com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider|null[0]
     constructor <init>(platform.AVKit/AVPlayerView?) // com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerView?){}[0]
 }
 
-// Targets: [macosArm64]
+// Targets: [macos]
 final class com.splendo.kaluga.media/NSViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AppKit/NSView> { // com.splendo.kaluga.media/NSViewMediaSurfaceProvider|null[0]
     constructor <init>(platform.AppKit/NSView?) // com.splendo.kaluga.media/NSViewMediaSurfaceProvider.<init>|<init>(platform.AppKit.NSView?){}[0]
 }
 
-// Targets: [macosArm64]
+// Targets: [macos]
 final fun com.splendo.kaluga.media/MediaSurface(platform.AVKit/AVPlayerView): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.media/MediaSurface|MediaSurface(platform.AVKit.AVPlayerView){}[0]

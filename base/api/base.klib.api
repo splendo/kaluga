@@ -1,6 +1,7 @@
 // Klib ABI Dump
-// Targets: [iosSimulatorArm64, js, macosArm64]
-// Alias: apple => [iosSimulatorArm64, macosArm64]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -2894,7 +2895,7 @@ final fun (platform.Foundation/NSData).com.splendo.kaluga.base.utils/toByteArray
 // Targets: [apple]
 final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/ULong = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.ULong){0§<kotlin.Any?>}[0]
 
-// Targets: [iosSimulatorArm64]
+// Targets: [ios]
 final class com.splendo.kaluga.base/IOSVersion : kotlin/Comparable<com.splendo.kaluga.base/IOSVersion> { // com.splendo.kaluga.base/IOSVersion|null[0]
     constructor <init>(kotlin/Int, kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.base/IOSVersion.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 
