@@ -48,9 +48,7 @@ kaluga {
     }
 }
 
-// Regenerates the JS region → currency map from upstream CLDR data. Run on demand; the output
-// file is checked in. Intl exposes no API for this (java.util.Currency.getInstance(locale) and
-// NSLocale.currencyCode are platform-private), so we bake CLDR's supplemental/currencyData.json.
+// Regenerates DefaultCurrencyForCountry.kt from CLDR. Run on demand; output is checked in.
 tasks.register("generateDefaultCurrencyMap") {
     val cldrVersion = "48.2.0"
     group = "codegen"

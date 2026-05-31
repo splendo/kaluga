@@ -24,9 +24,7 @@ import kotlin.time.Duration.Companion.minutes
 
 /**
  * A default implementation of [BaseTimeZone] backed by the
- * [`luxon`](https://moment.github.io/luxon/) JS library, which computes timezone arithmetic via
- * the runtime's built-in `Intl.DateTimeFormat` — the same IANA tz data that ships with Node.js
- * and modern browsers.
+ * [`luxon`](https://moment.github.io/luxon/) JS library.
  *
  * @property identifier the IANA timezone identifier (e.g. `"Europe/Amsterdam"`, `"UTC"`).
  */

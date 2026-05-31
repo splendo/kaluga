@@ -32,9 +32,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-/** Toggle whether bluetooth scanning requires the location permission on Android. Lives in
- *  `:feature-permissions` because it influences how the permission factories are wired; the
- *  bluetooth feature reads it when registering its scanner. */
+/** Toggle whether bluetooth scanning requires the location permission on Android. */
 const val USE_LOCATION_FOR_BLUETOOTH = false
 
 class PermissionsContribution : FeatureContribution {

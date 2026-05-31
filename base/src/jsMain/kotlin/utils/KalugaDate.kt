@@ -56,7 +56,7 @@ actual class DefaultKalugaDate internal constructor(private var dt: dynamic) : K
     actual override var era: Int
         get() = if (dt.year.unsafeCast<Int>() >= 1) 1 else 0
         set(_) {
-            // luxon doesn't expose a settable era; treat as no-op for non-historical use.
+            // luxon has no settable era.
         }
 
     actual override var year: Int

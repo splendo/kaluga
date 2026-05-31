@@ -45,10 +45,6 @@ class BeaconsContribution : FeatureContribution {
  *  client registered by `:feature-bluetooth` — beacons reuses the same scanner pipeline rather
  *  than spinning up a parallel one. */
 val beaconsFeatureModule: Module = module {
-    // Explicit `get<Bluetooth>()` because `:feature-bluetooth` registers the singleton under the
-    // concrete `Bluetooth` type, and `DefaultBeacons` takes the `BluetoothService` interface —
-    // Koin doesn't auto-bind a class to its parent interface, so an unqualified `get()` would
-    // try to resolve `BluetoothService` and fail at instantiation time.
     single<Beacons> { DefaultBeacons(bluetooth = get<Bluetooth>(), logger = get()) }
     single { BeaconsContribution() } bind FeatureContribution::class
 }

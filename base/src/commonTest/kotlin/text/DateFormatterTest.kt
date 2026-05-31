@@ -95,9 +95,6 @@ class DateFormatterTest {
         val usFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, UnitedStatesLocale)
         val frFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, FranceLocale)
 
-        // CLDR ≥ 42 separates the time and the day-period (AM/PM) with U+202F NARROW NO-BREAK SPACE
-        // (and historically U+00A0 NO-BREAK SPACE on some platforms) instead of a regular space.
-        // Normalise so the assertion isn't whitespace-sensitive.
         assertEquals("1:37:42 PM", usFormatter.format(March181988).replace(" ", " ").replace(" ", " "))
         assertEquals(expectedFrenchMediumTime, frFormatter.format(March181988).replace(' ', ' ').replace(' ', ' '))
     }

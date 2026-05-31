@@ -117,10 +117,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
      * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
      * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
      * the macOS targets.
-     *
-     * Targets are registered eagerly in the setter (like [supportJVM] / [supportJS]) because the
-     * consumer's `kaluga { }` block runs after `configureMultiplatform()` has already inspected
-     * the registered target list.
      */
     var supportMacOS: Boolean = false
         set(value) {
@@ -147,9 +143,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             isAppleSilicon -> setOf(MacOSTarget.Arm64)
             else -> setOf(MacOSTarget.X64)
         }
-        // Compose Multiplatform doesn't publish for `macosX64`, mirroring its iOS story. Modules
-        // depending on CMP set `kaluga.omitMacosX64=true` in their `gradle.properties` so the
-        // legacy Intel target isn't registered and Gradle's variant resolution stays clean.
+        // Modules depending on CMP set `kaluga.omitMacosX64=true` — CMP doesn't publish for macosX64.
         val omitMacosX64 = project.findProperty("kaluga.omitMacosX64")?.toString()
             .equals("true", ignoreCase = true)
         return if (omitMacosX64) all - MacOSTarget.X64 else all

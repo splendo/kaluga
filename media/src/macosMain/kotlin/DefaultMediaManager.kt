@@ -117,7 +117,6 @@ actual class DefaultPlayableMedia(actual override val source: MediaSource, inter
         "presentationSize",
         NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew,
     ).map { _ ->
-        // Mapping from typealias NSSize seems to fail so we'll just grab the value ourselves
         avPlayerItem.presentationSize.useContents { Resolution(width.toInt(), height.toInt()) }
     }
 }

@@ -22,8 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 /**
  * An [ActivityLifecycleSubscribable] that exposes [ActivityLifecycleSubscribable.manager] as a
- * hot [StateFlow]. Useful for consumers (review prompts, surface providers, …) that want to
- * react to subscribe/unsubscribe events instead of polling the property.
+ * hot [StateFlow].
  */
 class LifecycleManagerObserver : DefaultActivityLifecycleSubscribable() {
 

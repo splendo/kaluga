@@ -52,10 +52,6 @@ actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPer
     BasePermissionManager<BluetoothPermission>(bluetoothPermission, settings, coroutineScope) {
 
     companion object {
-        // `CBManager.authorization` is the modern API, available on iOS 13+ / macOS 10.15+.
-        // Kaluga's deployment targets are both above that, so the legacy
-        // `CBPeripheralManager.authorizationStatus()` fallback is no longer needed (and
-        // `CBPeripheralManager.authorizationStatus()` itself doesn't exist on macOS).
         private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus = CBManager.authorization.toAuthorizationStatus()
     }
 

@@ -172,10 +172,7 @@ sealed class USCustomaryPressure :
     override val quantity = PhysicalQuantity.Pressure
 }
 
-// Renamed in Obj-C from `Pascal` (default Kotlin name) because `+pascal` collides with clang's
-// reserved `pascal` calling-convention keyword and Xcode 26+ rejects the default selector during
-// Swift framework `.pcm` precompilation. Kotlin call sites and the Swift class name are
-// unaffected — only the underlying Obj-C class/selector changes.
+// Obj-C-renamed: clang reserves `pascal` as a calling-convention keyword.
 @OptIn(ExperimentalObjCName::class)
 @ObjCName("PascalUnit")
 @Serializable

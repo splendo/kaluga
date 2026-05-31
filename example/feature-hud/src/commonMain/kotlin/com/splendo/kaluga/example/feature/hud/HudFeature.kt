@@ -30,9 +30,7 @@ private class HudContribution : FeatureContribution {
     override val isCompose = false
 }
 
-/** Common Koin module for the HUD feature. The Android `viewModel { HudViewModel(...) }` binding
- *  lives in `hudFeatureAndroidModule` because it pulls in koin-android. iOS does not need a Koin
- *  binding — the SwiftUI host constructs `HudViewModel(HUD.Builder())` directly. */
+/** Common Koin module for the HUD feature. */
 val hudFeatureModule: Module = module {
     single { HudContribution() } bind FeatureContribution::class
 }

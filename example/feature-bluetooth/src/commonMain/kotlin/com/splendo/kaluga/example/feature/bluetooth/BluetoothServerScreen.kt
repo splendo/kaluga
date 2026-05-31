@@ -127,7 +127,7 @@ fun BluetoothServerScreen(modifier: Modifier = Modifier) {
     }
 
     LaunchedEffect(Unit) {
-        // Drive the energy counter — mirrors the legacy MVVM `init` block.
+        // Drive the energy counter.
         while (true) {
             energyExpended.update { it + 5(Kilojoule) }
             delay(5.seconds)

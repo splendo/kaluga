@@ -25,7 +25,7 @@ package com.splendo.kaluga.lifecycle
  *
  * Cross-platform consumers (typically Kaluga ViewModels or service builders) hold a
  * `LifecycleSubscribable` so they can be wired into any host. The wiring itself is done either
- * by a Kaluga `BaseLifecycleViewModel` (legacy MVVM path) or by the Compose adapter in
+ * by a Kaluga `BaseLifecycleViewModel` or by the Compose adapter in
  * `:lifecycle-compose` (`LifecycleSubscribable.AttachToCompose()`), which dispatches to the
  * appropriate platform subtype based on the current Compose context.
  */

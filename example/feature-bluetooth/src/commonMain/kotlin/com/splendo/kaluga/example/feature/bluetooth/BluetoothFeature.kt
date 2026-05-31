@@ -70,8 +70,7 @@ internal expect fun newBluetoothBuilder(permissionsBuilder: suspend (CoroutineCo
  * Owns the singletons for the Bluetooth feature: the [BluetoothBuilder] (which wires the
  * [PermissionsBuilder] from `:feature-permissions` after registering bluetooth + location
  * permission factories on demand) and a ready-to-use [Bluetooth] client. The beacons feature
- * reuses the same `Bluetooth` instance by depending on `:feature-bluetooth` and pulling it from
- * Koin — that is the rationale for owning the singleton here rather than further down.
+ * reuses the same `Bluetooth` instance by depending on `:feature-bluetooth`.
  */
 val bluetoothFeatureModule: Module = module {
     single {

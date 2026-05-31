@@ -117,8 +117,6 @@ actual class KalugaDateFormatter private constructor(private var mode: Formatter
     }
 
     actual override fun parse(string: String): KalugaDate? {
-        // Use the parse-mode translation so the `z` (zone) token maps to luxon's lenient IANA-zone
-        // matcher rather than `ZZZZ`, which can't read "UTC"/"PST"/etc back from formatted output.
         val luxonPattern = javaPatternToLuxon(pattern, forParsing = true)
         val zone = timeZone.identifier
         val tag = locale.tag
@@ -176,8 +174,6 @@ private fun derivePatternFromStyle(dateStyle: DateFormatStyle?, timeStyle: DateF
     val styleFormatter = newDateTimeFormat(tag, opts)
     val parts = styleFormatter.formatToParts(sample)
 
-    // Probe the same sample with explicit month/weekday lengths so we can disambiguate non-digit
-    // forms (e.g. French January as `janv.` vs `janvier`) — length alone is unreliable.
     val monthShortFormatter = newDateTimeFormat(tag, js("({month: 'short', timeZone: 'UTC'})"))
     val weekdayShortFormatter = newDateTimeFormat(tag, js("({weekday: 'short', timeZone: 'UTC'})"))
     val monthShort = monthShortFormatter.formatToParts(sample)
@@ -296,9 +292,6 @@ private fun translateToken(c: Char, count: Int, forParsing: Boolean): String = w
 
     'Z' -> "ZZZ"
 
-    // Java `z` formats as a zone abbreviation ("UTC"/"PST"). Luxon's `ZZZZ` produces that on format
-    // but rejects those tokens on parse; luxon's `z` (IANA) accepts both IANA names and common
-    // abbreviations, so we switch tokens depending on direction.
     'z' -> if (forParsing) "z" else "ZZZZ"
 
     'X' -> "ZZ"

@@ -70,9 +70,6 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
      * Builder for creating a [DefaultNetworkManager]
      */
     class Builder : NetworkManager.Builder {
-        // The Network framework (`nw_path_monitor`) is available on iOS 12+ / macOS 10.14+ —
-        // both well below the Kaluga deployment targets — so the SystemConfiguration fallback is
-        // no longer needed (and bypassing the IOSVersion check lets this compile for macOS).
         override fun create(): NetworkManager = DefaultNetworkManager(NWPathNetworkManager())
     }
 

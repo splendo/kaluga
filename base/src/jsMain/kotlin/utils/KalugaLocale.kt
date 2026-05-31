@@ -101,9 +101,7 @@ private fun extractVariant(parsed: dynamic, language: String, script: String, re
     if (script.isNotEmpty() && parts.isNotEmpty() && parts[0].equals(script, ignoreCase = true)) parts.removeAt(0)
     if (region.isNotEmpty() && parts.isNotEmpty() && parts[0].equals(region, ignoreCase = true)) parts.removeAt(0)
 
-    // `Intl.Locale` canonicalises legacy variant subtags such as `POSIX` into the Unicode
-    // extension form `-u-va-<variant>` rather than keeping them as BCP 47 variant subtags.
-    // Unwrap that back so callers see the original variant they passed in.
+    // Unwrap `Intl.Locale`'s `-u-va-<variant>` canonicalisation back into a plain variant subtag.
     val uIndex = parts.indexOf("u")
     if (uIndex < 0) return parts.joinToString("_")
 
@@ -120,9 +118,6 @@ private fun extractVariant(parsed: dynamic, language: String, script: String, re
 }
 
 private fun intlDisplayName(type: String, displayLocale: String, code: String, fallback: String): String = try {
-    // Split construction from method call: Kotlin/JS's `js(...)` rewrites
-    // `new X(args).method(args)` into `new (X(args).method)(args)`, so combining them in one
-    // string applies `new` to the method instead of the constructor.
     val displayNames: dynamic = js("new Intl.DisplayNames([displayLocale], { type: type })")
     val resolved = displayNames.of(code)
     if (resolved == null) fallback else resolved.unsafeCast<String>()

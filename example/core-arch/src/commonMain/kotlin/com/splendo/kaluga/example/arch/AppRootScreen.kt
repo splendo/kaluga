@@ -51,8 +51,7 @@ object Routes {
  * Root composable hosted by every platform (Android `ComponentActivity`, iOS `MainViewController`,
  * macOS `Window { … }`). Pulls every [FeatureContribution] from Koin, builds a nav graph from the
  * contributions that ship compose destinations, and routes non-compose contributions through
- * [onNativeLaunch] so host platforms can launch their native UIs (legacy `:mobileshared` features
- * until they are ported to CMP).
+ * [onNativeLaunch] so host platforms can launch their native UIs.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

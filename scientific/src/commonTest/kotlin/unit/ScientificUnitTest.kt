@@ -58,14 +58,7 @@ class ScientificUnitTest {
 
     @Test
     fun testSerialization() = runBlocking {
-        // Round-trip every unit once through the module-aware Json instance. The work is
-        // CPU-bound (per-unit polymorphic dispatch in kotlinx-serialization on K/N), so we
-        // chunk across Dispatchers.Default workers to use all cores. ListSerializer within
-        // each chunk amortises per-call setup. Per-unit assertions so a regression names the
-        // specific unit rather than dumping the entire list diff. The original test ran two
-        // encoders (default + module) per unit and compared their output — that comparison is
-        // a property of the serializer config, not of individual data, so it now lives in
-        // `testDefaultAndModuleJsonAgree` and runs once.
+        // Chunked across Dispatchers.Default — per-unit polymorphic dispatch is CPU-bound on K/N.
         val listSerializer = ListSerializer(UnitContainer.serializer())
         val containers = Units.map { UnitContainer(it) }
         val chunkSize = ((containers.size + PARALLEL_CHUNKS - 1) / PARALLEL_CHUNKS).coerceAtLeast(1)
@@ -86,10 +79,7 @@ class ScientificUnitTest {
 
     @Test
     fun testDefaultAndModuleJsonAgree() {
-        // The default Json (which relies on sealed polymorphism inferred at compile time) must
-        // produce the same wire format as the explicit serializersModule. Spot-checked on one
-        // representative unit — agreement is a property of the serializer config, not of the
-        // data, so we don't need to repeat this for every unit.
+        // Default Json and the explicit serializersModule must produce the same wire format.
         val container = UnitContainer(Meter)
         val defaultEncoded = Json.encodeToString(UnitContainer.serializer(), container)
         val moduleEncoded = json.encodeToString(UnitContainer.serializer(), container)
