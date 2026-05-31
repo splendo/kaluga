@@ -7,8 +7,8 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":test-utils-architecture"))
                 api(project(":hud"))
+                api(project(":test-utils-base"))
             }
         }
     }

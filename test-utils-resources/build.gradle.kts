@@ -10,9 +10,6 @@ kaluga {
                 api(project(":test-utils-base"))
                 api(project(":resources"))
             }
-            test {
-                implementation(project(":test-utils-base"))
-            }
         }
     }
 }
