@@ -21,7 +21,7 @@ import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -52,14 +52,14 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
     private val locationManager = MainCLLocationManagerAccessor { /* no per-permission config on macOS */ }
 
     actual override fun requestPermissionDidStart() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_LOCATION_USAGE_DESCRIPTION).isEmpty()) {
+        if (ApplePermissionsHelper.missingDeclarationsInPList(bundle, NS_LOCATION_USAGE_DESCRIPTION).isEmpty()) {
             launch {
                 locationManager.updateLocationManager {
                     requestAlwaysAuthorization()
                 }
             }
         } else {
-            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
+            permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
@@ -84,17 +84,17 @@ actual class LocationPermissionManagerBuilder actual constructor(private val con
         DefaultLocationPermissionManager(context, locationPermission, settings, coroutineScope)
 }
 
-private fun CLAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
-    kCLAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+private fun CLAuthorizationStatus.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
+    kCLAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
-    kCLAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    kCLAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
 
-    kCLAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    kCLAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
-    kCLAuthorizationStatusAuthorizedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+    kCLAuthorizationStatusAuthorizedAlways -> ApplePermissionsHelper.AuthorizationStatus.Authorized
 
     else -> {
         error("LocationPermissionManager", "Unknown CLAuthorizationStatus $this")
-        IOSPermissionsHelper.AuthorizationStatus.Denied
+        ApplePermissionsHelper.AuthorizationStatus.Denied
     }
 }

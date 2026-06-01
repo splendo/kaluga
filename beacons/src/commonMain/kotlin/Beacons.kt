@@ -116,7 +116,7 @@ class DefaultBeacons(
     private val monitoringLock = Mutex()
     private val updateLock = Mutex()
     private val cache = concurrentMutableMapOf<BeaconID, BeaconJob>()
-    private val cacheJob = Job()
+    private val cacheScope = CoroutineScope(coroutineContext + Job() + CoroutineName("Beacons.Cache"))
     private var monitoringJob: MutableStateFlow<Job?> = MutableStateFlow(null)
 
     private val _beacons = MutableStateFlow(emptySet<BeaconInfo>())
@@ -156,7 +156,7 @@ class DefaultBeacons(
                 } else {
                     debug(TAG, "[New] $beacon")
                 }
-                this[beacon.beaconID] = beacon to this@DefaultBeacons.launch(cacheJob) {
+                this[beacon.beaconID] = beacon to cacheScope.launch {
                     logger.debug(TAG, "[Added] $beacon")
                     delay(beacon.lastSeen + beaconLifetime - DefaultKalugaDate.now())
                     logger.debug(TAG, "[Lost] $beacon")

@@ -22,7 +22,7 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
@@ -51,7 +51,7 @@ actual class DefaultCalendarPermissionManager(private val bundle: NSBundle, cale
     BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
-        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = EKEventStore
+        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus = EKEventStore
             .authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent)
             .toAuthorizationStatus()
     }
@@ -63,7 +63,7 @@ actual class DefaultCalendarPermissionManager(private val bundle: NSBundle, cale
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     actual override fun requestPermissionDidStart() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_CALENDARS_USAGE_DESCRIPTION).isEmpty()) {
+        if (ApplePermissionsHelper.missingDeclarationsInPList(bundle, NS_CALENDARS_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 eventStore.requestAccessToEntityType(
@@ -74,14 +74,14 @@ actual class DefaultCalendarPermissionManager(private val bundle: NSBundle, cale
                 }
 
                 try {
-                    if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Restricted
+                    if (deferred.await()) ApplePermissionsHelper.AuthorizationStatus.Authorized else ApplePermissionsHelper.AuthorizationStatus.Restricted
                 } catch (t: Throwable) {
-                    IOSPermissionsHelper.AuthorizationStatus.Restricted
+                    ApplePermissionsHelper.AuthorizationStatus.Restricted
                 }
             }
         } else {
             val permissionHandler = permissionHandler
-            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
+            permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
@@ -104,20 +104,20 @@ actual class CalendarPermissionManagerBuilder actual constructor(private val con
         DefaultCalendarPermissionManager(context, calendarPermission, settings, coroutineScope)
 }
 
-private fun EKAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
-    EKAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+private fun EKAuthorizationStatus.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
+    EKAuthorizationStatusAuthorized -> ApplePermissionsHelper.AuthorizationStatus.Authorized
 
-    EKAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    EKAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
-    EKAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    EKAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
 
-    EKAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    EKAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
     else -> {
         error(
             "CalendarPermissionManager",
             "Unknown CBManagerAuthorization status={$this}",
         )
-        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        ApplePermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

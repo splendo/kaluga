@@ -23,7 +23,7 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import kotlinx.coroutines.CoroutineScope
@@ -52,11 +52,11 @@ actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPer
     BasePermissionManager<BluetoothPermission>(bluetoothPermission, settings, coroutineScope) {
 
     companion object {
-        private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus = CBManager.authorization.toAuthorizationStatus()
+        private fun checkAuthorization(): ApplePermissionsHelper.AuthorizationStatus = CBManager.authorization.toAuthorizationStatus()
     }
 
     private class Provider : CurrentAuthorizationStatusProvider {
-        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = checkAuthorization()
+        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus = checkAuthorization()
     }
 
     private val permissionsQueue = dispatch_queue_create("BluetoothPermissionsMonitor", null)
@@ -76,7 +76,7 @@ actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPer
     }
 
     actual override fun requestPermissionDidStart() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(
+        if (ApplePermissionsHelper.missingDeclarationsInPList(
                 bundle,
                 NS_BLUETOOTH_ALWAYS_USAGE_DESCRIPTION,
                 NS_BLUETOOTH_PERIPHERAL_USAGE_DESCRIPTION,
@@ -85,7 +85,7 @@ actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPer
             centralManager.value
         } else {
             val permissionHandler = permissionHandler
-            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
+            permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
@@ -110,20 +110,20 @@ actual class BluetoothPermissionManagerBuilder actual constructor(private val co
         DefaultBluetoothPermissionManager(bluetoothPermission, context, settings, coroutineScope)
 }
 
-private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
-    CBManagerAuthorizationAllowedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+private fun CBManagerAuthorization.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
+    CBManagerAuthorizationAllowedAlways -> ApplePermissionsHelper.AuthorizationStatus.Authorized
 
-    CBManagerAuthorizationDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    CBManagerAuthorizationDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
-    CBManagerAuthorizationRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    CBManagerAuthorizationRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
 
-    CBManagerAuthorizationNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    CBManagerAuthorizationNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
     else -> {
         error(
             "BluetoothPermissionManager",
             "Unknown CBManagerAuthorization status={$this}",
         )
-        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        ApplePermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

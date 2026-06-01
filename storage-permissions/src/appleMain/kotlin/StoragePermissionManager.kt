@@ -22,7 +22,7 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
@@ -50,7 +50,7 @@ actual class DefaultStoragePermissionManager(private val bundle: NSBundle, stora
     BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
-        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
+        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus = PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
     }
 
     private val provider = Provider()
@@ -59,7 +59,7 @@ actual class DefaultStoragePermissionManager(private val bundle: NSBundle, stora
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     actual override fun requestPermissionDidStart() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_PHOTO_LIBRARY_USAGE_DESCRIPTION).isEmpty()) {
+        if (ApplePermissionsHelper.missingDeclarationsInPList(bundle, NS_PHOTO_LIBRARY_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<PHAuthorizationStatus>()
                 PHPhotoLibrary.requestAuthorization { status ->
@@ -70,7 +70,7 @@ actual class DefaultStoragePermissionManager(private val bundle: NSBundle, stora
                 deferred.await().toAuthorizationStatus()
             }
         } else {
-            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
+            permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
@@ -93,20 +93,20 @@ actual class StoragePermissionManagerBuilder actual constructor(private val cont
         DefaultStoragePermissionManager(context, storagePermission, settings, coroutineScope)
 }
 
-private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
-    PHAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+private fun PHAuthorizationStatus.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
+    PHAuthorizationStatusAuthorized -> ApplePermissionsHelper.AuthorizationStatus.Authorized
 
-    PHAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    PHAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
-    PHAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    PHAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
 
-    PHAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    PHAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
     else -> {
         error(
             "StoragePermissionManager",
             "Unknown StorageManagerAuthorization status={$this}",
         )
-        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        ApplePermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

@@ -22,7 +22,7 @@ import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper.AuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
@@ -32,7 +32,7 @@ import platform.Foundation.NSBundle
 /**
  * Convenience class for checking permissions.
  */
-class IOSPermissionsHelper {
+class ApplePermissionsHelper {
 
     /**
      * Type of AuthorizationStatus that can be given by a permission.

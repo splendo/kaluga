@@ -22,7 +22,7 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
@@ -51,7 +51,7 @@ actual class DefaultContactsPermissionManager(private val bundle: NSBundle, cont
     BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
-        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts)
+        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus = CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts)
             .toAuthorizationStatus()
     }
 
@@ -62,7 +62,7 @@ actual class DefaultContactsPermissionManager(private val bundle: NSBundle, cont
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     actual override fun requestPermissionDidStart() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_CONTACTS_USAGE_DESCRIPTION).isEmpty()) {
+        if (ApplePermissionsHelper.missingDeclarationsInPList(bundle, NS_CONTACTS_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 contactStore.requestAccessForEntityType(
@@ -73,14 +73,14 @@ actual class DefaultContactsPermissionManager(private val bundle: NSBundle, cont
                 }
 
                 try {
-                    if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Restricted
+                    if (deferred.await()) ApplePermissionsHelper.AuthorizationStatus.Authorized else ApplePermissionsHelper.AuthorizationStatus.Restricted
                 } catch (t: Throwable) {
-                    IOSPermissionsHelper.AuthorizationStatus.Restricted
+                    ApplePermissionsHelper.AuthorizationStatus.Restricted
                 }
             }
         } else {
             val permissionHandler = permissionHandler
-            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
+            permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
@@ -103,20 +103,20 @@ actual class ContactsPermissionManagerBuilder actual constructor(private val con
         DefaultContactsPermissionManager(context, contactsPermission, settings, coroutineScope)
 }
 
-private fun CNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
-    CNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+private fun CNAuthorizationStatus.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
+    CNAuthorizationStatusAuthorized -> ApplePermissionsHelper.AuthorizationStatus.Authorized
 
-    CNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    CNAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
-    CNAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    CNAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
 
-    CNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    CNAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
     else -> {
         error(
             "ContactsPermissionManager",
             "Unknown ContactManagerAuthorization status={$this}",
         )
-        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        ApplePermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

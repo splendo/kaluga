@@ -22,7 +22,7 @@ import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -80,7 +80,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
         } else {
             emptyList()
         }
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
+        if (ApplePermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
             launch {
                 locationManager.updateLocationManager {
                     if (permission.background) {
@@ -91,7 +91,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
                 }
             }
         } else {
-            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
+            permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
@@ -127,36 +127,36 @@ actual class LocationPermissionManagerBuilder actual constructor(private val con
         DefaultLocationPermissionManager(context, locationPermission, settings, coroutineScope)
 }
 
-private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = when (first) {
-    kCLAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permission: LocationPermission): ApplePermissionsHelper.AuthorizationStatus = when (first) {
+    kCLAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
-    kCLAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    kCLAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
 
-    kCLAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    kCLAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
     kCLAuthorizationStatusAuthorizedAlways -> {
         if (permission.precise && !second) {
-            IOSPermissionsHelper.AuthorizationStatus.Denied
+            ApplePermissionsHelper.AuthorizationStatus.Denied
         } else {
-            IOSPermissionsHelper.AuthorizationStatus.Authorized
+            ApplePermissionsHelper.AuthorizationStatus.Authorized
         }
     }
 
     kCLAuthorizationStatusAuthorizedWhenInUse -> {
         if (permission.background || (permission.precise && !second)) {
-            IOSPermissionsHelper.AuthorizationStatus.Denied
+            ApplePermissionsHelper.AuthorizationStatus.Denied
         } else {
-            IOSPermissionsHelper.AuthorizationStatus.Authorized
+            ApplePermissionsHelper.AuthorizationStatus.Authorized
         }
     }
 
     else -> {
         com.splendo.kaluga.logging.error("Unknown CLAuthorizationStatus $first")
-        IOSPermissionsHelper.AuthorizationStatus.Denied
+        ApplePermissionsHelper.AuthorizationStatus.Denied
     }
 }
 
-fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion > IOSVersion(13)) {
+fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): ApplePermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion > IOSVersion(13)) {
     authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
 } else {
     CLLocationManager.authorizationStatus() to true

@@ -30,16 +30,16 @@ class PermissionRefreshSchedulerTest : BaseTest() {
 
     @Test
     fun testStartMonitoring() = runBlocking {
-        var authorization = IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        var authorization = ApplePermissionsHelper.AuthorizationStatus.NotDetermined
         val authorizationProvider = object : CurrentAuthorizationStatusProvider {
-            override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = authorization
+            override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus = authorization
         }
 
-        val onPermissionChangedFlow = MutableStateFlow<IOSPermissionsHelper.AuthorizationStatus?>(null)
+        val onPermissionChangedFlow = MutableStateFlow<ApplePermissionsHelper.AuthorizationStatus?>(null)
         val timerHelper = PermissionRefreshScheduler(
             currentAuthorizationStatusProvider = authorizationProvider,
             authorizationStatusHandler = object : AuthorizationStatusHandler {
-                override fun status(status: IOSPermissionsHelper.AuthorizationStatus) {
+                override fun status(status: ApplePermissionsHelper.AuthorizationStatus) {
                     onPermissionChangedFlow.value = status
                 }
             },
@@ -50,24 +50,24 @@ class PermissionRefreshSchedulerTest : BaseTest() {
         delay(50)
         assertNull(onPermissionChangedFlow.value)
 
-        authorization = IOSPermissionsHelper.AuthorizationStatus.Authorized
+        authorization = ApplePermissionsHelper.AuthorizationStatus.Authorized
         delay(60)
         assertEquals(
-            IOSPermissionsHelper.AuthorizationStatus.Authorized,
+            ApplePermissionsHelper.AuthorizationStatus.Authorized,
             onPermissionChangedFlow.value,
         )
 
         timerHelper.waitingLock.lock()
-        authorization = IOSPermissionsHelper.AuthorizationStatus.Denied
+        authorization = ApplePermissionsHelper.AuthorizationStatus.Denied
         onPermissionChangedFlow.value = null
         delay(60)
         assertNull(onPermissionChangedFlow.value)
 
         timerHelper.waitingLock.unlock()
         delay(50)
-        assertEquals(IOSPermissionsHelper.AuthorizationStatus.Denied, onPermissionChangedFlow.value)
+        assertEquals(ApplePermissionsHelper.AuthorizationStatus.Denied, onPermissionChangedFlow.value)
 
-        authorization = IOSPermissionsHelper.AuthorizationStatus.Authorized
+        authorization = ApplePermissionsHelper.AuthorizationStatus.Authorized
         onPermissionChangedFlow.value = null
         timerHelper.stopMonitoring()
         delay(50)

@@ -22,7 +22,7 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
@@ -56,12 +56,12 @@ actual class DefaultNotificationsPermissionManager(notificationsPermission: Noti
     BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
     class Provider(val notificationCenter: UNUserNotificationCenter, val coroutineScope: CoroutineScope) : CurrentAuthorizationStatusProvider {
-        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
-            val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
+        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus {
+            val authorizationStatus = CompletableDeferred<ApplePermissionsHelper.AuthorizationStatus>()
             val notificationCenter = notificationCenter
             coroutineScope.launch {
                 notificationCenter.getNotificationSettingsWithCompletionHandler { setting ->
-                    authorizationStatus.complete(setting?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+                    authorizationStatus.complete(setting?.authorizationStatus?.toAuthorizationStatus() ?: ApplePermissionsHelper.AuthorizationStatus.NotDetermined)
                     Unit
                 }
             }
@@ -87,12 +87,12 @@ actual class DefaultNotificationsPermissionManager(notificationsPermission: Noti
 
             try {
                 if (deferred.await()) {
-                    IOSPermissionsHelper.AuthorizationStatus.Authorized
+                    ApplePermissionsHelper.AuthorizationStatus.Authorized
                 } else {
-                    IOSPermissionsHelper.AuthorizationStatus.Restricted
+                    ApplePermissionsHelper.AuthorizationStatus.Restricted
                 }
             } catch (t: Throwable) {
-                IOSPermissionsHelper.AuthorizationStatus.Restricted
+                ApplePermissionsHelper.AuthorizationStatus.Restricted
             }
         }
     }
@@ -116,20 +116,20 @@ actual class NotificationsPermissionManagerBuilder actual constructor(context: P
         DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
 }
 
-private fun UNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
-    UNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+private fun UNAuthorizationStatus.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
+    UNAuthorizationStatusAuthorized -> ApplePermissionsHelper.AuthorizationStatus.Authorized
 
-    UNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    UNAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
-    UNAuthorizationStatusProvisional -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    UNAuthorizationStatusProvisional -> ApplePermissionsHelper.AuthorizationStatus.Restricted
 
-    UNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    UNAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
     else -> {
         error(
             "CalendarPermissionManager",
             "Unknown CBManagerAuthorization status={$this}",
         )
-        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        ApplePermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }
