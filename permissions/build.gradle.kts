@@ -55,6 +55,7 @@ kaluga {
         tvos {
             main {
                 api(project(":bluetooth-permissions"))
+                api(project(":location-permissions"))
                 api(project(":microphone-permissions"))
                 api(project(":notifications-permissions"))
                 api(project(":storage-permissions"))
@@ -65,6 +66,7 @@ kaluga {
                 api(project(":bluetooth-permissions"))
                 api(project(":calendar-permissions"))
                 api(project(":contacts-permissions"))
+                api(project(":location-permissions"))
                 api(project(":microphone-permissions"))
                 api(project(":notifications-permissions"))
             }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -36,70 +36,54 @@ import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A default implementation of [BaseLocationManager]
- * @param settings the [Settings] to configure this location manager
- * @param coroutineScope the [CoroutineScope] this location manager runs on
+ * tvOS implementation of [BaseLocationManager].
+ *
+ * tvOS does not support background location updates, so `LocationPermission.background` has no
+ * effect on the configured [CLLocationManager]. The accuracy authorization flag is honored.
  */
 actual class DefaultLocationManager(settings: Settings, coroutineScope: CoroutineScope) : BaseLocationManager(settings, coroutineScope) {
 
-    /**
-     * Builder for creating a [DefaultLocationManager]
-     */
     class Builder : BaseLocationManager.Builder {
-
-        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager = DefaultLocationManager(
-            settings,
-            coroutineScope,
-        )
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager = DefaultLocationManager(settings, coroutineScope)
     }
 
     private class Delegate(private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>) :
         NSObject(),
         KalugaLocationDelegateProtocol {
         override fun didUpdateLocations(locations: List<*>, manager: CLLocationManager) {
-            val locations = locations.mapNotNull { (it as? CLLocation)?.knownLocation }
-            if (locations.isNotEmpty()) {
-                handleLocationChanged(locations)
-            }
-        }
-
-        private fun handleLocationChanged(locations: List<Location.KnownLocation>) = locations.forEach {
-            onLocationsChanged.tryEmit(it) // should always works as the buffer is DROP_OLDEST
+            val locs = locations.mapNotNull { (it as? CLLocation)?.knownLocation }
+            locs.forEach { onLocationsChanged.tryEmit(it) }
         }
     }
 
     actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
     private val locationManager = MainCLLocationManagerAccessor {
-        allowsBackgroundLocationUpdates = locationPermission.background
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
         distanceFilter = settings.minUpdateDistanceMeters.toDouble()
     }
 
-    private val locationUpdateDelegate: Delegate
+    private val locationUpdateDelegate = Delegate(sharedLocations)
     private var locationWrapper: KalugaLocationWrapper? = null
-    init {
-        val sharedLocations = sharedLocations
-        locationUpdateDelegate = Delegate(sharedLocations)
-    }
 
     actual override suspend fun requestEnableLocation() {
-        // No access to UIApplication.openSettingsURLString
-        // We have to fallback to alert then?
+        // tvOS has no equivalent of UIApplication.openSettingsURLString. Consumers should surface a UI prompt instead.
     }
 
     actual override suspend fun startMonitoringLocation() {
+        // tvOS only supports one-shot location via `requestLocation()` — there is no
+        // `startUpdatingLocation()`. Each call to startMonitoringLocation triggers a single
+        // delivery; callers that need a stream must invoke it again.
         val locationUpdateDelegate = locationUpdateDelegate
         locationManager.updateLocationManager {
             locationWrapper?.unlink()
             locationWrapper = KalugaLocationWrapper.createByLinkingWithLocationManager(this, locationUpdateDelegate)
-            startUpdatingLocation()
+            requestLocation()
         }
     }
 
     actual override suspend fun stopMonitoringLocation() {
         launch {
             locationManager.updateLocationManager {
-                stopUpdatingLocation()
                 locationWrapper?.unlink()
                 locationWrapper = null
             }
@@ -107,17 +91,8 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
     }
 }
 
-/**
- * Default [BaseLocationStateRepoBuilder]
- * @param permissionsBuilder a method for creating the [Permissions] object to manage the Location permissions.
- * Needs to have [com.splendo.kaluga.permissions.location.LocationPermission] registered.
- */
 actual class LocationStateRepoBuilder(private val permissionsBuilder: suspend (CoroutineContext) -> Permissions) : BaseLocationStateRepoBuilder {
 
-    /**
-     * Constructor
-     * @param bundle the [NSBundle]
-     */
     constructor(
         bundle: NSBundle = NSBundle.mainBundle,
     ) : this(

@@ -20,6 +20,8 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
+import com.splendo.kaluga.permissions.location.registerLocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermissionIfNotRegistered
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
@@ -30,6 +32,7 @@ import kotlin.time.Duration
 
 actual fun PermissionsBuilder.registerAllPermissions(monitoringInterval: Duration, settings: BasePermissionManager.Settings) {
     registerBluetoothPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerLocationPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerStoragePermission(monitoringInterval = monitoringInterval, settings = settings)
@@ -37,6 +40,7 @@ actual fun PermissionsBuilder.registerAllPermissions(monitoringInterval: Duratio
 
 actual suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(monitoringInterval: Duration, settings: BasePermissionManager.Settings) {
     registerBluetoothPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerLocationPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerStoragePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)

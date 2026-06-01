@@ -5,6 +5,8 @@ plugins {
 kaluga {
     moduleName = "test.location"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         common {
             main {

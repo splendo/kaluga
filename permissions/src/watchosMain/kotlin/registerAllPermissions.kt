@@ -24,6 +24,8 @@ import com.splendo.kaluga.permissions.calendar.registerCalendarPermission
 import com.splendo.kaluga.permissions.calendar.registerCalendarPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.contacts.registerContactsPermission
 import com.splendo.kaluga.permissions.contacts.registerContactsPermissionIfNotRegistered
+import com.splendo.kaluga.permissions.location.registerLocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermissionIfNotRegistered
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
@@ -34,6 +36,7 @@ actual fun PermissionsBuilder.registerAllPermissions(monitoringInterval: Duratio
     registerBluetoothPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerCalendarPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerContactsPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerLocationPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermission(monitoringInterval = monitoringInterval, settings = settings)
 }
@@ -42,6 +45,7 @@ actual suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(monito
     registerBluetoothPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerCalendarPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerContactsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerLocationPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
 }

@@ -22,12 +22,11 @@ import CoreLocation
 @objc(KalugaLocationDelegate)
 public protocol KalugaLocationDelegate {
     @objc func didUpdateLocations(_ locations: [CLLocation], manager: CLLocationManager)
-    @objc func didFinishDeferredUpdates(error: (any Error)?, manager: CLLocationManager)
 }
 
 @objc(KalugaLocationWrapper)
 public class KalugaLocationWrapper : NSObject, CLLocationManagerDelegate {
-    
+
     @objc public static func createByLinking(locationManager: CLLocationManager, to delegate: KalugaLocationDelegate) -> KalugaLocationWrapper {
         let wrapper = KalugaLocationWrapper(delegate: delegate) {
             locationManager.delegate = nil
@@ -35,23 +34,19 @@ public class KalugaLocationWrapper : NSObject, CLLocationManagerDelegate {
         locationManager.delegate = wrapper
         return wrapper
     }
-    
+
     @objc public init(delegate: KalugaLocationDelegate, unlinkAction: @escaping () -> Void) {
         self.delegate = delegate
         self.unlinkAction = unlinkAction
     }
-    
+
     let delegate: KalugaLocationDelegate
     var unlinkAction: (() -> Void)?
-    
+
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         delegate.didUpdateLocations(locations, manager: manager)
     }
 
-    public func locationManager(_ manager: CLLocationManager, didFinishDeferredUpdatesWithError error: (any Error)?) {
-        delegate.didFinishDeferredUpdates(error: error, manager: manager)
-    }
-    
     @objc public func unlink() {
         if let unlinkAction = unlinkAction {
             unlinkAction()
