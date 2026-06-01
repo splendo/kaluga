@@ -153,14 +153,14 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             initialActiveState = configuration.initialPermissionState,
         )
 
-        val permissionStateRepo get() = permissionsBuilder.buildBluetoothStateRepos.first()
+        val permissionStateRepo get() = permissionsBuilder.registry<BluetoothPermission>().buildRepos.first()
 
         private val scannerBuilder = MockBaseScanner.Builder(configuration.isEnabled)
         val scanner get() = scannerBuilder.createdScanners.first()
 
         val bluetooth = Bluetooth(
             { scannerContext ->
-                permissionsBuilder.registerAllPermissionsBuilders()
+                permissionsBuilder.registerPermissionBuilder<BluetoothPermission>()
                 BaseScanner.Settings(
                     Permissions(
                         permissionsBuilder,

@@ -27,7 +27,8 @@ kaluga {
                 api(project(":bluetooth-permissions", ""))
             }
             test {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":test-utils-bluetooth-client", ""))
+                implementation(project(":test-utils-permissions", ""))
             }
         }
     }

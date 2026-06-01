@@ -272,4 +272,4 @@ data class HeartRate(
 ```
 
 ## Testing
-Use the [`test-utils-bluetooth` module](../test-utils-bluetooth) to get mockable Bluetooth classes.
+Use the [`test-utils-bluetooth-client` module](../test-utils-bluetooth-client) to get mockable Bluetooth classes.

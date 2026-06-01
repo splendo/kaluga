@@ -96,7 +96,9 @@ kaluga-compose-resources = { module = "com.splendo.kaluga:resources-compose", ve
 kaluga-testutils-architecture = { module = "com.splendo.kaluga:test-utils-architecture", version.ref = "kaluga" }
 kaluga-testutils-alerts = { module = "com.splendo.kaluga:test-utils-alerts", version.ref = "kaluga" }
 kaluga-testutils-base = { module = "com.splendo.kaluga:test-utils-base", version.ref = "kaluga" }
-kaluga-testutils-bluetooth = { module = "com.splendo.kaluga:test-utils-bluetooth", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-base = { module = "com.splendo.kaluga:test-utils-bluetooth-base", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-client = { module = "com.splendo.kaluga:test-utils-bluetooth-client", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-server = { module = "com.splendo.kaluga:test-utils-bluetooth-server", version.ref = "kaluga" }
 kaluga-testutils-datetimepicker = { module = "com.splendo.kaluga:test-utils-date-time-picker", version.ref = "kaluga" }
 kaluga-testutils-resources = { module = "com.splendo.kaluga:test-utils-resources", version.ref = "kaluga" }
 kaluga-testutils-hud = { module = "com.splendo.kaluga:test-utils-hud", version.ref = "kaluga" }

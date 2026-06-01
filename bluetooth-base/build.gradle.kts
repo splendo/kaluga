@@ -28,7 +28,7 @@ kaluga {
                 api(libs.kotlinx.serialization.core)
             }
             test {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":test-utils-bluetooth-base", ""))
             }
         }
     }

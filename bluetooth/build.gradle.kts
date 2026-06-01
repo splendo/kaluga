@@ -29,10 +29,6 @@ kaluga {
                 api(project(":bluetooth-permissions", ""))
                 api(libs.kotlinx.serialization.core)
             }
-            test {
-                implementation(project(":test-utils-bluetooth", ""))
-                implementation(project(":test-utils-permissions", ""))
-            }
         }
     }
 }

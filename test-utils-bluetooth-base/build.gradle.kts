@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.bluetooth"
+    moduleName = "test.bluetooth.base"
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true
@@ -12,7 +12,7 @@ kaluga {
             main {
                 api(project(":test-utils-base"))
                 api(project(":test-utils-service"))
-                api(project(":bluetooth-client"))
+                api(project(":bluetooth-base"))
             }
         }
     }

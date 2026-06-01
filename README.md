@@ -134,7 +134,9 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils-base](test-utils-base/)                         | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils-base             |
 | [test-utils-alerts](test-utils-alerts/)                     | Enables easier testing of Alerts module                                            | com.splendo.kaluga:test-utils-alerts           |
 | [test-utils-architecture](test-utils-architecture/)         | Enables easier testing of Architecture module                                      | com.splendo.kaluga:test-utils-architecture     |
-| [test-utils-bluetooth](test-utils-bluetooth/)               | Enables easier testing of Bluetooth module                                         | com.splendo.kaluga:test-utils-bluetooth        |
+| [test-utils-bluetooth-base](test-utils-bluetooth-base/)     | Enables easier testing of the Bluetooth base module                                | com.splendo.kaluga:test-utils-bluetooth-base   |
+| [test-utils-bluetooth-client](test-utils-bluetooth-client/) | Enables easier testing of the Bluetooth client module                              | com.splendo.kaluga:test-utils-bluetooth-client |
+| [test-utils-bluetooth-server](test-utils-bluetooth-server/) | Enables easier testing of the Bluetooth server module                              | com.splendo.kaluga:test-utils-bluetooth-server |
 | [test-utils-date-time-picker](test-utils-date-time-picker/) | Enables easier testing of Date Time Picker module                                  | com.splendo.kaluga:test-utils-date-time-picker |
 | [test-utils-hud](test-utils-hud/)                           | Enables easier testing of HUD module                                               | com.splendo.kaluga:test-utils-hud              |
 | [test-utils-keyboard](test-utils-keyboard/)                 | Enables easier testing of Keyboard module                                          | com.splendo.kaluga:test-utils-keyboard         |
