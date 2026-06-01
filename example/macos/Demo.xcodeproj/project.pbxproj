@@ -10,6 +10,7 @@
 		117A70A6F150E32615092894 /* KalugaExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFA1A56F43FCA413D5DD7790 /* KalugaExample.framework */; };
 		1B8B9FFB9373D937D3CE4C23 /* sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CAFC97A73281DE1E2A6E1516 /* sound.mp3 */; };
 		79E538BE535BEECCF74F6A96 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC30BE14C2065F9F61C4E6E /* main.swift */; };
+		CEDF9CC9EEAA23BEA5FAC904 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30BA7271EB3F3F6BFA2E807 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +19,7 @@
 		CAFC97A73281DE1E2A6E1516 /* sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound.mp3; sourceTree = "<group>"; };
 		CFC30BE14C2065F9F61C4E6E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E158E1D8DDD5F3DC89B171A3 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E30BA7271EB3F3F6BFA2E807 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EFA1A56F43FCA413D5DD7790 /* KalugaExample.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KalugaExample.framework; path = "../shared/build/xcode-frameworks/Debug/macosx/KalugaExample.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -52,6 +54,7 @@
 		E3B4D1D5BF2C08ECE550C978 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				E30BA7271EB3F3F6BFA2E807 /* Assets.xcassets */,
 				58BAC8E5CE873219C0FD0BB9 /* Demo.entitlements */,
 				3A226E443F31E591F7687A46 /* Info.plist */,
 				CFC30BE14C2065F9F61C4E6E /* main.swift */,
@@ -127,6 +130,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEDF9CC9EEAA23BEA5FAC904 /* Assets.xcassets in Resources */,
 				1B8B9FFB9373D937D3CE4C23 /* sound.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

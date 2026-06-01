@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mirror of android/src/main/res/drawable/ic_launcher_foreground.xml (foreground) over
+     android/src/main/res/values/ic_launcher_background.xml (#FFFFFF background).
+     Source of truth for the macOS app icon — re-rasterize via rsvg-convert if edited. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 361 361" width="1024" height="1024">
+  <rect x="0" y="0" width="361" height="361" fill="#FFFFFF"/>
+  <path d="M216.166,228 L265.794,228 L240.98,185.462 Z" fill="#0095D5"/>
+  <path d="M186.999,183 L236.627,183 L211.813,225.538 Z" fill="#3087DB"/>
+  <path d="M186.999,178 L236.627,178 L211.813,135.462 Z" fill="#557CDF"/>
+  <path d="M216.166,133 L265.794,133 L240.98,175.538 Z" fill="#806EE3"/>
+  <path d="M138.333,178 L180.961,178 L159.647,141.462 Z" fill="#F88909"/>
+  <path d="M159.647,219.538 L138.333,183 L180.961,183 Z" fill="#E47550"/>
+  <path d="M112.667,222 L155.295,222 L133.981,185.462 Z" fill="#C757BC"/>
+  <path d="M87,183 L129.628,183 L108.314,219.538 Z" fill="#0095D5"/>
+  <path d="M87,178 L129.628,178 L108.314,141.462 Z" fill="#3087DB"/>
+  <path d="M112.667,139 L155.295,139 L133.981,175.538 Z" fill="#806EE3"/>
+</svg>
