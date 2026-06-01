@@ -54,7 +54,7 @@ actual interface BluetoothMonitor : ServiceMonitor {
  * @param applicationContext the [Context] in which Bluetooth should run
  * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
  */
-class DefaultBluetoothMonitor(private val applicationContext: Context, private val bluetoothAdapter: BluetoothAdapter) :
+class DefaultBluetoothMonitor internal constructor(private val applicationContext: Context, private val bluetoothAdapter: BluetoothAdapter) :
     DefaultServiceMonitor(),
     BluetoothMonitor {
 

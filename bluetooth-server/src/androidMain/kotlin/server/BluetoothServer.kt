@@ -60,6 +60,7 @@ import kotlin.experimental.or
 internal sealed class AndroidServerState {
     class AwaitingPermissions(
         private val manager: BluetoothManager,
+        private val bluetoothMonitor: BluetoothMonitor,
         private val permissionStateRepo: BluetoothPermissionStateRepo,
         private val callback: KalugaBluetoothGattServerCallback,
         private val context: Context,
@@ -69,10 +70,9 @@ internal sealed class AndroidServerState {
         override suspend fun awaitPermitted(autoRequest: Boolean): ServerState.HasPermissions =
             permissionStateRepo.filterOnlyImportant().map { listOf(it) }.transformLatest { permissions ->
                 if (permissions.all { it is PermissionState.Allowed }) {
-                    val enabledManager = DefaultBluetoothMonitor(context.applicationContext, manager.adapter)
-                    enabledManager.startMonitoring()
+                    bluetoothMonitor.startMonitoring()
                     emit(
-                        AwaitingBluetoothEnabled(manager, enabledManager, permissionStateRepo, callback, context, logger),
+                        AwaitingBluetoothEnabled(manager, bluetoothMonitor, permissionStateRepo, callback, context, logger),
                     )
                 } else {
                     if (autoRequest) {
@@ -121,7 +121,7 @@ internal sealed class AndroidServerState {
         override suspend fun awaitRevoked(): ServerState.AwaitingPermissions {
             permissionStateRepo.filterOnlyImportant().first { state -> listOf(state).any { it !is PermissionState.Allowed } }
             bluetoothMonitor.stopMonitoring()
-            return AwaitingPermissions(manager, permissionStateRepo, callback, context, logger)
+            return AwaitingPermissions(manager, bluetoothMonitor, permissionStateRepo, callback, context, logger)
         }
 
         override fun close(): ServerState.Closed {
@@ -257,7 +257,7 @@ internal sealed class AndroidServerState {
         override suspend fun awaitRevoked(): ServerState.AwaitingPermissions {
             permissionStateRepo.filterOnlyImportant().first { state -> listOf(state).any { it !is PermissionState.Allowed } }
             clean(true)
-            return AwaitingPermissions(manager, permissionStateRepo, callback, context, logger)
+            return AwaitingPermissions(manager, bluetoothMonitor, permissionStateRepo, callback, context, logger)
         }
 
         override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL.Primary = LocalServiceDSL.Primary(

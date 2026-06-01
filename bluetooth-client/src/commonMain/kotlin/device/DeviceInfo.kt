@@ -30,57 +30,6 @@ import kotlinx.serialization.encoding.Encoder
 import kotlin.math.pow
 
 /**
- * Unique identifier of a Bluetooth [Device]
- */
-expect class Identifier
-
-/**
- * Gets a random [Identifier]
- * @return a random [Identifier]
- */
-expect fun randomIdentifier(): Identifier
-
-/**
- * Gets an [Identifier] from a string value
- * @param stringValue the string value to get the [Identifier] from
- * @return an [Identifier] matching the string value or `null` if it could not be generated
- */
-expect fun identifierFromString(stringValue: String): Identifier?
-
-/**
- * Gets a string representation of an [Identifier]
- */
-expect val Identifier.stringValue: String
-
-/**
- * A [Identifier] that can be serialized
- */
-@Serializable(with = IdentifierSerializer::class)
-data class SerializableIdentifier(val identifier: Identifier)
-
-/**
- * Converts an [Identifier] into a [SerializableIdentifier]
- */
-val Identifier.serializable get() = SerializableIdentifier(this)
-
-/**
- * [KSerializer] for a [SerializableIdentifier]
- */
-open class IdentifierSerializer : KSerializer<SerializableIdentifier> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IdentifierString", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: SerializableIdentifier) {
-        val string = value.identifier.stringValue
-        encoder.encodeString(string)
-    }
-
-    override fun deserialize(decoder: Decoder): SerializableIdentifier {
-        val string = decoder.decodeString()
-        return SerializableIdentifier(identifierFromString(string)!!)
-    }
-}
-
-/**
  * Accessor to the platform level Bluetooth device
  */
 expect interface DeviceWrapper {

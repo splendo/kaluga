@@ -47,16 +47,6 @@ import kotlin.coroutines.CoroutineContext
 typealias ConnectableDeviceStateFlowRepo = StateRepo<ConnectableDeviceState, MutableStateFlow<ConnectableDeviceState>>
 
 /**
- * A Bluetooth Device that is either the Peripheral (Server) or Central (Client)
- */
-interface Device {
-    /**
-     * The [Identifier] of the device
-     */
-    val identifier: Identifier
-}
-
-/**
  * A [Device] that can be connected to
  */
 interface ConnectableDevice : Device {

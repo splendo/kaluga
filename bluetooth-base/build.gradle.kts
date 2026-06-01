@@ -12,7 +12,6 @@ kaluga {
     dependencies {
         android {
             main {
-                implementation(libs.nordic.support.scanner)
                 implementation(libs.kotlinx.atomicfu)
             }
         }

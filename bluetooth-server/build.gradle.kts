@@ -20,7 +20,6 @@ kaluga {
         common {
             main {
                 api(project(":bluetooth-base"))
-                api(project(":bluetooth-client"))
                 api(project(":bluetooth-permissions", ""))
                 api(project(":base"))
             }

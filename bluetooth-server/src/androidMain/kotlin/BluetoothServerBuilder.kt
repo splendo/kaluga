@@ -46,6 +46,7 @@ actual class BluetoothServerBuilder(
         val initialState = manager?.let {
             AndroidServerState.AwaitingPermissions(
                 it,
+                BluetoothMonitor.Builder(applicationContext, manager.adapter).create(),
                 settings.permissions[BluetoothPermission(BluetoothPermission.Type.Server)] as BluetoothPermissionStateRepo,
                 KalugaBluetoothGattServerCallback(settings.logger, coroutineContext),
                 applicationContext,
