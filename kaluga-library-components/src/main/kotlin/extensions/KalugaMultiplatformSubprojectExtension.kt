@@ -402,6 +402,57 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     }
                 }
 
+                if (registeredMacosTargets.isNotEmpty()) {
+                    if (multiplatformDependencies.macos.mainDependencies.isNotEmpty()) {
+                        macosMain.configure {
+                            dependencies {
+                                multiplatformDependencies.macos.mainDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                    if (multiplatformDependencies.macos.testDependencies.isNotEmpty()) {
+                        macosTest.configure {
+                            dependencies {
+                                multiplatformDependencies.macos.testDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                }
+
+                if (registeredTvosTargets.isNotEmpty()) {
+                    if (multiplatformDependencies.tvos.mainDependencies.isNotEmpty()) {
+                        tvosMain.configure {
+                            dependencies {
+                                multiplatformDependencies.tvos.mainDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                    if (multiplatformDependencies.tvos.testDependencies.isNotEmpty()) {
+                        tvosTest.configure {
+                            dependencies {
+                                multiplatformDependencies.tvos.testDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                }
+
+                if (registeredWatchosTargets.isNotEmpty()) {
+                    if (multiplatformDependencies.watchos.mainDependencies.isNotEmpty()) {
+                        watchosMain.configure {
+                            dependencies {
+                                multiplatformDependencies.watchos.mainDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                    if (multiplatformDependencies.watchos.testDependencies.isNotEmpty()) {
+                        watchosTest.configure {
+                            dependencies {
+                                multiplatformDependencies.watchos.testDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                }
+
                 if (supportJVM) {
                     jvmMain.configure {
                         dependencies {
