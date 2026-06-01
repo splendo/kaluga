@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.example.feature.info
+package com.splendo.kaluga.example.arch.info
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

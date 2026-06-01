@@ -28,19 +28,24 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.splendo.kaluga.example.arch.info.InfoScreen
 import org.koin.mp.KoinPlatformTools
 
 object Routes {
@@ -95,22 +100,44 @@ fun AppRootScreen(onNativeLaunch: (id: String) -> Unit = {}, modifier: Modifier 
     }
 }
 
+private enum class RootTab(val label: String) { Features("Features"), Info("Info") }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RootScaffold(contributions: List<FeatureContribution>, onSelected: (FeatureContribution) -> Unit) {
+    var selectedTab by remember { mutableStateOf(RootTab.Features) }
     Scaffold(topBar = { TopAppBar(title = { Text("Kaluga Example") }) }) { padding ->
-        LazyColumn(
-            modifier = Modifier.padding(padding).fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(contributions, key = { it.id }) { contribution ->
-                Button(
-                    onClick = { onSelected(contribution) },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(contribution.label)
+        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+            PrimaryTabRow(selectedTabIndex = selectedTab.ordinal) {
+                RootTab.entries.forEach { tab ->
+                    Tab(
+                        selected = selectedTab == tab,
+                        onClick = { selectedTab = tab },
+                        text = { Text(tab.label) },
+                    )
                 }
+            }
+            when (selectedTab) {
+                RootTab.Features -> FeatureList(contributions = contributions, onSelected = onSelected)
+                RootTab.Info -> InfoScreen()
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeatureList(contributions: List<FeatureContribution>, onSelected: (FeatureContribution) -> Unit) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(contributions, key = { it.id }) { contribution ->
+            Button(
+                onClick = { onSelected(contribution) },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(contribution.label)
             }
         }
     }

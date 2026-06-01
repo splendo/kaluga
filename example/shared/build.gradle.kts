@@ -77,7 +77,6 @@ kaluga {
                 api(project(":feature-beacons"))
                 api(project(":feature-bluetooth"))
                 api(project(":feature-datetime"))
-                api(project(":feature-info"))
                 api(project(":feature-links"))
                 api(project(":feature-localization"))
                 api(project(":feature-location"))
