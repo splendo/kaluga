@@ -5,13 +5,14 @@ plugins {
 }
 
 kaluga {
-    moduleName = "bluetooth"
+    moduleName = "bluetooth.base"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         android {
             main {
                 implementation(libs.nordic.support.scanner)
-                implementation(project(":location", ""))
                 implementation(libs.kotlinx.atomicfu)
             }
         }
@@ -22,16 +23,12 @@ kaluga {
         }
         common {
             main {
-                api(project(":bluetooth-base"))
-                api(project(":bluetooth-client"))
-                api(project(":bluetooth-server"))
-                implementation(project(":service"))
-                api(project(":bluetooth-permissions", ""))
+                api(project(":base"))
+                api(project(":service"))
                 api(libs.kotlinx.serialization.core)
             }
             test {
-                implementation(project(":test-utils-bluetooth", ""))
-                implementation(project(":test-utils-permissions", ""))
+                implementation(project(":test-utils-base", ""))
             }
         }
     }

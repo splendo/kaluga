@@ -17,29 +17,39 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlin.coroutines.CoroutineContext
 
-/**
- * Builder class for creating both [Bluetooth] (client) and [BluetoothServer].
- */
-interface BaseBluetoothBuilder : BaseBluetoothClientBuilder, BaseBluetoothServerBuilder {
-
-    @Deprecated("Use createClient instead", replaceWith = ReplaceWith("createClient(scannerSettingsBuilder, coroutineContext)"))
-    fun create(
-        scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
-        coroutineContext: CoroutineContext = defaultBluetoothClientDispatcher,
-    ) = createClient(scannerSettingsBuilder, coroutineContext)
+internal val defaultBluetoothServerDispatcher by lazy {
+    singleThreadDispatcher("BluetoothServer")
 }
 
 /**
- * A default implementation of [BaseBluetoothBuilder]
+ * Builder class for creating a [BluetoothServer].
  */
-expect class BluetoothBuilder : BaseBluetoothBuilder {
-    override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth
+interface BaseBluetoothServerBuilder {
+
+    /**
+     * Creates a [BluetoothServer]
+     * @param settingsBuilder a method for getting the [ServerSettings] to be used while scanning from a [CoroutineContext]
+     * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
+     * @param specs the [BluetoothServerDSL] to build the [BluetoothServer] from
+     * @return the created [BluetoothServer]
+     */
+    suspend fun createServer(
+        settingsBuilder: (Permissions) -> ServerSettings = { ServerSettings(permissions = it) },
+        coroutineContext: CoroutineContext = defaultBluetoothServerDispatcher,
+        specs: BluetoothServerDSL.() -> Unit,
+    ): BluetoothServer
+}
+
+/**
+ * A default implementation of [BaseBluetoothServerBuilder]
+ */
+expect class BluetoothServerBuilder : BaseBluetoothServerBuilder {
     override suspend fun createServer(settingsBuilder: (Permissions) -> ServerSettings, coroutineContext: CoroutineContext, specs: BluetoothServerDSL.() -> Unit): BluetoothServer
 }

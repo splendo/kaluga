@@ -1,12 +1,13 @@
 plugins {
     id("com.splendo.kaluga.plugin")
     id(libs.plugins.kotlinx.atomicfu.get().pluginId)
-    alias(libs.plugins.kotlin.serialization)
 }
 
 kaluga {
-    moduleName = "bluetooth"
+    moduleName = "bluetooth.client"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         android {
             main {
@@ -23,15 +24,10 @@ kaluga {
         common {
             main {
                 api(project(":bluetooth-base"))
-                api(project(":bluetooth-client"))
-                api(project(":bluetooth-server"))
-                implementation(project(":service"))
                 api(project(":bluetooth-permissions", ""))
-                api(libs.kotlinx.serialization.core)
             }
             test {
-                implementation(project(":test-utils-bluetooth", ""))
-                implementation(project(":test-utils-permissions", ""))
+                implementation(project(":test-utils-base", ""))
             }
         }
     }

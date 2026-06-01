@@ -5,11 +5,13 @@ plugins {
 kaluga {
     moduleName = "beacons"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         common {
             main {
                 implementation(project(":base"))
-                api(project(":bluetooth"))
+                api(project(":bluetooth-client"))
                 api(project(":logging", ""))
             }
             test {

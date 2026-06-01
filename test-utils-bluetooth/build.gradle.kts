@@ -5,12 +5,14 @@ plugins {
 kaluga {
     moduleName = "test.bluetooth"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         common {
             main {
-                api(project(":test-utils-permissions"))
+                api(project(":test-utils-base"))
                 api(project(":test-utils-service"))
-                api(project(":bluetooth"))
+                api(project(":bluetooth-client"))
             }
         }
     }
