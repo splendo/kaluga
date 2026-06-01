@@ -86,7 +86,7 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
             subExtensionClass == KalugaMultiplatformSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 val multiplatformExtension = extensions.findByType(KotlinMultiplatformExtension::class)!!
-                extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, project.objects, project)
+                extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, project.objects)
             }
 
             else -> {

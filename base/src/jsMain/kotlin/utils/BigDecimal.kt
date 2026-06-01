@@ -67,9 +67,9 @@ private fun bigIntPow(base: dynamic, n: Int): dynamic {
     var b: dynamic = base
     var e = n
     while (e > 0) {
-        if (e and 1 == 1) result = result * b
+        if (e and 1 == 1) result *= b
         e = e shr 1
-        if (e > 0) b = b * b
+        if (e > 0) b *= b
     }
     return result
 }

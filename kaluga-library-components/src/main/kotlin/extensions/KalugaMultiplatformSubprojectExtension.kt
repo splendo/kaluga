@@ -56,22 +56,29 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     val multiplatformExtension: KotlinMultiplatformExtension,
     versionCatalog: VersionCatalog,
     objects: ObjectFactory,
-    private val project: Project,
 ) : BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
 
-    companion object {
-        private const val TEST_DEPENDENT_PROJECTS_ENV_NAME = "TEST_DEPENDENT_PROJECTS"
-        private const val ON_CI_ENV_NAME = "CI"
-    }
+    val isMacOs = Os.isFamily(Os.FAMILY_MAC)
+    val ideaActive = System.getProperty("idea.active") == "true"
+    val isAppleSilicon = System.getProperty("os.arch") == "aarch64"
+
     private enum class IOSTarget(val sourceSetName: String) {
-        X64("iosX64"),
         Arm64("iosArm64"),
         SimulatorArm64("iosSimulatorArm64"),
     }
 
     private enum class MacOSTarget(val sourceSetName: String) {
-        X64("macosX64"),
         Arm64("macosArm64"),
+    }
+
+    private enum class TVOSTarget(val sourceSetName: String) {
+        Arm64("tvosArm64"),
+        SimulatorArm64("tvosSimulatorArm64"),
+    }
+
+    private enum class WatchOSTarget(val sourceSetName: String) {
+        Arm64("watchosArm64"),
+        SimulatorArm64("watchosSimulatorArm64"),
     }
 
     var supportJVM: Boolean = false
@@ -110,9 +117,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         }
     var iosDeploymentTarget: String = "15.0"
     var macosDeploymentTarget: String = "11.0"
+    var tvosDeploymentTarget: String = "15.0"
+    var watchosDeploymentTarget: String = "8.0"
 
     /**
-     * When `true`, this module is also compiled for `macosX64` and `macosArm64`.
+     * When `true`, this module is also compiled for `macosArm64`.
      *
      * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
      * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
@@ -124,7 +133,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             if (value) {
                 macosTargetsToRegister().forEach { macosTarget ->
                     val target = when (macosTarget) {
-                        MacOSTarget.X64 -> multiplatformExtension.macosX64()
                         MacOSTarget.Arm64 -> multiplatformExtension.macosArm64()
                     }
                     registeredMacosTargets += target
@@ -132,22 +140,82 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
 
-    private val registeredMacosTargets = mutableListOf<KotlinNativeTarget>()
-
-    private fun macosTargetsToRegister(): Set<MacOSTarget> {
-        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
-        val ideaActive = System.getProperty("idea.active") == "true"
-        val isAppleSilicon = System.getProperty("os.arch") == "aarch64"
-        val all = when {
-            !ideaActive -> MacOSTarget.values().toSet()
-            isAppleSilicon -> setOf(MacOSTarget.Arm64)
-            else -> setOf(MacOSTarget.X64)
+    /**
+     * When `true`, this module is also compiled for `tvosArm64` and `tvosSimulatorArm64`.
+     *
+     * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
+     * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
+     * the tvOS targets.
+     */
+    var supportTvOS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                tvosTargetsToRegister().forEach { tvosTarget ->
+                    val target = when (tvosTarget) {
+                        TVOSTarget.Arm64 -> multiplatformExtension.tvosArm64()
+                        TVOSTarget.SimulatorArm64 -> multiplatformExtension.tvosSimulatorArm64()
+                    }
+                    registeredTvosTargets += target
+                }
+            }
         }
-        // Modules depending on CMP set `kaluga.omitMacosX64=true` — CMP doesn't publish for macosX64.
-        val omitMacosX64 = project.findProperty("kaluga.omitMacosX64")?.toString()
-            .equals("true", ignoreCase = true)
-        return if (omitMacosX64) all - MacOSTarget.X64 else all
+
+    /**
+     * When `true`, this module is also compiled for `watchosArm64` and `watchosSimulatorArm64`.
+     *
+     * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
+     * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
+     * the watchOS targets.
+     */
+    var supportWatchOS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                watchosTargetsToRegister().forEach { watchosTarget ->
+                    val target = when (watchosTarget) {
+                        WatchOSTarget.Arm64 -> multiplatformExtension.watchosArm64()
+                        WatchOSTarget.SimulatorArm64 -> multiplatformExtension.watchosSimulatorArm64()
+                    }
+                    registeredWatchosTargets += target
+                }
+            }
+        }
+
+    private val registeredMacosTargets = mutableListOf<KotlinNativeTarget>()
+    private val registeredTvosTargets = mutableListOf<KotlinNativeTarget>()
+    private val registeredWatchosTargets = mutableListOf<KotlinNativeTarget>()
+
+    private fun macosTargetsToRegister(): Set<MacOSTarget> = when {
+        !isMacOs || !isAppleSilicon -> emptySet()
+        !ideaActive -> MacOSTarget.values().toSet()
+        else -> setOf(MacOSTarget.Arm64)
     }
+
+    private fun tvosTargetsToRegister(): Set<TVOSTarget> {
+        if (!isMacOs) return emptySet()
+        val sdkName = System.getenv("SDK_NAME") ?: "unknown"
+        val isRealTvOSDevice = sdkName.startsWith("appletvos")
+        return when {
+            !ideaActive -> TVOSTarget.values().toSet()
+            isRealTvOSDevice -> setOf(TVOSTarget.Arm64)
+            !isAppleSilicon -> emptySet()
+            else -> setOf(TVOSTarget.SimulatorArm64)
+        }
+    }
+
+    private fun watchosTargetsToRegister(): Set<WatchOSTarget> {
+        if (!isMacOs) return emptySet()
+        val sdkName = System.getenv("SDK_NAME") ?: "unknown"
+        val isRealWatchOSDevice = sdkName.startsWith("watchos")
+        return when {
+            !ideaActive -> WatchOSTarget.values().toSet()
+            isRealWatchOSDevice -> setOf(WatchOSTarget.Arm64)
+            !isAppleSilicon -> emptySet()
+            else -> setOf(WatchOSTarget.SimulatorArm64)
+        }
+    }
+
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
@@ -229,7 +297,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         val iosTargets = project.iosTargets.map { iosTarget ->
             when (iosTarget) {
                 IOSTarget.Arm64 -> iosArm64()
-                IOSTarget.X64 -> iosX64()
                 IOSTarget.SimulatorArm64 -> iosSimulatorArm64()
             }
         }
@@ -320,7 +387,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
 
                 iosMain.configure {
-                    iosDeploymentTarget = "15.0"
                     dependencies {
                         multiplatformDependencies.ios.mainDependencies.forEach {
                             it.execute(this)
@@ -472,17 +538,23 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
 
-            // `registeredMacosTargets` is populated by the `supportMacOS` setter, which runs
-            // after `configureMultiplatform()` — so this list is only meaningful inside
-            // `afterEvaluate { }`. macOS only consumes Swift sources under `appleMain/swift`.
-            project.configure(registeredMacosTargets) {
-                configureSwiftAndInterop(swiftSourceDirFor(forIos = false), macosDeploymentTarget)
-                binaries {
-                    frameworkConfig?.let { macosExport ->
-                        framework { macosExport() }
+            // The `registeredMacos/Tvos/WatchosTargets` lists are populated by their respective
+            // `supportXxx` setters, which run after `configureMultiplatform()` — so these lists
+            // are only meaningful inside `afterEvaluate { }`. These targets only consume Swift
+            // sources under `appleMain/swift`.
+            fun configureNonIosTargets(targets: List<KotlinNativeTarget>, deploymentTarget: String) {
+                project.configure(targets) {
+                    configureSwiftAndInterop(swiftSourceDirFor(forIos = false), deploymentTarget)
+                    binaries {
+                        frameworkConfig?.let { export ->
+                            framework { export() }
+                        }
                     }
                 }
             }
+            configureNonIosTargets(registeredMacosTargets, macosDeploymentTarget)
+            configureNonIosTargets(registeredTvosTargets, tvosDeploymentTarget)
+            configureNonIosTargets(registeredWatchosTargets, watchosDeploymentTarget)
 
             sourceSets.all {
                 languageSettings {
@@ -496,7 +568,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     optIn("kotlin.time.ExperimentalTime")
                     optIn("kotlin.ExperimentalStdlibApi")
                     val sourceSetName = this@all.name.lowercase()
-                    if (sourceSetName.contains("ios") || sourceSetName.contains("macos") || sourceSetName.contains("apple") || sourceSetName.contains("native")) {
+                    if (sourceSetName.contains("ios") || sourceSetName.contains("macos") || sourceSetName.contains("tvos") || sourceSetName.contains("watchos") || sourceSetName.contains("apple") || sourceSetName.contains("native")) {
                         optIn("kotlinx.cinterop.ExperimentalForeignApi")
                         optIn("kotlinx.cinterop.BetaInteropApi")
                         optIn("kotlin.experimental.ExperimentalNativeApi")
@@ -550,33 +622,18 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     }
 
     private val Project.iosTargets: Set<IOSTarget> get() {
-        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
+        if (!isMacOs) return emptySet()
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
             logger.info("Run on real ios device: $it from sdk: $sdkName")
         }
 
-        // Run on IntelliJ
-        val ideaActive = (System.getProperty("idea.active") == "true").also {
-            logger.info("Run on IntelliJ: $it")
-        }
-
-        // Run on apple silicon
-        val isAppleSilicon = (System.getProperty("os.arch") == "aarch64").also {
-            logger.info("Run on apple silicon: $it")
-        }
-
-        val all = when {
+        return when {
             !ideaActive -> IOSTarget.values().toSet()
             isRealIOSDevice -> setOf(IOSTarget.Arm64)
-            isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
-            else -> setOf(IOSTarget.X64)
+            !isAppleSilicon -> emptySet()
+            else -> setOf(IOSTarget.SimulatorArm64)
         }
-        // Compose Multiplatform libraries only publish for `iosArm64` and `iosSimulatorArm64`;
-        // modules that need CMP in commonMain opt out of `iosX64` with `kaluga.omitIosX64=true`
-        // in their `gradle.properties` so the property is honoured during eager target registration.
-        val omitX64 = findProperty("kaluga.omitIosX64")?.toString().equals("true", ignoreCase = true)
-        return if (omitX64) all - IOSTarget.X64 else all
     }
 
     override fun Project.beforeEvaluated() {
