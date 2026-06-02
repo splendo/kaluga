@@ -51,7 +51,7 @@ class PermissionsContribution : FeatureContribution {
             arguments = listOf(navArgument("name") { type = NavType.StringType }),
         ) { entry ->
             val name = entry.arguments?.read { getString("name") } ?: return@composable
-            val permissionView = PermissionView.valueOf(name)
+            val permissionView = availablePermissionViews.firstOrNull { it.name == name } ?: return@composable
             DetailScaffold(title = permissionView.title, onBack = { navController.popBackStack() }) {
                 PermissionScreen(permissionView)
             }
