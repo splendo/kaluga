@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.splendo.kaluga.media.MediaSurfaceProvider
 
 /**
  * macOS implementation — currently a placeholder.
@@ -53,7 +54,7 @@ import androidx.compose.ui.unit.dp
  * hosted **outside** the Compose tree (e.g. SwiftUI/AppKit hosts that consume `KalugaExample.framework`).
  */
 @Composable
-actual fun MediaSurfaceContainer(provider: ComposeMediaSurfaceProvider, modifier: Modifier) {
+actual fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier) {
     Box(modifier = modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
         BasicText("Video playback inside Compose-on-macOS is not yet supported (CMP-macOS-Native lacks AppKit interop in 1.11.0).")
     }

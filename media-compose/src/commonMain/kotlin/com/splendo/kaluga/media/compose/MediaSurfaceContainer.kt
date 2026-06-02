@@ -42,9 +42,9 @@ class ComposeMediaSurfaceProvider : MediaSurfaceProvider {
 }
 
 /**
- * Hosts a platform-native video surface (Android `SurfaceView`, iOS `AVPlayerView` host,
- * macOS placeholder until CMP grows AppKit interop) and binds the resulting [MediaSurface] to
- * [provider]. The surface is detached on composition exit.
+ * Hosts a platform-native video surface and binds the resulting [MediaSurface] to [provider]. The surface is detached on composition exit.
+ *
+ * [provider] is the generic [MediaSurfaceProvider] so that view models can depend on the interface; only a [ComposeMediaSurfaceProvider] can receive a surface, so any other provider renders nothing.
  */
 @Composable
-expect fun MediaSurfaceContainer(provider: ComposeMediaSurfaceProvider, modifier: Modifier = Modifier)
+expect fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier = Modifier)
