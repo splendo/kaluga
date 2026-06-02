@@ -309,6 +309,18 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         project.afterEvaluate {
             applyDefaultHierarchyTemplate()
 
+            if (registeredTvosTargets.isNotEmpty()) {
+                val uikitMain = sourceSets.maybeCreate("uikitMain")
+                sourceSets.matching { it.name == "appleMain" }.configureEach {
+                    uikitMain.dependsOn(this)
+                }
+                sourceSets.matching {
+                    it.name in setOf("iosMain", "tvosMain")
+                }.configureEach {
+                    dependsOn(uikitMain)
+                }
+            }
+
             // When watchOS is supported, split off an intermediate source set covering only the
             // 64-bit Apple targets. Foundation typealiases like NSUInteger resolve to ULong on
             // iOS / macOS / tvOS / watchosSimulatorArm64 (arm64) but to UInt on watchosArm64
@@ -638,7 +650,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     optIn("kotlin.time.ExperimentalTime")
                     optIn("kotlin.ExperimentalStdlibApi")
                     val sourceSetName = this@all.name.lowercase()
-                    if (sourceSetName.contains("ios") || sourceSetName.contains("macos") || sourceSetName.contains("tvos") || sourceSetName.contains("watchos") || sourceSetName.contains("apple") || sourceSetName.contains("native")) {
+                    if (sourceSetName.contains("ios") || sourceSetName.contains("macos") || sourceSetName.contains("tvos") || sourceSetName.contains("watchos") || sourceSetName.contains("apple") || sourceSetName.contains("native") || sourceSetName.contains("uikit")) {
                         optIn("kotlinx.cinterop.ExperimentalForeignApi")
                         optIn("kotlinx.cinterop.BetaInteropApi")
                         optIn("kotlin.experimental.ExperimentalNativeApi")

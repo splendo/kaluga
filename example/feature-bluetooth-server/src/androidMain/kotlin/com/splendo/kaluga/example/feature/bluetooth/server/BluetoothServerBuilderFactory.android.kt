@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.example.feature.bluetooth.server
 
-import com.splendo.kaluga.bluetooth.BluetoothServerBuilder
+import com.splendo.kaluga.bluetooth.server.BluetoothServerBuilder
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlin.coroutines.CoroutineContext
 

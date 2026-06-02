@@ -18,8 +18,15 @@
 package com.splendo.kaluga.example.feature.bluetooth.client
 
 import com.splendo.kaluga.bluetooth.BluetoothClientBuilder
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permissions
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import kotlin.coroutines.CoroutineContext
 
 internal actual fun newBluetoothClientBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): BluetoothClientBuilder =
     BluetoothClientBuilder(permissionsBuilder = permissionsBuilder)
+
+internal actual fun PermissionsBuilder.registerAdditionalPermissionIfNotRegistered(settings: BasePermissionManager.Settings) {
+    registerLocationPermissionIfNotRegistered(settings = settings)
+}

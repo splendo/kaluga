@@ -20,7 +20,7 @@ package com.splendo.kaluga.example.feature.bluetooth.server
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.splendo.kaluga.bluetooth.BluetoothServerBuilder
+import com.splendo.kaluga.bluetooth.server.BluetoothServerBuilder
 import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
 import com.splendo.kaluga.permissions.base.BasePermissionManager

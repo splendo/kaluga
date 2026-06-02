@@ -19,7 +19,7 @@ package com.splendo.kaluga.media
 
 import platform.AVKit.AVPlayerViewController
 
-/** iOS-only convenience constructor binding an `AVPlayer` to an [AVPlayerViewController]. */
+/** Convenience constructor binding an `AVPlayer` to an [AVPlayerViewController]. */
 @Suppress("FunctionName")
 fun MediaSurface(viewController: AVPlayerViewController): MediaSurface = MediaSurface(
     { viewController.player = it },

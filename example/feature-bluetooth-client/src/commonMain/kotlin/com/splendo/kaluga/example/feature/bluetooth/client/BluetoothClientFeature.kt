@@ -20,7 +20,7 @@ package com.splendo.kaluga.example.feature.bluetooth.client
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.BluetoothClientBuilder
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.example.arch.DetailScaffold
@@ -50,6 +50,7 @@ class BluetoothClientContribution : FeatureContribution {
 
 /** [BluetoothClientBuilder] is an `expect class` — its constructor differs per platform. */
 internal expect fun newBluetoothClientBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): BluetoothClientBuilder
+internal expect fun PermissionsBuilder.registerAdditionalPermissionIfNotRegistered(settings: BasePermissionManager.Settings)
 
 /**
  * Owns the singletons for the Bluetooth client feature: the [BluetoothClientBuilder] (which wires
@@ -63,11 +64,11 @@ val bluetoothClientFeatureModule: Module = module {
             val builder = get<PermissionsBuilder>()
             val settings = BasePermissionManager.Settings(logger = get())
             builder.registerBluetoothPermissionIfNotRegistered(settings = settings)
-            builder.registerLocationPermissionIfNotRegistered(settings = settings)
+            builder.registerAdditionalPermissionIfNotRegistered(settings = settings)
             Permissions(builder, context)
         }
     }
-    single<Bluetooth> {
+    single<BluetoothClient> {
         get<BluetoothClientBuilder>().createClient(
             { BaseScanner.Settings(permissions = it, useLocation = USE_LOCATION_FOR_BLUETOOTH, logger = get()) },
         )

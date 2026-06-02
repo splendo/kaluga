@@ -51,16 +51,18 @@ sealed class CharacteristicProperty(val rawValue: Int, val encryptedValue: Int) 
 
     companion object {
 
-        private val allProperties = setOf(
-            Broadcast,
-            Read,
-            Write,
-            WriteWithoutResponse,
-            SignedWrite,
-            Notify,
-            Indicate,
-            ExtendedProperties,
-        )
+        private val allProperties by lazy {
+            setOf(
+                Broadcast,
+                Read,
+                Write,
+                WriteWithoutResponse,
+                SignedWrite,
+                Notify,
+                Indicate,
+                ExtendedProperties,
+            )
+        }
 
         /**
          * Gets a [Set] of [CharacteristicProperty] from an [Int]

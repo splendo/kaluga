@@ -38,7 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.stringValue
 import kotlinx.coroutines.CoroutineScope
@@ -53,17 +53,17 @@ import org.koin.compose.koinInject
 
 @Composable
 fun BluetoothDeviceListScreen(modifier: Modifier = Modifier) {
-    val bluetooth: Bluetooth = koinInject()
+    val bluetoothClient: BluetoothClient = koinInject()
     val scope = remember { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
     DisposableEffect(Unit) { onDispose { scope.cancel() } }
 
     val devicesFlow = remember {
-        bluetooth.allDevices().stateIn(scope, SharingStarted.Eagerly, emptyList())
+        bluetoothClient.allDevices().stateIn(scope, SharingStarted.Eagerly, emptyList())
     }
     val devices by devicesFlow.collectAsState()
 
     var isScanningFlow by remember { mutableStateOf<Flow<Boolean>>(flowOf(false)) }
-    LaunchedEffect(Unit) { isScanningFlow = bluetooth.isScanning() }
+    LaunchedEffect(Unit) { isScanningFlow = bluetoothClient.isScanning() }
     val scanning by isScanningFlow.collectAsState(initial = false)
 
     Column(
@@ -73,7 +73,7 @@ fun BluetoothDeviceListScreen(modifier: Modifier = Modifier) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                if (scanning) bluetooth.stopScanning() else bluetooth.startScanning()
+                if (scanning) bluetoothClient.stopScanning() else bluetoothClient.startScanning()
             },
         ) {
             Text(if (scanning) "Stop Scanning" else "Start Scanning")
