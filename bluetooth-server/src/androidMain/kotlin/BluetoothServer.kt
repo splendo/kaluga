@@ -223,11 +223,12 @@ internal sealed class AndroidServerState {
         }
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
-            val didNotify = async { callback.notificationSent.mapNotNull { (deviceNotified, success) -> success.takeIf { deviceNotified == device.device } }.first() }
+            val bluetoothDevice = device.device
+            val didNotify = async { callback.notificationSent.mapNotNull { (deviceNotified, success) -> success.takeIf { deviceNotified == bluetoothDevice } }.first() }
             logger.info(TAG) { "Notify characteristic ${characteristic.uuid.uuidString} updated to ${value.toHexString(" ")}" }
             val didStart = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 server.notifyCharacteristicChanged(
-                    device.device,
+                    bluetoothDevice,
                     characteristic.wrapper.characteristic,
                     characteristic.properties.contains(CharacteristicProperty.Indicate),
                     value,
@@ -235,7 +236,7 @@ internal sealed class AndroidServerState {
             } else {
                 characteristic.wrapper.characteristic.setValue(value)
                 server.notifyCharacteristicChanged(
-                    device.device,
+                    bluetoothDevice,
                     characteristic.wrapper.characteristic,
                     characteristic.properties.contains(CharacteristicProperty.Indicate),
                 )

@@ -160,7 +160,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
             val response = if (execute) {
                 pendingWrites[device.address]?.entries.orEmpty().map { (identifier, value) ->
                     writeActions[identifier]?.let { writeAction ->
-                        writeAction(ConnectedDevice(device), value, 0)
+                        writeAction(DefaultConnectedDevice(device), value, 0)
                     }
                 }.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess
             } else {
@@ -206,7 +206,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         handlingScope.launch {
             logger.info(TAG) { "Device ${device.address} attempting to read $identifier at $offset" }
             val (response, data) = readActions[identifier]?.let { readAction ->
-                val response = readAction(ConnectedDevice(device), offset)
+                val response = readAction(DefaultConnectedDevice(device), offset)
                 response to when (response) {
                     is GattResponse.ReadSuccess -> {
                         val sizeToSend = (mtu[device.address] ?: DEFAULT_MTU_SIZE) - MTU_HEADER_SIZE
@@ -242,7 +242,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
             } else {
                 logger.info(TAG) { "Device ${device.address} wrote $value for $identifier at offset $offset" }
                 writeActions[identifier]?.let { writeAction ->
-                    writeAction(ConnectedDevice(device), value, offset)
+                    writeAction(DefaultConnectedDevice(device), value, offset)
                 } ?: GattResponse.InvalidHandle
             }
 

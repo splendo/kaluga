@@ -15,19 +15,18 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.server
+package com.splendo.kaluga.test.bluetooth.server
 
-import android.bluetooth.BluetoothDevice
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.randomIdentifier
+import com.splendo.kaluga.bluetooth.server.ConnectedDevice
 
-actual interface ConnectedDevice : Device {
-    /**
-     * The platform [BluetoothDevice] of the connected device
-     */
-    val device: BluetoothDevice
-}
-
-class DefaultConnectedDevice(override val device: BluetoothDevice) : ConnectedDevice {
-    override val identifier: Identifier = device.address
+/**
+ * A mock implementation of [ConnectedDevice] for use in tests.
+ * The platform handle (`device`/`cbCentral`) is not mockable and throws if accessed; only
+ * [identifier] is provided.
+ * @property identifier the [Identifier] of the device
+ */
+expect class MockConnectedDevice(identifier: Identifier = randomIdentifier()) : ConnectedDevice {
+    override val identifier: Identifier
 }

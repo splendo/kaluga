@@ -15,19 +15,12 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.server
+package com.splendo.kaluga.test.bluetooth.server
 
-import android.bluetooth.BluetoothDevice
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.server.ConnectedDevice
+import platform.CoreBluetooth.CBCentral
 
-actual interface ConnectedDevice : Device {
-    /**
-     * The platform [BluetoothDevice] of the connected device
-     */
-    val device: BluetoothDevice
-}
-
-class DefaultConnectedDevice(override val device: BluetoothDevice) : ConnectedDevice {
-    override val identifier: Identifier = device.address
+actual class MockConnectedDevice actual constructor(actual override val identifier: Identifier) : ConnectedDevice {
+    override val cbCentral: CBCentral get() = throw NotImplementedError("MockConnectedDevice has no platform CBCentral")
 }

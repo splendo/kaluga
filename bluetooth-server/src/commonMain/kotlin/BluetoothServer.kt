@@ -24,7 +24,6 @@ import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
@@ -690,6 +689,4 @@ data class AdvertiseData(val localName: String?, val serviceUUIDs: List<UUID>) {
 /**
  * A [Device] that connected to a [BluetoothServer]
  */
-expect class ConnectedDevice : Device {
-    override val identifier: Identifier
-}
+expect interface ConnectedDevice : Device

@@ -30,6 +30,11 @@ abstract interface com.splendo.kaluga.bluetooth.server/BluetoothServerDSL { // c
     open fun service(kotlin/String, kotlin/Function1<com.splendo.kaluga.bluetooth.server/LocalService.DSL.Primary, kotlin/Unit>) // com.splendo.kaluga.bluetooth.server/BluetoothServerDSL.service|service(kotlin.String;kotlin.Function1<com.splendo.kaluga.bluetooth.server.LocalService.DSL.Primary,kotlin.Unit>){}[0]
 }
 
+abstract interface com.splendo.kaluga.bluetooth.server/ConnectedDevice : com.splendo.kaluga.bluetooth.device/Device { // com.splendo.kaluga.bluetooth.server/ConnectedDevice|null[0]
+    abstract val cbCentral // com.splendo.kaluga.bluetooth.server/ConnectedDevice.cbCentral|{}cbCentral[0]
+        abstract fun <get-cbCentral>(): platform.CoreBluetooth/CBCentral // com.splendo.kaluga.bluetooth.server/ConnectedDevice.cbCentral.<get-cbCentral>|<get-cbCentral>(){}[0]
+}
+
 final class com.splendo.kaluga.bluetooth.server/AdvertiseData { // com.splendo.kaluga.bluetooth.server/AdvertiseData|null[0]
     constructor <init>(kotlin/String?, kotlin.collections/List<platform.CoreBluetooth/CBUUID>) // com.splendo.kaluga.bluetooth.server/AdvertiseData.<init>|<init>(kotlin.String?;kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
 
@@ -84,13 +89,13 @@ final class com.splendo.kaluga.bluetooth.server/BluetoothServerBuilder : com.spl
     final suspend fun createServer(kotlin/Function1<com.splendo.kaluga.permissions.base/Permissions, com.splendo.kaluga.bluetooth.server/ServerSettings>, kotlin.coroutines/CoroutineContext, kotlin/Function1<com.splendo.kaluga.bluetooth.server/BluetoothServerDSL, kotlin/Unit>): com.splendo.kaluga.bluetooth.server/BluetoothServer // com.splendo.kaluga.bluetooth.server/BluetoothServerBuilder.createServer|createServer(kotlin.Function1<com.splendo.kaluga.permissions.base.Permissions,com.splendo.kaluga.bluetooth.server.ServerSettings>;kotlin.coroutines.CoroutineContext;kotlin.Function1<com.splendo.kaluga.bluetooth.server.BluetoothServerDSL,kotlin.Unit>){}[0]
 }
 
-final class com.splendo.kaluga.bluetooth.server/ConnectedDevice : com.splendo.kaluga.bluetooth.device/Device { // com.splendo.kaluga.bluetooth.server/ConnectedDevice|null[0]
-    constructor <init>(platform.CoreBluetooth/CBCentral) // com.splendo.kaluga.bluetooth.server/ConnectedDevice.<init>|<init>(platform.CoreBluetooth.CBCentral){}[0]
+final class com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice : com.splendo.kaluga.bluetooth.server/ConnectedDevice { // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice|null[0]
+    constructor <init>(platform.CoreBluetooth/CBCentral) // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.<init>|<init>(platform.CoreBluetooth.CBCentral){}[0]
 
-    final val cbCentral // com.splendo.kaluga.bluetooth.server/ConnectedDevice.cbCentral|{}cbCentral[0]
-        final fun <get-cbCentral>(): platform.CoreBluetooth/CBCentral // com.splendo.kaluga.bluetooth.server/ConnectedDevice.cbCentral.<get-cbCentral>|<get-cbCentral>(){}[0]
-    final val identifier // com.splendo.kaluga.bluetooth.server/ConnectedDevice.identifier|{}identifier[0]
-        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.server/ConnectedDevice.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val cbCentral // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.cbCentral|{}cbCentral[0]
+        final fun <get-cbCentral>(): platform.CoreBluetooth/CBCentral // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.cbCentral.<get-cbCentral>|<get-cbCentral>(){}[0]
+    final val identifier // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.identifier|{}identifier[0]
+        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.identifier.<get-identifier>|<get-identifier>(){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.server/KalugaCBPeripheralManagerDelegate : com.splendo.kaluga.bluetooth.server/KalugaBluetoothServerDelegateProtocol, platform.darwin/NSObject { // com.splendo.kaluga.bluetooth.server/KalugaCBPeripheralManagerDelegate|null[0]

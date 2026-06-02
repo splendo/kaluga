@@ -21,6 +21,13 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import platform.CoreBluetooth.CBCentral
 
-actual class ConnectedDevice(val cbCentral: CBCentral) : Device {
-    actual override val identifier: Identifier = cbCentral.identifier
+actual interface ConnectedDevice : Device {
+    /**
+     * The platform [CBCentral] of the connected device
+     */
+    val cbCentral: CBCentral
+}
+
+class DefaultConnectedDevice(override val cbCentral: CBCentral) : ConnectedDevice {
+    override val identifier: Identifier = cbCentral.identifier
 }

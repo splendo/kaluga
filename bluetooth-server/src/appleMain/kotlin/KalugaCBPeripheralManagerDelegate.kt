@@ -141,7 +141,7 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
     override fun didSubscribe(central: CBCentral, toCharacteristic: CBCharacteristic, peripheralManager: CBPeripheralManager) {
         subscribeActions[toCharacteristic]?.let { onSubscribe ->
             handlingScope.launch {
-                onSubscribe(ConnectedDevice(central))
+                onSubscribe(DefaultConnectedDevice(central))
             }
         }
     }
@@ -149,7 +149,7 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
     override fun didUnsubscribe(central: CBCentral, fromCharacteristic: CBCharacteristic, peripheralManager: CBPeripheralManager) {
         unsubscribeActions[fromCharacteristic]?.let { onUnsubscribe ->
             handlingScope.launch {
-                onUnsubscribe(ConnectedDevice(central))
+                onUnsubscribe(DefaultConnectedDevice(central))
             }
         }
     }
@@ -159,7 +159,7 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
             val identifier = request.characteristic
             logger.info(TAG) { "Device ${request.central.identifier} attempting to read $identifier at ${request.offset}" }
             val response = readActions[identifier]?.invoke(
-                ConnectedDevice(
+                DefaultConnectedDevice(
                     request.central,
                 ),
                 request.offset.toInt(),
@@ -182,7 +182,7 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
                 val value = writeRequest.value?.asBytes ?: byteArrayOf()
                 logger.info(TAG) { "Device ${writeRequest.central.identifier} wrote $value for $identifier at offset ${writeRequest.offset}" }
                 writeActions[identifier]?.invoke(
-                    ConnectedDevice(
+                    DefaultConnectedDevice(
                         writeRequest.central,
                     ),
                     value,
