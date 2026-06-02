@@ -21,5 +21,4 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.randomUUID
 import com.splendo.kaluga.bluetooth.uuidString
 
-
 actual fun randomIdentifier(): Identifier = randomUUID().uuidString

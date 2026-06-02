@@ -46,9 +46,13 @@ internal actual fun isMicrophoneAvailable(): Boolean = AVCaptureDevice.defaultDe
 
 private fun AVAuthorizationStatus.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
     AVAuthorizationStatusAuthorized -> ApplePermissionsHelper.AuthorizationStatus.Authorized
+
     AVAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
+
     AVAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
+
     AVAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error("MicrophonePermissionManager", "Unknown AVAuthorizationStatus={$this}")
         ApplePermissionsHelper.AuthorizationStatus.NotDetermined

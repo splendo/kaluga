@@ -406,4 +406,3 @@ expect interface RemoteCharacteristicWrapper {
      */
     val properties: Set<CharacteristicProperty>
 }
-

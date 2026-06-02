@@ -53,8 +53,7 @@ actual class DefaultCameraPermissionManager(private val bundle: NSBundle, settin
 
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val provider = object : CurrentAuthorizationStatusProvider {
-        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus =
-            AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo).toAuthorizationStatus()
+        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo).toAuthorizationStatus()
     }
     private val timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
@@ -77,6 +76,7 @@ actual class DefaultCameraPermissionManager(private val bundle: NSBundle, settin
         when {
             AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo) == null ->
                 permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Denied)
+
             else -> timerHelper.startMonitoring(interval)
         }
     }
@@ -97,9 +97,13 @@ actual class CameraPermissionManagerBuilder actual constructor(private val conte
 
 private fun AVAuthorizationStatus.toAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (this) {
     AVAuthorizationStatusAuthorized -> ApplePermissionsHelper.AuthorizationStatus.Authorized
+
     AVAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
+
     AVAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
+
     AVAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error("CameraPermissionManager", "Unknown AVAuthorizationStatus={$this}")
         ApplePermissionsHelper.AuthorizationStatus.NotDetermined

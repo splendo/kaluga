@@ -21,4 +21,3 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import platform.Foundation.NSUUID
 
 actual fun randomIdentifier(): Identifier = NSUUID()
-

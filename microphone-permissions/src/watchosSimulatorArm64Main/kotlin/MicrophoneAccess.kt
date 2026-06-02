@@ -24,13 +24,12 @@ import platform.AVFAudio.AVAudioSessionRecordPermissionDenied
 import platform.AVFAudio.AVAudioSessionRecordPermissionGranted
 import platform.AVFAudio.AVAudioSessionRecordPermissionUndetermined
 
-internal actual suspend fun currentMicrophoneAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus =
-    when (AVAudioSession.sharedInstance().recordPermission) {
-        AVAudioSessionRecordPermissionGranted -> ApplePermissionsHelper.AuthorizationStatus.Authorized
-        AVAudioSessionRecordPermissionDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
-        AVAudioSessionRecordPermissionUndetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
-        else -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
-    }
+internal actual suspend fun currentMicrophoneAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus = when (AVAudioSession.sharedInstance().recordPermission) {
+    AVAudioSessionRecordPermissionGranted -> ApplePermissionsHelper.AuthorizationStatus.Authorized
+    AVAudioSessionRecordPermissionDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
+    AVAudioSessionRecordPermissionUndetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
+    else -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
+}
 
 internal actual suspend fun requestMicrophoneAccess(): ApplePermissionsHelper.AuthorizationStatus {
     val deferred = CompletableDeferred<Boolean>()

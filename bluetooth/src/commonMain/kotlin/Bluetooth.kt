@@ -28,7 +28,9 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Builder class for creating both [BluetoothClient] (client) and [BluetoothServer].
  */
-interface BaseBluetoothBuilder : BaseBluetoothClientBuilder, BaseBluetoothServerBuilder {
+interface BaseBluetoothBuilder :
+    BaseBluetoothClientBuilder,
+    BaseBluetoothServerBuilder {
 
     @Deprecated("Use createClient instead", replaceWith = ReplaceWith("createClient(scannerSettingsBuilder, coroutineContext)"))
     fun create(

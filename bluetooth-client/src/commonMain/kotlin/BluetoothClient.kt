@@ -70,11 +70,6 @@ val defaultBluetoothClientDispatcher by lazy {
     singleThreadDispatcher("BluetoothClient")
 }
 
-
-/**
- * The Maximum Transmission Unit (MTU)
- */
-
 /**
  * A service for managing Bluetooth [ConnectableDevice]
  */

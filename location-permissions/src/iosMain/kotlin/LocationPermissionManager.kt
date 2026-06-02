@@ -54,7 +54,9 @@ internal actual fun CLLocationManager.requestLocationAuthorization(permission: L
     }
 }
 
-actual fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): ApplePermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion > IOSVersion(13)) {
+actual fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): ApplePermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion >
+    IOSVersion(13)
+) {
     authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
 } else {
     CLLocationManager.authorizationStatus() to true

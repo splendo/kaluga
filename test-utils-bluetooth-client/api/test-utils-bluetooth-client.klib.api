@@ -1,11 +1,13 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: ios => [iosArm64, iosSimulatorArm64]
+// Alias: tvos => [tvosArm64, tvosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga:test-utils-bluetooth>
+// Library unique name: <com.splendo.kaluga:test-utils-bluetooth-client>
 open annotation class com.splendo.kaluga.test.bluetooth/MockBuilderDsl : kotlin/Annotation { // com.splendo.kaluga.test.bluetooth/MockBuilderDsl|null[0]
     constructor <init>() // com.splendo.kaluga.test.bluetooth/MockBuilderDsl.<init>|<init>(){}[0]
 }
@@ -300,60 +302,6 @@ final class com.splendo.kaluga.test.bluetooth.scanner/MockScanner : com.splendo.
     final suspend fun stopMonitoringHardwareEnabled() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringHardwareEnabled|stopMonitoringHardwareEnabled(){}[0]
     final suspend fun stopMonitoringPermissions() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringPermissions|stopMonitoringPermissions(){}[0]
     final suspend fun stopScanning() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopScanning|stopScanning(){}[0]
-}
-
-final class com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper : com.splendo.kaluga.test.bluetooth/MockCharacteristicWrapper { // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper|null[0]
-    constructor <init>(platform.CoreBluetooth/CBUUID = ..., kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> = ..., com.splendo.kaluga.bluetooth/RemoteServiceWrapper = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ...) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;kotlin.collections.Set<com.splendo.kaluga.bluetooth.CharacteristicProperty>;com.splendo.kaluga.bluetooth.RemoteServiceWrapper;kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
-
-    final val descriptors // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.descriptors|{}descriptors[0]
-        final fun <get-descriptors>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteDescriptorWrapper> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.descriptors.<get-descriptors>|<get-descriptors>(){}[0]
-    final val isNotificationCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isNotificationCompleted|{}isNotificationCompleted[0]
-        final fun <get-isNotificationCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isNotificationCompleted.<get-isNotificationCompleted>|<get-isNotificationCompleted>(){}[0]
-    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isReadCompleted|{}isReadCompleted[0]
-        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
-    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isWriteCompleted|{}isWriteCompleted[0]
-        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
-    final val properties // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.properties|{}properties[0]
-        final fun <get-properties>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.properties.<get-properties>|<get-properties>(){}[0]
-    final val service // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.service|{}service[0]
-        final fun <get-service>(): com.splendo.kaluga.bluetooth/RemoteServiceWrapper // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.service.<get-service>|<get-service>(){}[0]
-    final val uuid // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.uuid|{}uuid[0]
-        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
-
-    final var value // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value|{}value[0]
-        final fun <get-value>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value.<get-value>|<get-value>(){}[0]
-        final fun <set-value>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value.<set-value>|<set-value>(kotlin.ByteArray?){}[0]
-
-    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
-    final fun setNotificationValue(kotlin/Boolean, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.setNotificationValue|setNotificationValue(kotlin.Boolean;platform.CoreBluetooth.CBPeripheral){}[0]
-    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral, kotlin/Boolean) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral;kotlin.Boolean){}[0]
-}
-
-final class com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper : com.splendo.kaluga.test.bluetooth/MockDescriptorWrapper { // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper|null[0]
-    constructor <init>(platform.CoreBluetooth/CBUUID = ..., com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper = ...) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper){}[0]
-
-    final val characteristic // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.characteristic|{}characteristic[0]
-        final fun <get-characteristic>(): com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.characteristic.<get-characteristic>|<get-characteristic>(){}[0]
-    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isReadCompleted|{}isReadCompleted[0]
-        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
-    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isWriteCompleted|{}isWriteCompleted[0]
-        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
-    final val uuid // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.uuid|{}uuid[0]
-        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
-
-    final var value // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value|{}value[0]
-        final fun <get-value>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value.<get-value>|<get-value>(){}[0]
-        final fun <set-value>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value.<set-value>|<set-value>(kotlin.ByteArray?){}[0]
-
-    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
-    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral){}[0]
-}
-
-final class com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor : com.splendo.kaluga.bluetooth/BluetoothMonitor, com.splendo.kaluga.test.service/MockServiceMonitor { // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor|null[0]
-    constructor <init>(kotlinx.coroutines.flow/StateFlow<kotlin/Boolean>) // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.<init>|<init>(kotlinx.coroutines.flow.StateFlow<kotlin.Boolean>){}[0]
-
-    final val isEnabled // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.isEnabled|{}isEnabled[0]
-        final fun <get-isEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
 }
 
 final class com.splendo.kaluga.test.bluetooth/MockBluetoothService : com.splendo.kaluga.bluetooth/BluetoothService { // com.splendo.kaluga.test.bluetooth/MockBluetoothService|null[0]
@@ -909,3 +857,101 @@ final fun com.splendo.kaluga.test.bluetooth/createMockDevice(com.splendo.kaluga.
 final fun com.splendo.kaluga.test.bluetooth/createMockDevice(platform.Foundation/NSUUID, com.splendo.kaluga.bluetooth.device/ConnectionSettings = ..., kotlin/Function1<com.splendo.kaluga.bluetooth.device/ConnectionSettings, com.splendo.kaluga.bluetooth.device/DeviceConnectionManager>, kotlin/Function1<com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder, kotlin/Unit>, kotlin/Function2<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.base.state/StateRepo<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState, kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState>>> = ..., kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.bluetooth.device/ConnectableDeviceImpl // com.splendo.kaluga.test.bluetooth/createMockDevice|createMockDevice(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.ConnectionSettings;kotlin.Function1<com.splendo.kaluga.bluetooth.device.ConnectionSettings,com.splendo.kaluga.bluetooth.device.DeviceConnectionManager>;kotlin.Function1<com.splendo.kaluga.test.bluetooth.MockDeviceInfoBuilder,kotlin.Unit>;kotlin.Function2<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.base.state.StateRepo<com.splendo.kaluga.bluetooth.device.ConnectableDeviceState,kotlinx.coroutines.flow.MutableStateFlow<com.splendo.kaluga.bluetooth.device.ConnectableDeviceState>>>;kotlinx.coroutines.CoroutineScope){}[0]
 final fun com.splendo.kaluga.test.bluetooth/createServiceWrapper(kotlin/Function1<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder, kotlin/Unit>): com.splendo.kaluga.bluetooth/RemoteServiceWrapper // com.splendo.kaluga.test.bluetooth/createServiceWrapper|createServiceWrapper(kotlin.Function1<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder,kotlin.Unit>){}[0]
 final fun com.splendo.kaluga.test.bluetooth/randomIdentifier(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth/randomIdentifier|randomIdentifier(){}[0]
+
+// Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
+final class com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper : com.splendo.kaluga.test.bluetooth/MockCharacteristicWrapper { // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID = ..., kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> = ..., com.splendo.kaluga.bluetooth/RemoteServiceWrapper = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ...) // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;kotlin.collections.Set<com.splendo.kaluga.bluetooth.CharacteristicProperty>;com.splendo.kaluga.bluetooth.RemoteServiceWrapper;kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+
+    final val descriptors // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.descriptors|{}descriptors[0]
+        final fun <get-descriptors>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteDescriptorWrapper> // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.descriptors.<get-descriptors>|<get-descriptors>(){}[0]
+    final val isNotificationCompleted // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.isNotificationCompleted|{}isNotificationCompleted[0]
+        final fun <get-isNotificationCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.isNotificationCompleted.<get-isNotificationCompleted>|<get-isNotificationCompleted>(){}[0]
+    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.isReadCompleted|{}isReadCompleted[0]
+        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
+    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.isWriteCompleted|{}isWriteCompleted[0]
+        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
+    final val properties // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.properties|{}properties[0]
+        final fun <get-properties>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.properties.<get-properties>|<get-properties>(){}[0]
+    final val service // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.service|{}service[0]
+        final fun <get-service>(): com.splendo.kaluga.bluetooth/RemoteServiceWrapper // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.service.<get-service>|<get-service>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final var value // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.value|{}value[0]
+        final fun <get-value>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.value.<get-value>|<get-value>(){}[0]
+        final fun <set-value>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.value.<set-value>|<set-value>(kotlin.ByteArray?){}[0]
+
+    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun setNotificationValue(kotlin/Boolean, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.setNotificationValue|setNotificationValue(kotlin.Boolean;platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral, kotlin/Boolean) // com.splendo.kaluga.test.bluetooth/AppleMockCharacteristicWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral;kotlin.Boolean){}[0]
+}
+
+// Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
+final class com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper : com.splendo.kaluga.test.bluetooth/MockDescriptorWrapper { // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID = ..., com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper = ...) // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper){}[0]
+
+    final val characteristic // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.characteristic|{}characteristic[0]
+        final fun <get-characteristic>(): com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.characteristic.<get-characteristic>|<get-characteristic>(){}[0]
+    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.isReadCompleted|{}isReadCompleted[0]
+        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
+    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.isWriteCompleted|{}isWriteCompleted[0]
+        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final var value // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.value|{}value[0]
+        final fun <get-value>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.value.<get-value>|<get-value>(){}[0]
+        final fun <set-value>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.value.<set-value>|<set-value>(kotlin.ByteArray?){}[0]
+
+    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/AppleMockDescriptorWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral){}[0]
+}
+
+// Targets: [watchosArm64]
+final class com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper : com.splendo.kaluga.test.bluetooth/MockCharacteristicWrapper { // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID = ..., kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> = ..., com.splendo.kaluga.bluetooth/RemoteServiceWrapper = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ...) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;kotlin.collections.Set<com.splendo.kaluga.bluetooth.CharacteristicProperty>;com.splendo.kaluga.bluetooth.RemoteServiceWrapper;kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+
+    final val descriptors // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.descriptors|{}descriptors[0]
+        final fun <get-descriptors>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteDescriptorWrapper> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.descriptors.<get-descriptors>|<get-descriptors>(){}[0]
+    final val isNotificationCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isNotificationCompleted|{}isNotificationCompleted[0]
+        final fun <get-isNotificationCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isNotificationCompleted.<get-isNotificationCompleted>|<get-isNotificationCompleted>(){}[0]
+    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isReadCompleted|{}isReadCompleted[0]
+        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
+    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isWriteCompleted|{}isWriteCompleted[0]
+        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
+    final val properties // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.properties|{}properties[0]
+        final fun <get-properties>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.properties.<get-properties>|<get-properties>(){}[0]
+    final val service // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.service|{}service[0]
+        final fun <get-service>(): com.splendo.kaluga.bluetooth/RemoteServiceWrapper // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.service.<get-service>|<get-service>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final var value // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value|{}value[0]
+        final fun <get-value>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value.<get-value>|<get-value>(){}[0]
+        final fun <set-value>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value.<set-value>|<set-value>(kotlin.ByteArray?){}[0]
+
+    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun setNotificationValue(kotlin/Boolean, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.setNotificationValue|setNotificationValue(kotlin.Boolean;platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral, kotlin/Boolean) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral;kotlin.Boolean){}[0]
+}
+
+// Targets: [watchosArm64]
+final class com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper : com.splendo.kaluga.test.bluetooth/MockDescriptorWrapper { // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID = ..., com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper = ...) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper){}[0]
+
+    final val characteristic // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.characteristic|{}characteristic[0]
+        final fun <get-characteristic>(): com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.characteristic.<get-characteristic>|<get-characteristic>(){}[0]
+    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isReadCompleted|{}isReadCompleted[0]
+        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
+    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isWriteCompleted|{}isWriteCompleted[0]
+        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final var value // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value|{}value[0]
+        final fun <get-value>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value.<get-value>|<get-value>(){}[0]
+        final fun <set-value>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value.<set-value>|<set-value>(kotlin.ByteArray?){}[0]
+
+    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral){}[0]
+}

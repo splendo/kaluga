@@ -160,8 +160,10 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
             logger.info(TAG) { "Device ${request.central.identifier} attempting to read $identifier at ${request.offset}" }
             val response = readActions[identifier]?.invoke(
                 ConnectedDevice(
-                    request.central
-                ), request.offset.toInt()) ?: GattResponse.InvalidHandle
+                    request.central,
+                ),
+                request.offset.toInt(),
+            ) ?: GattResponse.InvalidHandle
             if (response is GattResponse.ReadSuccess) {
                 request.setValue(response.value.toNSData())
             }
@@ -181,8 +183,11 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
                 logger.info(TAG) { "Device ${writeRequest.central.identifier} wrote $value for $identifier at offset ${writeRequest.offset}" }
                 writeActions[identifier]?.invoke(
                     ConnectedDevice(
-                        writeRequest.central
-                    ), value, writeRequest.offset.toInt()) ?: GattResponse.InvalidHandle
+                        writeRequest.central,
+                    ),
+                    value,
+                    writeRequest.offset.toInt(),
+                ) ?: GattResponse.InvalidHandle
             }
             val response = responses.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess
             if (peripheralManager.state == CBPeripheralManagerStatePoweredOn) {

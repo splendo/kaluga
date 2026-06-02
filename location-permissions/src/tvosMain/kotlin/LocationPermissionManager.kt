@@ -47,11 +47,18 @@ actual fun CLLocationManager.authorizationStatus(locationPermission: LocationPer
 
 private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permission: LocationPermission): ApplePermissionsHelper.AuthorizationStatus = when (first) {
     kCLAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
+
     kCLAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
+
     kCLAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
+
     kCLAuthorizationStatusAuthorizedWhenInUse ->
-        if (permission.background || (permission.precise && !second)) ApplePermissionsHelper.AuthorizationStatus.Denied
-        else ApplePermissionsHelper.AuthorizationStatus.Authorized
+        if (permission.background || (permission.precise && !second)) {
+            ApplePermissionsHelper.AuthorizationStatus.Denied
+        } else {
+            ApplePermissionsHelper.AuthorizationStatus.Authorized
+        }
+
     else -> {
         com.splendo.kaluga.logging.error("Unknown CLAuthorizationStatus $first")
         ApplePermissionsHelper.AuthorizationStatus.Denied

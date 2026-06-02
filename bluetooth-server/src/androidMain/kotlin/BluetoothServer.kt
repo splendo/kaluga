@@ -288,7 +288,7 @@ internal sealed class AndroidServerState {
                                 deviceStatus.synchronized {
                                     val current = getOrDefault(
                                         device,
-                                        BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                                        BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE,
                                     )
                                     val lsb = current[0] or value[0]
                                     val msb = current[1] or value[1]
@@ -313,7 +313,7 @@ internal sealed class AndroidServerState {
                 LocalDescriptorDSL(
                     uuid,
                     callback::registerReadAction,
-                    callback::registerWriteAction
+                    callback::registerWriteAction,
                 )
             },
         )
