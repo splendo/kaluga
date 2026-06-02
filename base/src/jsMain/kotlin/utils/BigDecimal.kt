@@ -85,6 +85,7 @@ private fun digitsOf(value: dynamic): Int {
  *
  * Represents the value `significand * 10^(-scale)`, mirroring `java.math.BigDecimal`. This is a custom implementation that may not cover every edge case of the platform decimal types used on other targets.
  */
+@ExperimentalJsDecimal
 class BigDecimal(val significand: dynamic, val scale: Int) {
 
     val isZero: Boolean get() = bigIntEquals(significand, BI_ZERO)

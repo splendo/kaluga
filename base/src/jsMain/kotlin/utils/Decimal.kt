@@ -16,6 +16,7 @@
  */
 
 @file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+@file:OptIn(ExperimentalJsDecimal::class)
 
 package com.splendo.kaluga.base.utils
 
