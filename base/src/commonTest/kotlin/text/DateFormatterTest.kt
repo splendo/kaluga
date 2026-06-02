@@ -31,6 +31,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
 class DateFormatterTest {
@@ -138,6 +139,9 @@ class DateFormatterTest {
     }
 }
 
-expect val expectedFrenchMediumTime: String
-
-expect val parseAbbreviationTolerance: Duration
+val expectedFrenchMediumTime: String get() = if (isLegacyLocalization) "1:37:42 PM" else "13:37:42"
+val parseAbbreviationTolerance: Duration get() = if (isLegacyLocalization) 1.hours else Duration.ZERO
+val expectedNlPdtZoneName: String get() = if (isLegacyLocalization) "GMT-07:00" else "PDT"
+val USDForNL: String = "US$"
+val JPYForUS: String = "¥"
+val JPYForNL: String = "JP¥"

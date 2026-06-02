@@ -28,6 +28,10 @@ actual interface ConnectedDevice : Device {
     val device: BluetoothDevice
 }
 
+/**
+ * The default [ConnectedDevice], wrapping the platform [BluetoothDevice].
+ * @property device the platform [BluetoothDevice] of the connected device
+ */
 class DefaultConnectedDevice(override val device: BluetoothDevice) : ConnectedDevice {
     override val identifier: Identifier = device.address
 }

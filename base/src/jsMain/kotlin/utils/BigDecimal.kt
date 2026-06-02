@@ -83,7 +83,7 @@ private fun digitsOf(value: dynamic): Int {
 /**
  * Pure Kotlin/JS arbitrary-precision signed decimal number backed by [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
  *
- * Represents the value `significand * 10^(-scale)`, mirroring `java.math.BigDecimal`.
+ * Represents the value `significand * 10^(-scale)`, mirroring `java.math.BigDecimal`. This is a custom implementation that may not cover every edge case of the platform decimal types used on other targets.
  */
 class BigDecimal(val significand: dynamic, val scale: Int) {
 

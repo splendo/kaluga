@@ -23,6 +23,8 @@ import kotlin.math.pow
 
 /**
  * Immutable, arbitrary-precision signed decimal numbers.
+ *
+ * On JavaScript [Decimal] is backed by a custom implementation that may not cover every edge case; validate results when relying on it for JS.
  */
 sealed class Decimal : Comparable<Decimal> {
 

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,12 +17,7 @@
 
 package com.splendo.kaluga.base.text
 
-import kotlin.time.Duration
-
-actual val USDForNL: String = "US$"
-actual val JPYForUS: String = "¥"
-actual val JPYForNL: String = "JP¥"
-
-actual val expectedFrenchMediumTime: String = "13:37:42"
-actual val parseAbbreviationTolerance: Duration = Duration.ZERO
-actual val expectedNlPdtZoneName: String = "PDT"
+/**
+ * `true` on platforms whose bundled localization data predates modern ICU formatting (Android API <= N), where some formatted values differ.
+ */
+expect val isLegacyLocalization: Boolean

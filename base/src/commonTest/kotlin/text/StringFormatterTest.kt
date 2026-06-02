@@ -542,5 +542,3 @@ class StringFormatterTest {
         assertEquals("donderdag juli 23, 2020 at 08:45:20 in $expectedNlPdtZoneName", timeNL)
     }
 }
-
-expect val expectedNlPdtZoneName: String

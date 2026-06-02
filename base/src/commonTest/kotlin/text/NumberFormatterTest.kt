@@ -189,7 +189,3 @@ class NumberFormatterTest : BaseTest() {
 
     private data class Formatters(val usFormatter: NumberFormatter, val nlFormatter: NumberFormatter)
 }
-
-expect val USDForNL: String
-expect val JPYForUS: String
-expect val JPYForNL: String

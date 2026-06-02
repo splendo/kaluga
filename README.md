@@ -21,7 +21,7 @@ Scanning for nearby devices with Bluetooth LE:
 
 ```kotlin
 // will auto request permissions and try to enable bluetooth
-BluetoothBuilder().create().devices().collect {
+BluetoothBuilder().createClient().devices().collect {
     i("discovered device: $it") // log found device
 }
 ```
@@ -101,7 +101,10 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [architecture-compose](architecture-compose/)               | Compose extensions for architecture                                                | com.splendo.kaluga:architecture-compose        |
 | [base](base/)                                               | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga:base                        |
 | [beacons](beacons/)                                         | Tracking the availability of Beacons using the Eddystone protocol                  | com.splendo.kaluga:beacons                     |
-| [bluetooth](bluetooth/)                                     | Scanning for and communicating with BLE devices                                    | com.splendo.kaluga:bluetooth                   |
+| [bluetooth](bluetooth/)                                     | Aggregate of the Bluetooth client, server and base modules                         | com.splendo.kaluga:bluetooth                   |
+| [bluetooth-base](bluetooth-base/)                           | Shared Bluetooth attributes and the BluetoothFormat (de)serialization framework    | com.splendo.kaluga:bluetooth-base              |
+| [bluetooth-client](bluetooth-client/)                       | Scanning for and connecting to BLE devices as a Client                             | com.splendo.kaluga:bluetooth-client            |
+| [bluetooth-server](bluetooth-server/)                       | Advertising and exposing GATT attributes as a Server                               | com.splendo.kaluga:bluetooth-server            |
 | [date-time](date-time/)                                     | Contains multiplatform classes to work with date and time                          | com.splendo.kaluga:date-time                   |
 | [date-timepicker](date-time-picker/)                        | Used for showing a Date or Time Picker                                             | com.splendo.kaluga:date-time-picker            |
 | [hud](hud/)                                                 | Used for showing a Loading indicator HUD                                           | com.splendo.kaluga:hud                         |
@@ -123,11 +126,13 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [microphone-permissions](microphone-permissions/)           | Managing microphone permissions                                                    | com.splendo.kaluga:microphone-permissions      |
 | [notifications-permissions](notifications-permissions/)     | Managing notifications permissions                                                 | com.splendo.kaluga:notifications-permissions   |
 | [storage-permissions](storage-permissions/)                 | Managing storage permissions                                                       | com.splendo.kaluga:storage-permissions         |
+| [permissions](permissions/)                                 | Aggregate of all permissions modules                                               | com.splendo.kaluga:permissions                 |
 | [resources](resources/)                                     | Provides shared Strings, Images, Colors and Fonts                                  | com.splendo.kaluga:resources                   |
 | [resources-compose](resources-compose/)                     | Compose extensions for resources                                                   | com.splendo.kaluga:resources-compose           |
 | [resources-databinding](resources-databinding/)             | Data Binding extensions for resources                                              | com.splendo.kaluga:resources-databinding       |
 | [review](review/)                                           | Used for requesting the user to review the app                                     | com.splendo.kaluga:review                      |
 | [scientific](scientific/)                                   | Scientific units and conversions                                                   | com.splendo.kaluga:scientific                  |
+| [scientific-converters](scientific-converters/)             | Converters between scientific units                                                | com.splendo.kaluga:scientific-converters       |
 | [service](service/)                                         | Used for adding services to Kaluga                                                 | com.splendo.kaluga:service                     |
 | [system](system/)                                           | System APIs such as network, audio, battery                                        | com.splendo.kaluga:system                      |
 | [test-utils](test-utils/)                                   | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils                  |
@@ -143,6 +148,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils-koin](test-utils-koin/)                         | Enables easier testing with Koin                                                   | com.splendo:kaluga.test-utils-koin             |
 | [test-utils-lifecycle](test-utils-lifecycle/)               | Activity-cached helpers for the Lifecycle module                                   | com.splendo.kaluga:test-utils-lifecycle        |
 | [test-utils-location](test-utils-location/)                 | Enables easier testing of Location module                                          | com.splendo.kaluga:test-utils-location         |
+| [test-utils-media](test-utils-media/)                       | Enables easier testing of Media module                                             | com.splendo.kaluga:test-utils-media            |
 | [test-utils-permissions](test-utils-permissions/)           | Enables easier testing of Permissions modules                                      | com.splendo.kaluga:test-utils-permissions      |
 | [test-utils-resources](test-utils-resources/)               | Enables easier testing of Resources module                                         | com.splendo.kaluga:test-utils-resources        |
 | [test-utils-service](test-utils-service/)                   | Enables easier testing of Service module                                           | com.splendo.kaluga:test-utils-service          |
