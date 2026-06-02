@@ -17,13 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import platform.Foundation.NSUUID
 
 actual fun randomIdentifier(): Identifier = NSUUID()
 
-actual fun createDeviceWrapper(deviceName: String?, identifier: Identifier): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName, identifier = identifier)
-
-actual fun ServiceWrapperBuilder.build(): RemoteServiceWrapper = MockServiceWrapper(builder = this)

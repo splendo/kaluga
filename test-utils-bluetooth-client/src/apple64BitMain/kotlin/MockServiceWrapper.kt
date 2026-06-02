@@ -31,7 +31,7 @@ class MockServiceWrapper(
     constructor(builder: ServiceWrapperBuilder) : this(
         builder.uuid,
         characteristics = builder.characteristics.map {
-            IOSMockCharacteristicWrapper(
+            AppleMockCharacteristicWrapper(
                 uuid = it.uuid,
                 properties = it.properties,
                 descriptorUUIDs = it.descriptorUUIDs,
@@ -39,3 +39,4 @@ class MockServiceWrapper(
         },
     )
 }
+actual fun ServiceWrapperBuilder.build(): RemoteServiceWrapper = MockServiceWrapper(builder = this)

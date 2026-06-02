@@ -89,8 +89,9 @@ interface DeviceInfo {
 
 /**
  * An implementation of [DeviceInfo]
+ * @param deviceName the name reported by the [DeviceWrapper], used as a fallback when the [advertisementData] does not contain a name
  */
-data class DeviceInfoImpl(override val name: String?, override val identifier: Identifier, override val rssi: RSSI, override val advertisementData: BaseAdvertisementData) :
+data class DeviceInfoImpl(val deviceName: String?, override val identifier: Identifier, override val rssi: RSSI, override val advertisementData: BaseAdvertisementData) :
     DeviceInfo {
 
     /**
@@ -104,10 +105,12 @@ data class DeviceInfoImpl(override val name: String?, override val identifier: I
         rssi: RSSI,
         advertisementData: BaseAdvertisementData,
     ) : this(
-        name = advertisementData.name ?: wrapper.name,
+        deviceName = wrapper.name,
         identifier = wrapper.identifier,
         rssi = rssi,
         advertisementData = advertisementData,
     )
+
+    override val name: String? get() = advertisementData.name ?: deviceName
     override val updatedAt = DefaultKalugaDate.now()
 }

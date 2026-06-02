@@ -65,3 +65,5 @@ class MockRemoteServiceWrapper(override val uuid: UUID = UUID.randomUUID(), init
         return true
     }
 }
+
+actual fun ServiceWrapperBuilder.build(): RemoteServiceWrapper = MockRemoteServiceWrapper(builder = this)

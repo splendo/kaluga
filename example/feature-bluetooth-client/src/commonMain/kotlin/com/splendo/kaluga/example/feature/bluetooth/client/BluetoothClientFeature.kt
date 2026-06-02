@@ -17,11 +17,16 @@
 
 package com.splendo.kaluga.example.feature.bluetooth.client
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.BluetoothClientBuilder
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
@@ -30,7 +35,6 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
-import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -41,8 +45,17 @@ class BluetoothClientContribution : FeatureContribution {
     override val label = "Bluetooth Client"
     override fun register(builder: NavGraphBuilder, navController: NavController) {
         builder.composable(id) {
-            DetailScaffold(title = label, onBack = { navController.popBackStack() }) {
-                BluetoothDeviceListScreen()
+            var selectedIdentifier by remember { mutableStateOf<Identifier?>(null) }
+            val sel = selectedIdentifier
+            if (sel == null) {
+                DetailScaffold(title = label, onBack = { navController.popBackStack() }) {
+                    BluetoothDeviceListScreen(onDeviceClick = { selectedIdentifier = it })
+                }
+            } else {
+                BluetoothDeviceDetailScreen(
+                    identifier = sel,
+                    onBack = { selectedIdentifier = null },
+                )
             }
         }
     }
@@ -52,12 +65,6 @@ class BluetoothClientContribution : FeatureContribution {
 internal expect fun newBluetoothClientBuilder(permissionsBuilder: suspend (CoroutineContext) -> Permissions): BluetoothClientBuilder
 internal expect fun PermissionsBuilder.registerAdditionalPermissionIfNotRegistered(settings: BasePermissionManager.Settings)
 
-/**
- * Owns the singletons for the Bluetooth client feature: the [BluetoothClientBuilder] (which wires
- * the [PermissionsBuilder] from `:feature-permissions` after registering bluetooth + location
- * permission factories on demand) and a ready-to-use [Bluetooth] client. The beacons feature
- * reuses the same `Bluetooth` instance by depending on this module.
- */
 val bluetoothClientFeatureModule: Module = module {
     single {
         newBluetoothClientBuilder { context ->

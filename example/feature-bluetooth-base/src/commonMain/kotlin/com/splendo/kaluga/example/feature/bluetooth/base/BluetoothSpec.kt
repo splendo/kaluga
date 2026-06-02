@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.example.feature.bluetooth.server
+package com.splendo.kaluga.example.feature.bluetooth.base
 
 import com.splendo.kaluga.bluetooth.serialization.FlagIndex
 import com.splendo.kaluga.bluetooth.serialization.Length

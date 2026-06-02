@@ -50,6 +50,7 @@ import com.splendo.kaluga.bluetooth.server.ServerStatus
 import com.splendo.kaluga.bluetooth.server.readableAlwaysSuccess
 import com.splendo.kaluga.bluetooth.server.triggerNotification
 import com.splendo.kaluga.bluetooth.server.writable
+import com.splendo.kaluga.example.feature.bluetooth.base.BluetoothSpec
 import com.splendo.kaluga.scientific.formatter.CommonScientificValueFormatter
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.minus

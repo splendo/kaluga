@@ -19,26 +19,40 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.asBytes
 import kotlinx.coroutines.CompletableDeferred
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-class IOSMockDescriptorWrapper(override val uuid: CBUUID = CBUUID(), override val characteristic: RemoteCharacteristicWrapper = IOSMockCharacteristicWrapper()) :
-    MockDescriptorWrapper {
+class AppleMockCharacteristicWrapper(
+    override val uuid: CBUUID = CBUUID(),
+    override val properties: Set<CharacteristicProperty> = emptySet(),
+    override val service: RemoteServiceWrapper = MockServiceWrapper(),
+    descriptorUUIDs: List<CBUUID> = emptyList(),
+) : MockCharacteristicWrapper {
 
     val isReadCompleted = EmptyCompletableDeferred()
     val isWriteCompleted = CompletableDeferred<NSData>()
+    val isNotificationCompleted = CompletableDeferred<Boolean>()
 
     override var value: ByteArray? = null
+
+    override val descriptors: List<RemoteDescriptorWrapper> = descriptorUUIDs
+        .map(::AppleMockDescriptorWrapper)
 
     override fun readValue(peripheral: CBPeripheral) {
         isReadCompleted.complete()
     }
 
-    override fun writeValue(value: NSData, peripheral: CBPeripheral) {
+    override fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral) {
+        isNotificationCompleted.complete(enabled)
+    }
+
+    override fun writeValue(value: NSData, peripheral: CBPeripheral, withResponse: Boolean) {
         this.value = value.asBytes
         isWriteCompleted.complete(value)
     }

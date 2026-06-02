@@ -50,3 +50,5 @@ class MockDeviceWrapper(override val name: String?, override val identifier: Ide
     override fun removeBond(): Unit = removeBondMock.call()
     override fun createBond(): Unit = createBondMock.call()
 }
+
+actual fun createDeviceWrapper(deviceName: String?, identifier: Identifier): DeviceWrapper = MockDeviceWrapper(deviceName, identifier, DeviceWrapper.BondState.NONE)

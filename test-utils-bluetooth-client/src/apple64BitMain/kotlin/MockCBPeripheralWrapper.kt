@@ -18,6 +18,9 @@
 package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 import platform.Foundation.NSUUID
 
 data class MockCBPeripheralWrapper(override val name: String? = null, override val identifier: NSUUID = NSUUID()) : DeviceWrapper
+
+actual fun createDeviceWrapper(deviceName: String?, identifier: Identifier): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName, identifier = identifier)
