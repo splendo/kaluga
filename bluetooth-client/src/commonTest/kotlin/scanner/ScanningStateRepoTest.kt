@@ -46,7 +46,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithoutService, CoroutineScope) -> DeviceContext = { configuration, coroutineScope ->
         DeviceContext(configuration, coroutineScope)
     }
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<ScanningState> = { bluetooth.scanningStateRepo.filterOnlyImportant() }
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<ScanningState> = { bluetoothClient.scanningStateRepo.filterOnlyImportant() }
 
     override val filter: (Flow<ScanningState>) -> Flow<ScanningState> = {
         it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new }).filterOnlyImportant()
@@ -189,9 +189,9 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             scanner.stopMonitoringHardwareEnabledMock.verify()
 
             // here to debug this test potentially being unstable
-            println("peek current state: ${bluetooth.scanningStateRepo.peekState()}")
+            println("peek current state: ${bluetoothClient.scanningStateRepo.peekState()}")
             delay(100)
-            println("peek current state after delay: ${bluetooth.scanningStateRepo.peekState()}")
+            println("peek current state after delay: ${bluetoothClient.scanningStateRepo.peekState()}")
         }
 
         test {

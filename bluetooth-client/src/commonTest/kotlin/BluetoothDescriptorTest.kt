@@ -30,7 +30,7 @@ class BluetoothDescriptorTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
     }
 
     override val flowFromTestContext: suspend DescriptorContext.() -> Flow<Descriptor?> = {
-        bluetooth.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid).descriptors().getOrNull(descriptorUuid)
+        bluetoothClient.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid).descriptors().getOrNull(descriptorUuid)
     }
 
     @Test
@@ -38,7 +38,7 @@ class BluetoothDescriptorTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
         Configuration.DeviceWithDescriptor(),
     ) {
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice()
         }
         test {

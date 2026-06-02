@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.serialization.DeserializationStrategy
 
 /**
- * A [Characteristic] [RemoteAttribute] that is accessed remotely by a bluetooth client using [Bluetooth]
+ * A [Characteristic] [RemoteAttribute] that is accessed remotely by a bluetooth client using [BluetoothClient]
  */
 open class RemoteCharacteristic internal constructor(
     val wrapper: RemoteCharacteristicWrapper,

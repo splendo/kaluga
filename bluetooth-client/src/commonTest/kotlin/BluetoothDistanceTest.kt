@@ -29,7 +29,7 @@ class BluetoothDistanceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         DeviceContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Double> = { bluetooth.scannedDevices()[device.identifier].distance() }
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Double> = { bluetoothClient.scannedDevices()[device.identifier].distance() }
 
     @Test
     fun testDistance() = testWithFlowAndTestContext(
@@ -42,7 +42,7 @@ class BluetoothDistanceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertEquals(Double.NaN, it)
         }
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice(rssi = -50)
         }
         test {

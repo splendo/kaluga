@@ -22,7 +22,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.Logger
 
 /**
- * A [Descriptor] [RemoteAttribute] that is accessed remotely by a bluetooth client using [Bluetooth]
+ * A [Descriptor] [RemoteAttribute] that is accessed remotely by a bluetooth client using [BluetoothClient]
  * @property wrapper the [RemoteDescriptorWrapper] to access the platform descriptor
  * @property characteristic the [RemoteCharacteristic] this descriptor belongs to
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place

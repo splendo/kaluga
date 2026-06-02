@@ -31,7 +31,7 @@ class BluetoothRssiTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Devi
         DeviceContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int> = { bluetooth.scannedDevices()[device.identifier].rssi() }
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int> = { bluetoothClient.scannedDevices()[device.identifier].rssi() }
 
     @Test
     fun testRssi() = testWithFlowAndTestContext(
@@ -39,7 +39,7 @@ class BluetoothRssiTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Devi
     ) {
         val newRssi = -42
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice()
         }
         test {
@@ -52,7 +52,7 @@ class BluetoothRssiTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Devi
                     connectionManager.handleNewRssi(newRssi)
                 }
             }
-            bluetooth.scannedDevices()[device.identifier].updateRssi()
+            bluetoothClient.scannedDevices()[device.identifier].updateRssi()
             connectionManager.readRssiMock.verify()
         }
         test {

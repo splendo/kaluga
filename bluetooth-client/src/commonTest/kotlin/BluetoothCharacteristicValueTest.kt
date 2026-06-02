@@ -37,7 +37,7 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
     override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<ByteArray?> = {
         flow {
             emit(null)
-            emitAll(bluetooth.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid).value())
+            emitAll(bluetoothClient.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid).value())
         }
     }
 
@@ -48,7 +48,7 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
         val newValue = "Test".encodeToByteArray()
 
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice()
         }
         test {

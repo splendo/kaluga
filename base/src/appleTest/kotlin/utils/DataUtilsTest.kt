@@ -27,7 +27,7 @@ class DataUtilsTest : BaseTest() {
     fun testByteArrayConverter() {
         val byteArray = byteArrayOf(0x2F, 0x4A, 0x0, 0x01)
         val byteData = byteArray.toNSData()
-        assertEquals(byteArray.size.toULong(), byteData.length)
+        assertEquals(byteArray.size.toLong(), byteData.length.toLong())
         assertEquals(true, byteData.toByteArray().contentEquals(byteArray))
     }
 }

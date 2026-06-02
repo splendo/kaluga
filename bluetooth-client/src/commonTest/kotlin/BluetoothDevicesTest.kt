@@ -45,7 +45,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
     }
 
     override val flowFromTestContext: suspend BluetoothContext.() -> Flow<List<Device>> = {
-        bluetooth.allDevices()
+        bluetoothClient.allDevices()
     }
 
     @Test
@@ -54,7 +54,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
     ) {
         test {
             assertEquals(emptyList(), it)
-            assertEquals(emptyList(), bluetooth.scannedDevices().first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices().first())
         }
 
         val filter = setOf(randomUUID())
@@ -65,12 +65,12 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             scanner.didStartScanningMock.on().doExecuteSuspended {
                 didStartScanningCalled.complete()
             }
-            bluetooth.startScanning()
-            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
+            bluetoothClient.startScanning()
+            bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             didStartScanningCalled.await()
             scanner.didStartScanningMock.verify(eq(emptySet()))
-            bluetooth.startScanning(filter)
-            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
+            bluetoothClient.startScanning(filter)
+            bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()
 
             createAndScanDevice(deferredDevice)
@@ -78,19 +78,19 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         test {
             scanner.didStartScanningMock.verify(eq(filter))
             assertEquals(listOf(deferredDevice.getCompleted()), it)
-            assertEquals(emptyList(), bluetooth.scannedDevices().first())
-            assertEquals(listOf(deferredDevice.getCompleted()), bluetooth.scannedDevices(filter).first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices().first())
+            assertEquals(listOf(deferredDevice.getCompleted()), bluetoothClient.scannedDevices(filter).first())
         }
 
         mainAction {
-            bluetooth.stopScanning()
+            bluetoothClient.stopScanning()
         }
 
         test {
             scanner.didStopScanningMock.verify(times = 2)
             assertEquals(emptyList(), it)
-            assertEquals(emptyList(), bluetooth.scannedDevices().first())
-            assertEquals(emptyList(), bluetooth.scannedDevices(filter).first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices().first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices(filter).first())
         }
     }
 
@@ -105,22 +105,22 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         val filter = setOf(randomUUID())
         val deferredDevice1 = CompletableDeferred<ConnectableDevice>()
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
 
             createAndScanDevice(deferredDevice1)
         }
         test {
             scanner.didStartScanningMock.verify(eq(emptySet()))
             assertEquals(listOf(deferredDevice1.getCompleted()), it)
-            assertEquals(listOf(deferredDevice1.getCompleted()), bluetooth.scannedDevices().first())
+            assertEquals(listOf(deferredDevice1.getCompleted()), bluetoothClient.scannedDevices().first())
         }
 
         val deferredDevice2 = CompletableDeferred<ConnectableDevice>()
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
-            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
+            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()
-            bluetooth.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
 
             createAndScanDevice(deferredDevice2)
         }
@@ -128,19 +128,19 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         test {
             scanner.didStartScanningMock.verify(eq(filter))
             assertEquals(listOf(deferredDevice1.await(), deferredDevice2.await()), it)
-            assertEquals(listOf(deferredDevice1.getCompleted()), bluetooth.scannedDevices().first())
-            assertEquals(listOf(deferredDevice2.getCompleted()), bluetooth.scannedDevices(filter).first())
+            assertEquals(listOf(deferredDevice1.getCompleted()), bluetoothClient.scannedDevices().first())
+            assertEquals(listOf(deferredDevice2.getCompleted()), bluetoothClient.scannedDevices(filter).first())
         }
 
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.REMOVE_ALL)
+            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.REMOVE_ALL)
         }
 
         test {
             scanner.didStopScanningMock.verify(times = 2)
             assertEquals(emptyList(), it)
-            assertEquals(emptyList(), bluetooth.scannedDevices().first())
-            assertEquals(emptyList(), bluetooth.scannedDevices(filter).first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices().first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices(filter).first())
         }
     }
 
@@ -155,22 +155,22 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         val filter = setOf(randomUUID())
         val deferredDevice1 = CompletableDeferred<ConnectableDevice>()
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
 
             createAndScanDevice(deferredDevice1)
         }
         test {
             scanner.didStartScanningMock.verify(eq(emptySet()))
             assertEquals(listOf(deferredDevice1.getCompleted()), it)
-            assertEquals(listOf(deferredDevice1.getCompleted()), bluetooth.scannedDevices().first())
+            assertEquals(listOf(deferredDevice1.getCompleted()), bluetoothClient.scannedDevices().first())
         }
 
         val deferredDevice2 = CompletableDeferred<ConnectableDevice>()
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
-            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
+            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()
-            bluetooth.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
 
             scanDevice(deferredDevice1.await(), createDeviceWrapper(identifier = deferredDevice1.await().identifier), -100, MockAdvertisementData())
             yield()
@@ -180,30 +180,30 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         test {
             scanner.didStartScanningMock.verify(eq(filter))
             assertEquals(listOf(deferredDevice1.await(), deferredDevice2.await()), it)
-            assertEquals(listOf(deferredDevice1.getCompleted()), bluetooth.scannedDevices().first())
-            assertEquals(listOf(deferredDevice1.getCompleted(), deferredDevice2.getCompleted()), bluetooth.scannedDevices(filter).first())
+            assertEquals(listOf(deferredDevice1.getCompleted()), bluetoothClient.scannedDevices().first())
+            assertEquals(listOf(deferredDevice1.getCompleted(), deferredDevice2.getCompleted()), bluetoothClient.scannedDevices(filter).first())
         }
 
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
+            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
         }
 
         test {
             scanner.didStopScanningMock.verify(times = 2)
             assertEquals(listOf(deferredDevice1.await()), it)
-            assertEquals(listOf(deferredDevice1.getCompleted()), bluetooth.scannedDevices().first())
-            assertEquals(emptyList(), bluetooth.scannedDevices(filter).first())
+            assertEquals(listOf(deferredDevice1.getCompleted()), bluetoothClient.scannedDevices().first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices(filter).first())
         }
 
         mainAction {
-            bluetooth.startScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
+            bluetoothClient.startScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
         }
 
         test {
             scanner.didStartScanningMock.verify(eq(emptySet()), times = 2)
             assertEquals(emptyList(), it)
-            assertEquals(emptyList(), bluetooth.scannedDevices().first())
-            assertEquals(emptyList(), bluetooth.scannedDevices(filter).first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices().first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices(filter).first())
         }
 
         mainAction {
@@ -212,8 +212,8 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
         test {
             assertEquals(listOf(deferredDevice2.await()), it)
-            assertEquals(listOf(deferredDevice2.getCompleted()), bluetooth.scannedDevices().first())
-            assertEquals(emptyList(), bluetooth.scannedDevices(filter).first())
+            assertEquals(listOf(deferredDevice2.getCompleted()), bluetoothClient.scannedDevices().first())
+            assertEquals(emptyList(), bluetoothClient.scannedDevices(filter).first())
         }
     }
 

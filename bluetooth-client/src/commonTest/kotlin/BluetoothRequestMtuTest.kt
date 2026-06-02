@@ -46,7 +46,7 @@ class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
         val newMtu = 512
 
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice()
             connectDevice()
             device.state.filterIsInstance<ConnectableDeviceState.Connected.NoServices>().first().startDiscovering()

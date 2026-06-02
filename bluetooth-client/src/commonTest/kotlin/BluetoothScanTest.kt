@@ -32,7 +32,7 @@ class BluetoothScanTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Blue
         BluetoothContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend BluetoothContext.() -> Flow<Boolean> = { bluetooth.isScanning() }
+    override val flowFromTestContext: suspend BluetoothContext.() -> Flow<Boolean> = { bluetoothClient.isScanning() }
 
     @Test
     fun testIsScanning() = testWithFlowAndTestContext(
@@ -42,7 +42,7 @@ class BluetoothScanTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Blue
         mainAction {
             devicesJob.complete(
                 coroutineScope.launch {
-                    bluetooth.scannedDevices().collect {}
+                    bluetoothClient.scannedDevices().collect {}
                 },
             )
         }
@@ -50,13 +50,13 @@ class BluetoothScanTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Blue
             assertFalse(it)
         }
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
         }
         test {
             assertTrue(it)
         }
         mainAction {
-            bluetooth.stopScanning()
+            bluetoothClient.stopScanning()
         }
         test {
             assertFalse(it)

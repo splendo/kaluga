@@ -308,6 +308,25 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
 
         project.afterEvaluate {
             applyDefaultHierarchyTemplate()
+
+            // When watchOS is supported, split off an intermediate source set covering only the
+            // 64-bit Apple targets. Foundation typealiases like NSUInteger resolve to ULong on
+            // iOS / macOS / tvOS / watchosSimulatorArm64 (arm64) but to UInt on watchosArm64
+            // (arm64_32), and shared `appleMain` code that references them fails the
+            // `compileAppleMainKotlinMetadata` task. Modules can place such code under
+            // `src/apple64BitMain` and ship a parallel `src/watchosArm64Main` copy.
+            if (registeredWatchosTargets.isNotEmpty()) {
+                val apple64BitMain = sourceSets.maybeCreate("apple64BitMain")
+                sourceSets.matching { it.name == "appleMain" }.configureEach {
+                    apple64BitMain.dependsOn(this)
+                }
+                sourceSets.matching {
+                    it.name in setOf("iosMain", "macosMain", "tvosMain", "watchosSimulatorArm64Main")
+                }.configureEach {
+                    dependsOn(apple64BitMain)
+                }
+            }
+
             dependencies {
                 implementation("kotlinx-coroutines-core".asDependency())
 

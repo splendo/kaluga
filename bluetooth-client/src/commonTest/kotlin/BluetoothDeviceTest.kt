@@ -32,7 +32,7 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
         DeviceContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Device?> = { bluetooth.scannedDevices()[device.identifier] }
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Device?> = { bluetoothClient.scannedDevices()[device.identifier] }
 
     @Test
     fun testGetDevice() = testWithFlowAndTestContext(
@@ -42,7 +42,7 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
             assertNull(it)
         }
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice()
         }
 
@@ -53,7 +53,7 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
         }
 
         mainAction {
-            bluetooth.stopScanning()
+            bluetoothClient.stopScanning()
         }
 
         test {

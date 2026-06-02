@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 class BluetoothAdvertisementTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, BaseAdvertisementData>() {
 
     override val flowFromTestContext: suspend DeviceContext.() -> Flow<BaseAdvertisementData> = {
-        bluetooth.scannedDevices()[device.identifier].advertisement()
+        bluetoothClient.scannedDevices()[device.identifier].advertisement()
     }
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
@@ -39,7 +39,7 @@ class BluetoothAdvertisementTest : BluetoothFlowTest<BluetoothFlowTest.Configura
         Configuration.DeviceWithoutService(),
     ) {
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice()
         }
 

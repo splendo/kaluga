@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.server.BaseBluetoothServerBuilder
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.ServerSettings
@@ -25,7 +26,7 @@ import com.splendo.kaluga.permissions.base.Permissions
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Builder class for creating both [Bluetooth] (client) and [BluetoothServer].
+ * Builder class for creating both [BluetoothClient] (client) and [BluetoothServer].
  */
 interface BaseBluetoothBuilder : BaseBluetoothClientBuilder, BaseBluetoothServerBuilder {
 
@@ -40,6 +41,9 @@ interface BaseBluetoothBuilder : BaseBluetoothClientBuilder, BaseBluetoothServer
  * A default implementation of [BaseBluetoothBuilder]
  */
 expect class BluetoothBuilder : BaseBluetoothBuilder {
-    override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth
+    override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): BluetoothClient
     override suspend fun createServer(settingsBuilder: (Permissions) -> ServerSettings, coroutineContext: CoroutineContext, specs: BluetoothServerDSL.() -> Unit): BluetoothServer
 }
+
+@Deprecated("Renamed to BluetoothClient", ReplaceWith("BluetoothClient"))
+typealias Bluetooth = BluetoothClient

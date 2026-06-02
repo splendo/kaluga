@@ -22,7 +22,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 
 /**
- * A [Service] that is accessed remotely by a bluetooth client using [Bluetooth]
+ * A [Service] that is accessed remotely by a bluetooth client using [BluetoothClient]
  */
 class RemoteService internal constructor(
     service: RemoteServiceWrapper,

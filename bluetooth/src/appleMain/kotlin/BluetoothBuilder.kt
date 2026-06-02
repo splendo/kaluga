@@ -3,6 +3,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
+import com.splendo.kaluga.bluetooth.server.BluetoothServerBuilder
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.permissions.base.Permissions
@@ -31,7 +32,7 @@ actual class BluetoothBuilder(
     private val clientBuilder = BluetoothClientBuilder(bundle, permissionsBuilder, scannerBuilder)
     private val serverBuilder = BluetoothServerBuilder(bundle, permissionsBuilder)
 
-    actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth =
+    actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): BluetoothClient =
         clientBuilder.createClient(scannerSettingsBuilder, coroutineContext)
 
     actual override suspend fun createServer(

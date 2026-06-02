@@ -30,14 +30,14 @@ class BluetoothServicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         ServiceContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend ServiceContext.() -> Flow<List<Service>> = { bluetooth.scannedDevices()[device.identifier].services() }
+    override val flowFromTestContext: suspend ServiceContext.() -> Flow<List<Service>> = { bluetoothClient.scannedDevices()[device.identifier].services() }
 
     @Test
     fun testGetServices() = testWithFlowAndTestContext(
         Configuration.DeviceWithService(),
     ) {
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             scanDevice()
         }
 

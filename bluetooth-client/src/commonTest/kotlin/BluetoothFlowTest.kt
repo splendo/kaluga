@@ -158,7 +158,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         private val scannerBuilder = MockBaseScanner.Builder(configuration.isEnabled)
         val scanner get() = scannerBuilder.createdScanners.first()
 
-        val bluetooth = Bluetooth(
+        val bluetoothClient = BluetoothClient(
             { scannerContext ->
                 permissionsBuilder.registerPermissionBuilder<BluetoothPermission>()
                 BaseScanner.Settings(
@@ -176,7 +176,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             scannerBuilder,
             coroutineScope.coroutineContext,
         )
-        val scanningStateRepo = bluetooth.scanningStateRepo
+        val scanningStateRepo = bluetoothClient.scanningStateRepo
 
         val serviceWrapper = createServiceWrapper(configuration.serviceWrapperBuilder)
 
@@ -197,7 +197,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         }
 
         private suspend fun awaitScanDevice(device: ConnectableDevice, deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData) {
-            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
+            bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             scanner.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { device }
         }
 
@@ -211,14 +211,14 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             connectionManager.connectMock.on().doExecute {
                 connectionManager.handleConnect()
             }
-            bluetooth.allDevices()[device.identifier].connect()
+            bluetoothClient.allDevices()[device.identifier].connect()
         }
 
         suspend fun disconnectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
             connectionManager.disconnectMock.on().doExecute {
                 connectionManager.handleDisconnect()
             }
-            bluetooth.allDevices()[device.identifier].disconnect()
+            bluetoothClient.allDevices()[device.identifier].disconnect()
         }
 
         suspend fun discoverService(service: RemoteService, device: ConnectableDevice, connectionManager: MockDeviceConnectionManager) {

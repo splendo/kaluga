@@ -52,7 +52,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
     }
 
     override val flowFromTestContext: suspend BluetoothContext.() -> Flow<List<Device>> = {
-        bluetooth.pairedDevices(pairedFilter, timer = pairedDevicesTimer)
+        bluetoothClient.pairedDevices(pairedFilter, timer = pairedDevicesTimer)
     }
 
     @Test
@@ -106,7 +106,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
 
         val scannedDevice = CompletableDeferred<Device>()
         mainAction {
-            bluetooth.startScanning()
+            bluetoothClient.startScanning()
             yield()
             val name = "Discovered Device"
             val deviceWrapper = createDeviceWrapper(deviceName = name)
@@ -120,9 +120,9 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
             val job = launch {
-                bluetooth.scannedDevices().collect() // trigger scanning
+                bluetoothClient.scannedDevices().collect() // trigger scanning
             }
-            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
+            bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             didStartScanningCalled.await()
             scanner.didStartScanningMock.verify(eq(emptySet()))
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
@@ -161,7 +161,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             scannedList.complete(listOf(scannedDevice.getCompleted(), device))
             scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
-            bluetooth.scannedDevices().first() // wait for scanned devices updated
+            bluetoothClient.scannedDevices().first() // wait for scanned devices updated
         }
 
         val completableSecondPairedDevice = CompletableDeferred<Device>()
