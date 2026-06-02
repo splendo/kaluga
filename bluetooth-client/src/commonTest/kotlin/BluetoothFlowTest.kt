@@ -41,6 +41,7 @@ import com.splendo.kaluga.test.bluetooth.createServiceWrapper
 import com.splendo.kaluga.test.bluetooth.descriptor
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.test.bluetooth.randomUUID
 import com.splendo.kaluga.test.bluetooth.scanner.MockBaseScanner
 import com.splendo.kaluga.test.permissions.MockPermissionState
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
@@ -158,7 +159,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         private val scannerBuilder = MockBaseScanner.Builder(configuration.isEnabled)
         val scanner get() = scannerBuilder.createdScanners.first()
 
-        val bluetoothClient = BluetoothClient(
+        val bluetoothClient = DefaultBluetoothClient(
             { scannerContext ->
                 permissionsBuilder.registerPermissionBuilder<BluetoothPermission>()
                 BaseScanner.Settings(

@@ -51,7 +51,7 @@ internal sealed class IOSServerState {
                 } else {
                     if (autoRequest) {
                         permissions.filterIsInstance<PermissionState.Denied.Requestable<BluetoothPermission>>().forEach { state ->
-                            logger.info(BluetoothServer.Companion.TAG) { "Request Permission" }
+                            logger.info(DefaultBluetoothServer.TAG) { "Request Permission" }
                             state.request()
                         }
                     }

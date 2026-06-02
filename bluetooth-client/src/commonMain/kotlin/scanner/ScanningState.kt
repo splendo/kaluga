@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
-import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
@@ -111,10 +111,10 @@ sealed interface ScanningState : KalugaState {
         /**
          * Creates a new [Devices] instance that sets the [currentScanFilter] for a [DeviceDiscoveryMode.Scanning] with a given [Filter]
          * @param filter the [Filter] to set as the [DeviceDiscoveryMode.Scanning.filter] for the new [currentScanFilter]
-         * @param cleanMode the [BluetoothService.CleanMode] to apply for cleaning the previously found [ConnectableDevice]
+         * @param cleanMode the [BluetoothClient.CleanMode] to apply for cleaning the previously found [ConnectableDevice]
          * @return the new instance of [Devices] where [currentScanFilter] if filtered with [filter] and cleanup has occurred according to [cleanMode]
          */
-        fun updateScanFilter(filter: Filter, cleanMode: BluetoothService.CleanMode): Devices
+        fun updateScanFilter(filter: Filter, cleanMode: BluetoothClient.CleanMode): Devices
 
         /**
          * The list of [ConnectableDevice] found for a given [DeviceDiscoveryMode]
@@ -241,23 +241,23 @@ sealed interface ScanningState : KalugaState {
             /**
              * Transitions into a [Scanning] State for a given filter
              * @param filter the [Filter] to apply for scanning
-             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [ConnectableDevice].
+             * @param cleanMode the [BluetoothClient.CleanMode] to apply to previously scanned [ConnectableDevice].
              * @param connectionSettings the [ConnectionSettings] to apply to any [ConnectableDevice] scanned that was not previously discovered. If `null` the default will be used
              * @return the method for transitioning into a [Scanning] state
              */
             fun startScanning(
                 filter: Filter = devices.currentScanFilter.filter,
-                cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL,
+                cleanMode: BluetoothClient.CleanMode = BluetoothClient.CleanMode.REMOVE_ALL,
                 connectionSettings: ConnectionSettings? = null,
             ): suspend () -> Scanning
 
             /**
              * Transitions into an [Idle] State with a new [Filter]
              * @param filter the new [Filter] to apply
-             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [ConnectableDevice].
+             * @param cleanMode the [BluetoothClient.CleanMode] to apply to previously scanned [ConnectableDevice].
              * @return the method for transitioning into a new [Idle] state
              */
-            fun refresh(filter: Filter = devices.currentScanFilter.filter, cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL): suspend () -> Idle
+            fun refresh(filter: Filter = devices.currentScanFilter.filter, cleanMode: BluetoothClient.CleanMode = BluetoothClient.CleanMode.REMOVE_ALL): suspend () -> Idle
         }
 
         /**
@@ -283,9 +283,9 @@ sealed interface ScanningState : KalugaState {
 
             /**
              * Transitions into an [Idle] State
-             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [ConnectableDevice].
+             * @param cleanMode the [BluetoothClient.CleanMode] to apply to previously scanned [ConnectableDevice].
              */
-            fun stopScanning(cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL): suspend () -> Idle
+            fun stopScanning(cleanMode: BluetoothClient.CleanMode = BluetoothClient.CleanMode.REMOVE_ALL): suspend () -> Idle
         }
     }
 
@@ -384,10 +384,10 @@ data class DefaultDevices(
         return DefaultDevices(newDevices, newIdentifiersForFilter, currentScanFilter)
     }
 
-    override fun updateScanFilter(filter: Filter, cleanMode: BluetoothService.CleanMode): ScanningState.Devices = when (cleanMode) {
-        BluetoothService.CleanMode.RETAIN_ALL -> DefaultDevices(allDevices, identifiersFoundForDeviceDiscoveryMode, ScanningState.DeviceDiscoveryMode.Scanning(filter))
-        BluetoothService.CleanMode.ONLY_PROVIDED_FILTER -> cleanFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
-        BluetoothService.CleanMode.REMOVE_ALL -> DefaultDevices(emptyMap(), emptyMap(), ScanningState.DeviceDiscoveryMode.Scanning(filter))
+    override fun updateScanFilter(filter: Filter, cleanMode: BluetoothClient.CleanMode): ScanningState.Devices = when (cleanMode) {
+        BluetoothClient.CleanMode.RETAIN_ALL -> DefaultDevices(allDevices, identifiersFoundForDeviceDiscoveryMode, ScanningState.DeviceDiscoveryMode.Scanning(filter))
+        BluetoothClient.CleanMode.ONLY_PROVIDED_FILTER -> cleanFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
+        BluetoothClient.CleanMode.REMOVE_ALL -> DefaultDevices(emptyMap(), emptyMap(), ScanningState.DeviceDiscoveryMode.Scanning(filter))
     }
 
     private fun cleanFilter(filter: ScanningState.DeviceDiscoveryMode): DefaultDevices {
@@ -544,7 +544,7 @@ internal sealed class ScanningStateImpl {
 
             override fun startScanning(
                 filter: Filter,
-                cleanMode: BluetoothService.CleanMode,
+                cleanMode: BluetoothClient.CleanMode,
                 connectionSettings: ConnectionSettings?,
             ): suspend () -> ScanningState.Enabled.Scanning = {
                 Scanning(
@@ -554,7 +554,7 @@ internal sealed class ScanningStateImpl {
                 )
             }
 
-            override fun refresh(filter: Filter, cleanMode: BluetoothService.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
+            override fun refresh(filter: Filter, cleanMode: BluetoothClient.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
                 Idle(
                     devices.updateScanFilter(filter, cleanMode),
                     scanner,
@@ -601,7 +601,7 @@ internal sealed class ScanningStateImpl {
                 }
             }
 
-            override fun stopScanning(cleanMode: BluetoothService.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
+            override fun stopScanning(cleanMode: BluetoothClient.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
                 Idle(devices.updateScanFilter(devices.currentScanFilter.filter, cleanMode), scanner)
             }
 

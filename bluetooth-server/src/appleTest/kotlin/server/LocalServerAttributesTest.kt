@@ -22,13 +22,13 @@ import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.randomUUID
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.suspendTripleParametersMock
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.bluetooth.randomUUID
 import com.splendo.kaluga.test.bluetooth.server.MockConnectedDevice
 import kotlinx.serialization.serializer
 import kotlin.test.Test

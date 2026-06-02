@@ -24,6 +24,21 @@ abstract interface com.splendo.kaluga.bluetooth.server/BaseBluetoothServerBuilde
     abstract suspend fun createServer(kotlin/Function1<com.splendo.kaluga.permissions.base/Permissions, com.splendo.kaluga.bluetooth.server/ServerSettings> = ..., kotlin.coroutines/CoroutineContext = ..., kotlin/Function1<com.splendo.kaluga.bluetooth.server/BluetoothServerDSL, kotlin/Unit>): com.splendo.kaluga.bluetooth.server/BluetoothServer // com.splendo.kaluga.bluetooth.server/BaseBluetoothServerBuilder.createServer|createServer(kotlin.Function1<com.splendo.kaluga.permissions.base.Permissions,com.splendo.kaluga.bluetooth.server.ServerSettings>;kotlin.coroutines.CoroutineContext;kotlin.Function1<com.splendo.kaluga.bluetooth.server.BluetoothServerDSL,kotlin.Unit>){}[0]
 }
 
+abstract interface com.splendo.kaluga.bluetooth.server/BluetoothServer : kotlin/AutoCloseable { // com.splendo.kaluga.bluetooth.server/BluetoothServer|null[0]
+    abstract val isAdvertising // com.splendo.kaluga.bluetooth.server/BluetoothServer.isAdvertising|{}isAdvertising[0]
+        abstract fun <get-isAdvertising>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.bluetooth.server/BluetoothServer.isAdvertising.<get-isAdvertising>|<get-isAdvertising>(){}[0]
+    abstract val services // com.splendo.kaluga.bluetooth.server/BluetoothServer.services|{}services[0]
+        abstract fun <get-services>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<com.splendo.kaluga.bluetooth.server/LocalService>> // com.splendo.kaluga.bluetooth.server/BluetoothServer.services.<get-services>|<get-services>(){}[0]
+    abstract val status // com.splendo.kaluga.bluetooth.server/BluetoothServer.status|{}status[0]
+        abstract fun <get-status>(): kotlinx.coroutines.flow/StateFlow<com.splendo.kaluga.bluetooth.server/ServerStatus> // com.splendo.kaluga.bluetooth.server/BluetoothServer.status.<get-status>|<get-status>(){}[0]
+
+    abstract fun stopAdvertising() // com.splendo.kaluga.bluetooth.server/BluetoothServer.stopAdvertising|stopAdvertising(){}[0]
+    abstract suspend fun add(platform.CoreBluetooth/CBUUID, kotlin/Function1<com.splendo.kaluga.bluetooth.server/LocalService.DSL.Primary, kotlin/Unit>): com.splendo.kaluga.bluetooth.server/LocalService? // com.splendo.kaluga.bluetooth.server/BluetoothServer.add|add(platform.CoreBluetooth.CBUUID;kotlin.Function1<com.splendo.kaluga.bluetooth.server.LocalService.DSL.Primary,kotlin.Unit>){}[0]
+    abstract suspend fun advertise(kotlin/Function1<com.splendo.kaluga.bluetooth.server/AdvertiseData.Builder, kotlin/Unit>): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/BluetoothServer.advertise|advertise(kotlin.Function1<com.splendo.kaluga.bluetooth.server.AdvertiseData.Builder,kotlin.Unit>){}[0]
+    abstract suspend fun remove(com.splendo.kaluga.bluetooth.server/LocalService): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/BluetoothServer.remove|remove(com.splendo.kaluga.bluetooth.server.LocalService){}[0]
+    abstract suspend fun removeAllServices(): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/BluetoothServer.removeAllServices|removeAllServices(){}[0]
+}
+
 abstract interface com.splendo.kaluga.bluetooth.server/BluetoothServerDSL { // com.splendo.kaluga.bluetooth.server/BluetoothServerDSL|null[0]
     abstract fun advertise(kotlin/Function1<com.splendo.kaluga.bluetooth.server/AdvertiseData.Builder, kotlin/Unit>) // com.splendo.kaluga.bluetooth.server/BluetoothServerDSL.advertise|advertise(kotlin.Function1<com.splendo.kaluga.bluetooth.server.AdvertiseData.Builder,kotlin.Unit>){}[0]
     abstract fun service(platform.CoreBluetooth/CBUUID, kotlin/Function1<com.splendo.kaluga.bluetooth.server/LocalService.DSL.Primary, kotlin/Unit>) // com.splendo.kaluga.bluetooth.server/BluetoothServerDSL.service|service(platform.CoreBluetooth.CBUUID;kotlin.Function1<com.splendo.kaluga.bluetooth.server.LocalService.DSL.Primary,kotlin.Unit>){}[0]
@@ -60,33 +75,33 @@ final class com.splendo.kaluga.bluetooth.server/AdvertiseData { // com.splendo.k
     }
 }
 
-final class com.splendo.kaluga.bluetooth.server/BluetoothServer : kotlin/AutoCloseable, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.bluetooth.server/BluetoothServer|null[0]
-    final val coroutineContext // com.splendo.kaluga.bluetooth.server/BluetoothServer.coroutineContext|{}coroutineContext[0]
-        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.bluetooth.server/BluetoothServer.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
-    final val isAdvertising // com.splendo.kaluga.bluetooth.server/BluetoothServer.isAdvertising|{}isAdvertising[0]
-        final fun <get-isAdvertising>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.bluetooth.server/BluetoothServer.isAdvertising.<get-isAdvertising>|<get-isAdvertising>(){}[0]
-    final val services // com.splendo.kaluga.bluetooth.server/BluetoothServer.services|{}services[0]
-        final fun <get-services>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<com.splendo.kaluga.bluetooth.server/LocalService>> // com.splendo.kaluga.bluetooth.server/BluetoothServer.services.<get-services>|<get-services>(){}[0]
-    final val status // com.splendo.kaluga.bluetooth.server/BluetoothServer.status|{}status[0]
-        final fun <get-status>(): kotlinx.coroutines.flow/StateFlow<com.splendo.kaluga.bluetooth.server/ServerStatus> // com.splendo.kaluga.bluetooth.server/BluetoothServer.status.<get-status>|<get-status>(){}[0]
-
-    final fun close() // com.splendo.kaluga.bluetooth.server/BluetoothServer.close|close(){}[0]
-    final fun stopAdvertising() // com.splendo.kaluga.bluetooth.server/BluetoothServer.stopAdvertising|stopAdvertising(){}[0]
-    final suspend fun add(platform.CoreBluetooth/CBUUID, kotlin/Function1<com.splendo.kaluga.bluetooth.server/LocalService.DSL.Primary, kotlin/Unit>): com.splendo.kaluga.bluetooth.server/LocalService? // com.splendo.kaluga.bluetooth.server/BluetoothServer.add|add(platform.CoreBluetooth.CBUUID;kotlin.Function1<com.splendo.kaluga.bluetooth.server.LocalService.DSL.Primary,kotlin.Unit>){}[0]
-    final suspend fun advertise(kotlin/Function1<com.splendo.kaluga.bluetooth.server/AdvertiseData.Builder, kotlin/Unit>): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/BluetoothServer.advertise|advertise(kotlin.Function1<com.splendo.kaluga.bluetooth.server.AdvertiseData.Builder,kotlin.Unit>){}[0]
-    final suspend fun remove(com.splendo.kaluga.bluetooth.server/LocalService): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/BluetoothServer.remove|remove(com.splendo.kaluga.bluetooth.server.LocalService){}[0]
-    final suspend fun removeAllServices(): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/BluetoothServer.removeAllServices|removeAllServices(){}[0]
-
-    final object Companion { // com.splendo.kaluga.bluetooth.server/BluetoothServer.Companion|null[0]
-        final const val TAG // com.splendo.kaluga.bluetooth.server/BluetoothServer.Companion.TAG|{}TAG[0]
-            final fun <get-TAG>(): kotlin/String // com.splendo.kaluga.bluetooth.server/BluetoothServer.Companion.TAG.<get-TAG>|<get-TAG>(){}[0]
-    }
-}
-
 final class com.splendo.kaluga.bluetooth.server/BluetoothServerBuilder : com.splendo.kaluga.bluetooth.server/BaseBluetoothServerBuilder { // com.splendo.kaluga.bluetooth.server/BluetoothServerBuilder|null[0]
     constructor <init>(platform.Foundation/NSBundle = ..., kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions> = ...) // com.splendo.kaluga.bluetooth.server/BluetoothServerBuilder.<init>|<init>(platform.Foundation.NSBundle;kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>){}[0]
 
     final suspend fun createServer(kotlin/Function1<com.splendo.kaluga.permissions.base/Permissions, com.splendo.kaluga.bluetooth.server/ServerSettings>, kotlin.coroutines/CoroutineContext, kotlin/Function1<com.splendo.kaluga.bluetooth.server/BluetoothServerDSL, kotlin/Unit>): com.splendo.kaluga.bluetooth.server/BluetoothServer // com.splendo.kaluga.bluetooth.server/BluetoothServerBuilder.createServer|createServer(kotlin.Function1<com.splendo.kaluga.permissions.base.Permissions,com.splendo.kaluga.bluetooth.server.ServerSettings>;kotlin.coroutines.CoroutineContext;kotlin.Function1<com.splendo.kaluga.bluetooth.server.BluetoothServerDSL,kotlin.Unit>){}[0]
+}
+
+final class com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer : com.splendo.kaluga.bluetooth.server/BluetoothServer, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer|null[0]
+    final val coroutineContext // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.coroutineContext|{}coroutineContext[0]
+        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    final val isAdvertising // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.isAdvertising|{}isAdvertising[0]
+        final fun <get-isAdvertising>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.isAdvertising.<get-isAdvertising>|<get-isAdvertising>(){}[0]
+    final val services // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.services|{}services[0]
+        final fun <get-services>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<com.splendo.kaluga.bluetooth.server/LocalService>> // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.services.<get-services>|<get-services>(){}[0]
+    final val status // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.status|{}status[0]
+        final fun <get-status>(): kotlinx.coroutines.flow/StateFlow<com.splendo.kaluga.bluetooth.server/ServerStatus> // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.status.<get-status>|<get-status>(){}[0]
+
+    final fun close() // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.close|close(){}[0]
+    final fun stopAdvertising() // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.stopAdvertising|stopAdvertising(){}[0]
+    final suspend fun add(platform.CoreBluetooth/CBUUID, kotlin/Function1<com.splendo.kaluga.bluetooth.server/LocalService.DSL.Primary, kotlin/Unit>): com.splendo.kaluga.bluetooth.server/LocalService? // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.add|add(platform.CoreBluetooth.CBUUID;kotlin.Function1<com.splendo.kaluga.bluetooth.server.LocalService.DSL.Primary,kotlin.Unit>){}[0]
+    final suspend fun advertise(kotlin/Function1<com.splendo.kaluga.bluetooth.server/AdvertiseData.Builder, kotlin/Unit>): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.advertise|advertise(kotlin.Function1<com.splendo.kaluga.bluetooth.server.AdvertiseData.Builder,kotlin.Unit>){}[0]
+    final suspend fun remove(com.splendo.kaluga.bluetooth.server/LocalService): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.remove|remove(com.splendo.kaluga.bluetooth.server.LocalService){}[0]
+    final suspend fun removeAllServices(): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.removeAllServices|removeAllServices(){}[0]
+
+    final object Companion { // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.Companion|null[0]
+        final const val TAG // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.Companion.TAG|{}TAG[0]
+            final fun <get-TAG>(): kotlin/String // com.splendo.kaluga.bluetooth.server/DefaultBluetoothServer.Companion.TAG.<get-TAG>|<get-TAG>(){}[0]
+    }
 }
 
 final class com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice : com.splendo.kaluga.bluetooth.server/ConnectedDevice { // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice|null[0]

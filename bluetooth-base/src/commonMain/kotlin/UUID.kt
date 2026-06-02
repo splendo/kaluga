@@ -64,18 +64,12 @@ expect val UUID.uuidString: String
 fun uuidFrom(uuidString: String): UUID = if (uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString) else throw UUIDException.InvalidFormat(uuidString)
 
 /**
- * Gets a random [UUID]
- * @return a random [UUID]
- */
-expect fun randomUUID(): UUID
-
-/**
  * The UUID format is the same for all services and characteristics and defined in bluetooth specification.
  *
  * @see <a href="https://www.bluetooth.com/specifications/gatt/characteristics/">GATT Characteristics specification</a>
  * @see <a href="https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Service%20Discovery.pdf">Service discovery</a>
  */
-fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.BASE_BLUETOOTH_UUID.format(uuidString))
+internal fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.BASE_BLUETOOTH_UUID.format(uuidString))
 
 /**
  * Meant for internal usage. It takes string which already passed validation

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.bluetooth.randomUUID
+import com.splendo.kaluga.test.bluetooth.randomUUID
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
@@ -27,7 +27,7 @@ import kotlin.test.assertFailsWith
 
 class BluetoothServerDSLTest : BaseTest() {
 
-    private fun createDSL(): BluetoothServer.DSL = BluetoothServer.DSL(
+    private fun createDSL(): DefaultBluetoothServer.DSL = DefaultBluetoothServer.DSL(
         ServerSettings(Permissions(MockPermissionsBuilder())),
         ServerState.NotSupported,
         EmptyCoroutineContext,

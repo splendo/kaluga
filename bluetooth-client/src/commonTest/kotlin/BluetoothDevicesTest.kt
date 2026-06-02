@@ -30,6 +30,7 @@ import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.test.bluetooth.randomUUID
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -117,10 +118,10 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
         val deferredDevice2 = CompletableDeferred<ConnectableDevice>()
         mainAction {
-            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.stopScanning(cleanMode = BluetoothClient.CleanMode.RETAIN_ALL)
             bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()
-            bluetoothClient.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.startScanning(filter, BluetoothClient.CleanMode.RETAIN_ALL)
 
             createAndScanDevice(deferredDevice2)
         }
@@ -133,7 +134,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         mainAction {
-            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.REMOVE_ALL)
+            bluetoothClient.stopScanning(cleanMode = BluetoothClient.CleanMode.REMOVE_ALL)
         }
 
         test {
@@ -167,10 +168,10 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
         val deferredDevice2 = CompletableDeferred<ConnectableDevice>()
         mainAction {
-            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.stopScanning(cleanMode = BluetoothClient.CleanMode.RETAIN_ALL)
             bluetoothClient.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()
-            bluetoothClient.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
+            bluetoothClient.startScanning(filter, BluetoothClient.CleanMode.RETAIN_ALL)
 
             scanDevice(deferredDevice1.await(), createDeviceWrapper(identifier = deferredDevice1.await().identifier), -100, MockAdvertisementData())
             yield()
@@ -185,7 +186,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         mainAction {
-            bluetoothClient.stopScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
+            bluetoothClient.stopScanning(cleanMode = BluetoothClient.CleanMode.ONLY_PROVIDED_FILTER)
         }
 
         test {
@@ -196,7 +197,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         mainAction {
-            bluetoothClient.startScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
+            bluetoothClient.startScanning(cleanMode = BluetoothClient.CleanMode.ONLY_PROVIDED_FILTER)
         }
 
         test {

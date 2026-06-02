@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,21 +15,12 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.test.bluetooth
+
+import com.splendo.kaluga.bluetooth.UUID
 
 /**
- * The Unique Identifier of a Bluetooth property
+ * Gets a random [UUID]
+ * @return a random [UUID]
  */
-actual typealias UUID = java.util.UUID
-
-/**
- * The string representation of a [UUID]
- */
-actual val UUID.uuidString: String
-    get() = toString()
-
-internal actual fun unsafeUUIDFrom(uuidString: String): UUID = if (uuidString.isShortUUID()) {
-    uuidFromShort(uuidString)
-} else {
-    UUID.fromString(uuidString)
-}
+expect fun randomUUID(): UUID

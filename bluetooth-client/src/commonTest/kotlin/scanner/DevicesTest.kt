@@ -18,12 +18,12 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.randomUUID
 import com.splendo.kaluga.test.bluetooth.device.MockDevice
+import com.splendo.kaluga.test.bluetooth.randomUUID
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -49,7 +49,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter)
                 validateDevicesForCurrentScanFilter(devices[0], devices[1])
             }
-            .setFilterValidate(filter, BluetoothService.CleanMode.ONLY_PROVIDED_FILTER) {
+            .setFilterValidate(filter, BluetoothClient.CleanMode.ONLY_PROVIDED_FILTER) {
                 validateAllDevices(devices[0], devices[1])
                 validateDevicesForScanningFilter(emptyFilter, devices[0], devices[1])
                 validateDevicesForScanningFilter(filter)
@@ -67,7 +67,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
                 validateDevicesForCurrentScanFilter(devices[1], devices[2])
             }
-            .setFilterValidate(emptyFilter, BluetoothService.CleanMode.ONLY_PROVIDED_FILTER) {
+            .setFilterValidate(emptyFilter, BluetoothClient.CleanMode.ONLY_PROVIDED_FILTER) {
                 validateAllDevices(devices[1], devices[2])
                 validateDevicesForScanningFilter(emptyFilter)
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
@@ -79,7 +79,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
                 validateDevicesForCurrentScanFilter(devices[0])
             }
-            .setFilterValidate(filter, BluetoothService.CleanMode.RETAIN_ALL) {
+            .setFilterValidate(filter, BluetoothClient.CleanMode.RETAIN_ALL) {
                 validateAllDevices(devices[0], devices[1], devices[2])
                 validateDevicesForScanningFilter(emptyFilter, devices[0])
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
@@ -91,7 +91,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
                 validateDevicesForCurrentScanFilter(devices[1], devices[2])
             }
-            .setFilterValidate(emptyFilter, BluetoothService.CleanMode.REMOVE_ALL) {
+            .setFilterValidate(emptyFilter, BluetoothClient.CleanMode.REMOVE_ALL) {
                 validateAllDevices()
                 validateDevicesForScanningFilter(emptyFilter)
                 validateDevicesForScanningFilter(filter)
@@ -137,7 +137,7 @@ class DevicesTest {
                 validateDevicesForPairingFilter(filter2)
                 validateDevicesForCurrentScanFilter(devices[0])
             }
-            .setFilterValidate(filter1, cleanMode = BluetoothService.CleanMode.REMOVE_ALL) {
+            .setFilterValidate(filter1, cleanMode = BluetoothClient.CleanMode.REMOVE_ALL) {
                 validateAllDevices()
                 validateDevicesForPairingFilter(filter1)
                 validateDevicesForPairingFilter(filter2)
@@ -159,7 +159,7 @@ class DevicesTest {
         validation: ScanningState.Devices.() -> Unit,
     ) = copyAndSetPaired(device.associate { it.identifier to { it } }, filter, removeAllPairedFilters).apply(validation)
 
-    private fun ScanningState.Devices.setFilterValidate(filter: Filter, cleanMode: BluetoothService.CleanMode, validation: ScanningState.Devices.() -> Unit) =
+    private fun ScanningState.Devices.setFilterValidate(filter: Filter, cleanMode: BluetoothClient.CleanMode, validation: ScanningState.Devices.() -> Unit) =
         updateScanFilter(filter, cleanMode).apply(validation)
 
     private fun ScanningState.Devices.validateAllDevices(vararg device: Device) = assertEquals(device.associateBy { it.identifier }, allDevices)

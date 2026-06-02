@@ -12,3 +12,5 @@ final class com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor : com.splendo
     final val isEnabled // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.isEnabled|{}isEnabled[0]
         final fun <get-isEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
 }
+
+final fun com.splendo.kaluga.test.bluetooth/randomUUID(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/randomUUID|randomUUID(){}[0]

@@ -47,7 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.bluetooth.BluetoothClient
-import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceState
@@ -141,22 +141,22 @@ fun BluetoothDeviceListScreen(onDeviceClick: (Identifier) -> Unit, modifier: Mod
             isScanning = scanning,
             onRetainAll = {
                 if (scanning) {
-                    bluetoothClient.stopScanning(BluetoothService.CleanMode.RETAIN_ALL)
+                    bluetoothClient.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
                 } else {
                     bluetoothClient.startScanning(
                         filter = setOf(BluetoothSpec.HeartRateService.UUID),
-                        cleanMode = BluetoothService.CleanMode.RETAIN_ALL,
+                        cleanMode = BluetoothClient.CleanMode.RETAIN_ALL,
                     )
                 }
                 showScanDialog = false
             },
             onRemoveAll = {
                 if (scanning) {
-                    bluetoothClient.stopScanning(BluetoothService.CleanMode.REMOVE_ALL)
+                    bluetoothClient.stopScanning(BluetoothClient.CleanMode.REMOVE_ALL)
                 } else {
                     bluetoothClient.startScanning(
                         filter = setOf(BluetoothSpec.HeartRateService.UUID),
-                        cleanMode = BluetoothService.CleanMode.REMOVE_ALL,
+                        cleanMode = BluetoothClient.CleanMode.REMOVE_ALL,
                     )
                 }
                 showScanDialog = false

@@ -20,7 +20,6 @@ package com.splendo.kaluga.test.bluetooth
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.randomUUID
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPEALIAS)
 @DslMarker

@@ -65,6 +65,6 @@ actual class BluetoothServerBuilder(
             )
         } ?: ServerState.NotSupported
 
-        return BluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
+        return DefaultBluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
     }
 }

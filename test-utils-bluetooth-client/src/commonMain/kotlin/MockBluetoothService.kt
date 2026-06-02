@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -36,7 +36,7 @@ class MockBluetoothService(
     val pairedDevicesFlow: MutableStateFlow<Map<Set<UUID>, List<ConnectableDevice>>> = MutableStateFlow(emptyMap()),
     override val isEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true),
     setupMocks: Boolean = true,
-) : BluetoothService {
+) : BluetoothClient {
 
     private val isScanningState = MutableStateFlow(false)
 
@@ -71,12 +71,12 @@ class MockBluetoothService(
         }
     }
 
-    override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings?) {
+    override fun startScanning(filter: Filter, cleanMode: BluetoothClient.CleanMode, connectionSettings: ConnectionSettings?) {
         currentFilter.value = filter
         startScanningMock.call(filter, cleanMode, connectionSettings)
     }
 
-    override fun stopScanning(cleanMode: BluetoothService.CleanMode): Unit = stopScanningMock.call(cleanMode)
+    override fun stopScanning(cleanMode: BluetoothClient.CleanMode): Unit = stopScanningMock.call(cleanMode)
     override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<ConnectableDevice>> =
         pairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 

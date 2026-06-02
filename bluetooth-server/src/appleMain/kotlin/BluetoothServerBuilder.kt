@@ -53,6 +53,6 @@ actual class BluetoothServerBuilder(
             KalugaCBPeripheralManagerDelegate(settings.logger, coroutineContext),
             settings.logger,
         )
-        return BluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
+        return DefaultBluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
     }
 }

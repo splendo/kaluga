@@ -45,7 +45,7 @@ import kotlin.test.assertEquals
 class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Bluetooth, BluetoothFlowTest.BluetoothContext, List<Device>>() {
 
     companion object {
-        private val pairedFilter = setOf(uuidFromShort("130D"))
+        private val pairedFilter = setOf(uuidFrom("130D"))
     }
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.Bluetooth, scope: CoroutineScope) -> BluetoothContext = { configuration, scope ->
         BluetoothContext(configuration, scope)

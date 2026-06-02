@@ -194,9 +194,63 @@ data class ServerSettings(
 /**
  * A Bluetooth Server that makes the Hardware advertise [AdvertiseData] and exposes [LocalService] to connect to.
  */
-class BluetoothServer internal constructor(private val settings: ServerSettings, initialState: ServerState.Initial, coroutineContext: CoroutineContext) :
-    CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothServer")),
-    AutoCloseable {
+interface BluetoothServer : AutoCloseable {
+
+    /**
+     * A [StateFlow] of the [ServerStatus] of this Server
+     */
+    val status: StateFlow<ServerStatus>
+
+    /**
+     * A [StateFlow] indicating whether this server is currently advertising
+     */
+    val isAdvertising: StateFlow<Boolean>
+
+    /**
+     * A [StateFlow] of the [LocalService]s that are currently discoverable
+     */
+    val services: StateFlow<List<LocalService>>
+
+    /**
+     * Starts advertising with the given [data]
+     * @param data the [AdvertiseData.Builder] to use to set up the advertising
+     * @return `true` if advertising was started, `false` if not
+     */
+    suspend fun advertise(data: AdvertiseData.Builder.() -> Unit): Boolean
+
+    /**
+     * Stops advertising any [AdvertiseData]
+     */
+    fun stopAdvertising()
+
+    /**
+     * Attempts to add a [LocalService] at a given [UUID] and suspends until it has been added.
+     * @param uuid the [UUID] of the [LocalService] to add
+     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
+     * @return the [LocalService] added or `null` if it could not be added
+     */
+    suspend fun add(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService?
+
+    /**
+     * Attempts to remove a [LocalService] and suspends until it has been removed.
+     * @param service the [LocalService] to remove
+     * @return `true` if the [LocalService] was removed, `false` if not
+     */
+    suspend fun remove(service: LocalService): Boolean
+
+    /**
+     * Attempts to remove all [LocalService] and suspends until they have been removed.
+     * @return `true` if all [LocalService] were removed, `false` if not
+     */
+    suspend fun removeAllServices(): Boolean
+}
+
+/**
+ * The default implementation of [BluetoothServer]. It makes the Hardware advertise [AdvertiseData] and exposes [LocalService] to connect to.
+ */
+class DefaultBluetoothServer internal constructor(private val settings: ServerSettings, initialState: ServerState.Initial, coroutineContext: CoroutineContext) :
+    BluetoothServer,
+    CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothServer")) {
 
     companion object {
         const val TAG = "BluetoothServer"
@@ -217,7 +271,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
             serviceBuilders[uuid] = service
         }
 
-        suspend fun build(): BluetoothServer = BluetoothServer(settings, initialState, coroutineContext).apply {
+        suspend fun build(): BluetoothServer = DefaultBluetoothServer(settings, initialState, coroutineContext).apply {
             try {
                 advertisementBuilder?.let { advertise(it) }
                 for ((uuid, builder) in serviceBuilders) {
@@ -285,24 +339,12 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
 
     private val logger = settings.logger
     private val _status = MutableStateFlow(initialState.status)
-
-    /**
-     * A [StateFlow] of the [ServerStatus] of this Server
-     */
-    val status: StateFlow<ServerStatus> = _status.asStateFlow()
+    override val status: StateFlow<ServerStatus> = _status.asStateFlow()
     private val _isAdvertising = MutableStateFlow(false)
-
-    /**
-     * A [StateFlow] indicating whether this server is currently advertising
-     */
-    val isAdvertising: StateFlow<Boolean> = _isAdvertising.asStateFlow()
+    override val isAdvertising: StateFlow<Boolean> = _isAdvertising.asStateFlow()
 
     private val _services = MutableStateFlow<List<LocalService>>(emptyList())
-
-    /**
-     * A [StateFlow] of the [LocalService]s that are currently discoverable
-     */
-    val services: StateFlow<List<LocalService>> = _services.asStateFlow()
+    override val services: StateFlow<List<LocalService>> = _services.asStateFlow()
 
     private val advertiseChannel = Channel<(ServerState.Available?) -> AdvertisingSettings>(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) { undelivered ->
         undelivered(null).hasStarted.complete(false)
@@ -316,12 +358,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         is ServerState.Unavailable -> null
     }
 
-    /**
-     * Starts advertising with the given [data]
-     * @param data the [AdvertiseData.Builder] to use to set up the advertising
-     * @return `true` if advertising was started, `false` if not
-     */
-    suspend fun advertise(data: AdvertiseData.Builder.() -> Unit): Boolean = performOrFailOnClose(false) {
+    override suspend fun advertise(data: AdvertiseData.Builder.() -> Unit): Boolean = performOrFailOnClose(false) {
         val hasStarted = CompletableDeferred<Boolean>()
         val advertisingSettingsBuilder = AdvertisingSettings.Builder().apply(data)
         try {
@@ -332,10 +369,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
-    /**
-     * Stops advertising any [AdvertiseData]
-     */
-    fun stopAdvertising() {
+    override fun stopAdvertising() {
         stopAdvertising(true)
     }
 
@@ -351,13 +385,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         _isAdvertising.value = false
     }
 
-    /**
-     * Attempts to add a [LocalService] at a given [UUID] and suspends until it has been added.
-     * @param uuid the [UUID] of the [LocalService] to add
-     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
-     * @return the [LocalService] added or `null` if it could not be added
-     */
-    suspend fun add(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService? = performOrFailOnClose(null) {
+    override suspend fun add(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService? = performOrFailOnClose(null) {
         val response = CompletableDeferred<LocalService?>()
         val serviceBuilder: (ServerState.Available) -> LocalService = { available ->
             available.serviceBuilder(uuid, this::notify).apply(service).build()
@@ -370,12 +398,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
-    /**
-     * Attempts to remove a [LocalService] and suspends until it has been removed.
-     * @param service the [LocalService] to remove
-     * @return `true` if the [LocalService] was removed, `false` if not
-     */
-    suspend fun remove(service: LocalService) = performOrFailOnClose(false) {
+    override suspend fun remove(service: LocalService) = performOrFailOnClose(false) {
         val completed = EmptyCompletableDeferred()
         try {
             serviceActionChannel.send(ServiceAction.Remove(service, completed))
@@ -386,11 +409,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
-    /**
-     * Attempts to remove all [LocalService] and suspends until they have been removed.
-     * @return `true` if all [LocalService] were removed, `false` if not
-     */
-    suspend fun removeAllServices() = performOrFailOnClose(false) {
+    override suspend fun removeAllServices() = performOrFailOnClose(false) {
         val completed = EmptyCompletableDeferred()
         try {
             serviceActionChannel.send(ServiceAction.RemoveAll(completed))

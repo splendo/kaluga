@@ -910,7 +910,5 @@ final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/
 final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth/getOrNull(platform.CoreBluetooth/CBUUID): kotlinx.coroutines.flow/Flow<#A?> // com.splendo.kaluga.bluetooth/getOrNull|getOrNull@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(platform.CoreBluetooth.CBUUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
 final fun com.splendo.kaluga.bluetooth.device/identifierFromString(kotlin/String): platform.Foundation/NSUUID? // com.splendo.kaluga.bluetooth.device/identifierFromString|identifierFromString(kotlin.String){}[0]
 final fun com.splendo.kaluga.bluetooth.device/randomIdentifier(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.device/randomIdentifier|randomIdentifier(){}[0]
-final fun com.splendo.kaluga.bluetooth/randomUUID(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/randomUUID|randomUUID(){}[0]
 final fun com.splendo.kaluga.bluetooth/randomUUIDString(): kotlin/String // com.splendo.kaluga.bluetooth/randomUUIDString|randomUUIDString(){}[0]
 final fun com.splendo.kaluga.bluetooth/uuidFrom(kotlin/String): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/uuidFrom|uuidFrom(kotlin.String){}[0]
-final fun com.splendo.kaluga.bluetooth/uuidFromShort(kotlin/String): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/uuidFromShort|uuidFromShort(kotlin.String){}[0]

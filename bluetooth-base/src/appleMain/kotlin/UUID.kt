@@ -32,9 +32,3 @@ actual val UUID.uuidString: String
     get() = UUIDString
 
 internal actual fun unsafeUUIDFrom(uuidString: String) = CBUUID.UUIDWithString(uuidString)
-
-/**
- * Gets a random [UUID]
- * @return a random [UUID]
- */
-actual fun randomUUID(): UUID = CBUUID.UUIDWithNSUUID(NSUUID.UUID())

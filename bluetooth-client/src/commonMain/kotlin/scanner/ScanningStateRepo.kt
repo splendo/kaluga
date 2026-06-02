@@ -18,7 +18,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
-import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -113,7 +113,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
 
                     is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) {
-                        it.stopScanning(BluetoothService.CleanMode.REMOVE_ALL)
+                        it.stopScanning(BluetoothClient.CleanMode.REMOVE_ALL)
                     }
 
                     is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)

@@ -73,10 +73,10 @@ val defaultBluetoothClientDispatcher by lazy {
 /**
  * A service for managing Bluetooth [ConnectableDevice]
  */
-interface BluetoothService {
+interface BluetoothClient {
 
     /**
-     * Specifies the behaviour of cleaning up the list of [ConnectableDevice] discovered by a [BluetoothService]
+     * Specifies the behaviour of cleaning up the list of [ConnectableDevice] discovered by a [BluetoothClient]
      */
     enum class CleanMode {
 
@@ -151,12 +151,18 @@ interface BluetoothService {
 }
 
 /**
- * A [BluetoothService] that uses a [ScanningStateFlowRepo] to manage the [ScanningState]
+ * The previous name of [BluetoothClient]
+ */
+@Deprecated("Renamed to BluetoothClient", ReplaceWith("BluetoothClient"))
+typealias BluetoothService = BluetoothClient
+
+/**
+ * The default implementation of [BluetoothClient]. It uses a [ScanningStateFlowRepo] to manage the [ScanningState]
  * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
  * @param scanningStateRepoBuilder method for creating a the [ScanningStateFlowRepo] to contain the [ScanningState] of the Bluetooth service
  */
-class BluetoothClient constructor(coroutineContext: CoroutineContext, scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo) :
-    BluetoothService,
+class DefaultBluetoothClient constructor(coroutineContext: CoroutineContext, scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo) :
+    BluetoothClient,
     CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothClient")) {
 
     constructor(
@@ -175,14 +181,14 @@ class BluetoothClient constructor(coroutineContext: CoroutineContext, scanningSt
         },
     )
 
-    val scanningStateRepo = scanningStateRepoBuilder(coroutineContext + CoroutineName("Scanning State Repo"))
+    internal val scanningStateRepo = scanningStateRepoBuilder(coroutineContext + CoroutineName("Scanning State Repo"))
 
     private sealed class ScanMode {
-        data class Stopped(val cleanMode: BluetoothService.CleanMode) : ScanMode()
-        data class Scan(val filter: Filter, val cleanMode: BluetoothService.CleanMode, val connectionSettings: ConnectionSettings?) : ScanMode()
+        data class Stopped(val cleanMode: BluetoothClient.CleanMode) : ScanMode()
+        data class Scan(val filter: Filter, val cleanMode: BluetoothClient.CleanMode, val connectionSettings: ConnectionSettings?) : ScanMode()
     }
 
-    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped(BluetoothService.CleanMode.REMOVE_ALL))
+    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped(BluetoothClient.CleanMode.REMOVE_ALL))
 
     private companion object {
         val PAIRED_DEVICES_REFRESH_RATE = 15.seconds
@@ -198,7 +204,7 @@ class BluetoothClient constructor(coroutineContext: CoroutineContext, scanningSt
     override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<ConnectableDevice>> =
         pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
 
-    fun pairedDevices(
+    internal fun pairedDevices(
         filter: Filter,
         removeForAllPairedFilters: Boolean = true,
         connectionSettings: ConnectionSettings? = null,
@@ -252,7 +258,7 @@ class BluetoothClient constructor(coroutineContext: CoroutineContext, scanningSt
                             remainIfStateNot = ScanningState.Enabled.Scanning::class,
                         ) {
                             // Cleaning should happen when the new scan is started to ensure the proper clean mode is applied
-                            it.stopScanning(BluetoothService.CleanMode.RETAIN_ALL)
+                            it.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
                         }
                         scanState.devices
                     }
@@ -281,11 +287,11 @@ class BluetoothClient constructor(coroutineContext: CoroutineContext, scanningSt
         it.devicesForCurrentScanFilter()
     }
 
-    override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings?) {
+    override fun startScanning(filter: Filter, cleanMode: BluetoothClient.CleanMode, connectionSettings: ConnectionSettings?) {
         scanMode.value = ScanMode.Scan(filter, cleanMode, connectionSettings)
     }
 
-    override fun stopScanning(cleanMode: BluetoothService.CleanMode) {
+    override fun stopScanning(cleanMode: BluetoothClient.CleanMode) {
         scanMode.value = ScanMode.Stopped(cleanMode)
     }
 

@@ -16,7 +16,7 @@
 
 package com.splendo.kaluga.test.bluetooth.scanner
 
-import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -105,7 +105,7 @@ sealed class MockScanningState {
 
             override fun startScanning(
                 filter: Filter,
-                cleanMode: BluetoothService.CleanMode,
+                cleanMode: BluetoothClient.CleanMode,
                 connectionSettings: ConnectionSettings?,
             ): suspend () -> ScanningState.Enabled.Scanning = {
                 Scanning(
@@ -113,7 +113,7 @@ sealed class MockScanningState {
                 )
             }
 
-            override fun refresh(filter: Filter, cleanMode: BluetoothService.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
+            override fun refresh(filter: Filter, cleanMode: BluetoothClient.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
                 Idle(
                     devices.updateScanFilter(filter, cleanMode),
                 )
@@ -162,7 +162,7 @@ sealed class MockScanningState {
                 }
             }
 
-            override fun stopScanning(cleanMode: BluetoothService.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
+            override fun stopScanning(cleanMode: BluetoothClient.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
                 Idle(devices.updateScanFilter(devices.currentScanFilter.filter, cleanMode))
             }
         }
