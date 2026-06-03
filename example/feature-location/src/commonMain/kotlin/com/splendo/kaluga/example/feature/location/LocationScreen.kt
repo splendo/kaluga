@@ -102,6 +102,7 @@ fun LocationScreen(modifier: Modifier = Modifier) {
                 CircularProgressIndicator()
             }
         }
+
         is LocationVMState.Ready -> {
             val description by current.descriptions.collectAsState()
             Column(
