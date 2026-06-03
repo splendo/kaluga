@@ -10,7 +10,7 @@ kaluga {
         common {
             main {
                 api(project(":core-arch"))
-                api(project(":feature-bluetooth"))
+                api(project(":feature-bluetooth-client"))
                 api("com.splendo.kaluga:beacons:${project.rootProject.version}")
             }
         }

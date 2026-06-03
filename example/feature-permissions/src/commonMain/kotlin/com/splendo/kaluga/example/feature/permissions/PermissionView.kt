@@ -18,39 +18,22 @@
 package com.splendo.kaluga.example.feature.permissions
 
 import com.splendo.kaluga.permissions.base.Permission
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
-import com.splendo.kaluga.permissions.calendar.CalendarPermission
-import com.splendo.kaluga.permissions.camera.CameraPermission
-import com.splendo.kaluga.permissions.contacts.ContactsPermission
-import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.permissions.microphone.MicrophonePermission
 import com.splendo.kaluga.permissions.notifications.NotificationOptions
-import com.splendo.kaluga.permissions.notifications.NotificationsPermission
-import com.splendo.kaluga.permissions.storage.StoragePermission
-import kotlinx.serialization.Serializable
-
-@Serializable
-enum class PermissionView(val title: String) {
-    Bluetooth("Bluetooth"),
-    Calendar("Calendar"),
-    Camera("Camera"),
-    Contacts("Contacts"),
-    Location("Location"),
-    Microphone("Microphone"),
-    Notifications("Notifications"),
-    Storage("Storage"),
-    ;
-
-    val permission: Permission get() = when (this) {
-        Bluetooth -> BluetoothPermission(BluetoothPermission.Type.Client(useForLocation = USE_LOCATION_FOR_BLUETOOTH))
-        Calendar -> CalendarPermission(allowWrite = true)
-        Camera -> CameraPermission
-        Contacts -> ContactsPermission(allowWrite = true)
-        Location -> LocationPermission(background = true, precise = true)
-        Microphone -> MicrophonePermission
-        Notifications -> NotificationsPermission(notificationOptions)
-        Storage -> StoragePermission(allowWrite = true)
-    }
-}
 
 expect val notificationOptions: NotificationOptions
+
+/**
+ * UI representation of a single permission shown in the demo. Each target supplies its own
+ * [availablePermissionViews] list so the menu adapts to platform availability (no Camera/Storage
+ * on watchOS, no Calendar/Contacts/Camera on tvOS, etc.).
+ */
+abstract class PermissionView(val name: String, val title: String) {
+    abstract val permission: Permission
+}
+
+/**
+ * The set of [PermissionView]s the current platform supports. Each target's source set provides
+ * its own list — the `:permissions` module's `registerAllPermissions` matches the same per-target
+ * shape.
+ */
+expect val availablePermissionViews: List<PermissionView>

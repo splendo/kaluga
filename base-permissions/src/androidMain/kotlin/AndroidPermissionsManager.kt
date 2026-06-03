@@ -126,10 +126,20 @@ class AndroidPermissionsManager constructor(
      * Ensure [startMonitoring] was called to get notified of the permission change.
      * Sets the state to [AndroidPermissionState.DENIED_DO_NOT_ASK] if the permission cannot be requested.
      */
-    fun requestPermissions() {
-        if (missingPermissionsInManifest().isEmpty()) {
+    fun requestPermissions() = requestPermissions(permissions)
+
+    /**
+     * Starts to request a specific subset of [permissions].
+     * Ensure [startMonitoring] was called to get notified of the permission change.
+     * Sets the state to [AndroidPermissionState.DENIED_DO_NOT_ASK] if the permission cannot be requested.
+     * Useful when permissions must be requested in separate phases — e.g. Android requires the background
+     * location permission to be requested separately from, and after, foreground location on API 30+.
+     * @param permissionsToRequest the subset of [permissions] to request.
+     */
+    fun requestPermissions(permissionsToRequest: Array<String>) {
+        if (missingPermissionsInManifest(permissionsToRequest).isEmpty()) {
             launch {
-                val intent = PermissionsActivity.intent(context, *permissions)
+                val intent = PermissionsActivity.intent(context, *permissionsToRequest)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }
@@ -138,10 +148,10 @@ class AndroidPermissionsManager constructor(
         }
     }
 
-    private fun missingPermissionsInManifest(): List<String> {
+    private fun missingPermissionsInManifest(permissionsToCheck: Array<String> = permissions): List<String> {
         val pm = context.packageManager
 
-        val missingPermissions = permissions.toMutableList()
+        val missingPermissions = permissionsToCheck.toMutableList()
 
         try {
             val packageInfo = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {

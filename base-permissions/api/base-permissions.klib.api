@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -45,11 +45,11 @@ abstract interface <#A: com.splendo.kaluga.permissions.base/Permission> com.sple
 }
 
 abstract interface com.splendo.kaluga.permissions.base/AuthorizationStatusHandler { // com.splendo.kaluga.permissions.base/AuthorizationStatusHandler|null[0]
-    abstract fun status(com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus) // com.splendo.kaluga.permissions.base/AuthorizationStatusHandler.status|status(com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus){}[0]
+    abstract fun status(com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus) // com.splendo.kaluga.permissions.base/AuthorizationStatusHandler.status|status(com.splendo.kaluga.permissions.base.ApplePermissionsHelper.AuthorizationStatus){}[0]
 }
 
 abstract interface com.splendo.kaluga.permissions.base/CurrentAuthorizationStatusProvider { // com.splendo.kaluga.permissions.base/CurrentAuthorizationStatusProvider|null[0]
-    abstract suspend fun provide(): com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus // com.splendo.kaluga.permissions.base/CurrentAuthorizationStatusProvider.provide|provide(){}[0]
+    abstract suspend fun provide(): com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus // com.splendo.kaluga.permissions.base/CurrentAuthorizationStatusProvider.provide|provide(){}[0]
 }
 
 sealed interface <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.permissions.base/PermissionState : com.splendo.kaluga.base.state/KalugaState { // com.splendo.kaluga.permissions.base/PermissionState|null[0]
@@ -137,15 +137,6 @@ abstract class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.
     constructor <init>(kotlin/Function0<com.splendo.kaluga.permissions.base/PermissionState.Uninitialized<#A>>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.permissions.base/PermissionState<#A>>, com.splendo.kaluga.permissions.base/PermissionState.Inactive<#A>, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Initializing<#A>>>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.permissions.base/PermissionState<#A>>, com.splendo.kaluga.permissions.base/PermissionState.Active<#A>, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Deinitialized<#A>>> = ..., kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.permissions.base/BasePermissionStateRepo.<init>|<init>(kotlin.Function0<com.splendo.kaluga.permissions.base.PermissionState.Uninitialized<1:0>>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.permissions.base.PermissionState<1:0>>,com.splendo.kaluga.permissions.base.PermissionState.Inactive<1:0>,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.permissions.base.PermissionState.Initializing<1:0>>>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.permissions.base.PermissionState<1:0>>,com.splendo.kaluga.permissions.base.PermissionState.Active<1:0>,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.permissions.base.PermissionState.Deinitialized<1:0>>>;kotlin.coroutines.CoroutineContext){}[0]
 }
 
-abstract class com.splendo.kaluga.permissions.base.av/AVType { // com.splendo.kaluga.permissions.base.av/AVType|null[0]
-    constructor <init>() // com.splendo.kaluga.permissions.base.av/AVType.<init>|<init>(){}[0]
-
-    abstract val avMediaType // com.splendo.kaluga.permissions.base.av/AVType.avMediaType|{}avMediaType[0]
-        abstract fun <get-avMediaType>(): kotlin/String? // com.splendo.kaluga.permissions.base.av/AVType.avMediaType.<get-avMediaType>|<get-avMediaType>(){}[0]
-    abstract val declarationName // com.splendo.kaluga.permissions.base.av/AVType.declarationName|{}declarationName[0]
-        abstract fun <get-declarationName>(): kotlin/String // com.splendo.kaluga.permissions.base.av/AVType.declarationName.<get-declarationName>|<get-declarationName>(){}[0]
-}
-
 abstract class com.splendo.kaluga.permissions.base/Permission { // com.splendo.kaluga.permissions.base/Permission|null[0]
     constructor <init>() // com.splendo.kaluga.permissions.base/Permission.<init>|<init>(){}[0]
 
@@ -153,42 +144,31 @@ abstract class com.splendo.kaluga.permissions.base/Permission { // com.splendo.k
         abstract fun <get-name>(): kotlin/String // com.splendo.kaluga.permissions.base/Permission.name.<get-name>|<get-name>(){}[0]
 }
 
-final class com.splendo.kaluga.permissions.base.av/AVPermissionHelper : kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.permissions.base.av/AVPermissionHelper|null[0]
-    constructor <init>(platform.Foundation/NSBundle, com.splendo.kaluga.permissions.base.av/AVType, com.splendo.kaluga.permissions.base/AuthorizationStatusHandler, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.permissions.base.av/AVPermissionHelper.<init>|<init>(platform.Foundation.NSBundle;com.splendo.kaluga.permissions.base.av.AVType;com.splendo.kaluga.permissions.base.AuthorizationStatusHandler;kotlinx.coroutines.CoroutineScope){}[0]
+final class com.splendo.kaluga.permissions.base/ApplePermissionsHelper { // com.splendo.kaluga.permissions.base/ApplePermissionsHelper|null[0]
+    constructor <init>() // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.<init>|<init>(){}[0]
 
-    final val coroutineContext // com.splendo.kaluga.permissions.base.av/AVPermissionHelper.coroutineContext|{}coroutineContext[0]
-        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.permissions.base.av/AVPermissionHelper.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    final enum class AuthorizationStatus : kotlin/Enum<com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus> { // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus|null[0]
+        enum entry Authorized // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.Authorized|null[0]
+        enum entry Denied // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.Denied|null[0]
+        enum entry NotDetermined // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.NotDetermined|null[0]
+        enum entry Restricted // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.Restricted|null[0]
 
-    final fun requestPermission() // com.splendo.kaluga.permissions.base.av/AVPermissionHelper.requestPermission|requestPermission(){}[0]
-    final fun startMonitoring(kotlin.time/Duration) // com.splendo.kaluga.permissions.base.av/AVPermissionHelper.startMonitoring|startMonitoring(kotlin.time.Duration){}[0]
-    final fun stopMonitoring() // com.splendo.kaluga.permissions.base.av/AVPermissionHelper.stopMonitoring|stopMonitoring(){}[0]
+        final val entries // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus> // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus> // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus.values|values#static(){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.Companion|null[0]
+        final fun missingDeclarationsInPList(platform.Foundation/NSBundle, kotlin/Array<out kotlin/String>...): kotlin.collections/List<kotlin/String> // com.splendo.kaluga.permissions.base/ApplePermissionsHelper.Companion.missingDeclarationsInPList|missingDeclarationsInPList(platform.Foundation.NSBundle;kotlin.Array<out|kotlin.String>...){}[0]
+    }
 }
 
 final class com.splendo.kaluga.permissions.base/DefaultAuthorizationStatusHandler : com.splendo.kaluga.permissions.base/AuthorizationStatusHandler { // com.splendo.kaluga.permissions.base/DefaultAuthorizationStatusHandler|null[0]
     constructor <init>(kotlinx.coroutines.channels/SendChannel<com.splendo.kaluga.permissions.base/PermissionManager.Event>, kotlin/String, com.splendo.kaluga.logging/Logger) // com.splendo.kaluga.permissions.base/DefaultAuthorizationStatusHandler.<init>|<init>(kotlinx.coroutines.channels.SendChannel<com.splendo.kaluga.permissions.base.PermissionManager.Event>;kotlin.String;com.splendo.kaluga.logging.Logger){}[0]
 
-    final fun status(com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus) // com.splendo.kaluga.permissions.base/DefaultAuthorizationStatusHandler.status|status(com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus){}[0]
-}
-
-final class com.splendo.kaluga.permissions.base/IOSPermissionsHelper { // com.splendo.kaluga.permissions.base/IOSPermissionsHelper|null[0]
-    constructor <init>() // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.<init>|<init>(){}[0]
-
-    final enum class AuthorizationStatus : kotlin/Enum<com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus> { // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus|null[0]
-        enum entry Authorized // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.Authorized|null[0]
-        enum entry Denied // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.Denied|null[0]
-        enum entry NotDetermined // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.NotDetermined|null[0]
-        enum entry Restricted // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.Restricted|null[0]
-
-        final val entries // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.entries|#static{}entries[0]
-            final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus> // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.entries.<get-entries>|<get-entries>#static(){}[0]
-
-        final fun valueOf(kotlin/String): com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.valueOf|valueOf#static(kotlin.String){}[0]
-        final fun values(): kotlin/Array<com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus> // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus.values|values#static(){}[0]
-    }
-
-    final object Companion { // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.Companion|null[0]
-        final fun missingDeclarationsInPList(platform.Foundation/NSBundle, kotlin/Array<out kotlin/String>...): kotlin.collections/List<kotlin/String> // com.splendo.kaluga.permissions.base/IOSPermissionsHelper.Companion.missingDeclarationsInPList|missingDeclarationsInPList(platform.Foundation.NSBundle;kotlin.Array<out|kotlin.String>...){}[0]
-    }
+    final fun status(com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus) // com.splendo.kaluga.permissions.base/DefaultAuthorizationStatusHandler.status|status(com.splendo.kaluga.permissions.base.ApplePermissionsHelper.AuthorizationStatus){}[0]
 }
 
 final class com.splendo.kaluga.permissions.base/PermissionRefreshScheduler : kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.permissions.base/PermissionRefreshScheduler|null[0]
@@ -248,5 +228,5 @@ open class com.splendo.kaluga.permissions.base/PermissionsBuilder { // com.splen
 final val com.splendo.kaluga.permissions.base/defaultPermissionContext // com.splendo.kaluga.permissions.base/defaultPermissionContext|{}defaultPermissionContext[0]
     final fun <get-defaultPermissionContext>(): platform.Foundation/NSBundle // com.splendo.kaluga.permissions.base/defaultPermissionContext.<get-defaultPermissionContext>|<get-defaultPermissionContext>(){}[0]
 
-final fun (com.splendo.kaluga.permissions.base/AuthorizationStatusHandler).com.splendo.kaluga.permissions.base/requestAuthorizationStatus(com.splendo.kaluga.permissions.base/PermissionRefreshScheduler? = ..., kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus>) // com.splendo.kaluga.permissions.base/requestAuthorizationStatus|requestAuthorizationStatus@com.splendo.kaluga.permissions.base.AuthorizationStatusHandler(com.splendo.kaluga.permissions.base.PermissionRefreshScheduler?;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus>){}[0]
+final fun (com.splendo.kaluga.permissions.base/AuthorizationStatusHandler).com.splendo.kaluga.permissions.base/requestAuthorizationStatus(com.splendo.kaluga.permissions.base/PermissionRefreshScheduler? = ..., kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus>) // com.splendo.kaluga.permissions.base/requestAuthorizationStatus|requestAuthorizationStatus@com.splendo.kaluga.permissions.base.AuthorizationStatusHandler(com.splendo.kaluga.permissions.base.PermissionRefreshScheduler?;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.permissions.base.ApplePermissionsHelper.AuthorizationStatus>){}[0]
 final suspend fun <#A: com.splendo.kaluga.permissions.base/Permission> (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.permissions.base/PermissionState<out #A>>).com.splendo.kaluga.permissions.base/request(): kotlin/Boolean // com.splendo.kaluga.permissions.base/request|request@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.permissions.base.PermissionState<out|0:0>>(){0§<com.splendo.kaluga.permissions.base.Permission>}[0]

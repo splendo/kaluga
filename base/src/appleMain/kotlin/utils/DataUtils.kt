@@ -17,29 +17,16 @@
 
 package com.splendo.kaluga.base.utils
 
-import kotlinx.cinterop.ByteVar
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.allocArrayOf
-import kotlinx.cinterop.get
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.reinterpret
 import platform.Foundation.NSData
-import platform.Foundation.create
 
 /**
  * Converts a [NSData] to its corresponding [ByteArray]
  * @return The [ByteArray] equivalent to this [NSData]
  */
-fun NSData.toByteArray(): ByteArray {
-    val bytes = bytes?.let { it } ?: return byteArrayOf()
-    val ktBytes: CPointer<ByteVar> = bytes.reinterpret()
-    return ByteArray(length.toInt()) { index -> ktBytes[index] }
-}
+expect fun NSData.toByteArray(): ByteArray
 
 /**
  * Converts a [ByteArray] to its corresponding [NSData]
  * @return Th [NSData] corresponding to this [ByteArray]
  */
-fun ByteArray.toNSData(): NSData = memScoped {
-    return NSData.create(bytes = allocArrayOf(this@toNSData), length = this@toNSData.size.toULong())
-}
+expect fun ByteArray.toNSData(): NSData

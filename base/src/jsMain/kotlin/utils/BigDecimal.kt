@@ -67,9 +67,9 @@ private fun bigIntPow(base: dynamic, n: Int): dynamic {
     var b: dynamic = base
     var e = n
     while (e > 0) {
-        if (e and 1 == 1) result = result * b
+        if (e and 1 == 1) result *= b
         e = e shr 1
-        if (e > 0) b = b * b
+        if (e > 0) b *= b
     }
     return result
 }
@@ -83,8 +83,9 @@ private fun digitsOf(value: dynamic): Int {
 /**
  * Pure Kotlin/JS arbitrary-precision signed decimal number backed by [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
  *
- * Represents the value `significand * 10^(-scale)`, mirroring `java.math.BigDecimal`.
+ * Represents the value `significand * 10^(-scale)`, mirroring `java.math.BigDecimal`. This is a custom implementation that may not cover every edge case of the platform decimal types used on other targets.
  */
+@ExperimentalJsDecimal
 class BigDecimal(val significand: dynamic, val scale: Int) {
 
     val isZero: Boolean get() = bigIntEquals(significand, BI_ZERO)
@@ -106,12 +107,12 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         return BigDecimal((a - b).unsafeCast<dynamic>(), maxScale)
     }
 
-    fun multiply(other: BigDecimal, precision: Int? = null, rounding: RoundingMode = RoundHalfEven): BigDecimal {
+    fun multiply(other: BigDecimal, precision: Int = DECIMAL128_PRECISION, rounding: RoundingMode = RoundHalfEven): BigDecimal {
         val raw = BigDecimal((significand * other.significand).unsafeCast<dynamic>(), scale + other.scale)
-        return if (precision != null) raw.round(precision, rounding) else raw
+        return raw.round(precision, rounding)
     }
 
-    fun divide(other: BigDecimal, precision: Int, rounding: RoundingMode = RoundHalfEven): BigDecimal {
+    fun divide(other: BigDecimal, precision: Int = DECIMAL128_PRECISION, rounding: RoundingMode = RoundHalfEven): BigDecimal {
         if (other.isZero) throw ArithmeticException("Division by zero")
         if (isZero) return BigDecimal(BI_ZERO, scale - other.scale)
 

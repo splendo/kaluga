@@ -26,15 +26,15 @@ import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
 
 /**
- * Provides the current [IOSPermissionsHelper.AuthorizationStatus] of a given permission.
+ * Provides the current [ApplePermissionsHelper.AuthorizationStatus] of a given permission.
  */
 interface CurrentAuthorizationStatusProvider {
-    suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus
+    suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus
 }
 
 /**
  * Convenience class for scheduling checks to changes in permission state.
- * @param currentAuthorizationStatusProvider The [CurrentAuthorizationStatusProvider] used for getting the [IOSPermissionsHelper.AuthorizationStatus] of the permission.
+ * @param currentAuthorizationStatusProvider The [CurrentAuthorizationStatusProvider] used for getting the [ApplePermissionsHelper.AuthorizationStatus] of the permission.
  * @param authorizationStatusHandler [AuthorizationStatusHandler] that is notified when changes to a permission occurs.
  * @param coroutineScope The [CoroutineScope] on which to run the checks.
  */
@@ -61,13 +61,13 @@ class PermissionRefreshScheduler(
         }
     }
 
-    private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
+    private var lastPermission: ApplePermissionsHelper.AuthorizationStatus? = null
     internal val waitingLock = Mutex()
     private var timerState: TimerJobState = TimerJobState.TimerNotRunning
     private val lock = Mutex()
 
     /**
-     * Starts monitoring for changes to the [IOSPermissionsHelper.AuthorizationStatus]
+     * Starts monitoring for changes to the [ApplePermissionsHelper.AuthorizationStatus]
      * @param interval The [Duration] between checking for changes to the permission.
      */
     fun startMonitoring(interval: Duration) {
@@ -92,7 +92,7 @@ class PermissionRefreshScheduler(
     }
 
     /**
-     * Stops monitoring for changes to the [IOSPermissionsHelper.AuthorizationStatus].
+     * Stops monitoring for changes to the [ApplePermissionsHelper.AuthorizationStatus].
      */
     fun stopMonitoring() {
         launch {

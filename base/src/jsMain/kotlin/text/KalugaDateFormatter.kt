@@ -269,41 +269,23 @@ private val javaTokenChars = setOf('y', 'Y', 'M', 'd', 'H', 'h', 'k', 'K', 'm', 
 
 private fun translateToken(c: Char, count: Int, forParsing: Boolean): String = when (c) {
     'y', 'Y' -> "y".repeat(count.coerceAtMost(4).coerceAtLeast(1))
-
     'M' -> "M".repeat(count.coerceAtMost(4).coerceAtLeast(1))
-
     'd' -> "d".repeat(count.coerceAtMost(2).coerceAtLeast(1))
-
     'H' -> "H".repeat(count.coerceAtMost(2).coerceAtLeast(1))
-
     'h' -> "h".repeat(count.coerceAtMost(2).coerceAtLeast(1))
-
     'k' -> "H".repeat(count.coerceAtMost(2).coerceAtLeast(1))
-
     'K' -> "h".repeat(count.coerceAtMost(2).coerceAtLeast(1))
-
     'm' -> "m".repeat(count.coerceAtMost(2).coerceAtLeast(1))
-
     's' -> "s".repeat(count.coerceAtMost(2).coerceAtLeast(1))
-
     'S' -> "S".repeat(count.coerceAtMost(3).coerceAtLeast(1))
-
     'a' -> "a"
-
     'Z' -> "ZZZ"
-
     'z' -> if (forParsing) "z" else "ZZZZ"
-
     'X' -> "ZZ"
-
     'G' -> "G"
-
     'E' -> if (count >= 4) "EEEE" else "EEE"
-
     'D' -> "o"
-
     'w', 'W' -> "WW"
-
     else -> c.toString().repeat(count)
 }
 

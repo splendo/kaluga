@@ -22,12 +22,14 @@ import com.splendo.kaluga.test.base.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class NumberFormatterTest : BaseTest() {
 
     companion object {
         private val UnitedStates = createLocale("en", "US")
         private val Netherlands = createLocale("nl", "NL")
+        private val Turkey = createLocale("tr", "TR")
     }
 
     @Test
@@ -124,6 +126,24 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
+    fun testFormatPermillageLocalizesSymbol() {
+        val style = NumberFormatStyle.Permillage(minFractionDigits = 0U, maxFractionDigits = 0U)
+        val us = NumberFormatter(UnitedStates, style).apply { usesGroupingSeparator = false }
+        val turkish = NumberFormatter(Turkey, style).apply { usesGroupingSeparator = false }
+
+        val usResult = us.format(0.5)
+        val trResult = turkish.format(0.5)
+
+        // Both encode 500 per-mille (value is multiplied by 1000)...
+        assertEquals("500", usResult.filter { it.isDigit() })
+        assertEquals("500", trResult.filter { it.isDigit() })
+
+        // ...but the sign is placed per locale: en-US uses a suffix, tr-TR a prefix.
+        assertTrue(usResult.endsWith(us.perMillSymbol), "expected suffix per-mille for en-US, was $usResult")
+        assertTrue(trResult.startsWith(turkish.perMillSymbol), "expected prefix per-mille for tr-TR, was $trResult")
+    }
+
+    @Test
     fun testFormatScientific() {
         val formatters = createFormatters(NumberFormatStyle.Scientific(minFractionDigits = 4U, maxFractionDigits = 4U, minExponent = 2U))
         assertEquals("2.0000E00", formatters.usFormatter.format(2))
@@ -176,6 +196,21 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
+    fun testScientificAndPatternApplyCustomDecimalSeparator() {
+        val scientific = NumberFormatter(UnitedStates, NumberFormatStyle.Scientific(minFractionDigits = 2U, maxFractionDigits = 2U)).apply {
+            decimalSeparator = '!'
+        }
+        val sci = scientific.format(2)
+        assertTrue(sci.contains('!'), "expected custom decimal separator in scientific output, was $sci")
+
+        val pattern = NumberFormatter(UnitedStates, NumberFormatStyle.Pattern("#,##0.00", "-#,##0.00")).apply {
+            decimalSeparator = '!'
+        }
+        val pat = pattern.format(1.5)
+        assertTrue(pat.contains('!'), "expected custom decimal separator in pattern output, was $pat")
+    }
+
+    @Test
     fun testFailToParseInvalidString() {
         val formatter = NumberFormatter(style = NumberFormatStyle.Integer())
         assertNull(formatter.parse("invalid number"))
@@ -189,7 +224,3 @@ class NumberFormatterTest : BaseTest() {
 
     private data class Formatters(val usFormatter: NumberFormatter, val nlFormatter: NumberFormatter)
 }
-
-expect val USDForNL: String
-expect val JPYForUS: String
-expect val JPYForNL: String

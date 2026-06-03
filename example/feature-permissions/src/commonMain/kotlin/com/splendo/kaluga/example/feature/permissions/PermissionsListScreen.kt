@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PermissionsListScreen(onPermissionSelected: (PermissionView) -> Unit, modifier: Modifier = Modifier) {
-    val entries = remember { PermissionView.entries }
+    val entries = remember { availablePermissionViews }
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),

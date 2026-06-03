@@ -13,6 +13,8 @@ kotlinx-kover = "0.9.8"
 dokka = "2.2.0"
 vanniktechMavenPublish = "0.36.0"
 palantir-git-version = "5.0.0"
+# CLDR release used by the :base:generateDefaultCurrencyMap codegen task (see https://github.com/unicode-org/cldr-json/releases)
+cldr = "48.2.0"
 
 # higher versions of dependencycheck despite being a minor update break the API
 #noinspection NewerVersionAvailable
@@ -29,10 +31,8 @@ androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-arch-core = "2.2.0"
 androidx-browser = "1.10.0"
-# Compose Multiplatform — JetBrains coordinates. CMP wraps AndroidX Compose on the Android target,
-# so Android-only consumers get the same UI runtime as before, but downstream KMP consumers can
-# add iOS/Desktop/Web targets without a separate Compose version.
-compose-multiplatform = "1.11.0"
+
+compose-multiplatform = "1.11.1"
 compose-multiplatform-material3 = "1.11.0-alpha07"
 # Jetbrains-published multiplatform ports of AndroidX libraries — release independently of CMP.
 jetbrains-navigation = "2.9.2"
@@ -96,7 +96,9 @@ kaluga-compose-resources = { module = "com.splendo.kaluga:resources-compose", ve
 kaluga-testutils-architecture = { module = "com.splendo.kaluga:test-utils-architecture", version.ref = "kaluga" }
 kaluga-testutils-alerts = { module = "com.splendo.kaluga:test-utils-alerts", version.ref = "kaluga" }
 kaluga-testutils-base = { module = "com.splendo.kaluga:test-utils-base", version.ref = "kaluga" }
-kaluga-testutils-bluetooth = { module = "com.splendo.kaluga:test-utils-bluetooth", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-base = { module = "com.splendo.kaluga:test-utils-bluetooth-base", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-client = { module = "com.splendo.kaluga:test-utils-bluetooth-client", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-server = { module = "com.splendo.kaluga:test-utils-bluetooth-server", version.ref = "kaluga" }
 kaluga-testutils-datetimepicker = { module = "com.splendo.kaluga:test-utils-date-time-picker", version.ref = "kaluga" }
 kaluga-testutils-resources = { module = "com.splendo.kaluga:test-utils-resources", version.ref = "kaluga" }
 kaluga-testutils-hud = { module = "com.splendo.kaluga:test-utils-hud", version.ref = "kaluga" }

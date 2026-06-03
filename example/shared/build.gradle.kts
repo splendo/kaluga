@@ -75,7 +75,8 @@ kaluga {
                 // For `ProvideNSWindow` at the macOS entry point + `AttachToCompose` extensions.
                 api("com.splendo.kaluga:lifecycle-compose:${project.rootProject.version}")
                 api(project(":feature-beacons"))
-                api(project(":feature-bluetooth"))
+                api(project(":feature-bluetooth-client"))
+                api(project(":feature-bluetooth-server"))
                 api(project(":feature-datetime"))
                 api(project(":feature-links"))
                 api(project(":feature-localization"))

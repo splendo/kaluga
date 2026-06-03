@@ -37,10 +37,6 @@ import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -48,13 +44,14 @@ import org.koin.compose.koinInject
 fun PermissionScreen(permissionView: PermissionView, modifier: Modifier = Modifier) {
     val builder: PermissionsBuilder = koinInject()
     val composeScope = rememberCoroutineScope()
-    val permissionScope = remember { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
-    DisposableEffect(permissionView) { onDispose { permissionScope.cancel() } }
 
     val permission = remember(permissionView) { permissionView.permission }
-    val permissions = remember(permissionView) {
-        Permissions(builder, permissionScope.coroutineContext)
-    }
+    // Use the default (single-threaded) permission dispatcher: the permission state machines
+    // require serialized confinement. Passing a multi-threaded context (e.g. Dispatchers.Default)
+    // breaks the request transition, so the OS permission dialog never appears.
+    val permissions = remember(permissionView) { Permissions(builder) }
+    DisposableEffect(permissions) { onDispose { permissions.clean() } }
+
     val state by remember(permissionView) { permissions[permission] }
         .collectAsState(initial = null)
 

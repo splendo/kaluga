@@ -26,6 +26,7 @@ import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
+import com.splendo.kaluga.media.MediaSurfaceProvider
 import com.splendo.kaluga.media.compose.ComposeMediaSurfaceProvider
 import com.splendo.kaluga.media.duration
 import com.splendo.kaluga.media.isVideo
@@ -56,8 +57,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * - [DefaultMediaPlayer] is wired with that provider, so a [MediaSurfaceContainer] composed in the
  *   screen pushes its native surface straight into the player.
  */
-class MediaViewModel private constructor(val surfaceProvider: ComposeMediaSurfaceProvider, builder: BaseMediaManager.Builder) :
-    LifecycleViewModel(subscribables = listOf(surfaceProvider)) {
+class MediaViewModel(val surfaceProvider: MediaSurfaceProvider, builder: BaseMediaManager.Builder) : LifecycleViewModel(subscribables = listOf(surfaceProvider)) {
 
     constructor(builder: BaseMediaManager.Builder) : this(ComposeMediaSurfaceProvider(), builder)
 

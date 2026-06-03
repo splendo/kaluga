@@ -31,6 +31,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
 class DateFormatterTest {
@@ -95,8 +96,10 @@ class DateFormatterTest {
         val usFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, UnitedStatesLocale)
         val frFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, FranceLocale)
 
-        assertEquals("1:37:42 PM", usFormatter.format(March181988).replace(" ", " ").replace(" ", " "))
-        assertEquals(expectedFrenchMediumTime, frFormatter.format(March181988).replace(' ', ' ').replace(' ', ' '))
+        // Some platforms use different whitespace here.
+        fun String.simplifyWhitespace() = replace('\u202F', ' ').replace(Typography.nbsp, ' ')
+        assertEquals("1:37:42 PM", usFormatter.format(March181988).simplifyWhitespace())
+        assertEquals(expectedFrenchMediumTime, frFormatter.format(March181988).simplifyWhitespace())
     }
 
     @Test
@@ -138,6 +141,9 @@ class DateFormatterTest {
     }
 }
 
-expect val expectedFrenchMediumTime: String
-
-expect val parseAbbreviationTolerance: Duration
+val expectedFrenchMediumTime: String get() = if (isLegacyLocalization) "1:37:42 PM" else "13:37:42"
+val parseAbbreviationTolerance: Duration get() = if (isLegacyLocalization) 1.hours else Duration.ZERO
+val expectedNlPdtZoneName: String get() = if (isLegacyLocalization) "GMT-07:00" else "PDT"
+val USDForNL: String = "US$"
+val JPYForUS: String = "¥"
+val JPYForNL: String = "JP¥"

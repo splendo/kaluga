@@ -1,7 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
-// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
-// Alias: macos => [macosArm64, macosX64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: ios => [iosArm64, iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -47,7 +46,7 @@ open class com.splendo.kaluga.lifecycle/DefaultViewControllerLifecycleSubscribab
 // Targets: [ios]
 final fun (com.splendo.kaluga.lifecycle/ViewControllerLifecycleSubscribable).com.splendo.kaluga.lifecycle/subscribe(platform.UIKit/UIViewController) // com.splendo.kaluga.lifecycle/subscribe|subscribe@com.splendo.kaluga.lifecycle.ViewControllerLifecycleSubscribable(platform.UIKit.UIViewController){}[0]
 
-// Targets: [macos]
+// Targets: [macosArm64]
 abstract interface com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable|null[0]
     abstract val manager // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.manager|{}manager[0]
         abstract fun <get-manager>(): com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.LifecycleManager? // com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable.manager.<get-manager>|<get-manager>(){}[0]
@@ -69,7 +68,7 @@ abstract interface com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable : co
     }
 }
 
-// Targets: [macos]
+// Targets: [macosArm64]
 open class com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable : com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable { // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable|null[0]
     constructor <init>() // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.<init>|<init>(){}[0]
 
@@ -81,5 +80,5 @@ open class com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable : com
     open fun unsubscribe() // com.splendo.kaluga.lifecycle/DefaultWindowLifecycleSubscribable.unsubscribe|unsubscribe(){}[0]
 }
 
-// Targets: [macos]
+// Targets: [macosArm64]
 final fun (com.splendo.kaluga.lifecycle/WindowLifecycleSubscribable).com.splendo.kaluga.lifecycle/subscribe(platform.AppKit/NSWindow) // com.splendo.kaluga.lifecycle/subscribe|subscribe@com.splendo.kaluga.lifecycle.WindowLifecycleSubscribable(platform.AppKit.NSWindow){}[0]

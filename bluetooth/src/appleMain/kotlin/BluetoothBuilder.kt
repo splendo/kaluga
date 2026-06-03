@@ -3,23 +3,20 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
+import com.splendo.kaluga.bluetooth.server.BluetoothServerBuilder
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
-import com.splendo.kaluga.bluetooth.server.IOSServerState
-import com.splendo.kaluga.bluetooth.server.KalugaCBPeripheralManagerDelegate
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import platform.Foundation.NSBundle
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A default implementation of [BaseBluetoothBuilder]
+ * A default implementation of [BaseBluetoothBuilder] that delegates the client side to [BluetoothClientBuilder] and the server side to [BluetoothServerBuilder].
  * @param bundle the [NSBundle] in which Bluetooth should run
  * @param permissionsBuilder a method for creating the [Permissions] object to manage the Bluetooth permissions.
- * Needs to have [com.splendo.kaluga.permissions.bluetooth.BluetoothPermission] registered.
+ * Needs to have [com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder] registered.
  * @param scannerBuilder the [BaseScanner.Builder] for creating the [BaseScanner] to handle scanning
  */
 actual class BluetoothBuilder(
@@ -35,25 +32,15 @@ actual class BluetoothBuilder(
     private val scannerBuilder: DefaultScanner.Builder = DefaultScanner.Builder(),
 ) : BaseBluetoothBuilder {
 
-    actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth = Bluetooth(
-        { scannerContext ->
-            scannerSettingsBuilder(permissionsBuilder(scannerContext))
-        },
-        scannerBuilder,
-        coroutineContext,
-    )
+    private val clientBuilder = BluetoothClientBuilder(bundle, permissionsBuilder, scannerBuilder)
+    private val serverBuilder = BluetoothServerBuilder(bundle, permissionsBuilder)
+
+    actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): BluetoothClient =
+        clientBuilder.createClient(scannerSettingsBuilder, coroutineContext)
 
     actual override suspend fun createServer(
         settingsBuilder: (Permissions) -> ServerSettings,
         coroutineContext: CoroutineContext,
         specs: BluetoothServerDSL.() -> Unit,
-    ): BluetoothServer {
-        val settings = settingsBuilder(permissionsBuilder(coroutineContext))
-        val initialState = IOSServerState.AwaitingPermissions(
-            settings.permissions[BluetoothPermission(BluetoothPermission.Type.Server)] as BluetoothPermissionStateRepo,
-            KalugaCBPeripheralManagerDelegate(settings.logger, coroutineContext),
-            settings.logger,
-        )
-        return BluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
-    }
+    ): BluetoothServer = serverBuilder.createServer(settingsBuilder, coroutineContext, specs)
 }

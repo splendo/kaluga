@@ -5,11 +5,13 @@ plugins {
 kaluga {
     moduleName = "test.permissions"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         common {
             main {
                 api(project(":test-utils-base"))
-                api(project(":permissions"))
+                api(project(":base-permissions"))
             }
         }
     }

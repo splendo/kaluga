@@ -20,7 +20,7 @@ package com.splendo.kaluga.example.feature.beacons
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.beacons.DefaultBeacons
 import com.splendo.kaluga.example.arch.DetailScaffold
@@ -41,10 +41,10 @@ class BeaconsContribution : FeatureContribution {
     }
 }
 
-/** Owns the [Beacons] singleton, which sits on top of the [com.splendo.kaluga.bluetooth.Bluetooth]
+/** Owns the [Beacons] singleton, which sits on top of the [com.splendo.kaluga.bluetooth.BluetoothClient]
  *  client registered by `:feature-bluetooth` — beacons reuses the same scanner pipeline rather
  *  than spinning up a parallel one. */
 val beaconsFeatureModule: Module = module {
-    single<Beacons> { DefaultBeacons(bluetooth = get<Bluetooth>(), logger = get()) }
+    single<Beacons> { DefaultBeacons(bluetooth = get<BluetoothClient>(), logger = get()) }
     single { BeaconsContribution() } bind FeatureContribution::class
 }

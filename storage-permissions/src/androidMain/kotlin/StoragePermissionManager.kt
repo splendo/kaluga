@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.storage
 
 import android.Manifest
 import android.content.Context
+import android.os.Build
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
@@ -26,6 +27,24 @@ import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
+
+/**
+ * The Android runtime permissions backing a [StoragePermission].
+ * From Android 13 (API 33) the legacy `READ_EXTERNAL_STORAGE`/`WRITE_EXTERNAL_STORAGE` permissions
+ * are no longer granted; access to shared media is gated by the granular `READ_MEDIA_*` permissions instead.
+ */
+private fun storageAndroidPermissions(allowWrite: Boolean): Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    arrayOf(
+        Manifest.permission.READ_MEDIA_IMAGES,
+        Manifest.permission.READ_MEDIA_VIDEO,
+        Manifest.permission.READ_MEDIA_AUDIO,
+    )
+} else {
+    listOfNotNull(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        if (allowWrite) Manifest.permission.WRITE_EXTERNAL_STORAGE else null,
+    ).toTypedArray()
+}
 
 /**
  * The [BasePermissionManager] to use as a default for [StoragePermission]
@@ -40,10 +59,7 @@ actual class DefaultStoragePermissionManager(context: Context, storagePermission
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
-        listOfNotNull(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            if (storagePermission.allowWrite) Manifest.permission.WRITE_EXTERNAL_STORAGE else null,
-        ).toTypedArray(),
+        storageAndroidPermissions(storagePermission.allowWrite),
         coroutineScope,
         logTag,
         logger,

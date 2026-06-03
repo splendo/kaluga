@@ -5,6 +5,8 @@ plugins {
 kaluga {
     moduleName = "permissions.location"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         android {
             main {

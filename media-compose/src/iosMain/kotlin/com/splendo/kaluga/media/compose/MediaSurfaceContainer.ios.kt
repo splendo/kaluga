@@ -22,13 +22,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.UIKitView
 import com.splendo.kaluga.media.MediaSurface
+import com.splendo.kaluga.media.MediaSurfaceProvider
 import kotlinx.cinterop.readValue
 import platform.AVFoundation.AVPlayerLayer
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIView
 
 @Composable
-actual fun MediaSurfaceContainer(provider: ComposeMediaSurfaceProvider, modifier: Modifier) {
+actual fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier) {
+    val composeProvider = provider as? ComposeMediaSurfaceProvider ?: return
     UIKitView(
         modifier = modifier,
         factory = {
@@ -40,11 +42,11 @@ actual fun MediaSurfaceContainer(provider: ComposeMediaSurfaceProvider, modifier
                 }
             }
             view.layer.addSublayer(layer)
-            provider.set(MediaSurface(layer))
+            composeProvider.set(MediaSurface(layer))
             view
         },
     )
-    DisposableEffect(provider) {
-        onDispose { provider.set(null) }
+    DisposableEffect(composeProvider) {
+        onDispose { composeProvider.set(null) }
     }
 }

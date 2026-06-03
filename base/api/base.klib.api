@@ -1,7 +1,8 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64]
-// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
-// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: ios => [iosArm64, iosSimulatorArm64]
+// Alias: tvos => [tvosArm64, tvosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -2892,7 +2893,7 @@ final fun (kotlin/ByteArray).com.splendo.kaluga.base.utils/toNSData(): platform.
 // Targets: [apple]
 final fun (platform.Foundation/NSData).com.splendo.kaluga.base.utils/toByteArray(): kotlin/ByteArray // com.splendo.kaluga.base.utils/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
 
-// Targets: [apple]
+// Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
 final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/ULong = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.ULong){0§<kotlin.Any?>}[0]
 
 // Targets: [ios]
@@ -2964,3 +2965,6 @@ final class com.splendo.kaluga.base.utils/BigDecimal { // com.splendo.kaluga.bas
         final fun fromString(kotlin/String): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.fromString|fromString(kotlin.String){}[0]
     }
 }
+
+// Targets: [watchosArm64]
+final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/UInt = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.UInt){0§<kotlin.Any?>}[0]

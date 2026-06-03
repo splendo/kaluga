@@ -19,12 +19,21 @@ package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
+import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 import kotlin.time.Duration
+
+private const val NS_MICROPHONE_USAGE_DESCRIPTION = "NSMicrophoneUsageDescription"
+
+internal expect suspend fun currentMicrophoneAuthorizationStatus(): ApplePermissionsHelper.AuthorizationStatus
+internal expect suspend fun requestMicrophoneAccess(): ApplePermissionsHelper.AuthorizationStatus
+internal expect fun isMicrophoneAvailable(): Boolean
 
 /**
  * The [BasePermissionManager] to use as a default for [MicrophonePermission]
@@ -32,22 +41,34 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultMicrophonePermissionManager(bundle: NSBundle, settings: Settings, coroutineScope: CoroutineScope) :
+actual class DefaultMicrophonePermissionManager(private val bundle: NSBundle, settings: Settings, coroutineScope: CoroutineScope) :
     BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
-    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeMicrophone(), permissionHandler, coroutineScope)
+    private val provider = object : CurrentAuthorizationStatusProvider {
+        override suspend fun provide(): ApplePermissionsHelper.AuthorizationStatus = currentMicrophoneAuthorizationStatus()
+    }
+    private val timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     actual override fun requestPermissionDidStart() {
-        avPermissionHelper.requestPermission()
+        if (ApplePermissionsHelper.missingDeclarationsInPList(bundle, NS_MICROPHONE_USAGE_DESCRIPTION).isEmpty()) {
+            permissionHandler.requestAuthorizationStatus(timerHelper, this) {
+                requestMicrophoneAccess()
+            }
+        } else {
+            permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Denied)
+        }
     }
 
     actual override fun monitoringDidStart(interval: Duration) {
-        avPermissionHelper.startMonitoring(interval)
+        when {
+            !isMicrophoneAvailable() -> permissionHandler.status(ApplePermissionsHelper.AuthorizationStatus.Denied)
+            else -> timerHelper.startMonitoring(interval)
+        }
     }
 
     actual override fun monitoringDidStop() {
-        avPermissionHelper.stopMonitoring()
+        timerHelper.stopMonitoring()
     }
 }
 

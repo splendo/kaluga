@@ -14,7 +14,6 @@ kaluga {
         }
         common {
             main {
-                // api: `ReviewManager.Builder` extends `LifecycleSubscribable`.
                 api(project(":lifecycle", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))

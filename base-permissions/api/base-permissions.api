@@ -23,6 +23,7 @@ public final class com/splendo/kaluga/permissions/base/AndroidPermissionsManager
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public final fun getHasPermissions ()Z
 	public final fun requestPermissions ()V
+	public final fun requestPermissions ([Ljava/lang/String;)V
 	public final fun startMonitoring-LRDsOJo (J)V
 	public final fun stopMonitoring ()V
 }

@@ -24,26 +24,28 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.splendo.kaluga.media.MediaSurface
+import com.splendo.kaluga.media.MediaSurfaceProvider
 
 @Composable
-actual fun MediaSurfaceContainer(provider: ComposeMediaSurfaceProvider, modifier: Modifier) {
+actual fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier) {
+    val composeProvider = provider as? ComposeMediaSurfaceProvider ?: return
     AndroidView(
         modifier = modifier,
         factory = { context ->
             SurfaceView(context).apply {
                 holder.addCallback(object : SurfaceHolder.Callback {
                     override fun surfaceCreated(holder: SurfaceHolder) {
-                        provider.set(MediaSurface(holder))
+                        composeProvider.set(MediaSurface(holder))
                     }
                     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) = Unit
                     override fun surfaceDestroyed(holder: SurfaceHolder) {
-                        provider.set(null)
+                        composeProvider.set(null)
                     }
                 })
             }
         },
     )
-    DisposableEffect(provider) {
-        onDispose { provider.set(null) }
+    DisposableEffect(composeProvider) {
+        onDispose { composeProvider.set(null) }
     }
 }

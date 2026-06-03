@@ -18,14 +18,7 @@
 package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.IOSVersion
-import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.BasePermissionManager
-import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
-import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.base.PermissionContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import platform.CoreLocation.CLAccuracyAuthorization
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
@@ -36,128 +29,64 @@ import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
 import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import platform.CoreLocation.kCLLocationAccuracyBest
 import platform.CoreLocation.kCLLocationAccuracyReduced
-import platform.Foundation.NSBundle
-import platform.darwin.NSObject
-import kotlin.time.Duration
 
 private const val NS_LOCATION_WHEN_IN_USE_USAGE_DESCRIPTION = "NSLocationWhenInUseUsageDescription"
 private const val NS_LOCATION_ALWAYS_AND_WHEN_IN_USAGE_DESCRIPTION = "NSLocationAlwaysAndWhenInUseUsageDescription"
 private const val NS_LOCATION_ALWAYS_USAGE_DESCRIPTION = "NSLocationAlwaysUsageDescription"
 
-/**
- * The [BasePermissionManager] to use as a default for [LocationPermission]
- * @param bundle the [NSBundle] the [LocationPermission] is to be granted in
- * @param locationPermission the [LocationPermission] to manage
- * @param settings the [Settings] to apply to this manager.
- * @param coroutineScope the [CoroutineScope] of this manager.
- */
-actual class DefaultLocationPermissionManager(private val bundle: NSBundle, locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope) :
-    BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
+internal actual fun CLLocationManager.configureForLocationPermission(permission: LocationPermission) {
+    allowsBackgroundLocationUpdates = permission.background
+    desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
+}
 
-    private class Delegate(
-        private val locationPermission: LocationPermission,
-        private val onPermissionChanged: AuthorizationStatusHandler,
-        private val coroutineScope: CoroutineScope,
-    ) : NSObject(),
-        KalugaLocationPermissionDelegateProtocol {
-        override fun didChangeAuthorizationForLocationManager(manager: CLLocationManager) {
-            onPermissionChanged.status(manager.authorizationStatus(locationPermission))
-        }
-    }
-
-    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
-    private val locationManager = MainCLLocationManagerAccessor {
-        allowsBackgroundLocationUpdates = permission.background
-        desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
-    }
-
-    private val authorizationDelegate = Delegate(permission, permissionHandler, coroutineScope)
-    private var locationWrapper: KalugaLocationPermissionWrapper? = null
-
-    actual override fun requestPermissionDidStart() {
-        val locationDeclarations = listOf(NS_LOCATION_WHEN_IN_USE_USAGE_DESCRIPTION) + if (permission.background) {
-            listOf(NS_LOCATION_ALWAYS_AND_WHEN_IN_USAGE_DESCRIPTION, NS_LOCATION_ALWAYS_USAGE_DESCRIPTION)
-        } else {
-            emptyList()
-        }
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
-            launch {
-                locationManager.updateLocationManager {
-                    if (permission.background) {
-                        requestAlwaysAuthorization()
-                    } else {
-                        requestWhenInUseAuthorization()
-                    }
-                }
-            }
-        } else {
-            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
-        }
-    }
-
-    actual override fun monitoringDidStart(interval: Duration) {
-        val permission = permission
-        launch {
-            val status = locationManager.updateLocationManager {
-                locationWrapper?.unlink()
-                locationWrapper = KalugaLocationPermissionWrapper.createByLinkingWithLocationManager(this, authorizationDelegate)
-                authorizationStatus(permission)
-            }
-            permissionHandler.status(status)
-        }
-    }
-
-    actual override fun monitoringDidStop() {
-        launch {
-            locationManager.updateLocationManager {
-                locationWrapper?.unlink()
-                locationWrapper = null
-            }
-        }
+internal actual fun locationUsageDescriptions(permission: LocationPermission): List<String>? = buildList {
+    add(NS_LOCATION_WHEN_IN_USE_USAGE_DESCRIPTION)
+    if (permission.background) {
+        addAll(listOf(NS_LOCATION_ALWAYS_AND_WHEN_IN_USAGE_DESCRIPTION, NS_LOCATION_ALWAYS_USAGE_DESCRIPTION))
     }
 }
 
-/**
- * A [BaseLocationPermissionManagerBuilder]
- * @param context the [PermissionContext] this permissions manager builder runs on
- */
-actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
-
-    actual override fun create(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope): LocationPermissionManager =
-        DefaultLocationPermissionManager(context, locationPermission, settings, coroutineScope)
+internal actual fun CLLocationManager.requestLocationAuthorization(permission: LocationPermission) {
+    if (permission.background) {
+        requestAlwaysAuthorization()
+    } else {
+        requestWhenInUseAuthorization()
+    }
 }
 
-private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = when (first) {
-    kCLAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+actual fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): ApplePermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion >
+    IOSVersion(13)
+) {
+    authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
+} else {
+    CLLocationManager.authorizationStatus() to true
+}.toAuthorizationStatus(locationPermission)
 
-    kCLAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permission: LocationPermission): ApplePermissionsHelper.AuthorizationStatus = when (first) {
+    kCLAuthorizationStatusNotDetermined -> ApplePermissionsHelper.AuthorizationStatus.NotDetermined
 
-    kCLAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    kCLAuthorizationStatusRestricted -> ApplePermissionsHelper.AuthorizationStatus.Restricted
+
+    kCLAuthorizationStatusDenied -> ApplePermissionsHelper.AuthorizationStatus.Denied
 
     kCLAuthorizationStatusAuthorizedAlways -> {
         if (permission.precise && !second) {
-            IOSPermissionsHelper.AuthorizationStatus.Denied
+            ApplePermissionsHelper.AuthorizationStatus.Denied
         } else {
-            IOSPermissionsHelper.AuthorizationStatus.Authorized
+            ApplePermissionsHelper.AuthorizationStatus.Authorized
         }
     }
 
     kCLAuthorizationStatusAuthorizedWhenInUse -> {
         if (permission.background || (permission.precise && !second)) {
-            IOSPermissionsHelper.AuthorizationStatus.Denied
+            ApplePermissionsHelper.AuthorizationStatus.Denied
         } else {
-            IOSPermissionsHelper.AuthorizationStatus.Authorized
+            ApplePermissionsHelper.AuthorizationStatus.Authorized
         }
     }
 
     else -> {
         com.splendo.kaluga.logging.error("Unknown CLAuthorizationStatus $first")
-        IOSPermissionsHelper.AuthorizationStatus.Denied
+        ApplePermissionsHelper.AuthorizationStatus.Denied
     }
 }
-
-fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion > IOSVersion(13)) {
-    authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
-} else {
-    CLLocationManager.authorizationStatus() to true
-}.toAuthorizationStatus(locationPermission)

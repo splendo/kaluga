@@ -1,5 +1,7 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: ios => [iosArm64, iosSimulatorArm64]
+// Alias: tvos => [tvosArm64, tvosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -21,21 +23,39 @@ final class com.splendo.kaluga.permissions.notifications/DefaultNotificationsPer
         final val notificationCenter // com.splendo.kaluga.permissions.notifications/DefaultNotificationsPermissionManager.Provider.notificationCenter|{}notificationCenter[0]
             final fun <get-notificationCenter>(): platform.UserNotifications/UNUserNotificationCenter // com.splendo.kaluga.permissions.notifications/DefaultNotificationsPermissionManager.Provider.notificationCenter.<get-notificationCenter>|<get-notificationCenter>(){}[0]
 
-        final suspend fun provide(): com.splendo.kaluga.permissions.base/IOSPermissionsHelper.AuthorizationStatus // com.splendo.kaluga.permissions.notifications/DefaultNotificationsPermissionManager.Provider.provide|provide(){}[0]
+        final suspend fun provide(): com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus // com.splendo.kaluga.permissions.notifications/DefaultNotificationsPermissionManager.Provider.provide|provide(){}[0]
     }
 }
 
 final class com.splendo.kaluga.permissions.notifications/NotificationOptions { // com.splendo.kaluga.permissions.notifications/NotificationOptions|null[0]
-    constructor <init>(kotlin/ULong) // com.splendo.kaluga.permissions.notifications/NotificationOptions.<init>|<init>(kotlin.ULong){}[0]
-
     final val options // com.splendo.kaluga.permissions.notifications/NotificationOptions.options|{}options[0]
+        // Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
         final fun <get-options>(): kotlin/ULong // com.splendo.kaluga.permissions.notifications/NotificationOptions.options.<get-options>|<get-options>(){}[0]
 
-    final fun component1(): kotlin/ULong // com.splendo.kaluga.permissions.notifications/NotificationOptions.component1|component1(){}[0]
-    final fun copy(kotlin/ULong = ...): com.splendo.kaluga.permissions.notifications/NotificationOptions // com.splendo.kaluga.permissions.notifications/NotificationOptions.copy|copy(kotlin.ULong){}[0]
+        // Targets: [watchosArm64]
+        final fun <get-options>(): kotlin/UInt // com.splendo.kaluga.permissions.notifications/NotificationOptions.options.<get-options>|<get-options>(){}[0]
+
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.permissions.notifications/NotificationOptions.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.permissions.notifications/NotificationOptions.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.permissions.notifications/NotificationOptions.toString|toString(){}[0]
+
+    // Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
+    constructor <init>(kotlin/ULong) // com.splendo.kaluga.permissions.notifications/NotificationOptions.<init>|<init>(kotlin.ULong){}[0]
+
+    // Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
+    final fun component1(): kotlin/ULong // com.splendo.kaluga.permissions.notifications/NotificationOptions.component1|component1(){}[0]
+
+    // Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
+    final fun copy(kotlin/ULong = ...): com.splendo.kaluga.permissions.notifications/NotificationOptions // com.splendo.kaluga.permissions.notifications/NotificationOptions.copy|copy(kotlin.ULong){}[0]
+
+    // Targets: [watchosArm64]
+    constructor <init>(kotlin/UInt) // com.splendo.kaluga.permissions.notifications/NotificationOptions.<init>|<init>(kotlin.UInt){}[0]
+
+    // Targets: [watchosArm64]
+    final fun component1(): kotlin/UInt // com.splendo.kaluga.permissions.notifications/NotificationOptions.component1|component1(){}[0]
+
+    // Targets: [watchosArm64]
+    final fun copy(kotlin/UInt = ...): com.splendo.kaluga.permissions.notifications/NotificationOptions // com.splendo.kaluga.permissions.notifications/NotificationOptions.copy|copy(kotlin.UInt){}[0]
 }
 
 final class com.splendo.kaluga.permissions.notifications/NotificationsPermission : com.splendo.kaluga.permissions.base/Permission { // com.splendo.kaluga.permissions.notifications/NotificationsPermission|null[0]

@@ -5,6 +5,8 @@ plugins {
 kaluga {
     moduleName = "lifecycle"
     supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     supportJVM = true
     supportJS = true
     dependencies {
@@ -16,7 +18,7 @@ kaluga {
         }
         common {
             test {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":test-utils-lifecycle", ""))
             }
         }
     }
