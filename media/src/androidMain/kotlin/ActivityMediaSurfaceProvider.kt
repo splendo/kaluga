@@ -18,8 +18,8 @@
 package com.splendo.kaluga.media
 
 import android.view.SurfaceHolder
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleManagerObserver
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

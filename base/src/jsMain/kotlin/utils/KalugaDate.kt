@@ -19,7 +19,12 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.externals.DateTime
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
+
+private const val DEFAULT_LOCALE_TAG = "en-US"
+private val MILLISECONDS_PER_DAY = 24.hours.toDouble(DurationUnit.MILLISECONDS)
 
 actual typealias KalugaDateHolder = kotlin.js.Date
 
@@ -56,7 +61,7 @@ actual class DefaultKalugaDate internal constructor(private var dt: dynamic) : K
     actual override var era: Int
         get() = if (dt.year.unsafeCast<Int>() >= 1) 1 else 0
         set(_) {
-            // luxon doesn't expose a settable era; treat as no-op for non-historical use.
+            // luxon has no settable era.
         }
 
     actual override var year: Int
@@ -146,7 +151,7 @@ actual class DefaultKalugaDate internal constructor(private var dt: dynamic) : K
         get() = dt.toMillis().unsafeCast<Double>().toLong().milliseconds
         set(value) {
             val zone = dt.zoneName.unsafeCast<String>()
-            val locale = dt.locale.unsafeCast<String?>() ?: "en-US"
+            val locale = dt.locale.unsafeCast<String?>() ?: DEFAULT_LOCALE_TAG
             dt = DateTime.fromMillis(value.inWholeMilliseconds.toDouble(), js("({zone: zone, locale: locale})"))
         }
 
@@ -214,7 +219,7 @@ private fun minimalDaysForLocale(localeTag: String): Int = try {
 }
 
 private fun computeWeekOfYear(dt: dynamic): Int {
-    val localeTag = dt.locale.unsafeCast<String?>() ?: "en-US"
+    val localeTag = dt.locale.unsafeCast<String?>() ?: DEFAULT_LOCALE_TAG
     val firstDayCalendar = firstWeekDayForLocale(localeTag)
     val firstDayIso = calendarToIsoWeekday(firstDayCalendar)
     val minimalDays = minimalDaysForLocale(localeTag)
@@ -226,10 +231,10 @@ private fun computeWeekOfYear(dt: dynamic): Int {
     if (dayStart < weekStartMs) {
         // Date is in the last week of the previous year.
         val prevFirst = computeFirstWeekStart(year - 1, firstDayIso, minimalDays, zone)
-        val daysSince = ((dayStart - prevFirst.toMillis().unsafeCast<Double>()) / 86_400_000.0).toInt()
+        val daysSince = ((dayStart - prevFirst.toMillis().unsafeCast<Double>()) / MILLISECONDS_PER_DAY).toInt()
         return (daysSince / 7) + 1
     }
-    val daysSince = ((dayStart - weekStartMs) / 86_400_000.0).toInt()
+    val daysSince = ((dayStart - weekStartMs) / MILLISECONDS_PER_DAY).toInt()
     return (daysSince / 7) + 1
 }
 
@@ -250,7 +255,7 @@ private fun computeFirstWeekStart(year: Int, firstDayIso: Int, minimalDays: Int,
 }
 
 private fun computeWeekOfMonth(dt: dynamic): Int {
-    val localeTag = dt.locale.unsafeCast<String?>() ?: "en-US"
+    val localeTag = dt.locale.unsafeCast<String?>() ?: DEFAULT_LOCALE_TAG
     val firstDayCalendar = firstWeekDayForLocale(localeTag)
     val firstDayIso = calendarToIsoWeekday(firstDayCalendar)
     val firstOfMonth = dt.startOf("month")
@@ -260,6 +265,6 @@ private fun computeWeekOfMonth(dt: dynamic): Int {
     val firstWeekStart = firstOfMonth.minus(js("({days: daysBackInt})"))
     val dayStart = dt.startOf("day").toMillis().unsafeCast<Double>()
     val weekStartMs = firstWeekStart.toMillis().unsafeCast<Double>()
-    val daysSince = ((dayStart - weekStartMs) / 86_400_000.0).toInt()
+    val daysSince = ((dayStart - weekStartMs) / MILLISECONDS_PER_DAY).toInt()
     return (daysSince / 7) + 1
 }

@@ -4,6 +4,9 @@ plugins {
 
 kaluga {
     moduleName = "permissions.microphone"
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         common {
             main {

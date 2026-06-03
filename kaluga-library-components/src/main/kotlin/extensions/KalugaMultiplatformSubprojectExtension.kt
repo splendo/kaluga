@@ -44,6 +44,7 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 import java.io.BufferedWriter
 import java.io.File
@@ -57,14 +58,27 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     objects: ObjectFactory,
 ) : BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
 
-    companion object {
-        private const val TEST_DEPENDENT_PROJECTS_ENV_NAME = "TEST_DEPENDENT_PROJECTS"
-        private const val ON_CI_ENV_NAME = "CI"
-    }
+    val isMacOs = Os.isFamily(Os.FAMILY_MAC)
+    val ideaActive = System.getProperty("idea.active") == "true"
+    val isAppleSilicon = System.getProperty("os.arch") == "aarch64"
+
     private enum class IOSTarget(val sourceSetName: String) {
-        X64("iosX64"),
         Arm64("iosArm64"),
         SimulatorArm64("iosSimulatorArm64"),
+    }
+
+    private enum class MacOSTarget(val sourceSetName: String) {
+        Arm64("macosArm64"),
+    }
+
+    private enum class TVOSTarget(val sourceSetName: String) {
+        Arm64("tvosArm64"),
+        SimulatorArm64("tvosSimulatorArm64"),
+    }
+
+    private enum class WatchOSTarget(val sourceSetName: String) {
+        Arm64("watchosArm64"),
+        SimulatorArm64("watchosSimulatorArm64"),
     }
 
     var supportJVM: Boolean = false
@@ -102,6 +116,106 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
     var iosDeploymentTarget: String = "15.0"
+    var macosDeploymentTarget: String = "11.0"
+    var tvosDeploymentTarget: String = "15.0"
+    var watchosDeploymentTarget: String = "8.0"
+
+    /**
+     * When `true`, this module is also compiled for `macosArm64`.
+     *
+     * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
+     * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
+     * the macOS targets.
+     */
+    var supportMacOS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                macosTargetsToRegister().forEach { macosTarget ->
+                    val target = when (macosTarget) {
+                        MacOSTarget.Arm64 -> multiplatformExtension.macosArm64()
+                    }
+                    registeredMacosTargets += target
+                }
+            }
+        }
+
+    /**
+     * When `true`, this module is also compiled for `tvosArm64` and `tvosSimulatorArm64`.
+     *
+     * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
+     * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
+     * the tvOS targets.
+     */
+    var supportTvOS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                tvosTargetsToRegister().forEach { tvosTarget ->
+                    val target = when (tvosTarget) {
+                        TVOSTarget.Arm64 -> multiplatformExtension.tvosArm64()
+                        TVOSTarget.SimulatorArm64 -> multiplatformExtension.tvosSimulatorArm64()
+                    }
+                    registeredTvosTargets += target
+                }
+            }
+        }
+
+    /**
+     * When `true`, this module is also compiled for `watchosArm64` and `watchosSimulatorArm64`.
+     *
+     * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
+     * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
+     * the watchOS targets.
+     */
+    var supportWatchOS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                watchosTargetsToRegister().forEach { watchosTarget ->
+                    val target = when (watchosTarget) {
+                        WatchOSTarget.Arm64 -> multiplatformExtension.watchosArm64()
+                        WatchOSTarget.SimulatorArm64 -> multiplatformExtension.watchosSimulatorArm64()
+                    }
+                    registeredWatchosTargets += target
+                }
+            }
+        }
+
+    private val registeredMacosTargets = mutableListOf<KotlinNativeTarget>()
+    private val registeredTvosTargets = mutableListOf<KotlinNativeTarget>()
+    private val registeredWatchosTargets = mutableListOf<KotlinNativeTarget>()
+
+    private fun macosTargetsToRegister(): Set<MacOSTarget> = when {
+        !isMacOs || !isAppleSilicon -> emptySet()
+        !ideaActive -> MacOSTarget.values().toSet()
+        else -> setOf(MacOSTarget.Arm64)
+    }
+
+    private fun tvosTargetsToRegister(): Set<TVOSTarget> {
+        if (!isMacOs) return emptySet()
+        val sdkName = System.getenv("SDK_NAME") ?: "unknown"
+        val isRealTvOSDevice = sdkName.startsWith("appletvos")
+        return when {
+            !ideaActive -> TVOSTarget.values().toSet()
+            isRealTvOSDevice -> setOf(TVOSTarget.Arm64)
+            !isAppleSilicon -> emptySet()
+            else -> setOf(TVOSTarget.SimulatorArm64)
+        }
+    }
+
+    private fun watchosTargetsToRegister(): Set<WatchOSTarget> {
+        if (!isMacOs) return emptySet()
+        val sdkName = System.getenv("SDK_NAME") ?: "unknown"
+        val isRealWatchOSDevice = sdkName.startsWith("watchos")
+        return when {
+            !ideaActive -> WatchOSTarget.values().toSet()
+            isRealWatchOSDevice -> setOf(WatchOSTarget.Arm64)
+            !isAppleSilicon -> emptySet()
+            else -> setOf(WatchOSTarget.SimulatorArm64)
+        }
+    }
+
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
@@ -183,7 +297,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         val iosTargets = project.iosTargets.map { iosTarget ->
             when (iosTarget) {
                 IOSTarget.Arm64 -> iosArm64()
-                IOSTarget.X64 -> iosX64()
                 IOSTarget.SimulatorArm64 -> iosSimulatorArm64()
             }
         }
@@ -195,6 +308,37 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
 
         project.afterEvaluate {
             applyDefaultHierarchyTemplate()
+
+            if (registeredTvosTargets.isNotEmpty()) {
+                val uikitMain = sourceSets.maybeCreate("uikitMain")
+                sourceSets.matching { it.name == "appleMain" }.configureEach {
+                    uikitMain.dependsOn(this)
+                }
+                sourceSets.matching {
+                    it.name in setOf("iosMain", "tvosMain")
+                }.configureEach {
+                    dependsOn(uikitMain)
+                }
+            }
+
+            // When watchOS is supported, split off an intermediate source set covering only the
+            // 64-bit Apple targets. Foundation typealiases like NSUInteger resolve to ULong on
+            // iOS / macOS / tvOS / watchosSimulatorArm64 (arm64) but to UInt on watchosArm64
+            // (arm64_32), and shared `appleMain` code that references them fails the
+            // `compileAppleMainKotlinMetadata` task. Modules can place such code under
+            // `src/apple64BitMain` and ship a parallel `src/watchosArm64Main` copy.
+            if (registeredWatchosTargets.isNotEmpty()) {
+                val apple64BitMain = sourceSets.maybeCreate("apple64BitMain")
+                sourceSets.matching { it.name == "appleMain" }.configureEach {
+                    apple64BitMain.dependsOn(this)
+                }
+                sourceSets.matching {
+                    it.name in setOf("iosMain", "macosMain", "tvosMain", "watchosSimulatorArm64Main")
+                }.configureEach {
+                    dependsOn(apple64BitMain)
+                }
+            }
+
             dependencies {
                 implementation("kotlinx-coroutines-core".asDependency())
 
@@ -274,7 +418,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
 
                 iosMain.configure {
-                    iosDeploymentTarget = "15.0"
                     dependencies {
                         multiplatformDependencies.ios.mainDependencies.forEach {
                             it.execute(this)
@@ -286,6 +429,57 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     dependencies {
                         multiplatformDependencies.ios.testDependencies.forEach {
                             it.execute(this)
+                        }
+                    }
+                }
+
+                if (registeredMacosTargets.isNotEmpty()) {
+                    if (multiplatformDependencies.macos.mainDependencies.isNotEmpty()) {
+                        macosMain.configure {
+                            dependencies {
+                                multiplatformDependencies.macos.mainDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                    if (multiplatformDependencies.macos.testDependencies.isNotEmpty()) {
+                        macosTest.configure {
+                            dependencies {
+                                multiplatformDependencies.macos.testDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                }
+
+                if (registeredTvosTargets.isNotEmpty()) {
+                    if (multiplatformDependencies.tvos.mainDependencies.isNotEmpty()) {
+                        tvosMain.configure {
+                            dependencies {
+                                multiplatformDependencies.tvos.mainDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                    if (multiplatformDependencies.tvos.testDependencies.isNotEmpty()) {
+                        tvosTest.configure {
+                            dependencies {
+                                multiplatformDependencies.tvos.testDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                }
+
+                if (registeredWatchosTargets.isNotEmpty()) {
+                    if (multiplatformDependencies.watchos.mainDependencies.isNotEmpty()) {
+                        watchosMain.configure {
+                            dependencies {
+                                multiplatformDependencies.watchos.mainDependencies.forEach { it.execute(this) }
+                            }
+                        }
+                    }
+                    if (multiplatformDependencies.watchos.testDependencies.isNotEmpty()) {
+                        watchosTest.configure {
+                            dependencies {
+                                multiplatformDependencies.watchos.testDependencies.forEach { it.execute(this) }
+                            }
                         }
                     }
                 }
@@ -332,21 +526,29 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }.standardOutput.asText.map { it.trim() }
 
-            project.configure(iosTargets) {
-                val swiftSourceDir = project.file("src/iosMain/swift")
+            // Swift source-set resolution: `src/iosMain/swift` is iOS-only (current convention);
+            // `src/appleMain/swift` is shared across iOS + macOS. Modules that want their Swift
+            // wrappers to cover macOS too should put them under `appleMain/swift`.
+            val iosSwiftDir = project.file("src/iosMain/swift")
+            val appleSwiftDir = project.file("src/appleMain/swift")
+            fun swiftSourceDirFor(forIos: Boolean): File? = when {
+                forIos && iosSwiftDir.exists() && iosSwiftDir.listFiles().isNotEmpty() -> iosSwiftDir
+                appleSwiftDir.exists() && appleSwiftDir.listFiles().isNotEmpty() -> appleSwiftDir
+                else -> null
+            }
+
+            fun KotlinNativeTarget.configureSwiftAndInterop(swiftSourceDir: File?, deploymentTargetValue: String) {
                 val cinteropSwiftInteropTaskName = "cinteropSwiftInterop${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}"
                 logger.info("cinteropSwiftInteropTask: ${project.name}:$cinteropSwiftInteropTaskName with target: $name ($konanTarget)")
-                val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
+                val buildSwiftLibTask = swiftSourceDir?.let { srcDir ->
                     tasks.register<BuildSwiftLibTask>("buildSwiftLib_$name") {
-                        logger.info("buildSwiftLib_$name registered for $konanTarget with deployment $iosDeploymentTarget")
-                        srcDir.set(swiftSourceDir)
+                        logger.info("buildSwiftLib_$name registered for $konanTarget with deployment $deploymentTargetValue")
+                        this.srcDir.set(srcDir)
                         libraryOutputDir.set(layout.buildDirectory.dir("swift/$name"))
                         headerOutputDir.set(layout.buildDirectory.dir("objc/$name"))
                         target.set(konanTarget)
-                        deploymentTarget.set(iosDeploymentTarget)
+                        deploymentTarget.set(deploymentTargetValue)
                     }
-                } else {
-                    null
                 }
                 compilations.getByName("main").let { main ->
                     main.cinterops.let { mainInterops ->
@@ -403,14 +605,38 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     }
                 }
                 binaries {
-                    frameworkConfig?.let { iosExport ->
-                        framework { iosExport() }
-                    }
                     getTest("DEBUG").apply {
                         freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
                     }
                 }
             }
+
+            project.configure(iosTargets) {
+                configureSwiftAndInterop(swiftSourceDirFor(forIos = true), iosDeploymentTarget)
+                binaries {
+                    frameworkConfig?.let { iosExport ->
+                        framework { iosExport() }
+                    }
+                }
+            }
+
+            // The `registeredMacos/Tvos/WatchosTargets` lists are populated by their respective
+            // `supportXxx` setters, which run after `configureMultiplatform()` — so these lists
+            // are only meaningful inside `afterEvaluate { }`. These targets only consume Swift
+            // sources under `appleMain/swift`.
+            fun configureNonIosTargets(targets: List<KotlinNativeTarget>, deploymentTarget: String) {
+                project.configure(targets) {
+                    configureSwiftAndInterop(swiftSourceDirFor(forIos = false), deploymentTarget)
+                    binaries {
+                        frameworkConfig?.let { export ->
+                            framework { export() }
+                        }
+                    }
+                }
+            }
+            configureNonIosTargets(registeredMacosTargets, macosDeploymentTarget)
+            configureNonIosTargets(registeredTvosTargets, tvosDeploymentTarget)
+            configureNonIosTargets(registeredWatchosTargets, watchosDeploymentTarget)
 
             sourceSets.all {
                 languageSettings {
@@ -423,7 +649,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     optIn("kotlin.ExperimentalStdlibApi")
                     optIn("kotlin.time.ExperimentalTime")
                     optIn("kotlin.ExperimentalStdlibApi")
-                    if (this@all.name.lowercase().contains("ios")) {
+                    val sourceSetName = this@all.name.lowercase()
+                    if (sourceSetName.contains("ios") || sourceSetName.contains("macos") || sourceSetName.contains("tvos") || sourceSetName.contains("watchos") || sourceSetName.contains("apple") || sourceSetName.contains("native") || sourceSetName.contains("uikit")) {
                         optIn("kotlinx.cinterop.ExperimentalForeignApi")
                         optIn("kotlinx.cinterop.BetaInteropApi")
                         optIn("kotlin.experimental.ExperimentalNativeApi")
@@ -477,27 +704,17 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     }
 
     private val Project.iosTargets: Set<IOSTarget> get() {
-        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
+        if (!isMacOs) return emptySet()
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
             logger.info("Run on real ios device: $it from sdk: $sdkName")
         }
 
-        // Run on IntelliJ
-        val ideaActive = (System.getProperty("idea.active") == "true").also {
-            logger.info("Run on IntelliJ: $it")
-        }
-
-        // Run on apple silicon
-        val isAppleSilicon = (System.getProperty("os.arch") == "aarch64").also {
-            logger.info("Run on apple silicon: $it")
-        }
-
         return when {
             !ideaActive -> IOSTarget.values().toSet()
             isRealIOSDevice -> setOf(IOSTarget.Arm64)
-            isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
-            else -> setOf(IOSTarget.X64)
+            !isAppleSilicon -> emptySet()
+            else -> setOf(IOSTarget.SimulatorArm64)
         }
     }
 

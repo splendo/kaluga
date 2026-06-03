@@ -322,7 +322,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
     private fun openBrowser(browserSpec: NavigationSpec.Browser) {
         when (val spec = browserSpec.viewType) {
             NavigationSpec.Browser.Type.Normal -> {
-                UIApplication.sharedApplication.openURL(browserSpec.url)
+                UIApplication.sharedApplication.openURL(browserSpec.url, emptyMap<Any?, Any>(), null)
             }
 
             is NavigationSpec.Browser.Type.SafariView -> {
@@ -350,7 +350,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
 
     private fun openThirdPartyApp(urlScheme: NSURL, storeInfo: NavigationSpec.ThirdParty.StoreInfo?) {
         if (UIApplication.sharedApplication.canOpenURL(urlScheme)) {
-            UIApplication.sharedApplication.openURL(urlScheme)
+            UIApplication.sharedApplication.openURL(urlScheme, emptyMap<Any?, Any>(), null)
         } else {
             storeInfo?.let {
                 openAppStore(storeInfo)

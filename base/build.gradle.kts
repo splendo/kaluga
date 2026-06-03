@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 import java.net.URI
+import java.time.Year
 
 plugins {
     id("com.splendo.kaluga.plugin")
@@ -11,6 +12,9 @@ kaluga {
 
     supportJVM = true
     supportJS = true
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
 
     appleInterop {
         main {
@@ -47,11 +51,9 @@ kaluga {
     }
 }
 
-// Regenerates the JS region → currency map from upstream CLDR data. Run on demand; the output
-// file is checked in. Intl exposes no API for this (java.util.Currency.getInstance(locale) and
-// NSLocale.currencyCode are platform-private), so we bake CLDR's supplemental/currencyData.json.
+// Regenerates DefaultCurrencyForCountry.kt from CLDR. Run on demand; output is checked in.
 tasks.register("generateDefaultCurrencyMap") {
-    val cldrVersion = "48.2.0"
+    val cldrVersion = libs.versions.cldr.get()
     group = "codegen"
     description = "Regenerates DefaultCurrencyForCountry.kt from CLDR $cldrVersion currencyData.json."
 
@@ -87,7 +89,7 @@ tasks.register("generateDefaultCurrencyMap") {
 
         val out = buildString {
             appendLine("/*")
-            appendLine(" Copyright 2026 Splendo Consulting B.V. The Netherlands")
+            appendLine(" Copyright ${Year.now().value} Splendo Consulting B.V. The Netherlands")
             appendLine()
             appendLine("    Licensed under the Apache License, Version 2.0 (the \"License\");")
             appendLine("    you may not use this file except in compliance with the License.")

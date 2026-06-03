@@ -51,6 +51,9 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
 
     open class Apple : TargetDependencyContainer()
     open class IOS : TargetDependencyContainer()
+    open class MacOS : TargetDependencyContainer()
+    open class TvOS : TargetDependencyContainer()
+    open class WatchOS : TargetDependencyContainer()
     open class JS : TargetDependencyContainer()
     open class JVM : TargetDependencyContainer()
 
@@ -58,6 +61,9 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
     internal val android = objects.newInstance(Android::class.java)
     internal val apple = objects.newInstance(Apple::class.java)
     internal val ios = objects.newInstance(IOS::class.java)
+    internal val macos = objects.newInstance(MacOS::class.java)
+    internal val tvos = objects.newInstance(TvOS::class.java)
+    internal val watchos = objects.newInstance(WatchOS::class.java)
     internal val js = objects.newInstance(JS::class.java)
     internal val jvm = objects.newInstance(JVM::class.java)
     fun common(action: Action<Common>) {
@@ -74,6 +80,18 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
 
     fun ios(action: Action<IOS>) {
         action.execute(ios)
+    }
+
+    fun macos(action: Action<MacOS>) {
+        action.execute(macos)
+    }
+
+    fun tvos(action: Action<TvOS>) {
+        action.execute(tvos)
+    }
+
+    fun watchos(action: Action<WatchOS>) {
+        action.execute(watchos)
     }
 
     fun js(action: Action<JS>) {

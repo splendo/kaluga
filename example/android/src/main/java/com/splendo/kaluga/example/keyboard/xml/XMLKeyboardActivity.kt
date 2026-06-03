@@ -22,7 +22,7 @@ import android.view.LayoutInflater
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityKeyboardManagerBinding
-import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.feature.keyboard.KeyboardViewModel
 import com.splendo.kaluga.keyboard.ViewFocusHandler
 import com.splendo.kaluga.keyboard.ViewKeyboardManager
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -22,6 +22,9 @@ plugins {
 
 kaluga {
     moduleName = "links"
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         common {
             main {

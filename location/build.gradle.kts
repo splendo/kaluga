@@ -5,6 +5,9 @@ plugins {
 
 kaluga {
     moduleName = "location"
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         android {
             main {

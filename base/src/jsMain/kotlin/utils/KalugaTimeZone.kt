@@ -24,9 +24,7 @@ import kotlin.time.Duration.Companion.minutes
 
 /**
  * A default implementation of [BaseTimeZone] backed by the
- * [`luxon`](https://moment.github.io/luxon/) JS library, which computes timezone arithmetic via
- * the runtime's built-in `Intl.DateTimeFormat` — the same IANA tz data that ships with Node.js
- * and modern browsers.
+ * [`luxon`](https://moment.github.io/luxon/) JS library.
  *
  * @property identifier the IANA timezone identifier (e.g. `"Europe/Amsterdam"`, `"UTC"`).
  */
@@ -98,14 +96,14 @@ private fun canonicalizeTimeZone(identifier: String): String = try {
 }
 
 private fun systemTimeZone(): String = try {
-    val resolved = js("(typeof Intl !== 'undefined' && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : null")
-    resolved?.unsafeCast<String>() ?: "UTC"
+    js("Intl.DateTimeFormat().resolvedOptions().timeZone").unsafeCast<String?>() ?: "UTC"
 } catch (_: dynamic) {
     "UTC"
 }
 
+// Intl is assumed present (the whole time zone implementation depends on it); only the newer supportedValuesOf enumeration API is optional.
 private fun listSupportedTimeZones(): List<String> = try {
-    val arr = js("(typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('timeZone') : null")
+    val arr = js("typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : null")
     if (arr == null) fallbackTimeZones else arr.unsafeCast<Array<String>>().toList()
 } catch (_: dynamic) {
     fallbackTimeZones

@@ -73,9 +73,6 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             val styleCurrency = (style as NumberFormatStyle.Currency).currencyCode
             intlOpts.currency = styleCurrency ?: defaultCurrencyForLocale(locale)
         }
-        // The POSIX variant disables grouping in CLDR — `java.text.DecimalFormat` honours this for
-        // `en_US_POSIX` etc., but `Intl.NumberFormat` ignores the variant subtag and applies the
-        // parent locale's grouping. Match the JVM-observable behaviour explicitly.
         if (locale.variantCode.equals("POSIX", ignoreCase = true)) {
             intlOpts.useGrouping = false
         }
@@ -113,6 +110,16 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             val original = extractPart(parts, type) ?: continue
             if (original != override) result = result.replace(original, override)
         }
+        return result
+    }
+
+    // Applies the decimal/grouping/minus overrides to a plain numeric string for the scientific and pattern
+    // paths, which assemble output manually rather than going through rawFormat/applySymbolOverrides.
+    private fun applyNumericOverrides(formatted: String): String {
+        var result = formatted
+        symbolOverrides["decimal"]?.firstOrNull()?.let { if (it != localeSeparators.decimal) result = result.replace(localeSeparators.decimal, it) }
+        symbolOverrides["group"]?.firstOrNull()?.let { if (it != localeSeparators.grouping) result = result.replace(localeSeparators.grouping, it) }
+        symbolOverrides["minusSign"]?.firstOrNull()?.let { if (it != localeSeparators.minusSign) result = result.replace(localeSeparators.minusSign, it) }
         return result
     }
 
@@ -207,7 +214,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         val (minFrac, maxFrac) = patternFractionRange(body)
         val minInt = patternMinIntegerDigits(body)
         val numericFormatter = numericFormatterFor(minInt, minFrac, maxFrac, grouping)
-        val numericPart = numericFormatter(magnitude)
+        val numericPart = applyNumericOverrides(numericFormatter(magnitude))
         return prefix + numericPart + suffix
     }
 
@@ -308,11 +315,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             rawExp - (mantissaIntDigits - 1)
         }
         val mantissa = absValue / 10.0.pow(exponent)
-        val mantissaStr = rawFormatWithDigits(
-            mantissa,
-            minInt = mantissaIntDigits,
-            minFrac = style.minFractionDigits.toInt(),
-            maxFrac = style.maxFractionDigits.toInt(),
+        val mantissaStr = applyNumericOverrides(
+            rawFormatWithDigits(
+                mantissa,
+                minInt = mantissaIntDigits,
+                minFrac = style.minFractionDigits.toInt(),
+                maxFrac = style.maxFractionDigits.toInt(),
+            ),
         )
         val sign = if (negative) minusSign.toString() else ""
         val expSign = if (exponent < 0) minusSign.toString() else ""
@@ -335,18 +344,10 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     // region Permillage formatting
 
     private fun formatPermillage(value: Double): String {
-        val ps = style as NumberFormatStyle.Permillage
-        // `value` has already been normalized by `format()` to [raw * _multiplier / defaultMultiplier];
-        // re-apply defaultMultiplier (1000) so the rendered mantissa is raw * _multiplier.
-        val scaled = value * defaultMultiplier
-        val mantissaStr = rawFormatWithDigits(
-            scaled,
-            minInt = ps.minIntegerDigits.toInt().coerceAtLeast(1),
-            minFrac = ps.minFractionDigits.toInt(),
-            maxFrac = ps.maxFractionDigits.toInt(),
-            grouping = usesGroupingSeparator,
-        )
-        return mantissaStr + perMillSymbol
+        // Render through the "percent" formatter (set in buildBaseOptions) so the sign gets locale-correct
+        // placement and spacing; percent multiplies by 100, per-mille needs ×1000, so pre-scale by 10 and
+        // swap the rendered percent sign for the per-mille sign.
+        return rawFormat(value * 10).replace(percentSymbol, perMillSymbol)
     }
 
     // endregion
@@ -472,7 +473,8 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             }
 
             is NumberFormatStyle.Permillage -> {
-                opts.style = "decimal"
+                // No native per-mille style; reuse "percent" (×100) and pre-scale by 10 in formatPermillage to reach ×1000.
+                opts.style = "percent"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
                 opts.minimumFractionDigits = style.minFractionDigits.toInt()
                 opts.maximumFractionDigits = clampMaxFraction(style.maxFractionDigits.toInt())
@@ -489,9 +491,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             is NumberFormatStyle.Currency -> {
                 opts.style = "currency"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
-                // When fraction-digit bounds are unset, leave them off so Intl picks the
-                // currency's natural digits (2 for USD, 0 for JPY, ...) — matching JVM's
-                // fallback to `Currency.defaultFractionDigits`.
+                // Leave fraction-digit bounds unset so Intl picks the currency's natural digits.
                 style.minFractionDigits?.toInt()?.let { opts.minimumFractionDigits = it }
                 style.maxFractionDigits?.toInt()?.let { opts.maximumFractionDigits = it }
                 opts.useGrouping = true
@@ -559,10 +559,7 @@ private fun extractPart(parts: dynamic, type: String): String? {
     return null
 }
 
-// `defaultCurrencyForCountry` lives in DefaultCurrencyForCountry.kt — generated from CLDR
-// supplemental/currencyData.json by `./gradlew :base:generateDefaultCurrencyMap`. JS's Intl has
-// no region → currency API (TC39 Locale Info v2's `getCurrencies()` is still Stage 1), so we
-// bake the CLDR map.
+// `defaultCurrencyForCountry` is generated by `./gradlew :base:generateDefaultCurrencyMap`.
 private fun defaultCurrencyForLocale(locale: KalugaLocale): String {
     val country = locale.countryCode.ifEmpty { return "USD" }
     return defaultCurrencyForCountry[country.uppercase()] ?: "USD"

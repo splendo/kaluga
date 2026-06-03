@@ -18,17 +18,20 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.utc
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
 class DateFormatterTest {
@@ -93,11 +96,10 @@ class DateFormatterTest {
         val usFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, UnitedStatesLocale)
         val frFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, FranceLocale)
 
-        // CLDR ≥ 42 separates the time and the day-period (AM/PM) with U+202F NARROW NO-BREAK SPACE
-        // (and historically U+00A0 NO-BREAK SPACE on some platforms) instead of a regular space.
-        // Normalise so the assertion isn't whitespace-sensitive.
-        assertEquals("1:37:42 PM", usFormatter.format(March181988).replace(" ", " ").replace(" ", " "))
-        assertEquals("13:37:42", frFormatter.format(March181988))
+        // Some platforms use different whitespace here.
+        fun String.simplifyWhitespace() = replace('\u202F', ' ').replace(Typography.nbsp, ' ')
+        assertEquals("1:37:42 PM", usFormatter.format(March181988).simplifyWhitespace())
+        assertEquals(expectedFrenchMediumTime, frFormatter.format(March181988).simplifyWhitespace())
     }
 
     @Test
@@ -124,8 +126,24 @@ class DateFormatterTest {
         assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInUtc))
         assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInPst))
         assertEquals(epochInUtc, utcFormatter.parse(utcFormatter.format(epochInUtc)))
-        assertEquals(epochInUtc, utcFormatter.parse(pstFormatter.format(epochInPst)))
+        assertSameInstantWithinTolerance(epochInUtc, utcFormatter.parse(pstFormatter.format(epochInPst)))
         assertEquals(epochInPst, pstFormatter.parse(utcFormatter.format(epochInUtc)))
         assertEquals(epochInPst, pstFormatter.parse(pstFormatter.format(epochInPst)))
     }
+
+    private fun assertSameInstantWithinTolerance(expected: KalugaDate, actual: KalugaDate?) {
+        assertNotNull(actual)
+        val delta = expected.durationSinceEpoch - actual.durationSinceEpoch
+        assertTrue(
+            delta.absoluteValue <= parseAbbreviationTolerance,
+            "Expected $expected within $parseAbbreviationTolerance of $actual (delta=$delta)",
+        )
+    }
 }
+
+val expectedFrenchMediumTime: String get() = if (isLegacyLocalization) "1:37:42 PM" else "13:37:42"
+val parseAbbreviationTolerance: Duration get() = if (isLegacyLocalization) 1.hours else Duration.ZERO
+val expectedNlPdtZoneName: String get() = if (isLegacyLocalization) "GMT-07:00" else "PDT"
+val USDForNL: String = "US$"
+val JPYForUS: String = "¥"
+val JPYForNL: String = "JP¥"

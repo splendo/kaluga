@@ -54,6 +54,10 @@ actual data class KalugaLocale internal constructor(internal val tag: String) : 
     actual override val alternateQuotationStart: String = "\""
     actual override val alternateQuotationEnd: String = "\""
 
+    // `data class` would otherwise auto-generate a useless `KalugaLocale(tag=…)` toString
+    // that shadows the parent's `lang_country_variant` formatting. Delegate back to it.
+    override fun toString(): String = super.toString()
+
     actual companion object {
 
         actual fun createLocale(language: String): KalugaLocale = build(language, "", "")
@@ -97,9 +101,7 @@ private fun extractVariant(parsed: dynamic, language: String, script: String, re
     if (script.isNotEmpty() && parts.isNotEmpty() && parts[0].equals(script, ignoreCase = true)) parts.removeAt(0)
     if (region.isNotEmpty() && parts.isNotEmpty() && parts[0].equals(region, ignoreCase = true)) parts.removeAt(0)
 
-    // `Intl.Locale` canonicalises legacy variant subtags such as `POSIX` into the Unicode
-    // extension form `-u-va-<variant>` rather than keeping them as BCP 47 variant subtags.
-    // Unwrap that back so callers see the original variant they passed in.
+    // Unwrap `Intl.Locale`'s `-u-va-<variant>` canonicalisation back into a plain variant subtag.
     val uIndex = parts.indexOf("u")
     if (uIndex < 0) return parts.joinToString("_")
 
@@ -116,9 +118,6 @@ private fun extractVariant(parsed: dynamic, language: String, script: String, re
 }
 
 private fun intlDisplayName(type: String, displayLocale: String, code: String, fallback: String): String = try {
-    // Split construction from method call: Kotlin/JS's `js(...)` rewrites
-    // `new X(args).method(args)` into `new (X(args).method)(args)`, so combining them in one
-    // string applies `new` to the method instead of the constructor.
     val displayNames: dynamic = js("new Intl.DisplayNames([displayLocale], { type: type })")
     val resolved = displayNames.of(code)
     if (resolved == null) fallback else resolved.unsafeCast<String>()
@@ -146,12 +145,12 @@ private fun resolveMeasurementSystem(parsed: dynamic): UnitSystem? = try {
 }
 
 private fun resolveCurrentLocaleTag(): String = js(
-    "(typeof navigator !== 'undefined' && navigator.language) ? navigator.language : " +
-        "(typeof Intl !== 'undefined' && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().locale : 'en-US')",
+    "(typeof navigator !== 'undefined' && navigator.language) ? navigator.language : Intl.DateTimeFormat().resolvedOptions().locale",
 ).unsafeCast<String>()
 
+// Intl is assumed present (the whole locale implementation depends on it); only the newer supportedValuesOf enumeration API is optional.
 private fun resolveSupportedLocaleTags(): List<String> = try {
-    val arr = js("(typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('language') : null")
+    val arr = js("typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('language') : null")
     if (arr == null) fallbackLocaleTags else arr.unsafeCast<Array<String>>().toList()
 } catch (_: dynamic) {
     fallbackLocaleTags

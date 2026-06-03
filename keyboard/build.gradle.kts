@@ -5,9 +5,14 @@ plugins {
 kaluga {
     moduleName = "keyboard"
     dependencies {
+        android {
+            device {
+                implementation(project(":architecture", ""))
+            }
+        }
         common {
             main {
-                implementation(project(":architecture", ""))
+                api(project(":lifecycle", ""))
                 implementation(project(":base", ""))
             }
             test {

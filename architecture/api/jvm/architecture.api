@@ -1,6 +1,3 @@
-public abstract interface class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
-}
-
 public class com/splendo/kaluga/architecture/navigation/NavigationAction {
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)V
 	public final fun getBundle ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
@@ -540,7 +537,7 @@ public class com/splendo/kaluga/architecture/navigation/NavigationException : ja
 	public fun <init> (Ljava/lang/String;)V
 }
 
-public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator : com/splendo/kaluga/lifecycle/LifecycleSubscribable {
 	public abstract fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
 }
 
@@ -1050,14 +1047,14 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithS
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
-	protected final fun addLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
+	public fun <init> ([Lcom/splendo/kaluga/lifecycle/LifecycleSubscribable;)V
+	protected final fun addLifecycleSubscribables ([Lcom/splendo/kaluga/lifecycle/LifecycleSubscribable;)V
 	public final fun didPause ()V
 	public final fun didResume ()V
 	public final fun getActiveLifecycleSubscribables ()Lkotlinx/coroutines/flow/StateFlow;
 	protected fun onPause ()V
 	protected fun onResume (Lkotlinx/coroutines/CoroutineScope;)V
-	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
+	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/lifecycle/LifecycleSubscribable;)V
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
@@ -1067,7 +1064,7 @@ public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
-	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/lifecycle/LifecycleSubscribable;)V
 	protected final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
 }
 

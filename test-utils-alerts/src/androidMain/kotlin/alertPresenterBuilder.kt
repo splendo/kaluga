@@ -19,8 +19,8 @@ package com.splendo.kaluga.test.alerts
 
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.alerts.AlertPresenter
-import com.splendo.kaluga.test.architecture.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.test.architecture.lifecycleManagerObserver
+import com.splendo.kaluga.test.lifecycle.getOrPutAndRemoveOnDestroyFromCache
+import com.splendo.kaluga.test.lifecycle.lifecycleManagerObserver
 
 /**
  * @return The [AlertPresenter.Builder] which can be used to present alerts while this Activity is active

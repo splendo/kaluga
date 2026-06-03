@@ -4,6 +4,9 @@ plugins {
 
 kaluga {
     moduleName = "test.service"
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
 
     supportJVM = true
     supportJS = true

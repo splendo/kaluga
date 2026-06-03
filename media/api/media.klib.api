@@ -1,5 +1,7 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64]
+// Alias: ios => [iosArm64, iosSimulatorArm64]
+// Alias: tvos => [tvosArm64, tvosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -207,7 +209,7 @@ abstract interface com.splendo.kaluga.media/MediaSurfaceController { // com.sple
     abstract suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.media/MediaSurfaceController.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
 }
 
-abstract interface com.splendo.kaluga.media/MediaSurfaceProvider : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.media/MediaSurfaceProvider|null[0]
+abstract interface com.splendo.kaluga.media/MediaSurfaceProvider : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.media/MediaSurfaceProvider|null[0]
     abstract val surface // com.splendo.kaluga.media/MediaSurfaceProvider.surface|{}surface[0]
         abstract fun <get-surface>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaSurface?> // com.splendo.kaluga.media/MediaSurfaceProvider.surface.<get-surface>|<get-surface>(){}[0]
 }
@@ -407,10 +409,6 @@ final class com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider : com.spl
     constructor <init>(platform.AVFoundation/AVPlayerLayer?) // com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider.<init>|<init>(platform.AVFoundation.AVPlayerLayer?){}[0]
 }
 
-final class com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerViewController> { // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider|null[0]
-    constructor <init>(platform.AVKit/AVPlayerViewController?) // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerViewController?){}[0]
-}
-
 final class com.splendo.kaluga.media/BindingMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>> { // com.splendo.kaluga.media/BindingMediaSurfaceProvider|null[0]
     constructor <init>(kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>?) // com.splendo.kaluga.media/BindingMediaSurfaceProvider.<init>|<init>(kotlin.Function1<platform.AVFoundation.AVPlayer?,kotlin.Unit>?){}[0]
 }
@@ -565,7 +563,6 @@ final class com.splendo.kaluga.media/DefaultSoundPlayer : com.splendo.kaluga.med
 final class com.splendo.kaluga.media/MediaSurface { // com.splendo.kaluga.media/MediaSurface|null[0]
     constructor <init>(kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>) // com.splendo.kaluga.media/MediaSurface.<init>|<init>(kotlin.Function1<platform.AVFoundation.AVPlayer?,kotlin.Unit>){}[0]
     constructor <init>(platform.AVFoundation/AVPlayerLayer) // com.splendo.kaluga.media/MediaSurface.<init>|<init>(platform.AVFoundation.AVPlayerLayer){}[0]
-    constructor <init>(platform.AVKit/AVPlayerViewController) // com.splendo.kaluga.media/MediaSurface.<init>|<init>(platform.AVKit.AVPlayerViewController){}[0]
 
     final val bind // com.splendo.kaluga.media/MediaSurface.bind|{}bind[0]
         final fun <get-bind>(): kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit> // com.splendo.kaluga.media/MediaSurface.bind.<get-bind>|<get-bind>(){}[0]
@@ -632,10 +629,6 @@ final class com.splendo.kaluga.media/TrackInfo { // com.splendo.kaluga.media/Tra
         final fun valueOf(kotlin/String): com.splendo.kaluga.media/TrackInfo.Type // com.splendo.kaluga.media/TrackInfo.Type.valueOf|valueOf#static(kotlin.String){}[0]
         final fun values(): kotlin/Array<com.splendo.kaluga.media/TrackInfo.Type> // com.splendo.kaluga.media/TrackInfo.Type.values|values#static(){}[0]
     }
-}
-
-final class com.splendo.kaluga.media/UIViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.UIKit/UIView> { // com.splendo.kaluga.media/UIViewMediaSurfaceProvider|null[0]
-    constructor <init>(platform.UIKit/UIView?) // com.splendo.kaluga.media/UIViewMediaSurfaceProvider.<init>|<init>(platform.UIKit.UIView?){}[0]
 }
 
 open class com.splendo.kaluga.media/PlaybackStateRepo : com.splendo.kaluga.media/BasePlaybackStateRepo { // com.splendo.kaluga.media/PlaybackStateRepo|null[0]
@@ -883,3 +876,29 @@ final fun (com.splendo.kaluga.media/MediaPlayer).com.splendo.kaluga.media/playTi
 final fun com.splendo.kaluga.media/mediaSourceFromLocalFile(kotlin/String, kotlin/String): com.splendo.kaluga.media/MediaSource.Local // com.splendo.kaluga.media/mediaSourceFromLocalFile|mediaSourceFromLocalFile(kotlin.String;kotlin.String){}[0]
 final fun com.splendo.kaluga.media/mediaSourceFromUrl(kotlin/String): com.splendo.kaluga.media/MediaSource? // com.splendo.kaluga.media/mediaSourceFromUrl|mediaSourceFromUrl(kotlin.String){}[0]
 final suspend fun (com.splendo.kaluga.media/MediaPlayer).com.splendo.kaluga.media/play(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ..., kotlin/Boolean = ...) // com.splendo.kaluga.media/play|play@com.splendo.kaluga.media.MediaPlayer(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;kotlin.Boolean){}[0]
+
+// Targets: [ios, tvos]
+final class com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerViewController> { // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider|null[0]
+    constructor <init>(platform.AVKit/AVPlayerViewController?) // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerViewController?){}[0]
+}
+
+// Targets: [ios, tvos]
+final class com.splendo.kaluga.media/UIViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.UIKit/UIView> { // com.splendo.kaluga.media/UIViewMediaSurfaceProvider|null[0]
+    constructor <init>(platform.UIKit/UIView?) // com.splendo.kaluga.media/UIViewMediaSurfaceProvider.<init>|<init>(platform.UIKit.UIView?){}[0]
+}
+
+// Targets: [ios, tvos]
+final fun com.splendo.kaluga.media/MediaSurface(platform.AVKit/AVPlayerViewController): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.media/MediaSurface|MediaSurface(platform.AVKit.AVPlayerViewController){}[0]
+
+// Targets: [macosArm64]
+final class com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerView> { // com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider|null[0]
+    constructor <init>(platform.AVKit/AVPlayerView?) // com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerView?){}[0]
+}
+
+// Targets: [macosArm64]
+final class com.splendo.kaluga.media/NSViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AppKit/NSView> { // com.splendo.kaluga.media/NSViewMediaSurfaceProvider|null[0]
+    constructor <init>(platform.AppKit/NSView?) // com.splendo.kaluga.media/NSViewMediaSurfaceProvider.<init>|<init>(platform.AppKit.NSView?){}[0]
+}
+
+// Targets: [macosArm64]
+final fun com.splendo.kaluga.media/MediaSurface(platform.AVKit/AVPlayerView): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.media/MediaSurface|MediaSurface(platform.AVKit.AVPlayerView){}[0]

@@ -1,6 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
-// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -1205,10 +1205,10 @@ final suspend fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splen
 final suspend fun com.splendo.kaluga.test.base/yieldMultiple(kotlin/Int = ...) // com.splendo.kaluga.test.base/yieldMultiple|yieldMultiple(kotlin.Int){}[0]
 final suspend fun com.splendo.kaluga.test.base/yieldUntil(kotlin.time/Duration = ..., kotlin/Int = ..., kotlin.time/Duration = ..., kotlin/Function0<kotlin/Boolean>) // com.splendo.kaluga.test.base/yieldUntil|yieldUntil(kotlin.time.Duration;kotlin.Int;kotlin.time.Duration;kotlin.Function0<kotlin.Boolean>){}[0]
 
-// Targets: [ios]
+// Targets: [apple]
 open annotation class com.splendo.kaluga.test.base/IgnoreJs : kotlin/Annotation { // com.splendo.kaluga.test.base/IgnoreJs|null[0]
     constructor <init>() // com.splendo.kaluga.test.base/IgnoreJs.<init>|<init>(){}[0]
 }
 
-// Targets: [ios]
+// Targets: [apple]
 final fun com.splendo.kaluga.test.base/mainBackground(kotlin/Array<kotlin/String>) // com.splendo.kaluga.test.base/mainBackground|mainBackground(kotlin.Array<kotlin.String>){}[0]

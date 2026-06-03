@@ -4,11 +4,14 @@ plugins {
 
 kaluga {
     moduleName = "media"
+    supportMacOS = true
+    supportTvOS = true
     dependencies {
         common {
             main {
                 implementation(project(":base"))
-                implementation(project(":architecture"))
+                // api: `MediaSurfaceProvider` extends `LifecycleSubscribable`.
+                api(project(":lifecycle"))
                 implementation(project(":logging"))
             }
             test {

@@ -4,6 +4,8 @@ plugins {
 
 kaluga {
     moduleName = "permissions.contacts"
+    supportMacOS = true
+    supportWatchOS = true
     dependencies {
         common {
             main {

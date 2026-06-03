@@ -19,8 +19,8 @@ package com.splendo.kaluga.test.hud
 
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.hud.HUD
-import com.splendo.kaluga.test.architecture.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.test.architecture.lifecycleManagerObserver
+import com.splendo.kaluga.test.lifecycle.getOrPutAndRemoveOnDestroyFromCache
+import com.splendo.kaluga.test.lifecycle.lifecycleManagerObserver
 
 /**
  * @return A [HUD.Builder] which can be used to show an HUD while this Activity is active.

@@ -19,9 +19,14 @@ package com.splendo.kaluga.test.media
 
 import android.view.SurfaceHolder
 import com.splendo.kaluga.media.MediaSurface
-import org.mockito.Mockito
+import java.lang.reflect.Proxy
 
 /**
  * Creates a Mock implementation of [MediaSurface]
  */
-actual fun createMockMediaSurface(): MediaSurface = MediaSurface(Mockito.mock(SurfaceHolder::class.java))
+actual fun createMockMediaSurface(): MediaSurface = MediaSurface(stubSurfaceHolder())
+
+private fun stubSurfaceHolder(): SurfaceHolder = Proxy.newProxyInstance(
+    SurfaceHolder::class.java.classLoader,
+    arrayOf(SurfaceHolder::class.java),
+) { _, _, _ -> null } as SurfaceHolder

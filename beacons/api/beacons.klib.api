@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -41,7 +41,7 @@ final class com.splendo.kaluga.bluetooth.beacons/BeaconInfo { // com.splendo.kal
 }
 
 final class com.splendo.kaluga.bluetooth.beacons/DefaultBeacons : com.splendo.kaluga.bluetooth.beacons/Beacons, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons|null[0]
-    constructor <init>(com.splendo.kaluga.bluetooth/BluetoothService, kotlin.time/Duration = ..., com.splendo.kaluga.logging/Logger = ..., kotlin.coroutines/CoroutineContext = ...) // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.<init>|<init>(com.splendo.kaluga.bluetooth.BluetoothService;kotlin.time.Duration;com.splendo.kaluga.logging.Logger;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(com.splendo.kaluga.bluetooth/BluetoothClient, kotlin.time/Duration = ..., com.splendo.kaluga.logging/Logger = ..., kotlin.coroutines/CoroutineContext = ...) // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.<init>|<init>(com.splendo.kaluga.bluetooth.BluetoothClient;kotlin.time.Duration;com.splendo.kaluga.logging.Logger;kotlin.coroutines.CoroutineContext){}[0]
 
     final val beacons // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.beacons|{}beacons[0]
         final fun <get-beacons>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Set<com.splendo.kaluga.bluetooth.beacons/BeaconInfo>> // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.beacons.<get-beacons>|<get-beacons>(){}[0]

@@ -4,11 +4,13 @@ plugins {
 
 kaluga {
     moduleName = "test.media"
+    supportMacOS = true
+    supportTvOS = true
     dependencies {
         common {
             main {
                 api(project(":media"))
-                api(project(":test-utils-architecture"))
+                api(project(":test-utils-base"))
             }
         }
     }

@@ -17,25 +17,15 @@
 
 package com.splendo.kaluga.architecture.lifecycle
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-
 /**
- * A [ActivityLifecycleSubscribable] that provides [ActivityLifecycleSubscribable.manager] as a [StateFlow]
+ * Moved to `:lifecycle`. Kept here as a typealias so existing callers compile during the
+ * deprecation window.
  */
-class LifecycleManagerObserver : DefaultActivityLifecycleSubscribable() {
-
-    override var manager: ActivityLifecycleSubscribable.LifecycleManager?
-        get() = super.manager
-        set(value) {
-            super.manager = value
-            _managerState.value = value
-        }
-
-    private val _managerState = MutableStateFlow<ActivityLifecycleSubscribable.LifecycleManager?>(null)
-
-    /**
-     * A [StateFlow] of the current [manager]
-     */
-    val managerState: StateFlow<ActivityLifecycleSubscribable.LifecycleManager?> = _managerState
-}
+@Deprecated(
+    message = "Moved to :lifecycle. Import com.splendo.kaluga.lifecycle.LifecycleManagerObserver instead.",
+    replaceWith = ReplaceWith(
+        "LifecycleManagerObserver",
+        "com.splendo.kaluga.lifecycle.LifecycleManagerObserver",
+    ),
+)
+typealias LifecycleManagerObserver = com.splendo.kaluga.lifecycle.LifecycleManagerObserver

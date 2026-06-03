@@ -200,7 +200,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     }
 
     /**
-     * Gets the [PermissionStateRepoBuilder] registered for a a given type of [Permission].
+     * Gets the [PermissionStateRepoBuilder] registered for a given type of [Permission].
      * If no builder has been registered yet, [permissionStateRepoBuilder] will be registered instead.
      * This method is thread-safe.
      * @param P the type of [Permission] for which to register the builder.

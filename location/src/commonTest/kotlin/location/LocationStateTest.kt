@@ -75,7 +75,7 @@ class LocationStateTest : BaseFlowTest<LocationStateTest.Configuration, Location
 
         val locationStateRepoBuilder = MockLocationStateRepoBuilder(
             {
-                permissionsBuilder.registerAllPermissionsBuilders()
+                permissionsBuilder.registerPermissionBuilder<LocationPermission>()
                 Permissions(
                     permissionsBuilder,
                     coroutineContext = coroutineScope.coroutineContext,
@@ -98,7 +98,7 @@ class LocationStateTest : BaseFlowTest<LocationStateTest.Configuration, Location
             coroutineContext = coroutineScope.coroutineContext,
         )
         val locationManager get() = locationStateRepoBuilder.locationManagerBuilder.builtLocationManagers.first()
-        val permissionStateRepo get() = permissionsBuilder.buildLocationStateRepos.first()
+        val permissionStateRepo get() = permissionsBuilder.registry<LocationPermission>().buildRepos.first()
     }
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context =

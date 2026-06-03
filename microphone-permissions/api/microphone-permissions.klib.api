@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -8,15 +8,6 @@
 // Library unique name: <com.splendo.kaluga:microphone-permissions>
 abstract interface com.splendo.kaluga.permissions.microphone/BaseMicrophonePermissionManagerBuilder : com.splendo.kaluga.permissions.base/BasePermissionsBuilder<com.splendo.kaluga.permissions.microphone/MicrophonePermission> { // com.splendo.kaluga.permissions.microphone/BaseMicrophonePermissionManagerBuilder|null[0]
     abstract fun create(com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ..., kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.permissions.base/PermissionManager<com.splendo.kaluga.permissions.microphone/MicrophonePermission> // com.splendo.kaluga.permissions.microphone/BaseMicrophonePermissionManagerBuilder.create|create(com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
-}
-
-final class com.splendo.kaluga.permissions.microphone/AVTypeMicrophone : com.splendo.kaluga.permissions.base.av/AVType { // com.splendo.kaluga.permissions.microphone/AVTypeMicrophone|null[0]
-    constructor <init>() // com.splendo.kaluga.permissions.microphone/AVTypeMicrophone.<init>|<init>(){}[0]
-
-    final val avMediaType // com.splendo.kaluga.permissions.microphone/AVTypeMicrophone.avMediaType|{}avMediaType[0]
-        final fun <get-avMediaType>(): kotlin/String? // com.splendo.kaluga.permissions.microphone/AVTypeMicrophone.avMediaType.<get-avMediaType>|<get-avMediaType>(){}[0]
-    final val declarationName // com.splendo.kaluga.permissions.microphone/AVTypeMicrophone.declarationName|{}declarationName[0]
-        final fun <get-declarationName>(): kotlin/String // com.splendo.kaluga.permissions.microphone/AVTypeMicrophone.declarationName.<get-declarationName>|<get-declarationName>(){}[0]
 }
 
 final class com.splendo.kaluga.permissions.microphone/DefaultMicrophonePermissionManager : com.splendo.kaluga.permissions.base/BasePermissionManager<com.splendo.kaluga.permissions.microphone/MicrophonePermission> { // com.splendo.kaluga.permissions.microphone/DefaultMicrophonePermissionManager|null[0]

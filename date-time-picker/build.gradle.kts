@@ -8,11 +8,12 @@ kaluga {
         android {
             device {
                 implementation(libs.androidx.activity.ktx)
+                implementation(project(":architecture", ""))
             }
         }
         common {
             main {
-                implementation(project(":architecture", ""))
+                api(project(":lifecycle", ""))
                 implementation(project(":base", ""))
             }
             test {
