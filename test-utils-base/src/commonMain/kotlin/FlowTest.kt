@@ -40,6 +40,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.test.AfterTest
@@ -144,39 +145,37 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
         createFlowInMainScope: Boolean = true,
         retainContextAfterTest: Boolean = false,
         blockWithContext: FlowTestBlockWithContext<Configration, Context, T, F>,
-    ) {
-        runBlocking {
-            try {
-                testChannel = Channel(Channel.UNLIMITED)
+    ): TestResult = testRunBlocking {
+        try {
+            testChannel = Channel(Channel.UNLIMITED)
 
-                // startFlow is only called when the first test block is offered
+            // startFlow is only called when the first test block is offered
 
-                val flow = flowFromTestContext
-                val scope = scope
+            val flow = flowFromTestContext
+            val scope = scope
 
-                val createTestContextWithConfiguration = createTestContextWithConfiguration
+            val createTestContextWithConfiguration = createTestContextWithConfiguration
 
-                val f =
-                    if (createFlowInMainScope) {
-                        withContext(Dispatchers.Main.immediate) {
-                            (flow(getOrCreateContext { createTestContextWithConfiguration(configuration, scope) }))
-                        }
-                    } else {
-                        flow(
-                            withContext(Dispatchers.Main.immediate) {
-                                (getOrCreateContext { createTestContextWithConfiguration(configuration, scope) })
-                            },
-                        )
+            val f =
+                if (createFlowInMainScope) {
+                    withContext(Dispatchers.Main.immediate) {
+                        (flow(getOrCreateContext { createTestContextWithConfiguration(configuration, scope) }))
                     }
-
-                lateflow = f
-                lateConfiguration = configuration
-                blockWithContext(f)
-                resetFlow()
-            } finally {
-                if (!retainContextAfterTest) {
-                    disposeContext()
+                } else {
+                    flow(
+                        withContext(Dispatchers.Main.immediate) {
+                            (getOrCreateContext { createTestContextWithConfiguration(configuration, scope) })
+                        },
+                    )
                 }
+
+            lateflow = f
+            lateConfiguration = configuration
+            blockWithContext(f)
+            resetFlow()
+        } finally {
+            if (!retainContextAfterTest) {
+                disposeContext()
             }
         }
     }

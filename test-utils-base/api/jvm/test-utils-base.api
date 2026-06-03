@@ -91,6 +91,9 @@ public abstract class com/splendo/kaluga/test/base/FlowableTest : com/splendo/ka
 public abstract interface annotation class com/splendo/kaluga/test/base/IgnoreJs : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class com/splendo/kaluga/test/base/IgnoreWasm : java/lang/annotation/Annotation {
+}
+
 public abstract class com/splendo/kaluga/test/base/SimpleFlowTest : com/splendo/kaluga/test/base/FlowTest {
 	public fun <init> ()V
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
@@ -106,6 +109,11 @@ public final class com/splendo/kaluga/test/base/SimpleUIThreadTest$SimpleTestCon
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
 	public fun dispose ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public final class com/splendo/kaluga/test/base/TestRunBlockingKt {
+	public static final fun testRunBlocking (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun testRunBlocking$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
 public abstract class com/splendo/kaluga/test/base/UIThreadTest : com/splendo/kaluga/test/base/BaseUIThreadTest {

@@ -19,14 +19,22 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.base
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Runs a new coroutine and blocks the current thread interruptibly until its completion.
- * Since JavaScript does not support threading, this will just run block on [GlobalScope]
+ * Runs a new coroutine. The JS family (js + wasmJs) is single-threaded and cannot block, so [block]
+ * is launched on [GlobalScope] and the (not-yet-completed) [kotlinx.coroutines.Deferred] is returned
+ * cast to [T] — i.e. this does not actually block. Suitable only for fire-and-forget bridging such as
+ * [com.splendo.kaluga.base.state.KalugaState.peekState]; to drive suspending tests use the
+ * `TestResult`-returning runner in `test-utils-base` instead.
  * @param context the context of the coroutine. The default value is an event loop on the current thread.
  * @param block the coroutine code.
  */
-actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T = GlobalScope.async { block(this) }.asDynamic()
+@OptIn(DelicateCoroutinesApi::class)
+actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
+    @Suppress("UNCHECKED_CAST")
+    return GlobalScope.async(context) { block(this) } as T
+}

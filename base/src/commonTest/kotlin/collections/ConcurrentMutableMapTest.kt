@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.collections
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 class ConcurrentMutableMapTest : BaseTest() {
 
     @Test
-    fun testConcurrentMutableMap() = runBlocking {
+    fun testConcurrentMutableMap() = testRunBlocking {
         val map = concurrentMutableMapOf(0 to "Zero", 1 to "One", 2 to "Two")
         withContext(Dispatchers.Main.immediate) {
             assertEquals("Zero", map[0])
@@ -59,7 +59,7 @@ class ConcurrentMutableMapTest : BaseTest() {
     }
 
     @Test
-    fun testConcurrency() = runBlocking {
+    fun testConcurrency() = testRunBlocking {
         val dispatchers = List(10) { singleThreadDispatcher("Thread $it") }
         val map = concurrentMutableMapOf<Int, String>()
         val jobs = dispatchers.mapIndexed { index, dispatcher ->

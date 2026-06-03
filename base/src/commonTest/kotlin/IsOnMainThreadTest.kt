@@ -1,6 +1,7 @@
 import com.splendo.kaluga.base.KalugaThread
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.IgnoreJs
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.test.Test
@@ -26,25 +27,29 @@ import kotlin.test.assertTrue
 class IsOnMainThreadTest : BaseTest() {
 
     @Test
-    fun testIsOnMainThread() = runBlocking(Dispatchers.Main) {
+    fun testIsOnMainThread() = testRunBlocking(Dispatchers.Main) {
         assertTrue(KalugaThread.currentThread.isMainThread)
     }
 
+    // Single-threaded JS/Wasm has only the main thread, so a non-main thread can't be observed.
     @Test
-    fun testIsNotOnMainThread() = runBlocking(Dispatchers.Default) {
+    @IgnoreJs
+    fun testIsNotOnMainThread() = testRunBlocking(Dispatchers.Default) {
         assertFalse(KalugaThread.currentThread.isMainThread)
     }
 
     @Test
-    fun testIsMainThreadFromBackground() = runBlocking(Dispatchers.Main) {
+    fun testIsMainThreadFromBackground() = testRunBlocking(Dispatchers.Main) {
         val capturedThread = KalugaThread.currentThread
         withContext(Dispatchers.Default) {
             assertTrue(capturedThread.isMainThread)
         }
     }
 
+    // Single-threaded JS/Wasm has only the main thread, so a non-main thread can't be observed.
     @Test
-    fun testIsNotMainThreadFromMainThread() = runBlocking(Dispatchers.Default) {
+    @IgnoreJs
+    fun testIsNotMainThreadFromMainThread() = testRunBlocking(Dispatchers.Default) {
         val capturedThread = KalugaThread.currentThread
         withContext(Dispatchers.Main) {
             assertFalse(capturedThread.isMainThread)

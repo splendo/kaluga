@@ -25,13 +25,6 @@ import kotlinx.coroutines.Runnable
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Marker for `base` APIs not yet ported to Kotlin/Wasm (the date and decimal subsystems, which depend
- * on luxon / JS `BigInt`, and the `Intl`-backed locale/formatter classes). These throw at runtime until
- * the corresponding subsystem is ported; the wasmJs target compiles so further ports can be verified.
- */
-internal fun wasmJsNotImplemented(): Nothing = throw NotImplementedError("This base API is not yet implemented for Kotlin/Wasm")
-
-/**
  * The thread of execution. On Kotlin/Wasm there is only one thread, so everything is the main thread.
  */
 actual class KalugaThread {
@@ -56,11 +49,6 @@ actual class KalugaThread {
 actual fun runOnMain(block: () -> Unit) {
     block()
 }
-
-/**
- * Kotlin/Wasm is single-threaded and cannot block, so a true [runBlocking] is not supported.
- */
-actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T = wasmJsNotImplemented()
 
 /**
  * Kotlin/Wasm has no threading, so this returns [Dispatchers.Default].

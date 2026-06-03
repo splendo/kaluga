@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
 // Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
@@ -135,12 +135,17 @@ abstract class <#A: kotlin/Any?, #B: com.splendo.kaluga.test.base/BaseUIThreadTe
         final fun <get-job>(): kotlinx.coroutines/Job? // com.splendo.kaluga.test.base/BaseFlowTest.job.<get-job>|<get-job>(){}[0]
         final fun <set-job>(kotlinx.coroutines/Job?) // com.splendo.kaluga.test.base/BaseFlowTest.job.<set-job>|<set-job>(kotlinx.coroutines.Job?){}[0]
 
-    final fun testWithFlowAndTestContext(#A, kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.test.base/BaseFlowTest<#A, #B, #C, #D>, #D, kotlin/Unit>) // com.splendo.kaluga.test.base/BaseFlowTest.testWithFlowAndTestContext|testWithFlowAndTestContext(1:0;kotlin.Boolean;kotlin.Boolean;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.test.base.BaseFlowTest<1:0,1:1,1:2,1:3>,1:3,kotlin.Unit>){}[0]
     final suspend fun action(kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // com.splendo.kaluga.test.base/BaseFlowTest.action|action(kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]
     final suspend fun mainAction(kotlin.coroutines/SuspendFunction1<#B, kotlin/Unit>) // com.splendo.kaluga.test.base/BaseFlowTest.mainAction|mainAction(kotlin.coroutines.SuspendFunction1<1:1,kotlin.Unit>){}[0]
     final suspend fun resetFlow() // com.splendo.kaluga.test.base/BaseFlowTest.resetFlow|resetFlow(){}[0]
     final suspend fun test(kotlin/Int = ..., kotlin.coroutines/SuspendFunction2<#B, #C, kotlin/Unit>) // com.splendo.kaluga.test.base/BaseFlowTest.test|test(kotlin.Int;kotlin.coroutines.SuspendFunction2<1:1,1:2,kotlin.Unit>){}[0]
     open fun afterTest() // com.splendo.kaluga.test.base/BaseFlowTest.afterTest|afterTest(){}[0]
+
+    // Targets: [apple]
+    final fun testWithFlowAndTestContext(#A, kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.test.base/BaseFlowTest<#A, #B, #C, #D>, #D, kotlin/Unit>) // com.splendo.kaluga.test.base/BaseFlowTest.testWithFlowAndTestContext|testWithFlowAndTestContext(1:0;kotlin.Boolean;kotlin.Boolean;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.test.base.BaseFlowTest<1:0,1:1,1:2,1:3>,1:3,kotlin.Unit>){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun testWithFlowAndTestContext(#A, kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.test.base/BaseFlowTest<#A, #B, #C, #D>, #D, kotlin/Unit>): kotlinx.coroutines.test.internal/JsPromiseInterfaceForTesting // com.splendo.kaluga.test.base/BaseFlowTest.testWithFlowAndTestContext|testWithFlowAndTestContext(1:0;kotlin.Boolean;kotlin.Boolean;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.test.base.BaseFlowTest<1:0,1:1,1:2,1:3>,1:3,kotlin.Unit>){}[0]
 }
 
 abstract class <#A: kotlin/Any?, #B: com.splendo.kaluga.test.base/BaseUIThreadTest.TestContext> com.splendo.kaluga.test.base/BaseUIThreadTest : com.splendo.kaluga.test.base/BaseTest { // com.splendo.kaluga.test.base/BaseUIThreadTest|null[0]
@@ -175,14 +180,23 @@ abstract class <#A: kotlin/Any?, #B: kotlinx.coroutines.flow/Flow<#A>> com.splen
     open val flowFromTestContext // com.splendo.kaluga.test.base/FlowTest.flowFromTestContext|{}flowFromTestContext[0]
         open fun <get-flowFromTestContext>(): kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.test.base/BaseUIThreadTest.EmptyTestContext, #B> // com.splendo.kaluga.test.base/FlowTest.flowFromTestContext.<get-flowFromTestContext>|<get-flowFromTestContext>(){}[0]
 
+    // Targets: [apple]
     final fun testWithFlow(kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.test.base/FlowTest<#A, #B>, #B, kotlin/Unit>) // com.splendo.kaluga.test.base/FlowTest.testWithFlow|testWithFlow(kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.test.base.FlowTest<1:0,1:1>,1:1,kotlin.Unit>){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun testWithFlow(kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.test.base/FlowTest<#A, #B>, #B, kotlin/Unit>): kotlinx.coroutines.test.internal/JsPromiseInterfaceForTesting // com.splendo.kaluga.test.base/FlowTest.testWithFlow|testWithFlow(kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.test.base.FlowTest<1:0,1:1>,1:1,kotlin.Unit>){}[0]
 }
 
 abstract class <#A: kotlin/Any?> com.splendo.kaluga.test.base/FlowableTest : com.splendo.kaluga.test.base/BaseTest { // com.splendo.kaluga.test.base/FlowableTest|null[0]
     constructor <init>() // com.splendo.kaluga.test.base/FlowableTest.<init>|<init>(){}[0]
 
     abstract fun mutableSharedFlow(): kotlinx.coroutines.flow/MutableSharedFlow<#A> // com.splendo.kaluga.test.base/FlowableTest.mutableSharedFlow|mutableSharedFlow(){}[0]
+
+    // Targets: [apple]
     final fun testWithFlow(kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.test.base/FlowTest<#A, kotlinx.coroutines.flow/MutableSharedFlow<#A>>, kotlinx.coroutines.flow/MutableSharedFlow<#A>, kotlin/Unit>) // com.splendo.kaluga.test.base/FlowableTest.testWithFlow|testWithFlow(kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.test.base.FlowTest<1:0,kotlinx.coroutines.flow.MutableSharedFlow<1:0>>,kotlinx.coroutines.flow.MutableSharedFlow<1:0>,kotlin.Unit>){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun testWithFlow(kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.test.base/FlowTest<#A, kotlinx.coroutines.flow/MutableSharedFlow<#A>>, kotlinx.coroutines.flow/MutableSharedFlow<#A>, kotlin/Unit>): kotlinx.coroutines.test.internal/JsPromiseInterfaceForTesting // com.splendo.kaluga.test.base/FlowableTest.testWithFlow|testWithFlow(kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.test.base.FlowTest<1:0,kotlinx.coroutines.flow.MutableSharedFlow<1:0>>,kotlinx.coroutines.flow.MutableSharedFlow<1:0>,kotlin.Unit>){}[0]
 }
 
 abstract class <#A: kotlin/Any?> com.splendo.kaluga.test.base/SimpleFlowTest : com.splendo.kaluga.test.base/FlowTest<#A, kotlinx.coroutines.flow/Flow<#A>> { // com.splendo.kaluga.test.base/SimpleFlowTest|null[0]
@@ -1205,6 +1219,11 @@ final suspend fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splen
 final suspend fun com.splendo.kaluga.test.base/yieldMultiple(kotlin/Int = ...) // com.splendo.kaluga.test.base/yieldMultiple|yieldMultiple(kotlin.Int){}[0]
 final suspend fun com.splendo.kaluga.test.base/yieldUntil(kotlin.time/Duration = ..., kotlin/Int = ..., kotlin.time/Duration = ..., kotlin/Function0<kotlin/Boolean>) // com.splendo.kaluga.test.base/yieldUntil|yieldUntil(kotlin.time.Duration;kotlin.Int;kotlin.time.Duration;kotlin.Function0<kotlin.Boolean>){}[0]
 
+// Targets: [apple, js]
+open annotation class com.splendo.kaluga.test.base/IgnoreWasm : kotlin/Annotation { // com.splendo.kaluga.test.base/IgnoreWasm|null[0]
+    constructor <init>() // com.splendo.kaluga.test.base/IgnoreWasm.<init>|<init>(){}[0]
+}
+
 // Targets: [apple]
 open annotation class com.splendo.kaluga.test.base/IgnoreJs : kotlin/Annotation { // com.splendo.kaluga.test.base/IgnoreJs|null[0]
     constructor <init>() // com.splendo.kaluga.test.base/IgnoreJs.<init>|<init>(){}[0]
@@ -1212,3 +1231,9 @@ open annotation class com.splendo.kaluga.test.base/IgnoreJs : kotlin/Annotation 
 
 // Targets: [apple]
 final fun com.splendo.kaluga.test.base/mainBackground(kotlin/Array<kotlin/String>) // com.splendo.kaluga.test.base/mainBackground|mainBackground(kotlin.Array<kotlin.String>){}[0]
+
+// Targets: [apple]
+final fun com.splendo.kaluga.test.base/testRunBlocking(kotlin.coroutines/CoroutineContext = ..., kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit>) // com.splendo.kaluga.test.base/testRunBlocking|testRunBlocking(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>){}[0]
+
+// Targets: [js, wasmJs]
+final fun com.splendo.kaluga.test.base/testRunBlocking(kotlin.coroutines/CoroutineContext = ..., kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit>): kotlinx.coroutines.test.internal/JsPromiseInterfaceForTesting // com.splendo.kaluga.test.base/testRunBlocking|testRunBlocking(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>){}[0]

@@ -16,7 +16,7 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.base.singleThreadDispatcher
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -45,7 +45,7 @@ class BufferedAsListChannelTest {
     fun testSlowToConsumeChannel() = testBufferedAsListChannel(1.milliseconds, 10.milliseconds, 1..100) // TODO: Should be in a range of about 5-15 but tests on CI prove flaky
 
     @Test
-    fun testCancel() = runBlocking {
+    fun testCancel() = testRunBlocking {
         val groupingChannel = BufferedAsListChannel<Int>(coroutineContext)
         val producingDispatcher = singleThreadDispatcher("Produce")
         val didCompletedProductionExceptionally = CompletableDeferred<Boolean>()
@@ -89,7 +89,7 @@ class BufferedAsListChannelTest {
         consumerDispatcher.close()
     }
 
-    private fun testBufferedAsListChannel(producingDuration: Duration, consumingDuration: Duration, expectedNumberOfGroupsIn: IntRange) = runBlocking {
+    private fun testBufferedAsListChannel(producingDuration: Duration, consumingDuration: Duration, expectedNumberOfGroupsIn: IntRange) = testRunBlocking {
         val groupingChannel = BufferedAsListChannel<Int>(coroutineContext)
         val producingDispatcher = singleThreadDispatcher("Produce")
         CoroutineScope(coroutineContext + producingDispatcher).launch {
