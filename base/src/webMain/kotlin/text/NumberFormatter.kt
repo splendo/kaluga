@@ -18,7 +18,6 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.KalugaLocale
-import com.splendo.kaluga.base.utils.newNumberFormat
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
@@ -27,8 +26,7 @@ import kotlin.math.pow
 /**
  * Default implementation of [BaseNumberFormatter] backed by the ECMAScript
  * [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat)
- * API. Modern Node.js and browsers ship with full ICU data, giving feature parity with
- * `java.text.DecimalFormat` (Android/JVM) and `NSNumberFormatter` (iOS).
+ * API, shared by the JS family (js + wasmJs) via typed `Intl` externals.
  *
  * Pattern, scientific and permillage styles aren't directly representable in `Intl.NumberFormat`
  * — they're handled by composing native locale data (separators, currency symbols) with manual
@@ -39,7 +37,7 @@ import kotlin.math.pow
  */
 actual class NumberFormatter actual constructor(actual override val locale: KalugaLocale, private val style: NumberFormatStyle) : BaseNumberFormatter {
 
-    private val intlOpts: dynamic = buildBaseOptions(style)
+    private val intlOpts: NumberFormatOptions = buildBaseOptions(style)
     private val isPercent = style is NumberFormatStyle.Percentage
     private val isPermillage = style is NumberFormatStyle.Permillage
     private val isCurrency = style is NumberFormatStyle.Currency
@@ -78,12 +76,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
     }
 
-    private fun makeFormatter(): dynamic = newNumberFormat(localeTag, intlOpts)
+    private fun makeFormatter(): IntlNumberFormat = createNumberFormat(localeTag, intlOpts)
 
-    private fun partsFor(value: Double): dynamic = makeFormatter().formatToParts(value)
+    private fun partFor(value: Double, type: String): String? = numberFormatPartValue(makeFormatter(), value, type)
 
     private fun rawFormat(value: Double): String {
-        val raw = makeFormatter().format(value).unsafeCast<String>()
+        val raw = makeFormatter().format(value)
         val withOverrides = applySymbolOverrides(raw)
         return stripLeadingZeroIfRequested(withOverrides, value)
     }
@@ -104,10 +102,10 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
 
     private fun applySymbolOverrides(raw: String): String {
         if (symbolOverrides.isEmpty()) return raw
-        val parts = partsFor(-12345.678)
+        val formatter = makeFormatter()
         var result = raw
         for ((type, override) in symbolOverrides) {
-            val original = extractPart(parts, type) ?: continue
+            val original = numberFormatPartValue(formatter, -12345.678, type) ?: continue
             if (original != override) result = result.replace(original, override)
         }
         return result
@@ -219,13 +217,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     }
 
     private fun numericFormatterFor(minIntDigits: Int, minFrac: Int, maxFrac: Int, grouping: Boolean): (Double) -> String {
-        val opts = js("({})")
+        val opts = emptyNumberFormatOptions()
         opts.minimumIntegerDigits = if (minIntDigits > 0) minIntDigits else 1
         opts.minimumFractionDigits = minFrac
         opts.maximumFractionDigits = maxFrac
         opts.useGrouping = grouping
-        val formatter = newNumberFormat(localeTag, opts)
-        return { v -> formatter.format(v).unsafeCast<String>() }
+        val formatter = createNumberFormat(localeTag, opts)
+        return { v -> formatter.format(v) }
     }
 
     /**
@@ -330,13 +328,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     }
 
     private fun rawFormatWithDigits(value: Double, minInt: Int, minFrac: Int, maxFrac: Int, grouping: Boolean = false): String {
-        val opts = js("({})")
+        val opts = emptyNumberFormatOptions()
         opts.minimumIntegerDigits = if (minInt > 0) minInt else 1
         opts.minimumFractionDigits = minFrac
         opts.maximumFractionDigits = maxFrac
         opts.useGrouping = grouping
-        val formatter = newNumberFormat(localeTag, opts)
-        return formatter.format(value).unsafeCast<String>()
+        val formatter = createNumberFormat(localeTag, opts)
+        return formatter.format(value)
     }
 
     // endregion
@@ -380,12 +378,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             symbolOverrides["zero"] = value.toString()
         }
     actual override var notANumberSymbol: String
-        get() = symbolOverrides["nan"] ?: extractPart(partsFor(Double.NaN), "nan") ?: "NaN"
+        get() = symbolOverrides["nan"] ?: partFor(Double.NaN, "nan") ?: "NaN"
         set(value) {
             symbolOverrides["nan"] = value
         }
     actual override var infinitySymbol: String
-        get() = symbolOverrides["infinity"] ?: extractPart(partsFor(Double.POSITIVE_INFINITY), "infinity") ?: "∞"
+        get() = symbolOverrides["infinity"] ?: partFor(Double.POSITIVE_INFINITY, "infinity") ?: "∞"
         set(value) {
             symbolOverrides["infinity"] = value
         }
@@ -393,13 +391,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         get() {
             symbolOverrides["currency"]?.let { return it }
             if (!isCurrency) return ""
-            return extractPart(partsFor(1.0), "currency") ?: currencyCode
+            return partFor(1.0, "currency") ?: currencyCode
         }
         set(value) {
             symbolOverrides["currency"] = value
         }
     actual override var currencyCode: String
-        get() = (intlOpts.currency.unsafeCast<String?>()) ?: ""
+        get() = intlOpts.currency ?: ""
         set(value) {
             intlOpts.currency = value
         }
@@ -418,7 +416,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             symbolOverrides["group"] = value.toString()
         }
     actual override var usesGroupingSeparator: Boolean
-        get() = intlOpts.useGrouping.unsafeCast<Boolean?>() ?: true
+        get() = intlOpts.useGrouping ?: true
         set(value) {
             intlOpts.useGrouping = value
         }
@@ -442,8 +440,8 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
 
     // endregion
 
-    private fun buildBaseOptions(style: NumberFormatStyle): dynamic {
-        val opts = js("({})")
+    private fun buildBaseOptions(style: NumberFormatStyle): NumberFormatOptions {
+        val opts = emptyNumberFormatOptions()
         when (style) {
             is NumberFormatStyle.Integer -> {
                 opts.style = "decimal"
@@ -510,25 +508,55 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
 }
 
 /**
+ * Typed handle to an [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat).
+ */
+private external interface IntlNumberFormat {
+    fun format(value: Double): String
+}
+
+/**
+ * The subset of `Intl.NumberFormat` options Kaluga sets. All optional; an empty instance is created with
+ * [emptyNumberFormatOptions] and populated before constructing a formatter.
+ */
+private external interface NumberFormatOptions {
+    var style: String?
+    var currency: String?
+    var currencyDisplay: String?
+    var useGrouping: Boolean?
+    var minimumIntegerDigits: Int?
+    var minimumFractionDigits: Int?
+    var maximumFractionDigits: Int?
+    var roundingMode: String?
+}
+
+private fun emptyNumberFormatOptions(): NumberFormatOptions = js("({})")
+private fun createNumberFormat(tag: String, options: NumberFormatOptions): IntlNumberFormat = js("new Intl.NumberFormat(tag, options)")
+
+// Returns the value of the first `formatToParts` part of [type], or null. Done in a single `js(...)` so no
+// JS array crosses the Kotlin boundary (arrays have no shared js/wasm representation).
+private fun numberFormatPartValue(formatter: IntlNumberFormat, value: Double, type: String): String? =
+    js("(function(){ var p = formatter.formatToParts(value).find(function(x){ return x.type === type; }); return p ? p.value : null; })()")
+
+/**
  * Locale-aware separators resolved from `Intl.NumberFormat`. Probing with `useGrouping: true`
  * guarantees the grouping separator part is present even for styles (Integer, Scientific) where
  * the active formatter has grouping disabled.
  */
 private data class LocaleSeparators(val decimal: Char, val grouping: Char, val minusSign: Char, val zero: Char, val percentSign: Char)
 
+private fun numericProbeOptions(): NumberFormatOptions = js("({ useGrouping: true, minimumFractionDigits: 1 })")
+private fun percentProbeOptions(): NumberFormatOptions = js("({ style: 'percent' })")
+
 private fun resolveLocaleSeparators(localeTag: String): LocaleSeparators {
-    val numericFormatter = newNumberFormat(localeTag, js("({useGrouping: true, minimumFractionDigits: 1})"))
-    val percentFormatter = newNumberFormat(localeTag, js("({style: 'percent'})"))
-    val zeroFormatter = newNumberFormat(localeTag, js("({})"))
-    val probe = numericFormatter.formatToParts(-12345.678)
-    val percentProbe = percentFormatter.formatToParts(0.5)
-    val zeroProbe = zeroFormatter.formatToParts(0)
+    val numericFormatter = createNumberFormat(localeTag, numericProbeOptions())
+    val percentFormatter = createNumberFormat(localeTag, percentProbeOptions())
+    val zeroFormatter = createNumberFormat(localeTag, emptyNumberFormatOptions())
     return LocaleSeparators(
-        decimal = extractPart(probe, "decimal")?.firstOrNull() ?: '.',
-        grouping = extractPart(probe, "group")?.firstOrNull() ?: ',',
-        minusSign = extractPart(probe, "minusSign")?.firstOrNull() ?: '-',
-        zero = extractPart(zeroProbe, "integer")?.firstOrNull() ?: '0',
-        percentSign = extractPart(percentProbe, "percentSign")?.firstOrNull() ?: '%',
+        decimal = numberFormatPartValue(numericFormatter, -12345.678, "decimal")?.firstOrNull() ?: '.',
+        grouping = numberFormatPartValue(numericFormatter, -12345.678, "group")?.firstOrNull() ?: ',',
+        minusSign = numberFormatPartValue(numericFormatter, -12345.678, "minusSign")?.firstOrNull() ?: '-',
+        zero = numberFormatPartValue(zeroFormatter, 0.0, "integer")?.firstOrNull() ?: '0',
+        percentSign = numberFormatPartValue(percentFormatter, 0.5, "percentSign")?.firstOrNull() ?: '%',
     )
 }
 
@@ -546,17 +574,6 @@ private fun intlRoundingMode(mode: RoundingMode): String = when (mode) {
     RoundingMode.HalfEven -> "halfEven"
     RoundingMode.HalfDown -> "halfTrunc"
     RoundingMode.HalfUp -> "halfExpand"
-}
-
-private fun extractPart(parts: dynamic, type: String): String? {
-    val len = parts.length.unsafeCast<Int>()
-    for (i in 0 until len) {
-        val p = parts[i]
-        if (p.type.unsafeCast<String>() == type) {
-            return p.value.unsafeCast<String>()
-        }
-    }
-    return null
 }
 
 // `defaultCurrencyForCountry` is generated by `./gradlew :base:generateDefaultCurrencyMap`.

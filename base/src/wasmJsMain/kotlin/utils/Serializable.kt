@@ -18,12 +18,6 @@
 package com.splendo.kaluga.base.utils
 
 /**
- * Marks the custom JavaScript [BigDecimal] implementation backing [Decimal], which may not cover every edge case of the platform decimal types used on other targets.
+ * Not supported on Kotlin/Wasm.
  */
-@RequiresOptIn(
-    message = "On JavaScript Decimal is backed by a custom BigDecimal implementation that may not cover every edge case.",
-    level = RequiresOptIn.Level.ERROR,
-)
-@Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS)
-annotation class ExperimentalJsDecimal
+actual interface Serializable

@@ -26,89 +26,80 @@ import kotlin.math.max
 
 internal const val DECIMAL128_PRECISION = 34
 
-@JsName("BigInt")
-private external fun jsBigInt(value: String): dynamic
+private val BI_ZERO: JsBigInt = bigIntOf(0)
+private val BI_ONE: JsBigInt = bigIntOf(1)
+private val BI_TWO: JsBigInt = bigIntOf(2)
+private val BI_FIVE: JsBigInt = bigIntOf(5)
+private val BI_TEN: JsBigInt = bigIntOf(10)
 
-@JsName("BigInt")
-private external fun jsBigInt(value: Int): dynamic
+private fun bigIntEquals(a: JsBigInt, b: JsBigInt): Boolean = bigIntStrictEquals(a, b)
 
-private val BI_ZERO: dynamic = jsBigInt(0)
-private val BI_ONE: dynamic = jsBigInt(1)
-private val BI_TWO: dynamic = jsBigInt(2)
-private val BI_FIVE: dynamic = jsBigInt(5)
-private val BI_TEN: dynamic = jsBigInt(10)
-
-private fun bigIntLessThan(a: dynamic, b: dynamic): Boolean = (a < b).unsafeCast<Boolean>()
-private fun bigInGreaterThan(a: dynamic, b: dynamic): Boolean = (a > b).unsafeCast<Boolean>()
-private fun bigIntEquals(a: dynamic, b: dynamic): Boolean = js("a === b").unsafeCast<Boolean>()
-private fun bigIntToString(a: dynamic): String = js("a.toString()").unsafeCast<String>()
-
-private fun bigIntCompareTo(a: dynamic, b: dynamic): Int = when {
+private fun bigIntCompareTo(a: JsBigInt, b: JsBigInt): Int = when {
     bigIntLessThan(a, b) -> -1
-    bigInGreaterThan(a, b) -> 1
+    bigIntGreaterThan(a, b) -> 1
     else -> 0
 }
 
-private val powerCache = HashMap<Int, dynamic>()
+private val powerCache = HashMap<Int, JsBigInt>()
 
-private fun pow10(n: Int): dynamic {
+private fun pow10(n: Int): JsBigInt {
     if (n <= 0) return BI_ONE
     val cached = powerCache[n]
     if (cached != null) return cached
     val s = "1" + "0".repeat(n)
-    val result = jsBigInt(s)
+    val result = bigIntOf(s)
     if (n <= 128) powerCache[n] = result
     return result
 }
 
-private fun bigIntPow(base: dynamic, n: Int): dynamic {
+private fun bigIntPow(base: JsBigInt, n: Int): JsBigInt {
     if (n <= 0) return BI_ONE
-    var result: dynamic = BI_ONE
-    var b: dynamic = base
+    var result: JsBigInt = BI_ONE
+    var b: JsBigInt = base
     var e = n
     while (e > 0) {
-        if (e and 1 == 1) result *= b
+        if (e and 1 == 1) result = bigIntMultiply(result, b)
         e = e shr 1
-        if (e > 0) b *= b
+        if (e > 0) b = bigIntMultiply(b, b)
     }
     return result
 }
 
-private fun digitsOf(value: dynamic): Int {
+private fun digitsOf(value: JsBigInt): Int {
     if (bigIntEquals(value, BI_ZERO)) return 1
     val s = bigIntToString(value)
     return if (s.startsWith("-")) s.length - 1 else s.length
 }
 
 /**
- * Pure Kotlin/JS arbitrary-precision signed decimal number backed by [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
+ * Pure Kotlin arbitrary-precision signed decimal number backed by [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
  *
  * Represents the value `significand * 10^(-scale)`, mirroring `java.math.BigDecimal`. This is a custom implementation that may not cover every edge case of the platform decimal types used on other targets.
  */
 @ExperimentalJsDecimal
-class BigDecimal(val significand: dynamic, val scale: Int) {
+class BigDecimal internal constructor(internal val significand: JsBigInt, val scale: Int) {
 
     val isZero: Boolean get() = bigIntEquals(significand, BI_ZERO)
     val isNegative: Boolean get() = bigIntLessThan(significand, BI_ZERO)
 
-    fun unaryMinus(): BigDecimal = BigDecimal((-significand).unsafeCast<dynamic>(), scale)
+    fun unaryMinus(): BigDecimal = BigDecimal(bigIntNegate(significand), scale)
 
     fun add(other: BigDecimal): BigDecimal {
         val maxScale = max(scale, other.scale)
-        val a = if (scale < maxScale) significand * pow10(maxScale - scale) else significand
-        val b = if (other.scale < maxScale) other.significand * pow10(maxScale - other.scale) else other.significand
-        return BigDecimal((a + b).unsafeCast<dynamic>(), maxScale)
+        val a = if (scale < maxScale) bigIntMultiply(significand, pow10(maxScale - scale)) else significand
+        val b = if (other.scale < maxScale) bigIntMultiply(other.significand, pow10(maxScale - other.scale)) else other.significand
+        return BigDecimal(bigIntAdd(a, b), maxScale)
     }
 
     fun subtract(other: BigDecimal): BigDecimal {
         val maxScale = max(scale, other.scale)
-        val a = if (scale < maxScale) significand * pow10(maxScale - scale) else significand
-        val b = if (other.scale < maxScale) other.significand * pow10(maxScale - other.scale) else other.significand
-        return BigDecimal((a - b).unsafeCast<dynamic>(), maxScale)
+        val a = if (scale < maxScale) bigIntMultiply(significand, pow10(maxScale - scale)) else significand
+        val b = if (other.scale < maxScale) bigIntMultiply(other.significand, pow10(maxScale - other.scale)) else other.significand
+        return BigDecimal(bigIntSubtract(a, b), maxScale)
     }
 
     fun multiply(other: BigDecimal, precision: Int = DECIMAL128_PRECISION, rounding: RoundingMode = RoundHalfEven): BigDecimal {
-        val raw = BigDecimal((significand * other.significand).unsafeCast<dynamic>(), scale + other.scale)
+        val raw = BigDecimal(bigIntMultiply(significand, other.significand), scale + other.scale)
         return raw.round(precision, rounding)
     }
 
@@ -121,20 +112,20 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         // Enough extra digits to compute `precision + 1` significant digits in the quotient.
         val extraDigits = max(precision + bDigits - aDigits + 1, 0)
 
-        var dividend: dynamic = if (extraDigits > 0) significand * pow10(extraDigits) else significand
-        var divisor: dynamic = other.significand
+        var dividend: JsBigInt = if (extraDigits > 0) bigIntMultiply(significand, pow10(extraDigits)) else significand
+        var divisor: JsBigInt = other.significand
 
         if (bigIntLessThan(divisor, BI_ZERO)) {
-            dividend = -dividend
-            divisor = -divisor
+            dividend = bigIntNegate(dividend)
+            divisor = bigIntNegate(divisor)
         }
         val negDividend = bigIntLessThan(dividend, BI_ZERO)
-        val absDividend: dynamic = if (negDividend) -dividend else dividend
+        val absDividend: JsBigInt = if (negDividend) bigIntNegate(dividend) else dividend
 
-        var quotient: dynamic = absDividend / divisor
-        val remainder: dynamic = absDividend - quotient * divisor
+        var quotient: JsBigInt = bigIntDivide(absDividend, divisor)
+        val remainder: JsBigInt = bigIntSubtract(absDividend, bigIntMultiply(quotient, divisor))
         if (!bigIntEquals(remainder, BI_ZERO)) {
-            val twoRemainder = remainder * BI_TWO
+            val twoRemainder = bigIntMultiply(remainder, BI_TWO)
             val cmp = bigIntCompareTo(twoRemainder, divisor)
             val roundUp = when (rounding) {
                 RoundDown -> false
@@ -144,12 +135,12 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
                 RoundHalfEven -> when {
                     cmp > 0 -> true
                     cmp < 0 -> false
-                    else -> !bigIntEquals(quotient % BI_TWO, BI_ZERO)
+                    else -> !bigIntEquals(bigIntRemainder(quotient, BI_TWO), BI_ZERO)
                 }
             }
-            if (roundUp) quotient += BI_ONE
+            if (roundUp) quotient = bigIntAdd(quotient, BI_ONE)
         }
-        if (negDividend) quotient = -quotient
+        if (negDividend) quotient = bigIntNegate(quotient)
 
         val resultScale = extraDigits + scale - other.scale
         return BigDecimal(quotient, resultScale).round(precision, rounding)
@@ -165,16 +156,16 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
     fun setScale(newScale: Int, rounding: RoundingMode): BigDecimal {
         if (newScale == scale) return this
         if (newScale > scale) {
-            return BigDecimal((significand * pow10(newScale - scale)).unsafeCast<dynamic>(), newScale)
+            return BigDecimal(bigIntMultiply(significand, pow10(newScale - scale)), newScale)
         }
         val diff = scale - newScale
         val divisor = pow10(diff)
         val neg = isNegative
-        val abs: dynamic = if (neg) -significand else significand
-        var quotient: dynamic = abs / divisor
-        val remainder: dynamic = abs - quotient * divisor
+        val abs: JsBigInt = if (neg) bigIntNegate(significand) else significand
+        var quotient: JsBigInt = bigIntDivide(abs, divisor)
+        val remainder: JsBigInt = bigIntSubtract(abs, bigIntMultiply(quotient, divisor))
         if (!bigIntEquals(remainder, BI_ZERO)) {
-            val twoRemainder = remainder * BI_TWO
+            val twoRemainder = bigIntMultiply(remainder, BI_TWO)
             val cmp = bigIntCompareTo(twoRemainder, divisor)
             val roundUp = when (rounding) {
                 RoundDown -> false
@@ -184,12 +175,12 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
                 RoundHalfEven -> when {
                     cmp > 0 -> true
                     cmp < 0 -> false
-                    else -> !bigIntEquals(quotient % BI_TWO, BI_ZERO)
+                    else -> !bigIntEquals(bigIntRemainder(quotient, BI_TWO), BI_ZERO)
                 }
             }
-            if (roundUp) quotient += BI_ONE
+            if (roundUp) quotient = bigIntAdd(quotient, BI_ONE)
         }
-        if (neg) quotient = -quotient
+        if (neg) quotient = bigIntNegate(quotient)
         return BigDecimal(quotient, newScale)
     }
 
@@ -219,8 +210,8 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         val mb = digitsOf(other.significand) - other.scale
         if (ma != mb) return if (s1 > 0) ma.compareTo(mb) else mb.compareTo(ma)
         val maxScale = max(scale, other.scale)
-        val a = if (scale < maxScale) significand * pow10(maxScale - scale) else significand
-        val b = if (other.scale < maxScale) other.significand * pow10(maxScale - other.scale) else other.significand
+        val a = if (scale < maxScale) bigIntMultiply(significand, pow10(maxScale - scale)) else significand
+        val b = if (other.scale < maxScale) bigIntMultiply(other.significand, pow10(maxScale - other.scale)) else other.significand
         return bigIntCompareTo(a, b)
     }
 
@@ -233,10 +224,10 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
 
     fun stripTrailingZeros(): BigDecimal {
         if (isZero) return BigDecimal(BI_ZERO, 0)
-        var sig: dynamic = significand
+        var sig: JsBigInt = significand
         var s = scale
-        while (bigIntEquals(sig % BI_TEN, BI_ZERO)) {
-            sig = sig / BI_TEN
+        while (bigIntEquals(bigIntRemainder(sig, BI_TEN), BI_ZERO)) {
+            sig = bigIntDivide(sig, BI_TEN)
             s -= 1
         }
         return BigDecimal(sig, s)
@@ -247,7 +238,7 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         val absStr = if (isZero) {
             "0"
         } else {
-            bigIntToString((if (isNegative) -significand else significand).unsafeCast<dynamic>())
+            bigIntToString(if (isNegative) bigIntNegate(significand) else significand)
         }
         val precision = absStr.length
         // JVM BigDecimal.toString: use plain notation iff scale >= 0 && adjustedExp >= -6,
@@ -308,12 +299,12 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
             val exp = if (expStr.isEmpty()) 0 else expStr.toInt()
             val combined = (intPart + fracPart).trimStart('0').ifEmpty { "0" }
             val significandStr = (if (signStr == "-") "-" else "") + combined
-            return BigDecimal(jsBigInt(significandStr), fracPart.length - exp)
+            return BigDecimal(bigIntOf(significandStr), fracPart.length - exp)
         }
 
-        fun fromInt(n: Int): BigDecimal = BigDecimal(jsBigInt(n), 0)
+        fun fromInt(n: Int): BigDecimal = BigDecimal(bigIntOf(n), 0)
 
-        fun fromLong(n: Long): BigDecimal = BigDecimal(jsBigInt(n.toString()), 0)
+        fun fromLong(n: Long): BigDecimal = BigDecimal(bigIntOf(n.toString()), 0)
 
         /**
          * Decodes [d] as the exact rational it represents in IEEE 754 (mirroring the
@@ -335,14 +326,14 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
                 mantissa = mantissa shr 1
                 exponent++
             }
-            val absSig: dynamic = jsBigInt(mantissa.toString())
+            val absSig: JsBigInt = bigIntOf(mantissa.toString())
             return if (exponent >= 0) {
-                val product: dynamic = absSig * bigIntPow(BI_TWO, exponent)
-                val signed: dynamic = if (signBit != 0) -product else product
+                val product: JsBigInt = bigIntMultiply(absSig, bigIntPow(BI_TWO, exponent))
+                val signed: JsBigInt = if (signBit != 0) bigIntNegate(product) else product
                 BigDecimal(signed, 0)
             } else {
-                val product: dynamic = absSig * bigIntPow(BI_FIVE, -exponent)
-                val signed: dynamic = if (signBit != 0) -product else product
+                val product: JsBigInt = bigIntMultiply(absSig, bigIntPow(BI_FIVE, -exponent))
+                val signed: JsBigInt = if (signBit != 0) bigIntNegate(product) else product
                 BigDecimal(signed, -exponent)
             }
         }

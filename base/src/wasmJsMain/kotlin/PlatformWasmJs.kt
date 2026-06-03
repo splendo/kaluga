@@ -1,0 +1,80 @@
+/*
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.base
+
+import kotlinx.coroutines.CloseableCoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Runnable
+import kotlin.coroutines.CoroutineContext
+
+/**
+ * Marker for `base` APIs not yet ported to Kotlin/Wasm (the date and decimal subsystems, which depend
+ * on luxon / JS `BigInt`, and the `Intl`-backed locale/formatter classes). These throw at runtime until
+ * the corresponding subsystem is ported; the wasmJs target compiles so further ports can be verified.
+ */
+internal fun wasmJsNotImplemented(): Nothing = throw NotImplementedError("This base API is not yet implemented for Kotlin/Wasm")
+
+/**
+ * The thread of execution. On Kotlin/Wasm there is only one thread, so everything is the main thread.
+ */
+actual class KalugaThread {
+
+    actual companion object {
+        actual val currentThread: KalugaThread get() = KalugaThread()
+    }
+
+    actual var name: String = "Main Thread"
+        set(_) = Unit
+
+    actual val isMainThread: Boolean = true
+
+    override fun equals(other: Any?): Boolean = other is KalugaThread
+
+    override fun hashCode(): Int = "KalugaThread".hashCode()
+}
+
+/**
+ * Runs the provided [block] on the main thread. Kotlin/Wasm is single-threaded, so this just runs [block].
+ */
+actual fun runOnMain(block: () -> Unit) {
+    block()
+}
+
+/**
+ * Kotlin/Wasm is single-threaded and cannot block, so a true [runBlocking] is not supported.
+ */
+actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T = wasmJsNotImplemented()
+
+/**
+ * Kotlin/Wasm has no threading, so this returns [Dispatchers.Default].
+ */
+actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher = CoroutineDispatcherWrapper(Dispatchers.Default)
+
+/**
+ * Kotlin/Wasm has no threading, so this returns [Dispatchers.Default].
+ */
+actual fun threadPoolDispatcher(numberOfThreads: UInt, name: String): CloseableCoroutineDispatcher = CoroutineDispatcherWrapper(Dispatchers.Default)
+
+private class CoroutineDispatcherWrapper(private val base: CoroutineDispatcher) : CloseableCoroutineDispatcher() {
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+        base.dispatch(context, block)
+    }
+    override fun close() = Unit
+}

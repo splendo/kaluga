@@ -16,7 +16,6 @@
  */
 
 @file:JsModule("luxon")
-@file:JsNonModule
 
 package com.splendo.kaluga.base.externals
 

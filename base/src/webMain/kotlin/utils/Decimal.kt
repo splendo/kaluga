@@ -75,7 +75,7 @@ actual fun Number.toFiniteDecimal(): FiniteDecimal? {
 
 actual fun String.toFiniteDecimal(): FiniteDecimal? = try {
     FiniteDecimal(BigDecimal.fromString(this))
-} catch (_: dynamic) {
+} catch (_: NumberFormatException) {
     null
 }
 

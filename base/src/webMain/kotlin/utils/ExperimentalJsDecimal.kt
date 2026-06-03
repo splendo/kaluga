@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,10 +15,15 @@
 
  */
 
-@file:JsModule("luxon")
-@file:JsNonModule
+package com.splendo.kaluga.base.utils
 
-package com.splendo.kaluga.base.externals
-
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+/**
+ * Marks the custom JavaScript [BigDecimal] implementation backing [Decimal], which may not cover every edge case of the platform decimal types used on other targets.
+ */
+@RequiresOptIn(
+    message = "On the JS family Decimal is backed by a custom BigDecimal implementation that may not cover every edge case.",
+    level = RequiresOptIn.Level.ERROR,
+)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS)
+annotation class ExperimentalJsDecimal

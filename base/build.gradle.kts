@@ -12,6 +12,7 @@ kaluga {
 
     supportJVM = true
     supportJS = true
+    supportWasmJS = true
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true
@@ -48,6 +49,11 @@ kaluga {
                 implementation(npm("luxon", "3.5.0"))
             }
         }
+        wasmJs {
+            main {
+                implementation(npm("luxon", "3.5.0"))
+            }
+        }
     }
 }
 
@@ -58,7 +64,7 @@ tasks.register("generateDefaultCurrencyMap") {
     description = "Regenerates DefaultCurrencyForCountry.kt from CLDR $cldrVersion currencyData.json."
 
     val outputFile = layout.projectDirectory.file(
-        "src/jsMain/kotlin/text/DefaultCurrencyForCountry.kt",
+        "src/webMain/kotlin/text/DefaultCurrencyForCountry.kt",
     ).asFile
     outputs.file(outputFile)
 

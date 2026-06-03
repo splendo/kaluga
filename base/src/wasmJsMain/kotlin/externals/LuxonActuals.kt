@@ -15,10 +15,10 @@
 
  */
 
-@file:JsModule("luxon")
-@file:JsNonModule
-
 package com.splendo.kaluga.base.externals
 
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+internal actual fun luxonFromMillis(milliseconds: Double, options: LuxonOptions): LuxonDateTime = DateTime.fromMillis(milliseconds, options)
+internal actual fun luxonFromObject(values: LuxonDateValues, options: LuxonOptions): LuxonDateTime = DateTime.fromObject(values, options)
+internal actual fun luxonFromFormat(text: String, format: String, options: LuxonOptions): LuxonDateTime = DateTime.fromFormat(text, format, options)
+internal actual fun luxonNow(): LuxonDateTime = DateTime.now()
+internal actual fun luxonIsValidIANAZone(zone: String): Boolean = Info.isValidIANAZone(zone)

@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
 // Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Alias: ios => [iosArm64, iosSimulatorArm64]
 // Alias: tvos => [tvosArm64, tvosSimulatorArm64]
@@ -445,6 +445,9 @@ abstract class com.splendo.kaluga.base.utils/KalugaDate : kotlin/Comparable<com.
 
         // Targets: [js]
         abstract fun <get-date>(): kotlin.js/Date // com.splendo.kaluga.base.utils/KalugaDate.date.<get-date>|<get-date>(){}[0]
+
+        // Targets: [wasmJs]
+        abstract fun <get-date>(): com.splendo.kaluga.base.utils/KalugaDateHolder // com.splendo.kaluga.base.utils/KalugaDate.date.<get-date>|<get-date>(){}[0]
     abstract val daysInMonth // com.splendo.kaluga.base.utils/KalugaDate.daysInMonth|{}daysInMonth[0]
         abstract fun <get-daysInMonth>(): kotlin/Int // com.splendo.kaluga.base.utils/KalugaDate.daysInMonth.<get-daysInMonth>|<get-daysInMonth>(){}[0]
 
@@ -813,6 +816,9 @@ final class com.splendo.kaluga.base.utils/DefaultKalugaDate : com.splendo.kaluga
 
         // Targets: [js]
         final fun <get-date>(): kotlin.js/Date // com.splendo.kaluga.base.utils/DefaultKalugaDate.date.<get-date>|<get-date>(){}[0]
+
+        // Targets: [wasmJs]
+        final fun <get-date>(): com.splendo.kaluga.base.utils/KalugaDateHolder // com.splendo.kaluga.base.utils/DefaultKalugaDate.date.<get-date>|<get-date>(){}[0]
     final val daysInMonth // com.splendo.kaluga.base.utils/DefaultKalugaDate.daysInMonth|{}daysInMonth[0]
         final fun <get-daysInMonth>(): kotlin/Int // com.splendo.kaluga.base.utils/DefaultKalugaDate.daysInMonth.<get-daysInMonth>|<get-daysInMonth>(){}[0]
 
@@ -895,10 +901,10 @@ final class com.splendo.kaluga.base.utils/FiniteDecimal : kotlin/Comparable<com.
     // Targets: [apple]
     final fun copy(platform.Foundation/NSDecimalNumber = ...): com.splendo.kaluga.base.utils/FiniteDecimal // com.splendo.kaluga.base.utils/FiniteDecimal.copy|copy(platform.Foundation.NSDecimalNumber){}[0]
 
-    // Targets: [js]
+    // Targets: [js, wasmJs]
     constructor <init>(com.splendo.kaluga.base.utils/BigDecimal) // com.splendo.kaluga.base.utils/FiniteDecimal.<init>|<init>(com.splendo.kaluga.base.utils.BigDecimal){}[0]
 
-    // Targets: [js]
+    // Targets: [js, wasmJs]
     final fun copy(com.splendo.kaluga.base.utils/BigDecimal = ...): com.splendo.kaluga.base.utils/FiniteDecimal // com.splendo.kaluga.base.utils/FiniteDecimal.copy|copy(com.splendo.kaluga.base.utils.BigDecimal){}[0]
 }
 
@@ -1010,7 +1016,7 @@ final class com.splendo.kaluga.base/KalugaThread { // com.splendo.kaluga.base/Ka
     // Targets: [apple]
     final fun toString(): kotlin/String // com.splendo.kaluga.base/KalugaThread.toString|toString(){}[0]
 
-    // Targets: [js]
+    // Targets: [js, wasmJs]
     constructor <init>() // com.splendo.kaluga.base/KalugaThread.<init>|<init>(){}[0]
 }
 
@@ -2922,25 +2928,26 @@ final class com.splendo.kaluga.base/IOSVersion : kotlin/Comparable<com.splendo.k
     }
 }
 
-// Targets: [js]
-final class com.splendo.kaluga.base.utils/BigDecimal { // com.splendo.kaluga.base.utils/BigDecimal|null[0]
-    constructor <init>(dynamic, kotlin/Int) // com.splendo.kaluga.base.utils/BigDecimal.<init>|<init>(<dynamic>;kotlin.Int){}[0]
+// Targets: [js, wasmJs]
+open annotation class com.splendo.kaluga.base.utils/ExperimentalJsDecimal : kotlin/Annotation { // com.splendo.kaluga.base.utils/ExperimentalJsDecimal|null[0]
+    constructor <init>() // com.splendo.kaluga.base.utils/ExperimentalJsDecimal.<init>|<init>(){}[0]
+}
 
+// Targets: [js, wasmJs]
+final class com.splendo.kaluga.base.utils/BigDecimal { // com.splendo.kaluga.base.utils/BigDecimal|null[0]
     final val isNegative // com.splendo.kaluga.base.utils/BigDecimal.isNegative|{}isNegative[0]
         final fun <get-isNegative>(): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.isNegative.<get-isNegative>|<get-isNegative>(){}[0]
     final val isZero // com.splendo.kaluga.base.utils/BigDecimal.isZero|{}isZero[0]
         final fun <get-isZero>(): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.isZero.<get-isZero>|<get-isZero>(){}[0]
     final val scale // com.splendo.kaluga.base.utils/BigDecimal.scale|{}scale[0]
         final fun <get-scale>(): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.scale.<get-scale>|<get-scale>(){}[0]
-    final val significand // com.splendo.kaluga.base.utils/BigDecimal.significand|{}significand[0]
-        final fun <get-significand>(): dynamic // com.splendo.kaluga.base.utils/BigDecimal.significand.<get-significand>|<get-significand>(){}[0]
 
     final fun add(com.splendo.kaluga.base.utils/BigDecimal): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.add|add(com.splendo.kaluga.base.utils.BigDecimal){}[0]
     final fun compareTo(com.splendo.kaluga.base.utils/BigDecimal): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.compareTo|compareTo(com.splendo.kaluga.base.utils.BigDecimal){}[0]
-    final fun divide(com.splendo.kaluga.base.utils/BigDecimal, kotlin/Int, com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.divide|divide(com.splendo.kaluga.base.utils.BigDecimal;kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
+    final fun divide(com.splendo.kaluga.base.utils/BigDecimal, kotlin/Int = ..., com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.divide|divide(com.splendo.kaluga.base.utils.BigDecimal;kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.utils/BigDecimal.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.utils/BigDecimal.hashCode|hashCode(){}[0]
-    final fun multiply(com.splendo.kaluga.base.utils/BigDecimal, kotlin/Int? = ..., com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.multiply|multiply(com.splendo.kaluga.base.utils.BigDecimal;kotlin.Int?;com.splendo.kaluga.base.utils.RoundingMode){}[0]
+    final fun multiply(com.splendo.kaluga.base.utils/BigDecimal, kotlin/Int = ..., com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.multiply|multiply(com.splendo.kaluga.base.utils.BigDecimal;kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
     final fun pow(kotlin/Int, kotlin/Int = ..., com.splendo.kaluga.base.utils/RoundingMode = ...): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.pow|pow(kotlin.Int;kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
     final fun round(kotlin/Int, com.splendo.kaluga.base.utils/RoundingMode): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.round|round(kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
     final fun setScale(kotlin/Int, com.splendo.kaluga.base.utils/RoundingMode): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.setScale|setScale(kotlin.Int;com.splendo.kaluga.base.utils.RoundingMode){}[0]
@@ -2965,6 +2972,9 @@ final class com.splendo.kaluga.base.utils/BigDecimal { // com.splendo.kaluga.bas
         final fun fromString(kotlin/String): com.splendo.kaluga.base.utils/BigDecimal // com.splendo.kaluga.base.utils/BigDecimal.Companion.fromString|fromString(kotlin.String){}[0]
     }
 }
+
+// Targets: [wasmJs]
+final class com.splendo.kaluga.base.utils/KalugaDateHolder // com.splendo.kaluga.base.utils/KalugaDateHolder|null[0]
 
 // Targets: [watchosArm64]
 final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/UInt = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.UInt){0§<kotlin.Any?>}[0]

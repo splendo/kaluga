@@ -17,14 +17,18 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.externals.DateTime
-import com.splendo.kaluga.base.externals.Info
+import com.splendo.kaluga.base.externals.luxonFromMillis
+import com.splendo.kaluga.base.externals.luxonFromObject
+import com.splendo.kaluga.base.externals.luxonIsValidIANAZone
+import com.splendo.kaluga.base.externals.luxonNow
+import com.splendo.kaluga.base.externals.luxonDateValues
+import com.splendo.kaluga.base.externals.luxonOptions
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 /**
  * A default implementation of [BaseTimeZone] backed by the
- * [`luxon`](https://moment.github.io/luxon/) JS library.
+ * [`luxon`](https://moment.github.io/luxon/) JS library, shared by the JS family (js + wasmJs).
  *
  * @property identifier the IANA timezone identifier (e.g. `"Europe/Amsterdam"`, `"UTC"`).
  */
@@ -38,16 +42,14 @@ actual class KalugaTimeZone internal constructor(actual override val identifier:
 
     actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration {
         val ms = date.durationSinceEpoch.inWholeMilliseconds.toDouble()
-        val zone = identifier
-        val dt = DateTime.fromMillis(ms, js("({zone: zone})"))
-        return (dt.offset.unsafeCast<Int>()).minutes
+        val dt = luxonFromMillis(ms, luxonOptions(identifier))
+        return dt.offset.minutes
     }
 
     actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean {
         val ms = date.durationSinceEpoch.inWholeMilliseconds.toDouble()
-        val zone = identifier
-        val dt = DateTime.fromMillis(ms, js("({zone: zone})"))
-        return dt.isInDST.unsafeCast<Boolean>()
+        val dt = luxonFromMillis(ms, luxonOptions(identifier))
+        return dt.isInDST
     }
 
     actual override fun copy(): KalugaTimeZone = KalugaTimeZone(identifier)
@@ -72,40 +74,44 @@ actual class KalugaTimeZone internal constructor(actual override val identifier:
 private data class TimeZoneOffsets(val standard: Duration, val daylight: Duration)
 
 private fun computeOffsets(zone: String): TimeZoneOffsets {
-    val january = DateTime.fromObject(js("({year: 2024, month: 1, day: 15})"), js("({zone: zone})"))
-    val july = DateTime.fromObject(js("({year: 2024, month: 7, day: 15})"), js("({zone: zone})"))
-    val janOffset = january.offset.unsafeCast<Int>()
-    val julOffset = july.offset.unsafeCast<Int>()
+    val january = luxonFromObject(luxonDateValues(2024, 1, 15), luxonOptions(zone))
+    val july = luxonFromObject(luxonDateValues(2024, 7, 15), luxonOptions(zone))
+    val janOffset = january.offset
+    val julOffset = july.offset
     val standard = minOf(janOffset, julOffset)
     val daylight = maxOf(janOffset, julOffset) - standard
     return TimeZoneOffsets(standard.minutes, daylight.minutes)
 }
 
 private fun isValidTimeZone(identifier: String): Boolean = try {
-    Info.isValidIANAZone(identifier).unsafeCast<Boolean>() ||
+    luxonIsValidIANAZone(identifier) ||
         fallbackTimeZones.any { identifier.equals(it, ignoreCase = true) }
-} catch (_: dynamic) {
+} catch (_: Throwable) {
     false
 }
 
 private fun canonicalizeTimeZone(identifier: String): String = try {
-    val dt = DateTime.now().setZone(identifier)
-    if (dt.isValid.unsafeCast<Boolean>()) dt.zoneName.unsafeCast<String>() else identifier
-} catch (_: dynamic) {
+    val dt = luxonNow().setZone(identifier)
+    if (dt.isValid) dt.zoneName else identifier
+} catch (_: Throwable) {
     identifier
 }
 
 private fun systemTimeZone(): String = try {
-    js("Intl.DateTimeFormat().resolvedOptions().timeZone").unsafeCast<String?>() ?: "UTC"
-} catch (_: dynamic) {
+    resolvedTimeZone() ?: "UTC"
+} catch (_: Throwable) {
     "UTC"
 }
 
-// Intl is assumed present (the whole time zone implementation depends on it); only the newer supportedValuesOf enumeration API is optional.
+private fun resolvedTimeZone(): String? = js("Intl.DateTimeFormat().resolvedOptions().timeZone")
+
+// Intl is assumed present (the whole time zone implementation depends on it); only the newer supportedValuesOf
+// enumeration API is optional. Joined to a String to stay free of JS-array interop across the JS family.
+private fun supportedTimeZonesJoined(): String? = js("typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone').join(',') : null")
+
 private fun listSupportedTimeZones(): List<String> = try {
-    val arr = js("typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : null")
-    if (arr == null) fallbackTimeZones else arr.unsafeCast<Array<String>>().toList()
-} catch (_: dynamic) {
+    supportedTimeZonesJoined()?.split(",") ?: fallbackTimeZones
+} catch (_: Throwable) {
     fallbackTimeZones
 }
 
@@ -115,24 +121,16 @@ private fun resolveTimeZoneName(zone: String, style: TimeZoneNameStyle, withDayl
     val styleString = if (style == TimeZoneNameStyle.Short) "short" else "long"
     // Use a January date for standard time, a July date for daylight savings (matches northern-hemisphere observance).
     val referenceMillis = if (withDaylightSavings) DST_REFERENCE_MILLIS else STANDARD_REFERENCE_MILLIS
-    val formatter = newDateTimeFormat(localeTag, js("({timeZone: zone, timeZoneName: styleString})"))
-    val parts = formatter.formatToParts(js("new Date(referenceMillis)"))
-    extractTimeZoneNamePart(parts) ?: zone
-} catch (_: dynamic) {
+    val options = emptyDateTimeFormatOptions()
+    options.timeZone = zone
+    options.timeZoneName = styleString
+    val formatter = createDateTimeFormat(localeTag, options)
+    val parts = dateTimeFormatParts(formatter, jsDate(referenceMillis))
+    firstPartValue(parts, "timeZoneName") ?: zone
+} catch (_: Throwable) {
     zone
 }
 
 // Jan 15, 2024 12:00 UTC and Jul 15, 2024 12:00 UTC — chosen to disambiguate STD vs DST naming.
 private const val STANDARD_REFERENCE_MILLIS: Double = 1705320000000.0
 private const val DST_REFERENCE_MILLIS: Double = 1721044800000.0
-
-private fun extractTimeZoneNamePart(parts: dynamic): String? {
-    val length = parts.length.unsafeCast<Int>()
-    for (i in 0 until length) {
-        val part = parts[i]
-        if (part.type.unsafeCast<String>() == "timeZoneName") {
-            return part.value.unsafeCast<String>()
-        }
-    }
-    return null
-}

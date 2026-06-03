@@ -17,13 +17,10 @@
 
 package com.splendo.kaluga.base.utils
 
-// Each js(...) below is a compiler intrinsic and must be a string literal — callers can't pass
-// a constant — so these one-line helpers are the way to consolidate the constructor names.
-// They also enforce the "construct in its own js(...), then chain in Kotlin" pattern that we
-// rely on to dodge Kotlin/JS's `new X(args).method(args)` mangling.
+import com.splendo.kaluga.base.externals.LuxonDateTime
 
-internal fun newDateTimeFormat(tag: String, opts: dynamic): dynamic = js("new Intl.DateTimeFormat(tag, opts)")
+// Kotlin/Wasm has no `kotlin.js.Date`; the holder keeps the epoch milliseconds, which is all the
+// common API exposes (the value is opaque — no members are accessed through `KalugaDate.date`).
+actual class KalugaDateHolder internal constructor(internal val epochMilliseconds: Double)
 
-internal fun newNumberFormat(tag: String, opts: dynamic): dynamic = js("new Intl.NumberFormat(tag, opts)")
-
-internal fun newIntlLocale(tag: String): dynamic = js("new Intl.Locale(tag)")
+internal actual fun luxonToDateHolder(dateTime: LuxonDateTime): KalugaDateHolder = KalugaDateHolder(dateTime.toMillis())
