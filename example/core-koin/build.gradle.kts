@@ -5,6 +5,7 @@ plugins {
 kaluga {
     moduleName = "example.core.koin"
     supportMacOS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {

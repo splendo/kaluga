@@ -41,7 +41,7 @@ internal actual class DefaultLocationUpdater actual constructor(
 
     // tvOS has no `startUpdatingLocation()`; it only supports one-shot `requestLocation()`. To approximate a
     // stream, requestLocation is re-issued every [AppleLocationSettings.pollInterval] until monitoring stops.
-    override fun onStartUpdating(manager: CLLocationManager) {
+    actual override fun onStartUpdating(manager: CLLocationManager) {
         pollingJob?.cancel()
         pollingJob = coroutineScope.launch {
             while (isActive) {
@@ -51,7 +51,7 @@ internal actual class DefaultLocationUpdater actual constructor(
         }
     }
 
-    override fun onStopUpdating(manager: CLLocationManager) {
+    actual override fun onStopUpdating(manager: CLLocationManager) {
         pollingJob?.cancel()
         pollingJob = null
     }

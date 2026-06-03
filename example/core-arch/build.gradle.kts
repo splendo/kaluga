@@ -6,6 +6,7 @@ plugins {
 kaluga {
     moduleName = "example.core.arch"
     supportMacOS = true
+    supportWasmJS = true
     dependencies {
         android {
             main {

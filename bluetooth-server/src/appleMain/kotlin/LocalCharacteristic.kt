@@ -92,7 +92,6 @@ class DefaultLocalCharacteristicWrapper(internal val characteristic: CBMutableCh
         serverWrapper.updateValue(value, characteristic, centrals)
 }
 
-@JvmInline
 value class CBCharacteristicIdentity(val characteristic: CBCharacteristic) : AttributeIdentity
 
 private val Permission.cbAttributePermission: ULong get() = when (this) {

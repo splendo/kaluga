@@ -24,7 +24,9 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Kaluga Example"
+// Lowercase, no spaces: the name is reused as the root npm package name by the Kotlin/Wasm
+// tooling (`:web`), and npm package names may not contain spaces or uppercase characters.
+rootProject.name = "kaluga-example"
 include(":android")
 include(":core-arch")
 include(":core-koin")
@@ -49,6 +51,7 @@ include(":feature-review")
 include(":feature-scientific")
 include(":feature-system")
 include(":shared")
+include(":web")
 
 if (embedding.embeddingMode is EmbeddingMode.Composite) {
     includeBuild("../")

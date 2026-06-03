@@ -91,5 +91,4 @@ class DefaultLocalServiceWrapper(internal val service: CBMutableService) : Local
     }
 }
 
-@JvmInline
 value class CBServiceIdentity(val service: CBService) : AttributeIdentity
