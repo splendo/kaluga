@@ -1019,32 +1019,6 @@ final class com.splendo.kaluga.bluetooth.device/DeviceInfoImpl : com.splendo.kal
     final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.toString|toString(){}[0]
 }
 
-final class com.splendo.kaluga.bluetooth.device/PairedAdvertisementData : com.splendo.kaluga.bluetooth.device/BaseAdvertisementData { // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData|null[0]
-    constructor <init>(kotlin/String? = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ...) // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.<init>|<init>(kotlin.String?;kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
-
-    final val isConnectable // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.isConnectable|{}isConnectable[0]
-        final fun <get-isConnectable>(): kotlin/Boolean // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.isConnectable.<get-isConnectable>|<get-isConnectable>(){}[0]
-    final val manufacturerData // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.manufacturerData|{}manufacturerData[0]
-        final fun <get-manufacturerData>(): kotlin/ByteArray? // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.manufacturerData.<get-manufacturerData>|<get-manufacturerData>(){}[0]
-    final val manufacturerId // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.manufacturerId|{}manufacturerId[0]
-        final fun <get-manufacturerId>(): kotlin/Int? // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.manufacturerId.<get-manufacturerId>|<get-manufacturerId>(){}[0]
-    final val name // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.name|{}name[0]
-        final fun <get-name>(): kotlin/String? // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.name.<get-name>|<get-name>(){}[0]
-    final val serviceData // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.serviceData|{}serviceData[0]
-        final fun <get-serviceData>(): kotlin.collections/Map<platform.CoreBluetooth/CBUUID, kotlin/ByteArray?> // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.serviceData.<get-serviceData>|<get-serviceData>(){}[0]
-    final val serviceUUIDs // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.serviceUUIDs|{}serviceUUIDs[0]
-        final fun <get-serviceUUIDs>(): kotlin.collections/List<platform.CoreBluetooth/CBUUID> // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.serviceUUIDs.<get-serviceUUIDs>|<get-serviceUUIDs>(){}[0]
-    final val txPowerLevel // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.txPowerLevel|{}txPowerLevel[0]
-        final fun <get-txPowerLevel>(): kotlin/Int // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.txPowerLevel.<get-txPowerLevel>|<get-txPowerLevel>(){}[0]
-
-    final fun component1(): kotlin/String? // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.component1|component1(){}[0]
-    final fun component2(): kotlin.collections/List<platform.CoreBluetooth/CBUUID> // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.component2|component2(){}[0]
-    final fun copy(kotlin/String? = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ...): com.splendo.kaluga.bluetooth.device/PairedAdvertisementData // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.copy|copy(kotlin.String?;kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.device/PairedAdvertisementData.toString|toString(){}[0]
-}
-
 final class com.splendo.kaluga.bluetooth.scanner/DefaultDevices : com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices { // com.splendo.kaluga.bluetooth.scanner/DefaultDevices|null[0]
     constructor <init>(kotlin.collections/Map<platform.Foundation/NSUUID, com.splendo.kaluga.bluetooth.device/ConnectableDevice>, kotlin.collections/Map<com.splendo.kaluga.bluetooth.scanner/ScanningState.DeviceDiscoveryMode, kotlin.collections/Set<platform.Foundation/NSUUID>>, com.splendo.kaluga.bluetooth.scanner/ScanningState.DeviceDiscoveryMode.Scanning) // com.splendo.kaluga.bluetooth.scanner/DefaultDevices.<init>|<init>(kotlin.collections.Map<platform.Foundation.NSUUID,com.splendo.kaluga.bluetooth.device.ConnectableDevice>;kotlin.collections.Map<com.splendo.kaluga.bluetooth.scanner.ScanningState.DeviceDiscoveryMode,kotlin.collections.Set<platform.Foundation.NSUUID>>;com.splendo.kaluga.bluetooth.scanner.ScanningState.DeviceDiscoveryMode.Scanning){}[0]
     constructor <init>(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>) // com.splendo.kaluga.bluetooth.scanner/DefaultDevices.<init>|<init>(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>){}[0]
