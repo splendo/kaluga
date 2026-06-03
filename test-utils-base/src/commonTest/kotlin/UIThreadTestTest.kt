@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.base
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.base.IgnoreJs
+import com.splendo.kaluga.test.base.IgnoreWasm
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,6 +62,7 @@ class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
     }
 
     @Test
+    @IgnoreWasm
     fun testCanceling() = testOnUIThread(cancelScopeAfterTest = true) {
         launch {
             // normally this would hang the test

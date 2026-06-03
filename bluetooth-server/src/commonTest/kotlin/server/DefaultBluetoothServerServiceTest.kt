@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.verify
@@ -44,7 +44,7 @@ class DefaultBluetoothServerServiceTest : BaseTest() {
 
     private fun settings() = ServerSettings(Permissions(MockPermissionsBuilder()))
 
-    private fun testServer(block: suspend (server: BluetoothServer, available: MockAvailable) -> Unit) = runBlocking<Unit> {
+    private fun testServer(block: suspend (server: BluetoothServer, available: MockAvailable) -> Unit) = testRunBlocking {
         val available = MockAvailable()
         val job = Job()
         val server = DefaultBluetoothServer(settings(), MockAwaitingPermissions { available }, coroutineContext + job)

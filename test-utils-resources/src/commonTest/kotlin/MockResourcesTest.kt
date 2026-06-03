@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.resources
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.resources.asColor
 import com.splendo.kaluga.resources.asFont
 import com.splendo.kaluga.resources.asImage
@@ -92,14 +92,14 @@ class MockResourcesTest {
     }
 
     @Test
-    fun testMockFontLoaderGeneric() = runBlocking {
+    fun testMockFontLoaderGeneric() = testRunBlocking {
         val loader = MockFontLoader()
         assertNull(ID.asFont(fontLoader = loader))
         assertNull(ANOTHER_ID.asFont(fontLoader = loader))
     }
 
     @Test
-    fun testMockFontLoaderSpecific() = runBlocking {
+    fun testMockFontLoaderSpecific() = testRunBlocking {
         val mock = mockFont()
         val loader = MockFontLoader(true)
         loader.loadFontMock.on(eq(ID)).doReturn(mock)

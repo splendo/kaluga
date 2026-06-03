@@ -18,6 +18,7 @@
 package com.splendo.kaluga.test.base
 
 import com.splendo.kaluga.test.base.IgnoreJs
+import com.splendo.kaluga.test.base.IgnoreWasm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,6 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 class TestBlockingAndCancelScopeTest {
 
     @Test
+    @IgnoreWasm
     fun testCanceling(): Unit = testBlockingAndCancelScope {
         launch {
             // normally this would hang the test

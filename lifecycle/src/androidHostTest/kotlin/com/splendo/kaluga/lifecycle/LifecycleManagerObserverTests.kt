@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.lifecycle
 
+import com.splendo.kaluga.test.base.testRunBlocking
+
 import android.app.Activity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -50,7 +52,7 @@ class LifecycleManagerObserverTests : BaseTest() {
     }
 
     @Test
-    fun testLifecycleManagerObserverHandlerCalled() = runBlocking {
+    fun testLifecycleManagerObserverHandlerCalled() = testRunBlocking {
         val observer = LifecycleManagerObserver()
         val data: ActivityLifecycleSubscribable.LifecycleManager = ActivityLifecycleSubscribable.LifecycleManager(
             activity,

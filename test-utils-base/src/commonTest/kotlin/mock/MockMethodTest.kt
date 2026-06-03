@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.base.mock
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.any
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
@@ -108,7 +108,7 @@ class MockMethodTest {
     }
 
     @Test
-    fun testMockSuspendMethodWithParamsAndReturnType() = runBlocking {
+    fun testMockSuspendMethodWithParamsAndReturnType() = testRunBlocking {
         val mock = mockableTestMethods::suspendMethodWithParamsAndReturnType.mock()
         mock.verify(rule = never())
         assertEquals("", mock.call(""))

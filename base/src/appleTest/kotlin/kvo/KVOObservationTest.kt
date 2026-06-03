@@ -26,7 +26,7 @@ import platform.Foundation.NSLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class KVOObservation {
+class KVOObservationTest {
 
     @Test
     fun testObserveKeyValueAsFlow() = runBlocking {

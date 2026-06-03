@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.datetimepicker.buildTimePicker
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +33,7 @@ abstract class DateTimePickerPresenterTests {
     abstract val builder: DateTimePickerPresenter.Builder
 
     @Test
-    fun testDateTimePickerBuilderExceptionNoActions() = runBlocking {
+    fun testDateTimePickerBuilderExceptionNoActions() = testRunBlocking {
         assertFailsWith<IllegalArgumentException> {
             builder.buildTimePicker(this) {
             }
@@ -42,7 +42,7 @@ abstract class DateTimePickerPresenterTests {
     }
 
     @Test
-    fun testDateTimePickerBuilderExceptionNoCancelTitle() = runBlocking {
+    fun testDateTimePickerBuilderExceptionNoCancelTitle() = testRunBlocking {
         assertFailsWith<IllegalArgumentException> {
             builder.buildTimePicker(this) {
                 setConfirmButtonTitle("OK")
@@ -52,7 +52,7 @@ abstract class DateTimePickerPresenterTests {
     }
 
     @Test
-    fun testDateTimePickerFlowCancel() = runBlocking {
+    fun testDateTimePickerFlowCancel() = testRunBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
             val presenter = builder.buildTimePicker(this) {
                 setConfirmButtonTitle("OK")

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toCollection
@@ -29,7 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 class KnownLocationTest {
 
     @Test
-    fun testKnownLocation() = runBlocking {
+    fun testKnownLocation() = testRunBlocking {
         val now = DefaultKalugaDate.now()
         val knownLocation = Location.KnownLocation(1.0, 1.0, time = now)
         val locationFlow = flowOf(
@@ -46,7 +46,7 @@ class KnownLocationTest {
     }
 
     @Test
-    fun testExpiredKnownLocation() = runBlocking {
+    fun testExpiredKnownLocation() = testRunBlocking {
         val now = DefaultKalugaDate.epoch(10.seconds)
         val knownLocation = Location.KnownLocation(1.0, 1.0, time = now)
         val locationFlow = flowOf(

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.base.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import kotlin.test.assertTrue
 
