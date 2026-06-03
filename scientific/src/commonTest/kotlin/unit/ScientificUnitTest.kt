@@ -16,7 +16,7 @@
  */
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.scientificSerializationModule
@@ -57,7 +57,7 @@ class ScientificUnitTest {
     }
 
     @Test
-    fun testSerialization() = runBlocking {
+    fun testSerialization() = testRunBlocking {
         // Chunked across Dispatchers.Default — per-unit polymorphic dispatch is CPU-bound on K/N.
         val listSerializer = ListSerializer(UnitContainer.serializer())
         val containers = Units.map { UnitContainer(it) }

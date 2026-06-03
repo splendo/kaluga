@@ -10,6 +10,7 @@ kaluga {
 
     supportJVM = true
     supportJS = true
+    supportWasmJS = true
 
     dependencies {
         common {
