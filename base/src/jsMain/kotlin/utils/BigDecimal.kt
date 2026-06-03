@@ -107,12 +107,12 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         return BigDecimal((a - b).unsafeCast<dynamic>(), maxScale)
     }
 
-    fun multiply(other: BigDecimal, precision: Int? = null, rounding: RoundingMode = RoundHalfEven): BigDecimal {
+    fun multiply(other: BigDecimal, precision: Int = DECIMAL128_PRECISION, rounding: RoundingMode = RoundHalfEven): BigDecimal {
         val raw = BigDecimal((significand * other.significand).unsafeCast<dynamic>(), scale + other.scale)
-        return if (precision != null) raw.round(precision, rounding) else raw
+        return raw.round(precision, rounding)
     }
 
-    fun divide(other: BigDecimal, precision: Int, rounding: RoundingMode = RoundHalfEven): BigDecimal {
+    fun divide(other: BigDecimal, precision: Int = DECIMAL128_PRECISION, rounding: RoundingMode = RoundHalfEven): BigDecimal {
         if (other.isZero) throw ArithmeticException("Division by zero")
         if (isZero) return BigDecimal(BI_ZERO, scale - other.scale)
 

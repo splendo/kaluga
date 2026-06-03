@@ -325,11 +325,6 @@ internal expect fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode =
 
 /**
  * Converts a [Number] to a [Decimal]
- *
- * The special-value branches are checked before delegating to [toFiniteDecimalOrNaN] so that
- * `Double.POSITIVE_INFINITY`, `Double.NEGATIVE_INFINITY` and `Double.NaN` are mapped correctly on
- * Kotlin/JS, where `is Int` / `is Short` runtime checks collapse to `typeof x === 'number'` and
- * therefore match those special values.
  */
 fun Number.toDecimal(): Decimal {
     val d = toDouble()

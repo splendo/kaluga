@@ -42,28 +42,25 @@ actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int): FiniteDecimal 
 
 actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode): FiniteDecimal = FiniteDecimal(bd.subtract(value.bd).setScale(scale, roundingMode))
 
-actual operator fun FiniteDecimal.div(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(bd.divide(value.bd, DECIMAL128_PRECISION, RoundingMode.RoundHalfEven))
+actual operator fun FiniteDecimal.div(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(bd.divide(value.bd))
 
-actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int): FiniteDecimal =
-    FiniteDecimal(bd.divide(value.bd, DECIMAL128_PRECISION, RoundingMode.RoundHalfEven).setScale(scale, RoundingMode.RoundHalfEven))
+actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int): FiniteDecimal = FiniteDecimal(bd.divide(value.bd).setScale(scale, RoundingMode.RoundHalfEven))
 
 actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode): FiniteDecimal =
-    FiniteDecimal(bd.divide(value.bd, DECIMAL128_PRECISION, roundingMode).setScale(scale, roundingMode))
+    FiniteDecimal(bd.divide(value.bd, rounding = roundingMode).setScale(scale, roundingMode))
 
-actual operator fun FiniteDecimal.times(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(bd.multiply(value.bd, DECIMAL128_PRECISION, RoundingMode.RoundHalfEven))
+actual operator fun FiniteDecimal.times(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(bd.multiply(value.bd))
 
-actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int): FiniteDecimal =
-    FiniteDecimal(bd.multiply(value.bd, DECIMAL128_PRECISION, RoundingMode.RoundHalfEven).setScale(scale, RoundingMode.RoundHalfEven))
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int): FiniteDecimal = FiniteDecimal(bd.multiply(value.bd).setScale(scale, RoundingMode.RoundHalfEven))
 
 actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode): FiniteDecimal =
-    FiniteDecimal(bd.multiply(value.bd, DECIMAL128_PRECISION, roundingMode).setScale(scale, roundingMode))
+    FiniteDecimal(bd.multiply(value.bd, rounding = roundingMode).setScale(scale, roundingMode))
 
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = FiniteDecimal(bd.pow(n))
 
 actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = FiniteDecimal(bd.pow(n).setScale(scale, RoundingMode.RoundHalfEven))
 
-actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): FiniteDecimal =
-    FiniteDecimal(bd.pow(n, DECIMAL128_PRECISION, roundingMode).setScale(scale, roundingMode))
+actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): FiniteDecimal = FiniteDecimal(bd.pow(n, rounding = roundingMode).setScale(scale, roundingMode))
 
 actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode): FiniteDecimal = FiniteDecimal(bd.setScale(scale, roundingMode))
 

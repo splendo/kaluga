@@ -96,8 +96,10 @@ class DateFormatterTest {
         val usFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, UnitedStatesLocale)
         val frFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, FranceLocale)
 
-        assertEquals("1:37:42 PM", usFormatter.format(March181988).replace(" ", " ").replace(" ", " "))
-        assertEquals(expectedFrenchMediumTime, frFormatter.format(March181988).replace(' ', ' ').replace(' ', ' '))
+        // Some platforms use different whitespace here.
+        fun String.simplifyWhitespace() = replace('\u202F', ' ').replace(Typography.nbsp, ' ')
+        assertEquals("1:37:42 PM", usFormatter.format(March181988).simplifyWhitespace())
+        assertEquals(expectedFrenchMediumTime, frFormatter.format(March181988).simplifyWhitespace())
     }
 
     @Test

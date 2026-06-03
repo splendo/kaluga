@@ -113,6 +113,16 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         return result
     }
 
+    // Applies the decimal/grouping/minus overrides to a plain numeric string for the scientific and pattern
+    // paths, which assemble output manually rather than going through rawFormat/applySymbolOverrides.
+    private fun applyNumericOverrides(formatted: String): String {
+        var result = formatted
+        symbolOverrides["decimal"]?.firstOrNull()?.let { if (it != localeSeparators.decimal) result = result.replace(localeSeparators.decimal, it) }
+        symbolOverrides["group"]?.firstOrNull()?.let { if (it != localeSeparators.grouping) result = result.replace(localeSeparators.grouping, it) }
+        symbolOverrides["minusSign"]?.firstOrNull()?.let { if (it != localeSeparators.minusSign) result = result.replace(localeSeparators.minusSign, it) }
+        return result
+    }
+
     actual override fun format(number: Number): String {
         val raw = number.toDouble()
         val effective = if (_multiplier != defaultMultiplier) raw * (_multiplier.toDouble() / defaultMultiplier) else raw
@@ -204,7 +214,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         val (minFrac, maxFrac) = patternFractionRange(body)
         val minInt = patternMinIntegerDigits(body)
         val numericFormatter = numericFormatterFor(minInt, minFrac, maxFrac, grouping)
-        val numericPart = numericFormatter(magnitude)
+        val numericPart = applyNumericOverrides(numericFormatter(magnitude))
         return prefix + numericPart + suffix
     }
 
@@ -305,11 +315,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             rawExp - (mantissaIntDigits - 1)
         }
         val mantissa = absValue / 10.0.pow(exponent)
-        val mantissaStr = rawFormatWithDigits(
-            mantissa,
-            minInt = mantissaIntDigits,
-            minFrac = style.minFractionDigits.toInt(),
-            maxFrac = style.maxFractionDigits.toInt(),
+        val mantissaStr = applyNumericOverrides(
+            rawFormatWithDigits(
+                mantissa,
+                minInt = mantissaIntDigits,
+                minFrac = style.minFractionDigits.toInt(),
+                maxFrac = style.maxFractionDigits.toInt(),
+            ),
         )
         val sign = if (negative) minusSign.toString() else ""
         val expSign = if (exponent < 0) minusSign.toString() else ""
@@ -332,18 +344,10 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     // region Permillage formatting
 
     private fun formatPermillage(value: Double): String {
-        val ps = style as NumberFormatStyle.Permillage
-        // `value` has already been normalized by `format()` to [raw * _multiplier / defaultMultiplier];
-        // re-apply defaultMultiplier (1000) so the rendered mantissa is raw * _multiplier.
-        val scaled = value * defaultMultiplier
-        val mantissaStr = rawFormatWithDigits(
-            scaled,
-            minInt = ps.minIntegerDigits.toInt().coerceAtLeast(1),
-            minFrac = ps.minFractionDigits.toInt(),
-            maxFrac = ps.maxFractionDigits.toInt(),
-            grouping = usesGroupingSeparator,
-        )
-        return mantissaStr + perMillSymbol
+        // Render through the "percent" formatter (set in buildBaseOptions) so the sign gets locale-correct
+        // placement and spacing; percent multiplies by 100, per-mille needs ×1000, so pre-scale by 10 and
+        // swap the rendered percent sign for the per-mille sign.
+        return rawFormat(value * 10).replace(percentSymbol, perMillSymbol)
     }
 
     // endregion
@@ -469,7 +473,8 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             }
 
             is NumberFormatStyle.Permillage -> {
-                opts.style = "decimal"
+                // No native per-mille style; reuse "percent" (×100) and pre-scale by 10 in formatPermillage to reach ×1000.
+                opts.style = "percent"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
                 opts.minimumFractionDigits = style.minFractionDigits.toInt()
                 opts.maximumFractionDigits = clampMaxFraction(style.maxFractionDigits.toInt())
