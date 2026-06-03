@@ -1,5 +1,6 @@
 // Klib ABI Dump
 // Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: tvos => [tvosArm64, tvosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -180,6 +181,17 @@ abstract class com.splendo.kaluga.location/BaseLocationStateRepo : com.splendo.k
     constructor <init>(kotlin/Function0<com.splendo.kaluga.location/LocationState.NotInitialized>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.location/LocationState>, com.splendo.kaluga.location/LocationState.Inactive, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Initializing>>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.location/LocationState>, com.splendo.kaluga.location/LocationState.Active, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Deinitialized>>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.location/BaseLocationStateRepo.<init>|<init>(kotlin.Function0<com.splendo.kaluga.location.LocationState.NotInitialized>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.location.LocationState>,com.splendo.kaluga.location.LocationState.Inactive,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.location.LocationState.Initializing>>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.location.LocationState>,com.splendo.kaluga.location.LocationState.Active,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.location.LocationState.Deinitialized>>;kotlin.coroutines.CoroutineContext){}[0]
 }
 
+final class com.splendo.kaluga.location/AppleLocationSettings { // com.splendo.kaluga.location/AppleLocationSettings|null[0]
+    constructor <init>() // com.splendo.kaluga.location/AppleLocationSettings.<init>|<init>(){}[0]
+
+    // Targets: [tvos]
+    constructor <init>(kotlin.time/Duration) // com.splendo.kaluga.location/AppleLocationSettings.<init>|<init>(kotlin.time.Duration){}[0]
+
+    // Targets: [tvos]
+    final var pollInterval // com.splendo.kaluga.location/AppleLocationSettings.pollInterval|{}pollInterval[0]
+        final fun <get-pollInterval>(): kotlin.time/Duration // com.splendo.kaluga.location/AppleLocationSettings.pollInterval.<get-pollInterval>|<get-pollInterval>(){}[0]
+}
+
 final class com.splendo.kaluga.location/DMSCoordinate { // com.splendo.kaluga.location/DMSCoordinate|null[0]
     constructor <init>(kotlin/Int, kotlin/Int, kotlin/Double, com.splendo.kaluga.location/DMSCoordinate.WindDirection) // com.splendo.kaluga.location/DMSCoordinate.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Double;com.splendo.kaluga.location.DMSCoordinate.WindDirection){}[0]
 
@@ -223,14 +235,14 @@ final class com.splendo.kaluga.location/DMSCoordinate { // com.splendo.kaluga.lo
 }
 
 final class com.splendo.kaluga.location/DefaultLocationManager : com.splendo.kaluga.location/BaseLocationManager { // com.splendo.kaluga.location/DefaultLocationManager|null[0]
-    constructor <init>(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.location/DefaultLocationManager.<init>|<init>(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+    constructor <init>(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.location/AppleLocationSettings = ...) // com.splendo.kaluga.location/DefaultLocationManager.<init>|<init>(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope;com.splendo.kaluga.location.AppleLocationSettings){}[0]
 
     final suspend fun requestEnableLocation() // com.splendo.kaluga.location/DefaultLocationManager.requestEnableLocation|requestEnableLocation(){}[0]
     final suspend fun startMonitoringLocation() // com.splendo.kaluga.location/DefaultLocationManager.startMonitoringLocation|startMonitoringLocation(){}[0]
     final suspend fun stopMonitoringLocation() // com.splendo.kaluga.location/DefaultLocationManager.stopMonitoringLocation|stopMonitoringLocation(){}[0]
 
     final class Builder : com.splendo.kaluga.location/BaseLocationManager.Builder { // com.splendo.kaluga.location/DefaultLocationManager.Builder|null[0]
-        constructor <init>() // com.splendo.kaluga.location/DefaultLocationManager.Builder.<init>|<init>(){}[0]
+        constructor <init>(com.splendo.kaluga.location/AppleLocationSettings = ...) // com.splendo.kaluga.location/DefaultLocationManager.Builder.<init>|<init>(com.splendo.kaluga.location.AppleLocationSettings){}[0]
 
         final fun create(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.location/BaseLocationManager // com.splendo.kaluga.location/DefaultLocationManager.Builder.create|create(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
     }
