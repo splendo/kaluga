@@ -26,9 +26,10 @@ import platform.Foundation.NSBundle
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A default implementation of [com.splendo.kaluga.bluetooth.BaseBluetoothServerBuilder]
+ * A default implementation of [com.splendo.kaluga.bluetooth.server.BaseBluetoothServerBuilder]
  * @param bundle the [NSBundle] in which Bluetooth should run
  * @param permissionsBuilder a method for creating the [Permissions] object to manage the Bluetooth permissions.
+ * Needs to have [com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder] registered.
  */
 actual class BluetoothServerBuilder(
     private val bundle: NSBundle = NSBundle.Companion.mainBundle,

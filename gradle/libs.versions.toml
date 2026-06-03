@@ -31,10 +31,8 @@ androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-arch-core = "2.2.0"
 androidx-browser = "1.10.0"
-# Compose Multiplatform — JetBrains coordinates. CMP wraps AndroidX Compose on the Android target,
-# so Android-only consumers get the same UI runtime as before, but downstream KMP consumers can
-# add iOS/Desktop/Web targets without a separate Compose version.
-compose-multiplatform = "1.11.0"
+
+compose-multiplatform = "1.11.1"
 compose-multiplatform-material3 = "1.11.0-alpha07"
 # Jetbrains-published multiplatform ports of AndroidX libraries — release independently of CMP.
 jetbrains-navigation = "2.9.2"

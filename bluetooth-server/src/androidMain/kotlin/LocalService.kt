@@ -17,12 +17,51 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import android.bluetooth.BluetoothGattServer
 import android.bluetooth.BluetoothGattService
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 
-actual class LocalServiceWrapper(val service: BluetoothGattService) {
-    actual constructor(
+actual interface LocalServiceWrapper {
+
+    /**
+     * The [UUID] of the service
+     */
+    actual val uuid: UUID
+
+    /**
+     * Adds an included [LocalServiceWrapper] to the service
+     */
+    actual fun addIncludedService(service: LocalServiceWrapper)
+
+    /**
+     * Adds a [LocalCharacteristicWrapper] to the service
+     */
+    actual fun addCharacteristic(characteristic: LocalCharacteristicWrapper)
+
+    /**
+     * Identity used to correlate this service with incoming GATT callbacks.
+     */
+    val identity: AttributeIdentity
+
+    /**
+     * Adds the service to a parent [BluetoothGattService] as an included service
+     */
+    fun addToParent(parent: BluetoothGattService)
+
+    /**
+     * Adds the service to a [BluetoothGattServer]
+     */
+    fun addTo(gattServer: BluetoothGattServer): Boolean
+
+    /**
+     * Removes the service from a [BluetoothGattServer]
+     */
+    fun removeFrom(gattServer: BluetoothGattServer)
+}
+
+class DefaultLocalServiceWrapper(internal val service: BluetoothGattService) : LocalServiceWrapper {
+    constructor(
         uuid: UUID,
         type: Service.Type,
     ) : this(
@@ -35,13 +74,28 @@ actual class LocalServiceWrapper(val service: BluetoothGattService) {
         ),
     )
 
-    actual val uuid: UUID = service.uuid
+    override val uuid: UUID = service.uuid
 
-    actual fun addIncludedService(service: LocalServiceWrapper) {
-        this.service.addService(service.service)
+    override val identity: AttributeIdentity get() = GattServiceIdentity(service)
+
+    override fun addIncludedService(service: LocalServiceWrapper) {
+        service.addToParent(this.service)
     }
 
-    actual fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {
-        service.addCharacteristic(characteristic.characteristic)
+    override fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {
+        characteristic.addToService(service)
+    }
+
+    override fun addToParent(parent: BluetoothGattService) {
+        parent.addService(service)
+    }
+
+    override fun addTo(gattServer: BluetoothGattServer): Boolean = gattServer.addService(service)
+
+    override fun removeFrom(gattServer: BluetoothGattServer) {
+        gattServer.removeService(service)
     }
 }
+
+@JvmInline
+value class GattServiceIdentity(val service: BluetoothGattService) : AttributeIdentity

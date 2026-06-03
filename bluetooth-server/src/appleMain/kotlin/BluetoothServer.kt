@@ -99,17 +99,18 @@ internal sealed class IOSServerState {
         ServerState.Available {
 
         override suspend fun addService(service: LocalService): Boolean = coroutineScope {
-            val servicesAdded = mutableListOf<CBMutableService>()
+            val servicesAdded = mutableListOf<LocalServiceWrapper>()
             try {
                 // On iOS, the Included Services must be explicitly added
                 val success = listOf(*service.includedServices.toTypedArray(), service).fold(true) { success, toAdd ->
                     if (!success) {
                         false
                     } else {
-                        val response = async { delegate.serviceAdded.mapNotNull { (added, success) -> success.takeIf { added.UUID == toAdd.wrapper.service.UUID } }.first() }
-                        bluetoothServerWrapper.add(toAdd.wrapper.service)
+                        val response =
+                            async { delegate.serviceAdded.mapNotNull { (added, success) -> success.takeIf { CBServiceIdentity(added) == toAdd.wrapper.identity } }.first() }
+                        toAdd.wrapper.addTo(bluetoothServerWrapper)
                         if (response.await()) {
-                            servicesAdded.add(toAdd.wrapper.service)
+                            servicesAdded.add(toAdd.wrapper)
                             true
                         } else {
                             false
@@ -118,18 +119,18 @@ internal sealed class IOSServerState {
                 }
                 if (!success) {
                     // When failing to add the parent service, clean up the included services as well
-                    servicesAdded.forEach { bluetoothServerWrapper.remove(it) }
+                    servicesAdded.forEach { it.removeFrom(bluetoothServerWrapper) }
                 }
                 success
             } catch (e: CancellationException) {
-                servicesAdded.forEach { bluetoothServerWrapper.remove(it) }
+                servicesAdded.forEach { it.removeFrom(bluetoothServerWrapper) }
                 throw e
             }
         }
 
         override fun removeService(service: LocalService) {
-            delegate.removeService(service.wrapper.service)
-            bluetoothServerWrapper.remove(service.wrapper.service)
+            delegate.removeService(service)
+            service.wrapper.removeFrom(bluetoothServerWrapper)
         }
 
         override fun removeAllServices() {
@@ -158,7 +159,7 @@ internal sealed class IOSServerState {
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
             val isAvailable = delegate.resetAvailable()
-            if (bluetoothServerWrapper.updateValue(value.toNSData(), characteristic.wrapper.characteristic, listOf(device.cbCentral))) {
+            if (characteristic.wrapper.updateValue(bluetoothServerWrapper, value.toNSData(), listOf(device.cbCentral))) {
                 true
             } else {
                 isAvailable.await()
@@ -187,6 +188,7 @@ internal sealed class IOSServerState {
                 logger.warn("DescriptorDSL") { "iOS Does not support adding descriptors" }
                 null
             },
+            DefaultLocalServiceWrapperBuilder(),
         )
 
         override fun close(): ServerState.Closed {

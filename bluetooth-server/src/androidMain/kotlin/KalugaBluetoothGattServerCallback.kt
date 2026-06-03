@@ -50,17 +50,6 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
     data class ServiceAdded(val service: BluetoothGattService, val success: Boolean)
     data class NotificationSent(val device: BluetoothDevice, val success: Boolean)
 
-    sealed class AttributeIdentifier {
-        data class Characteristic(val characteristic: BluetoothGattCharacteristic) : AttributeIdentifier() {
-            override val service: BluetoothGattService = characteristic.service
-        }
-        data class Descriptor(val descriptor: BluetoothGattDescriptor) : AttributeIdentifier() {
-            override val service: BluetoothGattService = descriptor.characteristic.service
-        }
-
-        abstract val service: BluetoothGattService
-    }
-
     private val _serviceAdded = MutableSharedFlow<ServiceAdded>(replay = 1)
     val serviceAdded = _serviceAdded.asSharedFlow()
 
@@ -70,33 +59,33 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
     private var sendResponse: SendResponse? = null
 
     private val mtu = mutableMapOf<String, Int>()
-    private val pendingWrites = concurrentMutableMapOf<String, Map<AttributeIdentifier, ByteArray>>()
+    private val pendingWrites = concurrentMutableMapOf<String, Map<AttributeIdentity, ByteArray>>()
 
-    private val readActions = mutableMapOf<AttributeIdentifier, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
-    private val writeActions = mutableMapOf<AttributeIdentifier, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
+    private val readActions = mutableMapOf<AttributeIdentity, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
+    private val writeActions = mutableMapOf<AttributeIdentity, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
 
     private val handlingScope = CoroutineScope(handlingContext + CoroutineName("BluetoothServerCallback"))
 
     fun registerReadAction(characteristic: LocalCharacteristic, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
-        registerReadAction(AttributeIdentifier.Characteristic(characteristic.wrapper.characteristic)) { device, offset ->
+        registerReadAction(characteristic.wrapper.identity) { device, offset ->
             characteristic.onRead(device, offset)
         }
     }
 
     fun registerReadAction(descriptor: LocalDescriptor, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
-        registerReadAction(AttributeIdentifier.Descriptor(descriptor.wrapper.descriptor)) { device, offset ->
+        registerReadAction(descriptor.wrapper.identity) { device, offset ->
             descriptor.onRead(device, offset)
         }
     }
 
     fun registerWriteAction(characteristic: LocalCharacteristic, onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
-        registerWriteAction(AttributeIdentifier.Characteristic(characteristic.wrapper.characteristic)) { device, value, offset ->
+        registerWriteAction(characteristic.wrapper.identity) { device, value, offset ->
             characteristic.onWrite(device, value, offset)
         }
     }
 
     fun registerWriteAction(descriptor: LocalDescriptor, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
-        registerWriteAction(AttributeIdentifier.Descriptor(descriptor.wrapper.descriptor)) { device, value, offset ->
+        registerWriteAction(descriptor.wrapper.identity) { device, value, offset ->
             descriptor.onWrite(device, value, offset)
         }
     }
@@ -105,12 +94,16 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         this.sendResponse = sendResponse
     }
 
-    fun removeService(service: BluetoothGattService) {
-        service.includedServices.forEach {
-            removeService(it)
+    fun removeService(service: LocalService) {
+        service.includedServices.forEach { removeService(it) }
+        service.characteristics.forEach { characteristic ->
+            readActions.remove(characteristic.wrapper.identity)
+            writeActions.remove(characteristic.wrapper.identity)
+            characteristic.descriptors.forEach { descriptor ->
+                readActions.remove(descriptor.wrapper.identity)
+                writeActions.remove(descriptor.wrapper.identity)
+            }
         }
-        readActions.keys.removeIf { it.service == service.uuid }
-        writeActions.keys.removeIf { it.service == service.uuid }
     }
 
     fun reset() {
@@ -124,7 +117,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
     }
 
     override fun onCharacteristicReadRequest(device: BluetoothDevice, requestId: Int, offset: Int, characteristic: BluetoothGattCharacteristic) {
-        handleReadAction(device, AttributeIdentifier.Characteristic(characteristic), requestId, offset)
+        handleReadAction(device, GattCharacteristicIdentity(characteristic), requestId, offset)
     }
 
     override fun onCharacteristicWriteRequest(
@@ -136,11 +129,11 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         offset: Int,
         value: ByteArray,
     ) {
-        handleWriteAction(device, AttributeIdentifier.Characteristic(characteristic), requestId, offset, value, preparedWrite, responseNeeded)
+        handleWriteAction(device, GattCharacteristicIdentity(characteristic), requestId, offset, value, preparedWrite, responseNeeded)
     }
 
     override fun onDescriptorReadRequest(device: BluetoothDevice, requestId: Int, offset: Int, descriptor: BluetoothGattDescriptor) {
-        handleReadAction(device, AttributeIdentifier.Descriptor(descriptor), requestId, offset)
+        handleReadAction(device, GattDescriptorIdentity(descriptor), requestId, offset)
     }
 
     override fun onDescriptorWriteRequest(
@@ -152,7 +145,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         offset: Int,
         value: ByteArray,
     ) {
-        handleWriteAction(device, AttributeIdentifier.Descriptor(descriptor), requestId, offset, value, preparedWrite, responseNeeded)
+        handleWriteAction(device, GattDescriptorIdentity(descriptor), requestId, offset, value, preparedWrite, responseNeeded)
     }
 
     override fun onExecuteWrite(device: BluetoothDevice, requestId: Int, execute: Boolean) {
@@ -202,7 +195,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         }
     }
 
-    private fun handleReadAction(device: BluetoothDevice, identifier: AttributeIdentifier, requestId: Int, offset: Int) {
+    private fun handleReadAction(device: BluetoothDevice, identifier: AttributeIdentity, requestId: Int, offset: Int) {
         handlingScope.launch {
             logger.info(TAG) { "Device ${device.address} attempting to read $identifier at $offset" }
             val (response, data) = readActions[identifier]?.let { readAction ->
@@ -223,7 +216,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
 
     private fun handleWriteAction(
         device: BluetoothDevice,
-        identifier: AttributeIdentifier,
+        identifier: AttributeIdentity,
         requestId: Int,
         offset: Int,
         value: ByteArray,
@@ -252,12 +245,12 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         }
     }
 
-    private fun registerReadAction(identifier: AttributeIdentifier, onRead: suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse) {
+    private fun registerReadAction(identifier: AttributeIdentity, onRead: suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse) {
         if (readActions.putIfAbsent(identifier, onRead) != null) {
             logger.warn(TAG) { "Read action for $identifier was already set. Ignoring" }
         }
     }
-    private fun registerWriteAction(identifier: AttributeIdentifier, onWrite: suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
+    private fun registerWriteAction(identifier: AttributeIdentity, onWrite: suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
         if (writeActions.putIfAbsent(identifier, onWrite) != null) {
             logger.warn(TAG) { "Write action for $identifier was already set. Ignoring" }
         }

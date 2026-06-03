@@ -30,6 +30,7 @@ import com.splendo.kaluga.test.base.mock.suspendTripleParametersMock
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.bluetooth.randomUUID
 import com.splendo.kaluga.test.bluetooth.server.MockConnectedDevice
+import com.splendo.kaluga.test.bluetooth.server.MockLocalServiceWrapperBuilder
 import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -40,10 +41,8 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
- * Tests the common [LocalService] / [LocalCharacteristic] / [LocalDescriptor] DSL.
- *
- * Lives in `appleTest` because building an attribute graph constructs the platform `CBMutable*`
- * wrappers, which are only available on Apple targets.
+ * Tests the common [LocalService] / [LocalCharacteristic] / [LocalDescriptor] DSL. Builds attribute
+ * graphs with mock wrappers, so it runs on every platform without a live Bluetooth stack.
  */
 class LocalServerAttributesTest : BaseTest() {
 
@@ -73,6 +72,7 @@ class LocalServerAttributesTest : BaseTest() {
             { characteristic, onWrite -> writes[characteristic.uuid] = onWrite },
             { subscriptionRegistrations.add(this) },
             { descriptorUuid -> LocalDescriptorDSL(descriptorUuid, { _, _ -> }, { _, _ -> }) },
+            MockLocalServiceWrapperBuilder(),
         )
     }
 

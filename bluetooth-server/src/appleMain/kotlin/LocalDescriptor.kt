@@ -18,11 +18,25 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.UUID
+import platform.CoreBluetooth.CBMutableCharacteristic
 import platform.CoreBluetooth.CBMutableDescriptor
 
-actual class LocalDescriptorWrapper internal constructor(val descriptor: CBMutableDescriptor) {
+actual interface LocalDescriptorWrapper {
+    actual val uuid: UUID
 
-    internal actual constructor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>) : this(CBMutableDescriptor())
+    /**
+     * Adds the descriptor to a [CBMutableCharacteristic]
+     */
+    fun addToCharacteristic(characteristic: CBMutableCharacteristic)
+}
 
-    actual val uuid = descriptor.UUID
+class DefaultLocalDescriptorWrapper internal constructor(internal val descriptor: CBMutableDescriptor) : LocalDescriptorWrapper {
+
+    constructor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>) : this(CBMutableDescriptor())
+
+    override val uuid = descriptor.UUID
+
+    override fun addToCharacteristic(characteristic: CBMutableCharacteristic) {
+        characteristic.setDescriptors(characteristic.descriptors.orEmpty() + descriptor)
+    }
 }

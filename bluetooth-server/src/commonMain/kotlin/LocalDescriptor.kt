@@ -229,8 +229,8 @@ internal class LocalDescriptorDSL(val uuid: UUID, val registerReadAction: LocalD
         writeAction = onWrite
     }
 
-    fun build(forCharacteristic: LocalCharacteristic): LocalDescriptor = LocalDescriptor(
-        LocalDescriptorWrapper(uuid, permissions),
+    fun build(forCharacteristic: LocalCharacteristic, wrapperBuilder: LocalServiceWrapperBuilder): LocalDescriptor = LocalDescriptor(
+        wrapperBuilder.createDescriptor(uuid, permissions),
         forCharacteristic,
     ).apply {
         forCharacteristic.wrapper.addDescriptor(wrapper)
@@ -244,9 +244,12 @@ internal class LocalDescriptorDSL(val uuid: UUID, val registerReadAction: LocalD
 }
 
 /**
- * Accessor to the platform level Local Bluetooth descriptor
+ * Accessor to the platform level Local Bluetooth descriptor.
+ *
+ * Implemented per platform by `DefaultLocalDescriptorWrapper` (wrapping the framework descriptor)
+ * and mockable in tests.
  */
-expect class LocalDescriptorWrapper internal constructor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>) {
+expect interface LocalDescriptorWrapper {
     val uuid: UUID
 }
 
