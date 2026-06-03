@@ -58,7 +58,7 @@ jobs:
 
       - name: build web example
         working-directory: example
-        run: ./gradlew :web:wasmJsBrowserDistribution
+        run: ./gradlew :web:wasmJsBrowserDevelopmentExecutableDistribution
 
       - name: Upload web example artifact
         uses: actions/upload-artifact@v7

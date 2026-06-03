@@ -1,14 +1,9 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    // Applied without a version: the Kotlin Multiplatform plugin is already on the build classpath
-    // via the root `com.splendo.kaluga.plugin`, so re-declaring a version would clash.
-    id("org.jetbrains.kotlin.multiplatform")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
-    // The JetBrains Compose Gradle plugin is only needed by this executable module: it wires the
-    // Skiko Wasm runtime (`skiko.mjs`/`skiko.wasm`) into the webpack bundle. The library modules
-    // get by with just the compose-compiler plugin since they never bundle for the browser.
-    id("org.jetbrains.compose") version "1.11.1"
+    alias(libs.plugins.jetbrains.compose)
 }
 
 group = "com.splendo.kaluga"
