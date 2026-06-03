@@ -83,7 +83,7 @@ internal fun String.isValidUUIDString(): Boolean = Constants.formatValidationReg
 /**
  * This function can be used to generate UUID on platforms which don't support it out of the box
  */
-fun randomUUIDString(): String {
+internal fun randomUUIDString(): String {
     val alphabet = ('A'..'F') + ('0'..'9')
     fun randomBlock(size: Int) = List(size) { alphabet.random() }.joinToString("")
 

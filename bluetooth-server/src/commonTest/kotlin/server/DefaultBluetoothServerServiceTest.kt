@@ -33,11 +33,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
 /**
- * Orchestration tests for [DefaultBluetoothServer] that drive real [LocalService] graphs through the
- * service/notification channels and the [MockAvailable] state. Lives in `appleTest` because building a
- * service constructs the platform `CBMutable*` wrappers.
+ * Orchestration tests for [DefaultBluetoothServer] that drive [LocalService] graphs through the
+ * service/notification channels and the [MockAvailable] state. Builds attributes with mock wrappers,
+ * so it runs on every platform without a live Bluetooth stack.
  */
 class DefaultBluetoothServerServiceTest : BaseTest() {
 
@@ -104,6 +105,6 @@ class DefaultBluetoothServerServiceTest : BaseTest() {
     }
 
     companion object {
-        private const val TIMEOUT = 10_000L
+        private val TIMEOUT = 10.seconds
     }
 }

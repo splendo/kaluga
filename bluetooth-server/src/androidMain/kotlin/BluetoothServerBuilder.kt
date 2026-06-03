@@ -32,6 +32,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A default implementation of [com.splendo.kaluga.bluetooth.server.BaseBluetoothServerBuilder]
  * @param applicationContext the [android.content.Context] in which Bluetooth should run
+ * Needs to have [com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder] and [com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder] registered.
  * @param permissionsBuilder a method for creating the [com.splendo.kaluga.permissions.base.Permissions] object to manage the Bluetooth permissions.
  */
 actual class BluetoothServerBuilder(

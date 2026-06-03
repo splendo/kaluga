@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 import java.net.URI
+import java.time.Year
 
 plugins {
     id("com.splendo.kaluga.plugin")
@@ -52,7 +53,7 @@ kaluga {
 
 // Regenerates DefaultCurrencyForCountry.kt from CLDR. Run on demand; output is checked in.
 tasks.register("generateDefaultCurrencyMap") {
-    val cldrVersion = "48.2.0"
+    val cldrVersion = libs.versions.cldr.get()
     group = "codegen"
     description = "Regenerates DefaultCurrencyForCountry.kt from CLDR $cldrVersion currencyData.json."
 
@@ -88,7 +89,7 @@ tasks.register("generateDefaultCurrencyMap") {
 
         val out = buildString {
             appendLine("/*")
-            appendLine(" Copyright 2026 Splendo Consulting B.V. The Netherlands")
+            appendLine(" Copyright ${Year.now().value} Splendo Consulting B.V. The Netherlands")
             appendLine()
             appendLine("    Licensed under the Apache License, Version 2.0 (the \"License\");")
             appendLine("    you may not use this file except in compliance with the License.")

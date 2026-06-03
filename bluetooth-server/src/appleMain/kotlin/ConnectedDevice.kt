@@ -28,6 +28,10 @@ actual interface ConnectedDevice : Device {
     val cbCentral: CBCentral
 }
 
+/**
+ * The default [ConnectedDevice], wrapping the platform [CBCentral].
+ * @property cbCentral the platform [CBCentral] of the connected device
+ */
 class DefaultConnectedDevice(override val cbCentral: CBCentral) : ConnectedDevice {
     override val identifier: Identifier = cbCentral.identifier
 }

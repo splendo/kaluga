@@ -20,19 +20,76 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import platform.CoreBluetooth.CBMutableService
+import platform.CoreBluetooth.CBService
+import kotlin.jvm.JvmInline
 
-actual class LocalServiceWrapper(val service: CBMutableService) {
-    actual constructor(uuid: UUID, type: Service.Type) : this(
+actual interface LocalServiceWrapper {
+
+    /**
+     * The [UUID] of the service
+     */
+    actual val uuid: UUID
+
+    /**
+     * Adds an included [LocalServiceWrapper] to the service
+     */
+    actual fun addIncludedService(service: LocalServiceWrapper)
+
+    /**
+     * Adds a [LocalCharacteristicWrapper] to the service
+     */
+    actual fun addCharacteristic(characteristic: LocalCharacteristicWrapper)
+
+    /**
+     * Identity used to correlate this service with incoming peripheral-manager callbacks.
+     */
+    val identity: AttributeIdentity
+
+    /**
+     * Adds the service to a parent [CBMutableService] as an included service
+     */
+    fun addToParent(parent: CBMutableService)
+
+    /**
+     * Adds the service to a [KalugaBluetoothServerWrapper]
+     */
+    fun addTo(serverWrapper: KalugaBluetoothServerWrapper)
+
+    /**
+     * Removes the service from a [KalugaBluetoothServerWrapper]
+     */
+    fun removeFrom(serverWrapper: KalugaBluetoothServerWrapper)
+}
+
+class DefaultLocalServiceWrapper(internal val service: CBMutableService) : LocalServiceWrapper {
+    constructor(uuid: UUID, type: Service.Type) : this(
         CBMutableService(uuid, type == Service.Type.PRIMARY),
     )
 
-    actual val uuid: UUID = service.UUID
+    override val uuid: UUID = service.UUID
 
-    actual fun addIncludedService(service: LocalServiceWrapper) {
-        this.service.setIncludedServices(this.service.includedServices.orEmpty() + service.service)
+    override val identity: AttributeIdentity get() = CBServiceIdentity(service)
+
+    override fun addIncludedService(service: LocalServiceWrapper) {
+        service.addToParent(this.service)
     }
 
-    actual fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {
-        this.service.setCharacteristics(this.service.characteristics.orEmpty() + characteristic.characteristic)
+    override fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {
+        characteristic.addToService(service)
+    }
+
+    override fun addToParent(parent: CBMutableService) {
+        parent.setIncludedServices(parent.includedServices.orEmpty() + service)
+    }
+
+    override fun addTo(serverWrapper: KalugaBluetoothServerWrapper) {
+        serverWrapper.add(service)
+    }
+
+    override fun removeFrom(serverWrapper: KalugaBluetoothServerWrapper) {
+        serverWrapper.remove(service)
     }
 }
+
+@JvmInline
+value class CBServiceIdentity(val service: CBService) : AttributeIdentity

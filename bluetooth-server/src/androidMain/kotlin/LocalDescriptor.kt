@@ -18,13 +18,28 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.LocalDescriptor.Permissions
 
-actual class LocalDescriptorWrapper(val descriptor: BluetoothGattDescriptor) {
+actual interface LocalDescriptorWrapper {
+    actual val uuid: UUID
 
-    internal actual constructor(uuid: UUID, permissions: Set<Permissions>) : this(
+    /**
+     * Identity used to correlate this descriptor with incoming GATT callbacks.
+     */
+    val identity: AttributeIdentity
+
+    /**
+     * Adds the descriptor to a [BluetoothGattCharacteristic]
+     */
+    fun addToCharacteristic(characteristic: BluetoothGattCharacteristic)
+}
+
+class DefaultLocalDescriptorWrapper(internal val descriptor: BluetoothGattDescriptor) : LocalDescriptorWrapper {
+
+    constructor(uuid: UUID, permissions: Set<Permissions>) : this(
         BluetoothGattDescriptor(
             uuid,
             permissions.fold(0) { acc, permission ->
@@ -34,8 +49,17 @@ actual class LocalDescriptorWrapper(val descriptor: BluetoothGattDescriptor) {
         ),
     )
 
-    actual val uuid: UUID = descriptor.uuid
+    override val uuid: UUID = descriptor.uuid
+
+    override val identity: AttributeIdentity get() = GattDescriptorIdentity(descriptor)
+
+    override fun addToCharacteristic(characteristic: BluetoothGattCharacteristic) {
+        characteristic.addDescriptor(descriptor)
+    }
 }
+
+@JvmInline
+value class GattDescriptorIdentity(val descriptor: BluetoothGattDescriptor) : AttributeIdentity
 
 private val Permissions.rawValue: Int get() = when (this) {
     Permissions.READ -> BluetoothGattDescriptor.PERMISSION_READ

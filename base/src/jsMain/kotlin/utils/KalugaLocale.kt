@@ -145,12 +145,12 @@ private fun resolveMeasurementSystem(parsed: dynamic): UnitSystem? = try {
 }
 
 private fun resolveCurrentLocaleTag(): String = js(
-    "(typeof navigator !== 'undefined' && navigator.language) ? navigator.language : " +
-        "(typeof Intl !== 'undefined' && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().locale : 'en-US')",
+    "(typeof navigator !== 'undefined' && navigator.language) ? navigator.language : Intl.DateTimeFormat().resolvedOptions().locale",
 ).unsafeCast<String>()
 
+// Intl is assumed present (the whole locale implementation depends on it); only the newer supportedValuesOf enumeration API is optional.
 private fun resolveSupportedLocaleTags(): List<String> = try {
-    val arr = js("(typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('language') : null")
+    val arr = js("typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('language') : null")
     if (arr == null) fallbackLocaleTags else arr.unsafeCast<Array<String>>().toList()
 } catch (_: dynamic) {
     fallbackLocaleTags

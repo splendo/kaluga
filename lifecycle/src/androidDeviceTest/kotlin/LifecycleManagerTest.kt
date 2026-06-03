@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,12 +15,10 @@
 
  */
 
-package com.splendo.kaluga.architecture.lifecycle
+package com.splendo.kaluga.lifecycle
 
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.splendo.kaluga.architecture.TestActivity
-import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.test.lifecycle.lifecycleManagerObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

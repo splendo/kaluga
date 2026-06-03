@@ -642,10 +642,10 @@ internal class LocalCharacteristicDSL(
         }
     }
 
-    fun build(forService: LocalService): LocalCharacteristic {
+    fun build(forService: LocalService, wrapperBuilder: LocalServiceWrapperBuilder): LocalCharacteristic {
         val characteristic = subscriptionActions?.let { (onSubscribe, onUnsubscribe) ->
             LocalCharacteristic.Notifiable(
-                LocalCharacteristicWrapper(uuid, properties, encryptedNotification, permissions),
+                wrapperBuilder.createCharacteristic(uuid, properties, encryptedNotification, permissions),
                 forService,
                 notify,
                 onSubscribe,
@@ -654,16 +654,16 @@ internal class LocalCharacteristicDSL(
                 forService.wrapper.addCharacteristic(wrapper)
                 registerSubscriptionActions(encryptedNotification)
                 descriptorBuilders.mapNotNull { descriptorBuilder ->
-                    descriptorBuilder.build(this)
+                    descriptorBuilder.build(this, wrapperBuilder)
                         .takeIf { it.uuid != Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }
                 }
             }
         } ?: LocalCharacteristic.Static(
-            LocalCharacteristicWrapper(uuid, properties, false, permissions),
+            wrapperBuilder.createCharacteristic(uuid, properties, false, permissions),
             forService,
         ) {
             forService.wrapper.addCharacteristic(wrapper)
-            descriptorBuilders.map { it.build(this) }
+            descriptorBuilders.map { it.build(this, wrapperBuilder) }
         }
 
         readAction?.let { onRead ->
@@ -678,25 +678,18 @@ internal class LocalCharacteristicDSL(
 }
 
 /**
- * Accessor to the platform level Local Bluetooth characteristic
- * @param uuid the [UUID] of the characteristic
- * @param properties the [CharacteristicProperty] of the characteristic
- * @param permissions the [Permission] of the characteristic
+ * Accessor to the platform level Local Bluetooth characteristic.
+ *
+ * Implemented per platform by `DefaultLocalCharacteristicWrapper` (wrapping the framework
+ * characteristic) and mockable in tests.
  */
-expect class LocalCharacteristicWrapper {
+expect interface LocalCharacteristicWrapper {
     val uuid: UUID
     val properties: Set<CharacteristicProperty>
     val permissions: Set<Permission>
 
-    internal constructor(
-        uuid: UUID,
-        properties: Set<CharacteristicProperty>,
-        encryptedNotification: Boolean,
-        permissions: Set<Permission>,
-    )
-
     /**
-     * Adds a [com.splendo.kaluga.bluetooth.LocalDescriptorWrapper] to the characteristic
+     * Adds a [LocalDescriptorWrapper] to the characteristic
      */
     fun addDescriptor(descriptor: LocalDescriptorWrapper)
 }

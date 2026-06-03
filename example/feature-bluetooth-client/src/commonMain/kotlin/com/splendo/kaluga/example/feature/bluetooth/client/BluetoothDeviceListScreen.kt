@@ -166,12 +166,7 @@ fun BluetoothDeviceListScreen(onDeviceClick: (Identifier) -> Unit, modifier: Mod
 }
 
 @Composable
-private fun ScanModeDialog(
-    isScanning: Boolean,
-    onRetainAll: () -> Unit,
-    onRemoveAll: () -> Unit,
-    onDismiss: () -> Unit,
-) {
+private fun ScanModeDialog(isScanning: Boolean, onRetainAll: () -> Unit, onRemoveAll: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(if (isScanning) "Stop Scanning" else "Start Scanning") },
@@ -224,27 +219,26 @@ private fun DeviceRow(device: ConnectableDevice, onNavigate: () -> Unit) {
 }
 
 @Composable
-private fun DeviceActions(
-    deviceState: DeviceState?,
-    onConnect: () -> Unit,
-    onDisconnect: () -> Unit,
-    onNavigate: () -> Unit,
-) {
+private fun DeviceActions(deviceState: DeviceState?, onConnect: () -> Unit, onDisconnect: () -> Unit, onNavigate: () -> Unit) {
     Column(horizontalAlignment = Alignment.End) {
         when (deviceState) {
             is ConnectableDeviceState.Connected -> {
                 Button(onClick = onNavigate) { Text("Details") }
                 OutlinedButton(onClick = onDisconnect) { Text("Disconnect") }
             }
+
             is ConnectableDeviceState.Disconnected -> {
                 Button(onClick = onConnect) { Text("Connect") }
             }
+
             is ConnectableDeviceState.Connecting -> {
                 Text("Connecting…", style = MaterialTheme.typography.bodySmall)
             }
+
             is ConnectableDeviceState.Disconnecting -> {
                 Text("Disconnecting…", style = MaterialTheme.typography.bodySmall)
             }
+
             is NotConnectableDeviceState, null -> {}
         }
     }

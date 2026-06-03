@@ -25,10 +25,41 @@ import platform.CoreBluetooth.CBAttributePermissionsReadEncryptionRequired
 import platform.CoreBluetooth.CBAttributePermissionsReadable
 import platform.CoreBluetooth.CBAttributePermissionsWriteEncryptionRequired
 import platform.CoreBluetooth.CBAttributePermissionsWriteable
+import platform.CoreBluetooth.CBCentral
+import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBMutableCharacteristic
+import platform.CoreBluetooth.CBMutableService
+import platform.Foundation.NSData
+import kotlin.jvm.JvmInline
 
-actual class LocalCharacteristicWrapper(val characteristic: CBMutableCharacteristic) {
-    actual constructor(
+actual interface LocalCharacteristicWrapper {
+    actual val uuid: UUID
+    actual val properties: Set<CharacteristicProperty>
+    actual val permissions: Set<Permission>
+
+    /**
+     * Adds a [LocalDescriptorWrapper] to the characteristic
+     */
+    actual fun addDescriptor(descriptor: LocalDescriptorWrapper)
+
+    /**
+     * Identity used to correlate this characteristic with incoming peripheral-manager callbacks.
+     */
+    val identity: AttributeIdentity
+
+    /**
+     * Adds the characteristic to a [CBMutableService]
+     */
+    fun addToService(service: CBMutableService)
+
+    /**
+     * Updates the value of the characteristic for the given [centrals] through a [KalugaBluetoothServerWrapper]
+     */
+    fun updateValue(serverWrapper: KalugaBluetoothServerWrapper, value: NSData, centrals: List<CBCentral>): Boolean
+}
+
+class DefaultLocalCharacteristicWrapper(internal val characteristic: CBMutableCharacteristic) : LocalCharacteristicWrapper {
+    constructor(
         uuid: UUID,
         properties: Set<CharacteristicProperty>,
         encryptedNotification: Boolean,
@@ -41,16 +72,28 @@ actual class LocalCharacteristicWrapper(val characteristic: CBMutableCharacteris
             permissions.fold(0UL) { acc, permission -> acc or permission.cbAttributePermission },
         ),
     )
-    actual val uuid = characteristic.UUID
-    actual val properties: Set<CharacteristicProperty> = CharacteristicProperty.fromInt(characteristic.properties.toInt())
-    actual val permissions: Set<Permission> = Permission.entries.filter {
+    override val uuid = characteristic.UUID
+    override val properties: Set<CharacteristicProperty> = CharacteristicProperty.fromInt(characteristic.properties.toInt())
+    override val permissions: Set<Permission> = Permission.entries.filter {
         it.cbAttributePermission and characteristic.permissions != 0UL
     }.toSet()
 
-    actual fun addDescriptor(descriptor: LocalDescriptorWrapper) {
-        characteristic.setDescriptors(characteristic.descriptors.orEmpty() + descriptor.descriptor)
+    override fun addDescriptor(descriptor: LocalDescriptorWrapper) {
+        descriptor.addToCharacteristic(characteristic)
     }
+
+    override val identity: AttributeIdentity get() = CBCharacteristicIdentity(characteristic)
+
+    override fun addToService(service: CBMutableService) {
+        service.setCharacteristics(service.characteristics.orEmpty() + characteristic)
+    }
+
+    override fun updateValue(serverWrapper: KalugaBluetoothServerWrapper, value: NSData, centrals: List<CBCentral>): Boolean =
+        serverWrapper.updateValue(value, characteristic, centrals)
 }
+
+@JvmInline
+value class CBCharacteristicIdentity(val characteristic: CBCharacteristic) : AttributeIdentity
 
 private val Permission.cbAttributePermission: ULong get() = when (this) {
     Permission.READABLE -> CBAttributePermissionsReadable

@@ -171,8 +171,9 @@ internal sealed class AndroidServerState {
         }
 
         override suspend fun addService(service: LocalService): Boolean = coroutineScope {
-            val response = async { callback.serviceAdded.mapNotNull { (serviceAdded, success) -> success.takeIf { serviceAdded == service.wrapper.service } }.first() }
-            if (server.addService(service.wrapper.service)) {
+            val response =
+                async { callback.serviceAdded.mapNotNull { (serviceAdded, success) -> success.takeIf { GattServiceIdentity(serviceAdded) == service.wrapper.identity } }.first() }
+            if (service.wrapper.addTo(server)) {
                 response.await()
             } else {
                 false
@@ -180,8 +181,8 @@ internal sealed class AndroidServerState {
         }
 
         override fun removeService(service: LocalService) {
-            callback.removeService(service.wrapper.service)
-            server.removeService(service.wrapper.service)
+            callback.removeService(service)
+            service.wrapper.removeFrom(server)
         }
 
         override fun removeAllServices() {
@@ -226,21 +227,12 @@ internal sealed class AndroidServerState {
             val bluetoothDevice = device.device
             val didNotify = async { callback.notificationSent.mapNotNull { (deviceNotified, success) -> success.takeIf { deviceNotified == bluetoothDevice } }.first() }
             logger.info(TAG) { "Notify characteristic ${characteristic.uuid.uuidString} updated to ${value.toHexString(" ")}" }
-            val didStart = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                server.notifyCharacteristicChanged(
-                    bluetoothDevice,
-                    characteristic.wrapper.characteristic,
-                    characteristic.properties.contains(CharacteristicProperty.Indicate),
-                    value,
-                ) == BluetoothStatusCodes.SUCCESS
-            } else {
-                characteristic.wrapper.characteristic.setValue(value)
-                server.notifyCharacteristicChanged(
-                    bluetoothDevice,
-                    characteristic.wrapper.characteristic,
-                    characteristic.properties.contains(CharacteristicProperty.Indicate),
-                )
-            }
+            val didStart = characteristic.wrapper.notify(
+                server,
+                bluetoothDevice,
+                value,
+                characteristic.properties.contains(CharacteristicProperty.Indicate),
+            )
             if (didStart) {
                 didNotify.await()
             } else {
@@ -308,7 +300,7 @@ internal sealed class AndroidServerState {
                             else -> GattResponse.InvalidHandle
                         }
                     }
-                }.build(this)
+                }.build(this, DefaultLocalServiceWrapperBuilder())
             },
             { uuid ->
                 LocalDescriptorDSL(
@@ -317,6 +309,7 @@ internal sealed class AndroidServerState {
                     callback::registerWriteAction,
                 )
             },
+            DefaultLocalServiceWrapperBuilder(),
         )
 
         override fun close(): ServerState.Closed {

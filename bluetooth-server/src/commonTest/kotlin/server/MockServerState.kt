@@ -21,6 +21,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.bluetooth.server.MockLocalServiceWrapperBuilder
 import kotlinx.coroutines.CompletableDeferred
 
 /**
@@ -89,5 +90,6 @@ internal class MockAvailable(setupMocks: Boolean = true) : ServerState.Available
         { _, _ -> },
         { },
         { descriptorUuid -> LocalDescriptorDSL(descriptorUuid, { _, _ -> }, { _, _ -> }) },
+        MockLocalServiceWrapperBuilder(),
     )
 }

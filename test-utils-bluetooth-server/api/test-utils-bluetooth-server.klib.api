@@ -6,6 +6,10 @@
 // - Show declarations: true
 
 // Library unique name: <com.splendo.kaluga:test-utils-bluetooth-server>
+final class com.splendo.kaluga.test.bluetooth.server/MockAttributeIdentity : com.splendo.kaluga.bluetooth.server/AttributeIdentity { // com.splendo.kaluga.test.bluetooth.server/MockAttributeIdentity|null[0]
+    constructor <init>() // com.splendo.kaluga.test.bluetooth.server/MockAttributeIdentity.<init>|<init>(){}[0]
+}
+
 final class com.splendo.kaluga.test.bluetooth.server/MockBluetoothServer : com.splendo.kaluga.bluetooth.server/BluetoothServer { // com.splendo.kaluga.test.bluetooth.server/MockBluetoothServer|null[0]
     constructor <init>(com.splendo.kaluga.bluetooth.server/ServerStatus = ..., kotlin/Boolean = ...) // com.splendo.kaluga.test.bluetooth.server/MockBluetoothServer.<init>|<init>(com.splendo.kaluga.bluetooth.server.ServerStatus;kotlin.Boolean){}[0]
 
@@ -60,4 +64,53 @@ final class com.splendo.kaluga.test.bluetooth.server/MockConnectedDevice : com.s
         final fun <get-cbCentral>(): platform.CoreBluetooth/CBCentral // com.splendo.kaluga.test.bluetooth.server/MockConnectedDevice.cbCentral.<get-cbCentral>|<get-cbCentral>(){}[0]
     final val identifier // com.splendo.kaluga.test.bluetooth.server/MockConnectedDevice.identifier|{}identifier[0]
         final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth.server/MockConnectedDevice.identifier.<get-identifier>|<get-identifier>(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper : com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper { // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID, kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty>, kotlin.collections/Set<com.splendo.kaluga.bluetooth.server/LocalCharacteristic.Permission>) // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;kotlin.collections.Set<com.splendo.kaluga.bluetooth.CharacteristicProperty>;kotlin.collections.Set<com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Permission>){}[0]
+
+    final val identity // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.identity|{}identity[0]
+        final fun <get-identity>(): com.splendo.kaluga.bluetooth.server/AttributeIdentity // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.identity.<get-identity>|<get-identity>(){}[0]
+    final val permissions // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.permissions|{}permissions[0]
+        final fun <get-permissions>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.server/LocalCharacteristic.Permission> // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.permissions.<get-permissions>|<get-permissions>(){}[0]
+    final val properties // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.properties|{}properties[0]
+        final fun <get-properties>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.properties.<get-properties>|<get-properties>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final fun addDescriptor(com.splendo.kaluga.bluetooth.server/LocalDescriptorWrapper) // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.addDescriptor|addDescriptor(com.splendo.kaluga.bluetooth.server.LocalDescriptorWrapper){}[0]
+    final fun addToService(platform.CoreBluetooth/CBMutableService) // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.addToService|addToService(platform.CoreBluetooth.CBMutableService){}[0]
+    final fun updateValue(com.splendo.kaluga.bluetooth.server/KalugaBluetoothServerWrapper, platform.Foundation/NSData, kotlin.collections/List<platform.CoreBluetooth/CBCentral>): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.server/MockLocalCharacteristicWrapper.updateValue|updateValue(com.splendo.kaluga.bluetooth.server.KalugaBluetoothServerWrapper;platform.Foundation.NSData;kotlin.collections.List<platform.CoreBluetooth.CBCentral>){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.server/MockLocalDescriptorWrapper : com.splendo.kaluga.bluetooth.server/LocalDescriptorWrapper { // com.splendo.kaluga.test.bluetooth.server/MockLocalDescriptorWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID) // com.splendo.kaluga.test.bluetooth.server/MockLocalDescriptorWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID){}[0]
+
+    final val uuid // com.splendo.kaluga.test.bluetooth.server/MockLocalDescriptorWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth.server/MockLocalDescriptorWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final fun addToCharacteristic(platform.CoreBluetooth/CBMutableCharacteristic) // com.splendo.kaluga.test.bluetooth.server/MockLocalDescriptorWrapper.addToCharacteristic|addToCharacteristic(platform.CoreBluetooth.CBMutableCharacteristic){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper : com.splendo.kaluga.bluetooth.server/LocalServiceWrapper { // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID) // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID){}[0]
+
+    final val identity // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.identity|{}identity[0]
+        final fun <get-identity>(): com.splendo.kaluga.bluetooth.server/AttributeIdentity // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.identity.<get-identity>|<get-identity>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final fun addCharacteristic(com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper) // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.addCharacteristic|addCharacteristic(com.splendo.kaluga.bluetooth.server.LocalCharacteristicWrapper){}[0]
+    final fun addIncludedService(com.splendo.kaluga.bluetooth.server/LocalServiceWrapper) // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.addIncludedService|addIncludedService(com.splendo.kaluga.bluetooth.server.LocalServiceWrapper){}[0]
+    final fun addTo(com.splendo.kaluga.bluetooth.server/KalugaBluetoothServerWrapper) // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.addTo|addTo(com.splendo.kaluga.bluetooth.server.KalugaBluetoothServerWrapper){}[0]
+    final fun addToParent(platform.CoreBluetooth/CBMutableService) // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.addToParent|addToParent(platform.CoreBluetooth.CBMutableService){}[0]
+    final fun removeFrom(com.splendo.kaluga.bluetooth.server/KalugaBluetoothServerWrapper) // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapper.removeFrom|removeFrom(com.splendo.kaluga.bluetooth.server.KalugaBluetoothServerWrapper){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapperBuilder : com.splendo.kaluga.bluetooth.server/LocalServiceWrapperBuilder { // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapperBuilder|null[0]
+    constructor <init>() // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapperBuilder.<init>|<init>(){}[0]
+
+    final fun createCharacteristic(platform.CoreBluetooth/CBUUID, kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty>, kotlin/Boolean, kotlin.collections/Set<com.splendo.kaluga.bluetooth.server/LocalCharacteristic.Permission>): com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapperBuilder.createCharacteristic|createCharacteristic(platform.CoreBluetooth.CBUUID;kotlin.collections.Set<com.splendo.kaluga.bluetooth.CharacteristicProperty>;kotlin.Boolean;kotlin.collections.Set<com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Permission>){}[0]
+    final fun createDescriptor(platform.CoreBluetooth/CBUUID, kotlin.collections/Set<com.splendo.kaluga.bluetooth.server/LocalDescriptor.Permissions>): com.splendo.kaluga.bluetooth.server/LocalDescriptorWrapper // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapperBuilder.createDescriptor|createDescriptor(platform.CoreBluetooth.CBUUID;kotlin.collections.Set<com.splendo.kaluga.bluetooth.server.LocalDescriptor.Permissions>){}[0]
+    final fun createService(platform.CoreBluetooth/CBUUID, com.splendo.kaluga.bluetooth/Service.Type): com.splendo.kaluga.bluetooth.server/LocalServiceWrapper // com.splendo.kaluga.test.bluetooth.server/MockLocalServiceWrapperBuilder.createService|createService(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.Service.Type){}[0]
 }

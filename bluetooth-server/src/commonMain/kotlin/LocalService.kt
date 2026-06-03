@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidFrom
@@ -96,7 +97,7 @@ class LocalService internal constructor(
     override val includedServices: List<LocalService> = buildIncludedServices()
 }
 
-internal sealed class LocalServiceDSL(val uuid: UUID) {
+internal sealed class LocalServiceDSL(val uuid: UUID, protected val wrapperBuilder: LocalServiceWrapperBuilder) {
 
     abstract val type: Service.Type
     internal val characteristicsBuilders = mutableListOf<LocalCharacteristicDSL>()
@@ -109,7 +110,8 @@ internal sealed class LocalServiceDSL(val uuid: UUID) {
         private val registerCharacteristicWriteAction: LocalCharacteristicRegisterWriteAction,
         private val registerSubscriptionActions: NotifiableRegisterSubscription,
         private val buildDescriptor: BuildDescriptor,
-    ) : LocalServiceDSL(uuid),
+        wrapperBuilder: LocalServiceWrapperBuilder,
+    ) : LocalServiceDSL(uuid, wrapperBuilder),
         LocalService.DSL.Primary {
         override val type: Service.Type = Service.Type.PRIMARY
         override val includedServicesBuilders = mutableListOf<Secondary>()
@@ -123,6 +125,7 @@ internal sealed class LocalServiceDSL(val uuid: UUID) {
                     registerCharacteristicWriteAction,
                     registerSubscriptionActions,
                     buildDescriptor,
+                    wrapperBuilder,
                 ).apply(service),
             )
         }
@@ -147,7 +150,8 @@ internal sealed class LocalServiceDSL(val uuid: UUID) {
         private val registerCharacteristicWriteAction: LocalCharacteristicRegisterWriteAction,
         private val registerSubscriptionActions: NotifiableRegisterSubscription,
         private val buildDescriptor: BuildDescriptor,
-    ) : LocalServiceDSL(uuid),
+        wrapperBuilder: LocalServiceWrapperBuilder,
+    ) : LocalServiceDSL(uuid, wrapperBuilder),
         LocalService.DSL.Secondary {
         override val type: Service.Type = Service.Type.SECONDARY
         override val includedServicesBuilders: List<Secondary> = emptyList()
@@ -167,10 +171,7 @@ internal sealed class LocalServiceDSL(val uuid: UUID) {
     }
 
     fun build(): LocalService = LocalService(
-        LocalServiceWrapper(
-            uuid,
-            type,
-        ),
+        wrapperBuilder.createService(uuid, type),
         type,
         buildIncludedServices = {
             includedServicesBuilders.map { includedServiceBuilder ->
@@ -181,18 +182,19 @@ internal sealed class LocalServiceDSL(val uuid: UUID) {
         },
         buildCharacteristics = {
             characteristicsBuilders.map {
-                it.build(this)
+                it.build(this, wrapperBuilder)
             }
         },
     )
 }
 
 /**
- * Accessor to the platform level Local Bluetooth service
+ * Accessor to the platform level Local Bluetooth service.
+ *
+ * Implemented per platform by `DefaultLocalServiceWrapper` (wrapping the framework service) and
+ * mockable in tests, allowing a [LocalService] graph to be built without a live Bluetooth stack.
  */
-expect class LocalServiceWrapper {
-
-    internal constructor(uuid: UUID, type: Service.Type)
+expect interface LocalServiceWrapper {
 
     /**
      * The [UUID] of the service
@@ -200,12 +202,40 @@ expect class LocalServiceWrapper {
     val uuid: UUID
 
     /**
-     * Adds an included [com.splendo.kaluga.bluetooth.LocalServiceWrapper] to the service
+     * Adds an included [LocalServiceWrapper] to the service
      */
     fun addIncludedService(service: LocalServiceWrapper)
 
     /**
-     * Adds a [com.splendo.kaluga.bluetooth.LocalCharacteristicWrapper] to the service
+     * Adds a [LocalCharacteristicWrapper] to the service
      */
     fun addCharacteristic(characteristic: LocalCharacteristicWrapper)
+}
+
+/**
+ * Creates the platform [LocalServiceWrapper]s, [LocalCharacteristicWrapper]s and
+ * [LocalDescriptorWrapper]s for a [LocalService] graph. Injected into the DSL so tests can supply
+ * wrappers that don't require a live Bluetooth stack.
+ */
+interface LocalServiceWrapperBuilder {
+
+    /**
+     * Creates a [LocalServiceWrapper] for the given [uuid] and [type]
+     */
+    fun createService(uuid: UUID, type: Service.Type): LocalServiceWrapper
+
+    /**
+     * Creates a [LocalCharacteristicWrapper] for the given [uuid], [properties] and [permissions]
+     */
+    fun createCharacteristic(
+        uuid: UUID,
+        properties: Set<CharacteristicProperty>,
+        encryptedNotification: Boolean,
+        permissions: Set<LocalCharacteristic.Permission>,
+    ): LocalCharacteristicWrapper
+
+    /**
+     * Creates a [LocalDescriptorWrapper] for the given [uuid] and [permissions]
+     */
+    fun createDescriptor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>): LocalDescriptorWrapper
 }
