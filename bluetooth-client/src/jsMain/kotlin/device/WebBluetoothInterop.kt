@@ -196,19 +196,23 @@ internal actual suspend fun webDiscoverServices(identifier: String): List<WebSer
     }
 }
 
-internal actual suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): ByteArray? {
-    val handle = characteristics[characteristicKey(identifier, service, characteristic)] ?: return null
+// The `name` of the rejected DOMException (e.g. "NetworkError", "NotSupportedError"); Web Bluetooth
+// does not expose the underlying numeric ATT status code.
+private fun errorName(e: Throwable): String? = (e.asDynamic().name as? String) ?: e.message
+
+internal actual suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): WebGattResult {
+    val handle = characteristics[characteristicKey(identifier, service, characteristic)] ?: return WebGattResult.Failure(null)
     return try {
         val bytes = dataViewToByteArray(awaitJs(handle.readValue()))
         cachedValues[characteristicKey(identifier, service, characteristic)] = bytes
-        bytes
+        WebGattResult.Success(bytes)
     } catch (e: Throwable) {
-        null
+        WebGattResult.Failure(errorName(e))
     }
 }
 
-internal actual suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): Boolean {
-    val handle = characteristics[characteristicKey(identifier, service, characteristic)] ?: return false
+internal actual suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): WebGattResult {
+    val handle = characteristics[characteristicKey(identifier, service, characteristic)] ?: return WebGattResult.Failure(null)
     val buffer = value.unsafeCast<Int8Array>()
     return try {
         if (withResponse) {
@@ -216,33 +220,33 @@ internal actual suspend fun webWriteCharacteristic(identifier: String, service: 
         } else {
             awaitJs(handle.writeValueWithoutResponse(buffer))
         }
-        true
+        WebGattResult.Success(null)
     } catch (e: Throwable) {
-        false
+        WebGattResult.Failure(errorName(e))
     }
 }
 
-internal actual suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): ByteArray? {
-    val handle = descriptors[descriptorKey(identifier, service, characteristic, descriptor)] ?: return null
+internal actual suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): WebGattResult {
+    val handle = descriptors[descriptorKey(identifier, service, characteristic, descriptor)] ?: return WebGattResult.Failure(null)
     return try {
-        dataViewToByteArray(awaitJs(handle.readValue()))
+        WebGattResult.Success(dataViewToByteArray(awaitJs(handle.readValue())))
     } catch (e: Throwable) {
-        null
+        WebGattResult.Failure(errorName(e))
     }
 }
 
-internal actual suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): Boolean {
-    val handle = descriptors[descriptorKey(identifier, service, characteristic, descriptor)] ?: return false
+internal actual suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): WebGattResult {
+    val handle = descriptors[descriptorKey(identifier, service, characteristic, descriptor)] ?: return WebGattResult.Failure(null)
     return try {
         awaitJs(handle.writeValue(value.unsafeCast<Int8Array>()))
-        true
+        WebGattResult.Success(null)
     } catch (e: Throwable) {
-        false
+        WebGattResult.Failure(errorName(e))
     }
 }
 
-internal actual suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): Boolean {
-    val handle = characteristics[characteristicKey(identifier, service, characteristic)] ?: return false
+internal actual suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): WebGattResult {
+    val handle = characteristics[characteristicKey(identifier, service, characteristic)] ?: return WebGattResult.Failure(null)
     return try {
         if (enable) {
             handle.addEventListener("characteristicvaluechanged") { event: dynamic ->
@@ -254,9 +258,9 @@ internal actual suspend fun webSetNotifying(identifier: String, service: String,
         } else {
             awaitJs(handle.stopNotifications())
         }
-        true
+        WebGattResult.Success(null)
     } catch (e: Throwable) {
-        false
+        WebGattResult.Failure(errorName(e))
     }
 }
 

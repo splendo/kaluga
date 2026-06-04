@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.GattResponse
+
 // The Web Bluetooth boundary, expressed in plain kaluga/Kotlin types so the orchestration (scanner,
 // connection manager, wrappers) can be shared in webMain. The `actual`s in jsMain/wasmJsMain hold the
 // live JS GATT objects in a per-target registry keyed by the string ids/uuids passed here, because
@@ -33,6 +35,40 @@ internal data class WebCharacteristic(val uuid: String, val properties: Int, val
 
 /** A service discovered on a connected device. */
 internal data class WebService(val uuid: String, val isPrimary: Boolean, val characteristics: List<WebCharacteristic>)
+
+/**
+ * The outcome of a GATT read/write/notify operation. Web Bluetooth does not surface the numeric ATT
+ * status code — a failed operation rejects with a `DOMException` — so [Failure.errorName] carries that
+ * exception's `name` (e.g. `"NetworkError"`, `"NotSupportedError"`) for a best-effort mapping.
+ */
+internal sealed class WebGattResult {
+    /** A successful operation. [value] holds the bytes read, or `null` for writes/notifications. */
+    class Success(val value: ByteArray?) : WebGattResult()
+
+    /** A failed operation. [errorName] is the rejected `DOMException.name`, or `null`/`""` when unknown. */
+    class Failure(val errorName: String?) : WebGattResult()
+}
+
+internal fun WebGattResult.readResponse(): GattResponse.ReadResponse = when (this) {
+    is WebGattResult.Success -> GattResponse.ReadSuccess(value ?: ByteArray(0))
+    is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable
+}
+
+internal fun WebGattResult.writeResponse(): GattResponse.WriteResponse = when (this) {
+    is WebGattResult.Success -> GattResponse.WriteSuccess
+    is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable
+}
+
+// Web Bluetooth collapses several ATT error codes onto each DOMException name, so this is necessarily a
+// best-effort translation; connection-loss / unknown names fall through to [GattResponse.DeviceUnavailable].
+private fun gattError(errorName: String?): GattResponse.Error? = when (errorName) {
+    "NotSupportedError" -> GattResponse.RequestNotSupported
+    "SecurityError" -> GattResponse.InsufficientAuthentication
+    "InvalidModificationError" -> GattResponse.InvalidAttributeValueLength
+    "NotFoundError" -> GattResponse.AttributeNotFound
+    "NetworkError", "InvalidStateError", "AbortError", "", null -> null
+    else -> GattResponse.UnlikelyError
+}
 
 /**
  * Renders the "Add Device" overlay into the DOM and keeps it visible until [webHideDevicePicker].
@@ -69,15 +105,15 @@ internal expect fun webIsConnected(identifier: String): Boolean
 /** Discovers (and registers) all allowlisted services/characteristics/descriptors of the connected device. */
 internal expect suspend fun webDiscoverServices(identifier: String): List<WebService>
 
-internal expect suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): ByteArray?
+internal expect suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): WebGattResult
 
-internal expect suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): Boolean
+internal expect suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): WebGattResult
 
-internal expect suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): ByteArray?
+internal expect suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): WebGattResult
 
-internal expect suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): Boolean
+internal expect suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): WebGattResult
 
-internal expect suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): Boolean
+internal expect suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): WebGattResult
 
 /** Registers [handler] (called with service + characteristic uuid) for `characteristicvaluechanged` events. */
 internal expect fun webSetNotificationHandler(identifier: String, handler: (service: String, characteristic: String) -> Unit)

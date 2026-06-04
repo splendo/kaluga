@@ -15,7 +15,7 @@
 
  */
 
-// Generated from CLDR 48.2.0 availableLocales.json ("full" set) — do not edit by hand.
+// Generated from CLDR 48.2.0 cldr-core/availableLocales.json — do not edit by hand.
 // Refresh: ./gradlew :base:generateAvailableLocales
 
 package com.splendo.kaluga.base.utils

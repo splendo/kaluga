@@ -64,47 +64,47 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> {
-                val value = webReadCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString)
-                handleCharacteristicReadOrNotified(action.characteristic.uuid, value?.let { GattResponse.ReadSuccess(it) } ?: GattResponse.DeviceUnavailable)
+                val result = webReadCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString)
+                handleCharacteristicReadOrNotified(action.characteristic.uuid, result.readResponse())
             }
 
             is DeviceAction.Read.Descriptor -> {
-                val value = webReadDescriptor(
+                val result = webReadDescriptor(
                     identifier,
                     action.descriptor.characteristic.service.uuid.uuidString,
                     action.descriptor.characteristic.uuid.uuidString,
                     action.descriptor.uuid.uuidString,
                 )
-                handleDescriptorRead(action.descriptor.uuid, value?.let { GattResponse.ReadSuccess(it) } ?: GattResponse.DeviceUnavailable)
+                handleDescriptorRead(action.descriptor.uuid, result.readResponse())
             }
 
             is DeviceAction.Write.Characteristic -> {
                 val withResponse = action.characteristic.hasProperty(CharacteristicProperty.Write) ||
                     !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
-                val success =
+                val result =
                     webWriteCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, action.newValue, withResponse)
-                handleCharacteristicWritten(action.characteristic.uuid, if (success) GattResponse.WriteSuccess else GattResponse.DeviceUnavailable)
+                handleCharacteristicWritten(action.characteristic.uuid, result.writeResponse())
             }
 
             is DeviceAction.Write.Descriptor -> {
-                val success = webWriteDescriptor(
+                val result = webWriteDescriptor(
                     identifier,
                     action.descriptor.characteristic.service.uuid.uuidString,
                     action.descriptor.characteristic.uuid.uuidString,
                     action.descriptor.uuid.uuidString,
                     action.newValue,
                 )
-                handleDescriptorWritten(action.descriptor.uuid, if (success) GattResponse.WriteSuccess else GattResponse.DeviceUnavailable)
+                handleDescriptorWritten(action.descriptor.uuid, result.writeResponse())
             }
 
             is DeviceAction.Notification.Enable -> {
-                val success = webSetNotifying(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, true)
-                action.handleNotificationStateChanged(if (success) GattResponse.WriteSuccess else GattResponse.DeviceUnavailable)
+                val result = webSetNotifying(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, true)
+                action.handleNotificationStateChanged(result.writeResponse())
             }
 
             is DeviceAction.Notification.Disable -> {
-                val success = webSetNotifying(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, false)
-                action.handleNotificationStateChanged(if (success) GattResponse.WriteSuccess else GattResponse.DeviceUnavailable)
+                val result = webSetNotifying(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, false)
+                action.handleNotificationStateChanged(result.writeResponse())
             }
 
             is DeviceAction.RequestMtu -> {

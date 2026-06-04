@@ -144,7 +144,7 @@ internal actual suspend fun webDiscoverServices(identifier: String): List<WebSer
     }
 }
 
-internal actual suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): ByteArray? {
+internal actual suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): WebGattResult {
     ensureRegistry()
     return suspendCoroutine { continuation ->
         jsReadCharacteristic(
@@ -154,35 +154,58 @@ internal actual suspend fun webReadCharacteristic(identifier: String, service: S
             { hex ->
                 val bytes = hexToBytes(hex)
                 cachedValues[characteristicKey(identifier, service, characteristic)] = bytes
-                continuation.resume(bytes)
+                continuation.resume(WebGattResult.Success(bytes))
             },
-            { continuation.resume(null) },
+            { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
         )
     }
 }
 
-internal actual suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): Boolean {
+internal actual suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): WebGattResult {
     ensureRegistry()
     return suspendCoroutine { continuation ->
-        jsWriteCharacteristic(identifier, service, characteristic, bytesToHex(value), withResponse, { continuation.resume(true) }, { continuation.resume(false) })
+        jsWriteCharacteristic(
+            identifier,
+            service,
+            characteristic,
+            bytesToHex(value),
+            withResponse,
+            { continuation.resume(WebGattResult.Success(null)) },
+            { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
+        )
     }
 }
 
-internal actual suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): ByteArray? {
+internal actual suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): WebGattResult {
     ensureRegistry()
     return suspendCoroutine { continuation ->
-        jsReadDescriptor(identifier, service, characteristic, descriptor, { hex -> continuation.resume(hexToBytes(hex)) }, { continuation.resume(null) })
+        jsReadDescriptor(
+            identifier,
+            service,
+            characteristic,
+            descriptor,
+            { hex -> continuation.resume(WebGattResult.Success(hexToBytes(hex))) },
+            { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
+        )
     }
 }
 
-internal actual suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): Boolean {
+internal actual suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): WebGattResult {
     ensureRegistry()
     return suspendCoroutine { continuation ->
-        jsWriteDescriptor(identifier, service, characteristic, descriptor, bytesToHex(value), { continuation.resume(true) }, { continuation.resume(false) })
+        jsWriteDescriptor(
+            identifier,
+            service,
+            characteristic,
+            descriptor,
+            bytesToHex(value),
+            { continuation.resume(WebGattResult.Success(null)) },
+            { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
+        )
     }
 }
 
-internal actual suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): Boolean {
+internal actual suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): WebGattResult {
     ensureRegistry()
     return suspendCoroutine { continuation ->
         if (enable) {
@@ -194,11 +217,17 @@ internal actual suspend fun webSetNotifying(identifier: String, service: String,
                     cachedValues[characteristicKey(identifier, service, characteristic)] = hexToBytes(hex)
                     notificationHandlers[identifier]?.invoke(service, characteristic)
                 },
-                { continuation.resume(true) },
-                { continuation.resume(false) },
+                { continuation.resume(WebGattResult.Success(null)) },
+                { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
             )
         } else {
-            jsStopNotifications(identifier, service, characteristic, { continuation.resume(true) }, { continuation.resume(false) })
+            jsStopNotifications(
+                identifier,
+                service,
+                characteristic,
+                { continuation.resume(WebGattResult.Success(null)) },
+                { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
+            )
         }
     }
 }
@@ -345,65 +374,88 @@ private fun jsDiscoverServices(
     )
 }
 
-private fun jsReadCharacteristic(identifier: String, service: String, characteristic: String, onResult: (String) -> Unit, onError: () -> Unit) {
+private fun jsReadCharacteristic(identifier: String, service: String, characteristic: String, onResult: (String) -> Unit, onError: (errorName: String) -> Unit) {
     js(
         """
         var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
-        if (!c) { onError(); return; }
-        c.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function () { onError(); });
+        if (!c) { onError(''); return; }
+        c.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
 
-private fun jsWriteCharacteristic(identifier: String, service: String, characteristic: String, hex: String, withResponse: Boolean, onResult: () -> Unit, onError: () -> Unit) {
+private fun jsWriteCharacteristic(
+    identifier: String,
+    service: String,
+    characteristic: String,
+    hex: String,
+    withResponse: Boolean,
+    onResult: () -> Unit,
+    onError: (errorName: String) -> Unit,
+) {
     js(
         """
         var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
-        if (!c) { onError(); return; }
+        if (!c) { onError(''); return; }
         var buffer = globalThis.__kbt.buf(hex);
         var promise = withResponse ? c.writeValueWithResponse(buffer) : c.writeValueWithoutResponse(buffer);
-        promise.then(function () { onResult(); }, function () { onError(); });
+        promise.then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
 
-private fun jsReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, onResult: (String) -> Unit, onError: () -> Unit) {
+private fun jsReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, onResult: (String) -> Unit, onError: (errorName: String) -> Unit) {
     js(
         """
         var d = globalThis.__kbt.descs[identifier + '|' + service + '|' + characteristic + '|' + descriptor];
-        if (!d) { onError(); return; }
-        d.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function () { onError(); });
+        if (!d) { onError(''); return; }
+        d.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
 
-private fun jsWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, hex: String, onResult: () -> Unit, onError: () -> Unit) {
+private fun jsWriteDescriptor(
+    identifier: String,
+    service: String,
+    characteristic: String,
+    descriptor: String,
+    hex: String,
+    onResult: () -> Unit,
+    onError: (errorName: String) -> Unit,
+) {
     js(
         """
         var d = globalThis.__kbt.descs[identifier + '|' + service + '|' + characteristic + '|' + descriptor];
-        if (!d) { onError(); return; }
-        d.writeValue(globalThis.__kbt.buf(hex)).then(function () { onResult(); }, function () { onError(); });
+        if (!d) { onError(''); return; }
+        d.writeValue(globalThis.__kbt.buf(hex)).then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
 
-private fun jsStartNotifications(identifier: String, service: String, characteristic: String, onValue: (String) -> Unit, onResult: () -> Unit, onError: () -> Unit) {
+private fun jsStartNotifications(
+    identifier: String,
+    service: String,
+    characteristic: String,
+    onValue: (String) -> Unit,
+    onResult: () -> Unit,
+    onError: (errorName: String) -> Unit,
+) {
     js(
         """
         var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
-        if (!c) { onError(); return; }
+        if (!c) { onError(''); return; }
         c.addEventListener('characteristicvaluechanged', function (event) { onValue(globalThis.__kbt.hex(event.target.value)); });
-        c.startNotifications().then(function () { onResult(); }, function () { onError(); });
+        c.startNotifications().then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
 
-private fun jsStopNotifications(identifier: String, service: String, characteristic: String, onResult: () -> Unit, onError: () -> Unit) {
+private fun jsStopNotifications(identifier: String, service: String, characteristic: String, onResult: () -> Unit, onError: (errorName: String) -> Unit) {
     js(
         """
         var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
-        if (!c) { onError(); return; }
-        c.stopNotifications().then(function () { onResult(); }, function () { onError(); });
+        if (!c) { onError(''); return; }
+        c.stopNotifications().then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
