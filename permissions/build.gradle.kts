@@ -77,12 +77,16 @@ kaluga {
             main {
                 api(project(":location-permissions"))
                 api(project(":notifications-permissions"))
+                api(project(":camera-permissions"))
+                api(project(":microphone-permissions"))
             }
         }
         wasmJs {
             main {
                 api(project(":location-permissions"))
                 api(project(":notifications-permissions"))
+                api(project(":camera-permissions"))
+                api(project(":microphone-permissions"))
             }
         }
     }

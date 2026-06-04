@@ -18,21 +18,30 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.camera.registerCameraPermission
+import com.splendo.kaluga.permissions.camera.registerCameraPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
+import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
+import com.splendo.kaluga.permissions.microphone.registerMicrophonePermissionIfNotRegistered
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermissionIfNotRegistered
 import kotlin.time.Duration
 
 // The JS family (js + wasmJs) supports the permissions whose capabilities the browser exposes:
-// geolocation (Permissions API) and notifications (Notification API). The per-permission modules are
-// declared in the js/wasmJs dependency blocks, so this lives per-target rather than in webMain.
+// geolocation (Permissions API), notifications (Notification API), and camera/microphone (getUserMedia +
+// Permissions API). The per-permission modules are declared in the js/wasmJs dependency blocks, so this
+// lives per-target rather than in webMain.
 actual fun PermissionsBuilder.registerAllPermissions(monitoringInterval: Duration, settings: BasePermissionManager.Settings) {
     registerLocationPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerCameraPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
 }
 
 actual suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(monitoringInterval: Duration, settings: BasePermissionManager.Settings) {
     registerLocationPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerCameraPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
 }
