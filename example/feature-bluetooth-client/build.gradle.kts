@@ -7,6 +7,7 @@ plugins {
 kaluga {
     moduleName = "example.feature.bluetooth.client"
     supportMacOS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {

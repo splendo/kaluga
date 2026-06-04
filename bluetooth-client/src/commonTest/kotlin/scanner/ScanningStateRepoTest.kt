@@ -36,6 +36,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import com.splendo.kaluga.test.base.IgnoreJs
+import com.splendo.kaluga.test.base.IgnoreWasm
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -64,6 +66,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
+    @IgnoreJs
+    @IgnoreWasm
     fun testStartWithoutPermissions() = testWithFlowAndTestContext(Configuration.DeviceWithoutService(initialPermissionState = MockPermissionState.ActiveState.REQUESTABLE)) {
         test {
             permissionStateRepo.currentMockState.requestMock.verify()
@@ -85,6 +89,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
+    @IgnoreJs
+    @IgnoreWasm
     fun testStartWithoutPermissionNoAutoRequest() = testWithFlowAndTestContext(
         Configuration.DeviceWithoutService(
             autoRequestPermission = false,
@@ -126,6 +132,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
+    @IgnoreJs
+    @IgnoreWasm
     fun testScanning() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
         test {
             assertIs<Idle>(it)

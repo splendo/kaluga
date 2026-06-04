@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.example.web.di
 
+import com.splendo.kaluga.example.feature.bluetooth.client.bluetoothClientFeatureModule
 import com.splendo.kaluga.example.feature.datetime.datetimeFeatureModule
 import com.splendo.kaluga.example.feature.localization.localizationFeatureModule
 import com.splendo.kaluga.example.feature.location.locationFeatureModule
@@ -30,10 +31,9 @@ import org.koin.dsl.module
  * `:shared`'s `sharedFeaturesModule`. Each feature module exposes its own Koin module containing
  * its `FeatureContribution`; this includes them all so the web bootstrap just loads one thing.
  *
- * The web target only includes the features whose underlying Kaluga modules support `wasmJs`
- * (localization, date/time and scientific units). It cannot reuse `:shared` directly: that module
- * aggregates the macOS/iOS/Android feature set, much of which (Bluetooth, location, media, …) has
- * no `wasmJs` target.
+ * The web target only includes the features whose underlying Kaluga modules support `wasmJs`. It
+ * cannot reuse `:shared` directly: that module aggregates the macOS/iOS/Android feature set, some of
+ * which (media, …) has no `wasmJs` target.
  */
 val webFeaturesModule: Module = module {
     includes(
@@ -41,6 +41,7 @@ val webFeaturesModule: Module = module {
         datetimeFeatureModule,
         locationFeatureModule,
         permissionsFeatureModule,
+        bluetoothClientFeatureModule,
         scientificFeatureModule,
     )
 }

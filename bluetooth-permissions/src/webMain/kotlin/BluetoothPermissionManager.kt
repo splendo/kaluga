@@ -84,12 +84,12 @@ actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPer
         if (state == lastState) return
         lastState = state
         when (state) {
-            "granted" -> emitEvent(PermissionManager.Event.PermissionGranted)
-
             // A browser "denied" cannot be re-prompted programmatically, so treat it as locked.
             "denied" -> emitEvent(PermissionManager.Event.PermissionDenied(locked = true))
 
-            else -> emitEvent(PermissionManager.Event.PermissionDenied(locked = false)) // "prompt" — still requestable via the picker
+            // "granted" and "prompt" both mean Bluetooth is usable: there is no upfront permission on the
+            // web, access is granted per-device when the user picks one through the scanner's picker.
+            else -> emitEvent(PermissionManager.Event.PermissionGranted)
         }
     }
 }

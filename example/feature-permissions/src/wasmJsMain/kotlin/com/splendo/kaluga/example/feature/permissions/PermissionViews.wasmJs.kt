@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.example.feature.permissions
 
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.camera.CameraPermission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.microphone.MicrophonePermission
 import com.splendo.kaluga.permissions.notifications.NotificationsPermission
 
-// The browser exposes geolocation, notifications, camera and microphone; the rest of the permission
-// types have no Web API. `background`/`precise` are accepted but inert on the web.
+// The browser exposes geolocation, notifications, camera, microphone and Bluetooth; the rest of the
+// permission types have no Web API. `background`/`precise` are accepted but inert on the web.
 internal object LocationPermissionView : PermissionView("Location", "Location") {
     override val permission = LocationPermission(background = false, precise = true)
 }
@@ -36,10 +37,14 @@ internal object CameraPermissionView : PermissionView("Camera", "Camera") {
 internal object MicrophonePermissionView : PermissionView("Microphone", "Microphone") {
     override val permission = MicrophonePermission
 }
+internal object BluetoothPermissionView : PermissionView("Bluetooth", "Bluetooth") {
+    override val permission = BluetoothPermission(BluetoothPermission.Type.Client())
+}
 
 actual val availablePermissionViews: List<PermissionView> = listOf(
     LocationPermissionView,
     NotificationsPermissionView,
     CameraPermissionView,
     MicrophonePermissionView,
+    BluetoothPermissionView,
 )

@@ -29,6 +29,7 @@ kotlin {
             implementation(project(":feature-datetime"))
             implementation(project(":feature-location"))
             implementation(project(":feature-permissions"))
+            implementation(project(":feature-bluetooth-client"))
             implementation(project(":feature-scientific"))
             implementation(libs.compose.ui)
         }

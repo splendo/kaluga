@@ -18,6 +18,8 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.camera.registerCameraPermission
 import com.splendo.kaluga.permissions.camera.registerCameraPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.location.registerLocationPermission
@@ -29,14 +31,15 @@ import com.splendo.kaluga.permissions.notifications.registerNotificationsPermiss
 import kotlin.time.Duration
 
 // The JS family (js + wasmJs) supports the permissions whose capabilities the browser exposes:
-// geolocation (Permissions API), notifications (Notification API), and camera/microphone (getUserMedia +
-// Permissions API). The per-permission modules are declared in the js/wasmJs dependency blocks, so this
-// lives per-target rather than in webMain.
+// geolocation (Permissions API), notifications (Notification API), camera/microphone (getUserMedia +
+// Permissions API), and Bluetooth (Web Bluetooth). The per-permission modules are declared in the
+// js/wasmJs dependency blocks, so this lives per-target rather than in webMain.
 actual fun PermissionsBuilder.registerAllPermissions(monitoringInterval: Duration, settings: BasePermissionManager.Settings) {
     registerLocationPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerCameraPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerBluetoothPermission(monitoringInterval = monitoringInterval, settings = settings)
 }
 
 actual suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(monitoringInterval: Duration, settings: BasePermissionManager.Settings) {
@@ -44,4 +47,5 @@ actual suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(monito
     registerNotificationsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerCameraPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerBluetoothPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
 }

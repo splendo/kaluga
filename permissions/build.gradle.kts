@@ -75,6 +75,7 @@ kaluga {
         }
         js {
             main {
+                api(project(":bluetooth-permissions"))
                 api(project(":location-permissions"))
                 api(project(":notifications-permissions"))
                 api(project(":camera-permissions"))
@@ -83,6 +84,7 @@ kaluga {
         }
         wasmJs {
             main {
+                api(project(":bluetooth-permissions"))
                 api(project(":location-permissions"))
                 api(project(":notifications-permissions"))
                 api(project(":camera-permissions"))

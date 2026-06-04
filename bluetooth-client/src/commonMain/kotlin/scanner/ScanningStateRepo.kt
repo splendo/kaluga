@@ -22,8 +22,6 @@ import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -103,7 +101,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
 
     private val supervisorJob = SupervisorJob(coroutineContext[Job])
     private fun startMonitoringScanner(scanner: Scanner) {
-        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
+        CoroutineScope(coroutineContext + supervisorJob + scanningStateDispatcher).launch {
             scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
@@ -120,7 +118,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                 }
             }
         }
-        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
+        CoroutineScope(coroutineContext + supervisorJob + scanningStateDispatcher).launch {
             scanner.connectionEvents.collect { connectionEvent ->
                 when (connectionEvent) {
                     is Scanner.ConnectionEvent.DeviceConnected -> handleDeviceConnectionChanged(connectionEvent.identifier, true)
@@ -128,7 +126,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                 }
             }
         }
-        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
+        CoroutineScope(coroutineContext + supervisorJob + scanningStateDispatcher).launch {
             scanner.discoveryEvents.collect { discoveredDevices ->
                 handleDeviceDiscovered(discoveredDevices)
             }

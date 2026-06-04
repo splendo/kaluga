@@ -1,0 +1,409 @@
+/*
+ Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bluetooth.device
+
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
+// Wasm cannot share Promise<T> across the JS family and cannot hold the live Web Bluetooth objects in
+// typed Kotlin, so the handles live in a JS-side registry (`globalThis.__kbt`) keyed by the string
+// ids/uuids of the webMain interop surface. Each async op is bridged to a coroutine via plain
+// success/error callbacks passed into `js(...)`; byte payloads cross the boundary as hex strings.
+
+private val cachedValues = mutableMapOf<String, ByteArray>()
+private val notificationHandlers = mutableMapOf<String, (String, String) -> Unit>()
+
+private fun characteristicKey(identifier: String, service: String, characteristic: String) = "$identifier|$service|$characteristic"
+
+private fun bytesToHex(bytes: ByteArray): String {
+    val builder = StringBuilder(bytes.size * 2)
+    for (byte in bytes) {
+        val value = byte.toInt() and 0xFF
+        builder.append("0123456789abcdef"[value shr 4])
+        builder.append("0123456789abcdef"[value and 0x0F])
+    }
+    return builder.toString()
+}
+
+private fun hexToBytes(hex: String): ByteArray = ByteArray(hex.length / 2) { (hex.substring(it * 2, it * 2 + 2).toInt(16)).toByte() }
+
+private fun ensureRegistry() {
+    js(
+        """
+        if (!globalThis.__kbt) {
+            globalThis.__kbt = {
+                devices: {}, chars: {}, descs: {},
+                hex: function (view) {
+                    var s = '';
+                    for (var i = 0; i < view.byteLength; i++) {
+                        var h = view.getUint8(i).toString(16);
+                        if (h.length < 2) h = '0' + h;
+                        s += h;
+                    }
+                    return s;
+                },
+                buf: function (hex) {
+                    var a = new Uint8Array(hex.length / 2);
+                    for (var i = 0; i < a.length; i++) a[i] = parseInt(hex.substr(i * 2, 2), 16);
+                    return a;
+                },
+                props: function (p) {
+                    var v = 0;
+                    if (p.broadcast) v |= 1;
+                    if (p.read) v |= 2;
+                    if (p.writeWithoutResponse) v |= 4;
+                    if (p.write) v |= 8;
+                    if (p.notify) v |= 16;
+                    if (p.indicate) v |= 32;
+                    if (p.authenticatedSignedWrites) v |= 64;
+                    return v;
+                }
+            };
+        }
+        """,
+    )
+}
+
+internal actual fun webBluetoothSupported(): Boolean = js("(typeof navigator !== 'undefined' && !!navigator.bluetooth)")
+
+internal actual fun webShowDevicePicker(
+    filterServices: List<String>,
+    optionalServices: List<String>,
+    title: String,
+    addButtonLabel: String,
+    emptyLabel: String,
+    cssClassPrefix: String,
+    containerId: String?,
+    onDevicePicked: (identifier: String, name: String) -> Unit,
+) {
+    ensureRegistry()
+    webHideDevicePicker()
+    jsShowDevicePicker(
+        filterServices.joinToString(","),
+        optionalServices.joinToString(","),
+        title,
+        addButtonLabel,
+        emptyLabel,
+        cssClassPrefix,
+        containerId ?: "",
+        onDevicePicked,
+    )
+}
+
+internal actual fun webHideDevicePicker() {
+    ensureRegistry()
+    jsHideDevicePicker()
+}
+
+internal actual suspend fun webGattConnect(identifier: String, onDisconnected: () -> Unit): Boolean {
+    ensureRegistry()
+    return suspendCoroutine { continuation ->
+        jsGattConnect(identifier, onDisconnected, { continuation.resume(true) }, { continuation.resume(false) })
+    }
+}
+
+internal actual fun webGattDisconnect(identifier: String) {
+    ensureRegistry()
+    jsGattDisconnect(identifier)
+}
+
+internal actual fun webIsConnected(identifier: String): Boolean {
+    ensureRegistry()
+    return jsIsConnected(identifier)
+}
+
+internal actual suspend fun webDiscoverServices(identifier: String): List<WebService> {
+    ensureRegistry()
+    return suspendCoroutine { continuation ->
+        val services = LinkedHashMap<String, ServiceAccumulator>()
+        jsDiscoverServices(
+            identifier,
+            { serviceUuid, isPrimary, characteristicUuid, properties, descriptorCsv ->
+                val accumulator = services.getOrPut(serviceUuid) { ServiceAccumulator(isPrimary) }
+                val descriptors = if (descriptorCsv.isEmpty()) emptyList() else descriptorCsv.split(",")
+                accumulator.characteristics.add(WebCharacteristic(characteristicUuid, properties, descriptors))
+            },
+            { continuation.resume(services.map { (uuid, accumulator) -> WebService(uuid, accumulator.isPrimary, accumulator.characteristics) }) },
+            { continuation.resume(emptyList()) },
+        )
+    }
+}
+
+internal actual suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): ByteArray? {
+    ensureRegistry()
+    return suspendCoroutine { continuation ->
+        jsReadCharacteristic(
+            identifier,
+            service,
+            characteristic,
+            { hex ->
+                val bytes = hexToBytes(hex)
+                cachedValues[characteristicKey(identifier, service, characteristic)] = bytes
+                continuation.resume(bytes)
+            },
+            { continuation.resume(null) },
+        )
+    }
+}
+
+internal actual suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): Boolean {
+    ensureRegistry()
+    return suspendCoroutine { continuation ->
+        jsWriteCharacteristic(identifier, service, characteristic, bytesToHex(value), withResponse, { continuation.resume(true) }, { continuation.resume(false) })
+    }
+}
+
+internal actual suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): ByteArray? {
+    ensureRegistry()
+    return suspendCoroutine { continuation ->
+        jsReadDescriptor(identifier, service, characteristic, descriptor, { hex -> continuation.resume(hexToBytes(hex)) }, { continuation.resume(null) })
+    }
+}
+
+internal actual suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): Boolean {
+    ensureRegistry()
+    return suspendCoroutine { continuation ->
+        jsWriteDescriptor(identifier, service, characteristic, descriptor, bytesToHex(value), { continuation.resume(true) }, { continuation.resume(false) })
+    }
+}
+
+internal actual suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): Boolean {
+    ensureRegistry()
+    return suspendCoroutine { continuation ->
+        if (enable) {
+            jsStartNotifications(
+                identifier,
+                service,
+                characteristic,
+                { hex ->
+                    cachedValues[characteristicKey(identifier, service, characteristic)] = hexToBytes(hex)
+                    notificationHandlers[identifier]?.invoke(service, characteristic)
+                },
+                { continuation.resume(true) },
+                { continuation.resume(false) },
+            )
+        } else {
+            jsStopNotifications(identifier, service, characteristic, { continuation.resume(true) }, { continuation.resume(false) })
+        }
+    }
+}
+
+internal actual fun webSetNotificationHandler(identifier: String, handler: (service: String, characteristic: String) -> Unit) {
+    notificationHandlers[identifier] = handler
+}
+
+internal actual fun webCachedCharacteristicValue(identifier: String, service: String, characteristic: String): ByteArray? =
+    cachedValues[characteristicKey(identifier, service, characteristic)]
+
+private class ServiceAccumulator(val isPrimary: Boolean) {
+    val characteristics = mutableListOf<WebCharacteristic>()
+}
+
+private fun jsShowDevicePicker(
+    filterCsv: String,
+    optionalCsv: String,
+    title: String,
+    addLabel: String,
+    emptyLabel: String,
+    prefix: String,
+    containerId: String,
+    onPicked: (identifier: String, name: String) -> Unit,
+) {
+    js(
+        """
+        if (typeof document === 'undefined') return;
+        var reg = globalThis.__kbt;
+        var overlay = document.createElement('div');
+        overlay.className = prefix + '-overlay';
+        // A self-contained dismiss control so the overlay can always be closed even if it covers app UI.
+        var closeButton = document.createElement('button');
+        closeButton.className = prefix + '-close';
+        closeButton.textContent = '✕';
+        closeButton.addEventListener('click', function () {
+            if (reg.overlay && reg.overlay.parentNode) reg.overlay.parentNode.removeChild(reg.overlay);
+            reg.overlay = null;
+        });
+        overlay.appendChild(closeButton);
+        var heading = document.createElement('h2');
+        heading.className = prefix + '-title';
+        heading.textContent = title;
+        overlay.appendChild(heading);
+        var list = document.createElement('ul');
+        list.className = prefix + '-list';
+        var emptyItem = document.createElement('li');
+        emptyItem.className = prefix + '-list-empty';
+        emptyItem.textContent = emptyLabel;
+        list.appendChild(emptyItem);
+        overlay.appendChild(list);
+        var added = {};
+        var button = document.createElement('button');
+        button.className = prefix + '-button';
+        button.textContent = addLabel;
+        button.addEventListener('click', function () {
+            // Called synchronously from the click handler so the requestDevice user-gesture requirement holds.
+            var options = {};
+            if (filterCsv.length === 0) { options.acceptAllDevices = true; } else { options.filters = [{ services: filterCsv.split(',') }]; }
+            if (optionalCsv.length > 0) options.optionalServices = optionalCsv.split(',');
+            navigator.bluetooth.requestDevice(options).then(function (device) {
+                reg.devices[device.id] = device;
+                var name = device.name || '';
+                if (!added[device.id]) {
+                    added[device.id] = true;
+                    if (emptyItem.parentNode) list.removeChild(emptyItem);
+                    var item = document.createElement('li');
+                    item.className = prefix + '-list-item';
+                    item.textContent = name.length ? name : device.id;
+                    list.appendChild(item);
+                }
+                onPicked(device.id, name);
+            }, function () {});
+        });
+        overlay.appendChild(button);
+        var container = (containerId && document.getElementById(containerId)) || document.body;
+        container.appendChild(overlay);
+        reg.overlay = overlay;
+        """,
+    )
+}
+
+private fun jsHideDevicePicker() {
+    js(
+        """
+        var reg = globalThis.__kbt;
+        if (reg && reg.overlay) {
+            if (reg.overlay.parentNode) reg.overlay.parentNode.removeChild(reg.overlay);
+            reg.overlay = null;
+        }
+        """,
+    )
+}
+
+private fun jsGattConnect(identifier: String, onDisconnected: () -> Unit, onConnected: () -> Unit, onError: () -> Unit) {
+    js(
+        """
+        var device = globalThis.__kbt.devices[identifier];
+        if (!device) { onError(); return; }
+        device.addEventListener('gattserverdisconnected', function () { onDisconnected(); });
+        device.gatt.connect().then(function () { onConnected(); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsGattDisconnect(identifier: String) {
+    js("var d = globalThis.__kbt.devices[identifier]; if (d && d.gatt && d.gatt.connected) d.gatt.disconnect();")
+}
+
+private fun jsIsConnected(identifier: String): Boolean = js("(function () { var d = globalThis.__kbt.devices[identifier]; return !!(d && d.gatt && d.gatt.connected); })()")
+
+private fun jsDiscoverServices(
+    identifier: String,
+    onCharacteristic: (service: String, isPrimary: Boolean, characteristic: String, properties: Int, descriptorCsv: String) -> Unit,
+    onDone: () -> Unit,
+    onError: () -> Unit,
+) {
+    js(
+        """
+        var reg = globalThis.__kbt;
+        var device = reg.devices[identifier];
+        if (!device) { onError(); return; }
+        device.gatt.getPrimaryServices().then(function (services) {
+            return services.reduce(function (servicePromise, service) {
+                return servicePromise.then(function () {
+                    return service.getCharacteristics().then(function (characteristics) {
+                        return characteristics.reduce(function (characteristicPromise, characteristic) {
+                            return characteristicPromise.then(function () {
+                                reg.chars[identifier + '|' + service.uuid + '|' + characteristic.uuid] = characteristic;
+                                return characteristic.getDescriptors().then(function (d) { return d; }, function () { return []; }).then(function (descriptors) {
+                                    var uuids = descriptors.map(function (descriptor) {
+                                        reg.descs[identifier + '|' + service.uuid + '|' + characteristic.uuid + '|' + descriptor.uuid] = descriptor;
+                                        return descriptor.uuid;
+                                    });
+                                    onCharacteristic(service.uuid, service.isPrimary !== false, characteristic.uuid, reg.props(characteristic.properties), uuids.join(','));
+                                });
+                            });
+                        }, Promise.resolve());
+                    });
+                });
+            }, Promise.resolve());
+        }).then(function () { onDone(); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsReadCharacteristic(identifier: String, service: String, characteristic: String, onResult: (String) -> Unit, onError: () -> Unit) {
+    js(
+        """
+        var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
+        if (!c) { onError(); return; }
+        c.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsWriteCharacteristic(identifier: String, service: String, characteristic: String, hex: String, withResponse: Boolean, onResult: () -> Unit, onError: () -> Unit) {
+    js(
+        """
+        var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
+        if (!c) { onError(); return; }
+        var buffer = globalThis.__kbt.buf(hex);
+        var promise = withResponse ? c.writeValueWithResponse(buffer) : c.writeValueWithoutResponse(buffer);
+        promise.then(function () { onResult(); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, onResult: (String) -> Unit, onError: () -> Unit) {
+    js(
+        """
+        var d = globalThis.__kbt.descs[identifier + '|' + service + '|' + characteristic + '|' + descriptor];
+        if (!d) { onError(); return; }
+        d.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, hex: String, onResult: () -> Unit, onError: () -> Unit) {
+    js(
+        """
+        var d = globalThis.__kbt.descs[identifier + '|' + service + '|' + characteristic + '|' + descriptor];
+        if (!d) { onError(); return; }
+        d.writeValue(globalThis.__kbt.buf(hex)).then(function () { onResult(); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsStartNotifications(identifier: String, service: String, characteristic: String, onValue: (String) -> Unit, onResult: () -> Unit, onError: () -> Unit) {
+    js(
+        """
+        var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
+        if (!c) { onError(); return; }
+        c.addEventListener('characteristicvaluechanged', function (event) { onValue(globalThis.__kbt.hex(event.target.value)); });
+        c.startNotifications().then(function () { onResult(); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsStopNotifications(identifier: String, service: String, characteristic: String, onResult: () -> Unit, onError: () -> Unit) {
+    js(
+        """
+        var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
+        if (!c) { onError(); return; }
+        c.stopNotifications().then(function () { onResult(); }, function () { onError(); });
+        """,
+    )
+}

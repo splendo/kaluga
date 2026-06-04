@@ -5,6 +5,8 @@ plugins {
 
 kaluga {
     moduleName = "bluetooth.client"
+    supportJS = true
+    supportWasmJS = true
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true
