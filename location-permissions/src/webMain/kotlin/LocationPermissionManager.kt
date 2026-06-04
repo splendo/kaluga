@@ -46,9 +46,16 @@ actual class DefaultLocationPermissionManager(locationPermission: LocationPermis
     private var monitoringJob: Job? = null
     private var lastState: String? = null
 
+    // A grant obtained through the prompt; remembered so a browser that keeps reporting "prompt" after a
+    // one-time "Allow" (e.g. Firefox) does not downgrade the permission back to requestable.
+    private var grantedViaRequest = false
+
     actual override fun requestPermissionDidStart() {
         if (hasGeolocation()) {
-            triggerGeolocationPrompt()
+            requestGeolocationPermission {
+                grantedViaRequest = true
+                emitForState("granted")
+            }
         } else {
             emitEvent(PermissionManager.Event.PermissionDenied(locked = true))
         }
@@ -68,16 +75,21 @@ actual class DefaultLocationPermissionManager(locationPermission: LocationPermis
         monitoringJob?.cancel()
         monitoringJob = null
         lastState = null
+        grantedViaRequest = false
     }
 
     private fun emitForState(state: String) {
-        if (state == lastState) return
-        lastState = state
-        when (state) {
+        val resolved = if (state == "prompt" && grantedViaRequest) "granted" else state
+        if (resolved == lastState) return
+        lastState = resolved
+        when (resolved) {
             "granted" -> emitEvent(PermissionManager.Event.PermissionGranted)
 
             // Once a browser denies geolocation it cannot be re-prompted programmatically, so it is locked.
-            "denied" -> emitEvent(PermissionManager.Event.PermissionDenied(locked = true))
+            "denied" -> {
+                grantedViaRequest = false
+                emitEvent(PermissionManager.Event.PermissionDenied(locked = true))
+            }
 
             else -> emitEvent(PermissionManager.Event.PermissionDenied(locked = false)) // "prompt" — not yet granted, still requestable
         }
