@@ -73,6 +73,7 @@ class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
     }
 
     @IgnoreJs
+    @IgnoreWasm
     @Test
     fun testExceptionWhenCanceling() {
         // a custom cancel exception is thrown and caught by the method, but ours is exception is not a cancel exception

@@ -1224,7 +1224,7 @@ open annotation class com.splendo.kaluga.test.base/IgnoreWasm : kotlin/Annotatio
     constructor <init>() // com.splendo.kaluga.test.base/IgnoreWasm.<init>|<init>(){}[0]
 }
 
-// Targets: [apple]
+// Targets: [apple, wasmJs]
 open annotation class com.splendo.kaluga.test.base/IgnoreJs : kotlin/Annotation { // com.splendo.kaluga.test.base/IgnoreJs|null[0]
     constructor <init>() // com.splendo.kaluga.test.base/IgnoreJs.<init>|<init>(){}[0]
 }

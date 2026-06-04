@@ -1,5 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -312,19 +313,31 @@ final enum class com.splendo.kaluga.bluetooth.serialization/Length : kotlin/Enum
 
 abstract interface com.splendo.kaluga.bluetooth.device/Device { // com.splendo.kaluga.bluetooth.device/Device|null[0]
     abstract val identifier // com.splendo.kaluga.bluetooth.device/Device.identifier|{}identifier[0]
+        // Targets: [apple]
         abstract fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.device/Device.identifier.<get-identifier>|<get-identifier>(){}[0]
+
+        // Targets: [js, wasmJs]
+        abstract fun <get-identifier>(): kotlin/String // com.splendo.kaluga.bluetooth.device/Device.identifier.<get-identifier>|<get-identifier>(){}[0]
 }
 
 abstract interface com.splendo.kaluga.bluetooth/Attribute { // com.splendo.kaluga.bluetooth/Attribute|null[0]
     abstract val uuid // com.splendo.kaluga.bluetooth/Attribute.uuid|{}uuid[0]
+        // Targets: [apple]
         abstract fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/Attribute.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+        // Targets: [js, wasmJs]
+        abstract fun <get-uuid>(): com.splendo.kaluga.bluetooth/UUID // com.splendo.kaluga.bluetooth/Attribute.uuid.<get-uuid>|<get-uuid>(){}[0]
 }
 
 abstract interface com.splendo.kaluga.bluetooth/BluetoothMonitor : com.splendo.kaluga.service/ServiceMonitor { // com.splendo.kaluga.bluetooth/BluetoothMonitor|null[0]
     final class Builder { // com.splendo.kaluga.bluetooth/BluetoothMonitor.Builder|null[0]
+        final fun create(): com.splendo.kaluga.bluetooth/BluetoothMonitor // com.splendo.kaluga.bluetooth/BluetoothMonitor.Builder.create|create(){}[0]
+
+        // Targets: [apple]
         constructor <init>(kotlin/Function0<platform.CoreBluetooth/CBCentralManager> = ...) // com.splendo.kaluga.bluetooth/BluetoothMonitor.Builder.<init>|<init>(kotlin.Function0<platform.CoreBluetooth.CBCentralManager>){}[0]
 
-        final fun create(): com.splendo.kaluga.bluetooth/BluetoothMonitor // com.splendo.kaluga.bluetooth/BluetoothMonitor.Builder.create|create(){}[0]
+        // Targets: [js, wasmJs]
+        constructor <init>() // com.splendo.kaluga.bluetooth/BluetoothMonitor.Builder.<init>|<init>(){}[0]
     }
 }
 
@@ -343,7 +356,11 @@ abstract interface com.splendo.kaluga.bluetooth/Descriptor : com.splendo.kaluga.
 
     final object Companion { // com.splendo.kaluga.bluetooth/Descriptor.Companion|null[0]
         final val CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR // com.splendo.kaluga.bluetooth/Descriptor.Companion.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR|{}CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR[0]
+            // Targets: [apple]
             final fun <get-CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/Descriptor.Companion.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR.<get-CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR>|<get-CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR>(){}[0]
+
+            // Targets: [js, wasmJs]
+            final fun <get-CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR>(): com.splendo.kaluga.bluetooth/UUID // com.splendo.kaluga.bluetooth/Descriptor.Companion.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR.<get-CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR>|<get-CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR>(){}[0]
     }
 }
 
@@ -700,13 +717,13 @@ sealed interface com.splendo.kaluga.bluetooth/GattResponse { // com.splendo.kalu
 }
 
 final class com.splendo.kaluga.bluetooth.device/SerializableIdentifier { // com.splendo.kaluga.bluetooth.device/SerializableIdentifier|null[0]
-    constructor <init>(platform.Foundation/NSUUID) // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.<init>|<init>(platform.Foundation.NSUUID){}[0]
-
     final val identifier // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.identifier|{}identifier[0]
+        // Targets: [apple]
         final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.identifier.<get-identifier>|<get-identifier>(){}[0]
 
-    final fun component1(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.component1|component1(){}[0]
-    final fun copy(platform.Foundation/NSUUID = ...): com.splendo.kaluga.bluetooth.device/SerializableIdentifier // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.copy|copy(platform.Foundation.NSUUID){}[0]
+        // Targets: [js, wasmJs]
+        final fun <get-identifier>(): kotlin/String // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.identifier.<get-identifier>|<get-identifier>(){}[0]
+
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.toString|toString(){}[0]
@@ -714,6 +731,24 @@ final class com.splendo.kaluga.bluetooth.device/SerializableIdentifier { // com.
     final object Companion { // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.bluetooth.device/SerializableIdentifier> // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.Companion.serializer|serializer(){}[0]
     }
+
+    // Targets: [apple]
+    constructor <init>(platform.Foundation/NSUUID) // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.<init>|<init>(platform.Foundation.NSUUID){}[0]
+
+    // Targets: [apple]
+    final fun component1(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.component1|component1(){}[0]
+
+    // Targets: [apple]
+    final fun copy(platform.Foundation/NSUUID = ...): com.splendo.kaluga.bluetooth.device/SerializableIdentifier // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.copy|copy(platform.Foundation.NSUUID){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.<init>|<init>(kotlin.String){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun component1(): kotlin/String // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.component1|component1(){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun copy(kotlin/String = ...): com.splendo.kaluga.bluetooth.device/SerializableIdentifier // com.splendo.kaluga.bluetooth.device/SerializableIdentifier.copy|copy(kotlin.String){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.serialization/ByteArrayEndedBeforeSerializationCompleted : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bluetooth.serialization/ByteArrayEndedBeforeSerializationCompleted|null[0]
@@ -780,6 +815,9 @@ final class com.splendo.kaluga.bluetooth.serialization/UnexpectedNullTermination
 final class com.splendo.kaluga.bluetooth/DefaultBluetoothMonitor : com.splendo.kaluga.bluetooth/BluetoothMonitor, com.splendo.kaluga.service/DefaultServiceMonitor { // com.splendo.kaluga.bluetooth/DefaultBluetoothMonitor|null[0]
     final val isServiceEnabled // com.splendo.kaluga.bluetooth/DefaultBluetoothMonitor.isServiceEnabled|{}isServiceEnabled[0]
         final fun <get-isServiceEnabled>(): kotlin/Boolean // com.splendo.kaluga.bluetooth/DefaultBluetoothMonitor.isServiceEnabled.<get-isServiceEnabled>|<get-isServiceEnabled>(){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>() // com.splendo.kaluga.bluetooth/DefaultBluetoothMonitor.<init>|<init>(){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth/FailedToReadException : kotlin/Exception { // com.splendo.kaluga.bluetooth/FailedToReadException|null[0]
@@ -890,24 +928,94 @@ sealed class com.splendo.kaluga.bluetooth/UUIDException : kotlin/Exception { // 
     }
 }
 
-final val com.splendo.kaluga.bluetooth.device/serializable // com.splendo.kaluga.bluetooth.device/serializable|@platform.Foundation.NSUUID{}serializable[0]
-    final fun (platform.Foundation/NSUUID).<get-serializable>(): com.splendo.kaluga.bluetooth.device/SerializableIdentifier // com.splendo.kaluga.bluetooth.device/serializable.<get-serializable>|<get-serializable>@platform.Foundation.NSUUID(){}[0]
-final val com.splendo.kaluga.bluetooth.device/stringValue // com.splendo.kaluga.bluetooth.device/stringValue|@platform.Foundation.NSUUID{}stringValue[0]
-    final fun (platform.Foundation/NSUUID).<get-stringValue>(): kotlin/String // com.splendo.kaluga.bluetooth.device/stringValue.<get-stringValue>|<get-stringValue>@platform.Foundation.NSUUID(){}[0]
 final val com.splendo.kaluga.bluetooth.extensions/printableString // com.splendo.kaluga.bluetooth.extensions/printableString|@kotlin.ByteArray{}printableString[0]
     final fun (kotlin/ByteArray).<get-printableString>(): kotlin/String // com.splendo.kaluga.bluetooth.extensions/printableString.<get-printableString>|<get-printableString>@kotlin.ByteArray(){}[0]
+
+final fun (kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty>).com.splendo.kaluga.bluetooth/rawValue(kotlin/Boolean): kotlin/Int // com.splendo.kaluga.bluetooth/rawValue|rawValue@kotlin.collections.Set<com.splendo.kaluga.bluetooth.CharacteristicProperty>(kotlin.Boolean){}[0]
+final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth.extensions/get(kotlin/String): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.bluetooth.extensions/get|get@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(kotlin.String){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth.extensions/getOrNull(kotlin/String): kotlinx.coroutines.flow/Flow<#A?> // com.splendo.kaluga.bluetooth.extensions/getOrNull|getOrNull@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(kotlin.String){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.bluetooth.device/serializable // com.splendo.kaluga.bluetooth.device/serializable|@platform.Foundation.NSUUID{}serializable[0]
+    final fun (platform.Foundation/NSUUID).<get-serializable>(): com.splendo.kaluga.bluetooth.device/SerializableIdentifier // com.splendo.kaluga.bluetooth.device/serializable.<get-serializable>|<get-serializable>@platform.Foundation.NSUUID(){}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.bluetooth.device/stringValue // com.splendo.kaluga.bluetooth.device/stringValue|@platform.Foundation.NSUUID{}stringValue[0]
+    final fun (platform.Foundation/NSUUID).<get-stringValue>(): kotlin/String // com.splendo.kaluga.bluetooth.device/stringValue.<get-stringValue>|<get-stringValue>@platform.Foundation.NSUUID(){}[0]
+
+// Targets: [apple]
 final val com.splendo.kaluga.bluetooth/asBytes // com.splendo.kaluga.bluetooth/asBytes|@platform.Foundation.NSData{}asBytes[0]
     final fun (platform.Foundation/NSData).<get-asBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth/asBytes.<get-asBytes>|<get-asBytes>@platform.Foundation.NSData(){}[0]
+
+// Targets: [apple]
 final val com.splendo.kaluga.bluetooth/uuidString // com.splendo.kaluga.bluetooth/uuidString|@platform.CoreBluetooth.CBUUID{}uuidString[0]
     final fun (platform.CoreBluetooth/CBUUID).<get-uuidString>(): kotlin/String // com.splendo.kaluga.bluetooth/uuidString.<get-uuidString>|<get-uuidString>@platform.CoreBluetooth.CBUUID(){}[0]
 
-final fun (kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty>).com.splendo.kaluga.bluetooth/rawValue(kotlin/Boolean): kotlin/Int // com.splendo.kaluga.bluetooth/rawValue|rawValue@kotlin.collections.Set<com.splendo.kaluga.bluetooth.CharacteristicProperty>(kotlin.Boolean){}[0]
+// Targets: [apple]
 final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlin.collections/List<#A>).com.splendo.kaluga.bluetooth/get(platform.CoreBluetooth/CBUUID): #A // com.splendo.kaluga.bluetooth/get|get@kotlin.collections.List<0:0>(platform.CoreBluetooth.CBUUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [apple]
 final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlin.collections/List<#A>).com.splendo.kaluga.bluetooth/getOrNull(platform.CoreBluetooth/CBUUID): #A? // com.splendo.kaluga.bluetooth/getOrNull|getOrNull@kotlin.collections.List<0:0>(platform.CoreBluetooth.CBUUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
-final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth.extensions/get(kotlin/String): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.bluetooth.extensions/get|get@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(kotlin.String){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
-final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth.extensions/getOrNull(kotlin/String): kotlinx.coroutines.flow/Flow<#A?> // com.splendo.kaluga.bluetooth.extensions/getOrNull|getOrNull@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(kotlin.String){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [apple]
 final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth/get(platform.CoreBluetooth/CBUUID): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.bluetooth/get|get@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(platform.CoreBluetooth.CBUUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [apple]
 final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth/getOrNull(platform.CoreBluetooth/CBUUID): kotlinx.coroutines.flow/Flow<#A?> // com.splendo.kaluga.bluetooth/getOrNull|getOrNull@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(platform.CoreBluetooth.CBUUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [apple]
 final fun com.splendo.kaluga.bluetooth.device/identifierFromString(kotlin/String): platform.Foundation/NSUUID? // com.splendo.kaluga.bluetooth.device/identifierFromString|identifierFromString(kotlin.String){}[0]
+
+// Targets: [apple]
 final fun com.splendo.kaluga.bluetooth.device/randomIdentifier(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.device/randomIdentifier|randomIdentifier(){}[0]
+
+// Targets: [apple]
 final fun com.splendo.kaluga.bluetooth/uuidFrom(kotlin/String): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/uuidFrom|uuidFrom(kotlin.String){}[0]
+
+// Targets: [js, wasmJs]
+final class com.splendo.kaluga.bluetooth/UUID { // com.splendo.kaluga.bluetooth/UUID|null[0]
+    final val value // com.splendo.kaluga.bluetooth/UUID.value|{}value[0]
+        final fun <get-value>(): kotlin/String // com.splendo.kaluga.bluetooth/UUID.value.<get-value>|<get-value>(){}[0]
+
+    final fun component1(): kotlin/String // com.splendo.kaluga.bluetooth/UUID.component1|component1(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/UUID.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/UUID.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/UUID.toString|toString(){}[0]
+}
+
+// Targets: [js, wasmJs]
+final val com.splendo.kaluga.bluetooth.device/serializable // com.splendo.kaluga.bluetooth.device/serializable|@kotlin.String{}serializable[0]
+    final fun (kotlin/String).<get-serializable>(): com.splendo.kaluga.bluetooth.device/SerializableIdentifier // com.splendo.kaluga.bluetooth.device/serializable.<get-serializable>|<get-serializable>@kotlin.String(){}[0]
+
+// Targets: [js, wasmJs]
+final val com.splendo.kaluga.bluetooth.device/stringValue // com.splendo.kaluga.bluetooth.device/stringValue|@kotlin.String{}stringValue[0]
+    final fun (kotlin/String).<get-stringValue>(): kotlin/String // com.splendo.kaluga.bluetooth.device/stringValue.<get-stringValue>|<get-stringValue>@kotlin.String(){}[0]
+
+// Targets: [js, wasmJs]
+final val com.splendo.kaluga.bluetooth/asBytes // com.splendo.kaluga.bluetooth/asBytes|@kotlin.ByteArray{}asBytes[0]
+    final fun (kotlin/ByteArray).<get-asBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth/asBytes.<get-asBytes>|<get-asBytes>@kotlin.ByteArray(){}[0]
+
+// Targets: [js, wasmJs]
+final val com.splendo.kaluga.bluetooth/uuidString // com.splendo.kaluga.bluetooth/uuidString|@com.splendo.kaluga.bluetooth.UUID{}uuidString[0]
+    final fun (com.splendo.kaluga.bluetooth/UUID).<get-uuidString>(): kotlin/String // com.splendo.kaluga.bluetooth/uuidString.<get-uuidString>|<get-uuidString>@com.splendo.kaluga.bluetooth.UUID(){}[0]
+
+// Targets: [js, wasmJs]
+final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlin.collections/List<#A>).com.splendo.kaluga.bluetooth/get(com.splendo.kaluga.bluetooth/UUID): #A // com.splendo.kaluga.bluetooth/get|get@kotlin.collections.List<0:0>(com.splendo.kaluga.bluetooth.UUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [js, wasmJs]
+final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlin.collections/List<#A>).com.splendo.kaluga.bluetooth/getOrNull(com.splendo.kaluga.bluetooth/UUID): #A? // com.splendo.kaluga.bluetooth/getOrNull|getOrNull@kotlin.collections.List<0:0>(com.splendo.kaluga.bluetooth.UUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [js, wasmJs]
+final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth/get(com.splendo.kaluga.bluetooth/UUID): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.bluetooth/get|get@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(com.splendo.kaluga.bluetooth.UUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [js, wasmJs]
+final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>>).com.splendo.kaluga.bluetooth/getOrNull(com.splendo.kaluga.bluetooth/UUID): kotlinx.coroutines.flow/Flow<#A?> // com.splendo.kaluga.bluetooth/getOrNull|getOrNull@kotlinx.coroutines.flow.Flow<kotlin.collections.List<0:0>>(com.splendo.kaluga.bluetooth.UUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
+
+// Targets: [js, wasmJs]
+final fun com.splendo.kaluga.bluetooth.device/identifierFromString(kotlin/String): kotlin/String? // com.splendo.kaluga.bluetooth.device/identifierFromString|identifierFromString(kotlin.String){}[0]
+
+// Targets: [js, wasmJs]
+final fun com.splendo.kaluga.bluetooth.device/randomIdentifier(): kotlin/String // com.splendo.kaluga.bluetooth.device/randomIdentifier|randomIdentifier(){}[0]
+
+// Targets: [js, wasmJs]
+final fun com.splendo.kaluga.bluetooth/uuidFrom(kotlin/String): com.splendo.kaluga.bluetooth/UUID // com.splendo.kaluga.bluetooth/uuidFrom|uuidFrom(kotlin.String){}[0]

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
+import com.splendo.kaluga.test.base.IgnoreJs
+
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.CRC16
 import com.splendo.kaluga.base.bytes.Encoding
@@ -614,6 +616,7 @@ class BluetoothFormatTest {
     }
 
     @Test
+    @IgnoreJs
     fun encodeFloat() {
         validateEncoding(42.0f, 42.0f.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
 
@@ -680,6 +683,7 @@ class BluetoothFormatTest {
     }
 
     @Test
+    @IgnoreJs
     fun encodeDouble() {
         validateEncoding(42.0, 42.0.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
 

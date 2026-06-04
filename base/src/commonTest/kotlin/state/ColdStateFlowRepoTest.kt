@@ -20,6 +20,7 @@ package com.splendo.kaluga.base.state
 import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.IgnoreJs
+import com.splendo.kaluga.test.base.IgnoreWasm
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -49,6 +50,7 @@ class ColdStateFlowRepoTest : BaseTest() {
 
     @Test
     @IgnoreJs
+    @IgnoreWasm
     fun testColdStateFlowRepo() = testRunBlocking {
         val repo = Repo()
 

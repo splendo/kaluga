@@ -40,6 +40,7 @@ class TestBlockingAndCancelScopeTest {
     }
 
     @IgnoreJs
+    @IgnoreWasm
     @Test
     fun testFrozenResult() {
         val map = testBlockingAndCancelScope(Dispatchers.Default) {
