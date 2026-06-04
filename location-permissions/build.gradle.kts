@@ -4,6 +4,8 @@ plugins {
 
 kaluga {
     moduleName = "permissions.location"
+    supportJS = true
+    supportWasmJS = true
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true

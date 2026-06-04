@@ -19,6 +19,8 @@ package com.splendo.kaluga.example.web.di
 
 import com.splendo.kaluga.example.feature.datetime.datetimeFeatureModule
 import com.splendo.kaluga.example.feature.localization.localizationFeatureModule
+import com.splendo.kaluga.example.feature.location.locationFeatureModule
+import com.splendo.kaluga.example.feature.permissions.permissionsFeatureModule
 import com.splendo.kaluga.example.feature.scientific.scientificFeatureModule
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -37,6 +39,8 @@ val webFeaturesModule: Module = module {
     includes(
         localizationFeatureModule,
         datetimeFeatureModule,
+        locationFeatureModule,
+        permissionsFeatureModule,
         scientificFeatureModule,
     )
 }

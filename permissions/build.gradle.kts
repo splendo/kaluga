@@ -7,6 +7,8 @@ kaluga {
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true
+    supportJS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {
@@ -68,6 +70,18 @@ kaluga {
                 api(project(":contacts-permissions"))
                 api(project(":location-permissions"))
                 api(project(":microphone-permissions"))
+                api(project(":notifications-permissions"))
+            }
+        }
+        js {
+            main {
+                api(project(":location-permissions"))
+                api(project(":notifications-permissions"))
+            }
+        }
+        wasmJs {
+            main {
+                api(project(":location-permissions"))
                 api(project(":notifications-permissions"))
             }
         }

@@ -27,6 +27,8 @@ kotlin {
             implementation(project(":core-koin"))
             implementation(project(":feature-localization"))
             implementation(project(":feature-datetime"))
+            implementation(project(":feature-location"))
+            implementation(project(":feature-permissions"))
             implementation(project(":feature-scientific"))
             implementation(libs.compose.ui)
         }
