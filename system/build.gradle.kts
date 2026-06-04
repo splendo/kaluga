@@ -5,6 +5,8 @@ plugins {
 kaluga {
     moduleName = "system"
     supportMacOS = true
+    supportJS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {

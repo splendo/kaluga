@@ -1,5 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -41,5 +42,8 @@ final class com.splendo.kaluga.links/DefaultLinksManager : com.splendo.kaluga.li
     }
 }
 
+// Targets: [apple]
 final fun (com.splendo.kaluga.links/LinksManager).com.splendo.kaluga.links/validateLink(platform.Foundation/NSURL): platform.Foundation/NSURL? // com.splendo.kaluga.links/validateLink|validateLink@com.splendo.kaluga.links.LinksManager(platform.Foundation.NSURL){}[0]
+
+// Targets: [apple]
 final fun <#A: kotlin/Any?> (com.splendo.kaluga.links/LinksManager).com.splendo.kaluga.links/handleIncomingLink(platform.Foundation/NSURL, kotlinx.serialization/KSerializer<#A>): #A? // com.splendo.kaluga.links/handleIncomingLink|handleIncomingLink@com.splendo.kaluga.links.LinksManager(platform.Foundation.NSURL;kotlinx.serialization.KSerializer<0:0>){0§<kotlin.Any?>}[0]
