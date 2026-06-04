@@ -28,6 +28,10 @@ import kotlin.coroutines.resume
 private val cachedValues = mutableMapOf<String, ByteArray>()
 private val notificationHandlers = mutableMapOf<String, (String, String) -> Unit>()
 
+// The `gattserverdisconnected` listener is registered once per device; it dispatches to the latest handler.
+private val disconnectListenerAdded = mutableSetOf<String>()
+private val onDisconnectedHandlers = mutableMapOf<String, () -> Unit>()
+
 private fun characteristicKey(identifier: String, service: String, characteristic: String) = "$identifier|$service|$characteristic"
 
 // Drops the connection-scoped state for a device (its discovered handles, cached values and notification
@@ -120,17 +124,28 @@ internal actual fun webHideDevicePicker() {
 
 internal actual suspend fun webGattConnect(identifier: String, onDisconnected: () -> Unit): Boolean {
     ensureRegistry()
-    return suspendCancellableCoroutine { continuation ->
-        jsGattConnect(identifier, {
+    onDisconnectedHandlers[identifier] = onDisconnected
+    if (disconnectListenerAdded.add(identifier)) {
+        jsAddDisconnectListener(identifier) {
             clearConnectionState(identifier)
-            onDisconnected()
-        }, { continuation.resume(true) }, { continuation.resume(false) })
+            onDisconnectedHandlers[identifier]?.invoke()
+        }
+    }
+    return suspendCancellableCoroutine { continuation ->
+        jsGattConnect(identifier, { continuation.resume(true) }, { continuation.resume(false) })
     }
 }
 
 internal actual fun webGattDisconnect(identifier: String) {
     ensureRegistry()
     jsGattDisconnect(identifier)
+}
+
+internal actual fun webForgetDevice(identifier: String) {
+    clearConnectionState(identifier)
+    disconnectListenerAdded.remove(identifier)
+    onDisconnectedHandlers.remove(identifier)
+    jsForgetDevice(identifier)
 }
 
 internal actual fun webIsConnected(identifier: String): Boolean {
@@ -333,19 +348,32 @@ private fun jsHideDevicePicker() {
     )
 }
 
-private fun jsGattConnect(identifier: String, onDisconnected: () -> Unit, onConnected: () -> Unit, onError: () -> Unit) {
+private fun jsGattConnect(identifier: String, onConnected: () -> Unit, onError: () -> Unit) {
     js(
         """
         var device = globalThis.__kbt.devices[identifier];
         if (!device) { onError(); return; }
-        device.addEventListener('gattserverdisconnected', function () { onDisconnected(); });
         device.gatt.connect().then(function () { onConnected(); }, function () { onError(); });
+        """,
+    )
+}
+
+private fun jsAddDisconnectListener(identifier: String, onDisconnected: () -> Unit) {
+    js(
+        """
+        var device = globalThis.__kbt.devices[identifier];
+        if (!device) return;
+        device.addEventListener('gattserverdisconnected', function () { onDisconnected(); });
         """,
     )
 }
 
 private fun jsGattDisconnect(identifier: String) {
     js("var d = globalThis.__kbt.devices[identifier]; if (d && d.gatt && d.gatt.connected) d.gatt.disconnect();")
+}
+
+private fun jsForgetDevice(identifier: String) {
+    js("var reg = globalThis.__kbt; if (reg) delete reg.devices[identifier];")
 }
 
 private fun jsClearConnectionState(identifier: String) {

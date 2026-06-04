@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope) :
@@ -33,6 +34,12 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
     }
 
     private val identifier = deviceWrapper.identifier
+
+    init {
+        // Release the device from the interop registry once this manager's scope is torn down — e.g. when
+        // the scanner cleans the device away (REMOVE_ALL) or the bluetooth client is deinitialized.
+        coroutineContext.job.invokeOnCompletion { webForgetDevice(identifier) }
+    }
 
     actual override fun getCurrentState(): DeviceConnectionManager.State =
         if (webIsConnected(identifier)) DeviceConnectionManager.State.CONNECTED else DeviceConnectionManager.State.DISCONNECTED

@@ -100,6 +100,13 @@ internal expect suspend fun webGattConnect(identifier: String, onDisconnected: (
 
 internal expect fun webGattDisconnect(identifier: String)
 
+/**
+ * Forgets a device entirely — drops its connection-scoped state, its `gattserverdisconnected` listener
+ * and the device handle from the registry. Called when the device's connection manager is torn down (its
+ * scope completes), e.g. once the scanner has cleaned it away.
+ */
+internal expect fun webForgetDevice(identifier: String)
+
 internal expect fun webIsConnected(identifier: String): Boolean
 
 /** Discovers (and registers) all allowlisted services/characteristics/descriptors of the connected device. */

@@ -32,6 +32,10 @@ private val descriptors = mutableMapOf<String, dynamic>()
 private val cachedValues = mutableMapOf<String, ByteArray>()
 private val notificationHandlers = mutableMapOf<String, (String, String) -> Unit>()
 
+// The `gattserverdisconnected` listener is registered once per device; it dispatches to the latest handler.
+private val disconnectListenerAdded = mutableSetOf<String>()
+private val onDisconnectedHandlers = mutableMapOf<String, () -> Unit>()
+
 private fun characteristicKey(identifier: String, service: String, characteristic: String) = "$identifier|$service|$characteristic"
 private fun descriptorKey(identifier: String, service: String, characteristic: String, descriptor: String) = "$identifier|$service|$characteristic|$descriptor"
 
@@ -163,11 +167,14 @@ internal actual fun webHideDevicePicker() {
 
 internal actual suspend fun webGattConnect(identifier: String, onDisconnected: () -> Unit): Boolean {
     val device = devices[identifier] ?: return false
-    return try {
+    onDisconnectedHandlers[identifier] = onDisconnected
+    if (disconnectListenerAdded.add(identifier)) {
         device.addEventListener("gattserverdisconnected", {
             clearConnectionState(identifier)
-            onDisconnected()
+            onDisconnectedHandlers[identifier]?.invoke()
         })
+    }
+    return try {
         awaitJs(device.gatt.connect())
         true
     } catch (e: Throwable) {
@@ -180,6 +187,13 @@ internal actual fun webGattDisconnect(identifier: String) {
     if (device.gatt.connected == true) {
         device.gatt.disconnect()
     }
+}
+
+internal actual fun webForgetDevice(identifier: String) {
+    clearConnectionState(identifier)
+    devices.remove(identifier)
+    disconnectListenerAdded.remove(identifier)
+    onDisconnectedHandlers.remove(identifier)
 }
 
 internal actual fun webIsConnected(identifier: String): Boolean = devices[identifier]?.gatt?.connected == true
