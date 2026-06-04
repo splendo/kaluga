@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 // Wasm cannot share Promise<T> across the JS family and cannot hold the live Web Bluetooth objects in
 // typed Kotlin, so the handles live in a JS-side registry (`globalThis.__kbt`) keyed by the string
@@ -29,6 +29,14 @@ private val cachedValues = mutableMapOf<String, ByteArray>()
 private val notificationHandlers = mutableMapOf<String, (String, String) -> Unit>()
 
 private fun characteristicKey(identifier: String, service: String, characteristic: String) = "$identifier|$service|$characteristic"
+
+// Drops the connection-scoped state for a device (its discovered handles, cached values and notification
+// handler) on disconnect; the device handle itself is kept so it can be reconnected without re-picking.
+private fun clearConnectionState(identifier: String) {
+    cachedValues.keys.removeAll { it.startsWith("$identifier|") }
+    notificationHandlers.remove(identifier)
+    jsClearConnectionState(identifier)
+}
 
 private fun bytesToHex(bytes: ByteArray): String {
     val builder = StringBuilder(bytes.size * 2)
@@ -112,8 +120,11 @@ internal actual fun webHideDevicePicker() {
 
 internal actual suspend fun webGattConnect(identifier: String, onDisconnected: () -> Unit): Boolean {
     ensureRegistry()
-    return suspendCoroutine { continuation ->
-        jsGattConnect(identifier, onDisconnected, { continuation.resume(true) }, { continuation.resume(false) })
+    return suspendCancellableCoroutine { continuation ->
+        jsGattConnect(identifier, {
+            clearConnectionState(identifier)
+            onDisconnected()
+        }, { continuation.resume(true) }, { continuation.resume(false) })
     }
 }
 
@@ -129,7 +140,7 @@ internal actual fun webIsConnected(identifier: String): Boolean {
 
 internal actual suspend fun webDiscoverServices(identifier: String): List<WebService> {
     ensureRegistry()
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         val services = LinkedHashMap<String, ServiceAccumulator>()
         jsDiscoverServices(
             identifier,
@@ -146,7 +157,7 @@ internal actual suspend fun webDiscoverServices(identifier: String): List<WebSer
 
 internal actual suspend fun webReadCharacteristic(identifier: String, service: String, characteristic: String): WebGattResult {
     ensureRegistry()
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         jsReadCharacteristic(
             identifier,
             service,
@@ -163,7 +174,7 @@ internal actual suspend fun webReadCharacteristic(identifier: String, service: S
 
 internal actual suspend fun webWriteCharacteristic(identifier: String, service: String, characteristic: String, value: ByteArray, withResponse: Boolean): WebGattResult {
     ensureRegistry()
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         jsWriteCharacteristic(
             identifier,
             service,
@@ -178,7 +189,7 @@ internal actual suspend fun webWriteCharacteristic(identifier: String, service: 
 
 internal actual suspend fun webReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String): WebGattResult {
     ensureRegistry()
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         jsReadDescriptor(
             identifier,
             service,
@@ -192,7 +203,7 @@ internal actual suspend fun webReadDescriptor(identifier: String, service: Strin
 
 internal actual suspend fun webWriteDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, value: ByteArray): WebGattResult {
     ensureRegistry()
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         jsWriteDescriptor(
             identifier,
             service,
@@ -207,7 +218,7 @@ internal actual suspend fun webWriteDescriptor(identifier: String, service: Stri
 
 internal actual suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): WebGattResult {
     ensureRegistry()
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         if (enable) {
             jsStartNotifications(
                 identifier,
@@ -335,6 +346,19 @@ private fun jsGattConnect(identifier: String, onDisconnected: () -> Unit, onConn
 
 private fun jsGattDisconnect(identifier: String) {
     js("var d = globalThis.__kbt.devices[identifier]; if (d && d.gatt && d.gatt.connected) d.gatt.disconnect();")
+}
+
+private fun jsClearConnectionState(identifier: String) {
+    js(
+        """
+        var reg = globalThis.__kbt;
+        if (!reg) return;
+        var prefix = identifier + '|';
+        ['chars', 'descs'].forEach(function (map) {
+            Object.keys(reg[map]).forEach(function (key) { if (key.indexOf(prefix) === 0) delete reg[map][key]; });
+        });
+        """,
+    )
 }
 
 private fun jsIsConnected(identifier: String): Boolean = js("(function () { var d = globalThis.__kbt.devices[identifier]; return !!(d && d.gatt && d.gatt.connected); })()")

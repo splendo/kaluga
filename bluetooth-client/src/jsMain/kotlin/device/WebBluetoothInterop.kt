@@ -35,6 +35,16 @@ private val notificationHandlers = mutableMapOf<String, (String, String) -> Unit
 private fun characteristicKey(identifier: String, service: String, characteristic: String) = "$identifier|$service|$characteristic"
 private fun descriptorKey(identifier: String, service: String, characteristic: String, descriptor: String) = "$identifier|$service|$characteristic|$descriptor"
 
+// Drops the connection-scoped state for a device (its discovered handles, cached values and notification
+// handler) on disconnect; the device handle itself is kept so it can be reconnected without re-picking.
+private fun clearConnectionState(identifier: String) {
+    val prefix = "$identifier|"
+    characteristics.keys.removeAll { it.startsWith(prefix) }
+    descriptors.keys.removeAll { it.startsWith(prefix) }
+    cachedValues.keys.removeAll { it.startsWith(prefix) }
+    notificationHandlers.remove(identifier)
+}
+
 private fun bluetoothApi(): dynamic = js("navigator.bluetooth")
 
 private suspend fun awaitJs(promise: dynamic): dynamic = (promise as Promise<*>).await().asDynamic()
@@ -154,7 +164,10 @@ internal actual fun webHideDevicePicker() {
 internal actual suspend fun webGattConnect(identifier: String, onDisconnected: () -> Unit): Boolean {
     val device = devices[identifier] ?: return false
     return try {
-        device.addEventListener("gattserverdisconnected", { onDisconnected() })
+        device.addEventListener("gattserverdisconnected", {
+            clearConnectionState(identifier)
+            onDisconnected()
+        })
         awaitJs(device.gatt.connect())
         true
     } catch (e: Throwable) {
