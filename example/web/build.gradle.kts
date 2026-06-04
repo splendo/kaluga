@@ -23,14 +23,9 @@ kotlin {
 
     sourceSets {
         wasmJsMain.dependencies {
-            implementation(project(":core-arch"))
-            implementation(project(":core-koin"))
-            implementation(project(":feature-localization"))
-            implementation(project(":feature-datetime"))
-            implementation(project(":feature-location"))
-            implementation(project(":feature-permissions"))
-            implementation(project(":feature-bluetooth-client"))
-            implementation(project(":feature-scientific"))
+            // `:shared` aggregates every feature whose Kaluga library supports wasmJs (via
+            // `sharedFeaturesModule`) and provides the web `initKoin`; it api-exposes core-arch/core-koin.
+            implementation(project(":shared"))
             implementation(libs.compose.ui)
         }
     }

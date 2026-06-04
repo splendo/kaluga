@@ -7,6 +7,7 @@ plugins {
 kaluga {
     moduleName = "example.feature.links"
     supportMacOS = true
+    supportWasmJS = true
     appleFramework {
         export("com.splendo.kaluga:links:${project.rootProject.version}")
     }

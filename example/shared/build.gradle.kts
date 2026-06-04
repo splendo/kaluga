@@ -32,9 +32,19 @@ val mobileKalugaModules = listOf(
     "resources",
 )
 
+/** Feature modules supported on macOS/iOS/Android but with no `wasmJs` target (their Kaluga libraries
+ *  have no web support): Web Bluetooth has no server role, no advertisement scanning for beacons, and
+ *  the web has no app-store review. Kept off `:shared`'s common source set so it stays wasmJs-capable. */
+val nonWebFeatureProjects = listOf(
+    ":feature-beacons",
+    ":feature-bluetooth-server",
+    ":feature-review",
+)
+
 kaluga {
     moduleName = "example.shared"
     supportMacOS = true
+    supportWasmJS = true
     appleFramework {
         baseName = "KalugaExample"
         isStatic = false
@@ -61,11 +71,18 @@ kaluga {
         android {
             main {
                 mobileFeatureProjects.forEach { api(project(it)) }
+                nonWebFeatureProjects.forEach { api(project(it)) }
             }
         }
         ios {
             main {
                 mobileFeatureProjects.forEach { api(project(it)) }
+            }
+        }
+        apple {
+            main {
+                // macOS + iOS get the non-web features; the web (`common`) source set must not see them.
+                nonWebFeatureProjects.forEach { api(project(it)) }
             }
         }
         common {
@@ -74,16 +91,13 @@ kaluga {
                 api(project(":core-koin"))
                 // For `ProvideNSWindow` at the macOS entry point + `AttachToCompose` extensions.
                 api("com.splendo.kaluga:lifecycle-compose:${project.rootProject.version}")
-                api(project(":feature-beacons"))
                 api(project(":feature-bluetooth-client"))
-                api(project(":feature-bluetooth-server"))
                 api(project(":feature-datetime"))
                 api(project(":feature-links"))
                 api(project(":feature-localization"))
                 api(project(":feature-location"))
                 api(project(":feature-media"))
                 api(project(":feature-permissions"))
-                api(project(":feature-review"))
                 // `:feature-scientific` is linked-but-hidden via `implementation` so its public
                 // types (QuantityDetails, converters) — which expose `kaluga.scientific.unit.*`
                 // in their signatures — never leak into the framework header. Scientific UI is

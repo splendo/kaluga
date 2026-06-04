@@ -6,6 +6,7 @@ plugins {
 kaluga {
     moduleName = "example.feature.system"
     supportMacOS = true
+    supportWasmJS = true
     appleFramework {
         export("com.splendo.kaluga:system:${project.rootProject.version}")
     }

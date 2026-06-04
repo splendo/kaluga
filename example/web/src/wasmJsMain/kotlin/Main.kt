@@ -18,19 +18,17 @@
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import com.splendo.kaluga.example.arch.AppRootScreen
-import com.splendo.kaluga.example.koin.initKoin
-import com.splendo.kaluga.example.web.di.webFeaturesModule
+import com.splendo.kaluga.example.shared.di.initKoin
 import kotlinx.browser.document
 
 /**
- * Web (Kotlin/Wasm) entry point. Bootstraps Koin with [webFeaturesModule] — the web counterpart
- * to `:shared`'s `sharedFeaturesModule` — and renders the same [AppRootScreen] Compose UI used by
- * the other platform hosts, pulling the feature contributions from Koin. This mirrors the macOS
- * host's `initKoin(sharedFeaturesModule)` + `AppRootScreen()` flow.
+ * Web (Kotlin/Wasm) entry point. Reuses `:shared`'s [initKoin] — whose `sharedFeaturesModule` resolves
+ * to the feature modules whose Kaluga libraries support `wasmJs` — and renders the same [AppRootScreen]
+ * Compose UI as the other platform hosts, pulling the feature contributions from Koin.
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    initKoin(customModules = listOf(webFeaturesModule))
+    initKoin()
     ComposeViewport(document.body!!) {
         AppRootScreen()
     }

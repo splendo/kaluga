@@ -6,6 +6,7 @@ plugins {
 kaluga {
     moduleName = "example.feature.media"
     supportMacOS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {
