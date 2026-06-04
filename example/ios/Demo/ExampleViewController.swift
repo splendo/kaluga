@@ -19,10 +19,9 @@ import SwiftUI
 import KalugaExample
 import PartialSheet
 
-/// Hosts the Compose Multiplatform root from `:shared`. Mobile-only `FeatureContribution`s
-/// (registered in `:mobileshared`'s `mobileSharedContributionsModule` with `isCompose = false`)
-/// arrive here as their string id via `onNativeLaunch`; we route those ids to the corresponding
-/// SwiftUI screen (wrapped in `UIHostingController`) or programmatic UIKit controller.
+/// Hosts the Compose Multiplatform root from `:shared`. Mobile-only `FeatureContribution.NativeLaunch`
+/// contributions arrive here as their string id via `onNativeLaunch`; we route those ids to the
+/// corresponding SwiftUI screen (wrapped in `UIHostingController`) or programmatic UIKit controller.
 class ExampleViewController: UIViewController {
 
     override func viewDidLoad() {

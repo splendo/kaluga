@@ -27,7 +27,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class ReviewContribution : FeatureContribution {
+class ReviewContribution : FeatureContribution.Compose {
     override val id = "review"
     override val label = "Review"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

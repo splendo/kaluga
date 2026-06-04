@@ -24,10 +24,9 @@ import org.koin.dsl.module
 
 const val DATE_TIME_PICKER_FEATURE_ID = "datetimepicker"
 
-private class DateTimePickerContribution : FeatureContribution {
+private class DateTimePickerContribution : FeatureContribution.NativeLaunch {
     override val id = DATE_TIME_PICKER_FEATURE_ID
     override val label = "Date / Time Picker"
-    override val isCompose = false
 }
 
 val datetimepickerFeatureModule: Module = module {

@@ -30,7 +30,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class BeaconsContribution : FeatureContribution {
+class BeaconsContribution : FeatureContribution.Compose {
     override val id = "beacons"
     override val label = "Beacons"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

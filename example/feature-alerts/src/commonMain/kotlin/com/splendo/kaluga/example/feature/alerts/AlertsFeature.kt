@@ -24,10 +24,9 @@ import org.koin.dsl.module
 
 const val ALERTS_FEATURE_ID = "alerts"
 
-private class AlertsContribution : FeatureContribution {
+private class AlertsContribution : FeatureContribution.NativeLaunch {
     override val id = ALERTS_FEATURE_ID
     override val label = "Alerts"
-    override val isCompose = false
 }
 
 val alertsFeatureModule: Module = module {

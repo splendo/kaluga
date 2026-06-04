@@ -27,7 +27,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class LocalizationContribution : FeatureContribution {
+class LocalizationContribution : FeatureContribution.Compose {
     override val id = "localization"
     override val label = "Localization"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

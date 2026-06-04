@@ -33,7 +33,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
 
-class LocationContribution : FeatureContribution {
+class LocationContribution : FeatureContribution.Compose {
     override val id = "location"
     override val label = "Location"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

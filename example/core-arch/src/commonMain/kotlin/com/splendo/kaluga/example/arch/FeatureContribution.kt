@@ -28,30 +28,33 @@ import androidx.navigation.NavGraphBuilder
  * macOS" if and only if its module is part of the build for the macOS target — there is no
  * separate availability flag.
  *
- * Contributions can be either compose-native (the contribution registers its own
- * [NavGraphBuilder] destinations) or native-launched (the host platform pops up its own
- * activity / view controller, keyed by [id]). Mobile-only Kaluga features whose UI hasn't been
- * ported to Compose Multiplatform yet use the native-launch variant.
+ * A contribution is one of two kinds: [Compose] (ships its own in-graph nav destinations) or
+ * [NativeLaunch] (the host platform pops up its own activity / view controller, keyed by [id]).
+ * Mobile-only Kaluga features whose UI hasn't been ported to Compose Multiplatform yet use the
+ * [NativeLaunch] variant.
  */
-interface FeatureContribution {
-    /** Stable string key. Used as the primary nav route for compose features, or as the
-     *  dispatch key the host platform inspects for native-launched features. */
+sealed interface FeatureContribution {
+    /** Stable string key. Used as the primary nav route for [Compose] features, or as the
+     *  dispatch key the host platform inspects for [NativeLaunch] features. */
     val id: String
 
     /** User-facing label shown in the feature list. */
     val label: String
 
-    /** When `false`, [AppRootScreen] notifies the host via its `onNativeLaunch` callback instead
-     *  of navigating in-graph. Default is `true`. */
-    val isCompose: Boolean get() = true
-
-    /** Add this feature's compose destination(s) to the root nav graph. Only called when
-     *  [isCompose] is `true`. The implementation typically calls `builder.composable(id) { … }`
-     *  for its primary screen and optionally additional sub-routes. */
-    fun register(builder: NavGraphBuilder, navController: NavController) = Unit
-
     /** Return a [DeepLink] targeting this feature if [url] matches a pattern owned by the
      *  feature, otherwise `null`. [DeepLinkBus] iterates registered contributions and picks the
      *  first non-null match. Default: feature has no deep links. */
     fun parseDeepLink(url: String): DeepLink? = null
+
+    /** A feature that renders in Compose: it adds its own destination(s) to the root nav graph. */
+    interface Compose : FeatureContribution {
+        /** Add this feature's compose destination(s) to the root nav graph. The implementation
+         *  typically calls `builder.composable(id) { … }` for its primary screen and optionally
+         *  additional sub-routes. */
+        fun register(builder: NavGraphBuilder, navController: NavController)
+    }
+
+    /** A feature launched as native host UI: [AppRootScreen] notifies the host via its
+     *  `onNativeLaunch` callback (keyed by [id]) instead of navigating in-graph. */
+    interface NativeLaunch : FeatureContribution
 }

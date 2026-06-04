@@ -24,10 +24,9 @@ import org.koin.dsl.module
 
 const val RESOURCES_FEATURE_ID = "resources"
 
-private class ResourcesContribution : FeatureContribution {
+private class ResourcesContribution : FeatureContribution.NativeLaunch {
     override val id = RESOURCES_FEATURE_ID
     override val label = "Resources"
-    override val isCompose = false
 }
 
 val resourcesFeatureModule: Module = module {

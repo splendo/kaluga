@@ -41,7 +41,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
 
-class BluetoothClientContribution : FeatureContribution {
+class BluetoothClientContribution : FeatureContribution.Compose {
     override val id = "bluetooth-client"
     override val label = "Bluetooth Client"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

@@ -26,7 +26,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class ScientificContribution : FeatureContribution {
+class ScientificContribution : FeatureContribution.Compose {
     override val id = "scientific"
     override val label = "Scientific"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

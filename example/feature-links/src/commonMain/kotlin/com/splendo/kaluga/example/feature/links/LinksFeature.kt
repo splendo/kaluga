@@ -28,7 +28,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class LinksContribution : FeatureContribution {
+class LinksContribution : FeatureContribution.Compose {
     override val id = "links"
     override val label = "Links"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

@@ -27,7 +27,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class TimerContribution : FeatureContribution {
+class TimerContribution : FeatureContribution.Compose {
     override val id = "timer"
     override val label = "Date / Time"
     override fun register(builder: NavGraphBuilder, navController: NavController) {
