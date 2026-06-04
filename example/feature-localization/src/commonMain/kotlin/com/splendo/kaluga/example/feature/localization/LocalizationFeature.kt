@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -39,5 +40,6 @@ class LocalizationContribution : FeatureContribution {
 }
 
 val localizationFeatureModule: Module = module {
+    viewModel { LocalizationViewModel() }
     single { LocalizationContribution() } bind FeatureContribution::class
 }

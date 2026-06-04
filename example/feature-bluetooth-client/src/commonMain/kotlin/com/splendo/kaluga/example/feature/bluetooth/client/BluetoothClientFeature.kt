@@ -36,6 +36,7 @@ import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
@@ -80,5 +81,7 @@ val bluetoothClientFeatureModule: Module = module {
             { BaseScanner.Settings(permissions = it, useLocation = USE_LOCATION_FOR_BLUETOOTH, logger = get()) },
         )
     }
+    viewModel { BluetoothDeviceListViewModel(get()) }
+    viewModel { (id: Identifier) -> BluetoothDeviceDetailViewModel(get(), id) }
     single { BluetoothClientContribution() } bind FeatureContribution::class
 }

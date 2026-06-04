@@ -34,13 +34,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,42 +50,14 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.example.feature.bluetooth.base.BluetoothSpec
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
-import org.koin.compose.koinInject
-import kotlin.time.Duration.Companion.minutes
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun BluetoothDeviceListScreen(onDeviceClick: (Identifier) -> Unit, modifier: Modifier = Modifier) {
-    val bluetoothClient: BluetoothClient = koinInject()
-    val scope = remember { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
-    DisposableEffect(Unit) { onDispose { scope.cancel() } }
-
-    val pairedDevicesFlow = remember {
-        bluetoothClient.pairedDevices(setOf(BluetoothSpec.HeartRateService.UUID))
-            .stateIn(scope, SharingStarted.Eagerly, emptyList())
-    }
-    val scannedDevicesFlow = remember {
-        bluetoothClient.devices().stateIn(scope, SharingStarted.Eagerly, emptyList())
-    }
-    val pairedDevices by pairedDevicesFlow.collectAsState()
-    val scannedDevices by scannedDevicesFlow.collectAsState()
-
-    var isScanningFlow by remember { mutableStateOf<Flow<Boolean>>(flowOf(false)) }
-    LaunchedEffect(Unit) { isScanningFlow = bluetoothClient.isScanning() }
-    val scanning by isScanningFlow.collectAsState(initial = false)
-
-    val enabled by bluetoothClient.isEnabled.collectAsState(initial = false)
+fun BluetoothDeviceListScreen(onDeviceClick: (Identifier) -> Unit, modifier: Modifier = Modifier, viewModel: BluetoothDeviceListViewModel = koinViewModel()) {
+    val pairedDevices by viewModel.pairedDevices.collectAsState()
+    val scannedDevices by viewModel.scannedDevices.collectAsState()
+    val scanning by viewModel.scanning.collectAsState()
+    val enabled by viewModel.enabled.collectAsState()
 
     var showScanDialog by remember { mutableStateOf(false) }
 
@@ -120,7 +89,7 @@ fun BluetoothDeviceListScreen(onDeviceClick: (Identifier) -> Unit, modifier: Mod
                 item { Text("None", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 8.dp)) }
             } else {
                 items(pairedDevices, key = { it.identifier.stringValue + "_paired" }) { device ->
-                    DeviceRow(device = device, onNavigate = { onDeviceClick(device.identifier) })
+                    DeviceRow(device = device, viewModel = viewModel, onNavigate = { onDeviceClick(device.identifier) })
                 }
             }
 
@@ -129,7 +98,7 @@ fun BluetoothDeviceListScreen(onDeviceClick: (Identifier) -> Unit, modifier: Mod
                 item { Text("None", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 8.dp)) }
             } else {
                 items(scannedDevices, key = { it.identifier.stringValue }) { device ->
-                    DeviceRow(device = device, onNavigate = { onDeviceClick(device.identifier) })
+                    DeviceRow(device = device, viewModel = viewModel, onNavigate = { onDeviceClick(device.identifier) })
                 }
             }
         }
@@ -139,25 +108,11 @@ fun BluetoothDeviceListScreen(onDeviceClick: (Identifier) -> Unit, modifier: Mod
         ScanModeDialog(
             isScanning = scanning,
             onRetainAll = {
-                if (scanning) {
-                    bluetoothClient.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
-                } else {
-                    bluetoothClient.startScanning(
-                        filter = setOf(BluetoothSpec.HeartRateService.UUID),
-                        cleanMode = BluetoothClient.CleanMode.RETAIN_ALL,
-                    )
-                }
+                viewModel.toggleScanning(BluetoothClient.CleanMode.RETAIN_ALL)
                 showScanDialog = false
             },
             onRemoveAll = {
-                if (scanning) {
-                    bluetoothClient.stopScanning(BluetoothClient.CleanMode.REMOVE_ALL)
-                } else {
-                    bluetoothClient.startScanning(
-                        filter = setOf(BluetoothSpec.HeartRateService.UUID),
-                        cleanMode = BluetoothClient.CleanMode.REMOVE_ALL,
-                    )
-                }
+                viewModel.toggleScanning(BluetoothClient.CleanMode.REMOVE_ALL)
                 showScanDialog = false
             },
             onDismiss = { showScanDialog = false },
@@ -181,8 +136,7 @@ private fun ScanModeDialog(isScanning: Boolean, onRetainAll: () -> Unit, onRemov
 }
 
 @Composable
-private fun DeviceRow(device: ConnectableDevice, onNavigate: () -> Unit) {
-    val scope = rememberCoroutineScope()
+private fun DeviceRow(device: ConnectableDevice, viewModel: BluetoothDeviceListViewModel, onNavigate: () -> Unit) {
     val info by device.info.collectAsState()
     val deviceState by device.state.collectAsState(initial = null as DeviceState?)
 
@@ -202,16 +156,8 @@ private fun DeviceRow(device: ConnectableDevice, onNavigate: () -> Unit) {
             }
             DeviceActions(
                 deviceState = deviceState,
-                onConnect = {
-                    scope.launch {
-                        try {
-                            withTimeout(5.minutes) {
-                                if (device.connect()) onNavigate()
-                            }
-                        } catch (_: TimeoutCancellationException) {}
-                    }
-                },
-                onDisconnect = { scope.launch { device.disconnect() } },
+                onConnect = { viewModel.connect(device, onNavigate) },
+                onDisconnect = { viewModel.disconnect(device) },
                 onNavigate = onNavigate,
             )
         }

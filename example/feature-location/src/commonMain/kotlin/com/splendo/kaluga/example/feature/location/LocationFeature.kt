@@ -28,6 +28,7 @@ import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
@@ -58,5 +59,6 @@ val locationFeatureModule: Module = module {
             Permissions(builder, context)
         }
     }
+    viewModel { LocationViewModel(get(), get(), get()) }
     single { LocationContribution() } bind FeatureContribution::class
 }

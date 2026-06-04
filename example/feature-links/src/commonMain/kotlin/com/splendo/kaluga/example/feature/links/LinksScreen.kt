@@ -28,34 +28,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.example.arch.PlatformActions
-import com.splendo.kaluga.links.DefaultLinksManager
-import com.splendo.kaluga.links.LinksManager
-
-private const val DEMO_URL = "https://kaluga-links.web.app"
-
-private data class IncomingAlert(val title: String, val message: String)
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun LinksScreen(incomingUrl: String? = null, modifier: Modifier = Modifier) {
-    val linksManager: LinksManager = remember { DefaultLinksManager.Builder().create() }
-    var alert by remember { mutableStateOf<IncomingAlert?>(null) }
-
-    LaunchedEffect(incomingUrl) {
-        val url = incomingUrl ?: return@LaunchedEffect
-        val repository = linksManager.handleIncomingLink(url, Repository.serializer())
-        alert = if (repository != null) {
-            IncomingAlert(title = "Alert", message = repository.toString())
-        } else {
-            IncomingAlert(title = "Error Alert", message = "Query is invalid or empty.")
-        }
-    }
+fun LinksScreen(incomingUrl: String? = null, modifier: Modifier = Modifier, viewModel: LinksViewModel = koinViewModel()) {
+    LaunchedEffect(incomingUrl) { viewModel.handleIncomingLink(incomingUrl) }
 
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
@@ -64,24 +45,20 @@ fun LinksScreen(incomingUrl: String? = null, modifier: Modifier = Modifier) {
         Text("Open a Kaluga demo URL in the default browser.")
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                val validated = linksManager.validateLink(DEMO_URL)
-                if (validated != null) {
-                    PlatformActions.openUrl(validated)
-                }
-            },
+            onClick = viewModel::openDemoUrl,
         ) {
             Text("Open Browser")
         }
     }
 
+    val alert by viewModel.alert.collectAsState()
     alert?.let { current ->
         AlertDialog(
-            onDismissRequest = { alert = null },
+            onDismissRequest = viewModel::dismissAlert,
             title = { Text(current.title) },
             text = { Text(current.message) },
             confirmButton = {
-                TextButton(onClick = { alert = null }) { Text("OK") }
+                TextButton(onClick = viewModel::dismissAlert) { Text("OK") }
             },
         )
     }
