@@ -126,3 +126,60 @@ tasks.register("generateDefaultCurrencyMap") {
         logger.lifecycle("Wrote ${mapping.size} entries to ${outputFile.relativeTo(rootDir)}")
     }
 }
+
+// Regenerates AvailableLocales.kt from CLDR. The web has no API to enumerate supported locales, so the
+// full CLDR locale set backs KalugaLocale.availableLocales. Run on demand; output is checked in.
+tasks.register("generateAvailableLocales") {
+    val cldrVersion = libs.versions.cldr.get()
+    group = "codegen"
+    description = "Regenerates AvailableLocales.kt from CLDR $cldrVersion availableLocales.json."
+
+    val outputFile = layout.projectDirectory.file(
+        "src/webMain/kotlin/utils/AvailableLocales.kt",
+    ).asFile
+    outputs.file(outputFile)
+
+    doLast {
+        val url = "https://raw.githubusercontent.com/unicode-org/cldr-json/" +
+            "$cldrVersion/cldr-json/cldr-core/availableLocales.json"
+        val json = URI(url).toURL().openStream().bufferedReader().use { it.readText() }
+
+        @Suppress("UNCHECKED_CAST")
+        val available = (JsonSlurper().parseText(json) as Map<String, Any>)["availableLocales"] as Map<String, Any>
+        @Suppress("UNCHECKED_CAST")
+        // "full" is the exhaustive CLDR locale set (the "modern" subset is empty as of recent CLDR).
+        val tags = (available["full"] as List<String>).filterNot { it == "root" }.sorted()
+
+        val out = buildString {
+            appendLine("/*")
+            appendLine(" Copyright ${Year.now().value} Splendo Consulting B.V. The Netherlands")
+            appendLine()
+            appendLine("    Licensed under the Apache License, Version 2.0 (the \"License\");")
+            appendLine("    you may not use this file except in compliance with the License.")
+            appendLine("    You may obtain a copy of the License at")
+            appendLine()
+            appendLine("      http://www.apache.org/licenses/LICENSE-2.0")
+            appendLine()
+            appendLine("    Unless required by applicable law or agreed to in writing, software")
+            appendLine("    distributed under the License is distributed on an \"AS IS\" BASIS,")
+            appendLine("    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.")
+            appendLine("    See the License for the specific language governing permissions and")
+            appendLine("    limitations under the License.")
+            appendLine()
+            appendLine(" */")
+            appendLine()
+            appendLine("// Generated from CLDR $cldrVersion availableLocales.json (\"full\" set) — do not edit by hand.")
+            appendLine("// Refresh: ./gradlew :base:generateAvailableLocales")
+            appendLine()
+            appendLine("package com.splendo.kaluga.base.utils")
+            appendLine()
+            appendLine("internal val availableLocaleTags: List<String> = listOf(")
+            for (tag in tags) {
+                appendLine("    \"$tag\",")
+            }
+            appendLine(")")
+        }
+        outputFile.writeText(out)
+        logger.lifecycle("Wrote ${tags.size} locale tags to ${outputFile.relativeTo(rootDir)}")
+    }
+}

@@ -73,7 +73,7 @@ actual data class KalugaLocale internal constructor(internal val tag: String) : 
             get() = KalugaLocale(canonicalizeTag(resolveCurrentLocaleTag()))
 
         actual val availableLocales: List<KalugaLocale> by lazy {
-            resolveSupportedLocaleTags().map { KalugaLocale(it) }
+            availableLocaleTags.map { KalugaLocale(canonicalizeTag(it)) }
         }
     }
 }
@@ -154,18 +154,6 @@ private fun resolveMeasurementSystem(parsed: IntlLocale): UnitSystem? = try {
 
 private fun resolveCurrentLocaleTag(): String = js("(typeof navigator !== 'undefined' && navigator.language) ? navigator.language : Intl.DateTimeFormat().resolvedOptions().locale")
 
-// Intl is assumed present (the whole locale implementation depends on it); only the newer supportedValuesOf
-// enumeration API is optional. Joined to a String to stay free of JS-array interop across the JS family.
-private fun supportedLocaleTagsJoined(): String? = js("typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('language').join(',') : null")
-
-private fun resolveSupportedLocaleTags(): List<String> = try {
-    supportedLocaleTagsJoined()?.split(",") ?: fallbackLocaleTags
-} catch (_: Throwable) {
-    fallbackLocaleTags
-}
-
-private val fallbackLocaleTags = listOf(
-    "ar", "bg", "ca", "cs", "da", "de", "el", "en", "es", "et", "fa", "fi", "fr",
-    "he", "hi", "hr", "hu", "id", "it", "ja", "ko", "lt", "lv", "nb", "nl", "pl",
-    "pt", "ro", "ru", "sk", "sl", "sv", "th", "tr", "uk", "vi", "zh",
-)
+// The web exposes no API to enumerate the locales a runtime supports (`Intl.supportedValuesOf` only
+// covers calendars, currencies, time zones, etc. — not locales), so [availableLocales] is backed by the
+// full CLDR locale set generated into `availableLocaleTags` (see `:base:generateAvailableLocales`).
