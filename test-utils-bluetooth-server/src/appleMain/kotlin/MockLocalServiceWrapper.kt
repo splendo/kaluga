@@ -34,8 +34,8 @@ private const val NO_PLATFORM = "Mock wrappers have no platform attribute and do
 
 actual class MockLocalServiceWrapper actual constructor(actual override val uuid: UUID) : LocalServiceWrapper {
     override val identity: AttributeIdentity = MockAttributeIdentity()
-    override fun addIncludedService(service: LocalServiceWrapper) {}
-    override fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {}
+    actual override fun addIncludedService(service: LocalServiceWrapper) {}
+    actual override fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {}
     override fun addToParent(parent: CBMutableService): Unit = error(NO_PLATFORM)
     override fun addTo(serverWrapper: KalugaBluetoothServerWrapper): Unit = error(NO_PLATFORM)
     override fun removeFrom(serverWrapper: KalugaBluetoothServerWrapper): Unit = error(NO_PLATFORM)
@@ -46,7 +46,7 @@ actual class MockLocalCharacteristicWrapper actual constructor(
     actual override val properties: Set<CharacteristicProperty>,
     actual override val permissions: Set<Permission>,
 ) : LocalCharacteristicWrapper {
-    override fun addDescriptor(descriptor: LocalDescriptorWrapper) {}
+    actual override fun addDescriptor(descriptor: LocalDescriptorWrapper) {}
     override val identity: AttributeIdentity = MockAttributeIdentity()
     override fun addToService(service: CBMutableService): Unit = error(NO_PLATFORM)
     override fun updateValue(serverWrapper: KalugaBluetoothServerWrapper, value: NSData, centrals: List<CBCentral>): Boolean = error(NO_PLATFORM)

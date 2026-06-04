@@ -126,6 +126,73 @@ val value = "".bind(device) {
 ### Android
 When using automatic permissions by default only the relevant Bluetooth permissions are asked for, and not the location permission (unless the Android version is lower than 12 where it is always required). Make sure you include `android:usesPermissionFlags="neverForLocation"`, unless you do use Bluetooth to determine location, in which case you can use the `useLocation` flag in `BaseScanner.Settings`.
 
+### JavaScript and WebAssembly (Web Bluetooth)
+On the JS family (`js` and `wasmJs`) the client is backed by the [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API). This API is **Chromium-only**, requires a **secure context** (HTTPS or `localhost`), and is **central/client only** — there is no peripheral/GATT-server role (the `bluetooth-server` module is not available for web). RSSI, MTU negotiation and pairing have no Web Bluetooth equivalent: reading RSSI and pairing are no-ops and an MTU request resolves to `GattResponse.MTUNotPermitted`.
+
+#### Scanning is an "Add Device" overlay
+Web Bluetooth has no free-running scan, and its `navigator.bluetooth.requestDevice` device picker must be opened from a user gesture. The `DefaultScanner` therefore does not call `requestDevice` directly: while a scan is active it renders an **"Add Device" overlay** in the DOM. Each press of its button opens the system picker (from within the click handler, satisfying the gesture requirement) and adds the chosen device to the scan results, so a single scan can collect any number of devices. The overlay carries its own close (`✕`) button and is removed automatically when scanning stops.
+
+#### Optional services
+Web Bluetooth only grants access to GATT services that are declared **up front** — a service that is not advertised, or only available after connecting, is unreachable unless it is listed as an optional service. Supply these through the scanner's builder; they are applied to every picker invocation:
+
+```kotlin
+val builder = BluetoothClientBuilder(
+    scannerBuilder = DefaultScanner.Builder(
+        optionalServices = listOf(heartRateServiceUUID, batteryServiceUUID),
+    ),
+)
+```
+
+The per-scan `Filter` passed to `startScanning` is separate: it only narrows which devices the picker *shows* (by advertised services), whereas `optionalServices` is the advertisement-independent access allowlist.
+
+#### Permissions
+There is no upfront Bluetooth permission prompt on the web — access is granted per device when the user picks one through the overlay. The Bluetooth permission therefore reports granted whenever Web Bluetooth is available (the browser's experimental `navigator.permissions.query({ name: 'bluetooth' })` is not relied upon, as it is unsupported in most browsers).
+
+#### Styling the overlay
+The overlay is configured with `WebDevicePickerSettings` (passed to `DefaultScanner.Builder`):
+
+```kotlin
+DefaultScanner.Builder(
+    optionalServices = listOf(heartRateServiceUUID),
+    pickerSettings = WebDevicePickerSettings(
+        title = "Bluetooth Devices",
+        addButtonLabel = "Add Device",
+        emptyLabel = "No devices added yet",
+        cssClassPrefix = "kaluga-bluetooth", // default
+        containerId = null, // mount in document.body when null
+    ),
+)
+```
+
+No inline styles are applied — every element gets a class derived from `cssClassPrefix`, so the host page styles it entirely through CSS:
+
+| Class (default prefix) | Element |
+| --- | --- |
+| `kaluga-bluetooth-overlay` | the overlay container |
+| `kaluga-bluetooth-title` | the heading |
+| `kaluga-bluetooth-close` | the `✕` dismiss button |
+| `kaluga-bluetooth-list` | the added-device list (`<ul>`) |
+| `kaluga-bluetooth-list-item` | a device entry |
+| `kaluga-bluetooth-list-empty` | the placeholder shown before any device is added |
+| `kaluga-bluetooth-button` | the "Add Device" button |
+
+For example, to float it in the top-right corner:
+
+```css
+.kaluga-bluetooth-overlay {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+.kaluga-bluetooth-close { position: absolute; top: 8px; right: 8px; border: none; background: transparent; cursor: pointer; }
+.kaluga-bluetooth-button { width: 100%; padding: 8px 12px; border: none; border-radius: 6px; background: #1a73e8; color: #fff; cursor: pointer; }
+```
+
 ### Notes
 There is a major difference when it comes to the reporting of scanned devices between Android and iOS. Android report multiple scans of the same device, whereas iOS filters them out.
 

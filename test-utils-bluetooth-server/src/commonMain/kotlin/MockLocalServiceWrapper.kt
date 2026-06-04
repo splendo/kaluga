@@ -41,6 +41,8 @@ class MockAttributeIdentity : AttributeIdentity
  */
 expect class MockLocalServiceWrapper(uuid: UUID) : LocalServiceWrapper {
     override val uuid: UUID
+    override fun addIncludedService(service: LocalServiceWrapper)
+    override fun addCharacteristic(characteristic: LocalCharacteristicWrapper)
 }
 
 /**
@@ -53,6 +55,7 @@ expect class MockLocalCharacteristicWrapper(uuid: UUID, properties: Set<Characte
     override val uuid: UUID
     override val properties: Set<CharacteristicProperty>
     override val permissions: Set<LocalCharacteristic.Permission>
+    override fun addDescriptor(descriptor: LocalDescriptorWrapper)
 }
 
 /**

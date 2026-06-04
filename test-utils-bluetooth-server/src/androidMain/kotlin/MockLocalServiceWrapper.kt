@@ -33,8 +33,8 @@ private const val NO_PLATFORM = "Mock wrappers have no platform attribute and do
 
 actual class MockLocalServiceWrapper actual constructor(actual override val uuid: UUID) : LocalServiceWrapper {
     override val identity: AttributeIdentity = MockAttributeIdentity()
-    override fun addIncludedService(service: LocalServiceWrapper) {}
-    override fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {}
+    actual override fun addIncludedService(service: LocalServiceWrapper) {}
+    actual override fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {}
     override fun addToParent(parent: BluetoothGattService): Unit = error(NO_PLATFORM)
     override fun addTo(gattServer: BluetoothGattServer): Boolean = error(NO_PLATFORM)
     override fun removeFrom(gattServer: BluetoothGattServer): Unit = error(NO_PLATFORM)
@@ -45,7 +45,7 @@ actual class MockLocalCharacteristicWrapper actual constructor(
     actual override val properties: Set<CharacteristicProperty>,
     actual override val permissions: Set<Permission>,
 ) : LocalCharacteristicWrapper {
-    override fun addDescriptor(descriptor: LocalDescriptorWrapper) {}
+    actual override fun addDescriptor(descriptor: LocalDescriptorWrapper) {}
     override val identity: AttributeIdentity = MockAttributeIdentity()
     override fun addToService(service: BluetoothGattService): Unit = error(NO_PLATFORM)
     override fun notify(gattServer: BluetoothGattServer, device: BluetoothDevice, value: ByteArray, indicate: Boolean): Boolean = error(NO_PLATFORM)

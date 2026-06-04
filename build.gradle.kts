@@ -42,8 +42,16 @@ publishing {
      }
  }
 
+// The scientific units modules generate an enormous API surface that exhausts Dokka's heap; they are
+// excluded from the aggregated documentation (the same sidestep noted in the library components plugin).
+val dokkaExcludedProjects = setOf("scientific", "scientific-converters")
+
 dependencies {
     subprojects.forEach { project ->
         kover(project)
+        // Aggregate every module into a single multi-module Dokka site (dokkaGeneratePublicationHtml).
+        if (project.name !in dokkaExcludedProjects) {
+            dokka(project)
+        }
     }
 }
