@@ -1229,6 +1229,11 @@ open annotation class com.splendo.kaluga.test.base/IgnoreJs : kotlin/Annotation 
 }
 
 // Targets: [apple]
+open annotation class com.splendo.kaluga.test.base/IgnoreWeb : kotlin/Annotation { // com.splendo.kaluga.test.base/IgnoreWeb|null[0]
+    constructor <init>() // com.splendo.kaluga.test.base/IgnoreWeb.<init>|<init>(){}[0]
+}
+
+// Targets: [apple]
 final fun com.splendo.kaluga.test.base/mainBackground(kotlin/Array<kotlin/String>) // com.splendo.kaluga.test.base/mainBackground|mainBackground(kotlin.Array<kotlin.String>){}[0]
 
 // Targets: [apple]

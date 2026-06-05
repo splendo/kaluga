@@ -10,8 +10,6 @@
 final class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo : com.splendo.kaluga.permissions.base/BasePermissionStateRepo<#A> { // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo|null[0]
     constructor <init>(#A, kotlin/Function0<com.splendo.kaluga.test.permissions/MockPermissionState.Uninitialized<#A>>, kotlin/Boolean = ..., kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.<init>|<init>(1:0;kotlin.Function0<com.splendo.kaluga.test.permissions.MockPermissionState.Uninitialized<1:0>>;kotlin.Boolean;kotlin.coroutines.CoroutineContext){}[0]
 
-    final val currentMockState // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.currentMockState|{}currentMockState[0]
-        final fun <get-currentMockState>(): com.splendo.kaluga.test.permissions/MockPermissionState<#A> // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.currentMockState.<get-currentMockState>|<get-currentMockState>(){}[0]
     final val didDeinitializeMock // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.didDeinitializeMock|{}didDeinitializeMock[0]
         final fun <get-didDeinitializeMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.test.permissions/MockPermissionState<#A>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.test.permissions/MockPermissionState<#A>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.test.permissions/MockPermissionState<#A>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.test.permissions/MockPermissionState<#A>>, kotlin/Unit> // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.didDeinitializeMock.<get-didDeinitializeMock>|<get-didDeinitializeMock>(){}[0]
     final val didInitializeMock // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.didInitializeMock|{}didInitializeMock[0]
@@ -21,6 +19,7 @@ final class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kal
 
     final fun didDeinitialize(com.splendo.kaluga.test.permissions/MockPermissionState<#A>) // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.didDeinitialize|didDeinitialize(com.splendo.kaluga.test.permissions.MockPermissionState<1:0>){}[0]
     final fun didInitialize(com.splendo.kaluga.test.permissions/MockPermissionState<#A>) // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.didInitialize|didInitialize(com.splendo.kaluga.test.permissions.MockPermissionState<1:0>){}[0]
+    final suspend fun currentMockState(): com.splendo.kaluga.test.permissions/MockPermissionState<#A> // com.splendo.kaluga.test.permissions/MockBasePermissionStateRepo.currentMockState|currentMockState(){}[0]
 }
 
 final class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.test.permissions/MockBasePermissionsBuilder : com.splendo.kaluga.permissions.base/BasePermissionsBuilder<#A> { // com.splendo.kaluga.test.permissions/MockBasePermissionsBuilder|null[0]
