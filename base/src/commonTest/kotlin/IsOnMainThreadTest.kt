@@ -1,7 +1,6 @@
 import com.splendo.kaluga.base.KalugaThread
 import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.IgnoreJs
-import com.splendo.kaluga.test.base.IgnoreWasm
+import com.splendo.kaluga.test.base.IgnoreWeb
 import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -34,8 +33,7 @@ class IsOnMainThreadTest : BaseTest() {
 
     // Single-threaded JS/Wasm has only the main thread, so a non-main thread can't be observed.
     @Test
-    @IgnoreJs
-    @IgnoreWasm
+    @IgnoreWeb
     fun testIsNotOnMainThread() = testRunBlocking(Dispatchers.Default) {
         assertFalse(KalugaThread.currentThread.isMainThread)
     }
@@ -50,8 +48,7 @@ class IsOnMainThreadTest : BaseTest() {
 
     // Single-threaded JS/Wasm has only the main thread, so a non-main thread can't be observed.
     @Test
-    @IgnoreJs
-    @IgnoreWasm
+    @IgnoreWeb
     fun testIsNotMainThreadFromMainThread() = testRunBlocking(Dispatchers.Default) {
         val capturedThread = KalugaThread.currentThread
         withContext(Dispatchers.Main) {

@@ -21,8 +21,7 @@ package com.splendo.kaluga.base.state
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.base.FlowTest
-import com.splendo.kaluga.test.base.IgnoreJs
-import com.splendo.kaluga.test.base.IgnoreWasm
+import com.splendo.kaluga.test.base.IgnoreWeb
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -96,8 +95,7 @@ class TrafficLight : HotStateRepo<TrafficLightState>() {
 class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
 
     @Test
-    @IgnoreJs
-    @IgnoreWasm
+    @IgnoreWeb
     fun testChangeState() = testWithFlow { trafficLight ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {

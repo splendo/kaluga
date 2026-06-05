@@ -19,8 +19,7 @@ package com.splendo.kaluga.test.base
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.base.IgnoreJs
-import com.splendo.kaluga.test.base.IgnoreWasm
+import com.splendo.kaluga.test.base.IgnoreWeb
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -71,8 +70,7 @@ class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
         }
     }
 
-    @IgnoreJs
-    @IgnoreWasm
+    @IgnoreWeb
     @Test
     fun testExceptionWhenCanceling() {
         // a custom cancel exception is thrown and caught by the method, but ours is exception is not a cancel exception
