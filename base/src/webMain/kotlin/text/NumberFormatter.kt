@@ -298,6 +298,20 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     // region Scientific formatting
 
     private fun formatScientific(value: Double, style: NumberFormatStyle.Scientific): String {
+        // Within the decimal-notation threshold, render like a normal localized decimal (grouping driven
+        // by usesGroupingSeparator, matching the other platforms' decimal fallback), reusing the
+        // mantissa's fraction digits.
+        if (style.rendersAsDecimal(value)) {
+            return applyNumericOverrides(
+                rawFormatWithDigits(
+                    value,
+                    minInt = 1,
+                    minFrac = style.minFractionDigits.toInt(),
+                    maxFrac = style.maxFractionDigits.toInt(),
+                    grouping = usesGroupingSeparator,
+                ),
+            )
+        }
         if (value == 0.0 || !value.isFinite()) {
             return rawFormat(value)
         }
@@ -482,7 +496,9 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
 
             is NumberFormatStyle.Scientific -> {
                 opts.style = "decimal"
-                opts.useGrouping = false
+                // Default grouping on only when a decimal-notation threshold is set, so within-threshold
+                // values group like a normal localized decimal (the scientific path groups manually).
+                opts.useGrouping = style.maxExponentForDecimalNotation != null
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
             }
 

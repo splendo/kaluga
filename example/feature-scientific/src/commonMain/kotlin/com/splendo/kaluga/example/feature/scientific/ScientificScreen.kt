@@ -35,6 +35,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,25 +44,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.example.feature.scientific.model.QuantityDetails
-import com.splendo.kaluga.example.feature.scientific.model.allPhysicalQuantities
 import com.splendo.kaluga.example.feature.scientific.converters.QuantityConverter
+import com.splendo.kaluga.example.feature.scientific.model.QuantityDetails
 import com.splendo.kaluga.example.feature.scientific.model.name
 import com.splendo.kaluga.example.feature.scientific.model.quantityDetails
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ScientificScreen(modifier: Modifier = Modifier) {
-    val quantities = remember {
-        allPhysicalQuantities
-            .mapNotNull { it.quantityDetails }
-            .filter { it.units.isNotEmpty() }
-            .sortedBy { it.quantity.name }
-    }
-    var selectedQuantity by remember { mutableStateOf(quantities.firstOrNull()) }
+fun ScientificScreen(modifier: Modifier = Modifier, viewModel: ScientificViewModel = koinViewModel()) {
+    val selectedQuantity by viewModel.selectedQuantity.collectAsState()
 
     Column(
         modifier = modifier
@@ -71,12 +65,12 @@ fun ScientificScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         QuantityPicker(
-            quantities = quantities,
+            quantities = ScientificViewModel.quantities,
             selected = selectedQuantity,
-            onSelected = { selectedQuantity = it },
+            onSelected = viewModel::selectQuantity,
         )
         selectedQuantity?.let { details ->
-            QuantitySection(details)
+            QuantitySection(details, viewModel)
         }
     }
 }
@@ -94,7 +88,7 @@ private fun QuantityPicker(quantities: List<QuantityDetails<*>>, selected: Quant
 }
 
 @Composable
-private fun <Q : PhysicalQuantity> QuantitySection(details: QuantityDetails<Q>) {
+private fun <Q : PhysicalQuantity> QuantitySection(details: QuantityDetails<Q>, viewModel: ScientificViewModel) {
     val unitList = remember(details) { details.units.toList() }
     var fromUnit by remember(details) { mutableStateOf(unitList.firstOrNull()) }
     var toUnit by remember(details) { mutableStateOf(unitList.getOrNull(1) ?: unitList.firstOrNull()) }
@@ -111,21 +105,9 @@ private fun <Q : PhysicalQuantity> QuantitySection(details: QuantityDetails<Q>) 
     )
     UnitPicker(label = "To", units = unitList, selected = toUnit) { toUnit = it }
 
-    val from = fromUnit
-    val to = toUnit
-    val sameQuantityResult = if (from != null && to != null) {
-        val decimal = rawValue.toDoubleOrNull()?.toDecimal()
-        if (decimal == null) {
-            "Enter a number"
-        } else {
-            val converted = details.convert(decimal, from, to)
-            converted?.let { "${it.decimalValue} ${(to as ScientificUnit<*>).name}" } ?: "Cannot convert"
-        }
-    } else {
-        "Pick units"
-    }
-    Text(sameQuantityResult, modifier = Modifier.fillMaxWidth())
+    Text(viewModel.convert(details, rawValue, fromUnit, toUnit), modifier = Modifier.fillMaxWidth())
 
+    val from = fromUnit
     if (details.converters.isNotEmpty() && from != null) {
         HorizontalDivider()
         Text(
@@ -133,15 +115,14 @@ private fun <Q : PhysicalQuantity> QuantitySection(details: QuantityDetails<Q>) 
             modifier = Modifier.fillMaxWidth(),
             fontWeight = FontWeight.SemiBold,
         )
-        val sourceValue = rawValue.toDoubleOrNull()?.toDecimal()
         details.converters.forEach { converter ->
-            ConverterCard(converter = converter, leftValue = sourceValue, leftUnit = from)
+            ConverterCard(converter = converter, leftRaw = rawValue, leftUnit = from, viewModel = viewModel)
         }
     }
 }
 
 @Composable
-private fun ConverterCard(converter: QuantityConverter<*, *>, leftValue: com.splendo.kaluga.base.utils.Decimal?, leftUnit: ScientificUnit<*>) {
+private fun ConverterCard(converter: QuantityConverter<*, *>, leftRaw: String, leftUnit: ScientificUnit<*>, viewModel: ScientificViewModel) {
     var expanded by remember(converter) { mutableStateOf(false) }
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -153,8 +134,8 @@ private fun ConverterCard(converter: QuantityConverter<*, *>, leftValue: com.spl
             }
             if (expanded) {
                 when (converter) {
-                    is QuantityConverter.Single<*, *> -> SingleConverterBody(converter, leftValue, leftUnit)
-                    is QuantityConverter.WithOperator<*, *, *> -> WithOperatorConverterBody(converter, leftValue, leftUnit)
+                    is QuantityConverter.Single<*, *> -> SingleConverterBody(converter, leftRaw, leftUnit, viewModel)
+                    is QuantityConverter.WithOperator<*, *, *> -> WithOperatorConverterBody(converter, leftRaw, leftUnit, viewModel)
                 }
             }
         }
@@ -162,18 +143,12 @@ private fun ConverterCard(converter: QuantityConverter<*, *>, leftValue: com.spl
 }
 
 @Composable
-private fun SingleConverterBody(converter: QuantityConverter.Single<*, *>, leftValue: com.splendo.kaluga.base.utils.Decimal?, leftUnit: ScientificUnit<*>) {
-    val result = if (leftValue == null) {
-        "Enter a value above"
-    } else {
-        val converted = converter.convert(leftValue, leftUnit)
-        converted?.let { "${it.decimalValue} ${(it.unit as ScientificUnit<*>).name}" } ?: "Cannot convert"
-    }
-    Text(result)
+private fun SingleConverterBody(converter: QuantityConverter.Single<*, *>, leftRaw: String, leftUnit: ScientificUnit<*>, viewModel: ScientificViewModel) {
+    Text(viewModel.convertSingle(converter, leftRaw, leftUnit))
 }
 
 @Composable
-private fun WithOperatorConverterBody(converter: QuantityConverter.WithOperator<*, *, *>, leftValue: com.splendo.kaluga.base.utils.Decimal?, leftUnit: ScientificUnit<*>) {
+private fun WithOperatorConverterBody(converter: QuantityConverter.WithOperator<*, *, *>, leftRaw: String, leftUnit: ScientificUnit<*>, viewModel: ScientificViewModel) {
     val rightDetails = remember(converter) {
         (converter.rightQuantity as PhysicalQuantity).quantityDetails
     }
@@ -186,7 +161,6 @@ private fun WithOperatorConverterBody(converter: QuantityConverter.WithOperator<
         mutableStateOf<AbstractScientificUnit<out PhysicalQuantity>?>(rightUnitList.firstOrNull())
     }
     var rightRaw by remember(rightDetails) { mutableStateOf("1") }
-    val rightValue = rightRaw.toDoubleOrNull()?.toDecimal()
 
     Text(
         "${leftUnit.name} ${converter.type.operatorSymbol} ${(rightUnit as? ScientificUnit<*>)?.name.orEmpty()}",
@@ -213,13 +187,10 @@ private fun WithOperatorConverterBody(converter: QuantityConverter.WithOperator<
         },
     )
 
-    val result = if (leftValue == null || rightValue == null || rightUnit == null) {
-        "Enter values"
-    } else {
-        val converted = converter.convert(leftValue, leftUnit, rightValue, rightUnit as ScientificUnit<*>)
-        converted?.let { "${it.decimalValue} ${(it.unit as ScientificUnit<*>).name}" } ?: "Cannot convert"
-    }
-    Text(result, fontWeight = FontWeight.SemiBold)
+    Text(
+        viewModel.convertWithOperator(converter, leftRaw, leftUnit, rightRaw, rightUnit as? ScientificUnit<*>),
+        fontWeight = FontWeight.SemiBold,
+    )
 }
 
 @Composable

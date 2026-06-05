@@ -76,6 +76,21 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
 
         is NumberFormatStyle.Pattern -> DecimalFormat("${style.positivePattern};${style.negativePattern}", DecimalFormatSymbols(locale.locale))
     } as DecimalFormat
+
+    // When the Scientific style sets a decimal-notation threshold, values within the threshold are
+    // rendered with this plain decimal formatter instead; its mutable state is synced from `format`
+    // at format time so symbol/grouping overrides apply to both notations.
+    private val decimalThresholdStyle: NumberFormatStyle.Scientific? =
+        (style as? NumberFormatStyle.Scientific)?.takeIf { it.maxExponentForDecimalNotation != null }
+    private val decimalFallback: DecimalFormat? = decimalThresholdStyle?.decimalNotation?.let { decimal ->
+        (DecimalFormat.getInstance(locale.locale) as DecimalFormat).apply {
+            minimumIntegerDigits = decimal.minIntegerDigits.toInt()
+            maximumIntegerDigits = decimal.maxIntegerDigits.toInt()
+            minimumFractionDigits = decimal.minFractionDigits.toInt()
+            maximumFractionDigits = decimal.maxFractionDigits.toInt()
+        }
+    }
+
     private val symbols: DecimalFormatSymbols get() = format.decimalFormatSymbols
     private fun applySymbols(apply: (DecimalFormatSymbols) -> Unit) {
         val symbols = format.decimalFormatSymbols
@@ -84,7 +99,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     }
 
     init {
-        format.roundingMode = when (style.roundingMode) {
+        val javaRounding = when (style.roundingMode) {
             RoundingMode.Ceiling -> java.math.RoundingMode.CEILING
             RoundingMode.Floor -> java.math.RoundingMode.FLOOR
             RoundingMode.HalfEven -> java.math.RoundingMode.HALF_EVEN
@@ -93,6 +108,8 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             RoundingMode.Down -> java.math.RoundingMode.DOWN
             RoundingMode.Up -> java.math.RoundingMode.UP
         }
+        format.roundingMode = javaRounding
+        decimalFallback?.roundingMode = javaRounding
     }
 
     actual override var percentSymbol: Char
@@ -169,9 +186,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             applySymbols { it.groupingSeparator = value }
         }
     actual override var usesGroupingSeparator: Boolean
-        get() = format.isGroupingUsed
+        // The decimal fallback owns grouping so it groups like a normal decimal by default; the toggle
+        // drives both notations.
+        get() = (decimalFallback ?: format).isGroupingUsed
         set(value) {
             format.isGroupingUsed = value
+            decimalFallback?.isGroupingUsed = value
         }
     actual override var decimalSeparator: Char
         get() = symbols.decimalSeparator
@@ -189,9 +209,11 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             applySymbols { it.monetaryDecimalSeparator = value }
         }
     actual override var groupingSize: Int
-        get() = format.groupingSize
+        // The decimal fallback owns its grouping size (the scientific pattern has none); the setter drives both.
+        get() = (decimalFallback ?: format).groupingSize
         set(value) {
             format.groupingSize = value
+            decimalFallback?.groupingSize = value
         }
     actual override var multiplier: Int
         get() = format.multiplier
@@ -199,7 +221,25 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             format.multiplier = value
         }
 
-    actual override fun format(number: Number): String = format.format(number.toDouble())
+    actual override fun format(number: Number): String {
+        val value = number.toDouble()
+        val fallback = decimalFallback
+        val scientific = decimalThresholdStyle
+        return if (fallback != null && scientific != null && scientific.rendersAsDecimal(value)) {
+            // Sync everything except grouping (which the fallback owns — see usesGroupingSeparator/groupingSize —
+            // so it renders like a normal localized decimal regardless of scientific's no-grouping default).
+            fallback.decimalFormatSymbols = format.decimalFormatSymbols
+            fallback.isDecimalSeparatorAlwaysShown = format.isDecimalSeparatorAlwaysShown
+            fallback.multiplier = format.multiplier
+            fallback.positivePrefix = format.positivePrefix
+            fallback.positiveSuffix = format.positiveSuffix
+            fallback.negativePrefix = format.negativePrefix
+            fallback.negativeSuffix = format.negativeSuffix
+            fallback.format(value)
+        } else {
+            format.format(value)
+        }
+    }
     actual override fun parse(string: String): Number? = try {
         format.parse(string)
     } catch (e: ParseException) {

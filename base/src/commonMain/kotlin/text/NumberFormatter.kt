@@ -19,6 +19,9 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.log10
 import kotlin.math.max
 
 /**
@@ -133,7 +136,12 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * Defaults to [minIntegerDigits]
      * @param minFractionDigits The minimum number of decimal digits to show in the mantissa. Defaults to `1U`.
      * @param maxFractionDigits The maximum number of decimal digits to show in the mantissa. Defaults to `16U`.
-     * @param minExponent The minimum number of digits to show in the exponent. Defaults to `1U`.
+     * @param minExponent The minimum number of digits to show in the exponent. Defaults to `1U`. Values below
+     * `1U` are treated as `1U` (a scientific format always shows at least one exponent digit).
+     * @param maxExponentForDecimalNotation When set, a value whose base-10 exponent magnitude is at most this
+     * is rendered in plain decimal notation instead of scientific (e.g. `6U` keeps `1E-6` through `1E6`
+     * inclusive in plain decimal, using the mantissa's [minFractionDigits]/[maxFractionDigits] as its
+     * fraction digits). When `null` (the default) scientific notation is always used.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
     data class Scientific(
@@ -142,14 +150,32 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val minFractionDigits: UInt = 1U,
         val maxFractionDigits: UInt = 16U,
         val minExponent: UInt = 1U,
+        val maxExponentForDecimalNotation: UInt? = null,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven,
     ) : NumberFormatStyle(roundingMode) {
         val pattern: String get() {
             val mantissaInteger = "${"#".repeat(max(maxIntegerDigits.toInt() - minIntegerDigits.toInt(), 0))}${"0".repeat(max(minIntegerDigits.toInt(), 1))}"
             val mantissaDecimal = "${"0".repeat(minFractionDigits.toInt())}${"#".repeat(max(maxFractionDigits.toInt() - minFractionDigits.toInt(), 0))}"
             val mantissa = if (mantissaDecimal.isNotEmpty()) "$mantissaInteger.$mantissaDecimal" else mantissaInteger
-            val exponent = "E${"0".repeat(if (minExponent > 0U) minExponent.toInt() else 0)}"
+            // DecimalFormat needs at least one exponent digit ("E0"); "E" alone is a malformed pattern.
+            val exponent = "E${"0".repeat(max(minExponent.toInt(), 1))}"
             return "$mantissa$exponent"
+        }
+
+        /** The plain [Decimal] representation used for values within [maxExponentForDecimalNotation]. */
+        internal val decimalNotation: Decimal get() = Decimal(
+            minIntegerDigits = 1U,
+            minFractionDigits = minFractionDigits,
+            maxFractionDigits = maxFractionDigits,
+            roundingMode = roundingMode,
+        )
+
+        /** Whether [value] falls within [maxExponentForDecimalNotation] and should render in plain decimal. */
+        internal fun rendersAsDecimal(value: Double): Boolean {
+            val threshold = maxExponentForDecimalNotation ?: return false
+            if (!value.isFinite()) return false
+            if (value == 0.0) return true
+            return abs(floor(log10(abs(value)))) <= threshold.toDouble()
         }
     }
 

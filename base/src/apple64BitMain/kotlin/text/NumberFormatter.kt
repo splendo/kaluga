@@ -115,6 +115,40 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
     }
 
+    // When the Scientific style sets a decimal-notation threshold, values within the threshold are
+    // rendered with this plain decimal formatter instead; its mutable state is synced from `formatter`
+    // at format time so symbol/grouping overrides apply to both notations.
+    private val decimalThresholdStyle: NumberFormatStyle.Scientific? =
+        (style as? NumberFormatStyle.Scientific)?.takeIf { it.maxExponentForDecimalNotation != null }
+    private val decimalFallback: NSNumberFormatter? = decimalThresholdStyle?.decimalNotation?.let { decimal ->
+        NSNumberFormatter().apply {
+            locale = this@NumberFormatter.locale.nsLocale
+            numberStyle = NSNumberFormatterDecimalStyle
+            minimumIntegerDigits = decimal.minIntegerDigits.toULong()
+            maximumIntegerDigits = decimal.maxIntegerDigits.toULong()
+            minimumFractionDigits = decimal.minFractionDigits.toULong()
+            maximumFractionDigits = decimal.maxFractionDigits.toULong()
+            usesSignificantDigits = false
+            roundingMode = formatter.roundingMode
+        }
+    }
+
+    private fun syncDecimalFallback(target: NSNumberFormatter) {
+        target.decimalSeparator = formatter.decimalSeparator
+        target.groupingSeparator = formatter.groupingSeparator
+        target.minusSign = formatter.minusSign
+        target.zeroSymbol = formatter.zeroSymbol
+        target.notANumberSymbol = formatter.notANumberSymbol
+        target.positiveInfinitySymbol = formatter.positiveInfinitySymbol
+        target.negativeInfinitySymbol = formatter.negativeInfinitySymbol
+        target.multiplier = formatter.multiplier
+        target.positivePrefix = formatter.positivePrefix
+        target.positiveSuffix = formatter.positiveSuffix
+        target.negativePrefix = formatter.negativePrefix
+        target.negativeSuffix = formatter.negativeSuffix
+        target.alwaysShowsDecimalSeparator = formatter.alwaysShowsDecimalSeparator
+    }
+
     actual override var percentSymbol: Char
         get() = formatter.percentSymbol.getOrNull(0) ?: Char.MIN_VALUE
         set(value) {
@@ -189,9 +223,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             formatter.currencyGroupingSeparator = charValue
         }
     actual override var usesGroupingSeparator: Boolean
-        get() = formatter.usesGroupingSeparator
+        // The decimal fallback owns grouping so it groups like a normal decimal by default; the toggle
+        // drives both notations.
+        get() = (decimalFallback ?: formatter).usesGroupingSeparator
         set(value) {
             formatter.usesGroupingSeparator = value
+            decimalFallback?.usesGroupingSeparator = value
         }
     actual override var decimalSeparator: Char
         get() = formatter.decimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
@@ -209,10 +246,15 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             formatter.currencyDecimalSeparator = charArrayOf(value).concatToString()
         }
     actual override var groupingSize: Int
-        get() = formatter.groupingSize.toInt()
+        // The decimal fallback owns its grouping size (the scientific style has none); the setter drives both.
+        get() = (decimalFallback ?: formatter).groupingSize.toInt()
         set(value) {
             formatter.groupingSize = value.toULong()
             formatter.secondaryGroupingSize = value.toULong()
+            decimalFallback?.let {
+                it.groupingSize = value.toULong()
+                it.secondaryGroupingSize = value.toULong()
+            }
         }
     actual override var multiplier: Int
         get() = formatter.multiplier?.intValue ?: 1
@@ -221,7 +263,15 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
-    actual override fun format(number: Number): String = (formatter.stringFromNumber(number as NSNumber) ?: "")
+    actual override fun format(number: Number): String {
+        val fallback = decimalFallback
+        val scientific = decimalThresholdStyle
+        if (fallback != null && scientific != null && scientific.rendersAsDecimal(number.toDouble())) {
+            syncDecimalFallback(fallback)
+            return fallback.stringFromNumber(number as NSNumber) ?: ""
+        }
+        return formatter.stringFromNumber(number as NSNumber) ?: ""
+    }
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
     actual override fun parse(string: String): Number? = formatter.numberFromString(string) as? Number

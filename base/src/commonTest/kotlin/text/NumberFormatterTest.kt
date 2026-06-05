@@ -157,6 +157,37 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
+    fun testFormatScientificMinExponentZero() {
+        // minExponent = 0 is coerced to 1 (a scientific format always shows ≥1 exponent digit); without
+        // the coerce this produced a malformed "…E" pattern that threw on the JVM.
+        val zero = NumberFormatter(UnitedStates, NumberFormatStyle.Scientific(minExponent = 0U))
+        val one = NumberFormatter(UnitedStates, NumberFormatStyle.Scientific(minExponent = 1U))
+        assertEquals(one.format(12345), zero.format(12345))
+        assertEquals("1.2345E4", zero.format(12345))
+    }
+
+    @Test
+    fun testFormatScientificWithDecimalNotationThreshold() {
+        val formatters = createFormatters(NumberFormatStyle.Scientific(maxExponentForDecimalNotation = 6U))
+        // |exponent| <= 6 -> plain localized decimal (grouped, reusing the mantissa's fraction digits).
+        assertEquals("1,000.0", formatters.usFormatter.format(1000))
+        assertEquals("1.000,0", formatters.nlFormatter.format(1000))
+        assertEquals("1,000,000.0", formatters.usFormatter.format(1000000))
+        assertEquals("0.001", formatters.usFormatter.format(0.001))
+        assertEquals("12,345.678", formatters.usFormatter.format(12345.678))
+        // beyond the threshold -> scientific notation.
+        assertEquals("1.0E7", formatters.usFormatter.format(10000000))
+        assertEquals("1.0E-7", formatters.usFormatter.format(0.0000001))
+    }
+
+    @Test
+    fun testFormatScientificDecimalNotationWithoutGrouping() {
+        val formatters = createFormatters(NumberFormatStyle.Scientific(maxExponentForDecimalNotation = 6U)) { it.usesGroupingSeparator = false }
+        assertEquals("1000000.0", formatters.usFormatter.format(1000000))
+        assertEquals("1.0E7", formatters.usFormatter.format(10000000))
+    }
+
+    @Test
     fun testFormatCurrency() {
         val formatters = createFormatters(
             NumberFormatStyle.Currency(

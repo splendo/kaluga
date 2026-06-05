@@ -1304,8 +1304,10 @@ sealed class com.splendo.kaluga.base.text/NumberFormatStyle { // com.splendo.kal
     }
 
     final class Scientific : com.splendo.kaluga.base.text/NumberFormatStyle { // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific|null[0]
-        constructor <init>(kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., com.splendo.kaluga.base.text/RoundingMode = ...) // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.<init>|<init>(kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;com.splendo.kaluga.base.text.RoundingMode){}[0]
+        constructor <init>(kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt? = ..., com.splendo.kaluga.base.text/RoundingMode = ...) // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.<init>|<init>(kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt?;com.splendo.kaluga.base.text.RoundingMode){}[0]
 
+        final val maxExponentForDecimalNotation // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.maxExponentForDecimalNotation|{}maxExponentForDecimalNotation[0]
+            final fun <get-maxExponentForDecimalNotation>(): kotlin/UInt? // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.maxExponentForDecimalNotation.<get-maxExponentForDecimalNotation>|<get-maxExponentForDecimalNotation>(){}[0]
         final val maxFractionDigits // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.maxFractionDigits|{}maxFractionDigits[0]
             final fun <get-maxFractionDigits>(): kotlin/UInt // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.maxFractionDigits.<get-maxFractionDigits>|<get-maxFractionDigits>(){}[0]
         final val maxIntegerDigits // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.maxIntegerDigits|{}maxIntegerDigits[0]
@@ -1326,8 +1328,9 @@ sealed class com.splendo.kaluga.base.text/NumberFormatStyle { // com.splendo.kal
         final fun component3(): kotlin/UInt // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.component3|component3(){}[0]
         final fun component4(): kotlin/UInt // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.component4|component4(){}[0]
         final fun component5(): kotlin/UInt // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.component5|component5(){}[0]
-        final fun component6(): com.splendo.kaluga.base.text/RoundingMode // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.component6|component6(){}[0]
-        final fun copy(kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., com.splendo.kaluga.base.text/RoundingMode = ...): com.splendo.kaluga.base.text/NumberFormatStyle.Scientific // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.copy|copy(kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;com.splendo.kaluga.base.text.RoundingMode){}[0]
+        final fun component6(): kotlin/UInt? // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.component6|component6(){}[0]
+        final fun component7(): com.splendo.kaluga.base.text/RoundingMode // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.component7|component7(){}[0]
+        final fun copy(kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt = ..., kotlin/UInt? = ..., com.splendo.kaluga.base.text/RoundingMode = ...): com.splendo.kaluga.base.text/NumberFormatStyle.Scientific // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.copy|copy(kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt;kotlin.UInt?;com.splendo.kaluga.base.text.RoundingMode){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.base.text/NumberFormatStyle.Scientific.toString|toString(){}[0]

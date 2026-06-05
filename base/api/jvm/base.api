@@ -1790,17 +1790,19 @@ public final class com/splendo/kaluga/base/text/NumberFormatStyle$Permillage : c
 }
 
 public final class com/splendo/kaluga/base/text/NumberFormatStyle$Scientific : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (IIIIILcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IIIIILcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-pVg5ArA ()I
 	public final fun component2-pVg5ArA ()I
 	public final fun component3-pVg5ArA ()I
 	public final fun component4-pVg5ArA ()I
 	public final fun component5-pVg5ArA ()I
-	public final fun component6 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy-Pip6UtA (IIIIILcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;
-	public static synthetic fun copy-Pip6UtA$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;IIIIILcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;
+	public final fun component6-0hXNFcg ()Lkotlin/UInt;
+	public final fun component7 ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public final fun copy-cgj78Tg (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;
+	public static synthetic fun copy-cgj78Tg$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMaxExponentForDecimalNotation-0hXNFcg ()Lkotlin/UInt;
 	public final fun getMaxFractionDigits-pVg5ArA ()I
 	public final fun getMaxIntegerDigits-pVg5ArA ()I
 	public final fun getMinExponent-pVg5ArA ()I
