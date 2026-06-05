@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toCollection
 import kotlin.test.Test

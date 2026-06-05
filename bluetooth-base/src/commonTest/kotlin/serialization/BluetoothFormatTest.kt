@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.test.base.IgnoreJs
-
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.CRC16
 import com.splendo.kaluga.base.bytes.Encoding

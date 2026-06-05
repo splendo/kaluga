@@ -16,7 +16,6 @@
  */
 
 package com.splendo.kaluga.test.base
-import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow

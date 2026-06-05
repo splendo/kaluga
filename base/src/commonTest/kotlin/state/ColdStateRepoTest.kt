@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.base.state
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect

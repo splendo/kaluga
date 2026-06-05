@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.bluetooth.device.MockDevice
 import com.splendo.kaluga.test.bluetooth.randomUUID
 import kotlin.coroutines.CoroutineContext

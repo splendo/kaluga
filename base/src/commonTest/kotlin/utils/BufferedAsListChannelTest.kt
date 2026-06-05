@@ -16,8 +16,8 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope

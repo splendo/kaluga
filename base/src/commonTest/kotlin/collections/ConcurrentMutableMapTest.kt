@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.base.collections
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch

@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.properties.ReadOnlyProperty

@@ -17,16 +17,14 @@
 
 package com.splendo.kaluga.lifecycle
 
-import com.splendo.kaluga.test.base.testRunBlocking
-
 import android.app.Activity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock

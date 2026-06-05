@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.base.mock
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.any
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
@@ -26,6 +25,7 @@ import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.notN
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.times
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import kotlin.test.Test

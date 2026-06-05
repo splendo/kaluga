@@ -18,7 +18,6 @@
 package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.permissions.base.BasePermissionManager
-import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import kotlinx.coroutines.CoroutineScope

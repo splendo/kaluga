@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.bluetooth.randomUUID
 import com.splendo.kaluga.test.bluetooth.server.MockConnectedDevice
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder

@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.base.state
 
-import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.IgnoreWeb
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay

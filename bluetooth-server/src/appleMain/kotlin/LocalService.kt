@@ -21,7 +21,6 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import platform.CoreBluetooth.CBMutableService
 import platform.CoreBluetooth.CBService
-import kotlin.jvm.JvmInline
 
 actual interface LocalServiceWrapper {
 

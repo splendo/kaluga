@@ -18,7 +18,6 @@
 package com.splendo.kaluga.test.permissions
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
-import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.permissions.base.BasePermissionStateRepo
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.Permission

@@ -30,7 +30,6 @@ import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBMutableCharacteristic
 import platform.CoreBluetooth.CBMutableService
 import platform.Foundation.NSData
-import kotlin.jvm.JvmInline
 
 actual interface LocalCharacteristicWrapper {
     actual val uuid: UUID

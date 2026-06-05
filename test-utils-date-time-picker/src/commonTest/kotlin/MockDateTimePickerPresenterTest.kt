@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.test.keyboard
 
-import com.splendo.kaluga.test.base.UIThreadTest
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.datetimepicker.DateTimePicker
 import com.splendo.kaluga.datetimepicker.buildDatePicker
+import com.splendo.kaluga.test.base.UIThreadTest
 import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.datetimepicker.MockDateTimePickerPresenter
