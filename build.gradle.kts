@@ -42,9 +42,10 @@ publishing {
      }
  }
 
-// The scientific units modules generate an enormous API surface that exhausts Dokka's heap; they are
-// excluded from the aggregated documentation (the same sidestep noted in the library components plugin).
-val dokkaExcludedProjects = setOf("scientific", "scientific-converters")
+// `scientific-converters` generates an enormous API surface (~4.4k files of generated unit-conversion
+// functions) that exhausts Dokka's heap, so it stays out of the aggregated documentation. The pure
+// `scientific` module is an order of magnitude smaller and documents fine, so it is included.
+val dokkaExcludedProjects = setOf("scientific-converters")
 
 dependencies {
     subprojects.forEach { project ->
