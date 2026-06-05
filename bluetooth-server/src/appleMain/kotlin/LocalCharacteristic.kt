@@ -30,7 +30,6 @@ import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBMutableCharacteristic
 import platform.CoreBluetooth.CBMutableService
 import platform.Foundation.NSData
-import kotlin.jvm.JvmInline
 
 actual interface LocalCharacteristicWrapper {
     actual val uuid: UUID
@@ -92,7 +91,6 @@ class DefaultLocalCharacteristicWrapper(internal val characteristic: CBMutableCh
         serverWrapper.updateValue(value, characteristic, centrals)
 }
 
-@JvmInline
 value class CBCharacteristicIdentity(val characteristic: CBCharacteristic) : AttributeIdentity
 
 private val Permission.cbAttributePermission: ULong get() = when (this) {

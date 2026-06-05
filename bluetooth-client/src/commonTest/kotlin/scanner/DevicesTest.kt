@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.bluetooth.device.MockDevice
 import com.splendo.kaluga.test.bluetooth.randomUUID
 import kotlin.coroutines.CoroutineContext
@@ -31,7 +31,7 @@ import kotlin.test.assertEquals
 class DevicesTest {
 
     @Test
-    fun testUpdateScanDevices() = runBlocking {
+    fun testUpdateScanDevices() = testRunBlocking {
         val devices = List(4) { createMockDevice(coroutineContext) }
         val emptyFilter = emptySet<UUID>()
         val filter = setOf(randomUUID())
@@ -101,7 +101,7 @@ class DevicesTest {
     }
 
     @Test
-    fun testUpdatePairedDevices() = runBlocking {
+    fun testUpdatePairedDevices() = testRunBlocking {
         val devices = List(4) { createMockDevice(coroutineContext) }
         val filter1 = setOf(randomUUID())
         val filter2 = setOf(randomUUID())

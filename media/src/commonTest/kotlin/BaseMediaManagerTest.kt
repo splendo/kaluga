@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.media.MockBaseMediaManager
 import com.splendo.kaluga.test.media.MockMediaSurfaceController
@@ -43,7 +43,7 @@ import kotlin.time.Duration.Companion.seconds
 class BaseMediaManagerTest {
 
     @Test
-    fun testEvents() = runBlocking {
+    fun testEvents() = testRunBlocking {
         val mediaManager = MockBaseMediaManager(null, coroutineContext = coroutineContext)
         val mockSource = mediaSourceFromUrl("https://example.com")!!
         val mockPlayableMedia = MockPlayableMedia(mockSource)
@@ -59,7 +59,7 @@ class BaseMediaManagerTest {
     }
 
     @Test
-    fun testCreatePlayableMedia() = runBlocking {
+    fun testCreatePlayableMedia() = testRunBlocking {
         val mediaSurfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
         val mediaSurfaceController = MockMediaSurfaceController()
         val surface = createMockMediaSurface()
@@ -91,7 +91,7 @@ class BaseMediaManagerTest {
     }
 
     @Test
-    fun testSeekTo() = runBlocking {
+    fun testSeekTo() = testRunBlocking {
         val mediaManager = MockBaseMediaManager(null, coroutineContext = coroutineContext)
         mediaManager.startSeekMock.on().doReturn(Unit)
         val seek1 = async { mediaManager.seekTo(100.seconds) }

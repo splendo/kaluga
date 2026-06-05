@@ -25,76 +25,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.location.BaseLocationManager
-import com.splendo.kaluga.location.Location
-import com.splendo.kaluga.location.LocationStateRepoBuilder
-import com.splendo.kaluga.location.location
-import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.permissions.base.BasePermissionManager
-import com.splendo.kaluga.permissions.base.PermissionsBuilder
-import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import org.koin.compose.koinInject
-
-/**
- * Lightweight "VM" backing [LocationScreen]: it owns the registration step (showing a spinner
- * while the location permission factory is being registered on first entry) and exposes a flow
- * of formatted location strings once setup is done.
- */
-private sealed interface LocationVMState {
-    object Registering : LocationVMState
-    data class Ready(val descriptions: kotlinx.coroutines.flow.StateFlow<String>) : LocationVMState
-}
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun LocationScreen(modifier: Modifier = Modifier) {
-    val permissionsBuilder: PermissionsBuilder = koinInject()
-    val repoBuilder: LocationStateRepoBuilder = koinInject()
-    val logger: Logger = koinInject()
-    val scope = remember { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
-    DisposableEffect(Unit) { onDispose { scope.cancel() } }
-
-    var state by remember { mutableStateOf<LocationVMState>(LocationVMState.Registering) }
-
-    LaunchedEffect(Unit) {
-        // Register the location permission factory if it hasn't been wired up by another
-        // feature yet. The spinner stays up until this completes — typically a no-op on
-        // subsequent visits, but on cold launch it materialises the location permission stack.
-        permissionsBuilder.registerLocationPermissionIfNotRegistered(
-            settings = BasePermissionManager.Settings(logger = logger),
-        )
-        val permission = LocationPermission(background = true, precise = true)
-        val descriptions = repoBuilder
-            .create(
-                permission,
-                { p, pBuilder -> BaseLocationManager.Settings(p, pBuilder, logger = logger) },
-                scope.coroutineContext,
-            )
-            .location()
-            .map(::format)
-            .stateIn(scope, SharingStarted.Eagerly, "Resolving location…")
-        state = LocationVMState.Ready(descriptions)
-    }
-
-    when (val current = state) {
-        LocationVMState.Registering -> {
+fun LocationScreen(modifier: Modifier = Modifier, viewModel: LocationViewModel = koinViewModel()) {
+    when (val state = viewModel.state.collectAsState().value) {
+        LocationViewModel.State.Registering -> {
             Box(
                 modifier = modifier.fillMaxSize().padding(16.dp),
                 contentAlignment = Alignment.Center,
@@ -103,25 +44,13 @@ fun LocationScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        is LocationVMState.Ready -> {
-            val description by current.descriptions.collectAsState()
+        is LocationViewModel.State.Located -> {
             Column(
                 modifier = modifier.fillMaxSize().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text(description)
+                Text(state.description)
             }
         }
-    }
-}
-
-private fun format(location: Location): String = when (location) {
-    is Location.KnownLocation -> "${location.latitudeDMS} ${location.longitudeDMS}"
-
-    is Location.UnknownLocation -> {
-        val lastKnown = (location as? Location.UnknownLocation.WithLastLocation)?.let {
-            " Last Known Location: ${it.lastKnownLocation.latitudeDMS} ${it.lastKnownLocation.longitudeDMS}"
-        } ?: ""
-        "Unknown Location. Reason: ${location.reason.name}$lastKnown"
     }
 }

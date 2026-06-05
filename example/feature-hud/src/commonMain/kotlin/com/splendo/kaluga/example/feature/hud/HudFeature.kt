@@ -24,10 +24,9 @@ import org.koin.dsl.module
 
 const val HUD_FEATURE_ID = "hud"
 
-private class HudContribution : FeatureContribution {
+private class HudContribution : FeatureContribution.NativeLaunch {
     override val id = HUD_FEATURE_ID
     override val label = "Loading Indicator"
-    override val isCompose = false
 }
 
 /** Common Koin module for the HUD feature. */

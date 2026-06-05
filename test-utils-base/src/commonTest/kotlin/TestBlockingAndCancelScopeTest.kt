@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.base
 
-import com.splendo.kaluga.test.base.IgnoreJs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,7 +27,7 @@ import kotlin.time.Duration.Companion.seconds
 class TestBlockingAndCancelScopeTest {
 
     @Test
-    fun testCanceling(): Unit = testBlockingAndCancelScope {
+    fun testCanceling() = testBlockingAndCancelScope {
         launch {
             // normally this would hang the test
             while (true) {
@@ -37,12 +36,9 @@ class TestBlockingAndCancelScopeTest {
         }
     }
 
-    @IgnoreJs
     @Test
-    fun testFrozenResult() {
-        val map = testBlockingAndCancelScope(Dispatchers.Default) {
-            mapOf("key" to "value")
-        }
+    fun testResult() = testBlockingAndCancelScope(Dispatchers.Default) {
+        val map = mapOf("key" to "value")
         assertEquals("value", map["key"])
     }
 }

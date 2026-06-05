@@ -20,5 +20,5 @@
 
 package com.splendo.kaluga.base.externals
 
-internal external val DateTime: dynamic
-internal external val Info: dynamic
+internal external val DateTime: LuxonDateTimeStatic
+internal external val Info: LuxonInfo

@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.transformLatest
 import platform.CoreBluetooth.CBAdvertisementDataLocalNameKey
 import platform.CoreBluetooth.CBAdvertisementDataServiceUUIDsKey
-import platform.CoreBluetooth.CBMutableService
 import platform.darwin.dispatch_queue_create
 
 internal sealed class IOSServerState {

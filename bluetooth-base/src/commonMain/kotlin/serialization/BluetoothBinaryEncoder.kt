@@ -34,6 +34,7 @@ import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.math.pow
+import kotlin.math.round
 
 internal class BluetoothBinaryEncoder(
     private val binaryDescriptor: BluetoothBinaryDescriptor,
@@ -302,6 +303,12 @@ internal fun BinaryBuilder.encodeBooleanElement(value: Boolean, binaryDescriptor
     }
 }
 
+// Whether [this] is represented losslessly by a 32-bit float. Kotlin/JS has no true 32-bit Float, so
+// `toFloat()` does not round to 32-bit precision there and a naive `this == toFloat()` would always be
+// true — round-trip through the raw bits to obtain the genuine 32-bit value so the 32-bit-vs-64-bit
+// sizing decision (and thus the byte layout) is identical on every platform.
+private fun Number.fitsLosslesslyIn32BitFloat(): Boolean = toDouble() == Float.fromBits(toFloat().toRawBits()).toDouble()
+
 internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor: BluetoothBinaryDescriptor, settings: BluetoothBinaryDescriptor.NumericSettings) {
     when (settings) {
         is BluetoothBinaryDescriptor.NumericSettings.Natural -> {
@@ -351,15 +358,19 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
         }
 
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> {
-            // Calculate scaled value and store it as a natural number
-            val scaledValue = settings.multiplier * value.toDouble() * 10.0.pow(settings.decimalExponent) * 2.0.pow(settings.binaryExponent) + settings.offset
+            // Calculate scaled value and store it as a natural number. The scaled value is meant to be
+            // integral; round to the nearest integer rather than letting the downstream `toByte()`/etc.
+            // truncate it, so sub-ULP floating-point noise (which differs per platform — Kotlin/JS has no
+            // true 32-bit Float and `pow` can differ by a ULP) can't tip a boundary value to the wrong
+            // integer. Guarantees identical bytes on every platform.
+            val scaledValue = round(settings.multiplier * value.toDouble() * 10.0.pow(settings.decimalExponent) * 2.0.pow(settings.binaryExponent) + settings.offset)
             encodeNumericElement(scaledValue, binaryDescriptor, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, settings.signed))
         }
 
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = binaryDescriptor.bitIndex + if (binaryDescriptor.isNullable) 1 else 0
-                if (value.toDouble() == value.toFloat().toDouble()) {
+                if (value.fitsLosslesslyIn32BitFloat()) {
                     addFlag(flagIndex, false)
                     Length.`32_BIT`
                 } else {

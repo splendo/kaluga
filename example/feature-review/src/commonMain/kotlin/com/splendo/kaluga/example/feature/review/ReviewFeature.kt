@@ -23,10 +23,11 @@ import androidx.navigation.compose.composable
 import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class ReviewContribution : FeatureContribution {
+class ReviewContribution : FeatureContribution.Compose {
     override val id = "review"
     override val label = "Review"
     override fun register(builder: NavGraphBuilder, navController: NavController) {
@@ -39,5 +40,6 @@ class ReviewContribution : FeatureContribution {
 }
 
 val reviewFeatureModule: Module = module {
+    viewModel { ReviewViewModel() }
     single { ReviewContribution() } bind FeatureContribution::class
 }

@@ -22,8 +22,8 @@ import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.keyboard.AndroidKeyboardManagerTests.AndroidKeyboardTestContext
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.any

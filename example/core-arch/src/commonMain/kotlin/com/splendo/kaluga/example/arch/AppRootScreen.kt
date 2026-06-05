@@ -86,15 +86,14 @@ fun AppRootScreen(onNativeLaunch: (id: String) -> Unit = {}, modifier: Modifier 
             RootScaffold(
                 contributions = contributions,
                 onSelected = { contribution ->
-                    if (contribution.isCompose) {
-                        navController.navigate(contribution.id)
-                    } else {
-                        onNativeLaunch(contribution.id)
+                    when (contribution) {
+                        is FeatureContribution.Compose -> navController.navigate(contribution.id)
+                        is FeatureContribution.NativeLaunch -> onNativeLaunch(contribution.id)
                     }
                 },
             )
         }
-        contributions.filter { it.isCompose }.forEach { contribution ->
+        contributions.filterIsInstance<FeatureContribution.Compose>().forEach { contribution ->
             contribution.register(this, navController)
         }
     }

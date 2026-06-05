@@ -26,11 +26,11 @@ internal actual fun CLLocationManager.configureForLocation(permission: LocationP
 
 internal actual class DefaultLocationUpdater actual constructor(delegate: LocationDelegate, settings: AppleLocationSettings, coroutineScope: CoroutineScope) :
     LocationUpdater(delegate) {
-    override fun onStartUpdating(manager: CLLocationManager) {
+    actual override fun onStartUpdating(manager: CLLocationManager) {
         manager.startUpdatingLocation()
     }
 
-    override fun onStopUpdating(manager: CLLocationManager) {
+    actual override fun onStopUpdating(manager: CLLocationManager) {
         manager.stopUpdatingLocation()
     }
 }

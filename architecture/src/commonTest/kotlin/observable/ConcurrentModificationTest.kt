@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,7 +26,7 @@ import kotlin.test.assertEquals
 class ConcurrentModificationTest : BaseTest() {
 
     @Test
-    fun testConcurrentModification() = runBlocking(Dispatchers.Main) {
+    fun testConcurrentModification() = testRunBlocking(Dispatchers.Main) {
         val subject = subjectOf(0)
         var observer3: Disposable? = null
         var observer2: Disposable? = null

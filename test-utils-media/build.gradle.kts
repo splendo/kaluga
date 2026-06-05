@@ -6,6 +6,8 @@ kaluga {
     moduleName = "test.media"
     supportMacOS = true
     supportTvOS = true
+    supportJS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {

@@ -18,11 +18,11 @@
 package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.ApplePermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.requestAuthorizationStatus

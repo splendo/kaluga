@@ -33,7 +33,7 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
         }
     }
 
-    fun testWithFlow(block: KoinFlowTestBlock<TC, T, F>) = super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false, retainContextAfterTest = false) {
+    fun testWithFlow(block: KoinFlowTestBlock<TC, T, F>) = super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false) {
         block(this@KoinFlowTest, it)
     }
 }

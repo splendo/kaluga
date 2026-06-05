@@ -7,6 +7,8 @@ plugins {
 kaluga {
     moduleName = "example.feature.permissions"
     supportMacOS = true
+    supportWasmJS = true
+
     appleFramework {
         export("com.splendo.kaluga:permissions:${project.rootProject.version}")
     }

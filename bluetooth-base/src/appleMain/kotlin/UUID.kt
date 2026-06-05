@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth
 
 import platform.CoreBluetooth.CBUUID
-import platform.Foundation.NSUUID
 
 /**
  * The Unique Identifier of a Bluetooth property

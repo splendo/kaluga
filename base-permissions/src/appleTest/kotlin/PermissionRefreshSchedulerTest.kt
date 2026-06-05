@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

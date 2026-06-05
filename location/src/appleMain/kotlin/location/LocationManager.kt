@@ -123,7 +123,10 @@ internal abstract class LocationUpdater(private val delegate: LocationDelegate) 
  * [settings] and [coroutineScope] are only consumed on platforms that need them (e.g. tvOS polling);
  * other platforms ignore them.
  */
-internal expect class DefaultLocationUpdater(delegate: LocationDelegate, settings: AppleLocationSettings, coroutineScope: CoroutineScope) : LocationUpdater
+internal expect class DefaultLocationUpdater(delegate: LocationDelegate, settings: AppleLocationSettings, coroutineScope: CoroutineScope) : LocationUpdater {
+    override fun onStartUpdating(manager: CLLocationManager)
+    override fun onStopUpdating(manager: CLLocationManager)
+}
 
 /**
  * The [KalugaLocationDelegateProtocol] used by [LocationUpdater] on every Apple platform, forwarding

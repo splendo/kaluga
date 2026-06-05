@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.bluetooth.randomUUID
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CompletableDeferred
@@ -41,7 +41,7 @@ class DefaultBluetoothServerTest : BaseTest() {
      * Runs [block] against a [DefaultBluetoothServer] that starts at [MockAwaitingPermissions] and immediately becomes [MockAvailable].
      * The server runs under a dedicated [Job] that is cancelled afterwards so the test scope does not leak coroutines.
      */
-    private fun testServer(block: suspend (server: BluetoothServer, available: MockAvailable) -> Unit) = runBlocking<Unit> {
+    private fun testServer(block: suspend (server: BluetoothServer, available: MockAvailable) -> Unit) = testRunBlocking {
         val available = MockAvailable()
         val job = Job()
         val server = DefaultBluetoothServer(settings(), MockAwaitingPermissions { available }, coroutineContext + job)
@@ -73,7 +73,7 @@ class DefaultBluetoothServerTest : BaseTest() {
     }
 
     @Test
-    fun testBluetoothDisabledTransition() = runBlocking<Unit> {
+    fun testBluetoothDisabledTransition() = testRunBlocking {
         val available = MockAvailable()
         val reEnabled = MockAvailable()
         val enabledTrigger = CompletableDeferred<ServerState.Available>()
@@ -96,7 +96,7 @@ class DefaultBluetoothServerTest : BaseTest() {
     }
 
     @Test
-    fun testPermissionsRevokedTransition() = runBlocking<Unit> {
+    fun testPermissionsRevokedTransition() = testRunBlocking {
         val available = MockAvailable()
         val rePermitted = MockAvailable()
         val permittedTrigger = CompletableDeferred<ServerState.HasPermissions>()
@@ -118,7 +118,7 @@ class DefaultBluetoothServerTest : BaseTest() {
     }
 
     @Test
-    fun testCloseReportsClosedAndFailsActions() = runBlocking<Unit> {
+    fun testCloseReportsClosedAndFailsActions() = testRunBlocking {
         val available = MockAvailable()
         val job = Job()
         val server = DefaultBluetoothServer(settings(), MockAwaitingPermissions { available }, coroutineContext + job)

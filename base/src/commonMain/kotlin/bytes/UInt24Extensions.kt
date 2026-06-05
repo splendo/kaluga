@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.utils.Int24
 import com.splendo.kaluga.base.utils.UInt24
 import com.splendo.kaluga.base.utils.toUInt24
 

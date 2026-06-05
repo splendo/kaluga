@@ -3,4 +3,4 @@
     bluetooth-server modules this module depends on; the consuming app's manifest merger
     pulls them in transitively, so they are not redeclared here.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" />
+<manifest />

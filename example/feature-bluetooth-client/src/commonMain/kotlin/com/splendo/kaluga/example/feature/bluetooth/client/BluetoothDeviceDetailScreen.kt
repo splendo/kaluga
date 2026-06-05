@@ -29,103 +29,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceInfo
-import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.bind
-import com.splendo.kaluga.bluetooth.device.observe
 import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.bluetooth.device.triggerRead
-import com.splendo.kaluga.bluetooth.device.triggerWrite
-import com.splendo.kaluga.bluetooth.disconnect
-import com.splendo.kaluga.bluetooth.distance
-import com.splendo.kaluga.bluetooth.get
-import com.splendo.kaluga.bluetooth.info
-import com.splendo.kaluga.bluetooth.state
-import com.splendo.kaluga.bluetooth.updateRssi
 import com.splendo.kaluga.example.arch.DetailScaffold
-import com.splendo.kaluga.example.feature.bluetooth.base.BluetoothSpec
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
-import kotlin.time.Duration.Companion.seconds
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun BluetoothDeviceDetailScreen(identifier: Identifier, onBack: () -> Unit) {
-    val bluetoothClient: BluetoothClient = koinInject()
-    val scope = rememberCoroutineScope()
-
-    val deviceFlow = remember(identifier) { bluetoothClient.allDevices()[identifier] }
-
-    val info: DeviceInfo? by remember(deviceFlow) { deviceFlow.info() }.collectAsState(initial = null)
-    val deviceState: DeviceState? by deviceFlow.state().collectAsState(initial = null)
-    val distance by remember(deviceFlow) { deviceFlow.distance() }.collectAsState(initial = Double.NaN)
-
-    // Heart rate state
-    val heartRate = remember { MutableStateFlow<BluetoothSpec.HeartRate?>(null) }
-    val position = remember { MutableStateFlow<BluetoothSpec.SensorLocation?>(null) }
-    val requestPositionUpdate = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
-    val requestReset = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
-
-    val currentHeartRate by heartRate.collectAsState()
-    val currentPosition by position.collectAsState()
-
-    LaunchedEffect(deviceFlow) {
-        while (true) {
-            deviceFlow.updateRssi()
-            delay(1.seconds)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        Unit.bind(deviceFlow, scope) {
-            service(BluetoothSpec.HeartRateService.UUID) {
-                characteristic(BluetoothSpec.HeartRateService.HEART_RATE_MEASUREMENT_CHARACTERISTIC) {
-                    observe<BluetoothSpec.HeartRate, Unit> {
-                        onNotification { hr -> heartRate.value = hr }
-                    }
-                }
-                characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                    requestPositionUpdate.collectTo {
-                        triggerRead<BluetoothSpec.SensorLocation, Unit> {
-                            onRead { loc -> position.value = loc }
-                            onFailedToRead { _ -> position.value = null }
-                        }
-                    }
-                }
-                characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
-                    requestReset.collectTo {
-                        triggerWrite(mapper = { BluetoothSpec.ResetEnergyCommand }) { }
-                    }
-                }
-            }
-        }
-    }
+    val viewModel: BluetoothDeviceDetailViewModel = koinViewModel(key = identifier.stringValue) { parametersOf(identifier) }
+    val info by viewModel.info.collectAsState()
+    val deviceState by viewModel.deviceState.collectAsState()
+    val distance by viewModel.distance.collectAsState()
+    val currentHeartRate by viewModel.heartRate.collectAsState()
+    val currentPosition by viewModel.position.collectAsState()
 
     val title = "${info?.name ?: identifier.stringValue} — ${identifier.stringValue}"
 
     DetailScaffold(
         title = title,
-        onBack = {
-            scope.launch {
-                deviceFlow.disconnect()
-                onBack()
-            }
-        },
+        onBack = { viewModel.disconnect(onBack) },
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -165,7 +96,7 @@ fun BluetoothDeviceDetailScreen(identifier: Identifier, onBack: () -> Unit) {
                 if (energy != null) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Energy expended: $energy kJ")
-                        OutlinedButton(onClick = { scope.launch { requestReset.emit(Unit) } }) {
+                        OutlinedButton(onClick = viewModel::resetEnergy) {
                             Text("Reset")
                         }
                     }
@@ -177,7 +108,7 @@ fun BluetoothDeviceDetailScreen(identifier: Identifier, onBack: () -> Unit) {
             Text("Sensor Location", style = MaterialTheme.typography.titleMedium)
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(currentPosition?.name ?: "Unknown")
-                Button(onClick = { scope.launch { requestPositionUpdate.emit(Unit) } }) {
+                Button(onClick = viewModel::refreshPosition) {
                     Text("Refresh")
                 }
             }

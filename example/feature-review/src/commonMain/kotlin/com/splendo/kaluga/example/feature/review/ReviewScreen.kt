@@ -25,17 +25,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.review.ReviewManager
-import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ReviewScreen(modifier: Modifier = Modifier) {
-    val manager = remember { ReviewManager.Builder().create() }
-    val scope = rememberCoroutineScope()
+fun ReviewScreen(modifier: Modifier = Modifier, viewModel: ReviewViewModel = koinViewModel()) {
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -46,7 +41,7 @@ fun ReviewScreen(modifier: Modifier = Modifier) {
         )
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { scope.launch { manager.attemptToRequestReview() } },
+            onClick = viewModel::requestReview,
         ) {
             Text("Request Review")
         }

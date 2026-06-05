@@ -6,6 +6,7 @@ plugins {
 kaluga {
     moduleName = "lifecycle.compose"
     supportMacOS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {

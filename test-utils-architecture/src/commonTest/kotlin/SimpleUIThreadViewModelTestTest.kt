@@ -18,7 +18,6 @@
 package com.splendo.kaluga.test.architecture
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.test.base.IgnoreJs
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verify
@@ -27,7 +26,6 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@IgnoreJs
 class SimpleUIThreadViewModelTestTest : SimpleUIThreadViewModelTest<SimpleUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {

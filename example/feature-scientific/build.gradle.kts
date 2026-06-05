@@ -6,6 +6,7 @@ plugins {
 kaluga {
     moduleName = "example.feature.scientific"
     supportMacOS = true
+    supportWasmJS = true
     // No `appleFramework {}` exports for scientific units — they're an implementation detail
     // consumed only by `ScientificScreen` (a Compose composable used inside Kotlin). Keeping them
     // off the framework's public Obj-C surface also avoids the `+pascal` selector collision with

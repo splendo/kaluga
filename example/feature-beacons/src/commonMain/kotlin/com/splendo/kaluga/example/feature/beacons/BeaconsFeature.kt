@@ -26,10 +26,11 @@ import com.splendo.kaluga.bluetooth.beacons.DefaultBeacons
 import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-class BeaconsContribution : FeatureContribution {
+class BeaconsContribution : FeatureContribution.Compose {
     override val id = "beacons"
     override val label = "Beacons"
     override fun register(builder: NavGraphBuilder, navController: NavController) {
@@ -46,5 +47,6 @@ class BeaconsContribution : FeatureContribution {
  *  than spinning up a parallel one. */
 val beaconsFeatureModule: Module = module {
     single<Beacons> { DefaultBeacons(bluetooth = get<BluetoothClient>(), logger = get()) }
+    viewModel { BeaconsViewModel(get()) }
     single { BeaconsContribution() } bind FeatureContribution::class
 }

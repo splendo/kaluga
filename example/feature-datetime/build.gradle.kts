@@ -6,6 +6,7 @@ plugins {
 kaluga {
     moduleName = "example.feature.datetime"
     supportMacOS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {

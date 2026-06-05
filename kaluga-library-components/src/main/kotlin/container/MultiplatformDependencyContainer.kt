@@ -55,6 +55,7 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
     open class TvOS : TargetDependencyContainer()
     open class WatchOS : TargetDependencyContainer()
     open class JS : TargetDependencyContainer()
+    open class WasmJS : TargetDependencyContainer()
     open class JVM : TargetDependencyContainer()
 
     internal val common = objects.newInstance(Common::class.java)
@@ -65,6 +66,7 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
     internal val tvos = objects.newInstance(TvOS::class.java)
     internal val watchos = objects.newInstance(WatchOS::class.java)
     internal val js = objects.newInstance(JS::class.java)
+    internal val wasmJs = objects.newInstance(WasmJS::class.java)
     internal val jvm = objects.newInstance(JVM::class.java)
     fun common(action: Action<Common>) {
         action.execute(common)
@@ -96,6 +98,10 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
 
     fun js(action: Action<JS>) {
         action.execute(js)
+    }
+
+    fun wasmJs(action: Action<WasmJS>) {
+        action.execute(wasmJs)
     }
 
     fun jvm(action: Action<JVM>) {

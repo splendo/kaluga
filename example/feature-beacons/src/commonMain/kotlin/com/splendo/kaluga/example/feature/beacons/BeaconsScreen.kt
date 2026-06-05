@@ -29,31 +29,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.bluetooth.beacons.BeaconInfo
-import com.splendo.kaluga.bluetooth.beacons.Beacons
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun BeaconsScreen(modifier: Modifier = Modifier) {
-    val service: Beacons = koinInject()
-    val scope = rememberCoroutineScope()
-
-    // `Beacons.isMonitoring()` is a `suspend fun` returning a `Flow<Boolean>`, so the flow has to
-    // be obtained from a coroutine. `produceState` runs its block in a `CoroutineScope` tied to
-    // the composition.
-    val isScanning by produceState(initialValue = false, service) {
-        service.isMonitoring().collect { value = it }
-    }
-    val beacons by produceState<List<BeaconInfo>>(initialValue = emptyList(), service) {
-        service.beacons.collect { value = it.toList() }
-    }
+fun BeaconsScreen(modifier: Modifier = Modifier, viewModel: BeaconsViewModel = koinViewModel()) {
+    val isScanning by viewModel.isScanning.collectAsState()
+    val beacons by viewModel.beacons.collectAsState()
 
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
@@ -61,11 +48,7 @@ fun BeaconsScreen(modifier: Modifier = Modifier) {
     ) {
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                scope.launch {
-                    if (isScanning) service.stopMonitoring() else service.startMonitoring()
-                }
-            },
+            onClick = viewModel::toggleMonitoring,
         ) {
             Text(if (isScanning) "Stop Monitoring" else "Start Monitoring")
         }

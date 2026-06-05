@@ -26,8 +26,8 @@ import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothStatusCodes
 import android.os.Build
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
-import com.splendo.kaluga.bluetooth.rawValue
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.rawValue
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Permission
 
 actual interface LocalCharacteristicWrapper {

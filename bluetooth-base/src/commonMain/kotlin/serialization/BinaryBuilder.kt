@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.toByteArray
 import kotlinx.serialization.SerializationException
-import kotlin.math.ceil
 
 /**
  * Builder for creating a [ByteArray] from a [BluetoothBinaryDescriptor]

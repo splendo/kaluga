@@ -28,11 +28,12 @@ import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
 
-class BluetoothServerContribution : FeatureContribution {
+class BluetoothServerContribution : FeatureContribution.Compose {
     override val id = "bluetooth-server"
     override val label = "Bluetooth Server"
     override fun register(builder: NavGraphBuilder, navController: NavController) {
@@ -56,5 +57,6 @@ val bluetoothServerFeatureModule: Module = module {
             Permissions(builder, context)
         }
     }
+    viewModel { BluetoothServerViewModel(get()) }
     single { BluetoothServerContribution() } bind FeatureContribution::class
 }

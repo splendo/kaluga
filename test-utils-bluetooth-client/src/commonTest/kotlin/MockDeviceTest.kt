@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.test.base.awaitFirst
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
 
 class MockDeviceTest {
 
     @Test
-    fun mock_device_connect_disconnect(): Unit = runBlocking {
+    fun mock_device_connect_disconnect() = testRunBlocking {
         val device = buildMockDevice(coroutineContext) {
             identifier = randomIdentifier()
             services {

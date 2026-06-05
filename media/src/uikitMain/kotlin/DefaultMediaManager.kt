@@ -104,6 +104,7 @@ import platform.Foundation.NSOperationQueue.Companion.mainQueue
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplicationDidEnterBackgroundNotification
 import platform.UIKit.UIApplicationWillEnterForegroundNotification
+import platform.darwin.NSInteger
 import platform.darwin.NSObjectProtocol
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue

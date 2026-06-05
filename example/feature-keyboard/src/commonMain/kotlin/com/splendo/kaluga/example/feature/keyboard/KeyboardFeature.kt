@@ -24,10 +24,9 @@ import org.koin.dsl.module
 
 const val KEYBOARD_FEATURE_ID = "keyboard"
 
-private class KeyboardContribution : FeatureContribution {
+private class KeyboardContribution : FeatureContribution.NativeLaunch {
     override val id = KEYBOARD_FEATURE_ID
     override val label = "Keyboard"
-    override val isCompose = false
 }
 
 /** Common Koin module. The platform-specific `viewModel { … }` bindings (for `ComposeKeyboardManager`

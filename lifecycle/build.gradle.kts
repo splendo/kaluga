@@ -9,6 +9,7 @@ kaluga {
     supportWatchOS = true
     supportJVM = true
     supportJS = true
+    supportWasmJS = true
     dependencies {
         android {
             main {

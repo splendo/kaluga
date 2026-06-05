@@ -1,5 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -180,4 +181,8 @@ final object com.splendo.kaluga.test.permissions/DummyPermission : com.splendo.k
 }
 
 final val com.splendo.kaluga.test.permissions/mockPermissionContext // com.splendo.kaluga.test.permissions/mockPermissionContext|{}mockPermissionContext[0]
+    // Targets: [apple]
     final fun <get-mockPermissionContext>(): platform.Foundation/NSBundle // com.splendo.kaluga.test.permissions/mockPermissionContext.<get-mockPermissionContext>|<get-mockPermissionContext>(){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun <get-mockPermissionContext>(): com.splendo.kaluga.permissions.base/PermissionContext // com.splendo.kaluga.test.permissions/mockPermissionContext.<get-mockPermissionContext>|<get-mockPermissionContext>(){}[0]

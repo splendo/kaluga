@@ -115,6 +115,16 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
         }
+    var supportWasmJS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                multiplatformExtension.wasmJs {
+                    browser()
+                    nodejs()
+                }
+            }
+        }
     var iosDeploymentTarget: String = "15.0"
     var macosDeploymentTarget: String = "11.0"
     var tvosDeploymentTarget: String = "15.0"
@@ -515,6 +525,21 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                         dependencies {
                             implementation(kotlin("test-js"))
                             multiplatformDependencies.js.testDependencies.forEach { it.execute(this) }
+                        }
+                    }
+                }
+
+                if (supportWasmJS) {
+                    wasmJsMain.configure {
+                        dependencies {
+                            multiplatformDependencies.wasmJs.mainDependencies.forEach { it.execute(this) }
+                        }
+                    }
+
+                    wasmJsTest.configure {
+                        dependencies {
+                            implementation(kotlin("test-wasm-js"))
+                            multiplatformDependencies.wasmJs.testDependencies.forEach { it.execute(this) }
                         }
                     }
                 }

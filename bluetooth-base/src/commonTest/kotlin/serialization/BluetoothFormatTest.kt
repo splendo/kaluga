@@ -631,8 +631,8 @@ class BluetoothFormatTest {
 
         validateEncoding(
             Container(
-                1234.56f,
-                567.89f,
+                1234.56f.as32Bit(),
+                567.89f.as32Bit(),
                 0.125f,
                 ((3.0 - 10.0) / (3 * 10.0.pow(-5) * 2.0.pow(2))).toFloat(),
                 0.025f,
@@ -655,14 +655,14 @@ class BluetoothFormatTest {
 
         validateEncoding(
             Container(
-                -12.34f,
-                -234.56f,
+                (-12.34f).as32Bit(),
+                (-234.56f).as32Bit(),
                 8.0f,
                 ((6.0 - 10.0) / (3 * 10.0.pow(-5) * 2.0.pow(2))).toFloat(),
                 0.0024f,
                 10.0f,
                 0.5f,
-                0.01f,
+                0.01f.as32Bit(),
             ),
             buildByteArray {
                 add(false) // flexibleScalar flag
@@ -700,7 +700,7 @@ class BluetoothFormatTest {
         validateEncoding(
             Container(
                 1234.56,
-                567.9f.toDouble(),
+                567.9f.as32Bit().toDouble(),
                 0.124,
                 variableSizing = 800.0,
                 ((3.0 - 50.0) / (5 * 10.0.pow(2) * 2.0.pow(3))),
@@ -730,7 +730,7 @@ class BluetoothFormatTest {
         validateEncoding(
             Container(
                 -12.34,
-                (-234.56f).toDouble(),
+                (-234.56f).as32Bit().toDouble(),
                 8.0,
                 7e-100,
                 ((6.0 - 50.0) / (5 * 10.0.pow(2) * 2.0.pow(3))),
@@ -1659,6 +1659,12 @@ class BluetoothFormatTest {
             },
         )
     }
+
+    // Kotlin/JS has no true 32-bit Float and does not canonicalize Float literals, so e.g. `1234.56f`
+    // keeps full double precision and would not equal the value decoded back from its 32-bit encoding.
+    // Round-tripping through the raw bits yields the genuine 32-bit value on every platform (a no-op on
+    // jvm/native/wasm), so the encode→decode round-trip assertions hold on js too.
+    private fun Float.as32Bit(): Float = Float.fromBits(toRawBits())
 
     @OptIn(InternalSerializationApi::class)
     private inline fun <reified T : Any> validateEncoding(value: T, expectedValue: ByteArray) = validateEncoding(value, T::class.serializer(), expectedValue)

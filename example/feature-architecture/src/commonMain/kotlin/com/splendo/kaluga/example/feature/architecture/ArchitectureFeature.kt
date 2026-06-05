@@ -24,10 +24,9 @@ import org.koin.dsl.module
 
 const val ARCHITECTURE_FEATURE_ID = "architecture"
 
-private class ArchitectureContribution : FeatureContribution {
+private class ArchitectureContribution : FeatureContribution.NativeLaunch {
     override val id = ARCHITECTURE_FEATURE_ID
     override val label = "Architecture"
-    override val isCompose = false
 }
 
 val architectureFeatureModule: Module = module {

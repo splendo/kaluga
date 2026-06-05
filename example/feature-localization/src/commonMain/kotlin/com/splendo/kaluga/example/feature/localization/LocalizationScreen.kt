@@ -35,6 +35,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,20 +44,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.KalugaDateFormatter
-import com.splendo.kaluga.base.text.NumberFormatStyle
-import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
-
-private val SAMPLE_INTEGER: Long = 1_234_567_890
-private const val SAMPLE_DECIMAL: Double = 12345.6789
-private const val SAMPLE_PERCENT: Double = 0.4275
-private const val SAMPLE_CURRENCY: Double = 1999.95
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun LocalizationScreen(modifier: Modifier = Modifier) {
-    val locales = remember { KalugaLocale.availableLocales.sortedBy { it.toString() } }
-    var selected by remember { mutableStateOf(KalugaLocale.defaultLocale) }
+fun LocalizationScreen(modifier: Modifier = Modifier, viewModel: LocalizationViewModel = koinViewModel()) {
+    val selected by viewModel.selectedLocale.collectAsState()
     var showPicker by remember { mutableStateOf(false) }
 
     Column(
@@ -82,13 +76,13 @@ fun LocalizationScreen(modifier: Modifier = Modifier) {
         Field("Alt. quotation", "${selected.alternateQuotationStart}quote${selected.alternateQuotationEnd}")
 
         SectionTitle("Numbers")
-        Field("Integer", formatInteger(selected, SAMPLE_INTEGER))
-        Field("Decimal", formatDecimal(selected, SAMPLE_DECIMAL))
-        Field("Percentage", formatPercent(selected, SAMPLE_PERCENT))
-        Field("Permillage", formatPermille(selected, SAMPLE_PERCENT))
-        Field("Currency", formatCurrency(selected, SAMPLE_CURRENCY))
-        Field("USD currency", formatCurrency(selected, SAMPLE_CURRENCY, "USD"))
-        Field("JPY currency", formatCurrency(selected, SAMPLE_CURRENCY, "JPY"))
+        Field("Integer", viewModel.integer(selected))
+        Field("Decimal", viewModel.decimal(selected))
+        Field("Percentage", viewModel.percent(selected))
+        Field("Permillage", viewModel.permille(selected))
+        Field("Currency", viewModel.currency(selected))
+        Field("USD currency", viewModel.currency(selected, "USD"))
+        Field("JPY currency", viewModel.currency(selected, "JPY"))
 
         SectionTitle("Date")
         val now = remember(selected) { DefaultKalugaDate.now(locale = selected) }
@@ -104,10 +98,10 @@ fun LocalizationScreen(modifier: Modifier = Modifier) {
 
     if (showPicker) {
         LocalePickerDialog(
-            locales = locales,
+            locales = viewModel.availableLocales,
             onDismiss = { showPicker = false },
             onSelect = {
-                selected = it
+                viewModel.selectLocale(it)
                 showPicker = false
             },
         )
@@ -178,15 +172,3 @@ private fun LocalePickerDialog(locales: List<KalugaLocale>, onDismiss: () -> Uni
         },
     )
 }
-
-private fun formatInteger(locale: KalugaLocale, value: Long): String = NumberFormatter(locale, NumberFormatStyle.Integer()).format(value)
-
-private fun formatDecimal(locale: KalugaLocale, value: Double): String =
-    NumberFormatter(locale, NumberFormatStyle.Decimal(minFractionDigits = 2U, maxFractionDigits = 4U)).format(value)
-
-private fun formatPercent(locale: KalugaLocale, value: Double): String = NumberFormatter(locale, NumberFormatStyle.Percentage(maxFractionDigits = 2U)).format(value)
-
-private fun formatPermille(locale: KalugaLocale, value: Double): String = NumberFormatter(locale, NumberFormatStyle.Permillage(maxFractionDigits = 2U)).format(value)
-
-private fun formatCurrency(locale: KalugaLocale, value: Double, code: String? = null): String =
-    NumberFormatter(locale, NumberFormatStyle.Currency(currencyCode = code)).format(value)

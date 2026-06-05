@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.test.base
 
-import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.yield
 
 open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContext>() {
@@ -108,10 +107,6 @@ abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestCo
     abstract val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context
     open val onFailedToCreateTestContextWithConfiguration: (configuration: Configuration) -> Unit = {}
 
-    private companion object {
-        val cancellationException = CancellationException("Scope canceled by testOnUIThread because cancelScopeAfterTest was set to true.")
-    }
-
     /**
      * Run your test block on the UI thread and inside the TestContext.
      *
@@ -127,34 +122,31 @@ abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestCo
      * @param cancelScopeAfterTest whether to cancel the coroutinescope your block ran in after it's done.
      *
      */
-    fun testOnUIThread(configuration: Configuration, cancelScopeAfterTest: Boolean = false, block: suspend Context.() -> Unit) {
-        try {
-            val createTestContextWithConfiguration = createTestContextWithConfiguration
-            val onFailedToCreateTestContextWithConfiguration = onFailedToCreateTestContextWithConfiguration
-            val test: suspend (CoroutineScope) -> Unit = {
-                val testContext = try {
-                    createTestContextWithConfiguration(configuration, it)
-                } catch (e: Throwable) {
-                    onFailedToCreateTestContextWithConfiguration(configuration)
-                    throw e
-                }
-                yield()
-                try {
-                    block(testContext)
-                } finally {
-                    testContext.dispose()
-                }
+    fun testOnUIThread(configuration: Configuration, cancelScopeAfterTest: Boolean = false, block: suspend Context.() -> Unit): TestResult {
+        val createTestContextWithConfiguration = createTestContextWithConfiguration
+        val onFailedToCreateTestContextWithConfiguration = onFailedToCreateTestContextWithConfiguration
+        val test: suspend CoroutineScope.() -> Unit = {
+            val testContext = try {
+                createTestContextWithConfiguration(configuration, this)
+            } catch (e: Throwable) {
+                onFailedToCreateTestContextWithConfiguration(configuration)
+                throw e
             }
+            yield()
+            try {
+                block(testContext)
+            } finally {
+                testContext.dispose()
+            }
+        }
 
-            if (cancelScopeAfterTest) {
-                testBlockingAndCancelScope(Dispatchers.Main) { test(this) }
-            } else {
-                runBlocking(Dispatchers.Main) { test(this) }
-            }
-        } catch (c: CancellationException) {
-            if (!cancelScopeAfterTest || c !== cancellationException) {
-                throw c
-            }
+        // Return the runner's `TestResult` so the js/wasm frameworks await it (they do not block, and
+        // do not await a fire-and-forget `runBlocking`). `cancelScopeAfterTest` additionally cancels any
+        // coroutines the block left running once it completes.
+        return if (cancelScopeAfterTest) {
+            testBlockingAndCancelScope(Dispatchers.Main, block = test)
+        } else {
+            testRunBlocking(Dispatchers.Main, test)
         }
     }
 }

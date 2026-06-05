@@ -28,6 +28,8 @@ import kotlinx.cinterop.value
 import platform.AVFAudio.AVAudioEngine
 import platform.AVFAudio.AVAudioFile
 import platform.AVFAudio.AVAudioPlayerNode
+import platform.AppKit.NSApplicationDidBecomeActiveNotification
+import platform.AppKit.NSApplicationDidResignActiveNotification
 import platform.Foundation.NSBundle
 import platform.Foundation.NSError
 import platform.Foundation.NSNotification
@@ -36,8 +38,6 @@ import platform.Foundation.NSNotificationName
 import platform.Foundation.NSOperationQueue.Companion.currentQueue
 import platform.Foundation.NSOperationQueue.Companion.mainQueue
 import platform.Foundation.NSURL
-import platform.AppKit.NSApplicationDidResignActiveNotification
-import platform.AppKit.NSApplicationDidBecomeActiveNotification
 
 /**
  * A default implementation of [SoundPlayer]

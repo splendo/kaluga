@@ -31,7 +31,6 @@ import kotlinx.cinterop.value
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import platform.AVFoundation.AVErrorContentIsNotAuthorized
@@ -78,6 +77,8 @@ import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
 import platform.AVFoundation.tracks
 import platform.AVFoundation.volume
+import platform.AppKit.NSApplicationDidBecomeActiveNotification
+import platform.AppKit.NSApplicationDidResignActiveNotification
 import platform.CoreMedia.CMTimeCompare
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
@@ -94,8 +95,6 @@ import platform.Foundation.NSNotificationName
 import platform.Foundation.NSOperationQueue.Companion.currentQueue
 import platform.Foundation.NSOperationQueue.Companion.mainQueue
 import platform.Foundation.NSURL
-import platform.AppKit.NSApplicationDidResignActiveNotification
-import platform.AppKit.NSApplicationDidBecomeActiveNotification
 import platform.darwin.NSObjectProtocol
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue

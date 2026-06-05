@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.base.state
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -61,7 +61,7 @@ class ColdStateRepoTest : BaseTest() {
     }
 
     @Test
-    fun testLaterCollectionsCallsInitialState() = runBlocking {
+    fun testLaterCollectionsCallsInitialState() = testRunBlocking {
         launch {
             val repo = Repo(coroutineContext)
             for (times in 1..2) {

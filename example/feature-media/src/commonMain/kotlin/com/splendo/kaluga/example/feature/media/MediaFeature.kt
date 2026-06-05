@@ -34,7 +34,7 @@ internal expect fun newMediaManagerBuilder(): BaseMediaManager.Builder
 
 private const val MEDIA_FEATURE_ID = "media"
 
-class MediaContribution : FeatureContribution {
+class MediaContribution : FeatureContribution.Compose {
     override val id = MEDIA_FEATURE_ID
     override val label = "Media"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

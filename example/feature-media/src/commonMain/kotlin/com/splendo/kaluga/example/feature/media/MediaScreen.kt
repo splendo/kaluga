@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -48,8 +47,8 @@ import com.splendo.kaluga.media.compose.MediaSurfaceContainer
 import com.splendo.kaluga.media.mediaSourceFromUrl
 import org.koin.compose.viewmodel.koinViewModel
 
-private const val DEFAULT_AUDIO_URL = "https://cdn.freesound.org/previews/459/459992_6253486-lq.mp3"
-private const val DEFAULT_VIDEO_URL = "https://www.pexels.com/download/video/11284186/"
+private const val DEFAULT_AUDIO_URL = "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
+private const val DEFAULT_VIDEO_URL = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
 private val RATE_OPTIONS = listOf(0.5f, 1.0f, 2.0f, 4.0f)
 
 // Plain Unicode glyphs render across Android, iOS, and macOS-Native Compose without an extra
@@ -83,8 +82,9 @@ fun MediaScreen(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        // Fills the space left above the bottom-locked controls/button.
         Box(
-            modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f),
+            modifier = Modifier.fillMaxWidth().weight(1f),
             contentAlignment = Alignment.Center,
         ) {
             when (viewState) {

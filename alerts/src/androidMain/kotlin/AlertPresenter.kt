@@ -25,9 +25,9 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope

@@ -35,7 +35,7 @@ import org.koin.dsl.module
 /** Toggle whether bluetooth scanning requires the location permission on Android. */
 const val USE_LOCATION_FOR_BLUETOOTH = false
 
-class PermissionsContribution : FeatureContribution {
+class PermissionsContribution : FeatureContribution.Compose {
     override val id = "permissions"
     override val label = "Permissions"
     override fun register(builder: NavGraphBuilder, navController: NavController) {

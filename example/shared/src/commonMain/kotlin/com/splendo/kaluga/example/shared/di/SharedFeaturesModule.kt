@@ -17,26 +17,30 @@
 
 package com.splendo.kaluga.example.shared.di
 
-import com.splendo.kaluga.example.feature.beacons.beaconsFeatureModule
 import com.splendo.kaluga.example.feature.bluetooth.client.bluetoothClientFeatureModule
-import com.splendo.kaluga.example.feature.bluetooth.server.bluetoothServerFeatureModule
 import com.splendo.kaluga.example.feature.datetime.datetimeFeatureModule
 import com.splendo.kaluga.example.feature.links.linksFeatureModule
 import com.splendo.kaluga.example.feature.localization.localizationFeatureModule
 import com.splendo.kaluga.example.feature.location.locationFeatureModule
 import com.splendo.kaluga.example.feature.media.mediaFeatureModule
 import com.splendo.kaluga.example.feature.permissions.permissionsFeatureModule
-import com.splendo.kaluga.example.feature.review.reviewFeatureModule
 import com.splendo.kaluga.example.feature.scientific.scientificFeatureModule
 import com.splendo.kaluga.example.feature.system.systemFeatureModule
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 /**
- * Aggregator for every macOS-capable feature module. Each feature module exposes its own Koin
- * module containing its `FeatureContribution`; this includes them all so the host bootstrap just
- * loads one thing. The macOS Demo host loads only this; the Android + iOS hosts additionally load
- * `mobileSharedContributionsModule` (native-launch contributions for `:mobileshared` features).
+ * The feature modules with no `wasmJs` target (bluetooth-server, beacons, review). Provided per target:
+ * non-empty on macOS/iOS/Android, empty on the web so [sharedFeaturesModule] stays wasmJs-compatible.
+ */
+expect val platformSharedFeaturesModule: Module
+
+/**
+ * Aggregator for every feature module the platform supports. Each feature module exposes its own Koin
+ * module containing its `FeatureContribution`; this includes them all so the host bootstrap just loads
+ * one thing. The web (`wasmJs`) host reuses this directly; macOS/iOS/Android additionally pick up the
+ * non-web features through [platformSharedFeaturesModule], and the Android + iOS hosts add the
+ * mobile-only features on top.
  */
 val sharedFeaturesModule: Module = module {
     includes(
@@ -46,11 +50,9 @@ val sharedFeaturesModule: Module = module {
         permissionsFeatureModule,
         locationFeatureModule,
         bluetoothClientFeatureModule,
-        bluetoothServerFeatureModule,
-        beaconsFeatureModule,
         localizationFeatureModule,
         mediaFeatureModule,
-        reviewFeatureModule,
         scientificFeatureModule,
+        platformSharedFeaturesModule,
     )
 }

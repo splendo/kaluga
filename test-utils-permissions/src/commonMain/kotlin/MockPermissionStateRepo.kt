@@ -58,7 +58,7 @@ class MockBasePermissionStateRepo<P : Permission>(
     val didDeinitializeMock = ::didDeinitialize.mock()
     fun didDeinitialize(state: MockPermissionState<P>): Unit = didDeinitializeMock.call(state)
 
-    val currentMockState get() = peekState() as MockPermissionState<P>
+    suspend fun currentMockState() = useState { it as MockPermissionState<P> }
 
     init {
         if (setupMocks) {

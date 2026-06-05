@@ -1,0 +1,77 @@
+name: Documentation
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    tags:
+      - '*.*.*'
+
+concurrency: docs-${{ github.ref_name }}
+
+jobs:
+  docs:
+    runs-on: macos-26
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Konan cache
+        uses: actions/cache@v5
+        id: konan-cache
+        with:
+          path: ~/.konan/*
+          key: konan
+
+      - name: Generate aggregated Dokka documentation
+        run: ./gradlew :dokkaGeneratePublicationHtml
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: dokka-html
+          path: build/dokka/html
+
+      - name: Build web example
+        working-directory: example
+        run: ./gradlew :web:wasmJsBrowserDistribution
+
+      - name: Upload web example artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-example
+          path: example/web/build/dist/wasmJs/productionExecutable
+
+      - name: Collect module READMEs
+        run: |
+          mkdir -p build/readmes
+          cp README.md build/readmes/README.md
+          for dir in */; do
+            if [ -f "${dir}README.md" ]; then
+              mkdir -p "build/readmes/${dir}"
+              cp "${dir}README.md" "build/readmes/${dir}README.md"
+            fi
+          done
+
+      - name: Upload READMEs artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: readmes
+          path: build/readmes
+
+      - name: Trigger website rebuild
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
+        run: |
+          if [ -n "$GH_TOKEN" ]; then
+            gh api repos/splendo/kaluga.splendo.com/dispatches -f event_type=kaluga-docs-updated
+          else
+            echo "SITE_DISPATCH_TOKEN not set; skipping website rebuild trigger"
+          fi

@@ -1,8 +1,51 @@
-name: JS tests
+name: JS and Wasm tests and example
 on: pull_request
 
 jobs:
+  build:
+    uses: ./.github/workflows/setup_linux.yaml
+    with:
+      gradleTask: compileKotlinJs compileKotlinWasmJs
+
   test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJSON(needs.build.outputs.projects) }}
+        target:
+          - name: JS
+            test: jsNodeTest
+            flag: supportJS
+          - name: Wasm
+            test: wasmJsNodeTest
+            flag: supportWasmJS
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_linux/
+
+      - name: run ${{ matrix.target.name }} tests for ${{ matrix.module }}
+        run: |
+          flag='${{ matrix.target.flag }}'
+          if [ -z "$flag" ] || grep -qE "$flag\s*=\s*true" "${{ matrix.module }}/build.gradle.kts" 2>/dev/null; then
+            ./gradlew :${{ matrix.module }}:${{ matrix.target.test }}
+          else
+            echo "Module ${{ matrix.module }} does not declare $flag = true, skipping ${{ matrix.target.name }}"
+          fi
+
+      - name: Upload ${{ matrix.target.name }} test artifact
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: ${{ matrix.module }} ${{ matrix.target.name }} Test Report HTML
+          path: ${{ format('**{0}/build/reports/tests/{1}', matrix.module, matrix.target.test) }}
+
+  example-web:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -10,18 +53,16 @@ jobs:
         with:
           submodules: recursive
 
-      - name: set up JDK 21
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: 21
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_linux/
 
-      - name: run JS Node tests
-        run: ./gradlew jsNodeTest
+      - name: build web example
+        working-directory: example
+        run: ./gradlew :web:wasmJsBrowserDevelopmentExecutableDistribution
 
-      - name: Upload JS test artifact
+      - name: Upload web example artifact
         uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: "JS Test Report HTML"
-          path: "**/build/reports/tests/jsNodeTest"
+          name: web example build reports
+          path: "example/**/build/reports"

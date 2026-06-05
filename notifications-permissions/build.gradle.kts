@@ -4,6 +4,8 @@ plugins {
 
 kaluga {
     moduleName = "permissions.notifications"
+    supportJS = true
+    supportWasmJS = true
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true

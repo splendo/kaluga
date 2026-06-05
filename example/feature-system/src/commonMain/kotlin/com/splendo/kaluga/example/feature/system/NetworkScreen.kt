@@ -24,48 +24,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.system.network.NetworkConnectionType
-import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
-import com.splendo.kaluga.system.network.state.network
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import org.koin.compose.koinInject
-
-private val networkScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
-private fun describe(type: NetworkConnectionType): String = when (type) {
-    is NetworkConnectionType.Unknown.WithoutLastNetwork ->
-        "Network's state is Unknown and without the last available connection."
-
-    is NetworkConnectionType.Unknown.WithLastNetwork ->
-        "Network's state is Unknown and with last known connection as ${type.lastKnown}."
-
-    is NetworkConnectionType.Known.Cellular ->
-        "Network's state is Available through Cellular."
-
-    is NetworkConnectionType.Known.Wifi ->
-        "Network's state is Available through WIFI."
-
-    is NetworkConnectionType.Known.Absent ->
-        "Network's state is Absent."
-}
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun NetworkScreen(modifier: Modifier = Modifier) {
-    val builder: NetworkStateRepoBuilder = koinInject()
-    val stateFlow = remember {
-        builder.create().network()
-            .map(::describe)
-            .stateIn(networkScope, SharingStarted.Eagerly, "Resolving network state…")
-    }
-    val description by stateFlow.collectAsState()
+fun NetworkScreen(modifier: Modifier = Modifier, viewModel: NetworkViewModel = koinViewModel()) {
+    val description by viewModel.description.collectAsState()
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
     ) {
