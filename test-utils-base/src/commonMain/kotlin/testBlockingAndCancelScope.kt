@@ -17,23 +17,24 @@
 
 package com.splendo.kaluga.test.base
 
-import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.test.TestResult
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-class DeliberateCancellationException(val result: Any?) : kotlinx.coroutines.CancellationException("Scope canceled deliberately by testAndCancelScope")
-
-inline fun <reified T> testBlockingAndCancelScope(context: CoroutineContext = EmptyCoroutineContext, crossinline block: suspend CoroutineScope.() -> T): T {
-    try {
-        return runBlocking(context) {
-            block().also { cancel(DeliberateCancellationException(it)) }
-        }
-    } catch (e: Throwable) {
-        if (e is DeliberateCancellationException && e.result is T) {
-            return e.result
-        }
-        throw e // not our expected exception
-    }
+/**
+ * Runs [block] as a test and then cancels any coroutines it left running in the runner's scope, so a
+ * test that deliberately launches a never-completing child (e.g. an infinite collector) does not hang.
+ *
+ * Returns a [TestResult] that the test framework awaits — it blocks until completion on JVM/Native and
+ * returns the backing `Promise` on js/wasmJs (which is single-threaded and cannot block). Use it the
+ * same way as [testRunBlocking]: `@Test fun foo() = testBlockingAndCancelScope { … }`.
+ * @param context the context of the coroutine. The default value is an event loop on the current thread.
+ * @param block the test body.
+ */
+fun testBlockingAndCancelScope(context: CoroutineContext = EmptyCoroutineContext, block: suspend CoroutineScope.() -> Unit): TestResult = testRunBlocking(context) {
+    block()
+    // Cancel the children the block left running (not this scope itself) so the runner can complete.
+    coroutineContext.cancelChildren()
 }

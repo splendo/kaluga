@@ -20,16 +20,12 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.test.bluetooth.characteristic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import com.splendo.kaluga.test.base.IgnoreJs
-import com.splendo.kaluga.test.base.IgnoreWasm
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@IgnoreJs
-@IgnoreWasm
 class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, Characteristic?>() {
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext =

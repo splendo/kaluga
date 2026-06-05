@@ -62,7 +62,6 @@ class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
     }
 
     @Test
-    @IgnoreWasm
     fun testCanceling() = testOnUIThread(cancelScopeAfterTest = true) {
         launch {
             // normally this would hang the test

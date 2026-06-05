@@ -43,7 +43,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlin.test.AfterTest
 import kotlin.time.Duration.Companion.seconds
 
 typealias TestBlock<Context, T> = suspend Context.(T) -> Unit
@@ -74,7 +73,7 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
 
     abstract val flow: suspend () -> F
 
-    fun testWithFlow(block: FlowTestBlock<T, F>) = super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false, retainContextAfterTest = false) {
+    fun testWithFlow(block: FlowTestBlock<T, F>) = super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false) {
         block(this@FlowTest, it)
     }
 }
@@ -93,14 +92,6 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
 
     private val testContext = atomic<Context?>(null)
     private lateinit var testChannel: Channel<Pair<TestBlock<Context, T>, EmptyCompletableDeferred>>
-
-    @AfterTest
-    override fun afterTest() {
-        runBlocking {
-            disposeContext()
-        }
-        super.afterTest()
-    }
 
     suspend fun resetFlow() {
         awaitTestBlocks() // get the final test blocks that were executed and check for exceptions
@@ -143,7 +134,6 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
     fun testWithFlowAndTestContext(
         configuration: Configration,
         createFlowInMainScope: Boolean = true,
-        retainContextAfterTest: Boolean = false,
         blockWithContext: FlowTestBlockWithContext<Configration, Context, T, F>,
     ): TestResult = testRunBlocking {
         try {
@@ -174,9 +164,10 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
             blockWithContext(f)
             resetFlow()
         } finally {
-            if (!retainContextAfterTest) {
-                disposeContext()
-            }
+            // Dispose inside this awaited scope so every test — including the last one in the file —
+            // cleans up its context. The js/wasm runners do not await `@AfterTest`, so cleanup must
+            // not be deferred there.
+            disposeContext()
         }
     }
 

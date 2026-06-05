@@ -32,12 +32,9 @@ import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.permissions.MockPermissionState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import com.splendo.kaluga.test.base.IgnoreJs
-import com.splendo.kaluga.test.base.IgnoreWasm
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -66,11 +63,9 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
-    @IgnoreJs
-    @IgnoreWasm
     fun testStartWithoutPermissions() = testWithFlowAndTestContext(Configuration.DeviceWithoutService(initialPermissionState = MockPermissionState.ActiveState.REQUESTABLE)) {
         test {
-            permissionStateRepo.currentMockState.requestMock.verify()
+            permissionStateRepo.currentMockState().requestMock.verify()
             scanner.startMonitoringPermissionsMock.verify()
             scanner.startMonitoringHardwareEnabledMock.verify(rule = never())
             assertIs<MissingPermissions>(it)
@@ -89,8 +84,6 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
-    @IgnoreJs
-    @IgnoreWasm
     fun testStartWithoutPermissionNoAutoRequest() = testWithFlowAndTestContext(
         Configuration.DeviceWithoutService(
             autoRequestPermission = false,
@@ -98,7 +91,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         ),
     ) {
         test {
-            permissionStateRepo.currentMockState.requestMock.verify(rule = never())
+            permissionStateRepo.currentMockState().requestMock.verify(rule = never())
             scanner.startMonitoringPermissionsMock.verify()
             scanner.startMonitoringHardwareEnabledMock.verify(rule = never())
             assertIs<MissingPermissions>(it)
@@ -132,8 +125,6 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
-    @IgnoreJs
-    @IgnoreWasm
     fun testScanning() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
         test {
             assertIs<Idle>(it)
@@ -195,11 +186,6 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             yieldMultiple(100)
             scanner.stopMonitoringPermissionsMock.verify()
             scanner.stopMonitoringHardwareEnabledMock.verify()
-
-            // here to debug this test potentially being unstable
-            println("peek current state: ${bluetoothClient.scanningStateRepo.peekState()}")
-            delay(100)
-            println("peek current state after delay: ${bluetoothClient.scanningStateRepo.peekState()}")
         }
 
         test {

@@ -34,6 +34,7 @@ import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.base.BaseFlowTest
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.verifyWithin
 import com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder
 import com.splendo.kaluga.test.bluetooth.characteristic
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
@@ -46,11 +47,14 @@ import com.splendo.kaluga.test.bluetooth.scanner.MockBaseScanner
 import com.splendo.kaluga.test.permissions.MockPermissionState
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.seconds
 
 abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : BluetoothFlowTest.Context<C>, T> : BaseFlowTest<C, TC, T, Flow<T>>(logger = null) {
 
@@ -246,7 +250,15 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
 
         fun scanDevice(rssi: RSSI = configuration.rssi, advertisementData: BaseAdvertisementData = configuration.advertisementData) =
             super.scanDevice(device, deviceWrapper, rssi, advertisementData)
-        suspend fun connectDevice() = connectDevice(device, connectionManager)
+        suspend fun connectDevice() {
+            deviceConnectionManagerBuilder.createMock.verifyWithin()
+            withTimeout(5.seconds) {
+                while (deviceConnectionManagerBuilder.createdDeviceConnectionManager.isEmpty()) {
+                    delay(10)
+                }
+            }
+            return connectDevice(device, connectionManager)
+        }
         suspend fun disconnectDevice() = disconnectDevice(device, connectionManager)
     }
     class DeviceContext(configuration: Configuration.DeviceWithoutService, coroutineScope: CoroutineScope) :

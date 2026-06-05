@@ -22,15 +22,11 @@ import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.verifyWithin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import com.splendo.kaluga.test.base.IgnoreJs
-import com.splendo.kaluga.test.base.IgnoreWasm
 import kotlin.test.Test
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@IgnoreJs
-@IgnoreWasm
 class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, RemoteDescriptor?>() {
 
     override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithDescriptor, CoroutineScope) -> DescriptorContext = { configuration, scope ->

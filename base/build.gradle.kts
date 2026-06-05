@@ -148,10 +148,20 @@ tasks.register("generateAvailableLocales") {
     outputs.file(outputFile)
 
     doLast {
+        // CLDR omits "default content" locales — those whose data is identical to their parent, e.g.
+        // `en-US` (en's default content) — from `availableLocales`, so they must be unioned back in or
+        // common locales like en-US/de-DE/es-ES would be missing from KalugaLocale.availableLocales.
+        @Suppress("UNCHECKED_CAST")
+        val defaultContent = run {
+            val dcUrl = "https://raw.githubusercontent.com/unicode-org/cldr-json/$cldrVersion/cldr-json/cldr-core/defaultContent.json"
+            val dcJson = URI(dcUrl).toURL().openStream().bufferedReader().use { it.readText() }
+            (JsonSlurper().parseText(dcJson) as Map<String, Any>)["defaultContent"] as List<String>
+        }
         val count = generateFromCldr(cldrVersion, "cldr-core/availableLocales.json", "generateAvailableLocales", outputFile, "com.splendo.kaluga.base.utils") { root ->
             @Suppress("UNCHECKED_CAST")
             // "full" is the exhaustive CLDR locale set (the "modern" subset is empty as of recent CLDR).
-            val tags = ((root["availableLocales"] as Map<String, Any>)["full"] as List<String>).filterNot { it == "root" }.sorted()
+            val full = (root["availableLocales"] as Map<String, Any>)["full"] as List<String>
+            val tags = (full + defaultContent).filterNot { it == "root" }.toSortedSet().toList()
             buildString {
                 appendLine("internal val availableLocaleTags: List<String> = listOf(")
                 for (tag in tags) appendLine("    \"$tag\",")
