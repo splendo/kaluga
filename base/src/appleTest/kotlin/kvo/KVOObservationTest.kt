@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.kvo
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.flow.first
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSKeyValueObservingOptionInitial
@@ -29,7 +29,7 @@ import kotlin.test.assertEquals
 class KVOObservationTest {
 
     @Test
-    fun testObserveKeyValueAsFlow() = runBlocking {
+    fun testObserveKeyValueAsFlow() = testRunBlocking {
         val kvoTestClass = NSDateFormatter()
         val flow = kvoTestClass.observeKeyValueAsFlow<NSLocale>("locale", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew)
         assertEquals(kvoTestClass.locale, flow.first())

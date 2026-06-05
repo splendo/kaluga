@@ -18,6 +18,7 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.properties.ReadOnlyProperty
 import kotlin.test.Test
@@ -27,7 +28,7 @@ import kotlin.test.assertEquals
 class ReadOnlyPropertyTest : ObservableBaseTest() {
 
     @Test
-    fun testReadOnlyPropertyDefaultObservable() = runBlocking {
+    fun testReadOnlyPropertyDefaultObservable() = testRunBlocking {
         val nullableString = MutableStateFlow<String?>(null)
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> nullableString.value }
 
@@ -54,7 +55,7 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testReadOnlyPropertyObservable() = runBlocking {
+    fun testReadOnlyPropertyObservable() = testRunBlocking {
         val s = MutableStateFlow("initial")
         val ro = ReadOnlyProperty<Any?, String> { _, _ -> s.value }
 
@@ -78,7 +79,7 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
 
     @Test
     fun testReadOnlyNullablePropertyObservableWithInitialNull() = testReadOnlyNullablePropertyObservable(null)
-    private fun testReadOnlyNullablePropertyObservable(initial: String?) = runBlocking {
+    private fun testReadOnlyNullablePropertyObservable(initial: String?) = testRunBlocking {
         val s = MutableStateFlow(initial)
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> s.value }
 

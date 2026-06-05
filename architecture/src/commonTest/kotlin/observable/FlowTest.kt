@@ -20,6 +20,7 @@ package com.splendo.kaluga.architecture.observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
@@ -53,7 +54,7 @@ class FlowTest : ObservableBaseTest() {
     )
 
     @Test
-    fun testFlow() = runBlocking {
+    fun testFlow() = testRunBlocking {
         withContext(Dispatchers.Main.immediate) {
             val flow = flowOfWithDelays("1", "2", "3")
             val o = flow.toUninitializedObservable(this)
@@ -69,7 +70,7 @@ class FlowTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testInitializedFlow() = runBlocking(Dispatchers.Default) {
+    fun testInitializedFlow() = testRunBlocking(Dispatchers.Default) {
         val flow = flowOfWithDelays("1", "2", "3")
         val o = flow.toInitializedObservable("initial", this)
 
@@ -84,7 +85,7 @@ class FlowTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testNullableFlow() = runBlocking {
+    fun testNullableFlow() = testRunBlocking {
         val flow = flowOfWithDelays("1", null, "3")
         val o = flow.toUninitializedObservable(this)
 
@@ -98,7 +99,7 @@ class FlowTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testNullableDefaultFlow() = runBlocking {
+    fun testNullableDefaultFlow() = testRunBlocking {
         val flow = flowOfWithDelays("1", null, "3")
         val o = flow.toDefaultObservable("default", "initial", this)
 
