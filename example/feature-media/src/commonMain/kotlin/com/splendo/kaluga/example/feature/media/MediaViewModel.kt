@@ -27,6 +27,7 @@ import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.MediaSurfaceProvider
+import com.splendo.kaluga.media.Resolution
 import com.splendo.kaluga.media.compose.ComposeMediaSurfaceProvider
 import com.splendo.kaluga.media.duration
 import com.splendo.kaluga.media.isVideo
@@ -37,6 +38,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -97,6 +100,15 @@ class MediaViewModel(val surfaceProvider: MediaSurfaceProvider, builder: BaseMed
         }.stateIn(viewModelScope, SharingStarted.Eagerly, 0f)
     val volume: StateFlow<Float> = mediaPlayer.currentVolume
         .stateIn(viewModelScope, SharingStarted.Eagerly, 1f)
+    val aspectRatio: StateFlow<Float> = mediaPlayer.playableMedia.flatMapLatest { media ->
+        media?.resolution ?: flowOf(Resolution.ZERO)
+    }.map { resolution ->
+        if (resolution.height == 0) {
+            1.0f
+        } else {
+            resolution.width.toFloat() / resolution.height.toFloat()
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, 1.0f)
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()

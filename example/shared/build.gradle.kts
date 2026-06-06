@@ -5,6 +5,8 @@ plugins {
     id("com.splendo.kaluga.plugin")
     alias(libs.plugins.kotlin.serialization)
     id(libs.plugins.compose.get().pluginId)
+    // Aggregates the Compose resources (the Material Icons font in :core-arch) into the iOS/macOS frameworks.
+    alias(libs.plugins.jetbrains.compose)
 }
 
 /** Mobile-only feature modules. Wired into iOS + Android variants of the framework (not macOS
@@ -123,4 +125,10 @@ afterEvaluate {
             }
         }
     }
+}
+
+// ktlint (lintKotlin/formatKotlin) would otherwise scan the generated Compose resource accessors
+// aggregated from dependencies (e.g. the Material Icons font in :core-arch).
+tasks.withType<org.jmailen.gradle.kotlinter.tasks.ConfigurableKtLintTask>().configureEach {
+    exclude { it.file.path.contains("/generated/") }
 }

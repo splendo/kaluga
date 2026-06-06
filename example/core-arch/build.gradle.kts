@@ -1,6 +1,7 @@
 plugins {
     id("com.splendo.kaluga.plugin")
     id(libs.plugins.compose.get().pluginId)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kaluga {
@@ -27,4 +28,20 @@ kaluga {
             }
         }
     }
+}
+
+// Bundles the Material Icons font (used to override `LocalIconSet` so the icon buttons render with the
+// Material glyphs on every platform) as a Compose resource.
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.splendo.kaluga.example.arch.generated.resources"
+}
+
+dependencies {
+    "commonMainImplementation"(compose.components.resources)
+}
+
+// ktlint (lintKotlin/formatKotlin) would otherwise scan the generated Compose resource accessors.
+tasks.withType<org.jmailen.gradle.kotlinter.tasks.ConfigurableKtLintTask>().configureEach {
+    exclude { it.file.path.contains("/generated/") }
 }

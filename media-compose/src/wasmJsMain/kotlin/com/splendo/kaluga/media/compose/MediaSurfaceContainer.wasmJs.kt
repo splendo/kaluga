@@ -22,6 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
@@ -36,6 +39,11 @@ private var surfaceElementCounter = 0
  * [onGloballyPositioned]) to overlay the area this composable occupies, and binds it as the
  * [MediaSurface]; the container — and the video the `MediaManager` appends to it — is removed on
  * composition exit. Positions are in CSS pixels, converted from Compose pixels through the current density.
+ *
+ * The container sits *behind* the Compose canvas, and this composable clears its own rectangle to
+ * transparent ([BlendMode.Clear]) so the video shows through that hole. Everything Compose draws after the
+ * surface — controls, overlays, dialogs — therefore composites on top of the video instead of being hidden
+ * behind a DOM element painted over the canvas.
  */
 @Composable
 actual fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier) {
@@ -57,16 +65,18 @@ actual fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modif
     }
 
     Box(
-        modifier = modifier.onGloballyPositioned { coordinates ->
-            val position = coordinates.positionInWindow()
-            positionSurfaceElement(
-                elementId,
-                (position.x / density).toDouble(),
-                (position.y / density).toDouble(),
-                (coordinates.size.width / density).toDouble(),
-                (coordinates.size.height / density).toDouble(),
-            )
-        },
+        modifier = modifier
+            .drawBehind { drawRect(Color.Transparent, blendMode = BlendMode.Clear) }
+            .onGloballyPositioned { coordinates ->
+                val position = coordinates.positionInWindow()
+                positionSurfaceElement(
+                    elementId,
+                    (position.x / density).toDouble(),
+                    (position.y / density).toDouble(),
+                    (coordinates.size.width / density).toDouble(),
+                    (coordinates.size.height / density).toDouble(),
+                )
+            },
     )
 }
 
@@ -79,6 +89,10 @@ private fun createSurfaceElement(id: String) {
         container.style.position = 'fixed';
         container.style.overflow = 'hidden';
         container.style.pointerEvents = 'none';
+        container.style.zIndex = '-1';
+        // Opaque backing so the cleared canvas hole shows the media surface (and video letterbox) rather
+        // than punching through to the page background where the video does not paint.
+        container.style.backgroundColor = '#000';
         document.body.appendChild(container);
         """,
     )

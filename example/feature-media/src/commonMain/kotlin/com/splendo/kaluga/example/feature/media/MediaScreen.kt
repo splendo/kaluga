@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,7 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import com.splendo.kaluga.example.arch.IconSet
+import com.splendo.kaluga.example.arch.LocalIconSet
 import com.splendo.kaluga.lifecycle.compose.AttachToCompose
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.compose.MediaSurfaceContainer
@@ -51,24 +56,16 @@ private const val DEFAULT_AUDIO_URL = "https://interactive-examples.mdn.mozilla.
 private const val DEFAULT_VIDEO_URL = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
 private val RATE_OPTIONS = listOf(0.5f, 1.0f, 2.0f, 4.0f)
 
-// Plain Unicode glyphs render across Android, iOS, and macOS-Native Compose without an extra
-// `material-icons` dep, which CMP 1.11 doesn't publish a macos-native variant for.
-private const val GLYPH_PLAY = "▶"
-private const val GLYPH_PAUSE = "⏸"
-private const val GLYPH_STOP = "⏹"
-private const val GLYPH_REPEAT = "↻"
-private const val GLYPH_REPEAT_ONE = "↺"
-private const val GLYPH_RATE = "»"
-private const val GLYPH_VOLUME = "🔊"
-
 @Composable
 fun MediaScreen(modifier: Modifier = Modifier) {
+    val icons = LocalIconSet.current
     val viewModel = koinViewModel<MediaViewModel>().AttachToCompose()
     val controls by viewModel.controls.collectAsState()
     val progress by viewModel.progress.collectAsState()
     val playTime by viewModel.playTimeLabel.collectAsState()
     val totalDuration by viewModel.totalDurationLabel.collectAsState()
     val volume by viewModel.volume.collectAsState()
+    val aspectRatio by viewModel.aspectRatio.collectAsState()
     val isPreparing by viewModel.isPreparing.collectAsState()
     val viewState by viewModel.viewState.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -96,7 +93,7 @@ fun MediaScreen(modifier: Modifier = Modifier) {
 
                 MediaViewModel.ViewState.VIDEO -> MediaSurfaceContainer(
                     provider = viewModel.surfaceProvider,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxHeight().aspectRatio(aspectRatio, matchHeightConstraintsFirst = true),
                 )
             }
         }
@@ -122,19 +119,19 @@ fun MediaScreen(modifier: Modifier = Modifier) {
                 FilledIconButton(
                     enabled = controls.play != null || controls.unpause != null,
                     onClick = { viewModel.playOrUnpause() },
-                ) { Text(GLYPH_PLAY) }
+                ) { Icon(icons.play, icons.fontFamily) }
                 FilledIconButton(
                     enabled = controls.pause != null,
                     onClick = { viewModel.pause() },
-                ) { Text(GLYPH_PAUSE) }
+                ) { Icon(icons.pause, icons.fontFamily) }
                 FilledIconButton(
                     enabled = controls.stop != null,
                     onClick = { viewModel.stop() },
-                ) { Text(GLYPH_STOP) }
+                ) { Icon(icons.stop, icons.fontFamily) }
                 FilledIconButton(
                     enabled = controls.setLoopMode != null,
                     onClick = { viewModel.toggleLoopMode() },
-                ) { Text(loopGlyph(controls.setLoopMode?.currentLoopMode)) }
+                ) { LoopIcon(controls.setLoopMode?.currentLoopMode, icons) }
             }
 
             Row(
@@ -145,11 +142,17 @@ fun MediaScreen(modifier: Modifier = Modifier) {
                     enabled = controls.setRate != null,
                     onClick = { showRateDialog = true },
                     modifier = Modifier.weight(1f),
-                ) { Text("$GLYPH_RATE ${controls.setRate?.currentRate ?: 1f}x") }
+                ) {
+                    Icon(icons.rate, icons.fontFamily)
+                    Text(" ${controls.setRate?.currentRate ?: 1f}x")
+                }
                 Button(
                     onClick = { showVolumeDialog = true },
                     modifier = Modifier.weight(1f),
-                ) { Text("$GLYPH_VOLUME ${(volume * 100).toInt()}%") }
+                ) {
+                    Icon(icons.volume, icons.fontFamily)
+                    Text(" ${(volume * 100).toInt()}%")
+                }
             }
         }
 
@@ -263,8 +266,21 @@ private fun <T> OptionsDialog(title: String, options: List<Pair<String, T>>, onD
     )
 }
 
-private fun loopGlyph(mode: PlaybackState.LoopMode?): String = when (mode) {
-    is PlaybackState.LoopMode.LoopingForever -> GLYPH_REPEAT
-    is PlaybackState.LoopMode.LoopingForFixedNumber -> "$GLYPH_REPEAT_ONE${mode.loops}"
-    PlaybackState.LoopMode.NotLooping, null -> GLYPH_REPEAT
+// Renders a single icon glyph in the icon font; the surrounding label text keeps the default font so
+// digits/units still render when the icon font (e.g. Material Icons) has no glyphs for them.
+@Composable
+private fun Icon(glyph: String, fontFamily: FontFamily) {
+    Text(glyph, fontFamily = fontFamily)
+}
+
+@Composable
+private fun LoopIcon(mode: PlaybackState.LoopMode?, icons: IconSet) {
+    when (mode) {
+        is PlaybackState.LoopMode.LoopingForFixedNumber -> {
+            Icon(icons.repeatOne, icons.fontFamily)
+            Text("${mode.loops}")
+        }
+
+        else -> Icon(icons.repeat, icons.fontFamily)
+    }
 }

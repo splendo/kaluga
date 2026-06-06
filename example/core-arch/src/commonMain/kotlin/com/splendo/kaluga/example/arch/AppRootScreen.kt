@@ -34,6 +34,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -77,24 +78,26 @@ fun AppRootScreen(onNativeLaunch: (id: String) -> Unit = {}, modifier: Modifier 
             DeepLinkBus.consume()
         }
     }
-    NavHost(
-        navController = navController,
-        startDestination = Routes.ROOT,
-        modifier = modifier.fillMaxSize(),
-    ) {
-        composable(Routes.ROOT) {
-            RootScaffold(
-                contributions = contributions,
-                onSelected = { contribution ->
-                    when (contribution) {
-                        is FeatureContribution.Compose -> navController.navigate(contribution.id)
-                        is FeatureContribution.NativeLaunch -> onNativeLaunch(contribution.id)
-                    }
-                },
-            )
-        }
-        contributions.filterIsInstance<FeatureContribution.Compose>().forEach { contribution ->
-            contribution.register(this, navController)
+    CompositionLocalProvider(LocalIconSet provides rememberMaterialIconSet()) {
+        NavHost(
+            navController = navController,
+            startDestination = Routes.ROOT,
+            modifier = modifier.fillMaxSize(),
+        ) {
+            composable(Routes.ROOT) {
+                RootScaffold(
+                    contributions = contributions,
+                    onSelected = { contribution ->
+                        when (contribution) {
+                            is FeatureContribution.Compose -> navController.navigate(contribution.id)
+                            is FeatureContribution.NativeLaunch -> onNativeLaunch(contribution.id)
+                        }
+                    },
+                )
+            }
+            contributions.filterIsInstance<FeatureContribution.Compose>().forEach { contribution ->
+                contribution.register(this, navController)
+            }
         }
     }
 }
@@ -150,7 +153,8 @@ fun DetailScaffold(title: String, onBack: () -> Unit, content: @Composable () ->
             TopAppBar(
                 title = { Text(title) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Text("<") }
+                    val icons = LocalIconSet.current
+                    IconButton(onClick = onBack) { Text(icons.back, fontFamily = icons.fontFamily) }
                 },
             )
         },
