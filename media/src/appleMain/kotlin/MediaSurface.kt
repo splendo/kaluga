@@ -24,9 +24,8 @@ typealias MediaSurfaceBinding = (AVPlayer?) -> Unit
 
 /**
  * A surface on which the video component of a [PlayableMedia] can be rendered.
- * Shared across iOS + macOS — the iOS-only `AVPlayerViewController` and macOS-only
- * `AVPlayerView` factory constructors live in `iosMain`/`macosMain` respectively, alongside
- * the platform-specific `MediaSurfaceProvider` implementations.
+ * Shared across iOS + macOS. A view constructs a [MediaSurface] (e.g. from its [AVPlayerLayer]) and binds
+ * it to a [MediaSurfaceBinder].
  *
  * @property bind the [MediaSurfaceBinding] that wires the surface to an [AVPlayer].
  */
@@ -38,4 +37,14 @@ actual data class MediaSurface(val bind: MediaSurfaceBinding) {
     constructor(avPlayerLayer: AVPlayerLayer) : this(
         { avPlayerLayer.player = it },
     )
+}
+
+/**
+ * Binds this [AVPlayerLayer] to [binder] so a [MediaPlayer] using that binder renders its video here.
+ * Call [MediaSurfaceBinder.unbind] to detach. Simplifies non-Compose video layout, mirroring
+ * `SurfaceView.bind` on Android.
+ * @param binder the [MediaSurfaceBinder] to bind to, typically obtained from [MediaPlayer.surfaceBinder].
+ */
+fun AVPlayerLayer.bind(binder: MediaSurfaceBinder) {
+    binder.bind(MediaSurface(this))
 }

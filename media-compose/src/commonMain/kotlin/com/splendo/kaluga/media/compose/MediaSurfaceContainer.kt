@@ -19,32 +19,12 @@ package com.splendo.kaluga.media.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.splendo.kaluga.media.MediaSurface
-import com.splendo.kaluga.media.MediaSurfaceProvider
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.splendo.kaluga.media.MediaSurfaceBinder
 
 /**
- * A [MediaSurfaceProvider] whose [surface] is populated by a [MediaSurfaceContainer] composable
- * — the inverse of the platform "walk the view tree to find a SurfaceView" providers. Construct
- * one, hand it to a `MediaManager`, and render it inside Compose via [MediaSurfaceContainer];
- * the container creates the platform surface and pushes it into [surface].
- */
-class ComposeMediaSurfaceProvider : MediaSurfaceProvider {
-
-    private val _surface = MutableStateFlow<MediaSurface?>(null)
-    override val surface: Flow<MediaSurface?> = _surface.asStateFlow()
-
-    internal fun set(surface: MediaSurface?) {
-        _surface.value = surface
-    }
-}
-
-/**
- * Hosts a platform-native video surface and binds the resulting [MediaSurface] to [provider]. The surface is detached on composition exit.
- *
- * [provider] is the generic [MediaSurfaceProvider] so that view models can depend on the interface; only a [ComposeMediaSurfaceProvider] can receive a surface, so any other provider renders nothing.
+ * Hosts a platform-native video surface and binds the resulting [com.splendo.kaluga.media.MediaSurface]
+ * to [binder] (via [MediaSurfaceBinder.bind]); the surface is detached ([MediaSurfaceBinder.unbind]) on
+ * composition exit. Obtain [binder] from `MediaPlayer.surfaceBinder`.
  */
 @Composable
-expect fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier = Modifier)
+expect fun MediaSurfaceContainer(binder: MediaSurfaceBinder, modifier: Modifier = Modifier)

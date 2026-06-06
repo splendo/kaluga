@@ -13,7 +13,6 @@ kaluga {
                 api(project(":core-arch"))
                 api("com.splendo.kaluga:media:${project.rootProject.version}")
                 api("com.splendo.kaluga:media-compose:${project.rootProject.version}")
-                api("com.splendo.kaluga:lifecycle-compose:${project.rootProject.version}")
             }
         }
     }

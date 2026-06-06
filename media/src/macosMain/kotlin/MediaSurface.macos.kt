@@ -24,3 +24,13 @@ import platform.AVKit.AVPlayerView
 fun MediaSurface(playerView: AVPlayerView): MediaSurface = MediaSurface(
     { playerView.player = it },
 )
+
+/**
+ * Binds this [AVPlayerView] to [binder] so a [MediaPlayer] using that binder renders its video here (the
+ * view handles its own layout). Call [MediaSurfaceBinder.unbind] to detach. This is the macOS path for
+ * video outside the Compose tree (CMP-macOS-Native has no AppKit interop).
+ * @param binder the [MediaSurfaceBinder] to bind to, typically obtained from [MediaPlayer.surfaceBinder].
+ */
+fun AVPlayerView.bind(binder: MediaSurfaceBinder) {
+    binder.bind(MediaSurface(this))
+}

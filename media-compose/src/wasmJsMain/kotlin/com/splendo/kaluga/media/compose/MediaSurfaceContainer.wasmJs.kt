@@ -29,7 +29,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import com.splendo.kaluga.media.MediaSurface
-import com.splendo.kaluga.media.MediaSurfaceProvider
+import com.splendo.kaluga.media.MediaSurfaceBinder
 
 private var surfaceElementCounter = 0
 
@@ -46,20 +46,15 @@ private var surfaceElementCounter = 0
  * behind a DOM element painted over the canvas.
  */
 @Composable
-actual fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier) {
-    if (provider !is ComposeMediaSurfaceProvider) {
-        Box(modifier)
-        return
-    }
-
+actual fun MediaSurfaceContainer(binder: MediaSurfaceBinder, modifier: Modifier) {
     val elementId = remember { "kaluga-media-surface-${surfaceElementCounter++}" }
     val density = LocalDensity.current.density
 
-    DisposableEffect(provider, elementId) {
+    DisposableEffect(binder, elementId) {
         createSurfaceElement(elementId)
-        provider.set(MediaSurface(elementId))
+        binder.bind(MediaSurface(elementId))
         onDispose {
-            provider.set(null)
+            binder.unbind()
             removeSurfaceElement(elementId)
         }
     }

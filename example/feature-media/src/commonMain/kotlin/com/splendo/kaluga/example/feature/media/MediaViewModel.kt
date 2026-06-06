@@ -17,18 +17,16 @@
 
 package com.splendo.kaluga.example.feature.media
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.lifecycle.compose.LifecycleViewModel
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.DefaultMediaPlayer
 import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
-import com.splendo.kaluga.media.MediaSurfaceProvider
 import com.splendo.kaluga.media.Resolution
-import com.splendo.kaluga.media.compose.ComposeMediaSurfaceProvider
 import com.splendo.kaluga.media.duration
 import com.splendo.kaluga.media.isVideo
 import com.splendo.kaluga.media.playTime
@@ -49,30 +47,23 @@ import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Demoes the [LifecycleViewModel] pattern from `:lifecycle-compose` together with the
- * [ComposeMediaSurfaceProvider] / [MediaSurfaceContainer] interop from `:media-compose`:
- *
- * - The view model owns a [ComposeMediaSurfaceProvider] and declares it as a
- *   [com.splendo.kaluga.lifecycle.LifecycleSubscribable] via `super(subscribables = …)`. The
- *   screen calls `vm.AttachToCompose()` once and any lifecycle wiring (a no-op for the
- *   Compose-driven provider, but the same code path Activity/UIViewController/NSWindow providers
- *   would use) is done.
- * - [DefaultMediaPlayer] is wired with that provider, so a [MediaSurfaceContainer] composed in the
- *   screen pushes its native surface straight into the player.
+ * Demoes the `MediaSurfaceBinder` / `MediaSurfaceContainer` interop from `:media-compose`: the player
+ * exposes [surfaceBinder], and a `MediaSurfaceContainer` composed in the screen binds its native surface
+ * to it — no host lifecycle wiring involved.
  */
-class MediaViewModel(val surfaceProvider: MediaSurfaceProvider, builder: BaseMediaManager.Builder) : LifecycleViewModel(subscribables = listOf(surfaceProvider)) {
-
-    constructor(builder: BaseMediaManager.Builder) : this(ComposeMediaSurfaceProvider(), builder)
+class MediaViewModel(builder: BaseMediaManager.Builder) : ViewModel() {
 
     enum class ViewState { NO_MEDIA_SELECTED, AUDIO, VIDEO }
 
     private val dispatcher = singleThreadDispatcher("MediaPlayer")
     private val playerJob = SupervisorJob()
     private val mediaPlayer = DefaultMediaPlayer(
-        surfaceProvider,
         builder,
         playerJob + dispatcher,
     )
+
+    /** The binder a [MediaSurfaceContainer] binds its surface to. */
+    val surfaceBinder get() = mediaPlayer.surfaceBinder
 
     val controls: StateFlow<MediaPlayer.Controls> =
         mediaPlayer.controls.stateIn(viewModelScope, SharingStarted.Eagerly, MediaPlayer.Controls())

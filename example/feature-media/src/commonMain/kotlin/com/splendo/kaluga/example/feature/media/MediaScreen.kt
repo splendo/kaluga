@@ -46,7 +46,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.example.arch.IconSet
 import com.splendo.kaluga.example.arch.LocalIconSet
-import com.splendo.kaluga.lifecycle.compose.AttachToCompose
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.compose.MediaSurfaceContainer
 import com.splendo.kaluga.media.mediaSourceFromUrl
@@ -59,7 +58,7 @@ private val RATE_OPTIONS = listOf(0.5f, 1.0f, 2.0f, 4.0f)
 @Composable
 fun MediaScreen(modifier: Modifier = Modifier) {
     val icons = LocalIconSet.current
-    val viewModel = koinViewModel<MediaViewModel>().AttachToCompose()
+    val viewModel = koinViewModel<MediaViewModel>()
     val controls by viewModel.controls.collectAsState()
     val progress by viewModel.progress.collectAsState()
     val playTime by viewModel.playTimeLabel.collectAsState()
@@ -92,7 +91,7 @@ fun MediaScreen(modifier: Modifier = Modifier) {
                 MediaViewModel.ViewState.AUDIO -> Text("Audio")
 
                 MediaViewModel.ViewState.VIDEO -> MediaSurfaceContainer(
-                    provider = viewModel.surfaceProvider,
+                    binder = viewModel.surfaceBinder,
                     modifier = Modifier.fillMaxHeight().aspectRatio(aspectRatio, matchHeightConstraintsFirst = true),
                 )
             }

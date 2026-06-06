@@ -81,6 +81,8 @@ abstract interface com.splendo.kaluga.media/MediaPlayer : com.splendo.kaluga.med
         abstract fun <get-controls>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaPlayer.Controls> // com.splendo.kaluga.media/MediaPlayer.controls.<get-controls>|<get-controls>(){}[0]
     abstract val playableMedia // com.splendo.kaluga.media/MediaPlayer.playableMedia|{}playableMedia[0]
         abstract fun <get-playableMedia>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.media/MediaPlayer.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+    abstract val surfaceBinder // com.splendo.kaluga.media/MediaPlayer.surfaceBinder|{}surfaceBinder[0]
+        abstract fun <get-surfaceBinder>(): com.splendo.kaluga.media/MediaSurfaceBinder // com.splendo.kaluga.media/MediaPlayer.surfaceBinder.<get-surfaceBinder>|<get-surfaceBinder>(){}[0]
 
     abstract fun close() // com.splendo.kaluga.media/MediaPlayer.close|close(){}[0]
     abstract suspend fun awaitCompletion() // com.splendo.kaluga.media/MediaPlayer.awaitCompletion|awaitCompletion(){}[0]
@@ -208,11 +210,6 @@ abstract interface com.splendo.kaluga.media/MediaPlayer : com.splendo.kaluga.med
 
 abstract interface com.splendo.kaluga.media/MediaSurfaceController { // com.splendo.kaluga.media/MediaSurfaceController|null[0]
     abstract suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.media/MediaSurfaceController.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
-}
-
-abstract interface com.splendo.kaluga.media/MediaSurfaceProvider : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.media/MediaSurfaceProvider|null[0]
-    abstract val surface // com.splendo.kaluga.media/MediaSurfaceProvider.surface|{}surface[0]
-        abstract fun <get-surface>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaSurface?> // com.splendo.kaluga.media/MediaSurfaceProvider.surface.<get-surface>|<get-surface>(){}[0]
 }
 
 abstract interface com.splendo.kaluga.media/PlayableMedia { // com.splendo.kaluga.media/PlayableMedia|null[0]
@@ -366,7 +363,7 @@ sealed interface com.splendo.kaluga.media/PlaybackState : com.splendo.kaluga.bas
 }
 
 abstract class com.splendo.kaluga.media/BaseMediaManager : com.splendo.kaluga.media/MediaManager, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.media/BaseMediaManager|null[0]
-    constructor <init>(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/BaseMediaManager.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceBinder?, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/BaseMediaManager.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceBinder?;kotlin.coroutines.CoroutineContext){}[0]
 
     open val coroutineContext // com.splendo.kaluga.media/BaseMediaManager.coroutineContext|{}coroutineContext[0]
         open fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.media/BaseMediaManager.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
@@ -388,7 +385,7 @@ abstract class com.splendo.kaluga.media/BaseMediaManager : com.splendo.kaluga.me
     open fun handleSeekCompleted(kotlin/Boolean) // com.splendo.kaluga.media/BaseMediaManager.handleSeekCompleted|handleSeekCompleted(kotlin.Boolean){}[0]
 
     abstract interface Builder { // com.splendo.kaluga.media/BaseMediaManager.Builder|null[0]
-        abstract fun create(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/BaseMediaManager // com.splendo.kaluga.media/BaseMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+        abstract fun create(com.splendo.kaluga.media/MediaSurfaceBinder?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/BaseMediaManager // com.splendo.kaluga.media/BaseMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceBinder?;kotlin.coroutines.CoroutineContext){}[0]
     }
 }
 
@@ -414,14 +411,14 @@ final class com.splendo.kaluga.media/DefaultMediaManager : com.splendo.kaluga.me
         constructor <init>(com.splendo.kaluga.media/DefaultMediaManager.Settings) // com.splendo.kaluga.media/DefaultMediaManager.Builder.<init>|<init>(com.splendo.kaluga.media.DefaultMediaManager.Settings){}[0]
 
         // Targets: [apple]
-        final fun create(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/DefaultMediaManager // com.splendo.kaluga.media/DefaultMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+        final fun create(com.splendo.kaluga.media/MediaSurfaceBinder?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/DefaultMediaManager // com.splendo.kaluga.media/DefaultMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceBinder?;kotlin.coroutines.CoroutineContext){}[0]
 
         // Targets: [js, wasmJs]
-        final fun create(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/BaseMediaManager // com.splendo.kaluga.media/DefaultMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+        final fun create(com.splendo.kaluga.media/MediaSurfaceBinder?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/BaseMediaManager // com.splendo.kaluga.media/DefaultMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceBinder?;kotlin.coroutines.CoroutineContext){}[0]
     }
 
     // Targets: [apple]
-    constructor <init>(com.splendo.kaluga.media/MediaSurfaceProvider?, com.splendo.kaluga.media/DefaultMediaManager.Settings, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaManager.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceProvider?;com.splendo.kaluga.media.DefaultMediaManager.Settings;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceBinder?, com.splendo.kaluga.media/DefaultMediaManager.Settings, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaManager.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceBinder?;com.splendo.kaluga.media.DefaultMediaManager.Settings;kotlin.coroutines.CoroutineContext){}[0]
 
     // Targets: [apple]
     final class Settings { // com.splendo.kaluga.media/DefaultMediaManager.Settings|null[0]
@@ -442,7 +439,9 @@ final class com.splendo.kaluga.media/DefaultMediaManager : com.splendo.kaluga.me
 }
 
 final class com.splendo.kaluga.media/DefaultMediaPlayer : com.splendo.kaluga.media/MediaPlayer, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.media/DefaultMediaPlayer|null[0]
-    constructor <init>(com.splendo.kaluga.media/MediaSurfaceProvider?, com.splendo.kaluga.media/BaseMediaManager.Builder, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaPlayer.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceProvider?;com.splendo.kaluga.media.BaseMediaManager.Builder;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(com.splendo.kaluga.media/BaseMediaManager.Builder, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaPlayer.<init>|<init>(com.splendo.kaluga.media.BaseMediaManager.Builder;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceBinder, com.splendo.kaluga.media/BaseMediaManager.Builder, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaPlayer.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceBinder;com.splendo.kaluga.media.BaseMediaManager.Builder;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceBinder, kotlin/Function1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.media/BasePlaybackStateRepo>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaPlayer.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceBinder;kotlin.Function1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.media.BasePlaybackStateRepo>;kotlin.coroutines.CoroutineContext){}[0]
     constructor <init>(kotlin/Function1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.media/BasePlaybackStateRepo>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaPlayer.<init>|<init>(kotlin.Function1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.media.BasePlaybackStateRepo>;kotlin.coroutines.CoroutineContext){}[0]
 
     final val controls // com.splendo.kaluga.media/DefaultMediaPlayer.controls|{}controls[0]
@@ -453,6 +452,8 @@ final class com.splendo.kaluga.media/DefaultMediaPlayer : com.splendo.kaluga.med
         final fun <get-currentVolume>(): kotlinx.coroutines.flow/Flow<kotlin/Float> // com.splendo.kaluga.media/DefaultMediaPlayer.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
     final val playableMedia // com.splendo.kaluga.media/DefaultMediaPlayer.playableMedia|{}playableMedia[0]
         final fun <get-playableMedia>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.media/DefaultMediaPlayer.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+    final val surfaceBinder // com.splendo.kaluga.media/DefaultMediaPlayer.surfaceBinder|{}surfaceBinder[0]
+        final fun <get-surfaceBinder>(): com.splendo.kaluga.media/MediaSurfaceBinder // com.splendo.kaluga.media/DefaultMediaPlayer.surfaceBinder.<get-surfaceBinder>|<get-surfaceBinder>(){}[0]
 
     final fun close() // com.splendo.kaluga.media/DefaultMediaPlayer.close|close(){}[0]
     final suspend fun awaitCompletion() // com.splendo.kaluga.media/DefaultMediaPlayer.awaitCompletion|awaitCompletion(){}[0]
@@ -589,6 +590,13 @@ final class com.splendo.kaluga.media/MediaSurface { // com.splendo.kaluga.media/
     // Targets: [js, wasmJs]
     final val elementId // com.splendo.kaluga.media/MediaSurface.elementId|{}elementId[0]
         final fun <get-elementId>(): kotlin/String // com.splendo.kaluga.media/MediaSurface.elementId.<get-elementId>|<get-elementId>(){}[0]
+}
+
+final class com.splendo.kaluga.media/MediaSurfaceBinder { // com.splendo.kaluga.media/MediaSurfaceBinder|null[0]
+    constructor <init>(com.splendo.kaluga.logging/Logger = ...) // com.splendo.kaluga.media/MediaSurfaceBinder.<init>|<init>(com.splendo.kaluga.logging.Logger){}[0]
+
+    final fun bind(com.splendo.kaluga.media/MediaSurface) // com.splendo.kaluga.media/MediaSurfaceBinder.bind|bind(com.splendo.kaluga.media.MediaSurface){}[0]
+    final fun unbind() // com.splendo.kaluga.media/MediaSurfaceBinder.unbind|unbind(){}[0]
 }
 
 final class com.splendo.kaluga.media/Resolution { // com.splendo.kaluga.media/Resolution|null[0]
@@ -902,35 +910,10 @@ final fun com.splendo.kaluga.media/mediaSourceFromUrl(kotlin/String): com.splend
 final suspend fun (com.splendo.kaluga.media/MediaPlayer).com.splendo.kaluga.media/play(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ..., kotlin/Boolean = ...) // com.splendo.kaluga.media/play|play@com.splendo.kaluga.media.MediaPlayer(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;kotlin.Boolean){}[0]
 
 // Targets: [apple]
-abstract class <#A: kotlin/Any?> com.splendo.kaluga.media/BaseMediaSurfaceProvider : com.splendo.kaluga.media/MediaSurfaceProvider { // com.splendo.kaluga.media/BaseMediaSurfaceProvider|null[0]
-    constructor <init>(#A?) // com.splendo.kaluga.media/BaseMediaSurfaceProvider.<init>|<init>(1:0?){}[0]
-
-    open val surface // com.splendo.kaluga.media/BaseMediaSurfaceProvider.surface|{}surface[0]
-        open fun <get-surface>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaSurface?> // com.splendo.kaluga.media/BaseMediaSurfaceProvider.surface.<get-surface>|<get-surface>(){}[0]
-
-    abstract fun (#A).asMediaSurface(): com.splendo.kaluga.media/MediaSurface? // com.splendo.kaluga.media/BaseMediaSurfaceProvider.asMediaSurface|asMediaSurface@1:0(){}[0]
-    final fun update(#A?) // com.splendo.kaluga.media/BaseMediaSurfaceProvider.update|update(1:0?){}[0]
-}
-
-// Targets: [apple]
-final class com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVFoundation/AVPlayerLayer> { // com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider|null[0]
-    constructor <init>(platform.AVFoundation/AVPlayerLayer?) // com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider.<init>|<init>(platform.AVFoundation.AVPlayerLayer?){}[0]
-}
-
-// Targets: [apple]
-final class com.splendo.kaluga.media/BindingMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>> { // com.splendo.kaluga.media/BindingMediaSurfaceProvider|null[0]
-    constructor <init>(kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>?) // com.splendo.kaluga.media/BindingMediaSurfaceProvider.<init>|<init>(kotlin.Function1<platform.AVFoundation.AVPlayer?,kotlin.Unit>?){}[0]
-}
+final fun (platform.AVFoundation/AVPlayerLayer).com.splendo.kaluga.media/bind(com.splendo.kaluga.media/MediaSurfaceBinder) // com.splendo.kaluga.media/bind|bind@platform.AVFoundation.AVPlayerLayer(com.splendo.kaluga.media.MediaSurfaceBinder){}[0]
 
 // Targets: [ios, tvos]
-final class com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerViewController> { // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider|null[0]
-    constructor <init>(platform.AVKit/AVPlayerViewController?) // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerViewController?){}[0]
-}
-
-// Targets: [ios, tvos]
-final class com.splendo.kaluga.media/UIViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.UIKit/UIView> { // com.splendo.kaluga.media/UIViewMediaSurfaceProvider|null[0]
-    constructor <init>(platform.UIKit/UIView?) // com.splendo.kaluga.media/UIViewMediaSurfaceProvider.<init>|<init>(platform.UIKit.UIView?){}[0]
-}
+final fun (platform.AVKit/AVPlayerViewController).com.splendo.kaluga.media/bind(com.splendo.kaluga.media/MediaSurfaceBinder) // com.splendo.kaluga.media/bind|bind@platform.AVKit.AVPlayerViewController(com.splendo.kaluga.media.MediaSurfaceBinder){}[0]
 
 // Targets: [ios, tvos]
 final fun com.splendo.kaluga.media/MediaSurface(platform.AVKit/AVPlayerViewController): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.media/MediaSurface|MediaSurface(platform.AVKit.AVPlayerViewController){}[0]
@@ -964,14 +947,7 @@ final class com.splendo.kaluga.media/URLMediaSource : com.splendo.kaluga.media/M
 }
 
 // Targets: [macosArm64]
-final class com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerView> { // com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider|null[0]
-    constructor <init>(platform.AVKit/AVPlayerView?) // com.splendo.kaluga.media/AVPlayerViewMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerView?){}[0]
-}
-
-// Targets: [macosArm64]
-final class com.splendo.kaluga.media/NSViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AppKit/NSView> { // com.splendo.kaluga.media/NSViewMediaSurfaceProvider|null[0]
-    constructor <init>(platform.AppKit/NSView?) // com.splendo.kaluga.media/NSViewMediaSurfaceProvider.<init>|<init>(platform.AppKit.NSView?){}[0]
-}
+final fun (platform.AVKit/AVPlayerView).com.splendo.kaluga.media/bind(com.splendo.kaluga.media/MediaSurfaceBinder) // com.splendo.kaluga.media/bind|bind@platform.AVKit.AVPlayerView(com.splendo.kaluga.media.MediaSurfaceBinder){}[0]
 
 // Targets: [macosArm64]
 final fun com.splendo.kaluga.media/MediaSurface(platform.AVKit/AVPlayerView): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.media/MediaSurface|MediaSurface(platform.AVKit.AVPlayerView){}[0]

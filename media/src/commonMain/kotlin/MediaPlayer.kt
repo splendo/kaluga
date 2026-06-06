@@ -215,6 +215,11 @@ interface MediaPlayer :
     }
 
     /**
+     * The [MediaSurfaceBinder] a view binds its [MediaSurface] to in order to render the video component.
+     */
+    val surfaceBinder: MediaSurfaceBinder
+
+    /**
      * A [Flow] of the [PlayableMedia] for which the player is controlling playback
      */
     val playableMedia: Flow<PlayableMedia?>
@@ -262,27 +267,47 @@ interface MediaPlayer :
  * @param createPlaybackStateRepo method for creating a [BasePlaybackStateRepo] to manage the [PlaybackState] of this player
  * @param coroutineContext the [CoroutineContext] on which to run the media player
  */
-class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo, coroutineContext: CoroutineContext) :
-    MediaPlayer,
+class DefaultMediaPlayer(
+    override val surfaceBinder: MediaSurfaceBinder,
+    createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo,
+    coroutineContext: CoroutineContext,
+) : MediaPlayer,
     CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaPlayer")) {
 
     /**
-     * Constructor that provides a [BaseMediaManager] to manage media playback
-     * @param mediaSurfaceProvider an optional [MediaSurfaceProvider] to attach to the [BaseMediaManager]
+     * Constructor that creates its own [MediaSurfaceBinder].
+     * @param createPlaybackStateRepo method for creating a [BasePlaybackStateRepo] to manage the [PlaybackState] of this player
+     * @param coroutineContext the [CoroutineContext] on which to run the media player
+     */
+    constructor(createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo, coroutineContext: CoroutineContext) :
+        this(MediaSurfaceBinder(), createPlaybackStateRepo, coroutineContext)
+
+    /**
+     * Constructor that provides a [BaseMediaManager] to manage media playback, wiring it to [surfaceBinder].
+     * @param surfaceBinder the [MediaSurfaceBinder] a view binds its surface to; attached to the [BaseMediaManager]
      * @param mediaManagerBuilder a [BaseMediaManager.Builder] to provide the [BaseMediaManager] to manage playback
      * @param coroutineContext the [CoroutineContext] on which to run the media player
      */
     constructor(
-        mediaSurfaceProvider: MediaSurfaceProvider?,
+        surfaceBinder: MediaSurfaceBinder,
         mediaManagerBuilder: BaseMediaManager.Builder,
         coroutineContext: CoroutineContext,
     ) : this(
+        surfaceBinder,
         { context ->
-            val mediaManager = mediaManagerBuilder.create(mediaSurfaceProvider, context)
+            val mediaManager = mediaManagerBuilder.create(surfaceBinder, context)
             PlaybackStateRepo(mediaManager, context)
         },
         coroutineContext,
     )
+
+    /**
+     * Constructor that provides a [BaseMediaManager] to manage media playback and creates its own [MediaSurfaceBinder].
+     * @param mediaManagerBuilder a [BaseMediaManager.Builder] to provide the [BaseMediaManager] to manage playback
+     * @param coroutineContext the [CoroutineContext] on which to run the media player
+     */
+    constructor(mediaManagerBuilder: BaseMediaManager.Builder, coroutineContext: CoroutineContext) :
+        this(MediaSurfaceBinder(), mediaManagerBuilder, coroutineContext)
 
     private val playbackStateRepo = createPlaybackStateRepo(coroutineContext)
 

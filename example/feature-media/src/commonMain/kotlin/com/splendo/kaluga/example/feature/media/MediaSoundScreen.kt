@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.splendo.kaluga.example.arch.LocalIconSet
 import com.splendo.kaluga.media.DefaultSoundPlayer
 import com.splendo.kaluga.media.MediaSource
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +55,7 @@ private const val SOUND_BPM_MAX = 500
 
 @Composable
 fun MediaSoundScreen(modifier: Modifier = Modifier) {
+    val icons = LocalIconSet.current
     val scope = rememberCoroutineScope()
     val looper = remember { MediaSoundLoopPlayer(scope, SoundsSources.beep) }
     DisposableEffect(looper) { onDispose { looper.stop() } }
@@ -77,7 +79,7 @@ fun MediaSoundScreen(modifier: Modifier = Modifier) {
                 playing = !playing
             },
         ) {
-            Text(if (playing) "⏹" else "▶")
+            Text(if (playing) icons.stop else icons.play, fontFamily = icons.fontFamily)
         }
         Text("$bpm bpm")
         Row(

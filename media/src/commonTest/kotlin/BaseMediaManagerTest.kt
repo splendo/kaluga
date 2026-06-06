@@ -26,12 +26,10 @@ import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.media.MockBaseMediaManager
 import com.splendo.kaluga.test.media.MockMediaSurfaceController
-import com.splendo.kaluga.test.media.MockMediaSurfaceProvider
 import com.splendo.kaluga.test.media.MockPlayableMedia
 import com.splendo.kaluga.test.media.createMockMediaSurface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -60,11 +58,11 @@ class BaseMediaManagerTest {
 
     @Test
     fun testCreatePlayableMedia() = testRunBlocking {
-        val mediaSurfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
+        val surfaceBinder = MediaSurfaceBinder()
         val mediaSurfaceController = MockMediaSurfaceController()
         val surface = createMockMediaSurface()
-        val mediaManager = MockBaseMediaManager(mediaSurfaceProvider, mediaSurfaceController = mediaSurfaceController, coroutineContext = coroutineContext)
-        mediaSurfaceProvider.surface.tryEmit(surface)
+        val mediaManager = MockBaseMediaManager(surfaceBinder, mediaSurfaceController = mediaSurfaceController, coroutineContext = coroutineContext)
+        surfaceBinder.bind(surface)
         yieldMultiple(4)
         mediaSurfaceController.renderVideoOnSurfaceMock.verify(rule = VerificationRule.never())
         val mockSource = mediaSourceFromUrl("https://example.com")!!

@@ -157,10 +157,10 @@ interface MediaManager :
 
 /**
  * An abstract implementation for [MediaManager]
- * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+ * @param surfaceBinder a [MediaSurfaceBinder] whose bound [MediaSurface] is automatically passed to [renderVideoOnSurface]
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  */
-abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) :
+abstract class BaseMediaManager(private val surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext) :
     MediaManager,
     CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaManager")) {
 
@@ -171,10 +171,10 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
 
         /**
          * Creates a [BaseMediaManager]
-         * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+         * @param surfaceBinder a [MediaSurfaceBinder] whose bound [MediaSurface] is automatically passed to [renderVideoOnSurface]
          * @param coroutineContext the [CoroutineContext] on which the media will be managed
          */
-        fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager
+        fun create(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext): BaseMediaManager
     }
 
     private val _events = Channel<MediaManager.Event>(UNLIMITED)
@@ -190,9 +190,9 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
     final override suspend fun createPlayableMedia(source: MediaSource): PlayableMedia? = mediaMutex.withLock {
         handleCreatePlayableMedia(source).also {
             mediaSurfaceJob?.cancelAndJoin()
-            mediaSurfaceJob = mediaSurfaceProvider?.let {
+            mediaSurfaceJob = surfaceBinder?.let {
                 this@BaseMediaManager.launch {
-                    mediaSurfaceProvider.surface.onCompletion {
+                    surfaceBinder.surface.onCompletion {
                         renderVideoOnSurface(null)
                     }.collect {
                         renderVideoOnSurface(it)

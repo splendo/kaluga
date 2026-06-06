@@ -23,8 +23,8 @@ import com.splendo.kaluga.media.MediaManager
 import com.splendo.kaluga.media.MediaManager.Event
 import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.media.MediaSurface
+import com.splendo.kaluga.media.MediaSurfaceBinder
 import com.splendo.kaluga.media.MediaSurfaceController
-import com.splendo.kaluga.media.MediaSurfaceProvider
 import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.VolumeController
@@ -150,19 +150,19 @@ class MockMediaManager(
 
 /**
  * Mock implementation for [BaseMediaManager]
- * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+ * @param surfaceBinder a [MediaSurfaceBinder] whose bound [MediaSurface] is automatically passed to [renderVideoOnSurface]
  * @param volumeController a [MockVolumeController] to act as the [VolumeController]
  * @param mediaSurfaceController a [MockMediaSurfaceController] to act as the [MediaSurfaceController]
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  * @param setupMocks If `true` this will automatically set up some mocking
  */
 class MockBaseMediaManager(
-    mediaSurfaceProvider: MediaSurfaceProvider?,
+    surfaceBinder: MediaSurfaceBinder?,
     val volumeController: MockVolumeController = MockVolumeController(),
     val mediaSurfaceController: MockMediaSurfaceController = MockMediaSurfaceController(),
     coroutineContext: CoroutineContext,
     setupMocks: Boolean = true,
-) : BaseMediaManager(mediaSurfaceProvider, coroutineContext),
+) : BaseMediaManager(surfaceBinder, coroutineContext),
     VolumeController by volumeController,
     MediaSurfaceController by mediaSurfaceController {
 
@@ -190,16 +190,15 @@ class MockBaseMediaManager(
 
         init {
             if (setupMocks) {
-                createMock.on().doExecute { (mediaSurfaceProvider, coroutineContext) ->
-                    MockBaseMediaManager(mediaSurfaceProvider, volumeController, mediaSurfaceController, coroutineContext).also {
+                createMock.on().doExecute { (surfaceBinder, coroutineContext) ->
+                    MockBaseMediaManager(surfaceBinder, volumeController, mediaSurfaceController, coroutineContext).also {
                         builtMediaManagers.add(it)
                     }
                 }
             }
         }
 
-        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager =
-            createMock.call(mediaSurfaceProvider, coroutineContext)
+        override fun create(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext): BaseMediaManager = createMock.call(surfaceBinder, coroutineContext)
     }
 
     /**

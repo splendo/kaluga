@@ -150,12 +150,12 @@ private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let
 
 /**
  * Default implementation of [BaseMediaManager]
- * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+ * @param surfaceBinder a [MediaSurfaceBinder] whose bound [MediaSurface] is automatically passed to [renderVideoOnSurface]
  * @param settings the [Settings] used to configure the Media Manager
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  */
-actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, private val settings: Settings, coroutineContext: CoroutineContext) :
-    BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
+actual class DefaultMediaManager(surfaceBinder: MediaSurfaceBinder?, private val settings: Settings, coroutineContext: CoroutineContext) :
+    BaseMediaManager(surfaceBinder, coroutineContext) {
 
     /**
      * Settings used for configuring a [DefaultMediaManager]
@@ -172,8 +172,8 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, pr
 
         constructor() : this(Settings())
 
-        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): DefaultMediaManager = DefaultMediaManager(
-            mediaSurfaceProvider,
+        override fun create(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext): DefaultMediaManager = DefaultMediaManager(
+            surfaceBinder,
             settings,
             coroutineContext,
         )

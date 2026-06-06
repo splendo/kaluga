@@ -24,3 +24,12 @@ import platform.AVKit.AVPlayerViewController
 fun MediaSurface(viewController: AVPlayerViewController): MediaSurface = MediaSurface(
     { viewController.player = it },
 )
+
+/**
+ * Binds this [AVPlayerViewController] to [binder] so a [MediaPlayer] using that binder renders its video
+ * here (the controller handles its own layout). Call [MediaSurfaceBinder.unbind] to detach.
+ * @param binder the [MediaSurfaceBinder] to bind to, typically obtained from [MediaPlayer.surfaceBinder].
+ */
+fun AVPlayerViewController.bind(binder: MediaSurfaceBinder) {
+    binder.bind(MediaSurface(this))
+}

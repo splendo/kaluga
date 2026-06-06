@@ -25,7 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.media.MediaSurfaceProvider
+import com.splendo.kaluga.media.MediaSurfaceBinder
 
 /**
  * macOS implementation — currently a placeholder.
@@ -49,12 +49,12 @@ import com.splendo.kaluga.media.MediaSurfaceProvider
  * The `awt`/`ComposePanel` API the user referenced is from the JVM Desktop variant and is not
  * available on the macOS-Native target.
  *
- * Until CMP-macOS-Native grows AppKit interop, the working path on macOS is the native
- * `NSViewMediaSurfaceProvider` / `WindowLifecycleSubscribable` against an AppKit `AVPlayerView`
- * hosted **outside** the Compose tree (e.g. SwiftUI/AppKit hosts that consume `KalugaExample.framework`).
+ * Until CMP-macOS-Native grows AppKit interop, the working path on macOS is to host an AppKit
+ * `AVPlayerView` **outside** the Compose tree (e.g. SwiftUI/AppKit hosts that consume
+ * `KalugaExample.framework`) and bind its surface via `MediaPlayer.surfaceBinder`.
  */
 @Composable
-actual fun MediaSurfaceContainer(provider: MediaSurfaceProvider, modifier: Modifier) {
+actual fun MediaSurfaceContainer(binder: MediaSurfaceBinder, modifier: Modifier) {
     Box(modifier = modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
         BasicText("Video playback inside Compose-on-macOS is not yet supported (CMP-macOS-Native lacks AppKit interop in 1.11.0).")
     }

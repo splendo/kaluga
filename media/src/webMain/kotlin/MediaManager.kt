@@ -26,15 +26,14 @@ import kotlin.time.Duration
 /**
  * Default implementation of [BaseMediaManager] for the JS family, backed by an `HTMLMediaElement`.
  */
-actual class DefaultMediaManager internal constructor(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) :
-    BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
+actual class DefaultMediaManager internal constructor(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext) :
+    BaseMediaManager(surfaceBinder, coroutineContext) {
 
     /**
      * Builder for creating a [DefaultMediaManager]
      */
     class Builder : BaseMediaManager.Builder {
-        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager =
-            DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
+        override fun create(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(surfaceBinder, coroutineContext)
     }
 
     private val id = nextMediaId()
