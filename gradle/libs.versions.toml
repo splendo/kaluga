@@ -1,5 +1,5 @@
 [versions]
-kaluga = "1.6.0"
+kaluga = "2.0.0"
 java = "21"
 foojay-resolver = "1.0.0"
 
