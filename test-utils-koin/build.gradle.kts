@@ -9,7 +9,7 @@ kaluga {
         common {
             main {
                 api(project(":test-utils-base"))
-                api(project(":test-utils-architecture"))
+                api(project(":architecture:test"))
                 api(libs.koin.core)
             }
         }

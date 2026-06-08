@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga:architecture>
+// Library unique name: <com.splendo.kaluga.architecture:architecture>
 abstract interface <#A: #B, #B: kotlin/Any?, #C: com.splendo.kaluga.architecture.observable/ObservableOptional<#A>> com.splendo.kaluga.architecture.observable/BasicObservable : com.splendo.kaluga.architecture.observable/Initial<#A, #B>, kotlin.properties/ReadOnlyProperty<kotlin/Any?, #C> // com.splendo.kaluga.architecture.observable/BasicObservable|null[0]
 
 abstract interface <#A: #B, #B: kotlin/Any?, #C: com.splendo.kaluga.architecture.observable/ObservableOptional<#A>> com.splendo.kaluga.architecture.observable/BasicSubject : com.splendo.kaluga.architecture.observable/BasicObservable<#A, #B, #C>, com.splendo.kaluga.architecture.observable/SuspendableSetter<#B> { // com.splendo.kaluga.architecture.observable/BasicSubject|null[0]

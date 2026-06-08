@@ -7,7 +7,7 @@ kaluga {
     dependencies {
         android {
             device {
-                implementation(project(":architecture", ""))
+                implementation(project(":architecture:architecture", ""))
             }
         }
         common {

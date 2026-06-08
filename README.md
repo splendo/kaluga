@@ -97,8 +97,8 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | Module                                                      | Usage                                                                              | Artifact Name                                  |
 |-------------------------------------------------------------|------------------------------------------------------------------------------------|------------------------------------------------|
 | [alerts](alerts/)                                           | Used for Showing Alert Dialogs                                                     | com.splendo.kaluga:alerts                      |
-| [architecture](architecture/)                               | MVVM architecture                                                                  | com.splendo.kaluga:architecture                |
-| [architecture-compose](architecture-compose/)               | Compose extensions for architecture                                                | com.splendo.kaluga:architecture-compose        |
+| [architecture](architecture/architecture/)                  | MVVM architecture                                                                  | com.splendo.kaluga.architecture:architecture   |
+| [architecture-compose](architecture/compose/)               | Compose extensions for architecture                                                | com.splendo.kaluga.architecture:compose        |
 | [base](base/)                                               | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga:base                        |
 | [beacons](beacons/)                                         | Tracking the availability of Beacons using the Eddystone protocol                  | com.splendo.kaluga:beacons                     |
 | [bluetooth](bluetooth/)                                     | Aggregate of the Bluetooth client, server and base modules                         | com.splendo.kaluga:bluetooth                   |
@@ -138,7 +138,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils](test-utils/)                                   | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils                  |
 | [test-utils-base](test-utils-base/)                         | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils-base             |
 | [test-utils-alerts](test-utils-alerts/)                     | Enables easier testing of Alerts module                                            | com.splendo.kaluga:test-utils-alerts           |
-| [test-utils-architecture](test-utils-architecture/)         | Enables easier testing of Architecture module                                      | com.splendo.kaluga:test-utils-architecture     |
+| [test-utils-architecture](architecture/test-utils/)         | Enables easier testing of Architecture module                                      | com.splendo.kaluga.architecture:test           |
 | [test-utils-bluetooth-base](test-utils-bluetooth-base/)     | Enables easier testing of the Bluetooth base module                                | com.splendo.kaluga:test-utils-bluetooth-base   |
 | [test-utils-bluetooth-client](test-utils-bluetooth-client/) | Enables easier testing of the Bluetooth client module                              | com.splendo.kaluga:test-utils-bluetooth-client |
 | [test-utils-bluetooth-server](test-utils-bluetooth-server/) | Enables easier testing of the Bluetooth server module                              | com.splendo.kaluga:test-utils-bluetooth-server |

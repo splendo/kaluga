@@ -12,7 +12,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga:architecture:$kalugaVersion")
+    implementation("com.splendo.kaluga.architecture:architecture:$kalugaVersion")
 }
 ```
 

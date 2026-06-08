@@ -8,7 +8,7 @@ kaluga {
         common {
             main {
                 api(project(":test-utils-alerts"))
-                api(project(":test-utils-architecture"))
+                api(project(":architecture:test"))
                 api(project(":test-utils-base"))
                 api(project(":test-utils-bluetooth-base"))
                 api(project(":test-utils-bluetooth-client"))

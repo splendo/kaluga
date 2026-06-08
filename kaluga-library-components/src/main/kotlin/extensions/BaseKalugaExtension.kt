@@ -161,7 +161,12 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     @OptIn(ExperimentalStdlibApi::class)
     @JvmName("handleProjectEvaluated")
     fun afterProjectEvaluated(project: Project) {
-        project.group = BASE_GROUP
+        // The Maven groupId follows the Gradle project nesting: a flat module (`:base`) publishes
+        // under `com.splendo.kaluga`, while a nested module (`:architecture:compose`) publishes under
+        // `com.splendo.kaluga.architecture` with artifactId `compose`. The container project of a
+        // group (e.g. `:architecture`) has no build script and is never published.
+        val groupSuffix = project.path.removePrefix(":").substringBeforeLast(":", "").replace(":", ".")
+        project.group = if (groupSuffix.isEmpty()) BASE_GROUP else "$BASE_GROUP.$groupSuffix"
 
         project.tasks.withType(Test::class.java) {
             testLogging {

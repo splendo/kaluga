@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga:test-utils-architecture>
+// Library unique name: <com.splendo.kaluga.architecture:test>
 abstract class <#A: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest : com.splendo.kaluga.test.architecture/UIThreadViewModelTest<com.splendo.kaluga.test.architecture/UIThreadViewModelTest.ViewModelTestContext<#A>, #A> { // com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest|null[0]
     constructor <init>() // com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest.<init>|<init>(){}[0]
 

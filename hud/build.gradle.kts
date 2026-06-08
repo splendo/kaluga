@@ -13,7 +13,7 @@ kaluga {
                 implementation(libs.androidx.fragment.ktx)
             }
             device {
-                implementation(project(":architecture", ""))
+                implementation(project(":architecture:architecture", ""))
             }
         }
         common {

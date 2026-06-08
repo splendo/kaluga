@@ -14,7 +14,7 @@ kaluga {
             }
             device {
                 implementation(libs.androidx.activity.ktx)
-                implementation(project(":architecture", ""))
+                implementation(project(":architecture:architecture", ""))
             }
         }
         common {

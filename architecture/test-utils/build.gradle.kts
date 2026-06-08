@@ -10,7 +10,7 @@ kaluga {
         common {
             main {
                 api(project(":test-utils-base"))
-                api(project(":architecture"))
+                api(project(":architecture:architecture"))
                 implementation(libs.kotlinx.atomicfu)
             }
         }

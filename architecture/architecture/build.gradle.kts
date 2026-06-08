@@ -25,7 +25,7 @@ kaluga {
                 api(libs.kotlinx.serialization.json)
             }
             test {
-                implementation(project(":test-utils-architecture", ""))
+                implementation(project(":architecture:test", ""))
                 implementation(project(":test-utils-lifecycle", ""))
             }
         }

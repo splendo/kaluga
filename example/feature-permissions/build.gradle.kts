@@ -16,7 +16,7 @@ kaluga {
         android {
             main {
                 api(libs.koin.compose.viewmodel)
-                api("com.splendo.kaluga:architecture:${project.rootProject.version}")
+                api("com.splendo.kaluga.architecture:architecture:${project.rootProject.version}")
             }
         }
         common {

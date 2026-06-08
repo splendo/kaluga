@@ -7,7 +7,7 @@ kaluga {
     appleFramework {
         export("com.splendo.kaluga:resources:${project.rootProject.version}")
         export("com.splendo.kaluga:alerts:${project.rootProject.version}")
-        export("com.splendo.kaluga:architecture:${project.rootProject.version}")
+        export("com.splendo.kaluga.architecture:architecture:${project.rootProject.version}")
     }
     dependencies {
         android {
@@ -19,7 +19,7 @@ kaluga {
             main {
                 api(project(":core-arch"))
                 api(project(":core-stylable"))
-                api("com.splendo.kaluga:architecture:${project.rootProject.version}")
+                api("com.splendo.kaluga.architecture:architecture:${project.rootProject.version}")
                 api("com.splendo.kaluga:alerts:${project.rootProject.version}")
                 api("com.splendo.kaluga:resources:${project.rootProject.version}")
             }
