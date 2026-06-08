@@ -105,30 +105,33 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
                 // with `gradle -p <group> <testTask>`, which cascades to every submodule of the group
                 // (core, client, compose, test-utils, ...) that has the task. A group's platform
                 // capabilities are the union of its multiplatform submodules' configured targets.
+                // A group is included if it has at least one multiplatform module. The set of
+                // *registered* targets is host-dependent (Apple targets are only registered on a macOS
+                // host — see `iosTargets`), so membership must NOT be derived from a specific target:
+                // this same file is generated on the Linux runner that drives the JS/Android matrices.
                 val groupTargets = linkedMapOf<String, MutableSet<String>>()
                 subprojects.forEach { subproject ->
                     val group = subproject.path.removePrefix(":").substringBefore(":")
                     if (group in blacklist) {
                         return@forEach
                     }
-                    val targets = groupTargets.getOrPut(group) { mutableSetOf() }
-                    subproject.extensions.findByType(KotlinMultiplatformExtension::class.java)
-                        ?.let { kotlin -> targets.addAll(kotlin.targets.map { it.name }) }
+                    val kotlin = subproject.extensions.findByType(KotlinMultiplatformExtension::class.java)
+                        ?: return@forEach
+                    groupTargets.getOrPut(group) { mutableSetOf() }.addAll(kotlin.targets.map { it.name })
                 }
 
-                // A group is testable on the native/JS matrices only if it has a multiplatform module.
-                val entries = groupTargets
-                    .filterValues { targets -> targets.any { it.startsWith("ios") } }
-                    .map { (group, targets) ->
-                        fun targetsStartingWith(prefix: String) = targets.any { it.startsWith(prefix) }
-                        """{"dir":"$group","name":"$group",""" +
-                            """"ios":true,""" +
-                            """"supportMacOS":${targetsStartingWith("macos")},""" +
-                            """"supportTvOS":${targetsStartingWith("tvos")},""" +
-                            """"supportWatchOS":${targetsStartingWith("watchos")},""" +
-                            """"supportJS":${targets.contains("js")},""" +
-                            """"supportWasmJS":${targets.contains("wasmJs")}}"""
-                    }
+                val entries = groupTargets.map { (group, targets) ->
+                    fun targetsStartingWith(prefix: String) = targets.any { it.startsWith(prefix) }
+                    // `ios` is always true (every Kaluga multiplatform module targets iOS); the rest
+                    // reflect the targets registered on the host that generated this file.
+                    """{"dir":"$group","name":"$group",""" +
+                        """"ios":true,""" +
+                        """"supportMacOS":${targetsStartingWith("macos")},""" +
+                        """"supportTvOS":${targetsStartingWith("tvos")},""" +
+                        """"supportWatchOS":${targetsStartingWith("watchos")},""" +
+                        """"supportJS":${targets.contains("js")},""" +
+                        """"supportWasmJS":${targets.contains("wasmJs")}}"""
+                }
 
                 outputFile.writeText("projects=[${entries.joinToString(",")}]")
                 logger.lifecycle("Generated ${outputFile.name} with ${entries.size} module groups")
