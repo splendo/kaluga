@@ -39,6 +39,6 @@ This is the inverse of the platform "walk the view tree to find a `SurfaceView`"
 
 ### Platform notes
 
-- **Android** — wraps an `AndroidView { SurfaceView(...) }` and pushes its `SurfaceHolder` into the provider.
+- **Android** — wraps an `AndroidView { SurfaceView(...) }` and binds its `SurfaceHolder` through the `MediaSurfaceBinder`.
 - **iOS** — hosts an `AVPlayerView`-backed `UIView` via `UIKitView`.
-- **macOS** — placeholder. CMP-macOS-Native (1.11) ships no `NSView` interop, so video playback inside Compose-on-macOS is not yet supported. Use the native `NSViewMediaSurfaceProvider` / `WindowLifecycleSubscribable` from [`media`](../media) against an AppKit `AVPlayerView` hosted outside the Compose tree.
+- **macOS** — placeholder. CMP-macOS-Native (1.11) ships no `NSView` interop, so video playback inside Compose-on-macOS is not yet supported. Instead create a native `MediaSurface(playerView)` from an AppKit `AVPlayerView` (hosted outside the Compose tree) and bind it via a `MediaSurfaceBinder` from [`media`](../media).

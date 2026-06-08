@@ -42,12 +42,19 @@ Create a `MediaSource` to start playback.
 Local files requires platform specific `MediaSource` creation, though `mediaSourceFromUrl` can be used for any url resource.
 
 ### Video Playback
-To play video files, the MediaPlayer should be bound to a platform specific `MediaSurface`.
-Call `MediaPlayer.renderVideoOnSurface()` to bind to a surface.
-The `BaseMediaManager` class offers a way to inject a `MediaSurfaceProvider` that can be bound to the lifecycle to automatically provide a `MediaSurface`.
+To play video files the player renders onto a platform-specific `MediaSurface`. The view that hosts the
+surface binds it through a `MediaSurfaceBinder`: pass the binder to the media manager (`BaseMediaManager`)
+and call `MediaSurfaceBinder.bind(surface)` once the surface is available, and `MediaSurfaceBinder.unbind()`
+when it goes away. The bound surface is automatically forwarded to `renderVideoOnSurface`.
 
-On **Android** create an `ActivityMediaSurfaceProvider` that provides a `MediaSurface` for a given `Activity`.
-On **iOS** multiple `BaseMediaSurfaceProvider` are available: `UIViewMediaSurfaceProvider`, `AVPlayerLayerMediaSurfaceProvider`, `AVPlayerViewControllerMediaSurfaceProvider`, and `BindingMediaSurfaceProvider`
+Create a `MediaSurface` from the platform view that renders the video:
+- **Android** — wraps the `SurfaceHolder` of a `SurfaceView`.
+- **iOS** — `MediaSurface(viewController: AVPlayerViewController)`.
+- **macOS** — `MediaSurface(playerView: AVPlayerView)`.
+- **JS / WasmJS** — `MediaSurface(elementId)` for an HTML media element.
+
+When using Compose, the [`media-compose`](../compose) module's `MediaSurfaceContainer(binder)` hosts the
+surface and performs the binding for you.
 
 ## Testing
-Use the [`test-utils-media` module](../test-utils) to get a mockable `MediaPlayer`, `MediaManager`,`BaseMediaManager`, `VolumeController`, `MediaSurfaceController`, `PlayableMedia`, `MediaSurfaceProvider`, `PlaybackState`, and `BasePlaybackStateRepo`.
+Use the [`test-utils-media` module](../test-utils) to get a mockable `MediaPlayer`, `MediaManager`,`BaseMediaManager`, `VolumeController`, `MediaSurfaceController`, `PlayableMedia`, `MediaSurfaceBinder`, `PlaybackState`, and `BasePlaybackStateRepo`.
