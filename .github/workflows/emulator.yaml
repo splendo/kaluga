@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: 'Project (Gradle module) to run tests for'
+        description: 'Feature group directory (e.g. bluetooth) to run tests for; blank runs all'
         required: false
         type: string
       video:
@@ -83,7 +83,7 @@ jobs:
 
       - name: pregenerate test package
         if: inputs.video
-        run: ./gradlew :${{ matrix.project }}:packageDebugAndroidTest
+        run: ./gradlew -p ${{ matrix.project.dir }} packageDebugAndroidTest
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -102,23 +102,23 @@ jobs:
           cores: 6
           script: |
             ./script/check_emulator.sh
-            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedAndroidTest
+            ./gradlew ${{ inputs.video && 'recordAndroid' }} -p ${{ matrix.project.dir }} connectedAndroidTest
 
       - name: Upload test reports on failure
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: "Android UI tests for ${{ matrix.project }}"
-          path: "${{ matrix.project }}/build/reports/androidTests/connected/debug/**"
+          name: "Android UI tests for ${{ matrix.project.name }}"
+          path: "${{ matrix.project.dir }}/**/build/reports/androidTests/connected/debug/**"
 
       - name: rename video
-        if: always() && inputs.video    
-        run: mv build/video.mp4 recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
+        if: always() && inputs.video
+        run: mv build/video.mp4 recording-${{ matrix.project.name }}-${{ matrix.api-level }}.mp4
 
       - name: upload video
         if: always() && inputs.video
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: recording-${{ matrix.project }}-${{ matrix.api-level }}
-          path: recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
+          name: recording-${{ matrix.project.name }}-${{ matrix.api-level }}
+          path: recording-${{ matrix.project.name }}-${{ matrix.api-level }}.mp4

@@ -45,16 +45,16 @@ jobs:
         target:
           - name: iOS
             test: iosSimulatorArm64Test
-            flag: ''
+            support: ios
           - name: macOS
             test: macosArm64Test
-            flag: supportMacOS
+            support: supportMacOS
           - name: tvOS
             test: tvosSimulatorArm64Test
-            flag: supportTvOS
+            support: supportTvOS
           - name: watchOS
             test: watchosSimulatorArm64Test
-            flag: supportWatchOS
+            support: supportWatchOS
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -65,21 +65,16 @@ jobs:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
           arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
-      - name: run ${{ matrix.target.name }} tests for ${{ matrix.module }}
-        run: |
-          flag='${{ matrix.target.flag }}'
-          if [ -z "$flag" ] || grep -qE "$flag\s*=\s*true" "${{ matrix.module }}/build.gradle.kts" 2>/dev/null; then
-            ./gradlew :${{ matrix.module }}:${{ matrix.target.test }}
-          else
-            echo "Module ${{ matrix.module }} does not declare $flag = true, skipping ${{ matrix.target.name }}"
-          fi
+      - name: run ${{ matrix.target.name }} tests for ${{ matrix.module.name }}
+        if: ${{ matrix.module[matrix.target.support] }}
+        run: ./gradlew -p ${{ matrix.module.dir }} ${{ matrix.target.test }}
 
       - name: Upload ${{ matrix.target.name }} test artifact
         uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: ${{ matrix.module }} ${{ matrix.target.name }} Test Report HTML
-          path: ${{ format('**{0}/build/reports/tests/{1}', matrix.module, matrix.target.test) }}
+          name: ${{ matrix.module.name }} ${{ matrix.target.name }} Test Report HTML
+          path: ${{ format('{0}/**/build/reports/tests/{1}', matrix.module.dir, matrix.target.test) }}
 
   example-ios:
     needs: build

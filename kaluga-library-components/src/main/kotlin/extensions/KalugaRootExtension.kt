@@ -97,49 +97,44 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
         tasks.register("generateNonDependentProjectsFile") {
             outputs.upToDateWhen { false }
 
-            val file = project.file("non_dependent_projects.properties")
-            file.delete()
-            file.appendText("projects=[")
-            var firstProject = true
+            val outputFile = rootProject.file("non_dependent_projects.properties")
+            val blacklist = properties["generateNonDependentProjectsFile.blacklist"]?.toString()
+                ?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() } ?: listOf()
 
-            val blacklist = properties["generateNonDependentProjectsFile.blacklist"]?.toString()?.split(',')?.map { it.trim() } ?: listOf()
-
-            subprojects.forEach { thisProject ->
-
-                val dependsOnOtherProject = subprojects.any { otherProject ->
-                    thisProject != otherProject &&
-                        (
-                            thisProject.name.startsWith(
-                                otherProject.name,
-                            ) ||
-                                thisProject.name.endsWith(otherProject.name)
-                            )
-                }
-                val otherProjectsDependOn = subprojects.any { otherProject ->
-                    thisProject != otherProject &&
-                        (
-                            otherProject.name.startsWith(
-                                thisProject.name,
-                            ) ||
-                                otherProject.name.endsWith(thisProject.name)
-                            )
-                }
-
-                if (!blacklist.contains(thisProject.name) && (!dependsOnOtherProject || otherProjectsDependOn)) {
-                    logger.debug("main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
-
-                    if (firstProject) {
-                        firstProject = false
-                    } else {
-                        file.appendText(",")
+            doLast {
+                // One matrix entry per top-level feature group (the first Gradle path segment, e.g.
+                // `bluetooth`, `permissions`, or a flat module like `date-time`). CI runs each entry
+                // with `gradle -p <group> <testTask>`, which cascades to every submodule of the group
+                // (core, client, compose, test-utils, ...) that has the task. A group's platform
+                // capabilities are the union of its multiplatform submodules' configured targets.
+                val groupTargets = linkedMapOf<String, MutableSet<String>>()
+                subprojects.forEach { subproject ->
+                    val group = subproject.path.removePrefix(":").substringBefore(":")
+                    if (group in blacklist) {
+                        return@forEach
                     }
-                    file.appendText('"' + thisProject.name + '"')
-                } else {
-                    logger.debug("not a main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
+                    val targets = groupTargets.getOrPut(group) { mutableSetOf() }
+                    subproject.extensions.findByType(KotlinMultiplatformExtension::class.java)
+                        ?.let { kotlin -> targets.addAll(kotlin.targets.map { it.name }) }
                 }
-            }
 
-            file.appendText("]")
+                // A group is testable on the native/JS matrices only if it has a multiplatform module.
+                val entries = groupTargets
+                    .filterValues { targets -> targets.any { it.startsWith("ios") } }
+                    .map { (group, targets) ->
+                        fun targetsStartingWith(prefix: String) = targets.any { it.startsWith(prefix) }
+                        """{"dir":"$group","name":"$group",""" +
+                            """"ios":true,""" +
+                            """"supportMacOS":${targetsStartingWith("macos")},""" +
+                            """"supportTvOS":${targetsStartingWith("tvos")},""" +
+                            """"supportWatchOS":${targetsStartingWith("watchos")},""" +
+                            """"supportJS":${targets.contains("js")},""" +
+                            """"supportWasmJS":${targets.contains("wasmJs")}}"""
+                    }
+
+                outputFile.writeText("projects=[${entries.joinToString(",")}]")
+                logger.lifecycle("Generated ${outputFile.name} with ${entries.size} module groups")
+            }
         }
     }
 

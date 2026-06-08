@@ -124,8 +124,8 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
             when {
                 project.plugins.hasPlugin(KotlinMultiplatformPluginWrapper::class.java) -> configure(
                     KotlinMultiplatform(
-                        // scientific docs take an enormous amount of RAM so we skip them
-                        javadocJar = if (project.name.startsWith("scientific")) {
+                        // scientific converters docs take an enormous amount of RAM so we skip them
+                        javadocJar = if (project.name.startsWith("converters")) {
                             JavadocJar.Empty()
                         } else {
                             JavadocJar.Dokka("dokkaGeneratePublicationHtml")
