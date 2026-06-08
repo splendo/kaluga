@@ -36,6 +36,7 @@ jobs:
         run: ./gradlew checkLegacyAbi
 
   test:
+    name: ${{ matrix.target.name }} · ${{ matrix.module.name }}
     needs: build
     runs-on: macos-26
     strategy:

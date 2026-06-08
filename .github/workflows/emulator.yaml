@@ -28,6 +28,7 @@ jobs:
       projectBlacklist: hud
 
   test:
+    name: ${{ matrix.project.name }} · API ${{ matrix.api-level }}
     needs: build
     runs-on: ubuntu-latest
     strategy:

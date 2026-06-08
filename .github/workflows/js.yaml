@@ -8,6 +8,7 @@ jobs:
       gradleTask: compileKotlinJs compileKotlinWasmJs
 
   test:
+    name: ${{ matrix.target.name }} · ${{ matrix.module.name }}
     needs: build
     runs-on: ubuntu-latest
     strategy:

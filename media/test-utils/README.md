@@ -22,4 +22,4 @@ dependencies {
 ```
 
 ## Mocks
-This library contains mock classes for `MediaPlayer`, `MediaManager`,`BaseMediaManager`, `VolumeController`, `MediaSurfaceController`, `PlayableMedia`, `MediaSurfaceProvider`, `PlaybackState`, and `BasePlaybackStateRepo`.
+This library contains mock classes for `MediaPlayer`, `MediaManager`,`BaseMediaManager`, `VolumeController`, `MediaSurfaceController`, `PlayableMedia`, `MediaSurfaceBinder`, `PlaybackState`, and `BasePlaybackStateRepo`.

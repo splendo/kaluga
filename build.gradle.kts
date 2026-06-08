@@ -52,7 +52,9 @@ publishing {
 val dokkaExcludedProjects = setOf(":scientific:converters")
 
 dependencies {
-    subprojects.forEach { project ->
+    // Group container projects (e.g. `:bluetooth`, `:permissions`) have no build script and apply
+    // neither the Kover nor Dokka plugins, so they expose no consumable variants — skip them.
+    subprojects.filter { it.buildFile.exists() }.forEach { project ->
         kover(project)
         // Aggregate every module into a single multi-module Dokka site (dokkaGeneratePublicationHtml).
         if (project.path !in dokkaExcludedProjects) {

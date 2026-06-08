@@ -140,7 +140,9 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
 
     private fun Project.koverModules() {
         dependencies {
-            subprojects.forEach {
+            // Group container projects (e.g. `:bluetooth`, `:permissions`) have no build script and
+            // apply no Kover plugin, so they expose no `kover` variant — skip them.
+            subprojects.filter { it.buildFile.exists() }.forEach {
                 add("kover", it)
             }
         }

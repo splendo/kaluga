@@ -120,7 +120,7 @@ afterEvaluate {
             binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework>().configureEach {
                 mobileFeatureProjects.forEach { export(project(it)) }
                 mobileKalugaModules.forEach {
-                    export("com.splendo.kaluga:$it:${project.rootProject.version}")
+                    export("com.splendo.kaluga.$it:$it:${project.rootProject.version}")
                 }
             }
         }
