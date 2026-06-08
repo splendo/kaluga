@@ -19,10 +19,10 @@ kaluga {
         }
         common {
             main {
-                api(project(":lifecycle", ""))
+                api(project(":lifecycle:lifecycle", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
-                implementation(project(":resources", ""))
+                implementation(project(":resources:resources", ""))
             }
             test {
                 implementation(project(":test-utils-alerts", ""))

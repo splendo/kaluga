@@ -1,0 +1,27 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.lifecycle:compose>
+abstract class com.splendo.kaluga.lifecycle.compose/LifecycleViewModel : androidx.lifecycle/ViewModel { // com.splendo.kaluga.lifecycle.compose/LifecycleViewModel|null[0]
+    constructor <init>(kotlin.collections/List<com.splendo.kaluga.lifecycle/LifecycleSubscribable> = ...) // com.splendo.kaluga.lifecycle.compose/LifecycleViewModel.<init>|<init>(kotlin.collections.List<com.splendo.kaluga.lifecycle.LifecycleSubscribable>){}[0]
+
+    final val subscribables // com.splendo.kaluga.lifecycle.compose/LifecycleViewModel.subscribables|{}subscribables[0]
+        final fun <get-subscribables>(): kotlin.collections/List<com.splendo.kaluga.lifecycle/LifecycleSubscribable> // com.splendo.kaluga.lifecycle.compose/LifecycleViewModel.subscribables.<get-subscribables>|<get-subscribables>(){}[0]
+}
+
+final val com.splendo.kaluga.lifecycle.compose/com_splendo_kaluga_lifecycle_compose_LifecycleViewModel$stableprop // com.splendo.kaluga.lifecycle.compose/com_splendo_kaluga_lifecycle_compose_LifecycleViewModel$stableprop|#static{}com_splendo_kaluga_lifecycle_compose_LifecycleViewModel$stableprop[0]
+
+final fun (com.splendo.kaluga.lifecycle/LifecycleSubscribable).com.splendo.kaluga.lifecycle.compose/AttachToCompose(androidx.compose.runtime/Composer?, kotlin/Int) // com.splendo.kaluga.lifecycle.compose/AttachToCompose|AttachToCompose@com.splendo.kaluga.lifecycle.LifecycleSubscribable(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun <#A: com.splendo.kaluga.lifecycle.compose/LifecycleViewModel> (#A).com.splendo.kaluga.lifecycle.compose/AttachToCompose(androidx.compose.runtime/Composer?, kotlin/Int): #A // com.splendo.kaluga.lifecycle.compose/AttachToCompose|AttachToCompose@0:0(androidx.compose.runtime.Composer?;kotlin.Int){0§<com.splendo.kaluga.lifecycle.compose.LifecycleViewModel>}[0]
+final fun com.splendo.kaluga.lifecycle.compose/com_splendo_kaluga_lifecycle_compose_LifecycleViewModel$stableprop_getter(): kotlin/Int // com.splendo.kaluga.lifecycle.compose/com_splendo_kaluga_lifecycle_compose_LifecycleViewModel$stableprop_getter|com_splendo_kaluga_lifecycle_compose_LifecycleViewModel$stableprop_getter(){}[0]
+
+// Targets: [macosArm64]
+final val com.splendo.kaluga.lifecycle.compose/LocalNSWindow // com.splendo.kaluga.lifecycle.compose/LocalNSWindow|{}LocalNSWindow[0]
+    final fun <get-LocalNSWindow>(): androidx.compose.runtime/ProvidableCompositionLocal<platform.AppKit/NSWindow?> // com.splendo.kaluga.lifecycle.compose/LocalNSWindow.<get-LocalNSWindow>|<get-LocalNSWindow>(){}[0]
+
+// Targets: [macosArm64]
+final fun (androidx.compose.ui.window/WindowScope).com.splendo.kaluga.lifecycle.compose/ProvideNSWindow(kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // com.splendo.kaluga.lifecycle.compose/ProvideNSWindow|ProvideNSWindow@androidx.compose.ui.window.WindowScope(kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]

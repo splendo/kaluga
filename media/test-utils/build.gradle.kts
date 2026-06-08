@@ -3,13 +3,16 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.datetimepicker"
+    moduleName = "test.media"
+    supportMacOS = true
+    supportTvOS = true
+    supportJS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {
-                api(project(":date-time-picker"))
+                api(project(":media:media"))
                 api(project(":test-utils-base"))
-                api(project(":lifecycle:test"))
             }
         }
     }

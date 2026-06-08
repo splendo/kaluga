@@ -3,13 +3,12 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.datetimepicker"
+    moduleName = "test.resources"
     dependencies {
         common {
             main {
-                api(project(":date-time-picker"))
                 api(project(":test-utils-base"))
-                api(project(":lifecycle:test"))
+                api(project(":resources:resources"))
             }
         }
     }

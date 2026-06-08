@@ -9,7 +9,7 @@ kaluga {
             main {
                 api(project(":hud"))
                 api(project(":test-utils-base"))
-                api(project(":test-utils-lifecycle"))
+                api(project(":lifecycle:test"))
             }
         }
     }

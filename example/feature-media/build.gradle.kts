@@ -11,8 +11,8 @@ kaluga {
         common {
             main {
                 api(project(":core-arch"))
-                api("com.splendo.kaluga:media:${project.rootProject.version}")
-                api("com.splendo.kaluga:media-compose:${project.rootProject.version}")
+                api("com.splendo.kaluga.media:media:${project.rootProject.version}")
+                api("com.splendo.kaluga.media:compose:${project.rootProject.version}")
             }
         }
     }

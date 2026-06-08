@@ -108,15 +108,15 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [date-time](date-time/)                                     | Contains multiplatform classes to work with date and time                          | com.splendo.kaluga:date-time                   |
 | [date-timepicker](date-time-picker/)                        | Used for showing a Date or Time Picker                                             | com.splendo.kaluga:date-time-picker            |
 | [hud](hud/)                                                 | Used for showing a Loading indicator HUD                                           | com.splendo.kaluga:hud                         |
-| [keyboard](keyboard/)                                       | Used for showing and hiding the keyboard                                           | com.splendo.kaluga:keyboard                    |
-| [keyboard-compose](keyboard-compose/)                       | Compose extensions for keyboard                                                    | com.splendo.kaluga:keyboard-compose            |
-| [lifecycle](lifecycle/)                                     | Platform-host lifecycle bindings for service builders                              | com.splendo.kaluga:lifecycle                   |
-| [lifecycle-compose](lifecycle-compose/)                     | Compose extensions for lifecycle                                                   | com.splendo.kaluga:lifecycle-compose           |
+| [keyboard](keyboard/)                                       | Used for showing and hiding the keyboard                                           | com.splendo.kaluga.keyboard:keyboard                    |
+| [keyboard-compose](keyboard-compose/)                       | Compose extensions for keyboard                                                    | com.splendo.kaluga.keyboard:compose            |
+| [lifecycle](lifecycle/)                                     | Platform-host lifecycle bindings for service builders                              | com.splendo.kaluga.lifecycle:lifecycle                   |
+| [lifecycle-compose](lifecycle-compose/)                     | Compose extensions for lifecycle                                                   | com.splendo.kaluga.lifecycle:compose           |
 | [links](links/)                                             | Used for decoding url into an object                                               | com.splendo.kaluga:links                       |
 | [location](location/)                                       | Provides the User' geolocation                                                     | com.splendo.kaluga:location                    |
 | [logging](logging/)                                         | Shared console logging                                                             | com.splendo.kaluga:logging                     |
-| [media](media/)                                             | Playing audio/video                                                                | com.splendo.kaluga:media                       |
-| [media-compose](media-compose/)                             | Compose extensions for media                                                       | com.splendo.kaluga:media-compose               |
+| [media](media/)                                             | Playing audio/video                                                                | com.splendo.kaluga.media:media                       |
+| [media-compose](media-compose/)                             | Compose extensions for media                                                       | com.splendo.kaluga.media:compose               |
 | [base-permissions](base-permissions/)                       | Managing permissions, used in conjunction with modules below                       | com.splendo.kaluga:base-permissions            |
 | [bluetooth-permissions](bluetooth-permissions/)             | Managing bluetooth permissions                                                     | com.splendo.kaluga:bluetooth-permissions       |
 | [calendar-permissions](calendar-permissions/)               | Managing calendar permissions                                                      | com.splendo.kaluga:calendar-permissions        |
@@ -127,9 +127,9 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [notifications-permissions](notifications-permissions/)     | Managing notifications permissions                                                 | com.splendo.kaluga:notifications-permissions   |
 | [storage-permissions](storage-permissions/)                 | Managing storage permissions                                                       | com.splendo.kaluga:storage-permissions         |
 | [permissions](permissions/)                                 | Aggregate of all permissions modules                                               | com.splendo.kaluga:permissions                 |
-| [resources](resources/)                                     | Provides shared Strings, Images, Colors and Fonts                                  | com.splendo.kaluga:resources                   |
-| [resources-compose](resources-compose/)                     | Compose extensions for resources                                                   | com.splendo.kaluga:resources-compose           |
-| [resources-databinding](resources-databinding/)             | Data Binding extensions for resources                                              | com.splendo.kaluga:resources-databinding       |
+| [resources](resources/)                                     | Provides shared Strings, Images, Colors and Fonts                                  | com.splendo.kaluga.resources:resources                   |
+| [resources-compose](resources-compose/)                     | Compose extensions for resources                                                   | com.splendo.kaluga.resources:compose           |
+| [resources-databinding](resources-databinding/)             | Data Binding extensions for resources                                              | com.splendo.kaluga.resources:databinding       |
 | [review](review/)                                           | Used for requesting the user to review the app                                     | com.splendo.kaluga:review                      |
 | [scientific](scientific/)                                   | Scientific units and conversions                                                   | com.splendo.kaluga:scientific                  |
 | [scientific-converters](scientific-converters/)             | Converters between scientific units                                                | com.splendo.kaluga:scientific-converters       |
@@ -144,13 +144,13 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils-bluetooth-server](test-utils-bluetooth-server/) | Enables easier testing of the Bluetooth server module                              | com.splendo.kaluga:test-utils-bluetooth-server |
 | [test-utils-date-time-picker](test-utils-date-time-picker/) | Enables easier testing of Date Time Picker module                                  | com.splendo.kaluga:test-utils-date-time-picker |
 | [test-utils-hud](test-utils-hud/)                           | Enables easier testing of HUD module                                               | com.splendo.kaluga:test-utils-hud              |
-| [test-utils-keyboard](test-utils-keyboard/)                 | Enables easier testing of Keyboard module                                          | com.splendo.kaluga:test-utils-keyboard         |
+| [test-utils-keyboard](test-utils-keyboard/)                 | Enables easier testing of Keyboard module                                          | com.splendo.kaluga.keyboard:test         |
 | [test-utils-koin](test-utils-koin/)                         | Enables easier testing with Koin                                                   | com.splendo:kaluga.test-utils-koin             |
-| [test-utils-lifecycle](test-utils-lifecycle/)               | Activity-cached helpers for the Lifecycle module                                   | com.splendo.kaluga:test-utils-lifecycle        |
+| [test-utils-lifecycle](test-utils-lifecycle/)               | Activity-cached helpers for the Lifecycle module                                   | com.splendo.kaluga.lifecycle:test        |
 | [test-utils-location](test-utils-location/)                 | Enables easier testing of Location module                                          | com.splendo.kaluga:test-utils-location         |
-| [test-utils-media](test-utils-media/)                       | Enables easier testing of Media module                                             | com.splendo.kaluga:test-utils-media            |
+| [test-utils-media](test-utils-media/)                       | Enables easier testing of Media module                                             | com.splendo.kaluga.media:test            |
 | [test-utils-permissions](test-utils-permissions/)           | Enables easier testing of Permissions modules                                      | com.splendo.kaluga:test-utils-permissions      |
-| [test-utils-resources](test-utils-resources/)               | Enables easier testing of Resources module                                         | com.splendo.kaluga:test-utils-resources        |
+| [test-utils-resources](test-utils-resources/)               | Enables easier testing of Resources module                                         | com.splendo.kaluga.resources:test        |
 | [test-utils-service](test-utils-service/)                   | Enables easier testing of Service module                                           | com.splendo.kaluga:test-utils-service          |
 | [test-utils-system](test-utils-system/)                     | Enables easier testing of System module                                            | com.splendo.kaluga:test-utils-system           |
 

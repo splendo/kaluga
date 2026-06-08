@@ -3,11 +3,11 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.datetimepicker"
+    moduleName = "test.keyboard"
     dependencies {
         common {
             main {
-                api(project(":date-time-picker"))
+                api(project(":keyboard:keyboard"))
                 api(project(":test-utils-base"))
                 api(project(":lifecycle:test"))
             }

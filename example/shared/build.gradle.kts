@@ -92,7 +92,7 @@ kaluga {
                 api(project(":core-arch"))
                 api(project(":core-koin"))
                 // For `ProvideNSWindow` at the macOS entry point + `AttachToCompose` extensions.
-                api("com.splendo.kaluga:lifecycle-compose:${project.rootProject.version}")
+                api("com.splendo.kaluga.lifecycle:compose:${project.rootProject.version}")
                 api(project(":feature-bluetooth-client"))
                 api(project(":feature-datetime"))
                 api(project(":feature-links"))

@@ -9,7 +9,7 @@ kaluga {
             main {
                 implementation(project(":alerts"))
                 api(project(":test-utils-base"))
-                api(project(":test-utils-lifecycle"))
+                api(project(":lifecycle:test"))
             }
         }
     }

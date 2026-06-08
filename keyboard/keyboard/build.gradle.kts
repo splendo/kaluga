@@ -3,15 +3,9 @@ plugins {
 }
 
 kaluga {
-    moduleName = "hud"
+    moduleName = "keyboard"
     dependencies {
         android {
-            main {
-                implementation(libs.androidx.fragment)
-            }
-            test {
-                implementation(libs.androidx.fragment.ktx)
-            }
             device {
                 implementation(project(":architecture:architecture", ""))
             }
@@ -22,7 +16,7 @@ kaluga {
                 implementation(project(":base", ""))
             }
             test {
-                implementation(project(":test-utils-hud", ""))
+                implementation(project(":keyboard:test", ""))
             }
         }
     }
