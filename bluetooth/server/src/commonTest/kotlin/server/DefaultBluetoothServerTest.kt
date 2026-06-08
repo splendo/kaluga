@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.bluetooth.test.randomUUID
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.test.MockPermissionsBuilder
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job

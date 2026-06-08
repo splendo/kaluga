@@ -18,6 +18,9 @@
 package com.splendo.kaluga.media.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.MediaManager
 import com.splendo.kaluga.media.MediaManager.Event
@@ -28,9 +31,6 @@ import com.splendo.kaluga.media.MediaSurfaceController
 import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.VolumeController
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext

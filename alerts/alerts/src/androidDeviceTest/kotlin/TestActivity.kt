@@ -18,8 +18,8 @@ Copyright 2023 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.alerts
 
 import androidx.activity.viewModels
-import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.alerts.test.alertPresenterBuilder
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 
 class TestActivity : KalugaViewModelActivity<AlertsViewModel>() {
 

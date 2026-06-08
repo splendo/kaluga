@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.testRunBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.media.test.MockBaseMediaManager
 import com.splendo.kaluga.media.test.MockMediaSurfaceController
 import com.splendo.kaluga.media.test.MockPlayableMedia

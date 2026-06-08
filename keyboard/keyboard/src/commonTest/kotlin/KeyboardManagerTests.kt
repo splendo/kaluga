@@ -13,8 +13,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.keyboard.KeyboardManagerTests.KeyboardTestContext
 import com.splendo.kaluga.base.test.UIThreadTest
+import com.splendo.kaluga.keyboard.KeyboardManagerTests.KeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch

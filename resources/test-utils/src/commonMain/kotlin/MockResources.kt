@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.resources.test
 
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.resources.FontLoader
 import com.splendo.kaluga.resources.ImageLoader
 import com.splendo.kaluga.resources.KalugaColor
@@ -24,9 +27,6 @@ import com.splendo.kaluga.resources.KalugaColorLoader
 import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.StringLoader
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.parameters.mock
 
 /**
  * Mock implementation of [StringLoader]

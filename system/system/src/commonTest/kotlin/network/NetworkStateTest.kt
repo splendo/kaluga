@@ -18,9 +18,9 @@
 package com.splendo.kaluga.system.network
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.test.mock.verifyWithin
 import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
-import com.splendo.kaluga.base.test.mock.verifyWithin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.test.Test

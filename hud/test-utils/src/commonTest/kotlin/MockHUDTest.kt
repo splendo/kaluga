@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.hud.test
 
+import com.splendo.kaluga.base.test.UIThreadTest
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HUDStyle
 import com.splendo.kaluga.hud.HudConfig
 import com.splendo.kaluga.hud.presentDuring
-import com.splendo.kaluga.base.test.UIThreadTest
-import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.base.test.mock.verify
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope

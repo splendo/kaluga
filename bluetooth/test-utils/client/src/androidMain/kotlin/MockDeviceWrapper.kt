@@ -20,12 +20,12 @@ package com.splendo.kaluga.bluetooth.test
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
-import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
+import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
+import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 
 class MockDeviceWrapper(override val name: String?, override val identifier: Identifier, override val bondState: DeviceWrapper.BondState, setupMocks: Boolean = true) :
     DeviceWrapper {

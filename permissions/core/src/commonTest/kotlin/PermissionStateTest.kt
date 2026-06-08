@@ -18,14 +18,14 @@
 package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.permissions.base.PermissionState.Allowed
-import com.splendo.kaluga.permissions.base.PermissionState.Denied.Locked
-import com.splendo.kaluga.permissions.base.PermissionState.Denied.Requestable
 import com.splendo.kaluga.base.test.BaseFlowTest
 import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.yieldMultiple
+import com.splendo.kaluga.permissions.base.PermissionState.Allowed
+import com.splendo.kaluga.permissions.base.PermissionState.Denied.Locked
+import com.splendo.kaluga.permissions.base.PermissionState.Denied.Requestable
 import com.splendo.kaluga.permissions.test.DummyPermission
 import com.splendo.kaluga.permissions.test.MockPermissionManager
 import com.splendo.kaluga.permissions.test.MockPermissionStateRepo

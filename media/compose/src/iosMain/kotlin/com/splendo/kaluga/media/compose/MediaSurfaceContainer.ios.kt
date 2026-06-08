@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.UIKitView
-import com.splendo.kaluga.media.MediaSurface
 import com.splendo.kaluga.media.MediaSurfaceBinder
 import com.splendo.kaluga.media.bind
 import kotlinx.cinterop.readValue

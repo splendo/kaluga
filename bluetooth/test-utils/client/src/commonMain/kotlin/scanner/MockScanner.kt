@@ -18,6 +18,9 @@
 package com.splendo.kaluga.bluetooth.test.scanner
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
@@ -28,9 +31,6 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.Scanner
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.bluetooth.test.MockBluetoothMonitor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

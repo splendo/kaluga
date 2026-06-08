@@ -19,9 +19,9 @@ package com.splendo.kaluga.lifecycle
 
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.lifecycle.test.getOrPutAndRemoveOnDestroyFromCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

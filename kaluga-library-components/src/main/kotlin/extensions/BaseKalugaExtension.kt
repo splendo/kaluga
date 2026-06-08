@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.plugin.extensions
 
+import com.splendo.kaluga.plugin.extensions.BaseKalugaExtension.Companion.BASE_GROUP
 import com.splendo.kaluga.plugin.helpers.jvmTarget
 import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.vanniktech.maven.publish.AndroidMultiVariantLibrary

@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.test.BaseFlowTest
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.verifyWithin
 import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
@@ -30,11 +33,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.permissions.base.Permissions
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
-import com.splendo.kaluga.base.test.BaseFlowTest
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.verifyWithin
 import com.splendo.kaluga.bluetooth.test.ServiceWrapperBuilder
 import com.splendo.kaluga.bluetooth.test.characteristic
 import com.splendo.kaluga.bluetooth.test.createDeviceWrapper
@@ -44,6 +42,8 @@ import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.test.randomUUID
 import com.splendo.kaluga.bluetooth.test.scanner.MockBaseScanner
+import com.splendo.kaluga.permissions.base.Permissions
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.test.MockPermissionState
 import com.splendo.kaluga.permissions.test.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope

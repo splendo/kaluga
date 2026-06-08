@@ -28,9 +28,9 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 

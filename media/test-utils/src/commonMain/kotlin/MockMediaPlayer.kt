@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.media.test
 
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaPlayer.Controls
 import com.splendo.kaluga.media.MediaSource
@@ -26,9 +29,6 @@ import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.VolumeController
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**

@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.media.test
 
+import com.splendo.kaluga.base.test.mock.SuspendMethodMock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.SingleParameters
 import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.media.MediaSurface
 import com.splendo.kaluga.media.MediaSurfaceController
@@ -24,10 +28,6 @@ import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.VolumeController
-import com.splendo.kaluga.base.test.mock.SuspendMethodMock
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.parameters.SingleParameters
 import kotlin.time.Duration
 
 typealias PlayableMediaProvider = (MediaSource) -> PlayableMedia?

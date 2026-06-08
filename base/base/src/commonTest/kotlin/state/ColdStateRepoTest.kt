@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.state
 
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
@@ -25,6 +24,7 @@ import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.base.test.yieldMultiple
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

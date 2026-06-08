@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.links
 
-import com.splendo.kaluga.links.handler.LinksHandler
 import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.any
 import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
+import com.splendo.kaluga.links.handler.LinksHandler
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals

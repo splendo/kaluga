@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.yieldMultiple
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.firstInstance
@@ -24,10 +28,6 @@ import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.verify
-import com.splendo.kaluga.base.test.yieldMultiple
 import com.splendo.kaluga.bluetooth.test.createDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.createMockDevice
 import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData

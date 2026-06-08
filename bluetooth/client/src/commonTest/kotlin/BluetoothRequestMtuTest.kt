@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.base.test.mock.verifyWithin
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow

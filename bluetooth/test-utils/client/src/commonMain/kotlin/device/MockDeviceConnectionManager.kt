@@ -18,6 +18,10 @@
 package com.splendo.kaluga.bluetooth.test.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.singleParametersMock
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RSSI
@@ -29,13 +33,9 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.parameters.mock
-import com.splendo.kaluga.base.test.mock.singleParametersMock
 import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.test.MockDescriptorWrapper
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 

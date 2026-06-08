@@ -18,14 +18,14 @@
 package com.splendo.kaluga.location.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.BaseLocationStateRepoBuilder
 import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.on
-import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
 /**

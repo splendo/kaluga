@@ -16,6 +16,8 @@
 
 package com.splendo.kaluga.bluetooth.test.scanner
 
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -23,8 +25,6 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.DefaultDevices
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.parameters.mock
 
 sealed class MockScanningState {
 

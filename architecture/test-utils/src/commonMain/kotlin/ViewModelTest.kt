@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.architecture.test
 
-import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.architecture.test.UIThreadViewModelTest.ViewModelTestContext
 import com.splendo.kaluga.architecture.test.viewmodel.cleanUp
+import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.test.BaseUIThreadTest
 import com.splendo.kaluga.base.test.UIThreadTest

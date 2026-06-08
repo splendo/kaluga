@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest
-import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.base.test.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.yieldMultiple
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager.ActionCompleted

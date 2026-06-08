@@ -18,9 +18,9 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
+import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.datetimepicker.buildTimePicker
-import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -18,15 +18,15 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.permissions.base.Permissions
-import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.base.test.BaseFlowTest
 import com.splendo.kaluga.base.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.yieldMultiple
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.location.test.MockBaseLocationManager
 import com.splendo.kaluga.location.test.MockLocationStateRepoBuilder
+import com.splendo.kaluga.permissions.base.Permissions
+import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.test.MockPermissionState
 import com.splendo.kaluga.permissions.test.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope

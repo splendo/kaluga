@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.testBlockingAndCancelScope
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.base.test.BaseTest
-import com.splendo.kaluga.base.test.mock.verify
-import com.splendo.kaluga.base.test.testBlockingAndCancelScope
 import com.splendo.kaluga.bluetooth.test.MockDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.createDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData

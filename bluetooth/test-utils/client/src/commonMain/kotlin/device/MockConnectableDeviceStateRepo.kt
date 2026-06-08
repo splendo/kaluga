@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.test.device
 
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.device.BaseConnectableDeviceStateRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.base.test.mock.call
-import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
 class MockConnectableDeviceStateRepo(mockConnectableDeviceManager: MockConnectableDeviceManager, coroutineContext: CoroutineContext) :

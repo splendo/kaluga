@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.permissions.test
 
-import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.base.test.mock.android.MockContext
+import com.splendo.kaluga.permissions.base.PermissionContext
 
 actual val mockPermissionContext get() = PermissionContext(MockContext())

@@ -20,14 +20,14 @@ package com.splendo.kaluga.base.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.test.BaseUIThreadTest.EmptyTestContext
+import com.splendo.kaluga.base.test.BaseUIThreadTest.TestContext
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
-import com.splendo.kaluga.base.test.BaseUIThreadTest.EmptyTestContext
-import com.splendo.kaluga.base.test.BaseUIThreadTest.TestContext
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
 import kotlinx.coroutines.CoroutineScope

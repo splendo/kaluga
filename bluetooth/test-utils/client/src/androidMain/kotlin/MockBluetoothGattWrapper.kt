@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.test
 
-import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
-import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
-import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
+import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 
 class MockBluetoothGattWrapper(setupMocks: Boolean = true) : BluetoothGattWrapper {
 

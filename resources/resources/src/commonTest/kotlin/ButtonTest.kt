@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
-import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.test.mockFont
+import com.splendo.kaluga.resources.view.KalugaButton
 import kotlin.test.Test
 
 class ButtonTest : BaseTest() {

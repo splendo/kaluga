@@ -18,8 +18,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import com.splendo.kaluga.hud.HUDTests.HUDTestContext
 import com.splendo.kaluga.base.test.UIThreadTest
+import com.splendo.kaluga.hud.HUDTests.HUDTestContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlin.test.Test

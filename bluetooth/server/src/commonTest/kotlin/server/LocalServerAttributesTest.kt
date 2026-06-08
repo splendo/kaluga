@@ -18,16 +18,16 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.bluetooth.CharacteristicProperty
-import com.splendo.kaluga.bluetooth.GattResponse
-import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.suspendTripleParametersMock
 import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
+import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.bluetooth.test.randomUUID
 import com.splendo.kaluga.bluetooth.test.server.MockConnectedDevice
 import com.splendo.kaluga.bluetooth.test.server.MockLocalServiceWrapperBuilder
