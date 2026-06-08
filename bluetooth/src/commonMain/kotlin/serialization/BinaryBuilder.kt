@@ -70,6 +70,9 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
     }
 
     override fun addBit(value: Boolean) {
+        if (isOfUnconstrainedSize) {
+            throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
+        }
         currentBits++
         if (currentBits == Byte.SIZE_BITS) {
             expectedBodySize++
@@ -109,14 +112,16 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
                     buildBody()
                 }
                 add(body)
-                // Calculate checksum if necessary
-                val crcBytes = crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-                for (i in 0..<crc.byteWidth) {
+                // Store the checksum as a [crc.byteWidth]-wide numeric in the structure's byte order, just like
+                // every other multi-byte value. The full ULong is encoded in [byteOrder] and the [crc.byteWidth]
+                // least-significant bytes are kept (the high zero bytes sit at the most-significant end).
+                val crcBytes = crc.compute(body).toByteArray(binaryDescriptor.byteOrder)
+                add(
                     when (binaryDescriptor.byteOrder) {
-                        ByteOrder.MOST_SIGNIFICANT_FIRST -> add(crcBytes[crc.byteWidth - i - 1])
-                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> add(crcBytes[i])
-                    }
-                }
+                        ByteOrder.MOST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(crcBytes.size - crc.byteWidth, crcBytes.size)
+                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(0, crc.byteWidth)
+                    },
+                )
             } else {
                 buildBody()
             }

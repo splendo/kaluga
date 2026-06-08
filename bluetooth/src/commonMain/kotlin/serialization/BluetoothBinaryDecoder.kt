@@ -322,7 +322,7 @@ internal fun BluetoothBinaryDescriptor.decodeDecimalNumericElement(decoder: Blue
     return when (lengthToDecode) {
         Length.`32_BIT` -> bytes.decodeFloat(0, byteOrder).toDouble()
         Length.`64_BIT` -> bytes.decodeDouble(0, byteOrder)
-        else -> throw IllegalArgumentException("Decimal only supports 16 and 32 bit decoding")
+        else -> throw IllegalArgumentException("Decimal only supports 32 and 64 bit decoding")
     }
 }
 

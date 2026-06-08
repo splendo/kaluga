@@ -32,8 +32,6 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.descriptors.getPolymorphicDescriptors
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.jvm.JvmInline
-import kotlin.math.ceil
-import kotlin.math.sqrt
 
 internal data class BluetoothBinaryDescriptor(
     val fieldName: String,
@@ -456,11 +454,12 @@ internal object BluetoothBinaryDescriptorRegistry {
         }
     }.sortedBy { it.bytes }.toSet()
 
-    private fun Set<Length>.sizingWidth() = when (size) {
-        0 -> 0
-        1 -> 0
-        2 -> 1
-        else -> ceil(sqrt(size.toDouble())).toInt()
+    // Number of flag bits needed to store which of [size] options was chosen, i.e. ceil(log2(size)).
+    // Computed with integer arithmetic to avoid floating-point rounding at the boundaries:
+    // the highest representable index is size - 1, and 32 - countLeadingZeroBits() is its bit width.
+    private fun Set<Length>.sizingWidth() = when {
+        size <= 1 -> 0
+        else -> 32 - (size - 1).countLeadingZeroBits()
     }
 
     private fun numericSettings(
@@ -589,7 +588,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                     val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
                     val serialIdentifier = optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
                         byteArrayOf(it.value)
-                    } ?: optionDescriptor.getElementName(index).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
+                    } ?: optionDescriptor.serialName.toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
                     optionDescriptor.serialName to ByteArrayHolder(serialIdentifier)
                 }
             }
@@ -653,7 +652,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             is ValueByteOrder -> ByteOrder(annotation.order)
             is ValueLengthPrefix -> LengthPrefix(annotation.lengthAsShort, annotation.canOverflow, annotation.sentinel)
             is ValueEncoded -> Encoded(annotation.encoding)
-            is KeyNullTerminated -> NullTerminated()
+            is ValueNullTerminated -> NullTerminated()
             is ValueUnsigned -> Unsigned()
             is ValueScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
             is ValueMedFloat -> MedFloat()

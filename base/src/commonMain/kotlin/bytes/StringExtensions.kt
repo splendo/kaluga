@@ -258,13 +258,24 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
         is StringEncodingSettings.NoMarking -> settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
 
         is StringEncodingSettings.FixedLength -> {
-            if (stringSize < totalSize) {
-                when (order) {
-                    ByteOrder.MOST_SIGNIFICANT_FIRST -> settings.encoding.copyEncodedStringIntoArray(this, array, offset + (totalSize - stringSize), order)
-                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
-                }
+            // FixedLength is a fixed BYTE length (totalSize). If the encoding of this string exceeds it,
+            // drop whole trailing characters until the encoding fits within totalSize bytes. For fixed-width
+            // encodings this equals take(length); for variable-width UTF-8 it may drop more characters (and,
+            // when a multibyte character straddles the boundary, leave the buffer null-padded) so the result
+            // never overflows the buffer.
+            val fitted = if (stringSize <= totalSize) {
+                this
             } else {
-                settings.encoding.copyEncodedStringIntoArray(take(endMarking.length), array, offset, order)
+                var truncated = take(endMarking.length)
+                while (truncated.isNotEmpty() && settings.encoding.byteSizeOf(truncated) > totalSize) {
+                    truncated = truncated.dropLast(1)
+                }
+                truncated
+            }
+            val fittedSize = settings.encoding.byteSizeOf(fitted)
+            when (order) {
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> settings.encoding.copyEncodedStringIntoArray(fitted, array, offset + (totalSize - fittedSize), order)
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> settings.encoding.copyEncodedStringIntoArray(fitted, array, offset, order)
             }
             array
         }
@@ -319,7 +330,7 @@ fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteO
     val writeByte: (Byte) -> Unit = when (byteOrder) {
         ByteOrder.MOST_SIGNIFICANT_FIRST -> {
             val size = utf8Size(throwOnMalformed)
-            require(array.size >= size) { "Cannot copy into ByteArray. Must be at least ${offset + size} long" }
+            require(array.size >= offset + size) { "Cannot copy into ByteArray. Must be at least ${offset + size} long" }
             val function = { byte: Byte ->
                 val index = offset + size - pos++ - 1
                 array[index] = byte
@@ -365,6 +376,33 @@ fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteO
 }
 
 private val REPLACEMENT_BYTE_SEQUENCE: ByteArray = byteArrayOf(0xEF.toByte(), 0xBF.toByte(), 0xBD.toByte())
+
+/**
+ * Decodes a single UTF-8 code point from an [Iterator] of [Byte], advancing the iterator past all the
+ * bytes of the sequence. The lead byte's high bits determine the sequence length (1/2/3/4 bytes) and the
+ * continuation bytes are pulled from the iterator. A code point outside the Basic Multilingual Plane is
+ * returned as a surrogate pair, hence the result is a [String] of one or two [Char]s.
+ */
+private fun Iterator<Byte>.decodeUTF8CodePoint(): String {
+    val lead = next().toInt() and 0xFF
+    val codePoint = when {
+        lead < 0x80 -> lead
+        lead < 0xE0 -> (lead and 0x1F) shl 6 or continuationByte()
+        lead < 0xF0 -> (lead and 0x0F) shl 12 or (continuationByte() shl 6) or continuationByte()
+        else -> (lead and 0x07) shl 18 or (continuationByte() shl 12) or (continuationByte() shl 6) or continuationByte()
+    }
+    return if (codePoint > 0xFFFF) {
+        val offset = codePoint - 0x10000
+        charArrayOf(((offset shr 10) + 0xD800).toChar(), ((offset and 0x3FF) + 0xDC00).toChar()).concatToString()
+    } else {
+        codePoint.toChar().toString()
+    }
+}
+
+private fun Iterator<Byte>.continuationByte(): Int {
+    require(hasNext()) { "Truncated UTF-8 sequence: missing continuation byte" }
+    return next().toInt() and 0x3F
+}
 
 /**
  * Returns the number of [Byte]s required to encode a [String] using UTF-16.
@@ -523,10 +561,10 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
     var result = ""
     val iterator = stringBytes.iterator()
     while (iterator.hasNext()) {
-        result += when (settings.encoding) {
-            UTF_8 -> iterator.next().decodeUTF8Char()
-            UTF_16 -> listOf(iterator.next(), iterator.next()).toByteArray().decodeUTF16Char(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
-            ASCII -> iterator.next().decodeAsciiChar()
+        when (settings.encoding) {
+            UTF_8 -> result += iterator.decodeUTF8CodePoint()
+            UTF_16 -> result += listOf(iterator.next(), iterator.next()).toByteArray().decodeUTF16Char(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+            ASCII -> result += iterator.next().decodeAsciiChar()
         }
     }
     return if (settings.endMarking is StringEncodingSettings.FixedLength) {

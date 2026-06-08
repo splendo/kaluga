@@ -69,7 +69,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
     override fun peekNextIs(value: ByteArray, consumeIfMatch: Boolean): Boolean = if (hasAtLeast(value.size)) {
         val start = if (bitOffset > 0) offset + 1 else offset
         when (byteOrder) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - start - value.size - 1, byteArray.size - start)
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - start - value.size, byteArray.size - start)
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(start, start + value.size)
         }.contentEquals(value).also { match ->
             if (match && consumeIfMatch) {
@@ -101,7 +101,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
     }
 
     fun subArrayFrom(offset: Int) = when (byteOrder) {
-        ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - this.offset - 1, byteArray.size - offset)
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - this.offset, byteArray.size - offset)
         ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(offset, this.offset)
     }
 
