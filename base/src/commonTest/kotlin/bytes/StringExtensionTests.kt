@@ -21,6 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 
 class StringExtensionTests {
 
@@ -373,6 +374,59 @@ class StringExtensionTests {
             ByteOrder.MOST_SIGNIFICANT_FIRST,
             SHORT_STRING.reversed().map { it.toAscii() }.toByteArray(),
         )
+    }
+
+    @Test
+    fun copyUTF8IntoArrayOffsetBoundCheck() {
+        // "abc" needs 3 UTF-8 bytes; writing at offset 1 needs 4 bytes but only 3 are available.
+        // Both byte orders must reject this with IllegalArgumentException (the documented contract),
+        // not an ArrayIndexOutOfBoundsException.
+        assertFailsWith<IllegalArgumentException> {
+            "abc".copyUTF8IntoArray(ByteArray(3), offset = 1, byteOrder = ByteOrder.MOST_SIGNIFICANT_FIRST)
+        }
+        assertFailsWith<IllegalArgumentException> {
+            "abc".copyUTF8IntoArray(ByteArray(3), offset = 1, byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        }
+        // Exactly enough room at the offset must succeed for both orders.
+        "abc".copyUTF8IntoArray(ByteArray(4), offset = 1, byteOrder = ByteOrder.MOST_SIGNIFICANT_FIRST)
+        "abc".copyUTF8IntoArray(ByteArray(4), offset = 1, byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    }
+
+    @Test
+    fun encodeFixedLengthMultibyteUTF8() {
+        // BUG 2 regression: FixedLength is a fixed BYTE length: UTF_8.byteSize(1) * length(3) = 3 bytes.
+        val settings = StringEncodingSettings(StringEncodingSettings.FixedLength(3), Encoding.UTF_8)
+        assertEquals(3, "ééé".byteArraySize(settings))
+
+        // Each 'é' (U+00E9) is 2 UTF-8 bytes. Truncation must drop whole trailing characters until the
+        // encoding fits the 3-byte buffer: only one 'é' (2 bytes) fits, leaving a single null pad byte.
+        // The result must be exactly the allocated buffer size and never overflow it.
+        val encodedLsb = "ééé".toByteArray(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        assertEquals(3, encodedLsb.size)
+        assertContentEquals("é".encodeToByteArray() + ByteArray(1), encodedLsb)
+
+        val encodedMsb = "ééé".toByteArray(settings, ByteOrder.MOST_SIGNIFICANT_FIRST)
+        assertEquals(3, encodedMsb.size)
+        assertContentEquals(ByteArray(1) + "é".encodeToByteArray().reversedArray(), encodedMsb)
+
+        // When the buffer is an exact multiple of the multibyte width, all characters fit with no padding.
+        val exactSettings = StringEncodingSettings(StringEncodingSettings.FixedLength(6), Encoding.UTF_8)
+        assertEquals(6, "ééé".byteArraySize(exactSettings))
+        val exactEncoded = "ééé".toByteArray(exactSettings, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        assertEquals(6, exactEncoded.size)
+        assertContentEquals("ééé".encodeToByteArray(), exactEncoded)
+    }
+
+    @Test
+    fun roundTripMultibyteUTF8() {
+        // BUG 1 regression: a multibyte UTF-8 string must round-trip through encode then decode.
+        // The encoder emits proper multi-byte sequences (2/3/4 bytes), so decoding one byte per char is wrong.
+        val multibyte = "café€日本"
+        for (endMarking in listOf(StringEncodingSettings.NoMarking, StringEncodingSettings.LengthPrefix.ByteLength)) {
+            val settings = StringEncodingSettings(endMarking, Encoding.UTF_8)
+            val encoded = multibyte.toByteArray(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+            assertEquals(multibyte, encoded.decodeString(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST))
+        }
     }
 
     private fun String.encodeDecode(settings: StringEncodingSettings, order: ByteOrder, expectedBytes: ByteArray, expectedString: String = this) {
