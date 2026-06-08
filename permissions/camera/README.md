@@ -1,0 +1,19 @@
+# Camera Permissions
+Adds a `CameraPermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerCameraPermission`()/`PermissionsBuilder.registerCameraPermissionIfNotRegistered()`.
+
+## Installing
+This library is available on Maven Central. You can import Kaluga Camera Permissions as follows:
+
+ ```kotlin
+ repositories {
+     // ...
+     mavenCentral()
+ }
+ // ...
+ dependencies {
+     // ...
+     implementation("com.splendo.kaluga.permissions:camera:$kalugaVersion")
+ }
+ ```
+
+## Please check [general permissions documentation](../base-permissions) for full documentation

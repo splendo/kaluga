@@ -4,7 +4,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "location"
+    moduleName = "permissions.base"
     supportJS = true
     supportWasmJS = true
     supportMacOS = true
@@ -13,18 +13,16 @@ kaluga {
     dependencies {
         android {
             main {
-                implementation(libs.android.play.services.location)
-                implementation(libs.kotlinx.coroutines.playservices)
                 implementation(libs.kotlinx.atomicfu)
             }
         }
         common {
             main {
-                implementation(project(":service"))
-                api(project(":permissions:location", ""))
+                api(project(":logging", ""))
+                api(project(":base", ""))
             }
             test {
-                implementation(project(":test-utils-location", ""))
+                implementation(project(":permissions:test", ""))
             }
         }
     }

@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga:bluetooth-server>
+// Library unique name: <com.splendo.kaluga.bluetooth:server>
 final enum class com.splendo.kaluga.bluetooth.server/ServerStatus : kotlin/Enum<com.splendo.kaluga.bluetooth.server/ServerStatus> { // com.splendo.kaluga.bluetooth.server/ServerStatus|null[0]
     enum entry AVAILABLE // com.splendo.kaluga.bluetooth.server/ServerStatus.AVAILABLE|null[0]
     enum entry AWAITING_BLUETOOTH_ENABLED // com.splendo.kaluga.bluetooth.server/ServerStatus.AWAITING_BLUETOOTH_ENABLED|null[0]

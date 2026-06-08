@@ -20,7 +20,7 @@ kaluga {
                 api(project(":lifecycle:test"))
                 api(project(":test-utils-location"))
                 api(project(":media:test"))
-                api(project(":test-utils-permissions"))
+                api(project(":permissions:test"))
                 api(project(":resources:test"))
                 api(project(":test-utils-service"))
                 api(project(":test-utils-system"))

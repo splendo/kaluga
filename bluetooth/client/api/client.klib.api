@@ -6,7 +6,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga:bluetooth-client>
+// Library unique name: <com.splendo.kaluga.bluetooth:client>
 abstract interface <#A: kotlin/Any?> com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding { // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding|null[0]
     abstract fun <#A1: kotlin/Any?> (kotlinx.coroutines.channels/Channel<#A1>).consumeTo(kotlin/Function1<com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.TriggerResponse<#A1, #A>, kotlin/Unit>) // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.consumeTo|consumeTo@kotlinx.coroutines.channels.Channel<0:0>(kotlin.Function1<com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.TriggerResponse<0:0,1:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]
     abstract fun <#A1: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A1>).collectTo(kotlin/Function1<com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.TriggerResponse<#A1, #A>, kotlin/Unit>) // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.collectTo|collectTo@kotlinx.coroutines.flow.Flow<0:0>(kotlin.Function1<com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.TriggerResponse<0:0,1:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]

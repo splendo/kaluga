@@ -17,11 +17,18 @@
 
 package com.splendo.kaluga.example.feature.permissions
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
 import com.splendo.kaluga.permissions.camera.CameraPermission
+import com.splendo.kaluga.permissions.camera.registerCameraPermission
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.permissions.microphone.MicrophonePermission
+import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.notifications.NotificationsPermission
+import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 
 // The browser exposes geolocation, notifications, camera, microphone and Bluetooth; the rest of the
 // permission types have no Web API. `background`/`precise` are accepted but inert on the web.
@@ -48,3 +55,11 @@ actual val availablePermissionViews: List<PermissionView> = listOf(
     MicrophonePermissionView,
     BluetoothPermissionView,
 )
+
+actual fun PermissionsBuilder.registerExamplePermissions(settings: BasePermissionManager.Settings) {
+    registerLocationPermission(settings = settings)
+    registerNotificationsPermission(settings = settings)
+    registerCameraPermission(settings = settings)
+    registerMicrophonePermission(settings = settings)
+    registerBluetoothPermission(settings = settings)
+}

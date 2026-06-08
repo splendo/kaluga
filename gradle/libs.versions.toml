@@ -63,13 +63,12 @@ nordic-support = "1.6.0"
 
 # Kaluga itself
 kaluga-base = { module = "com.splendo.kaluga:base", version.ref = "kaluga" }
-kaluga-base-permissions = { module = "com.splendo.kaluga:base-permissions", version.ref = "kaluga" }
+kaluga-base-permissions = { module = "com.splendo.kaluga.permissions:core", version.ref = "kaluga" }
 kaluga-beacons = { module = "com.splendo.kaluga.bluetooth:beacons", version.ref = "kaluga" }
-kaluga-bluetooth = { module = "com.splendo.kaluga:bluetooth", version.ref = "kaluga" }
-kaluga-bluetooth-permissions = { module = "com.splendo.kaluga:bluetooth-permissions", version.ref = "kaluga" }
-kaluga-calendar-permissions = { module = "com.splendo.kaluga:calendar-permissions", version.ref = "kaluga" }
-kaluga-camera-permissions = { module = "com.splendo.kaluga:camera-permissions", version.ref = "kaluga" }
-kaluga-contacts-permissions = { module = "com.splendo.kaluga:contacts-permissions", version.ref = "kaluga" }
+kaluga-bluetooth-permissions = { module = "com.splendo.kaluga.permissions:bluetooth", version.ref = "kaluga" }
+kaluga-calendar-permissions = { module = "com.splendo.kaluga.permissions:calendar", version.ref = "kaluga" }
+kaluga-camera-permissions = { module = "com.splendo.kaluga.permissions:camera", version.ref = "kaluga" }
+kaluga-contacts-permissions = { module = "com.splendo.kaluga.permissions:contacts", version.ref = "kaluga" }
 kaluga-datetime = { module = "com.splendo.kaluga:date-time", version.ref = "kaluga" }
 kaluga-datetimepicker = { module = "com.splendo.kaluga:date-time-picker", version.ref = "kaluga" }
 kaluga-alerts = { module = "com.splendo.kaluga:alerts", version.ref = "kaluga" }
@@ -79,16 +78,16 @@ kaluga-keyboard = { module = "com.splendo.kaluga.keyboard:keyboard", version.ref
 kaluga-links = { module = "com.splendo.kaluga:links", version.ref = "kaluga" }
 kaluga-logging = { module = "com.splendo.kaluga:logging", version.ref = "kaluga" }
 kaluga-location = { module = "com.splendo.kaluga:location", version.ref = "kaluga" }
-kaluga-location-permissions = { module = "com.splendo.kaluga:location-permissions", version.ref = "kaluga" }
+kaluga-location-permissions = { module = "com.splendo.kaluga.permissions:location", version.ref = "kaluga" }
 kaluga-media = { module = "com.splendo.kaluga.media:media", version.ref = "kaluga" }
-kaluga-microphone-permissions = { module = "com.splendo.kaluga:microphone-permissions", version.ref = "kaluga" }
-kaluga-notifications-permissions = { module = "com.splendo.kaluga:notifications-permissions", version.ref = "kaluga" }
+kaluga-microphone-permissions = { module = "com.splendo.kaluga.permissions:microphone", version.ref = "kaluga" }
+kaluga-notifications-permissions = { module = "com.splendo.kaluga.permissions:notifications", version.ref = "kaluga" }
 kaluga-resources = { module = "com.splendo.kaluga.resources:resources", version.ref = "kaluga" }
 kaluga-review = { module = "com.splendo.kaluga:review", version.ref = "kaluga" }
 kaluga-scientific = { module = "com.splendo.kaluga:scientific", version.ref = "kaluga" }
 kaluga-scientific-converters = { module = "com.splendo.kaluga:scientific-converters", version.ref = "kaluga" }
 kaluga-service = { module = "com.splendo.kaluga:service", version.ref = "kaluga" }
-kaluga-storage-permissions = { module = "com.splendo.kaluga:storage-permissions", version.ref = "kaluga" }
+kaluga-storage-permissions = { module = "com.splendo.kaluga.permissions:storage", version.ref = "kaluga" }
 kaluga-system = { module = "com.splendo.kaluga:system", version.ref = "kaluga" }
 kaluga-compose-architecture = { module = "com.splendo.kaluga.architecture:compose", version.ref = "kaluga" }
 kaluga-compose-keyboard = { module = "com.splendo.kaluga.keyboard:compose", version.ref = "kaluga" }
@@ -106,7 +105,7 @@ kaluga-testutils-keyboard = { module = "com.splendo.kaluga.keyboard:test", versi
 kaluga-testutils-koin = { module = "com.splendo.kaluga:test-utils-koin", version.ref = "kaluga" }
 kaluga-testutils-location = { module = "com.splendo.kaluga:test-utils-location", version.ref = "kaluga" }
 kaluga-testutils-media = { module = "com.splendo.kaluga.media:test", version.ref = "kaluga" }
-kaluga-testutils-permissions = { module = "com.splendo.kaluga:test-utils-permissions", version.ref = "kaluga" }
+kaluga-testutils-permissions = { module = "com.splendo.kaluga.permissions:test", version.ref = "kaluga" }
 kaluga-testutils-service = { module = "com.splendo.kaluga:test-utils-service", version.ref = "kaluga" }
 kaluga-testutils-system = { module = "com.splendo.kaluga:test-utils-system", version.ref = "kaluga" }
 

@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.example.feature.permissions
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationOptions
 
 expect val notificationOptions: NotificationOptions
@@ -33,7 +35,13 @@ abstract class PermissionView(val name: String, val title: String) {
 
 /**
  * The set of [PermissionView]s the current platform supports. Each target's source set provides
- * its own list — the `:permissions` module's `registerAllPermissions` matches the same per-target
- * shape.
+ * its own list.
  */
 expect val availablePermissionViews: List<PermissionView>
+
+/**
+ * Registers the permission managers for exactly the permission types shown on the current platform
+ * (matching [availablePermissionViews]). Replaces the removed `:permissions` `registerAllPermissions`
+ * facade — the demo registers only what it demonstrates, per platform.
+ */
+expect fun PermissionsBuilder.registerExamplePermissions(settings: BasePermissionManager.Settings)

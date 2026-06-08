@@ -27,7 +27,6 @@ import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
-import com.splendo.kaluga.permissions.registerAllPermissions
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -62,7 +61,7 @@ class PermissionsContribution : FeatureContribution.Compose {
 val permissionsFeatureModule: Module = module {
     single {
         PermissionsBuilder().apply {
-            registerAllPermissions(settings = BasePermissionManager.Settings(logger = get()))
+            registerExamplePermissions(settings = BasePermissionManager.Settings(logger = get()))
         }
     }
     single { PermissionsContribution() } bind FeatureContribution::class

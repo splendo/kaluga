@@ -21,7 +21,7 @@ Scanning for nearby devices with Bluetooth LE:
 
 ```kotlin
 // will auto request permissions and try to enable bluetooth
-BluetoothBuilder().createClient().devices().collect {
+BluetoothClientBuilder().createClient().devices().collect {
     i("discovered device: $it") // log found device
 }
 ```
@@ -101,8 +101,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [architecture-compose](architecture/compose/)               | Compose extensions for architecture                                                | com.splendo.kaluga.architecture:compose        |
 | [base](base/)                                               | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga:base                        |
 | [beacons](beacons/)                                         | Tracking the availability of Beacons using the Eddystone protocol                  | com.splendo.kaluga.bluetooth:beacons                     |
-| [bluetooth](bluetooth/)                                     | Aggregate of the Bluetooth client, server and base modules                         | com.splendo.kaluga:bluetooth                   |
-| [bluetooth-base](bluetooth-base/)                           | Shared Bluetooth attributes and the BluetoothFormat (de)serialization framework    | com.splendo.kaluga.bluetooth:core              |
+| [bluetooth-base](bluetooth/core/)                           | Shared Bluetooth attributes and the BluetoothFormat (de)serialization framework    | com.splendo.kaluga.bluetooth:core              |
 | [bluetooth-client](bluetooth-client/)                       | Scanning for and connecting to BLE devices as a Client                             | com.splendo.kaluga.bluetooth:client            |
 | [bluetooth-server](bluetooth-server/)                       | Advertising and exposing GATT attributes as a Server                               | com.splendo.kaluga.bluetooth:server            |
 | [date-time](date-time/)                                     | Contains multiplatform classes to work with date and time                          | com.splendo.kaluga:date-time                   |
@@ -117,16 +116,15 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [logging](logging/)                                         | Shared console logging                                                             | com.splendo.kaluga:logging                     |
 | [media](media/)                                             | Playing audio/video                                                                | com.splendo.kaluga.media:media                       |
 | [media-compose](media-compose/)                             | Compose extensions for media                                                       | com.splendo.kaluga.media:compose               |
-| [base-permissions](base-permissions/)                       | Managing permissions, used in conjunction with modules below                       | com.splendo.kaluga:base-permissions            |
-| [bluetooth-permissions](bluetooth-permissions/)             | Managing bluetooth permissions                                                     | com.splendo.kaluga:bluetooth-permissions       |
-| [calendar-permissions](calendar-permissions/)               | Managing calendar permissions                                                      | com.splendo.kaluga:calendar-permissions        |
-| [camera-permissions](camera-permissions/)                   | Managing camera permissions                                                        | com.splendo.kaluga:camera-permissions          |
-| [contacts-permissions](contacts-permissions/)               | Managing contacts permissions                                                      | com.splendo.kaluga:contacts-permissions        |
-| [location-permissions](location-permissions/)               | Managing location permissions                                                      | com.splendo.kaluga:location-permissions        |
-| [microphone-permissions](microphone-permissions/)           | Managing microphone permissions                                                    | com.splendo.kaluga:microphone-permissions      |
-| [notifications-permissions](notifications-permissions/)     | Managing notifications permissions                                                 | com.splendo.kaluga:notifications-permissions   |
-| [storage-permissions](storage-permissions/)                 | Managing storage permissions                                                       | com.splendo.kaluga:storage-permissions         |
-| [permissions](permissions/)                                 | Aggregate of all permissions modules                                               | com.splendo.kaluga:permissions                 |
+| [base-permissions](base-permissions/)                       | Managing permissions, used in conjunction with modules below                       | com.splendo.kaluga.permissions:core            |
+| [bluetooth-permissions](bluetooth-permissions/)             | Managing bluetooth permissions                                                     | com.splendo.kaluga.permissions:bluetooth       |
+| [calendar-permissions](calendar-permissions/)               | Managing calendar permissions                                                      | com.splendo.kaluga.permissions:calendar        |
+| [camera-permissions](camera-permissions/)                   | Managing camera permissions                                                        | com.splendo.kaluga.permissions:camera          |
+| [contacts-permissions](contacts-permissions/)               | Managing contacts permissions                                                      | com.splendo.kaluga.permissions:contacts        |
+| [location-permissions](location-permissions/)               | Managing location permissions                                                      | com.splendo.kaluga.permissions:location        |
+| [microphone-permissions](microphone-permissions/)           | Managing microphone permissions                                                    | com.splendo.kaluga.permissions:microphone      |
+| [notifications-permissions](notifications-permissions/)     | Managing notifications permissions                                                 | com.splendo.kaluga.permissions:notifications   |
+| [storage-permissions](storage-permissions/)                 | Managing storage permissions                                                       | com.splendo.kaluga.permissions:storage         |
 | [resources](resources/)                                     | Provides shared Strings, Images, Colors and Fonts                                  | com.splendo.kaluga.resources:resources                   |
 | [resources-compose](resources-compose/)                     | Compose extensions for resources                                                   | com.splendo.kaluga.resources:compose           |
 | [resources-databinding](resources-databinding/)             | Data Binding extensions for resources                                              | com.splendo.kaluga.resources:databinding       |
@@ -149,7 +147,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils-lifecycle](test-utils-lifecycle/)               | Activity-cached helpers for the Lifecycle module                                   | com.splendo.kaluga.lifecycle:test        |
 | [test-utils-location](test-utils-location/)                 | Enables easier testing of Location module                                          | com.splendo.kaluga:test-utils-location         |
 | [test-utils-media](test-utils-media/)                       | Enables easier testing of Media module                                             | com.splendo.kaluga.media:test            |
-| [test-utils-permissions](test-utils-permissions/)           | Enables easier testing of Permissions modules                                      | com.splendo.kaluga:test-utils-permissions      |
+| [test-utils-permissions](test-utils-permissions/)           | Enables easier testing of Permissions modules                                      | com.splendo.kaluga.permissions:test      |
 | [test-utils-resources](test-utils-resources/)               | Enables easier testing of Resources module                                         | com.splendo.kaluga.resources:test        |
 | [test-utils-service](test-utils-service/)                   | Enables easier testing of Service module                                           | com.splendo.kaluga:test-utils-service          |
 | [test-utils-system](test-utils-system/)                     | Enables easier testing of System module                                            | com.splendo.kaluga:test-utils-system           |

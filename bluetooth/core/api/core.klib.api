@@ -6,7 +6,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga:bluetooth-base>
+// Library unique name: <com.splendo.kaluga.bluetooth:core>
 open annotation class com.splendo.kaluga.bluetooth.serialization/ByteOrder : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteOrder|null[0]
     constructor <init>(com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/ByteOrder.<init>|<init>(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 

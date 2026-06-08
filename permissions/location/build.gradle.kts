@@ -1,10 +1,9 @@
 plugins {
     id("com.splendo.kaluga.plugin")
-    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
 kaluga {
-    moduleName = "location"
+    moduleName = "permissions.location"
     supportJS = true
     supportWasmJS = true
     supportMacOS = true
@@ -14,17 +13,14 @@ kaluga {
         android {
             main {
                 implementation(libs.android.play.services.location)
-                implementation(libs.kotlinx.coroutines.playservices)
-                implementation(libs.kotlinx.atomicfu)
             }
         }
         common {
             main {
-                implementation(project(":service"))
-                api(project(":permissions:location", ""))
+                api(project(":permissions:core", ""))
             }
             test {
-                implementation(project(":test-utils-location", ""))
+                implementation(project(":test-utils-base", ""))
             }
         }
     }

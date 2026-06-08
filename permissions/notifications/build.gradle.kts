@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.location"
+    moduleName = "permissions.notifications"
     supportJS = true
     supportWasmJS = true
     supportMacOS = true
@@ -12,9 +12,10 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":location"))
-                api(project(":permissions:test"))
-                api(project(":test-utils-service"))
+                api(project(":permissions:core", ""))
+            }
+            test {
+                implementation(project(":test-utils-base", ""))
             }
         }
     }

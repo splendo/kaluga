@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.location"
+    moduleName = "test.permissions"
     supportJS = true
     supportWasmJS = true
     supportMacOS = true
@@ -12,9 +12,8 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":location"))
-                api(project(":permissions:test"))
-                api(project(":test-utils-service"))
+                api(project(":test-utils-base"))
+                api(project(":permissions:core"))
             }
         }
     }

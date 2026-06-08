@@ -26,11 +26,11 @@ kaluga {
         common {
             main {
                 api(project(":bluetooth:core"))
-                api(project(":bluetooth-permissions", ""))
+                api(project(":permissions:bluetooth", ""))
             }
             test {
                 implementation(project(":bluetooth:test:client", ""))
-                implementation(project(":test-utils-permissions", ""))
+                implementation(project(":permissions:test", ""))
             }
         }
     }
