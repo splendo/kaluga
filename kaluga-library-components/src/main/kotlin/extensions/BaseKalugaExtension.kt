@@ -149,7 +149,12 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 }
             }
             publishToMavenCentral()
-            signAllPublications()
+            // Only sign when a signing key is configured (CI / release builds). Without this guard
+            // `publishToMavenLocal` fails locally with "no configured signatory" because the version
+            // is a non-SNAPSHOT (`-alpha`) release that the publish plugin signs by default.
+            if (project.providers.gradleProperty("signingInMemoryKey").getOrNull() != null) {
+                signAllPublications()
+            }
         }
     }
 

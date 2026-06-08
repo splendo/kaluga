@@ -30,15 +30,19 @@ publishing {
 }
 
  afterEvaluate {
-     // Gradle just does not do this for version catalogs and it breaks without these
-
-     tasks.named("publishMavenPublicationToMavenCentralRepository") {
-         dependsOn(tasks.named("signMavenPublication"))
-         dependsOn(tasks.named("signCatalogPublication"))
-     }
-     tasks.named("publishCatalogPublicationToMavenCentralRepository") {
-         dependsOn(tasks.named("signCatalogPublication"))
-         dependsOn(tasks.named("signMavenPublication"))
+     // Gradle just does not do this for version catalogs and it breaks without these.
+     // The sign* tasks only exist when signing is configured (see the signAllPublications guard in
+     // the Kaluga plugin), so only wire them when a signing key is present — otherwise
+     // publishToMavenLocal works locally without signing credentials.
+     if (providers.gradleProperty("signingInMemoryKey").getOrNull() != null) {
+         tasks.named("publishMavenPublicationToMavenCentralRepository") {
+             dependsOn(tasks.named("signMavenPublication"))
+             dependsOn(tasks.named("signCatalogPublication"))
+         }
+         tasks.named("publishCatalogPublicationToMavenCentralRepository") {
+             dependsOn(tasks.named("signCatalogPublication"))
+             dependsOn(tasks.named("signMavenPublication"))
+         }
      }
  }
 
