@@ -1,5 +1,9 @@
 # System
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ |  |  |
+
 This module aim to cover system APIs such as network, audio, battery etc...
 
 ## Installing
@@ -69,4 +73,4 @@ fun bar(networkStateRepoBuilder: NetworkStateRepoBuilder) {
 ```
 
 ## Testing
-Use the [`test-utils-system` module](../test-utils-system) to get mockable System classes.
+Use the [`test-utils` module](../test-utils) to get mockable System classes.

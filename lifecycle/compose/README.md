@@ -1,4 +1,9 @@
 # Lifecycle Compose
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  | ✅ | ✅ |  |  |
+
 Compose Multiplatform wiring for [`lifecycle`](../lifecycle): drives `LifecycleSubscribable.subscribe` / `unsubscribe` from the current Compose host on Android, iOS, and macOS.
 
 ## Installing

@@ -1,4 +1,9 @@
 # Service
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 Basic utilities for adding new services to Kaluga. Services are platform features that can be enabled/disabled by the user or OS.
 
 ## Installing

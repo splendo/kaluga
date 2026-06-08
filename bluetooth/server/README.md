@@ -1,5 +1,9 @@
 # Bluetooth Server
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  | ✅ |  |  |
+
 This library provides support for acting as a Bluetooth Server: advertising and exposing GATT attributes for clients to read, write and subscribe to.
 
 ## Installing
@@ -18,7 +22,7 @@ dependencies {
 ```
 
 ## Usage
-Create a `BluetoothServer` through the `BluetoothServerBuilder` (or via `BluetoothBuilder.createServer()` from the [`bluetooth`](../bluetooth) module). In it, specify the advertising and the attributes to support:
+Create a `BluetoothServer` through the `BluetoothServerBuilder`. In it, specify the advertising and the attributes to support:
 
 ```kotlin
 
@@ -63,4 +67,4 @@ notifiableCharacteristic.notifyAll(byteArrayOf())
 server.close() // server must be closed when done
 ```
 
-For (de)serializing the data exchanged with clients, see the `BluetoothFormat` documentation in [`bluetooth-base`](../bluetooth-base).
+For (de)serializing the data exchanged with clients, see the `BluetoothFormat` documentation in [`core`](../core/).

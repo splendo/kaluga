@@ -1,4 +1,9 @@
 # Media Compose
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  | ✅ | ✅ |  |  |
+
 Compose Multiplatform extensions for [`media`](../media): hosts the platform-native video surface inside the Compose tree.
 
 ## Installing

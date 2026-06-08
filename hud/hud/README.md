@@ -1,5 +1,9 @@
 # HUD
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
 A library allows you to show HUD (e.g. loading indicator) view.
 
 ## Installing
@@ -61,7 +65,7 @@ The `HUD.Builder` class can be used to build HUDs.
 The `HUD.Builder` object should be created from the platform side.
 
 ### Android
-On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../lifecycle)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the HUD.
+On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../../lifecycle/lifecycle/)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the HUD.
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 
 ```kotlin
@@ -142,4 +146,4 @@ Define your Color Sets in project's assets if using `.CUSTOM` style:
 - `li_colorAccent` for progress bar / activity indicator color
 
 ## Testing
-Use the [`test-utils-hud` module](../test-utils-hud) to get a mockable `HUDBuilder`.
+Use the [`test-utils` module](../test-utils) to get a mockable `HUDBuilder`.

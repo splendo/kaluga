@@ -1,5 +1,9 @@
 # Links
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 Module used to decode an object from either an App Link, Universal Link or Deep Link's query.
 
 ## Installing

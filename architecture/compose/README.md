@@ -1,4 +1,9 @@
 ## Architecture Compose
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ |  |  |  |  |  |  |  |
+
 This Android library contains composable functions to work with Kaluga architecture and androidx navigation.
 
 ## Installing
@@ -12,7 +17,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga.architecture-compose:$kalugaVersion")
+    implementation("com.splendo.kaluga.architecture:compose:$kalugaVersion")
 }
 ```
 

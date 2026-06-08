@@ -1,5 +1,10 @@
 # Test Utils Architecture
-This library adds support for testing the [`architecture` module](../architecture) to [`test-utils`](../test-utils-base)
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
+This library adds support for testing the [`architecture` module](../architecture/) to [`test-utils`](../../base/test-utils/)
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Test Utils Architecture as follows:

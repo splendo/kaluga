@@ -1,5 +1,10 @@
 # Test Utils Base
-This library adds support for testing the [`base` module](../base) and provides functionality for testing on threads.
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+This library adds support for testing the [`base` module](../base/) and provides functionality for testing on threads.
 The library contains support for mocking methods.
 
 ## Installing

@@ -1,6 +1,10 @@
 # Test Utils Media
 
-This library adds support for testing the [`media` module](../media) to [`test-utils`](../test-utils-base)
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ |  |
+
+This library adds support for testing the [`media` module](../media) to [`test-utils`](../../base/test-utils)
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Test Utils Media as follows:

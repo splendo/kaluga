@@ -1,4 +1,9 @@
 # Resources Data Binding
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ |  |  |  |  |  |  |  |
+
 [Android Data Binding](https://developer.android.com/topic/libraries/data-binding) extensions for [Resources](../resources)
 
 This module requires the Android project using it declaring the [Kapt plugin](https://kotlinlang.org/docs/kapt.html).

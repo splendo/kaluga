@@ -1,4 +1,9 @@
 # Notifications Permissions
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 Adds a `NotificationsPermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerNotificationsPermission`()/`PermissionsBuilder.registerNotificationsPermissionIfNotRegistered()`.
 
 On Android this permission will be granted automatically for devices running API 32 or lower.
@@ -18,4 +23,4 @@ This library is available on Maven Central. You can import Kaluga Notifications 
  }
  ```
 
-## Please check [general permissions documentation](../base-permissions) for full documentation
+## Please check [general permissions documentation](../core/) for full documentation

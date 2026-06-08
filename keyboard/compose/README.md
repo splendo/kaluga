@@ -1,4 +1,9 @@
 # Keyboard Compose
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ |  |  |  |  |  |  |  |
+
 This Android library contains composable functions to work with Kaluga keyboard.
 
 ## Installing
@@ -12,7 +17,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga.keyboard-compose:$kalugaVersion")
+    implementation("com.splendo.kaluga.keyboard:compose:$kalugaVersion")
 }
 ```
 

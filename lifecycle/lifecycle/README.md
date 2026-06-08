@@ -1,4 +1,9 @@
 # Lifecycle
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 Defines the cross-platform `LifecycleSubscribable` marker and its per-platform host bindings (`ActivityLifecycleSubscribable` on Android, `ViewControllerLifecycleSubscribable` on iOS, `WindowLifecycleSubscribable` on macOS).
 Service builders (alerts, HUD, keyboard, …) implement one of these so they can be wired to the current host without leaking platform types into common code.
 
@@ -63,7 +68,7 @@ builder.unsubscribe()
 ```
 
 ## Compose
-For Compose Multiplatform hosts the wiring is automated by the [`lifecycle-compose` module](../lifecycle-compose), which exposes `LifecycleSubscribable.AttachToCompose()` and dispatches to the correct subtype for the current platform.
+For Compose Multiplatform hosts the wiring is automated by the [`lifecycle-compose` module](../compose), which exposes `LifecycleSubscribable.AttachToCompose()` and dispatches to the correct subtype for the current platform.
 
 ## Architecture integration
-The [`architecture` module](../architecture)'s `BaseLifecycleViewModel` exposes `activeLifecycleSubscribables`. Any `LifecycleSubscribable` added there is automatically wired by `KalugaViewModelLifecycleObserver` (legacy MVVM path) or `ViewModelComposable` (Compose path).
+The [`architecture` module](../../architecture/architecture)'s `BaseLifecycleViewModel` exposes `activeLifecycleSubscribables`. Any `LifecycleSubscribable` added there is automatically wired by `KalugaViewModelLifecycleObserver` (legacy MVVM path) or `ViewModelComposable` (Compose path).

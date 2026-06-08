@@ -29,10 +29,5 @@ kaluga {
                 implementation(project(":lifecycle:test", ""))
             }
         }
-        js {
-            main {
-                api(libs.kotlinx.atomicfu)
-            }
-        }
     }
 }

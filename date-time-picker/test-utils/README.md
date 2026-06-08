@@ -1,6 +1,10 @@
 # Test Utils Date Time Picker
 
-This library adds support for testing the [`date-time-picker` module](../date-time-picker) to [`test-utils`](../test-utils-base)
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
+This library adds support for testing the [`date-time-picker` module](../date-time-picker/) to [`test-utils`](../../base/test-utils/)
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Test Utils Date Time Picker as follows:

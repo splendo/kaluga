@@ -1,5 +1,9 @@
 # Date Time Picker
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
 A library allows you to show native date and time pickers.
 
 ## Installing
@@ -85,7 +89,7 @@ buildTimePicker(coroutineScope: CoroutineScope, initialize: DateTimePicker.Build
 The `DateTimePickerPresenter.Builder` object should be created from the platform side.
 
 ### Android
-On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../lifecycle)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
+On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../../lifecycle/lifecycle/)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 
 ```kotlin
@@ -147,4 +151,4 @@ Since a `UIViewController` is required, for SwiftUI the `View` displaying the Da
 The [Kaluga SwiftUI scripts](https://github.com/splendo/kaluga-swiftui) provide a `ContainerView` that offers this functionality out of the box (if the `includeDatePicker` setting is set to `true`)
 
 ## Testing
-Use the [`test-utils-date-time-picker` module](../test-utils-date-time-picker) to get a mockable DateTimePicker Presenter.
+Use the [`test-utils` module](../test-utils/) to get a mockable DateTimePicker Presenter.

@@ -1,4 +1,9 @@
 # Architecture
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
 Adds a lifecycle aware viewModel solution with support for navigation and observables. Kaluga favours an MVVM based architecture due to its clean delegation between UI and view state.
 
 ## Installing
@@ -65,7 +70,7 @@ class SomeActivity : KalugaViewModelActivity<SomeViewModel> {
 ```
 
 The `KalugaViewModelLifecycleObserver` will automatically update the current host context of all `ActivityLifecycleSubscribable` (and other `LifecycleSubscribable`s) added to `BaseLifecycleViewModel.activeLifecycleSubscribables`.
-See the [`lifecycle` module](../lifecycle) for the subscribable interfaces themselves and `LifecycleManagerObserver`.
+See the [`lifecycle` module](../../lifecycle/lifecycle/) for the subscribable interfaces themselves and `LifecycleManagerObserver`.
 
 ### iOS
 On iOS the viewModel lifecycle should match 'onDidAppear'/`viewDidDisappear`.
@@ -219,7 +224,7 @@ Be aware that properties can not be observed, only when a value is read from the
 On Android both observable and subject can easily be converted into `LiveData` objects using the extension property `liveData`, allowing lifecycle-aware one way binding.
 Subjects also have a `liveDataObserver` property that can be added to a liveData to automatically set values on the subject.
 
-There are also `asState()` extension methods for use with Compose in the `architecture-compose` module.
+There are also `asState()` extension methods for use with Compose in the [`compose` module](../compose/).
 
 Two way bindings can be done on the `MutableStateFlow` of the `stateFlow` field of any subject. Starting with Android Studio ArcticFox databinding also support binding directly to MutableStateFlow.
 This required calling the `bind` method to provide a coroutine scope in which the binding takes place. `*Flow` based observables do this automatically.
@@ -385,4 +390,4 @@ androidBundle.toTypedProperty(type) // returns SomeClass
 ```
 
 ## Testing
-Use the [`test-utils-archictecture` module](../test-utils-architecture) to test `ViewModel`s.
+Use the [`test-utils` module](../test-utils/) to test `ViewModel`s.

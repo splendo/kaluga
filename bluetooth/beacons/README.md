@@ -1,5 +1,9 @@
 # Beacons
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  | ✅ | ✅ | ✅ |
+
 This library provides support for out-of-the-box access to Beacons.
 Currently only the [Eddystone protocol](https://github.com/google/eddystone/blob/master/protocol-specification.md) is supported
 

@@ -1,4 +1,9 @@
-# Scientific
+# Scientific Converters
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This Extension of the Scientific Library for Kaluga contains methods for combining Scientific values into new values.
 
 ## Installing

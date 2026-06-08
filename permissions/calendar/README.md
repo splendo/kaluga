@@ -1,4 +1,9 @@
 # Calendar Permissions
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  | ✅ |  | ✅ |
+
 Adds a `CalendarPermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerCalendarPermission`()/`PermissionsBuilder.registerCalendarPermissionIfNotRegistered()`.
 
 ## Installing
@@ -16,4 +21,4 @@ This library is available on Maven Central. You can import Kaluga Calendar Permi
  }
  ```
 
-## Please check [general permissions documentation](../base-permissions) for full documentation
+## Please check [general permissions documentation](../core/) for full documentation

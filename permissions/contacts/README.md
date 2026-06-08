@@ -1,4 +1,9 @@
 # Contacts Permissions
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  | ✅ |  | ✅ |
+
 Adds a `ContactsPermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerContactsPermission`()/`PermissionsBuilder.registerContactsPermissionIfNotRegistered()`.
 
 ## Installing
@@ -16,4 +21,4 @@ This library is available on Maven Central. You can import Kaluga Contacts Permi
  }
  ```
 
-## Please check [general permissions documentation](../base-permissions) for full documentation
+## Please check [general permissions documentation](../core/) for full documentation

@@ -1,16 +1,20 @@
 # Permissions
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This library provides support for out-of-the-box access to device permissions.
 
 Supported device features:
- - [Bluetooth](../bluetooth-permissions)
- - [Calendar](../calendar-permissions)
- - [Camera](../camera-permissions)
- - [Contacts](../contacts-permissions)
- - [Location](../location-permissions) (both with and without background)
- - [Microphone](../microphone-permissions)
- - [Notifications](../notifications-permissions)
- - [Storage](../storage-permissions) (aka Photos on iOS)
+ - [Bluetooth](../bluetooth/)
+ - [Calendar](../calendar/)
+ - [Camera](../camera/)
+ - [Contacts](../contacts/)
+ - [Location](../location/) (both with and without background)
+ - [Microphone](../microphone/)
+ - [Notifications](../notifications/)
+ - [Storage](../storage/) (aka Photos on iOS)
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Permissions as follows:
@@ -54,4 +58,4 @@ launch {
 ```
 
 ## Testing
-Use the [`test-utils-permissions` module](../test-utils-permissions) to get a mockable `PermissionBuilder`, `PermissionManager`, or `PermissionStateRepo`.
+Use the [`test-utils` module](../test-utils/) to get a mockable `PermissionBuilder`, `PermissionManager`, or `PermissionStateRepo`.

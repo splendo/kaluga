@@ -1,4 +1,9 @@
 # Storage Permissions
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  | ✅ | ✅ |  |
+
 Adds a `StoragePermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerStoragePermission()`/`PermissionsBuilder.registerStoragePermissionIfNotRegistered()`.
 
 ## Installing
@@ -16,4 +21,4 @@ This library is available on Maven Central. You can import Kaluga Storage Permis
  }
  ```
 
-## Please check [general permissions documentation](../base-permissions) for full documentation
+## Please check [general permissions documentation](../core/) for full documentation

@@ -1,5 +1,9 @@
 # Bluetooth Client
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This library provides support for connecting to Bluetooth devices as a Client: scanning for devices, connecting to them and reading, writing and subscribing to their attributes.
 
 ## Installing
@@ -18,7 +22,7 @@ dependencies {
 ```
 
 ## Usage
-Create a `BluetoothClient` through the `BluetoothClientBuilder` (or via `BluetoothBuilder.createClient()` from the [`bluetooth`](../bluetooth) module). This gives you access to a `Flow` of Bluetooth devices. To scan for devices simply call
+Create a `BluetoothClient` through the `BluetoothClientBuilder`. This gives you access to a `Flow` of Bluetooth devices. To scan for devices simply call
 
 ```kotlin
 bluetooth.startScanning(setOf(someUUID))
@@ -93,7 +97,7 @@ characteristic.value().collect {
 }
 ```
 
-All these methods have alternative implementations that automatically (de)serialize a ByteArray into a kotlin class. See the `BluetoothFormat` documentation in [`bluetooth-base`](../bluetooth-base).
+All these methods have alternative implementations that automatically (de)serialize a ByteArray into a kotlin class. See the `BluetoothFormat` documentation in [`core`](../core/).
 
 #### Binding
 Using the `bind` methods, an object can be make to transform based on bluetooth communication:
@@ -127,7 +131,7 @@ val value = "".bind(device) {
 When using automatic permissions by default only the relevant Bluetooth permissions are asked for, and not the location permission (unless the Android version is lower than 12 where it is always required). Make sure you include `android:usesPermissionFlags="neverForLocation"`, unless you do use Bluetooth to determine location, in which case you can use the `useLocation` flag in `BaseScanner.Settings`.
 
 ### JavaScript and WebAssembly (Web Bluetooth)
-On the JS family (`js` and `wasmJs`) the client is backed by the [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API). This API is **Chromium-only**, requires a **secure context** (HTTPS or `localhost`), and is **central/client only** — there is no peripheral/GATT-server role (the `bluetooth-server` module is not available for web). RSSI, MTU negotiation and pairing have no Web Bluetooth equivalent: reading RSSI and pairing are no-ops and an MTU request resolves to `GattResponse.MTUNotPermitted`.
+On the JS family (`js` and `wasmJs`) the client is backed by the [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API). This API is **Chromium-only**, requires a **secure context** (HTTPS or `localhost`), and is **central/client only** — there is no peripheral/GATT-server role (the `server` module is not available for web). RSSI, MTU negotiation and pairing have no Web Bluetooth equivalent: reading RSSI and pairing are no-ops and an MTU request resolves to `GattResponse.MTUNotPermitted`.
 
 #### Scanning is an "Add Device" overlay
 Web Bluetooth has no free-running scan, and its `navigator.bluetooth.requestDevice` device picker must be opened from a user gesture. The `DefaultScanner` therefore does not call `requestDevice` directly: while a scan is active it renders an **"Add Device" overlay** in the DOM. Each press of its button opens the system picker (from within the click handler, satisfying the gesture requirement) and adds the chosen device to the scan results, so a single scan can collect any number of devices. The overlay carries its own close (`✕`) button and is removed automatically when scanning stops.
@@ -199,4 +203,4 @@ There is a major difference when it comes to the reporting of scanned devices be
 To align the behaviour across platforms the [CBCentralManagerScanOptionAllowDuplicatesKey](https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey) option is enabled on iOS. It can be set to another value using `ScanSettings` as shown above.
 
 ## Testing
-Use the [`test-utils-bluetooth-client` module](../test-utils-bluetooth-client) to get mockable Bluetooth classes.
+Use the [`test-utils/client` module](../test-utils/client/) to get mockable Bluetooth classes.

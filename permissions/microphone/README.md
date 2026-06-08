@@ -1,4 +1,9 @@
 # Microphone Permissions
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 Adds a `MicrophonePermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerMicrophonePermission`()/`PermissionsBuilder.registerMicrophonePermissionIfNotRegistered()`.
 
 ## Installing
@@ -16,4 +21,4 @@ This library is available on Maven Central. You can import Kaluga Microphone Per
  }
  ```
 
-## Please check [general permissions documentation](../base-permissions) for full documentation
+## Please check [general permissions documentation](../core/) for full documentation

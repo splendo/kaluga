@@ -1,6 +1,10 @@
 # Test Utils Koin
 
-This library adds support for [Koin](https://insert-koin.io/) to the [`test-utils-base` module](../test-utils-base)
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
+This library adds support for [Koin](https://insert-koin.io/) to the [`test-utils-base` module](../../base/test-utils/)
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Test Utils Koin as follows:

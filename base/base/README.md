@@ -1,4 +1,9 @@
 ## Base
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This Base Library for Kaluga contains Data types and accessors for easy use across all Kaluga projects.
 
 ## Installing

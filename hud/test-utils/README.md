@@ -1,6 +1,10 @@
 # Test Utils HUD
 
-This library adds support for testing the [`hud` module](../hud) to [`test-utils`](../test-utils-base)
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
+This library adds support for testing the [`hud` module](../hud) to [`test-utils`](../../base/test-utils/)
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Test Utils HUD as follows:

@@ -1,5 +1,9 @@
 # Keyboard Manager
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
 A library allows you to show and dismiss the System keyboard.
 It is Activity dependent on Android.
 
@@ -36,7 +40,7 @@ fun hideKeyboard(builder: KeyboardManager.Builder) {
 The `KeyboardManager.Builder` and `FocusHandler` are provided on the platform.
 
 ### Android
-On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../lifecycle)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the keyboard.
+On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../../lifecycle/lifecycle)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the keyboard.
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 The keyboardHostingView is any resource Id for a `View` attached to the `Activity` bound to the manager.
 
@@ -86,7 +90,7 @@ MainScope().launch {
 You can use the `AppCompatActivity.keyboardManagerBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 ### Android compose-ui
-Use the [`keyboard-compose` module](../keyboard-compose)
+Use the [`keyboard-compose` module](../compose)
 
 ### iOS
 In iOS the builder is attached to a `UIApplication`. By default this will be ` UIApplication.sharedApplication`, but it can be overwritten by a custom Application. The `KeyboardHostingView` can be any `UIView` that `canBecomeFirstResponder`.
@@ -136,4 +140,4 @@ struct SomeView: View {
 Then create a `ValueFocusHandler` for `Field` using `swiftUIFocusHandler(value: Field.textField)`
 
 ## Testing
-Use the [`test-utils-keyboard` module](../test-utils-keyboard) to get a mockable `KeyboardManager`.
+Use the [`test-utils-keyboard` module](../test-utils) to get a mockable `KeyboardManager`.

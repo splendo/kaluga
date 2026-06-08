@@ -1,4 +1,9 @@
 # Media
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ |  |
+
 This Library for Kaluga contains methods for playing audio and video files from local and remote sources.
 
 ## Installing
@@ -45,4 +50,4 @@ On **Android** create an `ActivityMediaSurfaceProvider` that provides a `MediaSu
 On **iOS** multiple `BaseMediaSurfaceProvider` are available: `UIViewMediaSurfaceProvider`, `AVPlayerLayerMediaSurfaceProvider`, `AVPlayerViewControllerMediaSurfaceProvider`, and `BindingMediaSurfaceProvider`
 
 ## Testing
-Use the [`test-utils-media` module](../test-utils-media) to get a mockable `MediaPlayer`, `MediaManager`,`BaseMediaManager`, `VolumeController`, `MediaSurfaceController`, `PlayableMedia`, `MediaSurfaceProvider`, `PlaybackState`, and `BasePlaybackStateRepo`.
+Use the [`test-utils-media` module](../test-utils) to get a mockable `MediaPlayer`, `MediaManager`,`BaseMediaManager`, `VolumeController`, `MediaSurfaceController`, `PlayableMedia`, `MediaSurfaceProvider`, `PlaybackState`, and `BasePlaybackStateRepo`.

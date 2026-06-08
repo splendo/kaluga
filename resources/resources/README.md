@@ -1,4 +1,9 @@
 # Resources
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
 This Resource Library for Kaluga contains methods for loading various resources from the platform.
 Resources are grabbed using a `String` key associated with a resource type.
 Making these resources available on the platform is the responsibility of the platform.
@@ -57,7 +62,7 @@ An `ImageLoader` class is provided to overwrite this behaviour.
 Create a `TintedImage` from a `KalugaImage` and a `KalugaColor` using `KalugaImage.tinted(color)`.
 To get a platform specific image:
 
-- On Android call `TintedImage.drawable`. For compose use the [Resources Compose library](../resources-compose)
+- On Android call `TintedImage.drawable`. For compose use the [Resources Compose library](../compose)
 - On iOS, create a UIImage using `TintedImage.uiImage`
 > UIImage cannot be Tinted on SwiftUI. To use TintedImage from a SwiftUI View, import the [Kaluga SwiftUI scripts](https://github.com/splendo/kaluga-swiftui) with the `includeResources` setting and call `TintedImage.swiftUI`/`TintedImage.resizableSwiftUI`
 
@@ -88,7 +93,7 @@ KalugaLabel.Styled("Partial Styled text".styled(styledStringBuilderProvider, def
 ```
 
 #### Android
-*For compose use the [Resources Compose library](../resources-compose)*
+*For compose use the [Resources Compose library](../compose)*
 
 You can easily bind a `KalugaLabel` to a `TextView` by using `TextView.bindLabel(label)`
 To only apply a `TextStyle` use `TextView.applyTextStyle(textStyle)`
@@ -118,7 +123,7 @@ KalugaBackgroundStyle(
 ```
 
 #### Android
-*For compose use the [Resources Compose library](../resources-compose)*
+*For compose use the [Resources Compose library](../compose)*
 
 Apply a `KalugaBackgroundStyle` to any `View` using `View.applyBackgroundStyle(backgroundStyle`
 
@@ -174,7 +179,7 @@ KalugaButton.Styled(
 ```
 
 #### Android
-*For compose use the [Resources Compose library](../resources-compose)*
+*For compose use the [Resources Compose library](../compose)*
 
 Bind a `KalugaButton` to a `Button` by using `Button.bindButton(kalugaButton)`
 It is also possible to apply a `KalugaButtonStyle` using `Button.applyButtonStyle(style)`. This method also allows you to pass a `RippleStyle` to modify the ripple behaviour.
@@ -186,4 +191,4 @@ Bind a `KalugaButton` to a `UIButton` by using `UIButton.bindButton(kalugaButton
 It is also possible to apply a `ButtonStyle` using `UIButton.applyStyle(style)`
 
 ## Testing
-Use the [`test-utils-resources` module](../test-utils-resources) to get mockable Resources.
+Use the [`test-utils-resources` module](../test-utils) to get mockable Resources.

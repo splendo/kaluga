@@ -1,5 +1,9 @@
 # Location
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This library allows you to receive user's location.
 
 ## Installing
@@ -43,4 +47,4 @@ If set to `true` however, the request is optimised for usage in a `Service`.
 Like with any Location service on Android, the `Service` should call `startForeground()` to function properly.
 
 ## Testing
-Use the [`test-utils-location` module](../test-utils-location) to get a mockable `LocationManager`, `LocationMonitor`, or `LocationStateRepo`.
+Use the [`test-utils` module](../test-utils) to get a mockable `LocationManager`, `LocationMonitor`, or `LocationStateRepo`.

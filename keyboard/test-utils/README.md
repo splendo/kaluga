@@ -1,6 +1,10 @@
 # Test Utils Keyboard
 
-This library adds support for testing the [`keyboard` module](../keyboard) to [`test-utils`](../test-utils-base)
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
+This library adds support for testing the [`keyboard` module](../keyboard) to [`test-utils`](../../base/test-utils)
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Test Utils Keyboard as follows:

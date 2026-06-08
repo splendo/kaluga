@@ -1,4 +1,9 @@
 # Scientific
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This Scientific Library for Kaluga contains methods for converting values to and from different scientific units.
 
 ## Installing
@@ -16,7 +21,7 @@ dependencies {
 }
 ```
 
-Add [`scientific-converters` module](../scientific-converters) to support converting between units.
+Add [`converters` module](../converters) to support converting between units.
 
 ## Usage
 

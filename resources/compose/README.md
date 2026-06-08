@@ -1,4 +1,9 @@
 # Resources Compose
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ |  |  |  |  |  |  |  |
+
 Compose extensions for [Resources](../resources)
 
 ## Installing
