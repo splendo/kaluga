@@ -8,12 +8,12 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base", ""))
+                implementation(project(":base:base", ""))
                 implementation(project(":logging", ""))
                 api(libs.kotlinx.serialization.core)
             }
             test {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":base:test", ""))
                 implementation(project(":resources:test", ""))
             }
         }

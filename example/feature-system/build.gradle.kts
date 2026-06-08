@@ -8,13 +8,13 @@ kaluga {
     supportMacOS = true
     supportWasmJS = true
     appleFramework {
-        export("com.splendo.kaluga:system:${project.rootProject.version}")
+        export("com.splendo.kaluga.system:system:${project.rootProject.version}")
     }
     dependencies {
         common {
             main {
                 api(project(":core-arch"))
-                api("com.splendo.kaluga:system:${project.rootProject.version}")
+                api("com.splendo.kaluga.system:system:${project.rootProject.version}")
             }
         }
     }

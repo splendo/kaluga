@@ -24,7 +24,7 @@ kaluga {
 }
 
 dependencies {
-    implementation(project(":base"))
+    implementation(project(":base:base"))
     api(project(":resources:resources"))
     implementation(libs.compose.material3)
     implementation(libs.accompanist.drawablepainter)

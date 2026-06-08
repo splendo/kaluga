@@ -5,7 +5,7 @@ plugins {
 kaluga {
     moduleName = "example.feature.alerts"
     appleFramework {
-        export("com.splendo.kaluga:alerts:${project.rootProject.version}")
+        export("com.splendo.kaluga.alerts:alerts:${project.rootProject.version}")
         export("com.splendo.kaluga.architecture:architecture:${project.rootProject.version}")
     }
     dependencies {
@@ -19,7 +19,7 @@ kaluga {
                 api(project(":core-arch"))
                 api(project(":core-stylable"))
                 api("com.splendo.kaluga.architecture:architecture:${project.rootProject.version}")
-                api("com.splendo.kaluga:alerts:${project.rootProject.version}")
+                api("com.splendo.kaluga.alerts:alerts:${project.rootProject.version}")
                 api("com.splendo.kaluga:logging:${project.rootProject.version}")
             }
         }

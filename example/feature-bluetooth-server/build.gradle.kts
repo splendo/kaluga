@@ -17,7 +17,7 @@ kaluga {
                 api("com.splendo.kaluga.bluetooth:server:${project.rootProject.version}")
                 // `scientific` only used inside the server screen (BeatsPerMinute literals).
                 // `implementation` keeps unit classes out of the framework's public header.
-                implementation("com.splendo.kaluga:scientific:${project.rootProject.version}")
+                implementation("com.splendo.kaluga.scientific:scientific:${project.rootProject.version}")
             }
         }
     }

@@ -19,7 +19,7 @@ kaluga {
         common {
             main {
                 api(project(":logging", ""))
-                api(project(":base", ""))
+                api(project(":base:base", ""))
             }
             test {
                 implementation(project(":permissions:test", ""))

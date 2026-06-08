@@ -12,7 +12,7 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":test-utils-base"))
+                api(project(":base:test"))
                 api(project(":permissions:core"))
             }
         }

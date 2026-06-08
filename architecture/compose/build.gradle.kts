@@ -26,7 +26,7 @@ kaluga {
 }
 
 dependencies {
-    api(project(":base"))
+    api(project(":base:base"))
     api(project(":architecture:architecture"))
     implementation(libs.compose.material3)
     implementation(libs.compose.navigation)

@@ -11,7 +11,7 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base"))
+                implementation(project(":base:base"))
                 // api: `MediaSurfaceProvider` extends `LifecycleSubscribable`.
                 api(project(":lifecycle:lifecycle"))
                 implementation(project(":logging"))

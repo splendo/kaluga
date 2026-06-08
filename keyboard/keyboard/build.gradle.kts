@@ -13,7 +13,7 @@ kaluga {
         common {
             main {
                 api(project(":lifecycle:lifecycle", ""))
-                implementation(project(":base", ""))
+                implementation(project(":base:base", ""))
             }
             test {
                 implementation(project(":keyboard:test", ""))

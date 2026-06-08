@@ -16,7 +16,7 @@ kaluga {
         }
         common {
             main {
-                api("com.splendo.kaluga:base:${project.rootProject.version}")
+                api("com.splendo.kaluga.base:base:${project.rootProject.version}")
                 api(libs.koin.core)
                 api(libs.koin.compose)
                 api(libs.koin.compose.viewmodel)

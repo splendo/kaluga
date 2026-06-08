@@ -14,7 +14,7 @@ kaluga {
         common {
             main {
                 api(project(":lifecycle:lifecycle"))
-                api(project(":test-utils-base"))
+                api(project(":base:test"))
             }
         }
     }

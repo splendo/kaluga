@@ -12,8 +12,8 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":test-utils-base"))
-                api(project(":test-utils-service"))
+                api(project(":base:test"))
+                api(project(":service:test"))
                 api(project(":bluetooth:core"))
             }
         }

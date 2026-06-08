@@ -12,7 +12,7 @@ kaluga {
         common {
             main {
                 api(project(":media:media"))
-                api(project(":test-utils-base"))
+                api(project(":base:test"))
             }
         }
     }

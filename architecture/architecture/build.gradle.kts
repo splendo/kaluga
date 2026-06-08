@@ -19,7 +19,7 @@ kaluga {
         }
         common {
             main {
-                implementation(project(":base", ""))
+                implementation(project(":base:base", ""))
                 api(project(":lifecycle:lifecycle", ""))
                 api(libs.kotlinx.serialization.core)
                 api(libs.kotlinx.serialization.json)

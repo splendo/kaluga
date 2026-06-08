@@ -14,7 +14,7 @@ kaluga {
         android {
             main {
                 implementation(libs.nordic.support.scanner)
-                api(project(":location", ""))
+                api(project(":location:location", ""))
                 implementation(libs.kotlinx.atomicfu)
             }
         }

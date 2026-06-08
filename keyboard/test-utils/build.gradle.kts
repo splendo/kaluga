@@ -8,7 +8,7 @@ kaluga {
         common {
             main {
                 api(project(":keyboard:keyboard"))
-                api(project(":test-utils-base"))
+                api(project(":base:test"))
                 api(project(":lifecycle:test"))
             }
         }

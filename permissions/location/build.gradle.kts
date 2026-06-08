@@ -20,7 +20,7 @@ kaluga {
                 api(project(":permissions:core", ""))
             }
             test {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":base:test", ""))
             }
         }
     }
