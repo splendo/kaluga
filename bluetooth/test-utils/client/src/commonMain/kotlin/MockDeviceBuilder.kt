@@ -15,15 +15,15 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth
+package com.splendo.kaluga.bluetooth.test
 
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.bluetooth.device.MockDevice
-import com.splendo.kaluga.test.bluetooth.device.MockDeviceInfo
+import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
+import com.splendo.kaluga.bluetooth.test.device.MockDevice
+import com.splendo.kaluga.bluetooth.test.device.MockDeviceInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds

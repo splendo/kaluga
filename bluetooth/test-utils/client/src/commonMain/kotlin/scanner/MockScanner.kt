@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth.scanner
+package com.splendo.kaluga.bluetooth.test.scanner
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.RSSI
@@ -28,10 +28,10 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.Scanner
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
-import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
+import com.splendo.kaluga.bluetooth.test.MockBluetoothMonitor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -110,7 +110,7 @@ class MockBaseScanner(
         val createdScanners = concurrentMutableListOf<MockBaseScanner>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 
@@ -136,42 +136,42 @@ class MockBaseScanner(
     public override val bluetoothEnabledMonitor = MockBluetoothMonitor(isEnabled)
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringPermissions]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [startMonitoringPermissions]
      */
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringPermissions]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [stopMonitoringPermissions]
      */
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringHardwareEnabled]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [startMonitoringHardwareEnabled]
      */
     val startMonitoringHardwareEnabledMock = ::startMonitoringHardwareEnabled.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringHardwareEnabled]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [stopMonitoringHardwareEnabled]
      */
     val stopMonitoringHardwareEnabledMock = ::stopMonitoringHardwareEnabled.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [scanForDevices]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [scanForDevices]
      */
     val didStartScanningMock = ::didStartScanning.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopScanning]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [stopScanning]
      */
     val didStopScanningMock = ::didStopScanning.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [generateEnableSensorsActions]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [generateEnableSensorsActions]
      */
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [pairedDevices]
      */
     val retrievePairedDeviceDiscoveredEventsMock = ::retrievePairedDeviceDiscoveredEvents.mock()
 

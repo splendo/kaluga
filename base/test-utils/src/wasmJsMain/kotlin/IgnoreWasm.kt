@@ -16,6 +16,6 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 actual typealias IgnoreWasm = kotlin.test.Ignore

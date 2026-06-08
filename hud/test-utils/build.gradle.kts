@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.hud"
+    moduleName = "hud.test"
     dependencies {
         common {
             main {

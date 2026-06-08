@@ -15,9 +15,9 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock.answer
+package com.splendo.kaluga.base.test.mock.answer
 
-import com.splendo.kaluga.test.base.mock.parameters.ParametersSpec
+import com.splendo.kaluga.base.test.mock.parameters.ParametersSpec
 
 /**
  * Receives [ParametersSpec.Values] to return a result

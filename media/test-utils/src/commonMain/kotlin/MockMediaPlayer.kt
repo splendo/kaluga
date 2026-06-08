@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.media
+package com.splendo.kaluga.media.test
 
 import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaPlayer.Controls
@@ -26,9 +26,9 @@ import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.VolumeController
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -51,27 +51,27 @@ class MockMediaPlayer(
     override val surfaceBinder: MediaSurfaceBinder = MediaSurfaceBinder()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [initializeFor]
+     * A [com.splendo.kaluga.base.test.mock.SuspendMethodMock] for [initializeFor]
      */
     val initializeForMock = this::initializeFor.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [forceStart]
+     * A [com.splendo.kaluga.base.test.mock.SuspendMethodMock] for [forceStart]
      */
     val forceStartMock = this::forceStart.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [awaitCompletion]
+     * A [com.splendo.kaluga.base.test.mock.SuspendMethodMock] for [awaitCompletion]
      */
     val awaitCompletionMock = this::awaitCompletion.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [reset]
+     * A [com.splendo.kaluga.base.test.mock.SuspendMethodMock] for [reset]
      */
     val resetMock = this::reset.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [close]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [close]
      */
     val endMock = this::close.mock()
 

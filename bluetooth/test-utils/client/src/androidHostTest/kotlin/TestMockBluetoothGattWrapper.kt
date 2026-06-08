@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth
+package com.splendo.kaluga.bluetooth.test
 
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

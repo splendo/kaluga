@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock.matcher
+package com.splendo.kaluga.base.test.mock.matcher
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 
 /**
- * Captures a parameter to it can be extracted from [com.splendo.kaluga.test.base.mock.verify]
+ * Captures a parameter to it can be extracted from [com.splendo.kaluga.base.test.mock.verify]
  */
 sealed interface Captor<T> : ParameterMatcherOrCaptor<T> {
     /**

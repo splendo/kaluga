@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.koin"
+    moduleName = "koin.test"
 
     dependencies {
         common {

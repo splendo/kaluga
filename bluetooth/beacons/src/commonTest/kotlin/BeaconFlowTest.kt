@@ -19,8 +19,8 @@ package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
-import com.splendo.kaluga.test.base.SimpleFlowTest
-import com.splendo.kaluga.test.bluetooth.MockBluetoothService
+import com.splendo.kaluga.base.test.SimpleFlowTest
+import com.splendo.kaluga.bluetooth.test.MockBluetoothService
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 

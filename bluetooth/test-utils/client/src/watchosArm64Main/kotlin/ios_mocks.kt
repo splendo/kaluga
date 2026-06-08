@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth
+package com.splendo.kaluga.bluetooth.test
 
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper

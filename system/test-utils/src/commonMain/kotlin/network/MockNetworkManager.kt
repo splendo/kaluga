@@ -14,14 +14,14 @@
  *     limitations under the License.
  */
 
-package com.splendo.kaluga.test.system.network
+package com.splendo.kaluga.system.test.network
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.NetworkManager
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -39,7 +39,7 @@ class MockNetworkManager(initialNetworkConnectionType: NetworkConnectionType) : 
         val builtNetworkManagers = concurrentMutableListOf<MockNetworkManager>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 

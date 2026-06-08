@@ -15,13 +15,13 @@
 
  */
 
-package com.splendo.kaluga.test.koin
+package com.splendo.kaluga.koin.test
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.mock.voidParametersMock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.mock.voidParametersMock
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent

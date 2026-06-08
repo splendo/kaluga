@@ -14,7 +14,7 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.test.lifecycle
+package com.splendo.kaluga.lifecycle.test
 
 import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 

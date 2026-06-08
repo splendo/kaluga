@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.test.base.BaseFlowTest
-import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.media.MockMediaManager
-import com.splendo.kaluga.test.media.MockMediaSurfaceController
-import com.splendo.kaluga.test.media.MockVolumeController
+import com.splendo.kaluga.base.test.BaseFlowTest
+import com.splendo.kaluga.base.test.mock.matcher.AnyCaptor
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.verification.VerificationRule.Companion.never
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.media.test.MockMediaManager
+import com.splendo.kaluga.media.test.MockMediaSurfaceController
+import com.splendo.kaluga.media.test.MockVolumeController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlin.test.Test

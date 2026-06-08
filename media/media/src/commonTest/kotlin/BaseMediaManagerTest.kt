@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.verification.VerificationRule
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.testRunBlocking
-import com.splendo.kaluga.test.base.yieldMultiple
-import com.splendo.kaluga.test.media.MockBaseMediaManager
-import com.splendo.kaluga.test.media.MockMediaSurfaceController
-import com.splendo.kaluga.test.media.MockPlayableMedia
-import com.splendo.kaluga.test.media.createMockMediaSurface
+import com.splendo.kaluga.base.test.mock.matcher.AnyOrNullCaptor
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.verification.VerificationRule
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.testRunBlocking
+import com.splendo.kaluga.base.test.yieldMultiple
+import com.splendo.kaluga.media.test.MockBaseMediaManager
+import com.splendo.kaluga.media.test.MockMediaSurfaceController
+import com.splendo.kaluga.media.test.MockPlayableMedia
+import com.splendo.kaluga.media.test.createMockMediaSurface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.first

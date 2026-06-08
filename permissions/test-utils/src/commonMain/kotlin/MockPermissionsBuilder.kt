@@ -15,16 +15,16 @@
 
  */
 
-package com.splendo.kaluga.test.permissions
+package com.splendo.kaluga.permissions.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.permissions.base.BasePermissionStateRepo
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.pairParametersMock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.pairParametersMock
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 

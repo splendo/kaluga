@@ -15,20 +15,20 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock
+package com.splendo.kaluga.base.test.mock
 
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
-import com.splendo.kaluga.test.base.mock.answer.Answer
-import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
-import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
-import com.splendo.kaluga.test.base.mock.parameters.PairParameters
-import com.splendo.kaluga.test.base.mock.parameters.ParametersSpec
-import com.splendo.kaluga.test.base.mock.parameters.QuadrupleParameters
-import com.splendo.kaluga.test.base.mock.parameters.QuintupleParameters
-import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
-import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
-import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
-import com.splendo.kaluga.test.base.mock.verification.VerificationRule
+import com.splendo.kaluga.base.test.mock.answer.Answer
+import com.splendo.kaluga.base.test.mock.answer.BaseAnswer
+import com.splendo.kaluga.base.test.mock.answer.SuspendedAnswer
+import com.splendo.kaluga.base.test.mock.parameters.PairParameters
+import com.splendo.kaluga.base.test.mock.parameters.ParametersSpec
+import com.splendo.kaluga.base.test.mock.parameters.QuadrupleParameters
+import com.splendo.kaluga.base.test.mock.parameters.QuintupleParameters
+import com.splendo.kaluga.base.test.mock.parameters.SingleParameters
+import com.splendo.kaluga.base.test.mock.parameters.TripleParameters
+import com.splendo.kaluga.base.test.mock.parameters.VoidParameters
+import com.splendo.kaluga.base.test.mock.verification.VerificationRule
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.TimeoutCancellationException

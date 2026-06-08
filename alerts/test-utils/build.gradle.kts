@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.alerts"
+    moduleName = "alerts.test"
     dependencies {
         common {
             main {

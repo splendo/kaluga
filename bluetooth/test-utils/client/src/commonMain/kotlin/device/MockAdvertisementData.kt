@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth.device
+package com.splendo.kaluga.bluetooth.test.device
 
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID

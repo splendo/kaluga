@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.keyboard
+package com.splendo.kaluga.keyboard.test
 
 import kotlin.test.Test
 import kotlin.test.assertFalse

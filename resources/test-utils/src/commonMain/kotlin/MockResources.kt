@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.resources
+package com.splendo.kaluga.resources.test
 
 import com.splendo.kaluga.resources.FontLoader
 import com.splendo.kaluga.resources.ImageLoader
@@ -24,9 +24,9 @@ import com.splendo.kaluga.resources.KalugaColorLoader
 import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.StringLoader
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 
 /**
  * Mock implementation of [StringLoader]
@@ -35,12 +35,12 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadString]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [loadString]
      */
     val loadStringMock = ::loadString.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadQuantityString]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [loadQuantityString]
      */
     val loadQuantityStringMock = ::loadQuantityString.mock()
 
@@ -65,7 +65,7 @@ class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoader {
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadColor]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [loadColor]
      */
     val loadColorMock = ::loadColor.mock()
 
@@ -85,7 +85,7 @@ class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoad
 class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadImage]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [loadImage]
      */
     val loadImageMock = ::loadImage.mock()
 
@@ -105,7 +105,7 @@ class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
 class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadFont]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [loadFont]
      */
     val loadFontMock = ::loadFont.mock()
 

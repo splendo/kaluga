@@ -20,7 +20,7 @@ package com.splendo.kaluga.architecture.observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.base.test.BaseTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Semaphore
 import kotlin.test.assertEquals

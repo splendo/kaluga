@@ -631,7 +631,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
                 binaries {
                     getTest("DEBUG").apply {
-                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
+                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.base.test.mainBackground")
                     }
                 }
             }

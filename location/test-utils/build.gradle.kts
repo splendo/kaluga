@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.location"
+    moduleName = "location.test"
     supportJS = true
     supportWasmJS = true
     supportMacOS = true

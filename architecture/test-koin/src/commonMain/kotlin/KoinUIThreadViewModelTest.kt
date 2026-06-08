@@ -15,11 +15,11 @@
 
  */
 
-package com.splendo.kaluga.test.koin
+package com.splendo.kaluga.koin.test
 
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
-import com.splendo.kaluga.test.architecture.BaseUIThreadViewModelTest
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.architecture.test.BaseUIThreadViewModelTest
+import com.splendo.kaluga.architecture.test.UIThreadViewModelTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 

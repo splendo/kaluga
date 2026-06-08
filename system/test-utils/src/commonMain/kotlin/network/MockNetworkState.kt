@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package com.splendo.kaluga.test.system.network
+package com.splendo.kaluga.system.test.network
 
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.state.NetworkState

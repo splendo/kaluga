@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.permissions
+package com.splendo.kaluga.permissions.test
 
 import platform.Foundation.NSBundle
 

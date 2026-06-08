@@ -15,14 +15,14 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock
+package com.splendo.kaluga.base.test.mock
 
-import com.splendo.kaluga.test.base.mock.parameters.PairParameters
-import com.splendo.kaluga.test.base.mock.parameters.QuadrupleParameters
-import com.splendo.kaluga.test.base.mock.parameters.QuintupleParameters
-import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
-import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
-import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
+import com.splendo.kaluga.base.test.mock.parameters.PairParameters
+import com.splendo.kaluga.base.test.mock.parameters.QuadrupleParameters
+import com.splendo.kaluga.base.test.mock.parameters.QuintupleParameters
+import com.splendo.kaluga.base.test.mock.parameters.SingleParameters
+import com.splendo.kaluga.base.test.mock.parameters.TripleParameters
+import com.splendo.kaluga.base.test.mock.parameters.VoidParameters
 
 /**
  * Calls a [MethodMock] without any parameters

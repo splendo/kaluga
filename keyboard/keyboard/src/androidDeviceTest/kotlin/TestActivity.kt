@@ -21,7 +21,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.splendo.kaluga.test.keyboard.keyboardManagerBuilder
+import com.splendo.kaluga.keyboard.test.keyboardManagerBuilder
 
 class TestActivity : AppCompatActivity() {
 

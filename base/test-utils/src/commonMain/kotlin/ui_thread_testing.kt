@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +35,7 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
  * that is also created in the UI Thread.
  *
  * While normally iOS tests already run on the UI thread, this prevents the Main dispatcher from working as long as that Thread is blocked,
- * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.base.mainBackground] entry point.
+ * so this class is mostly used in conjunction with the [com.splendo.kaluga.base.test.mainBackground] entry point.
  *
  * It is useful for Kotlin Native classes that only work when created on the UI thread,
  * as it eases dealing with immutability and allows a shared context.
@@ -83,7 +83,7 @@ abstract class UIThreadTest<Context : UIThreadTest.TestContext> : BaseUIThreadTe
  * that is also created in the UI Thread using a configuration.
  *
  * While normally iOS tests already run on the UI thread, this prevents the Main dispatcher from working as long as that Thread is blocked,
- * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.base.mainBackground] entry point.
+ * so this class is mostly used in conjunction with the [com.splendo.kaluga.base.test.mainBackground] entry point.
  *
  * It is useful for Kotlin Native classes that only work when created on the UI thread,
  * as it eases dealing with immutability and allows a shared context.

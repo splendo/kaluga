@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.keyboard"
+    moduleName = "keyboard.test"
     dependencies {
         common {
             main {

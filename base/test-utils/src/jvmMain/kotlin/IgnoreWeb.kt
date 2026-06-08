@@ -16,7 +16,7 @@ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 actual annotation class IgnoreWeb

@@ -17,9 +17,9 @@
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.test.base.assertEmits
-import com.splendo.kaluga.test.base.captureFor
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.assertEmits
+import com.splendo.kaluga.base.test.captureFor
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

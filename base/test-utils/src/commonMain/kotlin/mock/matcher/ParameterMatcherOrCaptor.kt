@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock.matcher
+package com.splendo.kaluga.base.test.mock.matcher
 
 /**
  * Either a [ParameterMatcher] or a [Captor]

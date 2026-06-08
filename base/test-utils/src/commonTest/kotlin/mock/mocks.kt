@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock
+package com.splendo.kaluga.base.test.mock
 
 interface MockableTestMethods {
     fun methodWithoutParamsAndReturnType()

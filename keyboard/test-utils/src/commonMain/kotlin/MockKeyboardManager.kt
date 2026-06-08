@@ -15,14 +15,14 @@
 
  */
 
-package com.splendo.kaluga.test.keyboard
+package com.splendo.kaluga.keyboard.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -43,7 +43,7 @@ class MockKeyboardManager<FH : FocusHandler>(setupMocks: Boolean = true) : BaseK
         val builtKeyboardManagers = concurrentMutableListOf<MockKeyboardManager<FH>>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 
@@ -66,12 +66,12 @@ class MockKeyboardManager<FH : FocusHandler>(setupMocks: Boolean = true) : BaseK
     var focusHandler: FH? = null
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [show]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [show]
      */
     val showMock = ::show.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [hide]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [hide]
      */
     val hideMock = ::hide.mock()
 

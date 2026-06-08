@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.system.network
 
-import com.splendo.kaluga.test.base.BaseFlowTest
-import com.splendo.kaluga.test.system.network.MockNetworkManager
-import com.splendo.kaluga.test.system.network.MockNetworkStateRepoBuilder
+import com.splendo.kaluga.base.test.BaseFlowTest
+import com.splendo.kaluga.system.test.network.MockNetworkManager
+import com.splendo.kaluga.system.test.network.MockNetworkStateRepoBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 

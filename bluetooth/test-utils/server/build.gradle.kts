@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.bluetooth.server"
+    moduleName = "bluetooth.test.server"
     supportMacOS = true
     dependencies {
         common {

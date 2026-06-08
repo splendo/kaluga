@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.service"
+    moduleName = "service.test"
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true

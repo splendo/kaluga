@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth.server
+package com.splendo.kaluga.bluetooth.test.server
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.server.BaseBluetoothServerBuilder
@@ -23,9 +23,9 @@ import com.splendo.kaluga.bluetooth.server.BluetoothServer
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.permissions.base.Permissions
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
 /**

@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.MainScope

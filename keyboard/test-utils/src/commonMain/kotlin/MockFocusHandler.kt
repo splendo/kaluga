@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.keyboard
+package com.splendo.kaluga.keyboard.test
 
 import com.splendo.kaluga.keyboard.FocusHandler
 

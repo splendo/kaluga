@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.test.keyboard
+package com.splendo.kaluga.keyboard.test
 
-import com.splendo.kaluga.test.base.UIThreadTest
-import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.base.test.UIThreadTest
+import com.splendo.kaluga.base.test.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Test
 import kotlin.test.assertFalse

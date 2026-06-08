@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.datetimepicker"
+    moduleName = "datetimepicker.test"
     dependencies {
         common {
             main {

@@ -15,9 +15,9 @@
 
  */
 
-package com.splendo.kaluga.test.koin
+package com.splendo.kaluga.koin.test
 
-import com.splendo.kaluga.test.base.BaseFlowTest
+import com.splendo.kaluga.base.test.BaseFlowTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.context.stopKoin

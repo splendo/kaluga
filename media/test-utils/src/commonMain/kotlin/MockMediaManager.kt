@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.media
+package com.splendo.kaluga.media.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.media.BaseMediaManager
@@ -28,9 +28,9 @@ import com.splendo.kaluga.media.MediaSurfaceController
 import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.VolumeController
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext
@@ -45,7 +45,7 @@ class MockVolumeController(setupMocks: Boolean = true) : VolumeController {
     override val currentVolume = MutableStateFlow(1.0f)
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [updateVolumeMock]
+     * A [com.splendo.kaluga.base.test.mock.SuspendMethodMock] for [updateVolumeMock]
      * If `setupMocks` was set to `true` on construction this will automatically update [currentVolume]
      */
     val updateVolumeMock = this::updateVolume.mock()
@@ -64,7 +64,7 @@ class MockVolumeController(setupMocks: Boolean = true) : VolumeController {
 class MockMediaSurfaceController : MediaSurfaceController {
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [renderVideoOnSurface]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [renderVideoOnSurface]
      */
     val renderVideoOnSurfaceMock = this::renderVideoOnSurface.mock()
 
@@ -88,43 +88,43 @@ class MockMediaManager(
     MediaSurfaceController by mediaSurfaceController {
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [createPlayableMedia]
+     * A [com.splendo.kaluga.base.test.mock.SuspendMethodMock] for [createPlayableMedia]
      * If `setupMocks` was set to `true` on construction, this will automatically return a [MockPlayableMedia]
      */
     val createPlayableMediaMock = this::createPlayableMedia.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [initialize]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [initialize]
      */
     val initializeMock = this::initialize.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [play]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [play]
      */
     val playMock = this::play.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [pause]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [pause]
      */
     val pauseMock = this::pause.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [seekTo]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [seekTo]
      */
     val seekToMock = this::seekTo.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [stop]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [stop]
      */
     val stopMock = this::stop.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [reset]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [reset]
      */
     val resetMock = this::reset.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [close]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [close]
      */
     val endMock = this::close.mock()
 
@@ -184,7 +184,7 @@ class MockBaseMediaManager(
         val builtMediaManagers = concurrentMutableListOf<MockBaseMediaManager>()
 
         /**
-         * A [com.splendo.kaluga.test.base.mock.MethodMock] for [create]
+         * A [com.splendo.kaluga.base.test.mock.MethodMock] for [create]
          */
         val createMock = this::create.mock()
 
@@ -202,45 +202,45 @@ class MockBaseMediaManager(
     }
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [handleCreatePlayableMediaMock]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [handleCreatePlayableMediaMock]
      * If `setupMocks` was set to `true` on construction, this will automatically return a [MockPlayableMedia] for the provided [MediaSource]
      */
     val handleCreatePlayableMediaMock = this::handleCreatePlayableMedia.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [initialize]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [initialize]
      * If `setupMocks` was set to `true` on construction, this will automatically cause [handlePrepared] to be called immediately after [initialize] has been called
      */
     val initializeMock = this::initialize.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [play]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [play]
      */
     val playMock = this::play.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [pause]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [pause]
      */
     val pauseMock = this::pause.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [startSeek]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [startSeek]
      * If `setupMocks` was set to `true` on construction, this will automatically cause [handleSeekCompleted] to be called immediately after [startSeek] has been called
      */
     val startSeekMock = this::startSeek.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [stop]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [stop]
      */
     val stopMock = this::stop.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [handleReset]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [handleReset]
      */
     val handleResetMock = this::handleReset.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [cleanUp]
+     * A [com.splendo.kaluga.base.test.mock.MethodMock] for [cleanUp]
      */
     val cleanUpMock = this::cleanUp.mock()
 

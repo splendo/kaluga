@@ -18,9 +18,9 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.permissions.base.Permissions
-import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.bluetooth.randomUUID
-import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.bluetooth.test.randomUUID
+import com.splendo.kaluga.permissions.test.MockPermissionsBuilder
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertFailsWith

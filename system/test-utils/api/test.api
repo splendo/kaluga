@@ -1,34 +1,34 @@
-public final class com/splendo/kaluga/test/system/network/MockNetworkManager : com/splendo/kaluga/system/network/NetworkManager {
+public final class com/splendo/kaluga/system/test/network/MockNetworkManager : com/splendo/kaluga/system/network/NetworkManager {
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)V
 	public synthetic fun getNetwork ()Lkotlinx/coroutines/flow/Flow;
 	public fun getNetwork ()Lkotlinx/coroutines/flow/MutableStateFlow;
-	public final fun getStartMonitoringMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public final fun getStopMonitoringMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStartMonitoringMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStopMonitoringMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
 	public fun startMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkManager$Builder : com/splendo/kaluga/system/network/NetworkManager$Builder {
+public final class com/splendo/kaluga/system/test/network/MockNetworkManager$Builder : com/splendo/kaluga/system/network/NetworkManager$Builder {
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create ()Lcom/splendo/kaluga/system/network/NetworkManager;
 	public final fun getBuiltNetworkManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
-	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getCreateMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
 }
 
-public abstract class com/splendo/kaluga/test/system/network/MockNetworkState {
+public abstract class com/splendo/kaluga/system/test/network/MockNetworkState {
 	public abstract fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 }
 
-public abstract class com/splendo/kaluga/test/system/network/MockNetworkState$Active : com/splendo/kaluga/test/system/network/MockNetworkState {
+public abstract class com/splendo/kaluga/system/test/network/MockNetworkState$Active : com/splendo/kaluga/system/test/network/MockNetworkState {
 	public final fun getDeinitialize ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkState$Available : com/splendo/kaluga/test/system/network/MockNetworkState$Initialized, com/splendo/kaluga/system/network/state/NetworkState$Available {
+public final class com/splendo/kaluga/system/test/network/MockNetworkState$Available : com/splendo/kaluga/system/test/network/MockNetworkState$Initialized, com/splendo/kaluga/system/network/state/NetworkState$Available {
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;)V
 	public final fun component1 ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;
-	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Available;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Available;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Available;
+	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Available;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/test/network/MockNetworkState$Available;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;ILjava/lang/Object;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Available;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
@@ -39,10 +39,10 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Avail
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkState$Deinitialized : com/splendo/kaluga/test/system/network/MockNetworkState, com/splendo/kaluga/system/network/state/NetworkState$Deinitialized {
+public final class com/splendo/kaluga/system/test/network/MockNetworkState$Deinitialized : com/splendo/kaluga/system/test/network/MockNetworkState, com/splendo/kaluga/system/network/state/NetworkState$Deinitialized {
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)V
-	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Deinitialized;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Deinitialized;Lcom/splendo/kaluga/system/network/NetworkConnectionType;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Deinitialized;
+	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Deinitialized;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/test/network/MockNetworkState$Deinitialized;Lcom/splendo/kaluga/system/network/NetworkConnectionType;ILjava/lang/Object;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Deinitialized;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
@@ -51,19 +51,19 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Deini
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class com/splendo/kaluga/test/system/network/MockNetworkState$Inactive : com/splendo/kaluga/test/system/network/MockNetworkState {
+public abstract class com/splendo/kaluga/system/test/network/MockNetworkState$Inactive : com/splendo/kaluga/system/test/network/MockNetworkState {
 }
 
-public abstract class com/splendo/kaluga/test/system/network/MockNetworkState$Initialized : com/splendo/kaluga/test/system/network/MockNetworkState$Active {
+public abstract class com/splendo/kaluga/system/test/network/MockNetworkState$Initialized : com/splendo/kaluga/system/test/network/MockNetworkState$Active {
 	public final fun available (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;)Lkotlin/jvm/functions/Function1;
 	public final fun unknown (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown$Reason;)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkState$Initializing : com/splendo/kaluga/test/system/network/MockNetworkState$Active, com/splendo/kaluga/system/network/state/NetworkState$Initializing {
+public final class com/splendo/kaluga/system/test/network/MockNetworkState$Initializing : com/splendo/kaluga/system/test/network/MockNetworkState$Active, com/splendo/kaluga/system/network/state/NetworkState$Initializing {
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)V
 	public final fun component1 ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
-	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Initializing;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Initializing;Lcom/splendo/kaluga/system/network/NetworkConnectionType;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Initializing;
+	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Initializing;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/test/network/MockNetworkState$Initializing;Lcom/splendo/kaluga/system/network/NetworkConnectionType;ILjava/lang/Object;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Initializing;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun hashCode ()I
@@ -72,8 +72,8 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Initi
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkState$NotInitialized : com/splendo/kaluga/test/system/network/MockNetworkState$Inactive, com/splendo/kaluga/system/network/state/NetworkState$NotInitialized {
-	public static final field INSTANCE Lcom/splendo/kaluga/test/system/network/MockNetworkState$NotInitialized;
+public final class com/splendo/kaluga/system/test/network/MockNetworkState$NotInitialized : com/splendo/kaluga/system/test/network/MockNetworkState$Inactive, com/splendo/kaluga/system/network/state/NetworkState$NotInitialized {
+	public static final field INSTANCE Lcom/splendo/kaluga/system/test/network/MockNetworkState$NotInitialized;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun hashCode ()I
@@ -81,8 +81,8 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$NotIn
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unavailable : com/splendo/kaluga/test/system/network/MockNetworkState$Initialized, com/splendo/kaluga/system/network/state/NetworkState$Unavailable {
-	public static final field INSTANCE Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unavailable;
+public final class com/splendo/kaluga/system/test/network/MockNetworkState$Unavailable : com/splendo/kaluga/system/test/network/MockNetworkState$Initialized, com/splendo/kaluga/system/network/state/NetworkState$Unavailable {
+	public static final field INSTANCE Lcom/splendo/kaluga/system/test/network/MockNetworkState$Unavailable;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
@@ -92,11 +92,11 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unava
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unknown : com/splendo/kaluga/test/system/network/MockNetworkState$Initialized, com/splendo/kaluga/system/network/state/NetworkState$Unknown {
+public final class com/splendo/kaluga/system/test/network/MockNetworkState$Unknown : com/splendo/kaluga/system/test/network/MockNetworkState$Initialized, com/splendo/kaluga/system/network/state/NetworkState$Unknown {
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;)V
 	public final fun component1 ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;
-	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unknown;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unknown;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unknown;
+	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Unknown;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/test/network/MockNetworkState$Unknown;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;ILjava/lang/Object;)Lcom/splendo/kaluga/system/test/network/MockNetworkState$Unknown;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
@@ -106,13 +106,13 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unkno
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/test/system/network/MockNetworkStateRepoBuilder : com/splendo/kaluga/system/network/state/BaseNetworkStateRepoBuilder {
+public final class com/splendo/kaluga/system/test/network/MockNetworkStateRepoBuilder : com/splendo/kaluga/system/network/state/BaseNetworkStateRepoBuilder {
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkManager$Builder;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/NetworkManager$Builder;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun create (Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/system/network/state/BaseNetworkStateRepo;
 	public fun create (Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/system/network/state/NetworkStateRepo;
 	public final fun getBuiltNetworkStateRepo ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
-	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getCreateMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
 	public final fun getNetworkManagerBuilder ()Lcom/splendo/kaluga/system/network/NetworkManager$Builder;
 }
 

@@ -15,14 +15,14 @@
 
  */
 
-package com.splendo.kaluga.test.hud
+package com.splendo.kaluga.hud.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HudConfig
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -45,7 +45,7 @@ class MockHUD(override val hudConfig: HudConfig, setupMocks: Boolean = true, cor
         val builtHUDs = concurrentMutableListOf<MockHUD>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 
@@ -69,12 +69,12 @@ class MockHUD(override val hudConfig: HudConfig, setupMocks: Boolean = true, cor
     override var isVisible: Boolean = false
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [present]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [present]
      */
     val presentMock = ::present.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [dismiss]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [dismiss]
      */
     val dismissMock = ::dismiss.mock()
 

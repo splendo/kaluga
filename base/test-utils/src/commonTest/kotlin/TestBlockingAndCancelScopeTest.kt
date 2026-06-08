@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

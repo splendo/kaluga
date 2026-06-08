@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 import kotlin.test.Test
 import kotlin.test.assertTrue

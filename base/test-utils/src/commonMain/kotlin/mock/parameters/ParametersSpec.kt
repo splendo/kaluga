@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock.parameters
+package com.splendo.kaluga.base.test.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher
 
 /**
- * Specifies the parameters to be received by a [com.splendo.kaluga.test.base.mock.BaseMethodMock]
+ * Specifies the parameters to be received by a [com.splendo.kaluga.base.test.mock.BaseMethodMock]
  */
 interface ParametersSpec<M : ParametersSpec.Matchers, C : ParametersSpec.MatchersOrCaptor<M>, V : ParametersSpec.Values> {
     /**
@@ -34,7 +34,7 @@ interface ParametersSpec<M : ParametersSpec.Matchers, C : ParametersSpec.Matcher
     }
 
     /**
-     * The spec describing the [com.splendo.kaluga.test.base.mock.matcher.ParameterMatcherOrCaptor] used for a [ParametersSpec]
+     * The spec describing the [com.splendo.kaluga.base.test.mock.matcher.ParameterMatcherOrCaptor] used for a [ParametersSpec]
      */
     interface MatchersOrCaptor<M : Matchers> {
         /**

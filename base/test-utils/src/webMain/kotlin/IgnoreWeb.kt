@@ -16,7 +16,7 @@ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 // webMain is the shared parent of jsMain + wasmJsMain, so this single typealias skips on both web targets.
 actual typealias IgnoreWeb = kotlin.test.Ignore

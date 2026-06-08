@@ -14,7 +14,7 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 import kotlin.test.Test
 import kotlin.test.assertFalse

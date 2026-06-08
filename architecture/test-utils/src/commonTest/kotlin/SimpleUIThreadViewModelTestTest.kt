@@ -15,13 +15,13 @@
 
  */
 
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.architecture.test
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.mock.voidParametersMock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.mock.voidParametersMock
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

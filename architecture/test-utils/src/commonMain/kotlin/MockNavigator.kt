@@ -15,14 +15,14 @@
 
  */
 
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.architecture.test
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationException
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 
 class MockNavigationException(action: NavigationAction<*>) : NavigationException("Mock exception for $action")
 
@@ -39,7 +39,7 @@ open class MockNavigator<A : NavigationAction<*>>(handleAction: (A) -> Unit = { 
     }
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] of [navigate]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] of [navigate]
      */
     val navigateMock = this::navigate.mock()
     override fun navigate(action: A): Unit = navigateMock.call(action)

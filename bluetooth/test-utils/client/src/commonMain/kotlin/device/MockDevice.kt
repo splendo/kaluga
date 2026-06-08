@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth.device
+package com.splendo.kaluga.bluetooth.test.device
 
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RSSI
@@ -32,8 +32,8 @@ import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.bluetooth.createServiceWrapper
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.bluetooth.test.createServiceWrapper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

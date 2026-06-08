@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth
+package com.splendo.kaluga.bluetooth.test
 
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
-import com.splendo.kaluga.test.service.MockServiceMonitor
+import com.splendo.kaluga.service.test.MockServiceMonitor
 import kotlinx.coroutines.flow.StateFlow
 
 /**

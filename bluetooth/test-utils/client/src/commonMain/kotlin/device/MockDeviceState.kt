@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth.device
+package com.splendo.kaluga.bluetooth.test.device
 
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState

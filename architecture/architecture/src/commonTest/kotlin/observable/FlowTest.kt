@@ -19,7 +19,7 @@ package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach

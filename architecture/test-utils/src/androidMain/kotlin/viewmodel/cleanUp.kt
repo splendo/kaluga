@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.architecture.viewmodel
+package com.splendo.kaluga.architecture.test.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

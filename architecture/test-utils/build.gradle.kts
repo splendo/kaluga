@@ -4,7 +4,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.architecture"
+    moduleName = "architecture.test"
 
     dependencies {
         common {

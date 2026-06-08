@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth
+package com.splendo.kaluga.bluetooth.test
 
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.TxPower
@@ -29,8 +29,8 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.uuidFrom
-import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
+import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 

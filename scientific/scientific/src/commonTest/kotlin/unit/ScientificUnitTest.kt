@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.scientificSerializationModule
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

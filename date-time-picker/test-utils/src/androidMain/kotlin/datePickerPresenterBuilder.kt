@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.test.datetimepicker
+package com.splendo.kaluga.datetimepicker.test
 
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
-import com.splendo.kaluga.test.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.test.lifecycle.lifecycleManagerObserver
+import com.splendo.kaluga.lifecycle.test.getOrPutAndRemoveOnDestroyFromCache
+import com.splendo.kaluga.lifecycle.test.lifecycleManagerObserver
 
 /**
  * @return The [DateTimePickerPresenter.Builder] which can be used to present alerts while this Activity is active

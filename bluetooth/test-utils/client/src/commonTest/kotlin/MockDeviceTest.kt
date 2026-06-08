@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth
+package com.splendo.kaluga.bluetooth.test
 
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.uuidFrom
-import com.splendo.kaluga.test.base.awaitFirst
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.awaitFirst
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
 

@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock.android
+package com.splendo.kaluga.base.test.mock.android
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver

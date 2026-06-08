@@ -14,14 +14,14 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.test.alerts
+package com.splendo.kaluga.alerts.test
 
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -43,7 +43,7 @@ class MockAlertPresenter(alert: Alert, logger: Logger, setupMocks: Boolean = tru
         val builtAlerts = mutableListOf<MockAlertPresenter>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for the [create] function
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for the [create] function
          */
         val createMock = ::createAlertFromAlert.mock()
 
@@ -70,12 +70,12 @@ class MockAlertPresenter(alert: Alert, logger: Logger, setupMocks: Boolean = tru
     private var afterHandler: ((Alert.Action?) -> Unit)? = null
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for the [showAsync] function
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for the [showAsync] function
      */
     val showAsyncMock = this::showAsync.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for the [dismiss] function
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for the [dismiss] function
      */
     val dismissMock = this::dismiss.mock()
 

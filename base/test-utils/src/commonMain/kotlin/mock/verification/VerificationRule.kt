@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock.verification
+package com.splendo.kaluga.base.test.mock.verification
 
-import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.times
+import com.splendo.kaluga.base.test.mock.verification.VerificationRule.Companion.times
 
 /**
- * Rule for checking how often a [com.splendo.kaluga.test.base.mock.BaseMethodMock] can be called
+ * Rule for checking how often a [com.splendo.kaluga.base.test.mock.BaseMethodMock] can be called
  */
 sealed interface VerificationRule {
     /**

@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.resources
+package com.splendo.kaluga.resources.test
 
 import android.graphics.drawable.ColorDrawable
 import com.splendo.kaluga.resources.KalugaColor

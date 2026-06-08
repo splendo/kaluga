@@ -16,7 +16,7 @@ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 /** Marks a test or test class to be skipped on both web targets (Kotlin/JS and Kotlin/Wasm) — a
  *  shortcut for applying both [IgnoreJs] and [IgnoreWasm]. */

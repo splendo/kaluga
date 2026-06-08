@@ -18,8 +18,8 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
-import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher
+import com.splendo.kaluga.base.test.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test

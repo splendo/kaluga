@@ -16,7 +16,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

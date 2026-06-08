@@ -15,15 +15,15 @@
 
  */
 
-package com.splendo.kaluga.test.alerts
+package com.splendo.kaluga.alerts.test
 
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.base.UIThreadTest
-import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
-import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.base.test.UIThreadTest
+import com.splendo.kaluga.base.test.mock.matcher.AnyCaptor
+import com.splendo.kaluga.base.test.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test

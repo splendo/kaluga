@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.media
+package com.splendo.kaluga.media.test
 
 import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.media.MediaSurface

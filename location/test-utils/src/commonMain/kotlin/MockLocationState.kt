@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.location
+package com.splendo.kaluga.location.test
 
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationState

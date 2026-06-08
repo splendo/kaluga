@@ -16,7 +16,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test.base
+package com.splendo.kaluga.base.test
 
 /** Marks a test or test class to be skipped on the Kotlin/Wasm target. */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)

@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth.device
+package com.splendo.kaluga.bluetooth.test.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
@@ -30,12 +30,12 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
-import com.splendo.kaluga.test.base.mock.singleParametersMock
-import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
-import com.splendo.kaluga.test.bluetooth.MockDescriptorWrapper
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.singleParametersMock
+import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.test.MockDescriptorWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 
@@ -68,7 +68,7 @@ class MockDeviceConnectionManager(
         val createdDeviceConnectionManager = concurrentMutableListOf<MockDeviceConnectionManager>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 
@@ -95,47 +95,47 @@ class MockDeviceConnectionManager(
     var willActionSucceed: Boolean = initialWillActionSucceed
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [getCurrentState]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [getCurrentState]
      */
     val getCurrentStateMock = ::getCurrentState.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [connect]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [connect]
      */
     val connectMock = ::connect.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [discoverServices]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [discoverServices]
      */
     val discoverServicesMock = ::discoverServices.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [disconnect]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [disconnect]
      */
     val disconnectMock = ::disconnect.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [readRssi]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [readRssi]
      */
     val readRssiMock = ::readRssi.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pair]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [pair]
      */
     val pairMock = ::pair.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [unpair]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [unpair]
      */
     val unpairMock = ::unpair.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [performAction]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [performAction]
      */
     val performActionMock = ::performAction.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [handleActionCompleted]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [handleActionCompleted]
      */
     val handleCurrentActionCompletedMock = singleParametersMock<ActionCompleted<*>, Unit>().apply {
         on().doReturn(Unit)

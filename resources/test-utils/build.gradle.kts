@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.resources"
+    moduleName = "resources.test"
     dependencies {
         common {
             main {

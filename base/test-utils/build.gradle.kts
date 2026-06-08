@@ -4,7 +4,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.base"
+    moduleName = "base.test"
 
     supportJVM = true
     supportJS = true

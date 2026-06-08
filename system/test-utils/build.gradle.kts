@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.system"
+    moduleName = "system.test"
     supportMacOS = true
     supportJS = true
     supportWasmJS = true

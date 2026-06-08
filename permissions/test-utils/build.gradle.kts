@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.permissions"
+    moduleName = "permissions.test"
     supportJS = true
     supportWasmJS = true
     supportMacOS = true

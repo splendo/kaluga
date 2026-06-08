@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.kvo
 
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.flow.first
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSKeyValueObservingOptionInitial

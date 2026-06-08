@@ -19,7 +19,7 @@ package com.splendo.kaluga.alerts
 
 import androidx.activity.viewModels
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.test.alerts.alertPresenterBuilder
+import com.splendo.kaluga.alerts.test.alertPresenterBuilder
 
 class TestActivity : KalugaViewModelActivity<AlertsViewModel>() {
 

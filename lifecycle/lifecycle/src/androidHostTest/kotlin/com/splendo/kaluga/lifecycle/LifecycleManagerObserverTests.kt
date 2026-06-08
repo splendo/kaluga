@@ -20,8 +20,8 @@ package com.splendo.kaluga.lifecycle
 import android.app.Activity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

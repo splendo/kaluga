@@ -25,9 +25,9 @@ import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
-import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.test.createDeviceWrapper
+import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
+import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager
 import kotlinx.coroutines.CoroutineScope
 
 typealias ServiceData = Map<UUID, ByteArray?>

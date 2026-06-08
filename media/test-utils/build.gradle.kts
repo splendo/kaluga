@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.media"
+    moduleName = "media.test"
     supportMacOS = true
     supportTvOS = true
     supportJS = true

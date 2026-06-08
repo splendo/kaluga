@@ -15,16 +15,16 @@
 
  */
 
-package com.splendo.kaluga.test.location
+package com.splendo.kaluga.location.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationManager
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -78,7 +78,7 @@ class MockBaseLocationManager(initialLocationEnabled: Boolean, settings: Setting
         val builtLocationManagers = concurrentMutableListOf<MockBaseLocationManager>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 
@@ -104,37 +104,37 @@ class MockBaseLocationManager(initialLocationEnabled: Boolean, settings: Setting
     override val locationMonitor = MockLocationMonitor(locationEnabled)
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringPermissions]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [startMonitoringPermissions]
      */
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringPermissions]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [stopMonitoringPermissions]
      */
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringLocationEnabled]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [startMonitoringLocationEnabled]
      */
     val startMonitoringLocationEnabledMock = ::startMonitoringLocationEnabled.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringLocationEnabled]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [stopMonitoringLocationEnabled]
      */
     val stopMonitoringLocationEnabledMock = ::stopMonitoringLocationEnabled.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [requestEnableLocation]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [requestEnableLocation]
      */
     val requestEnableLocationMock = ::requestEnableLocation.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringLocation]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [startMonitoringLocation]
      */
     val startMonitoringLocationMock = ::startMonitoringLocation.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringLocation]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [stopMonitoringLocation]
      */
     val stopMonitoringLocationMock = ::stopMonitoringLocation.mock()
 

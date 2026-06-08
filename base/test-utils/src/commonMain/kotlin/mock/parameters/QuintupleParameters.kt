@@ -15,16 +15,16 @@
 
  */
 
-package com.splendo.kaluga.test.base.mock.parameters
+package com.splendo.kaluga.base.test.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.answer.Answer
-import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
-import com.splendo.kaluga.test.base.mock.matcher.Captor
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcherOrCaptor
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.quintupleParametersMock
-import com.splendo.kaluga.test.base.mock.suspendQuintupleParametersMock
+import com.splendo.kaluga.base.test.mock.answer.Answer
+import com.splendo.kaluga.base.test.mock.answer.SuspendedAnswer
+import com.splendo.kaluga.base.test.mock.matcher.Captor
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher
+import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcherOrCaptor
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.quintupleParametersMock
+import com.splendo.kaluga.base.test.mock.suspendQuintupleParametersMock
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 

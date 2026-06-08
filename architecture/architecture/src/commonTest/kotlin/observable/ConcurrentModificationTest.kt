@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlin.test.Test
 import kotlin.test.assertEquals

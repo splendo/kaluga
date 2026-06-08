@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.koin
+package com.splendo.kaluga.koin.test
 
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.inject

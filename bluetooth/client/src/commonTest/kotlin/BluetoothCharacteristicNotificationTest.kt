@@ -20,11 +20,11 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.mock.verifyWithin
-import com.splendo.kaluga.test.base.yieldMultiple
-import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager.ActionCompleted
+import com.splendo.kaluga.base.test.mock.matcher.AnyOrNullCaptor
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.mock.verifyWithin
+import com.splendo.kaluga.base.test.yieldMultiple
+import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager.ActionCompleted
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

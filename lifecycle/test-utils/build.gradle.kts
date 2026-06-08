@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test.lifecycle"
+    moduleName = "lifecycle.test"
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true

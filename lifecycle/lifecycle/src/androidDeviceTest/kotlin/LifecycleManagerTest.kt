@@ -19,7 +19,7 @@ package com.splendo.kaluga.lifecycle
 
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.splendo.kaluga.test.lifecycle.lifecycleManagerObserver
+import com.splendo.kaluga.lifecycle.test.lifecycleManagerObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext

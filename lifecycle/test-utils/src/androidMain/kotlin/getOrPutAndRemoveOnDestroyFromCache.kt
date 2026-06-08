@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.lifecycle
+package com.splendo.kaluga.lifecycle.test
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver

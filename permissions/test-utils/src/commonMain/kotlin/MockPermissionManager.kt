@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.permissions
+package com.splendo.kaluga.permissions.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.logging.debug
@@ -23,9 +23,9 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
@@ -61,7 +61,7 @@ class MockPermissionManager<P : Permission>(
         val createdManagers = concurrentMutableListOf<MockPermissionManager<P>>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 
@@ -84,17 +84,17 @@ class MockPermissionManager<P : Permission>(
     }
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [requestPermission]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [requestPermission]
      */
     val requestPermissionDidStartMock = ::requestPermission.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoring]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [startMonitoring]
      */
     val monitoringDidStartMock = ::startMonitoring.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoring]
+     * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [stopMonitoring]
      */
     val monitoringDidStopMock = ::stopMonitoring.mock()
 

@@ -18,12 +18,12 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.permissions.base.Permissions
-import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.testRunBlocking
-import com.splendo.kaluga.test.bluetooth.randomUUID
-import com.splendo.kaluga.test.bluetooth.server.MockConnectedDevice
-import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.testRunBlocking
+import com.splendo.kaluga.bluetooth.test.randomUUID
+import com.splendo.kaluga.bluetooth.test.server.MockConnectedDevice
+import com.splendo.kaluga.permissions.test.MockPermissionsBuilder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first

@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.test.keyboard
+package com.splendo.kaluga.keyboard.test
 
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.keyboard.ViewKeyboardManager
-import com.splendo.kaluga.test.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.test.lifecycle.lifecycleManagerObserver
+import com.splendo.kaluga.lifecycle.test.getOrPutAndRemoveOnDestroyFromCache
+import com.splendo.kaluga.lifecycle.test.lifecycleManagerObserver
 
 /**
  * @return A [KeyboardManager.Builder] which can be used to manipulate the soft keyboard while this Activity is active.

@@ -1,7 +1,7 @@
 import com.splendo.kaluga.base.KalugaThread
-import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.IgnoreWeb
-import com.splendo.kaluga.test.base.testRunBlocking
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.IgnoreWeb
+import com.splendo.kaluga.base.test.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.test.Test

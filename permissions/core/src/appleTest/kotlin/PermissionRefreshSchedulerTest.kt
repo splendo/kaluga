@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.base.test.BaseTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking

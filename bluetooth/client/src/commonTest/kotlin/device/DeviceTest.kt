@@ -19,14 +19,14 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.GattResponse
-import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.yieldMultiple
-import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
-import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager.ActionCompleted
+import com.splendo.kaluga.base.test.mock.matcher.AnyOrNullCaptor
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.verification.VerificationRule.Companion.never
+import com.splendo.kaluga.base.test.mock.verify
+import com.splendo.kaluga.base.test.yieldMultiple
+import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
+import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager.ActionCompleted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

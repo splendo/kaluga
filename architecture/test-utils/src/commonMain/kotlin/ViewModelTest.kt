@@ -15,14 +15,14 @@
 
  */
 
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.architecture.test
 
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest.ViewModelTestContext
-import com.splendo.kaluga.test.architecture.viewmodel.cleanUp
-import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.BaseUIThreadTest
-import com.splendo.kaluga.test.base.UIThreadTest
+import com.splendo.kaluga.architecture.test.UIThreadViewModelTest.ViewModelTestContext
+import com.splendo.kaluga.architecture.test.viewmodel.cleanUp
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.BaseUIThreadTest
+import com.splendo.kaluga.base.test.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

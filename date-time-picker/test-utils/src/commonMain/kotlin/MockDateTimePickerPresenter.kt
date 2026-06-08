@@ -15,15 +15,15 @@
 
  */
 
-package com.splendo.kaluga.test.datetimepicker
+package com.splendo.kaluga.datetimepicker.test
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.datetimepicker.BaseDateTimePickerPresenter
 import com.splendo.kaluga.datetimepicker.DateTimePicker
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
+import com.splendo.kaluga.base.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -44,7 +44,7 @@ class MockDateTimePickerPresenter(public override val dateTimePicker: DateTimePi
         val builtDateTimePickerPresenters = concurrentMutableListOf<MockDateTimePickerPresenter>()
 
         /**
-         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         * [com.splendo.kaluga.base.test.mock.BaseMethodMock] for [create]
          */
         val createMock = ::create.mock()
 
