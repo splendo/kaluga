@@ -100,11 +100,11 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [architecture](architecture/architecture/)                  | MVVM architecture                                                                  | com.splendo.kaluga.architecture:architecture   |
 | [architecture-compose](architecture/compose/)               | Compose extensions for architecture                                                | com.splendo.kaluga.architecture:compose        |
 | [base](base/)                                               | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga:base                        |
-| [beacons](beacons/)                                         | Tracking the availability of Beacons using the Eddystone protocol                  | com.splendo.kaluga:beacons                     |
+| [beacons](beacons/)                                         | Tracking the availability of Beacons using the Eddystone protocol                  | com.splendo.kaluga.bluetooth:beacons                     |
 | [bluetooth](bluetooth/)                                     | Aggregate of the Bluetooth client, server and base modules                         | com.splendo.kaluga:bluetooth                   |
-| [bluetooth-base](bluetooth-base/)                           | Shared Bluetooth attributes and the BluetoothFormat (de)serialization framework    | com.splendo.kaluga:bluetooth-base              |
-| [bluetooth-client](bluetooth-client/)                       | Scanning for and connecting to BLE devices as a Client                             | com.splendo.kaluga:bluetooth-client            |
-| [bluetooth-server](bluetooth-server/)                       | Advertising and exposing GATT attributes as a Server                               | com.splendo.kaluga:bluetooth-server            |
+| [bluetooth-base](bluetooth-base/)                           | Shared Bluetooth attributes and the BluetoothFormat (de)serialization framework    | com.splendo.kaluga.bluetooth:core              |
+| [bluetooth-client](bluetooth-client/)                       | Scanning for and connecting to BLE devices as a Client                             | com.splendo.kaluga.bluetooth:client            |
+| [bluetooth-server](bluetooth-server/)                       | Advertising and exposing GATT attributes as a Server                               | com.splendo.kaluga.bluetooth:server            |
 | [date-time](date-time/)                                     | Contains multiplatform classes to work with date and time                          | com.splendo.kaluga:date-time                   |
 | [date-timepicker](date-time-picker/)                        | Used for showing a Date or Time Picker                                             | com.splendo.kaluga:date-time-picker            |
 | [hud](hud/)                                                 | Used for showing a Loading indicator HUD                                           | com.splendo.kaluga:hud                         |
@@ -139,9 +139,9 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils-base](test-utils-base/)                         | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils-base             |
 | [test-utils-alerts](test-utils-alerts/)                     | Enables easier testing of Alerts module                                            | com.splendo.kaluga:test-utils-alerts           |
 | [test-utils-architecture](architecture/test-utils/)         | Enables easier testing of Architecture module                                      | com.splendo.kaluga.architecture:test           |
-| [test-utils-bluetooth-base](test-utils-bluetooth-base/)     | Enables easier testing of the Bluetooth base module                                | com.splendo.kaluga:test-utils-bluetooth-base   |
-| [test-utils-bluetooth-client](test-utils-bluetooth-client/) | Enables easier testing of the Bluetooth client module                              | com.splendo.kaluga:test-utils-bluetooth-client |
-| [test-utils-bluetooth-server](test-utils-bluetooth-server/) | Enables easier testing of the Bluetooth server module                              | com.splendo.kaluga:test-utils-bluetooth-server |
+| [test-utils-bluetooth-base](test-utils-bluetooth-base/)     | Enables easier testing of the Bluetooth base module                                | com.splendo.kaluga.bluetooth.test:core   |
+| [test-utils-bluetooth-client](test-utils-bluetooth-client/) | Enables easier testing of the Bluetooth client module                              | com.splendo.kaluga.bluetooth.test:client |
+| [test-utils-bluetooth-server](test-utils-bluetooth-server/) | Enables easier testing of the Bluetooth server module                              | com.splendo.kaluga.bluetooth.test:server |
 | [test-utils-date-time-picker](test-utils-date-time-picker/) | Enables easier testing of Date Time Picker module                                  | com.splendo.kaluga:test-utils-date-time-picker |
 | [test-utils-hud](test-utils-hud/)                           | Enables easier testing of HUD module                                               | com.splendo.kaluga:test-utils-hud              |
 | [test-utils-keyboard](test-utils-keyboard/)                 | Enables easier testing of Keyboard module                                          | com.splendo.kaluga.keyboard:test         |

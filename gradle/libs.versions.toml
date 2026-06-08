@@ -64,7 +64,7 @@ nordic-support = "1.6.0"
 # Kaluga itself
 kaluga-base = { module = "com.splendo.kaluga:base", version.ref = "kaluga" }
 kaluga-base-permissions = { module = "com.splendo.kaluga:base-permissions", version.ref = "kaluga" }
-kaluga-beacons = { module = "com.splendo.kaluga:beacons", version.ref = "kaluga" }
+kaluga-beacons = { module = "com.splendo.kaluga.bluetooth:beacons", version.ref = "kaluga" }
 kaluga-bluetooth = { module = "com.splendo.kaluga:bluetooth", version.ref = "kaluga" }
 kaluga-bluetooth-permissions = { module = "com.splendo.kaluga:bluetooth-permissions", version.ref = "kaluga" }
 kaluga-calendar-permissions = { module = "com.splendo.kaluga:calendar-permissions", version.ref = "kaluga" }
@@ -96,9 +96,9 @@ kaluga-compose-resources = { module = "com.splendo.kaluga.resources:compose", ve
 kaluga-testutils-architecture = { module = "com.splendo.kaluga.architecture:test", version.ref = "kaluga" }
 kaluga-testutils-alerts = { module = "com.splendo.kaluga:test-utils-alerts", version.ref = "kaluga" }
 kaluga-testutils-base = { module = "com.splendo.kaluga:test-utils-base", version.ref = "kaluga" }
-kaluga-testutils-bluetooth-base = { module = "com.splendo.kaluga:test-utils-bluetooth-base", version.ref = "kaluga" }
-kaluga-testutils-bluetooth-client = { module = "com.splendo.kaluga:test-utils-bluetooth-client", version.ref = "kaluga" }
-kaluga-testutils-bluetooth-server = { module = "com.splendo.kaluga:test-utils-bluetooth-server", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-base = { module = "com.splendo.kaluga.bluetooth.test:core", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-client = { module = "com.splendo.kaluga.bluetooth.test:client", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-server = { module = "com.splendo.kaluga.bluetooth.test:server", version.ref = "kaluga" }
 kaluga-testutils-datetimepicker = { module = "com.splendo.kaluga:test-utils-date-time-picker", version.ref = "kaluga" }
 kaluga-testutils-resources = { module = "com.splendo.kaluga.resources:test", version.ref = "kaluga" }
 kaluga-testutils-hud = { module = "com.splendo.kaluga:test-utils-hud", version.ref = "kaluga" }
