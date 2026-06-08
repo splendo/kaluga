@@ -6,7 +6,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga.bluetooth.test:core>
+// Library unique name: <com.splendo.kaluga.bluetooth:test-core>
 final class com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor : com.splendo.kaluga.bluetooth/BluetoothMonitor, com.splendo.kaluga.test.service/MockServiceMonitor { // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor|null[0]
     constructor <init>(kotlinx.coroutines.flow/StateFlow<kotlin/Boolean>) // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.<init>|<init>(kotlinx.coroutines.flow.StateFlow<kotlin.Boolean>){}[0]
 

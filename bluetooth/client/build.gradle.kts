@@ -29,7 +29,7 @@ kaluga {
                 api(project(":permissions:bluetooth", ""))
             }
             test {
-                implementation(project(":bluetooth:test:client", ""))
+                implementation(project(":bluetooth:test-client", ""))
                 implementation(project(":permissions:test", ""))
             }
         }

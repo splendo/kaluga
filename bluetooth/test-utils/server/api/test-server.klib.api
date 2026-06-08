@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga.bluetooth.test:server>
+// Library unique name: <com.splendo.kaluga.bluetooth:test-server>
 final class com.splendo.kaluga.test.bluetooth.server/MockAttributeIdentity : com.splendo.kaluga.bluetooth.server/AttributeIdentity { // com.splendo.kaluga.test.bluetooth.server/MockAttributeIdentity|null[0]
     constructor <init>() // com.splendo.kaluga.test.bluetooth.server/MockAttributeIdentity.<init>|<init>(){}[0]
 }

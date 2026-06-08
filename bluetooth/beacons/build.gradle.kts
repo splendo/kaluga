@@ -15,7 +15,7 @@ kaluga {
                 api(project(":logging", ""))
             }
             test {
-                implementation(project(":bluetooth:test:client"))
+                implementation(project(":bluetooth:test-client"))
             }
         }
     }

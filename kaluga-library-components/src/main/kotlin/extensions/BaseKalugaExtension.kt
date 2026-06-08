@@ -161,12 +161,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     @OptIn(ExperimentalStdlibApi::class)
     @JvmName("handleProjectEvaluated")
     fun afterProjectEvaluated(project: Project) {
-        // The Maven groupId follows the Gradle project nesting: a flat module (`:base`) publishes
-        // under `com.splendo.kaluga`, while a nested module (`:architecture:compose`) publishes under
-        // `com.splendo.kaluga.architecture` with artifactId `compose`. The container project of a
-        // group (e.g. `:architecture`) has no build script and is never published.
-        val groupSuffix = project.path.removePrefix(":").substringBeforeLast(":", "").replace(":", ".")
-        project.group = if (groupSuffix.isEmpty()) BASE_GROUP else "$BASE_GROUP.$groupSuffix"
+        project.group = project.mavenGroup()
 
         project.tasks.withType(Test::class.java) {
             testLogging {
@@ -180,6 +175,21 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         }
 
         project.afterProjectEvaluated()
+    }
+
+    /**
+     * The Maven groupId for this project, following the Gradle project nesting: [BASE_GROUP] plus
+     * every path segment *above* the project itself (the artifactId is the project's own name).
+     *
+     * - `:base` → `com.splendo.kaluga` (flat module)
+     * - `:architecture:compose` → `com.splendo.kaluga.architecture` (artifactId `compose`)
+     * - `:bluetooth:test-client` → `com.splendo.kaluga.bluetooth` (artifactId `test-client`)
+     *
+     * Group container projects (e.g. `:architecture`) have no build script and are never published.
+     */
+    private fun Project.mavenGroup(): String {
+        val parentSegments = path.split(":").filter { it.isNotEmpty() }.dropLast(1)
+        return (listOf(BASE_GROUP) + parentSegments).joinToString(".")
     }
 
     /**

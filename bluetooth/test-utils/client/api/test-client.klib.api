@@ -8,7 +8,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga.bluetooth.test:client>
+// Library unique name: <com.splendo.kaluga.bluetooth:test-client>
 open annotation class com.splendo.kaluga.test.bluetooth/MockBuilderDsl : kotlin/Annotation { // com.splendo.kaluga.test.bluetooth/MockBuilderDsl|null[0]
     constructor <init>() // com.splendo.kaluga.test.bluetooth/MockBuilderDsl.<init>|<init>(){}[0]
 }

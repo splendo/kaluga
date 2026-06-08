@@ -25,7 +25,7 @@ kaluga {
             }
             test {
                 implementation(project(":base:test", ""))
-                implementation(project(":bluetooth:test:server", ""))
+                implementation(project(":bluetooth:test-server", ""))
                 implementation(project(":permissions:test", ""))
             }
         }

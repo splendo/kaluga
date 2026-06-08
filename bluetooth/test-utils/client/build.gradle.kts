@@ -12,7 +12,7 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":bluetooth:test:core"))
+                api(project(":bluetooth:test-core"))
                 api(project(":bluetooth:client"))
             }
         }

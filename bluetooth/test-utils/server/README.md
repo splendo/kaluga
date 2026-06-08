@@ -13,7 +13,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga.bluetooth.test:server:$kalugaVersion")
+    implementation("com.splendo.kaluga.bluetooth:test-server:$kalugaVersion")
 }
 ```
 

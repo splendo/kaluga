@@ -95,9 +95,9 @@ kaluga-compose-resources = { module = "com.splendo.kaluga.resources:compose", ve
 kaluga-testutils-architecture = { module = "com.splendo.kaluga.architecture:test", version.ref = "kaluga" }
 kaluga-testutils-alerts = { module = "com.splendo.kaluga.alerts:test", version.ref = "kaluga" }
 kaluga-testutils-base = { module = "com.splendo.kaluga.base:test", version.ref = "kaluga" }
-kaluga-testutils-bluetooth-base = { module = "com.splendo.kaluga.bluetooth.test:core", version.ref = "kaluga" }
-kaluga-testutils-bluetooth-client = { module = "com.splendo.kaluga.bluetooth.test:client", version.ref = "kaluga" }
-kaluga-testutils-bluetooth-server = { module = "com.splendo.kaluga.bluetooth.test:server", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-base = { module = "com.splendo.kaluga.bluetooth:test-core", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-client = { module = "com.splendo.kaluga.bluetooth:test-client", version.ref = "kaluga" }
+kaluga-testutils-bluetooth-server = { module = "com.splendo.kaluga.bluetooth:test-server", version.ref = "kaluga" }
 kaluga-testutils-datetimepicker = { module = "com.splendo.kaluga.date-time-picker:test", version.ref = "kaluga" }
 kaluga-testutils-resources = { module = "com.splendo.kaluga.resources:test", version.ref = "kaluga" }
 kaluga-testutils-hud = { module = "com.splendo.kaluga.hud:test", version.ref = "kaluga" }
