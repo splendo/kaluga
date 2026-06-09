@@ -50,7 +50,7 @@ class DataAfterUnconstrainedData(override val message: String?) : SerializationE
  */
 internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBinaryDescriptor, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
 
-    val flagBits: MutableList<Boolean> = MutableList(flagBitsSize.coerceAtLeast(0)) { false }
+    val flagBits: BooleanArray = BooleanArray(flagBitsSize.coerceAtLeast(0))
 
     override val expectedSize: Int
         get() = totalBodySize +

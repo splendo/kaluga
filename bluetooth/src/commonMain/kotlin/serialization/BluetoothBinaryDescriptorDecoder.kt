@@ -46,7 +46,7 @@ class InvalidPostfix(override val message: String) : SerializationException()
 
 internal interface BluetoothBinaryDescriptorDecoder {
 
-    val flags: List<Boolean>
+    val flags: BooleanArray
 
     fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int = binaryDescriptor.flagBitSize): BluetoothBinaryDescriptorDecoder
     fun endStructure()
@@ -60,7 +60,7 @@ internal interface BluetoothBinaryDescriptorDecoder {
 internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder, private val validateChecksum: Boolean) :
     BluetoothBinaryDescriptorDecoder {
 
-    override val flags: List<Boolean> = emptyList()
+    override val flags: BooleanArray = BooleanArray(0)
     private var offset = 0
     private var bitOffset = 0
 
@@ -134,7 +134,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
         val startingOffset = offset
 
         // Prepare flags
-        val flags = MutableList(flagBitSize) {
+        val flags = BooleanArray(flagBitSize) {
             isNextBitSet()
         }
 
@@ -163,7 +163,7 @@ class InvalidChecksumException(val expected: ULong, val actual: ULong) : Seriali
 internal class StructureBluetoothBinaryDescriptorDecoder(
     val descriptor: BluetoothBinaryDescriptor,
     val rootDecoder: RootBluetoothBinaryDescriptorDecoder,
-    override val flags: List<Boolean>,
+    override val flags: BooleanArray,
     private val startingOffset: Int,
     private val validateChecksum: Boolean,
     parentFooterSize: Int,
