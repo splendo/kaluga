@@ -385,7 +385,7 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                 when (lengthToAdd) {
                     Length.`32_BIT` -> add(value.toFloat())
                     Length.`64_BIT` -> add(value.toDouble())
-                    else -> throw IllegalArgumentException("Decimal only supports 16 and 32 bit encoding")
+                    else -> throw IllegalArgumentException("Decimal only supports 32 and 64 bit encoding")
                 }
             }
         }

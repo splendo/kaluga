@@ -46,7 +46,7 @@ class InvalidPostfix(override val message: String) : SerializationException()
 
 internal interface BluetoothBinaryDescriptorDecoder {
 
-    val flags: List<Boolean>
+    val flags: BooleanArray
 
     fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int = binaryDescriptor.flagBitSize): BluetoothBinaryDescriptorDecoder
     fun endStructure()
@@ -60,7 +60,7 @@ internal interface BluetoothBinaryDescriptorDecoder {
 internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder, private val validateChecksum: Boolean) :
     BluetoothBinaryDescriptorDecoder {
 
-    override val flags: List<Boolean> = emptyList()
+    override val flags: BooleanArray = BooleanArray(0)
     private var offset = 0
     private var bitOffset = 0
 
@@ -69,7 +69,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
     override fun peekNextIs(value: ByteArray, consumeIfMatch: Boolean): Boolean = if (hasAtLeast(value.size)) {
         val start = if (bitOffset > 0) offset + 1 else offset
         when (byteOrder) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - start - value.size - 1, byteArray.size - start)
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - start - value.size, byteArray.size - start)
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(start, start + value.size)
         }.contentEquals(value).also { match ->
             if (match && consumeIfMatch) {
@@ -101,7 +101,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
     }
 
     fun subArrayFrom(offset: Int) = when (byteOrder) {
-        ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - this.offset - 1, byteArray.size - offset)
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - this.offset, byteArray.size - offset)
         ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(offset, this.offset)
     }
 
@@ -134,7 +134,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
         val startingOffset = offset
 
         // Prepare flags
-        val flags = MutableList(flagBitSize) {
+        val flags = BooleanArray(flagBitSize) {
             isNextBitSet()
         }
 
@@ -163,7 +163,7 @@ class InvalidChecksumException(val expected: ULong, val actual: ULong) : Seriali
 internal class StructureBluetoothBinaryDescriptorDecoder(
     val descriptor: BluetoothBinaryDescriptor,
     val rootDecoder: RootBluetoothBinaryDescriptorDecoder,
-    override val flags: List<Boolean>,
+    override val flags: BooleanArray,
     private val startingOffset: Int,
     private val validateChecksum: Boolean,
     parentFooterSize: Int,
