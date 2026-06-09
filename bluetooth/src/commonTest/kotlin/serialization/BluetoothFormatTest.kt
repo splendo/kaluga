@@ -1799,10 +1799,7 @@ class BluetoothFormatTest {
     fun encodeNullTerminatedAndOverflowMostSignificantFirst() {
         @Serializable
         @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
-        data class Container(
-            @NullTerminated val nullTerminated: Map<String, String>,
-            @LengthPrefix(lengthAsShort = false, canOverflow = true) val overflow: String,
-        )
+        data class Container(@NullTerminated val nullTerminated: Map<String, String>, @LengthPrefix(lengthAsShort = false, canOverflow = true) val overflow: String)
 
         val longString = MutableList(500) { "X" }.joinToString("")
         val value = Container(
