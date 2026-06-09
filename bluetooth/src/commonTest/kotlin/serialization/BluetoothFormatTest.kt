@@ -86,8 +86,8 @@ class BluetoothFormatTest {
     }
 
     // A sealed hierarchy WITHOUT @SerializedByteValue, with subclasses that have a
-    // DIFFERENT number of properties. Exercises the polymorphicMap SEALED fallback that
-    // identifies each option by its subclass serialName (NoMarking UTF-8).
+    // DIFFERENT number of properties. The fallback identifies each option by its
+    // subclass serialName encoded as a raw UTF-8 string (no length prefix).
     @Serializable
     sealed class UnmarkedSealed {
         @Serializable
@@ -1635,7 +1635,7 @@ class BluetoothFormatTest {
     @Test
     fun encodeUnmarkedSealed() {
         // No @SerializedByteValue: each option is identified by its subclass serialName as a
-        // NoMarking UTF-8 string (no length prefix), followed by the subclass body.
+        // raw UTF-8 string (no length prefix), followed by the subclass body.
         val oneName = UnmarkedSealed.One.serializer().descriptor.serialName
             .encodeToByteArray()
         val threeName = UnmarkedSealed.Three.serializer().descriptor.serialName

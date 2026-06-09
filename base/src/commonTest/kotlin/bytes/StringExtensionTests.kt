@@ -394,7 +394,7 @@ class StringExtensionTests {
 
     @Test
     fun encodeFixedLengthMultibyteUTF8() {
-        // BUG 2 regression: FixedLength is a fixed BYTE length: UTF_8.byteSize(1) * length(3) = 3 bytes.
+        // FixedLength is a fixed BYTE length: UTF_8.byteSize(1) * length(3) = 3 bytes.
         val settings = StringEncodingSettings(StringEncodingSettings.FixedLength(3), Encoding.UTF_8)
         assertEquals(3, "ééé".byteArraySize(settings))
 
@@ -419,8 +419,8 @@ class StringExtensionTests {
 
     @Test
     fun roundTripMultibyteUTF8() {
-        // BUG 1 regression: a multibyte UTF-8 string must round-trip through encode then decode.
-        // The encoder emits proper multi-byte sequences (2/3/4 bytes), so decoding one byte per char is wrong.
+        // A multibyte UTF-8 string must round-trip through encode then decode. The encoder emits proper
+        // multi-byte sequences (2/3/4 bytes), so decoding one byte per char would be wrong.
         val multibyte = "café€日本"
         for (endMarking in listOf(StringEncodingSettings.NoMarking, StringEncodingSettings.LengthPrefix.ByteLength)) {
             val settings = StringEncodingSettings(endMarking, Encoding.UTF_8)
