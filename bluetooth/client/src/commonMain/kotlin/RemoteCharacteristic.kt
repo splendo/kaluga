@@ -353,13 +353,19 @@ open class RemoteCharacteristic internal constructor(
     /**
      * The list of [RemoteDescriptor] available for this characteristic
      */
-    override val descriptors: List<RemoteDescriptor> = wrapper.descriptors.map {
-        RemoteDescriptor(
-            wrapper = it,
-            characteristic = this,
-            emitNewAction = emitNewAction,
-            logger = logger[it.uuid],
-        )
+    override val descriptors: List<RemoteDescriptor> = wrapper.descriptors.mapNotNull {
+        // The CCCD is owned by the notify/subscribe state machine; exposing it as a writable descriptor lets a
+        // direct write desync the notifying state (and throws on iOS), so it is skipped. Use [subscribe]/notifications instead.
+        if (it.uuid.uuidString == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR.uuidString) {
+            null
+        } else {
+            RemoteDescriptor(
+                wrapper = it,
+                characteristic = this,
+                emitNewAction = emitNewAction,
+                logger = logger[it.uuid],
+            )
+        }
     }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic = DeviceAction.Read.Characteristic(this).apply {

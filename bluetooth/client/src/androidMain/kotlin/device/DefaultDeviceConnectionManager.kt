@@ -208,7 +208,12 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     actual override suspend fun discoverServices() {
-        gatt.await().discoverServices()
+        // A false return means discovery never started, so the awaited onServicesDiscovered would never fire.
+        // Disconnect instead of leaving the state machine stuck in Discovering with no timeout.
+        if (!gatt.await().discoverServices()) {
+            logger.stateLogger.stateChangeLogger.info { "Failed to start service discovery" }
+            handleDisconnect { closeGatt() }
+        }
     }
 
     actual override fun disconnect() {
@@ -228,7 +233,9 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun readRssi() {
-        gatt.await().readRemoteRssi()
+        if (!gatt.await().readRemoteRssi()) {
+            logger.stateLogger.stateChangeLogger.info { "Failed to start RSSI read" }
+        }
     }
 
     actual override suspend fun didStartPerformingAction(action: DeviceAction<*>) {
