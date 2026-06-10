@@ -49,7 +49,9 @@ import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
+import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.extensions.printableString
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.error
@@ -241,7 +243,7 @@ internal actual class DefaultDeviceConnectionManager(
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
 
-            is DeviceAction.Write.Characteristic -> if (!readyGatt.writeCharacteristic(action.characteristic, action.newValue)) {
+            is DeviceAction.Write.Characteristic -> if (!readyGatt.writeCharacteristic(action.characteristic, action.newValue, action.writeType)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
 
@@ -308,7 +310,14 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    private fun BluetoothGattWrapper.writeCharacteristic(characteristic: RemoteCharacteristic, value: ByteArray): Boolean = writeCharacteristic(characteristic.wrapper, value)
+    private fun BluetoothGattWrapper.writeCharacteristic(characteristic: RemoteCharacteristic, value: ByteArray, writeType: WriteType?): Boolean {
+        when (writeType) {
+            WriteType.WithResponse -> characteristic.wrapper.writeType = RemoteCharacteristicWrapper.WriteType.DEFAULT
+            WriteType.WithoutResponse -> characteristic.wrapper.writeType = RemoteCharacteristicWrapper.WriteType.NO_RESPONSE
+            null -> {}
+        }
+        return writeCharacteristic(characteristic.wrapper, value)
+    }
 
     private fun BluetoothGattWrapper.writeDescriptor(descriptor: RemoteDescriptor, value: ByteArray): Boolean = writeDescriptor(descriptor.wrapper, value)
 

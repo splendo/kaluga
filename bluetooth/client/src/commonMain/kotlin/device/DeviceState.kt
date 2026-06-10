@@ -25,6 +25,7 @@ import com.splendo.kaluga.bluetooth.RemoteCharacteristic
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.WriteType
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 
@@ -82,8 +83,9 @@ sealed class DeviceAction<Response : GattResponse> {
          * A [DeviceAction.Write] on a [RemoteCharacteristic]
          * @param newValue the [ByteArray] to write
          * @property characteristic the [RemoteCharacteristic] to read the value of
+         * @property writeType the [WriteType] to use, or `null` to infer it from the characteristic's properties
          */
-        class Characteristic(newValue: ByteArray, val characteristic: RemoteCharacteristic) : Write(newValue) {
+        class Characteristic(newValue: ByteArray, val characteristic: RemoteCharacteristic, val writeType: WriteType? = null) : Write(newValue) {
             override fun toString(): String = "DeviceAction.Write.Characteristic(${characteristic.uuid})"
         }
 

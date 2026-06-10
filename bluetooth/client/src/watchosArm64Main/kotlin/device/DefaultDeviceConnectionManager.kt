@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.client.KalugaBluetoothPeripheralDelegateProtocol
 import com.splendo.kaluga.bluetooth.client.KalugaBluetoothPeripheralWrapper
 import com.splendo.kaluga.bluetooth.uuidString
@@ -203,8 +204,14 @@ internal actual class DefaultDeviceConnectionManager(
 
             is DeviceAction.Write.Characteristic -> {
                 val wasReady = peripheral.canSendWriteWithoutResponse
-                val withResponse = action.characteristic.hasProperty(CharacteristicProperty.Write) ||
-                    !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                val withResponse = when (action.writeType) {
+                    WriteType.WithResponse -> true
+
+                    WriteType.WithoutResponse -> false
+
+                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write) ||
+                        !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                }
                 if (!withResponse) {
                     peripheralDelegate.resetAwaitingSendWriteWithoutResponse()
                 }

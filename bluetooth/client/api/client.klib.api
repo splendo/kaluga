@@ -19,6 +19,17 @@ final enum class com.splendo.kaluga.bluetooth.device/PairingResult : kotlin/Enum
     final fun values(): kotlin/Array<com.splendo.kaluga.bluetooth.device/PairingResult> // com.splendo.kaluga.bluetooth.device/PairingResult.values|values#static(){}[0]
 }
 
+final enum class com.splendo.kaluga.bluetooth/WriteType : kotlin/Enum<com.splendo.kaluga.bluetooth/WriteType> { // com.splendo.kaluga.bluetooth/WriteType|null[0]
+    enum entry WithResponse // com.splendo.kaluga.bluetooth/WriteType.WithResponse|null[0]
+    enum entry WithoutResponse // com.splendo.kaluga.bluetooth/WriteType.WithoutResponse|null[0]
+
+    final val entries // com.splendo.kaluga.bluetooth/WriteType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.bluetooth/WriteType> // com.splendo.kaluga.bluetooth/WriteType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.bluetooth/WriteType // com.splendo.kaluga.bluetooth/WriteType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.bluetooth/WriteType> // com.splendo.kaluga.bluetooth/WriteType.values|values#static(){}[0]
+}
+
 abstract interface <#A: kotlin/Any?> com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding { // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding|null[0]
     abstract fun <#A1: kotlin/Any?> (kotlinx.coroutines.channels/Channel<#A1>).consumeTo(kotlin/Function1<com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.TriggerResponse<#A1, #A>, kotlin/Unit>) // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.consumeTo|consumeTo@kotlinx.coroutines.channels.Channel<0:0>(kotlin.Function1<com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.TriggerResponse<0:0,1:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]
     abstract fun <#A1: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A1>).collectTo(kotlin/Function1<com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.TriggerResponse<#A1, #A>, kotlin/Unit>) // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.collectTo|collectTo@kotlinx.coroutines.flow.Flow<0:0>(kotlin.Function1<com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.TriggerResponse<0:0,1:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]
@@ -1658,14 +1669,20 @@ open class com.splendo.kaluga.bluetooth/RemoteCharacteristic : com.splendo.kalug
         // Targets: [js, wasmJs]
         open fun <get-uuid>(): com.splendo.kaluga.bluetooth/UUID // com.splendo.kaluga.bluetooth/RemoteCharacteristic.uuid.<get-uuid>|<get-uuid>(){}[0]
 
+    final fun <#A1: kotlin/Any?> startWrite(kotlinx.serialization/SerializationStrategy<#A1>, com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., #A1, com.splendo.kaluga.bluetooth/WriteType): com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic // com.splendo.kaluga.bluetooth/RemoteCharacteristic.startWrite|startWrite(kotlinx.serialization.SerializationStrategy<0:0>;com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;0:0;com.splendo.kaluga.bluetooth.WriteType){0§<kotlin.Any?>}[0]
     final fun hasProperty(com.splendo.kaluga.bluetooth/CharacteristicProperty): kotlin/Boolean // com.splendo.kaluga.bluetooth/RemoteCharacteristic.hasProperty|hasProperty(com.splendo.kaluga.bluetooth.CharacteristicProperty){}[0]
     final fun startDisableNotification(): com.splendo.kaluga.bluetooth.device/DeviceAction.Notification.Disable? // com.splendo.kaluga.bluetooth/RemoteCharacteristic.startDisableNotification|startDisableNotification(){}[0]
     final fun startEnableNotification(): com.splendo.kaluga.bluetooth.device/DeviceAction.Notification.Enable? // com.splendo.kaluga.bluetooth/RemoteCharacteristic.startEnableNotification|startEnableNotification(){}[0]
+    final fun startWrite(kotlin/ByteArray, com.splendo.kaluga.bluetooth/WriteType): com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic // com.splendo.kaluga.bluetooth/RemoteCharacteristic.startWrite|startWrite(kotlin.ByteArray;com.splendo.kaluga.bluetooth.WriteType){}[0]
+    final inline fun <#A1: reified kotlin/Any?> startWrite(com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., #A1, com.splendo.kaluga.bluetooth/WriteType): com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic // com.splendo.kaluga.bluetooth/RemoteCharacteristic.startWrite|startWrite(com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;0:0;com.splendo.kaluga.bluetooth.WriteType){0§<kotlin.Any?>}[0]
     final suspend fun <#A1: kotlin/Any?> subscribe(kotlinx.serialization/DeserializationStrategy<#A1>, com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., kotlin/Function1<#A1, kotlin/Unit>): com.splendo.kaluga.bluetooth/RemoteCharacteristic.SubscriptionResult // com.splendo.kaluga.bluetooth/RemoteCharacteristic.subscribe|subscribe(kotlinx.serialization.DeserializationStrategy<0:0>;com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;kotlin.Function1<0:0,kotlin.Unit>){0§<kotlin.Any?>}[0]
+    final suspend fun <#A1: kotlin/Any?> write(kotlinx.serialization/SerializationStrategy<#A1>, com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., #A1, com.splendo.kaluga.bluetooth/WriteType): com.splendo.kaluga.bluetooth/GattResponse.WriteResponse // com.splendo.kaluga.bluetooth/RemoteCharacteristic.write|write(kotlinx.serialization.SerializationStrategy<0:0>;com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;0:0;com.splendo.kaluga.bluetooth.WriteType){0§<kotlin.Any?>}[0]
     final suspend fun disableNotification(): com.splendo.kaluga.bluetooth/GattResponse.WriteResponse // com.splendo.kaluga.bluetooth/RemoteCharacteristic.disableNotification|disableNotification(){}[0]
     final suspend fun enableNotification(): com.splendo.kaluga.bluetooth/GattResponse.WriteResponse // com.splendo.kaluga.bluetooth/RemoteCharacteristic.enableNotification|enableNotification(){}[0]
     final suspend fun subscribe(kotlin/Function1<kotlin/ByteArray, kotlin/Unit>): com.splendo.kaluga.bluetooth/RemoteCharacteristic.SubscriptionResult // com.splendo.kaluga.bluetooth/RemoteCharacteristic.subscribe|subscribe(kotlin.Function1<kotlin.ByteArray,kotlin.Unit>){}[0]
+    final suspend fun write(kotlin/ByteArray, com.splendo.kaluga.bluetooth/WriteType): com.splendo.kaluga.bluetooth/GattResponse.WriteResponse // com.splendo.kaluga.bluetooth/RemoteCharacteristic.write|write(kotlin.ByteArray;com.splendo.kaluga.bluetooth.WriteType){}[0]
     final suspend inline fun <#A1: reified kotlin/Any?> subscribe(com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., noinline kotlin/Function1<#A1, kotlin/Unit>): com.splendo.kaluga.bluetooth/RemoteCharacteristic.SubscriptionResult // com.splendo.kaluga.bluetooth/RemoteCharacteristic.subscribe|subscribe(com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;kotlin.Function1<0:0,kotlin.Unit>){0§<kotlin.Any?>}[0]
+    final suspend inline fun <#A1: reified kotlin/Any?> write(com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., #A1, com.splendo.kaluga.bluetooth/WriteType): com.splendo.kaluga.bluetooth/GattResponse.WriteResponse // com.splendo.kaluga.bluetooth/RemoteCharacteristic.write|write(com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;0:0;com.splendo.kaluga.bluetooth.WriteType){0§<kotlin.Any?>}[0]
 
     final class Subscription { // com.splendo.kaluga.bluetooth/RemoteCharacteristic.Subscription|null[0]
         final suspend fun unsubscribe(): com.splendo.kaluga.bluetooth/GattResponse.WriteResponse // com.splendo.kaluga.bluetooth/RemoteCharacteristic.Subscription.unsubscribe|unsubscribe(){}[0]
@@ -1783,10 +1800,12 @@ sealed class <#A: com.splendo.kaluga.bluetooth/GattResponse> com.splendo.kaluga.
             final fun <get-newValue>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.newValue.<get-newValue>|<get-newValue>(){}[0]
 
         final class Characteristic : com.splendo.kaluga.bluetooth.device/DeviceAction.Write { // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic|null[0]
-            constructor <init>(kotlin/ByteArray, com.splendo.kaluga.bluetooth/RemoteCharacteristic) // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic.<init>|<init>(kotlin.ByteArray;com.splendo.kaluga.bluetooth.RemoteCharacteristic){}[0]
+            constructor <init>(kotlin/ByteArray, com.splendo.kaluga.bluetooth/RemoteCharacteristic, com.splendo.kaluga.bluetooth/WriteType? = ...) // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic.<init>|<init>(kotlin.ByteArray;com.splendo.kaluga.bluetooth.RemoteCharacteristic;com.splendo.kaluga.bluetooth.WriteType?){}[0]
 
             final val characteristic // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic.characteristic|{}characteristic[0]
                 final fun <get-characteristic>(): com.splendo.kaluga.bluetooth/RemoteCharacteristic // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic.characteristic.<get-characteristic>|<get-characteristic>(){}[0]
+            final val writeType // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic.writeType|{}writeType[0]
+                final fun <get-writeType>(): com.splendo.kaluga.bluetooth/WriteType? // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic.writeType.<get-writeType>|<get-writeType>(){}[0]
 
             final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic.toString|toString(){}[0]
         }

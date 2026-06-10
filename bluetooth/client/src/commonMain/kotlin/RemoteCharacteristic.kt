@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationStrategy
 
 /**
  * A [Characteristic] [RemoteAttribute] that is accessed remotely by a bluetooth client using [BluetoothClient]
@@ -367,11 +368,96 @@ open class RemoteCharacteristic internal constructor(
         }
     }
 
-    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic = DeviceAction.Write.Characteristic(newValue, this).apply {
-        if (!hasAnyProperty(setOf(CharacteristicProperty.Write, CharacteristicProperty.WriteWithoutResponse, CharacteristicProperty.SignedWrite))) {
-            complete(GattResponse.WriteNotPermitted)
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic = createWriteAction(newValue, null)
+
+    /**
+     * Requests a write of [newValue] to the characteristic using the given [writeType] and suspends until the result is received.
+     * The characteristic must support the property corresponding to [writeType], otherwise [GattResponse.WriteNotPermitted] is returned.
+     * @param newValue the [ByteArray] to write
+     * @param writeType the [WriteType] to use
+     * @return the [GattResponse.WriteResponse] received from the device
+     */
+    suspend fun write(newValue: ByteArray, writeType: WriteType): GattResponse.WriteResponse = startWrite(newValue, writeType).response.await()
+
+    /**
+     * Creates and emits a [DeviceAction.Write.Characteristic] using the given [writeType]
+     * @param newValue the [ByteArray] to write
+     * @param writeType the [WriteType] to use
+     * @return the [DeviceAction.Write.Characteristic] created
+     */
+    fun startWrite(newValue: ByteArray, writeType: WriteType): DeviceAction.Write.Characteristic {
+        val action = createWriteAction(newValue, writeType)
+        if (!action.response.isCompleted) {
+            addAction(action)
         }
+        return action
     }
+
+    /**
+     * Attempts to write a value of [T] to the characteristic using the given [writeType] and suspends until the write completes.
+     * @param T the type of the data object to write.
+     * @param serializationStrategy the [SerializationStrategy] to use to serialize the value.
+     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param newValue the [T] to write.
+     * @param writeType the [WriteType] to use
+     * @return the [GattResponse.WriteResponse] received from the remote device.
+     */
+    suspend fun <T> write(
+        serializationStrategy: SerializationStrategy<T>,
+        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        newValue: T,
+        writeType: WriteType,
+    ): GattResponse.WriteResponse = write(bluetoothFormat.encodeToByteArray(serializationStrategy, newValue), writeType)
+
+    /**
+     * Attempts to write a value of [T] to the characteristic using the given [writeType] and suspends until the write completes.
+     * @param T the type of the data object to write.
+     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param newValue the [T] to write.
+     * @param writeType the [WriteType] to use
+     * @return the [GattResponse.WriteResponse] received from the remote device.
+     */
+    suspend inline fun <reified T> write(bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T, writeType: WriteType): GattResponse.WriteResponse =
+        write(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer<T>(), newValue), writeType)
+
+    /**
+     * Creates and emits a [DeviceAction.Write.Characteristic] to write a given [T] using the given [writeType]
+     * @param T the type of the data object to write.
+     * @param serializationStrategy the [SerializationStrategy] to use to serialize the value.
+     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param newValue the [T] to write to the characteristic
+     * @param writeType the [WriteType] to use
+     * @return the [DeviceAction.Write.Characteristic] created
+     */
+    fun <T> startWrite(
+        serializationStrategy: SerializationStrategy<T>,
+        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        newValue: T,
+        writeType: WriteType,
+    ): DeviceAction.Write.Characteristic = startWrite(bluetoothFormat.encodeToByteArray(serializationStrategy, newValue), writeType)
+
+    /**
+     * Creates and emits a [DeviceAction.Write.Characteristic] to write a given [T] using the given [writeType]
+     * @param T the type of the data object to write.
+     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param newValue the [T] to write to the characteristic
+     * @param writeType the [WriteType] to use
+     * @return the [DeviceAction.Write.Characteristic] created
+     */
+    inline fun <reified T> startWrite(bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T, writeType: WriteType): DeviceAction.Write.Characteristic =
+        startWrite(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), newValue), writeType)
+
+    private fun createWriteAction(newValue: ByteArray, writeType: WriteType?): DeviceAction.Write.Characteristic =
+        DeviceAction.Write.Characteristic(newValue, this, writeType).apply {
+            val required = when (writeType) {
+                WriteType.WithResponse -> setOf(CharacteristicProperty.Write, CharacteristicProperty.SignedWrite)
+                WriteType.WithoutResponse -> setOf(CharacteristicProperty.WriteWithoutResponse)
+                null -> setOf(CharacteristicProperty.Write, CharacteristicProperty.WriteWithoutResponse, CharacteristicProperty.SignedWrite)
+            }
+            if (!hasAnyProperty(required)) {
+                complete(GattResponse.WriteNotPermitted)
+            }
+        }
 
     /**
      * Checks if the characteristic has a given [CharacteristicProperty]

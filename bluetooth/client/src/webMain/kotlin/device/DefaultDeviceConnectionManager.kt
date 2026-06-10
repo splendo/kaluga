@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineScope
@@ -86,8 +87,14 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
             }
 
             is DeviceAction.Write.Characteristic -> {
-                val withResponse = action.characteristic.hasProperty(CharacteristicProperty.Write) ||
-                    !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                val withResponse = when (action.writeType) {
+                    WriteType.WithResponse -> true
+
+                    WriteType.WithoutResponse -> false
+
+                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write) ||
+                        !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                }
                 val result =
                     webWriteCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, action.newValue, withResponse)
                 handleCharacteristicWritten(action.characteristic.uuid, result.writeResponse())
