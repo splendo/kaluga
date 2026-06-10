@@ -164,6 +164,9 @@ internal sealed class AndroidServerState {
 
         // Whether this state has overridden the global adapter name; restoration is a no-op otherwise.
         private var didOverrideLocalName = false
+
+        // Persists the override so a process kill mid-advertise can be repaired on next launch (or via restoreBluetoothAdapterName).
+        private val nameStore = AdapterNameOverrideStore(context)
         private val server = manager.openGattServer(context, callback)
         private val advertiser = manager.adapter.bluetoothLeAdvertiser
         private val advertiserCallback = AdvertisementCallback()
@@ -214,6 +217,7 @@ internal sealed class AndroidServerState {
             // setName is asynchronous, so the first advertisement may still carry the previous name.
             data.localName?.let { name ->
                 if (manager.adapter.name != name) {
+                    nameStore.record(defaultLocalName, name)
                     didOverrideLocalName = true
                     if (manager.adapter.setName(name) != true) {
                         logger.warn(TAG) { "Failed to rename Bluetooth adapter to '$name'; advertising the existing name (is BLUETOOTH_CONNECT granted?)" }
@@ -237,6 +241,7 @@ internal sealed class AndroidServerState {
         private fun restoreLocalName() {
             if (didOverrideLocalName) {
                 defaultLocalName?.let { manager.adapter.setName(it) }
+                nameStore.clear()
                 didOverrideLocalName = false
             }
         }
