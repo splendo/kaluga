@@ -382,7 +382,10 @@ private fun jsClearConnectionState(identifier: String) {
         var reg = globalThis.__kbt;
         if (!reg) return;
         var prefix = identifier + '|';
-        ['chars', 'descs'].forEach(function (map) {
+        // Include 'listeners' so a post-reconnect re-subscribe registers on the new characteristic handle
+        // instead of being skipped by a stale entry.
+        ['chars', 'descs', 'listeners'].forEach(function (map) {
+            if (!reg[map]) return;
             Object.keys(reg[map]).forEach(function (key) { if (key.indexOf(prefix) === 0) delete reg[map][key]; });
         });
         """,
@@ -494,9 +497,17 @@ private fun jsStartNotifications(
 ) {
     js(
         """
-        var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
+        var key = identifier + '|' + service + '|' + characteristic;
+        var c = globalThis.__kbt.chars[key];
         if (!c) { onError(''); return; }
-        c.addEventListener('characteristicvaluechanged', function (event) { onValue(globalThis.__kbt.hex(event.target.value)); });
+        if (!globalThis.__kbt.listeners) globalThis.__kbt.listeners = {};
+        // Register the value-changed listener only once per characteristic so re-subscribing does not stack
+        // duplicate listeners (which would deliver each notification multiple times).
+        if (!globalThis.__kbt.listeners[key]) {
+            var listener = function (event) { onValue(globalThis.__kbt.hex(event.target.value)); };
+            globalThis.__kbt.listeners[key] = listener;
+            c.addEventListener('characteristicvaluechanged', listener);
+        }
         c.startNotifications().then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
@@ -505,8 +516,13 @@ private fun jsStartNotifications(
 private fun jsStopNotifications(identifier: String, service: String, characteristic: String, onResult: () -> Unit, onError: (errorName: String) -> Unit) {
     js(
         """
-        var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
+        var key = identifier + '|' + service + '|' + characteristic;
+        var c = globalThis.__kbt.chars[key];
         if (!c) { onError(''); return; }
+        if (globalThis.__kbt.listeners && globalThis.__kbt.listeners[key]) {
+            c.removeEventListener('characteristicvaluechanged', globalThis.__kbt.listeners[key]);
+            delete globalThis.__kbt.listeners[key];
+        }
         c.stopNotifications().then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )

@@ -516,7 +516,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         suspend fun notifyAll(value: ByteArray): Boolean {
             var result = true
             for (device in subscribedDevices.value) {
-                result = result or notify(device, value)
+                // `and` (non-short-circuit) so every device is notified, but the result is `true` only
+                // when the notification succeeded for all of them.
+                result = result and notify(device, value)
             }
             return result
         }

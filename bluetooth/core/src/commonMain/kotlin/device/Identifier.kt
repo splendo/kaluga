@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.device
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -72,6 +73,8 @@ open class IdentifierSerializer : KSerializer<SerializableIdentifier> {
 
     override fun deserialize(decoder: Decoder): SerializableIdentifier {
         val string = decoder.decodeString()
-        return SerializableIdentifier(identifierFromString(string)!!)
+        val identifier = identifierFromString(string)
+            ?: throw SerializationException("'$string' is not a valid Bluetooth Identifier")
+        return SerializableIdentifier(identifier)
     }
 }

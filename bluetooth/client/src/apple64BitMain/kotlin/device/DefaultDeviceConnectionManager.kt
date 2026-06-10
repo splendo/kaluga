@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
@@ -29,10 +30,12 @@ import com.splendo.kaluga.bluetooth.dataValue
 import com.splendo.kaluga.logging.debug
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
@@ -47,6 +50,7 @@ import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
+import kotlin.time.Duration.Companion.milliseconds
 
 internal actual class DefaultDeviceConnectionManager(
     private val cbCentralManager: CBCentralManager,
@@ -69,6 +73,10 @@ internal actual class DefaultDeviceConnectionManager(
 
     companion object {
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
+
+        // The 3-byte ATT write header; the ATT MTU is the usable write length plus this header.
+        private const val ATT_HEADER_SIZE = 3
+        private val MAX_WRITE_WITHOUT_RESPONSE_WAIT = 500.milliseconds
     }
 
     private val discoveringMutex = Mutex()
@@ -76,6 +84,12 @@ internal actual class DefaultDeviceConnectionManager(
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
     private val peripheralDelegate = object : NSObject(), KalugaBluetoothPeripheralDelegateProtocol {
+
+        private var awaitingSendWriteWithoutResponse = CompletableDeferred<Unit>()
+
+        fun resetAwaitingSendWriteWithoutResponse() {
+            awaitingSendWriteWithoutResponse = CompletableDeferred()
+        }
 
         override fun didDiscoverDescriptorsFor(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
             didDiscoverDescriptors(characteristic)
@@ -124,6 +138,14 @@ internal actual class DefaultDeviceConnectionManager(
             launch {
                 handleNewRssi(RSSI.intValue)
             }
+        }
+
+        override fun isReadyToSendWriteWithoutResponseFor(peripheral: CBPeripheral) {
+            awaitingSendWriteWithoutResponse.complete(Unit)
+        }
+
+        suspend fun awaitSendWriteWithoutResponse() {
+            awaitingSendWriteWithoutResponse.await()
         }
     }
 
@@ -177,12 +199,35 @@ internal actual class DefaultDeviceConnectionManager(
             is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
 
             is DeviceAction.Write.Characteristic -> {
+                val wasReady = peripheral.canSendWriteWithoutResponse
                 val withResponse = action.characteristic.hasProperty(CharacteristicProperty.Write) ||
                     !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                if (!withResponse) {
+                    peripheralDelegate.resetAwaitingSendWriteWithoutResponse()
+                }
+                // The first write doubles as the attempt that triggers peripheralIsReadyToSendWriteWithoutResponse
+                // when the queue is full.
                 action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, withResponse)
                 if (!withResponse) {
-                    handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
+                    // Write-without-response has no didWriteValueForCharacteristic callback, so completion is
+                    // reported here: immediately if it could be sent, otherwise once the peripheral signals it
+                    // is ready again (then the value is resent).
+                    if (wasReady) {
+                        handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
+                    } else {
+                        val isAvailable = withTimeoutOrNull(MAX_WRITE_WITHOUT_RESPONSE_WAIT) {
+                            peripheralDelegate.awaitSendWriteWithoutResponse()
+                            true
+                        } ?: false
+                        if (isAvailable) {
+                            action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, false)
+                            handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
+                        } else {
+                            handleCharacteristicWritten(action.characteristic.uuid, GattResponse.InsufficientResources)
+                        }
+                    }
                 }
+                // With-response completes via didWriteValueForCharacteristic.
             }
 
             is DeviceAction.Write.Descriptor -> {
@@ -198,10 +243,12 @@ internal actual class DefaultDeviceConnectionManager(
             }
 
             is DeviceAction.RequestMtu -> {
-                val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
-                debug(TAG) { "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max" }
-                // Update MTU to current known value, set succeeded to false, because we can't request MTU change from iOS
-                handleNewMtu(GattResponse.MTUNotPermitted(max.toInt()))
+                // iOS negotiates the MTU automatically and exposes no request API. Surface the actual usable
+                // MTU instead of discarding it: maximumWriteValueLengthForType(.withResponse) is the ATT MTU
+                // minus the 3-byte ATT write header, so add it back to report the ATT MTU (matching Android).
+                val maxWriteLength = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
+                debug(TAG) { "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $maxWriteLength" }
+                handleNewMtu(GattResponse.MTUSuccess(maxWriteLength.toInt() + ATT_HEADER_SIZE))
             }
         }
     }
