@@ -203,7 +203,7 @@ class MockBaseScanner(
 
     public override fun handleDeviceDiscovered(
         deviceWrapper: DeviceWrapper,
-        rssi: RSSI,
+        rssi: RSSI?,
         advertisementData: BaseAdvertisementData,
         deviceCreator: (CoroutineContext) -> ConnectableDevice,
     ) {

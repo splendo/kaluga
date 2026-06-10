@@ -280,9 +280,9 @@ actual class DefaultScanner internal constructor(
                 val advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs)
                 Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
-                    rssi = Int.MIN_VALUE,
+                    rssi = null,
                     advertisementData = advertisementData,
-                    deviceCreator = getDeviceBuilder(deviceWrapper, Int.MIN_VALUE, advertisementData, deviceConnectionManagerBuilder, connectionSettings),
+                    deviceCreator = getDeviceBuilder(deviceWrapper, null, advertisementData, deviceConnectionManagerBuilder, connectionSettings),
                 )
             } ?: emptyList()
     }

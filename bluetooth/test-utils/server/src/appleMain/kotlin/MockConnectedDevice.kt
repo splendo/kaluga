@@ -17,10 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.test.server
 
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.server.ConnectedDevice
 import platform.CoreBluetooth.CBCentral
 
 actual class MockConnectedDevice actual constructor(actual override val identifier: Identifier) : ConnectedDevice {
+    actual override val mtu: MTU? = null
     override val cbCentral: CBCentral get() = throw NotImplementedError("MockConnectedDevice has no platform CBCentral")
 }

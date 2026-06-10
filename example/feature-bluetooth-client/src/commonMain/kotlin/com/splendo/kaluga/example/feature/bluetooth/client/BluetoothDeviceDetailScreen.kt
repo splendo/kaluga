@@ -75,7 +75,7 @@ fun BluetoothDeviceDetailScreen(identifier: Identifier, onBack: () -> Unit) {
 
             val currentInfo = info
             if (currentInfo != null) {
-                Text("RSSI: ${currentInfo.rssi} dBm")
+                currentInfo.rssi?.let { Text("RSSI: $it dBm") }
                 if (!distance.isNaN()) {
                     Text("Distance: ${"%.1f".format(distance)} m")
                 }

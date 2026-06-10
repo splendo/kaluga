@@ -30,6 +30,6 @@ data class MockAdvertisementData(
     override val manufacturerData: ByteArray? = null,
     override val serviceUUIDs: List<UUID> = emptyList(),
     override val serviceData: Map<UUID, ByteArray?> = emptyMap(),
-    override val txPowerLevel: TxPower = Int.MIN_VALUE,
+    override val txPowerLevel: TxPower? = null,
     override val isConnectable: Boolean = true,
 ) : BaseAdvertisementData

@@ -53,9 +53,9 @@ interface DeviceInfo {
     val identifier: Identifier
 
     /**
-     * [RSSI] value of the Bluetooth device
+     * [RSSI] value of the Bluetooth device, or `null` if it is not known (e.g. a paired device that has not been scanned).
      */
-    val rssi: RSSI
+    val rssi: RSSI?
 
     /**
      * Current [BaseAdvertisementData] of the Bluetooth device
@@ -73,8 +73,10 @@ interface DeviceInfo {
      * @return the distance to the device in meters
      */
     fun distance(environmentalFactor: Double = 2.0): Double {
-        if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN()) return Double.NaN
-        val difference = advertisementData.txPowerLevel.toDouble() - rssi.toDouble()
+        val txPowerLevel = advertisementData.txPowerLevel
+        val rssi = rssi
+        if (txPowerLevel == null || rssi == null || environmentalFactor.isNaN()) return Double.NaN
+        val difference = txPowerLevel.toDouble() - rssi.toDouble()
         val factor = 10.0 * environmentalFactor
         return 10.0.pow(difference / factor)
     }
@@ -84,18 +86,18 @@ interface DeviceInfo {
  * An implementation of [DeviceInfo]
  * @param deviceName the name reported by the [DeviceWrapper], used as a fallback when the [advertisementData] does not contain a name
  */
-data class DeviceInfoImpl(val deviceName: String?, override val identifier: Identifier, override val rssi: RSSI, override val advertisementData: BaseAdvertisementData) :
+data class DeviceInfoImpl(val deviceName: String?, override val identifier: Identifier, override val rssi: RSSI?, override val advertisementData: BaseAdvertisementData) :
     DeviceInfo {
 
     /**
      * Constructor
      * @param wrapper the [DeviceWrapper] to the device
-     * @param rssi the current RSSI value
+     * @param rssi the current RSSI value, or `null` if not known
      * @param advertisementData the [BaseAdvertisementData] last received
      */
     constructor(
         wrapper: DeviceWrapper,
-        rssi: RSSI,
+        rssi: RSSI?,
         advertisementData: BaseAdvertisementData,
     ) : this(
         deviceName = wrapper.name,

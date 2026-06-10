@@ -49,7 +49,7 @@ class MockDeviceInfoBuilder {
     var manufacturerData: ByteArray? = null
     private val serviceUUIDs = ArrayList<UUID>()
     var serviceData: Map<UUID, ByteArray?> = emptyMap()
-    var txPowerLevel: TxPower = Int.MIN_VALUE
+    var txPowerLevel: TxPower? = null
 
     fun services(builder: ServiceUUIDsList.() -> Unit) = builder(serviceUUIDs)
 

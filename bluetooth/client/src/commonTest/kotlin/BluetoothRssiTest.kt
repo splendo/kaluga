@@ -25,13 +25,13 @@ import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothRssiTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int>() {
+class BluetoothRssiTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int?>() {
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
         DeviceContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int> = { bluetoothClient.scannedDevices()[device.identifier].rssi() }
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int?> = { bluetoothClient.scannedDevices()[device.identifier].rssi() }
 
     @Test
     fun testRssi() = testWithFlowAndTestContext(

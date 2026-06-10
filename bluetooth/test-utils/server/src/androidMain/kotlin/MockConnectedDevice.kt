@@ -18,9 +18,11 @@
 package com.splendo.kaluga.bluetooth.test.server
 
 import android.bluetooth.BluetoothDevice
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.server.ConnectedDevice
 
 actual class MockConnectedDevice actual constructor(actual override val identifier: Identifier) : ConnectedDevice {
+    actual override val mtu: MTU? = null
     override val device: BluetoothDevice get() = throw NotImplementedError("MockConnectedDevice has no platform BluetoothDevice")
 }

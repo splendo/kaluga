@@ -56,7 +56,7 @@ internal typealias BuildDescriptor = (
 
 /**
  * A [Characteristic] available from a [BluetoothServer]
- * @property wrapper the [com.splendo.kaluga.bluetooth.LocalCharacteristicWrapper] to access the platform characteristic
+ * @property wrapper the [com.splendo.kaluga.bluetooth.server.LocalCharacteristicWrapper] to access the platform characteristic
  */
 sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, override val service: LocalService) : Characteristic {
 
@@ -66,22 +66,22 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
     interface DSL {
 
         /**
-         * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.ConnectedDevice]
+         * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
          * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
          * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
          * Otherwise will add [Permission.READABLE]
          * @param onRead the function to call when reading from the characteristic.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] and the offset of the data to read and should return a [GattResponse.ReadResponse]
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return a [GattResponse.ReadResponse]
          */
         fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
 
         /**
-         * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.ConnectedDevice] to always return [GattResponse.ReadSuccess]
+         * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] to always return [GattResponse.ReadSuccess]
          * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
          * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
          * Otherwise will add [Permission.READABLE]
          * @param onRead the function to call when reading from the characteristic.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
          */
         fun readableAlwaysSuccess(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> ByteArray) {
             readable(encrypted) { device, offset ->
@@ -90,7 +90,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.ConnectedDevice] to always return [GattResponse.ReadSuccess]
+         * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] to always return [GattResponse.ReadSuccess]
          * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
          * @param T the type of the data being read
          * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
@@ -98,7 +98,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
          * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
          * @param onRead the function to call when reading from the characteristic.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] and the offset of the data to read and should return the [T] being read.
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return the [T] being read.
          */
         fun <T> readableAlwaysSuccess(
             encrypted: Boolean = false,
@@ -112,13 +112,13 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.ConnectedDevice]
+         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
          * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
          * Otherwise will add [Permission.WRITABLE]
          * @param onWrite the function to call when reading from the characteristic.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice], the [ByteArray] to write and the offset of the data to write and should return a [GattResponse.WriteResponse]
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], the [ByteArray] to write and the offset of the data to write and should return a [GattResponse.WriteResponse]
          */
         fun writable(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
@@ -127,7 +127,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         )
 
         /**
-         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.ConnectedDevice]
+         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param T the type of the data being written
          * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
@@ -135,9 +135,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * Otherwise will add [Permission.WRITABLE]
          * @param deserializationStrategy the [DeserializationStrategy] to use to decode the [ByteArray] being written to an instance of [T]
          * @param onFailedToWrite the function to call when writing to the characteristic fails.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
          * @param onWrite the function to call when reading from the characteristic.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
          * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
          */
         fun <T> writable(
@@ -176,13 +176,13 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
          * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
          * Otherwise will add [Permission.WRITABLE]
          * @param onWrite the function to call when reading from the characteristic.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice], the [ByteArray] to write and the offset of the data to write
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], the [ByteArray] to write and the offset of the data to write
          */
         fun writableAlwaysSuccess(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
@@ -196,7 +196,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param T the type of the data being written
          * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
@@ -204,7 +204,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * Otherwise will add [Permission.WRITABLE]
          * @param deserializationStrategy the [DeserializationStrategy] to use to decode the [ByteArray] being written to an instance of [T]
          * @param onWrite the function to call when reading from the characteristic.
-         * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice], and the [T] to write.
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], and the [T] to write.
          * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
          */
         fun <T> writableAlwaysSuccess(
@@ -229,8 +229,8 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * This method can only be called once.
          * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
          * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param onSubscribe the function to call when subscribing to the characteristic. This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] that subscribed
-         * @param onUnsubscribe the function to call when unsubscribing from the characteristic. This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] that unsubscribed
+         * @param onSubscribe the function to call when subscribing to the characteristic. This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that subscribed
+         * @param onUnsubscribe the function to call when unsubscribing from the characteristic. This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that unsubscribed
          */
         fun notifiable(
             properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
@@ -252,14 +252,14 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * This is not supported on iOS and will be ignored there.
          * @param uuidString string of the [UUID] of the [LocalDescriptor] to add
          * @param descriptor the [LocalDescriptor.DSL] to use to set up the [LocalDescriptor]
-         * @throws UUIDException if [uuidString] is not a valid [UUID]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
          */
         fun descriptor(uuidString: String, descriptor: LocalDescriptor.DSL.() -> Unit) {
             descriptor(uuidFrom(uuidString), descriptor)
         }
 
         /**
-         * Sets up notification to notify all [com.splendo.kaluga.bluetooth.ConnectedDevice] of changes to this [LocalCharacteristic] whenever a [Trigger] fires
+         * Sets up notification to notify all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] of changes to this [LocalCharacteristic] whenever a [Trigger] fires
          * @param [Trigger] the type of the Trigger that will cause the notification.
          */
         class NotificationDSL<Trigger> internal constructor(
@@ -310,7 +310,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Collects a [Flow] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.ConnectedDevice] of any changes.
+         * Collects a [Flow] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.server.ConnectedDevice] of any changes.
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
@@ -324,7 +324,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Collects a [SharedFlow] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.ConnectedDevice] of any changes.
+         * Collects a [SharedFlow] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.server.ConnectedDevice] of any changes.
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
@@ -348,7 +348,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Collects a [StateFlow] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.ConnectedDevice] of any changes.
+         * Collects a [StateFlow] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.server.ConnectedDevice] of any changes.
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
@@ -376,7 +376,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Consumes a [ReceiveChannel] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.ConnectedDevice] of any changes.
+         * Consumes a [ReceiveChannel] of [T] and notifies any subscribed [com.splendo.kaluga.bluetooth.server.ConnectedDevice] of any changes.
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
@@ -402,27 +402,27 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
     }
 
     /**
-     * The permissions this characteristic gives to [com.splendo.kaluga.bluetooth.ConnectedDevice]
+     * The permissions this characteristic gives to [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
      */
     enum class Permission {
 
         /**
-         * The characteristic can be read by a [com.splendo.kaluga.bluetooth.ConnectedDevice]
+         * The characteristic can be read by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
          */
         READABLE,
 
         /**
-         * The characteristic can be written to by a [com.splendo.kaluga.bluetooth.ConnectedDevice]
+         * The characteristic can be written to by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
          */
         WRITABLE,
 
         /**
-         * The characteristic can be read by a [com.splendo.kaluga.bluetooth.ConnectedDevice] if an encrypted connection has been established
+         * The characteristic can be read by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] if an encrypted connection has been established
          */
         READ_ENCRYPTION_REQUIRED,
 
         /**
-         * The characteristic can be written to by a [com.splendo.kaluga.bluetooth.ConnectedDevice] if an encrypted connection has been established
+         * The characteristic can be written to by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] if an encrypted connection has been established
          */
         WRITE_ENCRYPTION_REQUIRED,
     }
@@ -453,14 +453,14 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         private val _subscribedDevices = MutableStateFlow(emptyList<ConnectedDevice>())
 
         /**
-         * A [StateFlow] of all [com.splendo.kaluga.bluetooth.ConnectedDevice] that have subscribed to this [LocalCharacteristic.Notifiable]
+         * A [StateFlow] of all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that have subscribed to this [LocalCharacteristic.Notifiable]
          */
         val subscribedDevices = _subscribedDevices.asStateFlow()
         override val descriptors: List<LocalDescriptor> = buildDescriptors()
 
         /**
-         * Notifies a [com.splendo.kaluga.bluetooth.ConnectedDevice] that that the data changed to [value]
-         * @param device the [com.splendo.kaluga.bluetooth.ConnectedDevice] that should be notified
+         * Notifies a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that that the data changed to [value]
+         * @param device the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that should be notified
          * @param value the new data
          * @return `true` if the notification was successful, `false` otherwise
          */
@@ -471,9 +471,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }.first()
 
         /**
-         * Notifies a [com.splendo.kaluga.bluetooth.ConnectedDevice] that that the data changed to [notification]
+         * Notifies a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that that the data changed to [notification]
          * @param Notification the type of the data to notify
-         * @param device the [com.splendo.kaluga.bluetooth.ConnectedDevice] that should be notified
+         * @param device the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that should be notified
          * @param notification the new data
          * @param toByteArray method to convert the [Notification] to a [ByteArray]
          * @return `true` if the notification was successful, `false` otherwise
@@ -482,9 +482,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             notify(device, notification.toByteArray())
 
         /**
-         * Notifies a [com.splendo.kaluga.bluetooth.ConnectedDevice] that that the data changed to [notification]
+         * Notifies a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that that the data changed to [notification]
          * @param Notification the type of the data to notify
-         * @param device the [com.splendo.kaluga.bluetooth.ConnectedDevice] that should be notified
+         * @param device the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that should be notified
          * @param notification the new data
          * @param serializationStrategy the [SerializationStrategy] to use to encode the [Notification] to a [ByteArray]
          * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
@@ -498,9 +498,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         ): Boolean = notify(device, bluetoothFormat.encodeToByteArray(serializationStrategy, notification))
 
         /**
-         * Notifies a [com.splendo.kaluga.bluetooth.ConnectedDevice] that that the data changed to [notification]
+         * Notifies a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that that the data changed to [notification]
          * @param Notification the type of the data to notify
-         * @param device the [com.splendo.kaluga.bluetooth.ConnectedDevice] that should be notified
+         * @param device the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that should be notified
          * @param notification the new data
          * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
          * @return `true` if the notification was successful, `false` otherwise
@@ -509,9 +509,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             notify(device, bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), notification))
 
         /**
-         * Notifies all [com.splendo.kaluga.bluetooth.ConnectedDevice] currently subscribed that that the data changed to [value]
+         * Notifies all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] currently subscribed that that the data changed to [value]
          * @param value the new data
-         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.ConnectedDevice], `false` otherwise
+         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.server.ConnectedDevice], `false` otherwise
          */
         suspend fun notifyAll(value: ByteArray): Boolean {
             var result = true
@@ -524,21 +524,21 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Notifies all [com.splendo.kaluga.bluetooth.ConnectedDevice] currently subscribed that that the data changed to [notification]
+         * Notifies all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] currently subscribed that that the data changed to [notification]
          * @param Notification the type of the data to notify
          * @param notification the new data
          * @param toByteArray method to convert the [Notification] to a [ByteArray]
-         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.ConnectedDevice], `false` otherwise
+         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.server.ConnectedDevice], `false` otherwise
          */
         suspend fun <Notification> notifyAll(notification: Notification, toByteArray: Notification.() -> ByteArray): Boolean = notifyAll(notification.toByteArray())
 
         /**
-         * Notifies all [com.splendo.kaluga.bluetooth.ConnectedDevice] currently subscribed that that the data changed to [notification]
+         * Notifies all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] currently subscribed that that the data changed to [notification]
          * @param Notification the type of the data to notify
          * @param notification the new data
          * @param serializationStrategy the [SerializationStrategy] to use to encode the [Notification] to a [ByteArray]
          * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
-         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.ConnectedDevice], `false` otherwise
+         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.server.ConnectedDevice], `false` otherwise
          */
         suspend fun <Notification> notifyAll(
             notification: Notification,
@@ -547,11 +547,11 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         ): Boolean = notifyAll(bluetoothFormat.encodeToByteArray(serializationStrategy, notification))
 
         /**
-         * Notifies all [com.splendo.kaluga.bluetooth.ConnectedDevice] currently subscribed that that the data changed to [notification]
+         * Notifies all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] currently subscribed that that the data changed to [notification]
          * @param Notification the type of the data to notify
          * @param notification the new data
          * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
-         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.ConnectedDevice], `false` otherwise
+         * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.server.ConnectedDevice], `false` otherwise
          */
         suspend inline fun <reified Notification> notifyAll(notification: Notification, bluetoothFormat: BluetoothFormat = BluetoothFormat): Boolean =
             notifyAll(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), notification))
@@ -697,14 +697,14 @@ expect interface LocalCharacteristicWrapper {
 }
 
 /**
- * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.ConnectedDevice] to always return [GattResponse.ReadSuccess]
+ * Makes this [LocalCharacteristic] readable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] to always return [GattResponse.ReadSuccess]
  * Cannot be called if [LocalCharacteristic.DSL.readable], or [LocalCharacteristic.DSL.readableAlwaysSuccess] has been called before
  * @param T the type of the data being read
  * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
  * Otherwise will add [Permission.READABLE]
  * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
  * @param onRead the function to call when reading from the characteristic.
- * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] and the offset of the data to read and should return the [T] being read.
+ * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return the [T] being read.
  */
 inline fun <reified T : Any> LocalCharacteristic.DSL.readableAlwaysSuccess(
     encrypted: Boolean = false,
@@ -713,16 +713,16 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.readableAlwaysSuccess(
 ) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onRead)
 
 /**
- * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.ConnectedDevice]
+ * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
  * Cannot be called if [writable] has been called before
  * @param T the type of the data being written
  * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
  * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
  * Otherwise will add [Permission.WRITABLE]
  * @param onFailedToWrite the function to call when writing to the characteristic fails.
- * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
+ * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
  * @param onWrite the function to call when reading from the characteristic.
- * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+ * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
  * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
  */
 inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
@@ -734,14 +734,14 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
 ) = writable(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
 
 /**
- * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+ * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
  * Cannot be called if [writable] has been called before
  * @param T the type of the data being written
  * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
  * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
  * Otherwise will add [Permission.WRITABLE]
  * @param onWrite the function to call when reading from the characteristic.
- * This contains the [com.splendo.kaluga.bluetooth.ConnectedDevice], and the [T] to write.
+ * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], and the [T] to write.
  * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
  */
 inline fun <reified T : Any> LocalCharacteristic.DSL.writableAlwaysSuccess(

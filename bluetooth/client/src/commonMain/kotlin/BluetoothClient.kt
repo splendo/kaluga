@@ -467,7 +467,7 @@ fun Flow<ConnectableDevice?>.advertisement(): Flow<BaseAdvertisementData> = info
  * Gets the ([Flow] of) the [RSSI] value from a [Flow] of [ConnectableDevice]
  * @return the [Flow] of the RSSI value associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<ConnectableDevice?>.rssi(): Flow<RSSI> = info().map { it.rssi }.distinctUntilChanged()
+fun Flow<ConnectableDevice?>.rssi(): Flow<RSSI?> = info().map { it.rssi }.distinctUntilChanged()
 
 /**
  * Gets the ([Flow] of) the [MTU] from a [Flow] of [ConnectableDevice]

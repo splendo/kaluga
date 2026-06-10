@@ -28,6 +28,7 @@ import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.dataValue
+import com.splendo.kaluga.bluetooth.mtu
 import com.splendo.kaluga.logging.debug
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
@@ -40,7 +41,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration.Companion.milliseconds
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBPeripheralStateConnected
@@ -74,9 +74,6 @@ internal actual class DefaultDeviceConnectionManager(
 
     companion object {
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
-
-        // The 3-byte ATT write header; the ATT MTU is the usable write length plus this header.
-        private const val ATT_HEADER_SIZE = 3
 
         // Write-without-response has no completion callback; if the outbound queue is full we wait this long
         // for peripheralIsReadyToSendWriteWithoutResponse before giving up.
@@ -253,12 +250,10 @@ internal actual class DefaultDeviceConnectionManager(
             }
 
             is DeviceAction.RequestMtu -> {
-                // iOS negotiates the MTU automatically and exposes no request API. Surface the actual usable
-                // MTU instead of discarding it: maximumWriteValueLengthForType(.withResponse) is the ATT MTU
-                // minus the 3-byte ATT write header, so add it back to report the ATT MTU (matching Android).
-                val maxWriteLength = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
-                debug(TAG) { "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $maxWriteLength" }
-                handleNewMtu(GattResponse.MTUSuccess(maxWriteLength.toInt() + ATT_HEADER_SIZE))
+                // iOS negotiates the MTU automatically and exposes no request API; surface the actual ATT MTU.
+                val mtu = peripheral.mtu
+                debug(TAG) { "Reporting negotiated MTU $mtu" }
+                handleNewMtu(GattResponse.MTUSuccess(mtu))
             }
         }
     }

@@ -948,6 +948,14 @@ final val com.splendo.kaluga.bluetooth/asBytes // com.splendo.kaluga.bluetooth/a
     final fun (platform.Foundation/NSData).<get-asBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth/asBytes.<get-asBytes>|<get-asBytes>@platform.Foundation.NSData(){}[0]
 
 // Targets: [apple]
+final val com.splendo.kaluga.bluetooth/mtu // com.splendo.kaluga.bluetooth/mtu|@platform.CoreBluetooth.CBCentral{}mtu[0]
+    final fun (platform.CoreBluetooth/CBCentral).<get-mtu>(): kotlin/Int // com.splendo.kaluga.bluetooth/mtu.<get-mtu>|<get-mtu>@platform.CoreBluetooth.CBCentral(){}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.bluetooth/mtu // com.splendo.kaluga.bluetooth/mtu|@platform.CoreBluetooth.CBPeripheral{}mtu[0]
+    final fun (platform.CoreBluetooth/CBPeripheral).<get-mtu>(): kotlin/Int // com.splendo.kaluga.bluetooth/mtu.<get-mtu>|<get-mtu>@platform.CoreBluetooth.CBPeripheral(){}[0]
+
+// Targets: [apple]
 final val com.splendo.kaluga.bluetooth/uuidString // com.splendo.kaluga.bluetooth/uuidString|@platform.CoreBluetooth.CBUUID{}uuidString[0]
     final fun (platform.CoreBluetooth/CBUUID).<get-uuidString>(): kotlin/String // com.splendo.kaluga.bluetooth/uuidString.<get-uuidString>|<get-uuidString>@platform.CoreBluetooth.CBUUID(){}[0]
 
