@@ -689,7 +689,16 @@ class DefaultBluetoothServer internal constructor(private val settings: ServerSe
 
 /**
  * Data advertised by a [BluetoothServer]
- * @property localName the name of the device to advertise
+ * @property localName the name of the device to advertise, or `null` to not advertise a name.
+ *
+ * Platform caveats for [localName]:
+ * - **Android** has no API to advertise a custom name, so providing one temporarily renames the device's
+ *   **global** Bluetooth adapter (visible to other apps and the system UI) for the duration of advertising.
+ *   The original name is restored when advertising stops or the server is closed, but if the process is killed
+ *   while advertising the renamed adapter may persist. The rename is asynchronous, so the first advertisement
+ *   may still carry the previous name. Leave this `null` to advertise without touching the adapter name.
+ * - **iOS** drops the local name from the advertisement entirely while the app is in the background, and moves
+ *   service UUIDs into an overflow area only other iOS devices can discover.
  * @property serviceUUIDs the [UUID]s of the [LocalService] to advertise
  */
 data class AdvertiseData(val localName: String?, val serviceUUIDs: List<UUID>) {
