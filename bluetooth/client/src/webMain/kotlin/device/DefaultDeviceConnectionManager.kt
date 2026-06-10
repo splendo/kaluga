@@ -121,11 +121,13 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
         }
     }
 
-    actual override suspend fun requestStartPairing() {
+    actual override suspend fun requestStartPairing(): PairingResult {
         // Web Bluetooth has no pairing API; bonding is handled by the user agent.
+        return PairingResult.NOT_SUPPORTED
     }
 
-    actual override suspend fun requestStartUnpairing() {
+    actual override suspend fun requestStartUnpairing(): PairingResult {
         // Web Bluetooth has no unpairing API; the user manages this through the browser.
+        return PairingResult.NOT_SUPPORTED
     }
 }

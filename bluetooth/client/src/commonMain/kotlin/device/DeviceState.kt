@@ -275,8 +275,9 @@ sealed interface ConnectableDeviceState :
 
         /**
          * Attempts to pair this device
+         * @return the [PairingResult] of the request
          */
-        suspend fun pair()
+        suspend fun pair(): PairingResult
 
         /**
          * Transitions into a [Connected] state where the the [Connected.reconnectionSettings] have been updated to [reconnectionSettings]
@@ -343,8 +344,9 @@ sealed interface ConnectableDeviceState :
 
     /**
      * Attempts to unpair the Device
+     * @return the [PairingResult] of the request
      */
-    suspend fun unpair()
+    suspend fun unpair(): PairingResult
 }
 
 internal data object NotConnectableDeviceStateImpl : NotConnectableDeviceState
@@ -461,7 +463,7 @@ internal sealed class ConnectableDeviceStateImpl {
             deviceConnectionManager.readRssi()
         }
 
-        suspend fun pair() = deviceConnectionManager.pair()
+        suspend fun pair(): PairingResult = deviceConnectionManager.pair()
     }
 
     data class Connecting constructor(private val reconnectionSettings: ConnectionSettings.ReconnectionSettings, override val deviceConnectionManager: DeviceConnectionManager) :
@@ -520,5 +522,5 @@ internal sealed class ConnectableDeviceStateImpl {
         Disconnecting(deviceConnectionManager)
     }
 
-    suspend fun unpair() = deviceConnectionManager.unpair()
+    suspend fun unpair(): PairingResult = deviceConnectionManager.unpair()
 }

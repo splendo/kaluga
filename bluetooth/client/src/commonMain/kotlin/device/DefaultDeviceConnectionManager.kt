@@ -230,13 +230,15 @@ interface DeviceConnectionManager {
 
     /**
      * Pairs the device
+     * @return the [PairingResult] of the request
      */
-    suspend fun pair()
+    suspend fun pair(): PairingResult
 
     /**
      * Unpairs from the device
+     * @return the [PairingResult] of the request
      */
-    suspend fun unpair()
+    suspend fun unpair(): PairingResult
 }
 
 /**
@@ -307,19 +309,19 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     protected abstract suspend fun didStartPerformingAction(action: DeviceAction<*>)
 
-    final override suspend fun pair() {
+    final override suspend fun pair(): PairingResult {
         logger.stateLogger.stateChangeLogger.info { "Pair" }
-        requestStartPairing()
+        return requestStartPairing()
     }
 
-    protected abstract suspend fun requestStartPairing()
+    protected abstract suspend fun requestStartPairing(): PairingResult
 
-    final override suspend fun unpair() {
+    final override suspend fun unpair(): PairingResult {
         logger.stateLogger.stateChangeLogger.info { "Unpair" }
-        requestStartUnpairing()
+        return requestStartUnpairing()
     }
 
-    protected abstract suspend fun requestStartUnpairing()
+    protected abstract suspend fun requestStartUnpairing(): PairingResult
 
     protected fun createService(wrapper: RemoteServiceWrapper): RemoteService = RemoteService(
         wrapper,
@@ -439,6 +441,6 @@ internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManag
     override fun getCurrentState(): DeviceConnectionManager.State
     override suspend fun discoverServices()
     override suspend fun didStartPerformingAction(action: DeviceAction<*>)
-    override suspend fun requestStartPairing()
-    override suspend fun requestStartUnpairing()
+    override suspend fun requestStartPairing(): PairingResult
+    override suspend fun requestStartUnpairing(): PairingResult
 }

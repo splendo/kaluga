@@ -253,12 +253,14 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    actual override suspend fun requestStartPairing() {
-        // There is no iOS API to pair peripheral
+    actual override suspend fun requestStartPairing(): PairingResult {
+        // There is no iOS API to pair a peripheral; pairing happens implicitly on encrypted attribute access.
+        return PairingResult.NOT_SUPPORTED
     }
 
-    actual override suspend fun requestStartUnpairing() {
-        // There is no iOS API to unpair peripheral
+    actual override suspend fun requestStartUnpairing(): PairingResult {
+        // There is no iOS API to unpair a peripheral.
+        return PairingResult.NOT_SUPPORTED
     }
 
     private fun didDiscoverServices() {

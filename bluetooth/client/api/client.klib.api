@@ -7,6 +7,18 @@
 // - Show declarations: true
 
 // Library unique name: <com.splendo.kaluga.bluetooth:client>
+final enum class com.splendo.kaluga.bluetooth.device/PairingResult : kotlin/Enum<com.splendo.kaluga.bluetooth.device/PairingResult> { // com.splendo.kaluga.bluetooth.device/PairingResult|null[0]
+    enum entry FAILURE // com.splendo.kaluga.bluetooth.device/PairingResult.FAILURE|null[0]
+    enum entry NOT_SUPPORTED // com.splendo.kaluga.bluetooth.device/PairingResult.NOT_SUPPORTED|null[0]
+    enum entry SUCCESS // com.splendo.kaluga.bluetooth.device/PairingResult.SUCCESS|null[0]
+
+    final val entries // com.splendo.kaluga.bluetooth.device/PairingResult.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.bluetooth.device/PairingResult> // com.splendo.kaluga.bluetooth.device/PairingResult.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/PairingResult.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.bluetooth.device/PairingResult> // com.splendo.kaluga.bluetooth.device/PairingResult.values|values#static(){}[0]
+}
+
 abstract interface <#A: kotlin/Any?> com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding { // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding|null[0]
     abstract fun <#A1: kotlin/Any?> (kotlinx.coroutines.channels/Channel<#A1>).consumeTo(kotlin/Function1<com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.TriggerResponse<#A1, #A>, kotlin/Unit>) // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.consumeTo|consumeTo@kotlinx.coroutines.channels.Channel<0:0>(kotlin.Function1<com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.TriggerResponse<0:0,1:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]
     abstract fun <#A1: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A1>).collectTo(kotlin/Function1<com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.TriggerResponse<#A1, #A>, kotlin/Unit>) // com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.collectTo|collectTo@kotlinx.coroutines.flow.Flow<0:0>(kotlin.Function1<com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.TriggerResponse<0:0,1:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]
@@ -178,11 +190,11 @@ abstract interface com.splendo.kaluga.bluetooth.device/DeviceConnectionManager {
     abstract fun startDisconnecting() // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.startDisconnecting|startDisconnecting(){}[0]
     abstract fun startDiscovering() // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.startDiscovering|startDiscovering(){}[0]
     abstract suspend fun discoverServices() // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.discoverServices|discoverServices(){}[0]
-    abstract suspend fun pair() // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.pair|pair(){}[0]
+    abstract suspend fun pair(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.pair|pair(){}[0]
     abstract suspend fun performAction(com.splendo.kaluga.bluetooth.device/DeviceAction<*>) // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.performAction|performAction(com.splendo.kaluga.bluetooth.device.DeviceAction<*>){}[0]
     abstract suspend fun readRssi() // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.readRssi|readRssi(){}[0]
     abstract suspend fun reset() // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.reset|reset(){}[0]
-    abstract suspend fun unpair() // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.unpair|unpair(){}[0]
+    abstract suspend fun unpair(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.unpair|unpair(){}[0]
 
     final enum class State : kotlin/Enum<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.State> { // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.State|null[0]
         enum entry CONNECTED // com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.State.CONNECTED|null[0]
@@ -746,7 +758,7 @@ sealed interface com.splendo.kaluga.bluetooth.device/ConnectableDeviceState : co
     abstract val disconnecting // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.disconnecting|{}disconnecting[0]
         abstract fun <get-disconnecting>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Disconnecting> // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.disconnecting.<get-disconnecting>|<get-disconnecting>(){}[0]
 
-    abstract suspend fun unpair() // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.unpair|unpair(){}[0]
+    abstract suspend fun unpair(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.unpair|unpair(){}[0]
 
     abstract interface Connecting : com.splendo.kaluga.bluetooth.device/ConnectableDeviceState { // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting|null[0]
         abstract val cancelConnection // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting.cancelConnection|{}cancelConnection[0]
@@ -772,7 +784,7 @@ sealed interface com.splendo.kaluga.bluetooth.device/ConnectableDeviceState : co
 
         abstract fun startDisconnected() // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.startDisconnected|startDisconnected(){}[0]
         abstract fun updateReconnectionSettings(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected> // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.updateReconnectionSettings|updateReconnectionSettings(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings){}[0]
-        abstract suspend fun pair() // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.pair|pair(){}[0]
+        abstract suspend fun pair(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.pair|pair(){}[0]
         abstract suspend fun readRssi() // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.readRssi|readRssi(){}[0]
 
         abstract interface Discovering : com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected { // com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.Discovering|null[0]
@@ -1095,8 +1107,8 @@ abstract class com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager :
         final fun <set-currentAction>(com.splendo.kaluga.bluetooth.device/DeviceAction<*>?) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.currentAction.<set-currentAction>|<set-currentAction>(com.splendo.kaluga.bluetooth.device.DeviceAction<*>?){}[0]
 
     abstract suspend fun didStartPerformingAction(com.splendo.kaluga.bluetooth.device/DeviceAction<*>) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.didStartPerformingAction|didStartPerformingAction(com.splendo.kaluga.bluetooth.device.DeviceAction<*>){}[0]
-    abstract suspend fun requestStartPairing() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.requestStartPairing|requestStartPairing(){}[0]
-    abstract suspend fun requestStartUnpairing() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.requestStartUnpairing|requestStartUnpairing(){}[0]
+    abstract suspend fun requestStartPairing(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.requestStartPairing|requestStartPairing(){}[0]
+    abstract suspend fun requestStartUnpairing(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.requestStartUnpairing|requestStartUnpairing(){}[0]
     final fun (com.splendo.kaluga.bluetooth.device/DeviceAction.Notification).handleNotificationStateChanged(com.splendo.kaluga.bluetooth/GattResponse.WriteResponse) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleNotificationStateChanged|handleNotificationStateChanged@com.splendo.kaluga.bluetooth.device.DeviceAction.Notification(com.splendo.kaluga.bluetooth.GattResponse.WriteResponse){}[0]
     final fun <#A1: com.splendo.kaluga.bluetooth/GattResponse> (com.splendo.kaluga.bluetooth.device/DeviceAction<#A1>).handleActionCompleted(#A1) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleActionCompleted|handleActionCompleted@com.splendo.kaluga.bluetooth.device.DeviceAction<0:0>(0:0){0§<com.splendo.kaluga.bluetooth.GattResponse>}[0]
     final fun cancelConnecting() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.cancelConnecting|cancelConnecting(){}[0]
@@ -1108,9 +1120,9 @@ abstract class com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager :
     final fun startConnecting(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings?) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.startConnecting|startConnecting(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings?){}[0]
     final fun startDisconnecting() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.startDisconnecting|startDisconnecting(){}[0]
     final fun startDiscovering() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.startDiscovering|startDiscovering(){}[0]
-    final suspend fun pair() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.pair|pair(){}[0]
+    final suspend fun pair(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.pair|pair(){}[0]
     final suspend fun performAction(com.splendo.kaluga.bluetooth.device/DeviceAction<*>) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.performAction|performAction(com.splendo.kaluga.bluetooth.device.DeviceAction<*>){}[0]
-    final suspend fun unpair() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.unpair|unpair(){}[0]
+    final suspend fun unpair(): com.splendo.kaluga.bluetooth.device/PairingResult // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.unpair|unpair(){}[0]
     open fun <#A1: com.splendo.kaluga.bluetooth/GattResponse> handleActionCompleted(#A1, com.splendo.kaluga.bluetooth.device/DeviceAction<#A1>) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleActionCompleted|handleActionCompleted(0:0;com.splendo.kaluga.bluetooth.device.DeviceAction<0:0>){0§<com.splendo.kaluga.bluetooth.GattResponse>}[0]
     open fun handleNewRssi(kotlin/Int) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleNewRssi|handleNewRssi(kotlin.Int){}[0]
     open fun requestMtu(kotlin/Int): com.splendo.kaluga.bluetooth.device/DeviceAction.RequestMtu // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.requestMtu|requestMtu(kotlin.Int){}[0]

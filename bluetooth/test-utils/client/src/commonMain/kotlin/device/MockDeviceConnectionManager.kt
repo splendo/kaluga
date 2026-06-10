@@ -33,6 +33,7 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.PairingResult
 import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.test.MockDescriptorWrapper
 import com.splendo.kaluga.logging.debug
@@ -144,6 +145,8 @@ class MockDeviceConnectionManager(
     init {
         if (setupMocks) {
             getCurrentStateMock.on().doReturn(DeviceConnectionManager.State.DISCONNECTED)
+            pairMock.on().doReturn(PairingResult.SUCCESS)
+            unpairMock.on().doReturn(PairingResult.SUCCESS)
 
             performActionMock.on().doExecuteSuspended { (action) ->
                 currentAction = action
@@ -165,9 +168,9 @@ class MockDeviceConnectionManager(
 
     override suspend fun readRssi(): Unit = readRssiMock.call()
 
-    override suspend fun requestStartPairing(): Unit = pairMock.call()
+    override suspend fun requestStartPairing(): PairingResult = pairMock.call()
 
-    override suspend fun requestStartUnpairing(): Unit = unpairMock.call()
+    override suspend fun requestStartUnpairing(): PairingResult = unpairMock.call()
 
     override suspend fun didStartPerformingAction(action: DeviceAction<*>): Unit = performActionMock.call(action)
 

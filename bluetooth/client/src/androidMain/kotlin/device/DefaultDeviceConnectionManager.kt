@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGatt.GATT_CONNECTION_CONGESTED
 import android.bluetooth.BluetoothGatt.GATT_CONNECTION_TIMEOUT
@@ -35,7 +36,11 @@ import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.IntentCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.base.utils.getCompletedOrNull
@@ -259,16 +264,47 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    actual override suspend fun requestStartPairing() {
-        if (deviceWrapper.bondState == DeviceWrapper.BondState.NONE) {
-            deviceWrapper.createBond()
-        }
+    actual override suspend fun requestStartPairing(): PairingResult {
+        if (deviceWrapper.bondState == DeviceWrapper.BondState.BONDED) return PairingResult.SUCCESS
+        return awaitBondStateChange(DeviceWrapper.BondState.BONDED) { deviceWrapper.createBond() }
     }
 
     @SuppressLint("MissingPermission")
-    actual override suspend fun requestStartUnpairing() {
-        if (deviceWrapper.bondState != DeviceWrapper.BondState.NONE) {
-            deviceWrapper.removeBond()
+    actual override suspend fun requestStartUnpairing(): PairingResult {
+        if (deviceWrapper.bondState == DeviceWrapper.BondState.NONE) return PairingResult.SUCCESS
+        return awaitBondStateChange(DeviceWrapper.BondState.NONE) { deviceWrapper.removeBond() }
+    }
+
+    /**
+     * Triggers a bond change via [startBondChange] and waits for this device's bond state to settle, using the
+     * system [BluetoothDevice.ACTION_BOND_STATE_CHANGED] broadcast: [PairingResult.SUCCESS] once it reaches
+     * [target], [PairingResult.FAILURE] if it settles into the other terminal state. This suspends until the
+     * bond state settles; wrap the call in `withTimeoutOrNull` to bound the wait (cancelling unregisters the
+     * receiver).
+     */
+    private suspend fun awaitBondStateChange(target: DeviceWrapper.BondState, startBondChange: () -> Unit): PairingResult {
+        val result = CompletableDeferred<PairingResult>()
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(receiverContext: Context?, intent: Intent?) {
+                if (intent?.action != BluetoothDevice.ACTION_BOND_STATE_CHANGED) return
+                val device = IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+                if (device?.address != deviceWrapper.identifier) return
+                when (intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)) {
+                    BluetoothDevice.BOND_BONDED ->
+                        result.complete(if (target == DeviceWrapper.BondState.BONDED) PairingResult.SUCCESS else PairingResult.FAILURE)
+
+                    BluetoothDevice.BOND_NONE ->
+                        result.complete(if (target == DeviceWrapper.BondState.NONE) PairingResult.SUCCESS else PairingResult.FAILURE)
+                    // BOND_BONDING is a transient state; keep waiting for a terminal one.
+                }
+            }
+        }
+        context.registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
+        return try {
+            startBondChange()
+            result.await()
+        } finally {
+            context.unregisterReceiver(receiver)
         }
     }
 
