@@ -21,8 +21,10 @@ import com.splendo.kaluga.base.state.StateRepo
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.logging.debug
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +41,7 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -62,18 +65,25 @@ interface ConnectableDevice : Device {
     val state: Flow<DeviceState>
 
     /**
-     * Attempts to connect to the device
+     * Attempts to connect to the device.
+     * Cancelling this call tears down any in-flight connection attempt (CoreBluetooth has no connection timeout,
+     * so wrap this in e.g. `withTimeoutOrNull` to bound it).
      * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly
      * @return `true` if connection was successful.
      */
-    suspend fun connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = state.transform { deviceState ->
-        when (deviceState) {
-            is ConnectableDeviceState.Disconnected -> deviceState.startConnecting(reconnectionSettings)
-            is ConnectableDeviceState.Connected -> emit(true)
-            is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Disconnecting -> {}
-            is NotConnectableDeviceState -> emit(false)
-        }
-    }.first()
+    suspend fun connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = try {
+        state.transform { deviceState ->
+            when (deviceState) {
+                is ConnectableDeviceState.Disconnected -> deviceState.startConnecting(reconnectionSettings)
+                is ConnectableDeviceState.Connected -> emit(true)
+                is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Disconnecting -> {}
+                is NotConnectableDeviceState -> emit(false)
+            }
+        }.first()
+    } catch (e: CancellationException) {
+        withContext(NonCancellable) { disconnect() }
+        throw e
+    }
 
     /**
      * Notifies the device that is has connected

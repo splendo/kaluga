@@ -36,10 +36,8 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.permissions.base.Permissions
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -60,7 +58,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.serializer
 import kotlin.coroutines.CoroutineContext
@@ -425,14 +422,8 @@ fun ConnectableDevice.discoveredServices() = filterDiscovering().mapNotNull { di
  */
 suspend fun Flow<ConnectableDevice?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = transformLatest { device ->
     device?.let {
-        try {
-            emit(it.connect(reconnectionSettings))
-        } catch (e: CancellationException) {
-            withContext(NonCancellable) {
-                it.disconnect()
-            }
-            throw e
-        }
+        // ConnectableDevice.connect tears down its own in-flight attempt on cancellation.
+        emit(it.connect(reconnectionSettings))
     }
 }.first()
 
