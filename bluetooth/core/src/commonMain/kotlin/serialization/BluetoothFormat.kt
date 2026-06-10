@@ -100,7 +100,7 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
     override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(serializer.descriptor, serializersModule)
         val builder = object : BinaryBuilder {
-            val flags = MutableList(maxOf(flag.bitIndex + flag.bitWidth, 0)) { false }
+            val flags = BooleanArray(maxOf(flag.bitIndex + flag.bitWidth, 0))
 
             override val expectedSize: Int
                 get() = totalBodySize

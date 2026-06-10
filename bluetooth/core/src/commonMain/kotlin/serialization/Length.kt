@@ -57,7 +57,7 @@ enum class Length(val bytes: Int) {
         `32_BIT` -> if (signed) {
             number.toLong() in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()
         } else {
-            number.toLong().toULong() in UInt.MIN_VALUE.toULong()..Int.MAX_VALUE.toULong()
+            number.toLong().toULong() in UInt.MIN_VALUE.toULong()..UInt.MAX_VALUE.toULong()
         }
 
         `64_BIT` -> true // Always fits as it is the max we support

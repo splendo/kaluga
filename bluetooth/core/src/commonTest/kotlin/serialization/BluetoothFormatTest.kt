@@ -85,6 +85,21 @@ class BluetoothFormatTest {
         ) : SomeSealedClass()
     }
 
+    // A sealed hierarchy WITHOUT @SerializedByteValue, with subclasses that have a
+    // DIFFERENT number of properties. The fallback identifies each option by its
+    // subclass serialName encoded as a raw UTF-8 string (no length prefix).
+    @Serializable
+    sealed class UnmarkedSealed {
+        @Serializable
+        data class One(val a: Int) : UnmarkedSealed()
+
+        @Serializable
+        data class Three(val x: Byte, val y: Byte, val z: Byte) : UnmarkedSealed()
+    }
+
+    @Serializable
+    data class UnmarkedSealedContainer(val value: UnmarkedSealed)
+
     @Serializable
     @JvmInline
     value class ValueContainer<T>(val value: T)
@@ -865,6 +880,16 @@ class BluetoothFormatTest {
         assertFailsWith<DataAfterUnconstrainedData> {
             BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized("StringContent", 0x01))
         }
+
+        // A plain Boolean (no @FlagIndex/@FlagWidth) has no flag slot, so it is encoded into the body via
+        // addBit rather than addAction. Placing one after an @Unsized String must still be rejected: there is
+        // no way to know where the unsized data ends, so any trailing body data is undecodable.
+        @Serializable
+        data class BooleanAfterUnsized(@Unsized val string: String, val flag: Boolean)
+
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(BooleanAfterUnsized.serializer(), BooleanAfterUnsized("StringContent", true))
+        }
     }
 
     @Test
@@ -1545,6 +1570,53 @@ class BluetoothFormatTest {
     }
 
     @Test
+    fun encodeValueOnlyNullTerminatedMap() {
+        // Only the value is null-terminated; the key uses the default ByteLength prefix.
+        // This exercises valueAnnotations() mapping @ValueNullTerminated -> NullTerminated independently
+        // of @KeyNullTerminated (which the combined test in encodeStringMap masked).
+        @Serializable
+        data class ValueNullTerminatedMapContainer(
+            @ValueNullTerminated
+            val map: Map<String, String>,
+        )
+
+        validateEncoding(
+            ValueNullTerminatedMapContainer(
+                mapOf("Key" to "Value", "Other" to "Thing"),
+            ),
+            ValueNullTerminatedMapContainer.serializer(),
+            buildByteArray {
+                add(uByte = 2u)
+                add("Key") // default ByteLength prefix
+                add("Value", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Other") // default ByteLength prefix
+                add("Thing", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+            },
+        )
+
+        // Conversely, @KeyNullTerminated must NOT leak onto the value: key is null-terminated, value keeps default.
+        @Serializable
+        data class KeyNullTerminatedMapContainer(
+            @KeyNullTerminated
+            val map: Map<String, String>,
+        )
+
+        validateEncoding(
+            KeyNullTerminatedMapContainer(
+                mapOf("Key" to "Value", "Other" to "Thing"),
+            ),
+            KeyNullTerminatedMapContainer.serializer(),
+            buildByteArray {
+                add(uByte = 2u)
+                add("Key", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Value") // default ByteLength prefix
+                add("Other", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Thing") // default ByteLength prefix
+            },
+        )
+    }
+
+    @Test
     fun encodeEnum() {
         validateEncoding(SomeEnum.A, SomeEnum.serializer(), byteArrayOf(0x01))
     }
@@ -1558,6 +1630,36 @@ class BluetoothFormatTest {
     fun encodeSealed() {
         validateEncoding(SomeSealedClass.A(4), SomeSealedClass.serializer(), byteArrayOf(0x11, 0x55, 0x01, 0x04, 0x00, 0x00, 0x00, 0x66, 0xAA.toByte()))
         validateEncoding(SomeSealedClass.B(600.0), SomeSealedClass.serializer(), byteArrayOf(0x11, 0x55, 0x02, 0x06, 0x00, 0x00, 0x00, 0x66, 0xAA.toByte()))
+    }
+
+    @Test
+    fun encodeUnmarkedSealed() {
+        // No @SerializedByteValue: each option is identified by its subclass serialName as a
+        // raw UTF-8 string (no length prefix), followed by the subclass body.
+        val oneName = UnmarkedSealed.One.serializer().descriptor.serialName
+            .encodeToByteArray()
+        val threeName = UnmarkedSealed.Three.serializer().descriptor.serialName
+            .encodeToByteArray()
+
+        validateEncoding(
+            UnmarkedSealedContainer(UnmarkedSealed.One(4)),
+            UnmarkedSealedContainer.serializer(),
+            buildByteArray {
+                add(oneName)
+                add(4)
+            },
+        )
+
+        validateEncoding(
+            UnmarkedSealedContainer(UnmarkedSealed.Three(1, 2, 3)),
+            UnmarkedSealedContainer.serializer(),
+            buildByteArray {
+                add(threeName)
+                add(byte = 1)
+                add(byte = 2)
+                add(byte = 3)
+            },
+        )
     }
 
     @Test
@@ -1665,6 +1767,75 @@ class BluetoothFormatTest {
     // Round-tripping through the raw bits yields the genuine 32-bit value on every platform (a no-op on
     // jvm/native/wasm), so the encode→decode round-trip assertions hold on js too.
     private fun Float.as32Bit(): Float = Float.fromBits(toRawBits())
+
+    @Test
+    fun encodeWithChecksumMostSignificantFirst() {
+        @Serializable
+        @Prefix([0x19])
+        @Postfix([0x45])
+        @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+        @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        data class WithChecksum(val index: Int, val content: String)
+
+        val value = WithChecksum(1234, "123456789")
+
+        // The checksum is computed over the body only (everything between the prefix and the checksum bytes).
+        // In MOST_SIGNIFICANT_FIRST order the body is laid out as built here.
+        val body = buildByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) {
+            add(1234)
+            add("123456789")
+        }
+        val expectedChecksum = CRC16.compute(body)
+
+        // The stored CRC is just another multi-byte numeric in the structure's byte order, so in
+        // MOST_SIGNIFICANT_FIRST it is written most-significant-byte first (hi, lo).
+        val crcBytes = expectedChecksum.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        val expectedBytes = buildByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) {
+            add(byteArrayOf(0x19))
+            add(body)
+            add(crcBytes)
+            add(byteArrayOf(0x45))
+        }
+
+        // Full round-trip with checksum validation enabled (default BluetoothFormat): encode then decode.
+        validateRoundTrip(value, WithChecksum.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun encodeNullTerminatedAndOverflowMostSignificantFirst() {
+        @Serializable
+        @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        data class Container(@NullTerminated val nullTerminated: Map<String, String>, @LengthPrefix(lengthAsShort = false, canOverflow = true) val overflow: String)
+
+        val longString = MutableList(500) { "X" }.joinToString("")
+        val value = Container(
+            nullTerminated = mapOf("Key" to "Value", "Foo" to "Bar"),
+            overflow = longString,
+        )
+
+        // Mirror the encoder's MSB build order so the expected bytes match the encoded output exactly.
+        // @NullTerminated marks the *map* as null-terminated (single 0x00 sentinel after the last entry);
+        // the string keys/values keep their default length-prefix encoding.
+        val expected = buildByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) {
+            add("Key")
+            add("Value")
+            add("Foo")
+            add("Bar")
+            add(byte = 0x00)
+            // overflow string: length > 255 so the sentinel + 2-byte length is written
+            add(longString, StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+        }
+
+        validateRoundTrip(value, Container.serializer(), expected)
+    }
+
+    // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
+    // cannot legally be nested inside a LEAST_SIGNIFICANT_FIRST one (InvalidByteOrderException).
+    private fun <T> validateRoundTrip(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {
+        val bytes = format.encodeToByteArray(serializer, value)
+        assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
+        assertEquals(value, format.decodeFromByteArray(serializer, bytes))
+    }
 
     @OptIn(InternalSerializationApi::class)
     private inline fun <reified T : Any> validateEncoding(value: T, expectedValue: ByteArray) = validateEncoding(value, T::class.serializer(), expectedValue)
