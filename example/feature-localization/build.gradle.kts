@@ -5,6 +5,7 @@ plugins {
 
 kaluga {
     moduleName = "example.feature.localization"
+    supportJVM = true
     supportMacOS = true
     supportWasmJS = true
     dependencies {
