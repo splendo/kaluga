@@ -31,10 +31,10 @@ jobs:
   # per-run cache that the cleanup job deletes afterwards. Persistent AVD caches were
   # multi-GB and duplicated per branch, keeping the repo over its cache quota so that
   # freshly saved caches (including other workflows') were immediately evicted.
-  # google_atd is a headless Automated Test Device image: smaller and faster to boot, but it
-  # cannot render for video recording. If video recording is fixed (recordAndroid from the
-  # gradle-test-recorder submodule, not wired into the build since the Gradle 9 migration),
-  # switch target back to google_apis. No ATD image exists below API 30, so 24 stays google_apis.
+  # google_atd (headless Automated Test Device) would be faster, but as of 2026-06 the
+  # android-36 google_atd image is only on the dev sdkmanager channel (stable tops out at 35)
+  # and we install from stable, so both legs use google_apis for now. ATD also cannot render
+  # for video recording (recordAndroid), so check that trade-off before switching.
   avd:
     runs-on: ubuntu-latest
     strategy:
@@ -44,7 +44,7 @@ jobs:
           - api-level: 24
             target: google_apis
           - api-level: 36
-            target: google_atd
+            target: google_apis
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -93,7 +93,7 @@ jobs:
           - api-level: 24
             target: google_apis
           - api-level: 36
-            target: google_atd
+            target: google_apis
     steps:
       - name: checkout
         uses: actions/checkout@v6
