@@ -31,11 +31,20 @@ jobs:
   # per-run cache that the cleanup job deletes afterwards. Persistent AVD caches were
   # multi-GB and duplicated per branch, keeping the repo over its cache quota so that
   # freshly saved caches (including other workflows') were immediately evicted.
+  # google_atd is a headless Automated Test Device image: smaller and faster to boot, but it
+  # cannot render for video recording. If video recording is fixed (recordAndroid from the
+  # gradle-test-recorder submodule, not wired into the build since the Gradle 9 migration),
+  # switch target back to google_apis. No ATD image exists below API 30, so 24 stays google_apis.
   avd:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         api-level: [24, 36]
+        include:
+          - api-level: 24
+            target: google_apis
+          - api-level: 36
+            target: google_atd
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -50,17 +59,17 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
           disable-animations: true
           arch: x86_64
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
           profile: 3.4in WQVGA
-          channel: canary
-          cores: 6
+          # ubuntu-latest runners have 4 vCPUs; requesting more makes qemu warn and oversubscribe
+          cores: 4
           script: ./script/check_emulator.sh
 
       - name: save AVD cache for this run
@@ -79,6 +88,12 @@ jobs:
       matrix:
         api-level: [24, 36]
         project: ${{ fromJSON(needs.build.outputs.projects) }}
+        # Keep targets in sync with the avd job (see comment there about google_atd).
+        include:
+          - api-level: 24
+            target: google_apis
+          - api-level: 36
+            target: google_atd
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -109,17 +124,16 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
           disable-animations: true
           arch: x86_64
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
           profile: 3.4in WQVGA
-          channel: canary
-          cores: 6
+          cores: 4
           script: ./script/check_emulator.sh
 
       - name: install ffmpeg
@@ -134,17 +148,16 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
           disable-animations: true
           arch: x86_64
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
           profile: 3.4in WQVGA
-          channel: canary
-          cores: 6
+          cores: 4
           script: |
             ./script/check_emulator.sh
             ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedAndroidTest
