@@ -134,3 +134,17 @@ jobs:
         with:
           name: 'macos xcodebuild.log'
           path: 'example/macos/xcodebuild.log'
+
+  # The per-run workspace cache is only useful within this run; delete it so it doesn't
+  # pile up against the repo's 10GB cache quota.
+  cleanup-caches:
+    needs: [build, validation, test, example-ios, example-macos]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: delete per-run caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache delete "build-iOS-${{ github.sha }}-" --repo ${{ github.repository }} || true
