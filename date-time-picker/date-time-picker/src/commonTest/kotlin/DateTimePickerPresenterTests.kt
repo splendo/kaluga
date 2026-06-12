@@ -38,7 +38,6 @@ abstract class DateTimePickerPresenterTests {
             builder.buildTimePicker(this) {
             }
         }
-        Unit
     }
 
     @Test
@@ -48,7 +47,6 @@ abstract class DateTimePickerPresenterTests {
                 setConfirmButtonTitle("OK")
             }
         }
-        Unit
     }
 
     @Test

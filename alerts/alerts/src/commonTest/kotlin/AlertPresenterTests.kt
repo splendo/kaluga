@@ -37,7 +37,6 @@ abstract class AlertPresenterTests {
                 setTitle("OK")
             }
         }
-        Unit
     }
 
     @Test
@@ -47,7 +46,6 @@ abstract class AlertPresenterTests {
                 setPositiveButton("OK")
             }
         }
-        Unit
     }
 
     @Test

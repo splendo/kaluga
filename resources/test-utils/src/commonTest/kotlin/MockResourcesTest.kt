@@ -105,6 +105,5 @@ class MockResourcesTest {
         loader.loadFontMock.on(eq(ID)).doReturn(mock)
         assertEquals(mock, ID.asFont(fontLoader = loader))
         assertNotNull(ANOTHER_ID.asFont(fontLoader = loader))
-        Unit
     }
 }
