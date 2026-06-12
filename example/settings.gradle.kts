@@ -52,6 +52,7 @@ include(":feature-scientific")
 include(":feature-system")
 include(":shared")
 include(":web")
+include(":desktop")
 
 if (embedding.embeddingMode is EmbeddingMode.Composite) {
     includeBuild("../")

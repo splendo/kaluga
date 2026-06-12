@@ -13,11 +13,11 @@ jobs:
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.run_attempt < 2 }}
-    env: 
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      # Re-running another workflow's run is not possible with the installation-scoped
+      # GITHUB_TOKEN ("Resource not accessible by integration"), so this needs a PAT
+      # with actions read/write on this repository.
+      GH_TOKEN: ${{ secrets.RERUN_PAT }}
+      GH_REPO: ${{ github.repository }}
     steps:
-      - name: checkout 
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
       - run: gh run rerun ${{ github.event.workflow_run.id }} --failed

@@ -4,9 +4,6 @@ inputs:
   kotlinVersion:
     required: true
     description: Kotlin version
-  arch:
-    required: true
-    description: CPU Architecture of machine
   gradle-cache-read-only:
     default: 'true'
     description: Updates gradle cache after actions if not read-only
@@ -39,13 +36,14 @@ runs:
           caches
           notifications
 
+    # GitHub macOS runners are arm64-only, so the konan prebuilt path is fixed.
     - name: Konan cache
       uses: actions/cache@v5
       id: konan-cache
       with:
         path: |
           ~/.konan/cache/*
-          ~/.konan/kotlin-native-prebuilt-macos-${{ inputs.arch }}-${{ inputs.kotlinVersion }}/*
+          ~/.konan/kotlin-native-prebuilt-macos-arm64-${{ inputs.kotlinVersion }}/*
           ~/.konan/dependencies/*
         key: konan-${{ inputs.kotlinVersion }}
 

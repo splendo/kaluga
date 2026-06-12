@@ -25,9 +25,9 @@ import android.provider.MediaStore
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.DefaultActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.DefaultActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleSubscribable
 
 /**
  * Class that can trigger a given [NavigationAction]

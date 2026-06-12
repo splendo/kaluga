@@ -15,6 +15,7 @@ vanniktechMavenPublish = "0.36.0"
 palantir-git-version = "5.0.0"
 # CLDR release used by the :base:generateDefaultCurrencyMap codegen task (see https://github.com/unicode-org/cldr-json/releases)
 cldr = "48.2.0"
+luxon = "3.5.0"
 
 # higher versions of dependencycheck despite being a minor update break the API
 #noinspection NewerVersionAvailable

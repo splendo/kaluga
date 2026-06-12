@@ -5,6 +5,7 @@ plugins {
 
 kaluga {
     moduleName = "example.feature.scientific"
+    supportJVM = true
     supportMacOS = true
     supportWasmJS = true
     // No `appleFramework {}` exports for scientific units — they're an implementation detail

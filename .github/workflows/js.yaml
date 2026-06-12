@@ -62,3 +62,17 @@ jobs:
         with:
           name: web example build reports
           path: "example/**/build/reports"
+
+  # The per-run workspace cache is only useful within this run; delete it so it doesn't
+  # pile up against the repo's 10GB cache quota.
+  cleanup-caches:
+    needs: [build, test, example-web]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: delete per-run caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache delete "build-linux-${{ github.workflow }}-${{ github.sha }}-" --repo ${{ github.repository }} || true

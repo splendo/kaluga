@@ -20,7 +20,6 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
-          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
       - name: ktLint
         run: ./gradlew lintKotlin
@@ -64,7 +63,6 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
-          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
       - name: run ${{ matrix.target.name }} tests for ${{ matrix.module.name }}
         if: ${{ matrix.module[matrix.target.support] }}
@@ -88,7 +86,6 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
-          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
       - name: run install
         working-directory: example/ios
@@ -118,7 +115,6 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
-          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
       - name: build example
         working-directory: example/macos
@@ -130,3 +126,17 @@ jobs:
         with:
           name: 'macos xcodebuild.log'
           path: 'example/macos/xcodebuild.log'
+
+  # The per-run workspace cache is only useful within this run; delete it so it doesn't
+  # pile up against the repo's 10GB cache quota.
+  cleanup-caches:
+    needs: [build, validation, test, example-ios, example-macos]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: delete per-run caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache delete "build-iOS-${{ github.sha }}-" --repo ${{ github.repository }} || true
