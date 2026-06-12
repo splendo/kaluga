@@ -81,6 +81,7 @@ jobs:
           key: avd-${{ github.run_id }}-${{ matrix.api-level }}
 
   test:
+    name: ${{ matrix.project.name }} · API ${{ matrix.api-level }}
     needs: [build, avd]
     runs-on: ubuntu-latest
     strategy:
