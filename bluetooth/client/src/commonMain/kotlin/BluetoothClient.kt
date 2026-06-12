@@ -161,7 +161,7 @@ typealias BluetoothService = BluetoothClient
  * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
  * @param scanningStateRepoBuilder method for creating a the [ScanningStateFlowRepo] to contain the [ScanningState] of the Bluetooth service
  */
-class DefaultBluetoothClient constructor(coroutineContext: CoroutineContext, scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo) :
+class DefaultBluetoothClient(coroutineContext: CoroutineContext, scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo) :
     BluetoothClient,
     CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothClient")) {
 

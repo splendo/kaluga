@@ -273,12 +273,12 @@ private fun Bundle.composableValue(value: String?, specType: NavigationBundleSpe
                 ListSerializer(String.serializer()),
                 nonNullableValue,
             ).map {
-                KalugaDateFormatter.Companion.iso8601Pattern().parse(it) ?: throw BundleConversionError()
+                KalugaDateFormatter.iso8601Pattern().parse(it) ?: throw BundleConversionError()
             },
         )
 
         is NavigationBundleSpecType.DateType -> specType.convertValue(
-            KalugaDateFormatter.Companion.iso8601Pattern().parse(nonNullableValue)
+            KalugaDateFormatter.iso8601Pattern().parse(nonNullableValue)
                 ?: throw BundleConversionError(),
         )
 

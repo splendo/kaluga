@@ -29,7 +29,7 @@ actual data class KalugaThread(val thread: NSThread) {
          * The [KalugaThread] the calling method is running on
          */
         actual val currentThread: KalugaThread get() = KalugaThread(NSThread.currentThread)
-        private val threadDescriptionRegex = "^.*\\{(.*)}\$".toRegex()
+        private val threadDescriptionRegex = "^.*\\{(.*)}$".toRegex()
     }
 
     /**

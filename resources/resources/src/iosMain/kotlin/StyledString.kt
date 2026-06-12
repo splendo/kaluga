@@ -63,7 +63,7 @@ actual val StyledString.rawString: String get() = attributeString.string
  * @param linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
  * When `null` the Theme default will be used
  */
-actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?) {
+actual class StyledStringBuilder(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?) {
 
     /**
      * Provider for a [StyledStringBuilder]
@@ -80,7 +80,7 @@ actual class StyledStringBuilder constructor(string: String, private val default
         actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
     }
 
-    private val attributedString = NSMutableAttributedString.Companion.create(string)
+    private val attributedString = NSMutableAttributedString.create(string)
 
     /**
      * Adds a [StringStyleAttribute] for a given range
@@ -109,7 +109,7 @@ actual class StyledStringBuilder constructor(string: String, private val default
             }
 
             is StringStyleAttribute.Link -> {
-                NSURL.Companion.URLWithString(attribute.url)?.let {
+                NSURL.URLWithString(attribute.url)?.let {
                     attributedString.addAttribute("NSLink", it, nsRange)
                 }
             }

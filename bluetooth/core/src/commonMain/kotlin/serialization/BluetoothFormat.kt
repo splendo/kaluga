@@ -182,4 +182,4 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
     inline fun <reified T> serializer(): KSerializer<T> = serializersModule.serializer()
 }
 
-private class BluetoothFormatImpl(builder: BluetoothFormat.Builder) : BluetoothFormat(builder.validateChecksum, builder.serializersModule)
+private class BluetoothFormatImpl(builder: Builder) : BluetoothFormat(builder.validateChecksum, builder.serializersModule)

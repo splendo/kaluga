@@ -69,7 +69,7 @@ actual val StyledString.rawString: String get() = spannable.toString()
  * When `null` the Theme default will be used
  * @param context the [Context] in which the [StyledString] will be displayed
  */
-actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?, private val context: Context) {
+actual class StyledStringBuilder(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?, private val context: Context) {
 
     /**
      * Provider for a [StyledStringBuilder]

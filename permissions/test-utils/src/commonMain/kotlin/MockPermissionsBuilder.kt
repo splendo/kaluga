@@ -58,7 +58,7 @@ class MockPermissionsBuilder(
         registered.castOrNull<P>()
     } ?: RegistryMock(P::class)
 
-    suspend inline fun <reified P : Permission> registerPermissionBuilder() {
+    inline fun <reified P : Permission> registerPermissionBuilder() {
         val registry = RegistryMock(P::class)
         registries.add(registry)
         if (setupMocks) {

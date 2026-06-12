@@ -197,7 +197,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
 
     private fun macosTargetsToRegister(): Set<MacOSTarget> = when {
         !isMacOs || !isAppleSilicon -> emptySet()
-        !ideaActive -> MacOSTarget.values().toSet()
+        !ideaActive -> MacOSTarget.entries.toSet()
         else -> setOf(MacOSTarget.Arm64)
     }
 
@@ -206,7 +206,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealTvOSDevice = sdkName.startsWith("appletvos")
         return when {
-            !ideaActive -> TVOSTarget.values().toSet()
+            !ideaActive -> TVOSTarget.entries.toSet()
             isRealTvOSDevice -> setOf(TVOSTarget.Arm64)
             !isAppleSilicon -> emptySet()
             else -> setOf(TVOSTarget.SimulatorArm64)
@@ -218,7 +218,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealWatchOSDevice = sdkName.startsWith("watchos")
         return when {
-            !ideaActive -> WatchOSTarget.values().toSet()
+            !ideaActive -> WatchOSTarget.entries.toSet()
             isRealWatchOSDevice -> setOf(WatchOSTarget.Arm64)
             !isAppleSilicon -> emptySet()
             else -> setOf(WatchOSTarget.SimulatorArm64)
@@ -765,7 +765,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         }
 
         return when {
-            !ideaActive -> IOSTarget.values().toSet()
+            !ideaActive -> IOSTarget.entries.toSet()
             isRealIOSDevice -> setOf(IOSTarget.Arm64)
             !isAppleSilicon -> emptySet()
             else -> setOf(IOSTarget.SimulatorArm64)

@@ -79,7 +79,7 @@ class MockMediaSurfaceController : MediaSurfaceController {
  * @param setupMocks If `true` this will automatically set up some mocking
  */
 class MockMediaManager(
-    override val events: MutableSharedFlow<MediaManager.Event>,
+    override val events: MutableSharedFlow<Event>,
     val volumeController: MockVolumeController,
     val mediaSurfaceController: MockMediaSurfaceController,
     setupMocks: Boolean = true,

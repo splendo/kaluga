@@ -104,7 +104,7 @@ enum class AndroidPermissionState {
  * @param logger The [Logger] used for logging
  * @param onPermissionChanged A [AndroidPermissionStateHandler] that will be notified of changes to [AndroidPermissionState]
  */
-class AndroidPermissionsManager constructor(
+class AndroidPermissionsManager(
     private val context: Context = ApplicationHolder.applicationContext,
     private val permissions: Array<String> = emptyArray(),
     coroutineScope: CoroutineScope,

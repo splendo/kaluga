@@ -339,7 +339,7 @@ interface BaseNumberFormatter {
  * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-expect class NumberFormatter constructor(locale: KalugaLocale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) : BaseNumberFormatter {
+expect class NumberFormatter(locale: KalugaLocale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) : BaseNumberFormatter {
     override val locale: KalugaLocale
     override var percentSymbol: Char
     override var perMillSymbol: Char

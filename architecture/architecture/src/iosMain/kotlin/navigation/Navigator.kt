@@ -94,7 +94,7 @@ data class ImagePickerMediaNotAvailableNavigationException(val types: Set<Naviga
  */
 class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action> {
 
-    private inner class StoreKitDelegate :
+    private class StoreKitDelegate :
         NSObject(),
         KalugaStoreProductViewControllerDelegateProtocol {
 

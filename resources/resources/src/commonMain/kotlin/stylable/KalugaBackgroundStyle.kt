@@ -56,7 +56,7 @@ data class KalugaBackgroundStyle(val fillStyle: FillStyle, val strokeStyle: Stro
          * @property cornerRadiusY the radius in `scalable pixels` applied to the y-dimension of the corner
          * @property roundedCorners the set of [Corner] that are rounded according to [cornerRadiusX] and [cornerRadiusY]
          */
-        data class Rectangle(val cornerRadiusX: Float, val cornerRadiusY: Float, val roundedCorners: Set<Corner> = Corner.values().toSet()) : Shape() {
+        data class Rectangle(val cornerRadiusX: Float, val cornerRadiusY: Float, val roundedCorners: Set<Corner> = Corner.entries.toSet()) : Shape() {
 
             /**
              * The corners of a [Rectangle] that can be rounded
@@ -89,7 +89,7 @@ data class KalugaBackgroundStyle(val fillStyle: FillStyle, val strokeStyle: Stro
              * @param cornerRadius the radius in `scalable pixels` to apply to the corners
              * @param roundedCorners the set of [Corner] that are rounded according to [cornerRadius]
              */
-            constructor(cornerRadius: Float = 0.0f, roundedCorners: Set<Corner> = Corner.values().toSet()) : this(cornerRadius, cornerRadius, roundedCorners)
+            constructor(cornerRadius: Float = 0.0f, roundedCorners: Set<Corner> = Corner.entries.toSet()) : this(cornerRadius, cornerRadius, roundedCorners)
         }
 
         /**

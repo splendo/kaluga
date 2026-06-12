@@ -60,6 +60,6 @@ internal enum class DateTime(val char: Char) {
     ISO_STANDARD_DATE('F'), ; // (%Y-%m-%d)
 
     companion object {
-        internal fun parse(c: Char): DateTime = DateTime.values().find { it.char == c } ?: throw StringFormatterException.UnknownFormatConversionException("t$c")
+        internal fun parse(c: Char): DateTime = DateTime.entries.find { it.char == c } ?: throw StringFormatterException.UnknownFormatConversionException("t$c")
     }
 }

@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.utils.BufferedAsListChannel
-import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
@@ -230,7 +229,7 @@ interface Scanner {
  * @param coroutineScope the [CoroutineScope] this scanner runs on
  * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
-abstract class BaseScanner constructor(
+abstract class BaseScanner(
     settings: Settings,
     private val coroutineScope: CoroutineScope,
     private val scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,

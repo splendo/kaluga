@@ -58,7 +58,7 @@ internal enum class RegularFormatCharacter(val char: Char) {
 
     companion object {
         internal fun parse(c: Char): RegularFormatCharacter =
-            RegularFormatCharacter.values().find { it.char == c } ?: throw throw StringFormatterException.UnknownFormatConversionException(c.toString())
+            RegularFormatCharacter.entries.find { it.char == c } ?: throw throw StringFormatterException.UnknownFormatConversionException(c.toString())
     }
 
     // Returns true if and only if the Conversion is applicable to all objects.

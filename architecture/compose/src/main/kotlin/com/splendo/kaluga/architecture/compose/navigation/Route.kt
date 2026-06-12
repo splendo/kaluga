@@ -136,10 +136,10 @@ private val NavigationBundleValue<*>.routeArgument: String?
 
         is NavigationBundleValue.DateArrayValue -> Json.encodeToString(
             ListSerializer(String.serializer()),
-            value.map { KalugaDateFormatter.Companion.iso8601Pattern().format(it) },
+            value.map { KalugaDateFormatter.iso8601Pattern().format(it) },
         )
 
-        is NavigationBundleValue.DateValue -> KalugaDateFormatter.Companion.iso8601Pattern().format(value)
+        is NavigationBundleValue.DateValue -> KalugaDateFormatter.iso8601Pattern().format(value)
 
         is NavigationBundleValue.DoubleArrayValue -> Json.encodeToString(
             DoubleArraySerializer(),
