@@ -63,7 +63,6 @@ actual class DefaultCameraPermissionManager(private val bundle: NSBundle, settin
                 val deferred = CompletableDeferred<Boolean>()
                 AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo) { allowed ->
                     deferred.complete(allowed)
-                    Unit
                 }
                 if (deferred.await()) ApplePermissionsHelper.AuthorizationStatus.Authorized else ApplePermissionsHelper.AuthorizationStatus.Denied
             }

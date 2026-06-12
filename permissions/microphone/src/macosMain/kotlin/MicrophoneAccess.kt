@@ -37,7 +37,6 @@ internal actual suspend fun requestMicrophoneAccess(): ApplePermissionsHelper.Au
     val deferred = CompletableDeferred<Boolean>()
     AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio) { allowed ->
         deferred.complete(allowed)
-        Unit
     }
     return if (deferred.await()) ApplePermissionsHelper.AuthorizationStatus.Authorized else ApplePermissionsHelper.AuthorizationStatus.Denied
 }

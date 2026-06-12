@@ -64,7 +64,6 @@ actual class DefaultStoragePermissionManager(private val bundle: NSBundle, stora
                 val deferred = CompletableDeferred<PHAuthorizationStatus>()
                 PHPhotoLibrary.requestAuthorization { status ->
                     deferred.complete(status)
-                    Unit
                 }
 
                 deferred.await().toAuthorizationStatus()
