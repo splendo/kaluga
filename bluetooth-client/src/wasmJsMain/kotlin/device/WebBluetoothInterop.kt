@@ -23,7 +23,27 @@ import kotlin.coroutines.resume
 // Wasm cannot share Promise<T> across the JS family and cannot hold the live Web Bluetooth objects in
 // typed Kotlin, so the handles live in a JS-side registry (`globalThis.__kbt`) keyed by the string
 // ids/uuids of the webMain interop surface. Each async op is bridged to a coroutine via plain
-// success/error callbacks passed into `js(...)`; byte payloads cross the boundary as hex strings.
+// success/error callbacks passed into `js(...)`; byte payloads cross the boundary as DataView /
+// Uint8Array through the minimal externals below.
+
+// The Kotlin/Wasm stdlib ships no typed-array bindings (org.khronos.webgl is JS-only), and the
+// Web Bluetooth API itself has no Kotlin declarations anywhere, so a hand-rolled surface this
+// small is cheaper than a dependency. Byte is not a JS interop type; the seam speaks Int.
+private external interface JsDataView : JsAny {
+    val byteLength: Int
+    fun getInt8(byteOffset: Int): Int
+}
+
+private fun newUint8Array(size: Int): JsAny = js("new Uint8Array(size)")
+private fun uint8ArraySet(array: JsAny, index: Int, value: Int): Unit = js("{ array[index] = value; }")
+
+private fun JsDataView.toByteArray(): ByteArray = ByteArray(byteLength) { getInt8(it).toByte() }
+
+private fun ByteArray.toUint8Array(): JsAny {
+    val array = newUint8Array(size)
+    forEachIndexed { index, byte -> uint8ArraySet(array, index, byte.toInt() and 0xFF) }
+    return array
+}
 
 private val cachedValues = mutableMapOf<String, ByteArray>()
 private val notificationHandlers = mutableMapOf<String, (String, String) -> Unit>()
@@ -42,38 +62,12 @@ private fun clearConnectionState(identifier: String) {
     jsClearConnectionState(identifier)
 }
 
-private fun bytesToHex(bytes: ByteArray): String {
-    val builder = StringBuilder(bytes.size * 2)
-    for (byte in bytes) {
-        val value = byte.toInt() and 0xFF
-        builder.append("0123456789abcdef"[value shr 4])
-        builder.append("0123456789abcdef"[value and 0x0F])
-    }
-    return builder.toString()
-}
-
-private fun hexToBytes(hex: String): ByteArray = ByteArray(hex.length / 2) { (hex.substring(it * 2, it * 2 + 2).toInt(16)).toByte() }
-
 private fun ensureRegistry() {
     js(
         """
         if (!globalThis.__kbt) {
             globalThis.__kbt = {
                 devices: {}, chars: {}, descs: {},
-                hex: function (view) {
-                    var s = '';
-                    for (var i = 0; i < view.byteLength; i++) {
-                        var h = view.getUint8(i).toString(16);
-                        if (h.length < 2) h = '0' + h;
-                        s += h;
-                    }
-                    return s;
-                },
-                buf: function (hex) {
-                    var a = new Uint8Array(hex.length / 2);
-                    for (var i = 0; i < a.length; i++) a[i] = parseInt(hex.substr(i * 2, 2), 16);
-                    return a;
-                },
                 props: function (p) {
                     var v = 0;
                     if (p.broadcast) v |= 1;
@@ -177,8 +171,8 @@ internal actual suspend fun webReadCharacteristic(identifier: String, service: S
             identifier,
             service,
             characteristic,
-            { hex ->
-                val bytes = hexToBytes(hex)
+            { view ->
+                val bytes = view.toByteArray()
                 cachedValues[characteristicKey(identifier, service, characteristic)] = bytes
                 continuation.resume(WebGattResult.Success(bytes))
             },
@@ -194,7 +188,7 @@ internal actual suspend fun webWriteCharacteristic(identifier: String, service: 
             identifier,
             service,
             characteristic,
-            bytesToHex(value),
+            value.toUint8Array(),
             withResponse,
             { continuation.resume(WebGattResult.Success(null)) },
             { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
@@ -210,7 +204,7 @@ internal actual suspend fun webReadDescriptor(identifier: String, service: Strin
             service,
             characteristic,
             descriptor,
-            { hex -> continuation.resume(WebGattResult.Success(hexToBytes(hex))) },
+            { view -> continuation.resume(WebGattResult.Success(view.toByteArray())) },
             { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
         )
     }
@@ -224,7 +218,7 @@ internal actual suspend fun webWriteDescriptor(identifier: String, service: Stri
             service,
             characteristic,
             descriptor,
-            bytesToHex(value),
+            value.toUint8Array(),
             { continuation.resume(WebGattResult.Success(null)) },
             { errorName -> continuation.resume(WebGattResult.Failure(errorName)) },
         )
@@ -239,8 +233,8 @@ internal actual suspend fun webSetNotifying(identifier: String, service: String,
                 identifier,
                 service,
                 characteristic,
-                { hex ->
-                    cachedValues[characteristicKey(identifier, service, characteristic)] = hexToBytes(hex)
+                { view ->
+                    cachedValues[characteristicKey(identifier, service, characteristic)] = view.toByteArray()
                     notificationHandlers[identifier]?.invoke(service, characteristic)
                 },
                 { continuation.resume(WebGattResult.Success(null)) },
@@ -426,12 +420,12 @@ private fun jsDiscoverServices(
     )
 }
 
-private fun jsReadCharacteristic(identifier: String, service: String, characteristic: String, onResult: (String) -> Unit, onError: (errorName: String) -> Unit) {
+private fun jsReadCharacteristic(identifier: String, service: String, characteristic: String, onResult: (JsDataView) -> Unit, onError: (errorName: String) -> Unit) {
     js(
         """
         var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
         if (!c) { onError(''); return; }
-        c.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function (e) { onError(e && e.name ? e.name : ''); });
+        c.readValue().then(function (view) { onResult(view); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
@@ -440,7 +434,7 @@ private fun jsWriteCharacteristic(
     identifier: String,
     service: String,
     characteristic: String,
-    hex: String,
+    buffer: JsAny,
     withResponse: Boolean,
     onResult: () -> Unit,
     onError: (errorName: String) -> Unit,
@@ -449,19 +443,25 @@ private fun jsWriteCharacteristic(
         """
         var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
         if (!c) { onError(''); return; }
-        var buffer = globalThis.__kbt.buf(hex);
         var promise = withResponse ? c.writeValueWithResponse(buffer) : c.writeValueWithoutResponse(buffer);
         promise.then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
 
-private fun jsReadDescriptor(identifier: String, service: String, characteristic: String, descriptor: String, onResult: (String) -> Unit, onError: (errorName: String) -> Unit) {
+private fun jsReadDescriptor(
+    identifier: String,
+    service: String,
+    characteristic: String,
+    descriptor: String,
+    onResult: (JsDataView) -> Unit,
+    onError: (errorName: String) -> Unit,
+) {
     js(
         """
         var d = globalThis.__kbt.descs[identifier + '|' + service + '|' + characteristic + '|' + descriptor];
         if (!d) { onError(''); return; }
-        d.readValue().then(function (view) { onResult(globalThis.__kbt.hex(view)); }, function (e) { onError(e && e.name ? e.name : ''); });
+        d.readValue().then(function (view) { onResult(view); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
@@ -471,7 +471,7 @@ private fun jsWriteDescriptor(
     service: String,
     characteristic: String,
     descriptor: String,
-    hex: String,
+    buffer: JsAny,
     onResult: () -> Unit,
     onError: (errorName: String) -> Unit,
 ) {
@@ -479,7 +479,7 @@ private fun jsWriteDescriptor(
         """
         var d = globalThis.__kbt.descs[identifier + '|' + service + '|' + characteristic + '|' + descriptor];
         if (!d) { onError(''); return; }
-        d.writeValue(globalThis.__kbt.buf(hex)).then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
+        d.writeValue(buffer).then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
 }
@@ -488,7 +488,7 @@ private fun jsStartNotifications(
     identifier: String,
     service: String,
     characteristic: String,
-    onValue: (String) -> Unit,
+    onValue: (JsDataView) -> Unit,
     onResult: () -> Unit,
     onError: (errorName: String) -> Unit,
 ) {
@@ -496,7 +496,7 @@ private fun jsStartNotifications(
         """
         var c = globalThis.__kbt.chars[identifier + '|' + service + '|' + characteristic];
         if (!c) { onError(''); return; }
-        c.addEventListener('characteristicvaluechanged', function (event) { onValue(globalThis.__kbt.hex(event.target.value)); });
+        c.addEventListener('characteristicvaluechanged', function (event) { onValue(event.target.value); });
         c.startNotifications().then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
