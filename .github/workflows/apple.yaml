@@ -32,8 +32,8 @@ jobs:
           path: build/reports/ktlint
         if: ${{ failure() }}
 
-      - name: run checkLegacyAbi
-        run: ./gradlew checkLegacyAbi
+      - name: run checkKotlinAbi
+        run: ./gradlew checkKotlinAbi
 
   test:
     name: ${{ matrix.target.name }} · ${{ matrix.module.name }}

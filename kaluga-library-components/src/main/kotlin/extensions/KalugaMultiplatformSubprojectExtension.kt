@@ -39,7 +39,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
@@ -311,9 +310,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
 
-        extensions.configure(AbiValidationMultiplatformExtension::class) {
-            enabled.set(true)
-            abiExtension()
+        abiValidation {
+            configureKalugaAbi(project.layout.projectDirectory.dir("api"))
         }
 
         project.afterEvaluate {
@@ -715,7 +713,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     if (pluginManager.hasPlugin(versionCatalog.findPlugin("kotlin-serialization").get().get().pluginId)) {
                         optIn("kotlinx.serialization.ExperimentalSerializationApi")
                     }
-                    enableLanguageFeature("InlineClasses")
                 }
             }
             project.setupPublishingAfterEvaluation()
