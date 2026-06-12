@@ -1,0 +1,4 @@
+public final class com/splendo/kaluga/lifecycle/test/MockLifecycleSubscribable : com/splendo/kaluga/lifecycle/LifecycleSubscribable {
+	public fun <init> ()V
+}
+

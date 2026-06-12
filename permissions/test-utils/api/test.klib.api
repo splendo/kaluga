@@ -78,8 +78,8 @@ final class com.splendo.kaluga.permissions.test/MockPermissionsBuilder : com.spl
     final val setupMocks // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.setupMocks|{}setupMocks[0]
         final fun <get-setupMocks>(): kotlin/Boolean // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.setupMocks.<get-setupMocks>|<get-setupMocks>(){}[0]
 
+    final inline fun <#A1: reified com.splendo.kaluga.permissions.base/Permission> registerPermissionBuilder() // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.registerPermissionBuilder|registerPermissionBuilder(){0§<com.splendo.kaluga.permissions.base.Permission>}[0]
     final inline fun <#A1: reified com.splendo.kaluga.permissions.base/Permission> registry(): com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock<#A1> // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.registry|registry(){0§<com.splendo.kaluga.permissions.base.Permission>}[0]
-    final suspend inline fun <#A1: reified com.splendo.kaluga.permissions.base/Permission> registerPermissionBuilder() // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.registerPermissionBuilder|registerPermissionBuilder(){0§<com.splendo.kaluga.permissions.base.Permission>}[0]
 
     final class <#A1: com.splendo.kaluga.permissions.base/Permission> RegistryMock { // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock|null[0]
         constructor <init>(kotlin.reflect/KClass<#A1>) // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.<init>|<init>(kotlin.reflect.KClass<1:0>){}[0]
