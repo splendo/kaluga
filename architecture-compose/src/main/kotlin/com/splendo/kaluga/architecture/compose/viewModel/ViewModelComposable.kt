@@ -17,9 +17,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.splendo.kaluga.architecture.compose.activity
 import com.splendo.kaluga.architecture.compose.lifecycle.ComposableLifecycleSubscribable
 import com.splendo.kaluga.architecture.compose.lifecycle.composableLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleSubscribableManager
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 
 /**
  * Composable which manages [viewModel] lifecycle and binds to all its [BaseLifecycleViewModel.activeLifecycleSubscribables].
