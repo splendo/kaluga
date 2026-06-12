@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,8 +14,7 @@
     limitations under the License.
 
  */
+
 package com.splendo.kaluga.base.utils
-
 import java.io.Serializable
-
 actual typealias Serializable = Serializable

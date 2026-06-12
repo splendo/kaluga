@@ -319,6 +319,38 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         project.afterEvaluate {
             applyDefaultHierarchyTemplate()
 
+            // Android is itself a JVM platform, but the default hierarchy template gives `jvmMain`
+            // and `androidMain` no shared parent other than `commonMain`. That means an `expect`
+            // whose only actual lives in `androidMain` leaves the `jvm` target without an actual,
+            // even when the actual is pure Kotlin/JVM. When this module also targets the JVM,
+            // introduce a `jvmAndroidMain` intermediate source set between `commonMain` and both
+            // `jvmMain` + `androidMain`, so portable actuals placed in `src/jvmAndroidMain` are
+            // shared by Android and JVM. The set is inert (empty) for modules that don't use it.
+            if (supportJVM) {
+                val jvmAndroidMain = sourceSets.maybeCreate("jvmAndroidMain")
+                sourceSets.matching { it.name == "commonMain" }.configureEach {
+                    jvmAndroidMain.dependsOn(this)
+                }
+                sourceSets.matching {
+                    it.name in setOf("jvmMain", "androidMain")
+                }.configureEach {
+                    dependsOn(jvmAndroidMain)
+                }
+
+                // Mirror on the test side. The Android *unit* (host) test set is `androidHostTest`;
+                // `androidDeviceTest` is deliberately left out of this intermediate (it already
+                // depends on `commonTest` directly, and AGP 9.0 warns about cross-tree dependsOn).
+                val jvmAndroidTest = sourceSets.maybeCreate("jvmAndroidTest")
+                sourceSets.matching { it.name == "commonTest" }.configureEach {
+                    jvmAndroidTest.dependsOn(this)
+                }
+                sourceSets.matching {
+                    it.name in setOf("jvmTest", "androidHostTest")
+                }.configureEach {
+                    dependsOn(jvmAndroidTest)
+                }
+            }
+
             if (registeredTvosTargets.isNotEmpty()) {
                 val uikitMain = sourceSets.maybeCreate("uikitMain")
                 sourceSets.matching { it.name == "appleMain" }.configureEach {

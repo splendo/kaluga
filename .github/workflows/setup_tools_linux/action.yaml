@@ -37,4 +37,5 @@ runs:
         path: |
           ./*
           !/.gradle
-        key: build-linux-${{ github.sha }}-${{ inputs.project }}
+        # Must match the save key in setup_linux.yaml (scoped by calling workflow).
+        key: build-linux-${{ github.workflow }}-${{ github.sha }}-${{ inputs.project }}

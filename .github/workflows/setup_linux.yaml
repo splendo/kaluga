@@ -79,4 +79,7 @@ jobs:
           path: |
             ./*
             !/.gradle
-          key: build-linux-${{ github.sha }}-${{ inputs.project }}
+          # Scoped by workflow name: multiple workflows (emulator, js) call this reusable workflow
+          # with different gradle tasks for the same sha, so they must not share one key.
+          # The caller deletes this per-run cache in a cleanup job after its matrix completes.
+          key: build-linux-${{ github.workflow }}-${{ github.sha }}-${{ inputs.project }}
