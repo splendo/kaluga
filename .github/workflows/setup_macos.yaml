@@ -47,7 +47,6 @@ jobs:
           gradle-cache-read-only: 'false'
           restore-workspace-cache: 'false'
           kotlinVersion: ${{ steps.kotlinVersion.outputs.value }}
-          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
           project: ${{ inputs.project }}
 
       - name: generate file with projects for build matrix
