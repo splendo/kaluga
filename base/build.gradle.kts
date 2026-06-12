@@ -30,6 +30,7 @@ kaluga {
         }
     }
     dependencies {
+        val luxon = libs.versions.luxon.get()
         android {
             main {
                 implementation(libs.kotlinx.atomicfu)
@@ -46,12 +47,12 @@ kaluga {
         js {
             main {
                 api(libs.kotlinx.atomicfu)
-                implementation(npm("luxon", "3.5.0"))
+                implementation(npm("luxon", luxon))
             }
         }
         wasmJs {
             main {
-                implementation(npm("luxon", "3.5.0"))
+                implementation(npm("luxon", luxon))
             }
         }
     }
@@ -99,6 +100,12 @@ fun generateFromCldr(cldrVersion: String, cldrPath: String, refreshTask: String,
     return count
 }
 
+tasks.register("generateCLDRImports") {
+    group = "codegen"
+    dependsOn("generateDefaultCurrencyMap")
+    dependsOn("generateAvailableLocales")
+}
+
 // Regenerates DefaultCurrencyForCountry.kt from CLDR. Run on demand; output is checked in.
 tasks.register("generateDefaultCurrencyMap") {
     val cldrVersion = libs.versions.cldr.get()
@@ -127,9 +134,11 @@ tasks.register("generateDefaultCurrencyMap") {
                 }
             }
             buildString {
-                appendLine("internal val defaultCurrencyForCountry: Map<String, String> = mapOf(")
-                for ((regionCode, currency) in mapping) appendLine("    \"$regionCode\" to \"$currency\",")
-                appendLine(")")
+                appendLine("internal val defaultCurrencyForCountry: Map<String, String> by lazy {")
+                appendLine("    mapOf(")
+                for ((regionCode, currency) in mapping) appendLine("        \"$regionCode\" to \"$currency\",")
+                appendLine("    )")
+                appendLine("}")
             } to mapping.size
         }
         logger.lifecycle("Wrote $count entries to ${outputFile.relativeTo(rootDir)}")
@@ -162,9 +171,11 @@ tasks.register("generateAvailableLocales") {
             val full = (root["availableLocales"] as Map<String, Any>)["full"] as List<String>
             val tags = (full + defaultContent).filterNot { it == "root" }.toSortedSet().toList()
             buildString {
-                appendLine("internal val availableLocaleTags: List<String> = listOf(")
-                for (tag in tags) appendLine("    \"$tag\",")
-                appendLine(")")
+                appendLine("internal val availableLocaleTags: List<String> by lazy {")
+                appendLine("    listOf(")
+                for (tag in tags) appendLine("        \"$tag\",")
+                appendLine("    )")
+                appendLine("}")
             } to tags.size
         }
         logger.lifecycle("Wrote $count locale tags to ${outputFile.relativeTo(rootDir)}")

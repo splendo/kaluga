@@ -28,30 +28,11 @@ import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.media.MediaSurfaceBinder
 
 /**
- * macOS implementation — currently a placeholder.
+ * Hosts a platform-native video surface and binds the resulting [com.splendo.kaluga.media.MediaSurface]
+ * to [binder] (via [MediaSurfaceBinder.bind]); the surface is detached ([MediaSurfaceBinder.unbind]) on
+ * composition exit. Obtain [binder] from `MediaPlayer.surfaceBinder`.
  *
- * Compose Multiplatform ships two distinct macOS rendering paths:
- *
- * 1. **Compose Desktop on the JVM** (`org.jetbrains.compose.ui:ui-desktop`) — runs on the JVM
- *    via Skia/Skiko + AWT, and exposes `androidx.compose.ui.awt.ComposePanel` plus full Swing
- *    interop. AppKit/NSView interop is reachable here through Swing's heavyweight components.
- *
- * 2. **Compose Multiplatform Native macOS** (`org.jetbrains.compose.ui:ui-macosarm64`) — what
- *    this Kotlin/Native module compiles against. Renders directly via Skiko, no JVM, no AWT.
- *
- * The example app uses path (2) (Kotlin/Native macOS), and as of CMP **1.11.0** that path
- * defines `androidx.compose.ui.viewinterop.InteropView = typealias Any` and ships **no**
- * `@Composable fun NSView(...)` — verified by inspecting `ui-macosarm64-1.11.0-sources.jar`
- * (only `macosMain/androidx/compose/ui/appkit/Events.macos.kt` exists, providing `NSEvent`
- * access; no `NSView.macos.kt`). Importing `androidx.compose.ui.interop.NSView` produces
- * `Unresolved reference 'interop'`.
- *
- * The `awt`/`ComposePanel` API the user referenced is from the JVM Desktop variant and is not
- * available on the macOS-Native target.
- *
- * Until CMP-macOS-Native grows AppKit interop, the working path on macOS is to host an AppKit
- * `AVPlayerView` **outside** the Compose tree (e.g. SwiftUI/AppKit hosts that consume
- * `KalugaExample.framework`) and bind its surface via `MediaPlayer.surfaceBinder`.
+ * MacOS implementation — currently a placeholder as CMP for MacOs does not support interop with NSView.
  */
 @Composable
 actual fun MediaSurfaceContainer(binder: MediaSurfaceBinder, modifier: Modifier) {
