@@ -39,7 +39,7 @@ jobs:
         run: ./gradlew testDebugUnitTest testAndroidHostTest koverHtmlReport koverXmlReport
       - name: add coverage report to PR
         id: kover
-        uses: mi-kas/kover-report@v1
+        uses: mi-kas/kover-report@v2
         # this action fails if there is no report, unlike the above actions, so check if there are files
         if: ${{ always() && hashFiles(format('{0}/build/reports/kover/report.xml', github.workspace)) != '' }}
         with:
