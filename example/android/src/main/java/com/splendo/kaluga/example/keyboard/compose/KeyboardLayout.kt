@@ -48,11 +48,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.feature.keyboard.KeyboardViewModel
 import com.splendo.kaluga.keyboard.compose.ComposeFocusHandler
 import com.splendo.kaluga.keyboard.compose.ComposeKeyboardManager
 import com.splendo.kaluga.resources.compose.Composable
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 

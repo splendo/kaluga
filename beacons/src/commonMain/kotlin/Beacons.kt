@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
-import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.logging.Logger
@@ -96,13 +96,13 @@ private val defaultBeaconsDispatcher by lazy {
 
 /**
  * Default implementation of [Beacons]
- * @param bluetooth the [BluetoothService] managing bluetooth
+ * @param bluetooth the [BluetoothClient] managing bluetooth
  * @param beaconLifetime the [Duration] during which [BeaconInfo] is valid
  * @param logger the [Logger] to use for logging
  * @param coroutineContext the [CoroutineContext] beacons are monitored on
  */
 class DefaultBeacons(
-    private val bluetooth: BluetoothService,
+    private val bluetooth: BluetoothClient,
     private val beaconLifetime: Duration = 10.seconds,
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     coroutineContext: CoroutineContext = defaultBeaconsDispatcher,
@@ -116,7 +116,7 @@ class DefaultBeacons(
     private val monitoringLock = Mutex()
     private val updateLock = Mutex()
     private val cache = concurrentMutableMapOf<BeaconID, BeaconJob>()
-    private val cacheJob = Job()
+    private val cacheScope = CoroutineScope(coroutineContext + Job() + CoroutineName("Beacons.Cache"))
     private var monitoringJob: MutableStateFlow<Job?> = MutableStateFlow(null)
 
     private val _beacons = MutableStateFlow(emptySet<BeaconInfo>())
@@ -156,7 +156,7 @@ class DefaultBeacons(
                 } else {
                     debug(TAG, "[New] $beacon")
                 }
-                this[beacon.beaconID] = beacon to this@DefaultBeacons.launch(cacheJob) {
+                this[beacon.beaconID] = beacon to cacheScope.launch {
                     logger.debug(TAG, "[Added] $beacon")
                     delay(beacon.lastSeen + beaconLifetime - DefaultKalugaDate.now())
                     logger.debug(TAG, "[Lost] $beacon")

@@ -1,0 +1,9 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:media-compose>
+final fun com.splendo.kaluga.media.compose/MediaSurfaceContainer(com.splendo.kaluga.media/MediaSurfaceBinder, androidx.compose.ui/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.splendo.kaluga.media.compose/MediaSurfaceContainer|MediaSurfaceContainer(com.splendo.kaluga.media.MediaSurfaceBinder;androidx.compose.ui.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]

@@ -4,6 +4,11 @@ plugins {
 
 kaluga {
     moduleName = "permissions.bluetooth"
+    supportJS = true
+    supportWasmJS = true
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
     dependencies {
         android {
             main {

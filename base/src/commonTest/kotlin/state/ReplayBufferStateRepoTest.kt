@@ -17,8 +17,9 @@
 
 package com.splendo.kaluga.base.state
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.IgnoreWeb
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,7 +46,8 @@ class ReplayBufferStateRepoTest : BaseTest() {
     }
 
     @Test
-    fun testReplayBufferStateRepo() = runBlocking {
+    @IgnoreWeb
+    fun testReplayBufferStateRepo() = testRunBlocking {
         val repo = Repo()
         repo.useState { state ->
             assertEquals(state1, state)

@@ -5,9 +5,13 @@ plugins {
 
 kaluga {
     moduleName = "scientific.converter"
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
 
     supportJVM = true
     supportJS = true
+    supportWasmJS = true
 
     dependencies {
         common {

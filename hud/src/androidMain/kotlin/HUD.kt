@@ -36,10 +36,10 @@ import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.base.mainHandler
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleManagerObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine

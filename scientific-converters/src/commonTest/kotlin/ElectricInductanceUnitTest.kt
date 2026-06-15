@@ -35,9 +35,7 @@ import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class ElectricInductanceUnitTest {
 
     @Test

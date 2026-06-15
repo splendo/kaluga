@@ -17,6 +17,7 @@
 package com.splendo.kaluga.base
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 /**
  * The thread of execution

@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -24,7 +24,7 @@ abstract class com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter : c
     open fun showAsync(kotlin/Boolean, kotlin/Function1<com.splendo.kaluga.base.utils/KalugaDate?, kotlin/Unit>) // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.showAsync|showAsync(kotlin.Boolean;kotlin.Function1<com.splendo.kaluga.base.utils.KalugaDate?,kotlin.Unit>){}[0]
     open suspend fun show(kotlin/Boolean): com.splendo.kaluga.base.utils/KalugaDate? // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.show|show(kotlin.Boolean){}[0]
 
-    abstract class Builder : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder|null[0]
+    abstract class Builder : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder|null[0]
         constructor <init>() // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder.<init>|<init>(){}[0]
 
         abstract fun create(com.splendo.kaluga.datetimepicker/DateTimePicker, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder.create|create(com.splendo.kaluga.datetimepicker.DateTimePicker;kotlinx.coroutines.CoroutineScope){}[0]

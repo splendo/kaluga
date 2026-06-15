@@ -23,7 +23,7 @@ Create a `DefaultBeacons` object. This gives you access to a `Flow` of `Set<Beac
 
 ```kotlin
 val beacons = DefaultBeacons(
-    bluetooth = // Bluetooth
+    bluetooth = // BluetoothClient
     beaconLifetime = 10.seconds,
     coroutineContext = // CoroutineContext
 )

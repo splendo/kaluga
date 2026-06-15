@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.media
 import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaPlayer.Controls
 import com.splendo.kaluga.media.MediaSource
+import com.splendo.kaluga.media.MediaSurfaceBinder
 import com.splendo.kaluga.media.MediaSurfaceController
 import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackError
@@ -46,6 +47,8 @@ class MockMediaPlayer(
 ) : MediaPlayer,
     VolumeController by volumeController,
     MediaSurfaceController by mediaSurfaceController {
+
+    override val surfaceBinder: MediaSurfaceBinder = MediaSurfaceBinder()
 
     /**
      * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [initializeFor]

@@ -83,12 +83,12 @@ private fun AndroidTrackInfo.asTrackInfo(identifier: Int): TrackInfo = TrackInfo
 
 /**
  * Default implementation of [BaseMediaManager]
- * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+ * @param surfaceBinder a [MediaSurfaceBinder] whose bound [MediaSurface] is automatically passed to [renderVideoOnSurface]
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  * @param context the [Context] to access local resources
  */
-actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext, private val context: Context) :
-    BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
+actual class DefaultMediaManager(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext, private val context: Context) :
+    BaseMediaManager(surfaceBinder, coroutineContext) {
 
     /**
      * Builder for creating a [DefaultMediaManager]
@@ -96,12 +96,12 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     class Builder : BaseMediaManager.Builder {
 
         /** Creates [DefaultMediaManager] with the application context */
-        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): DefaultMediaManager =
-            create(mediaSurfaceProvider, coroutineContext, ApplicationHolder.applicationContext)
+        override fun create(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext): DefaultMediaManager =
+            create(surfaceBinder, coroutineContext, ApplicationHolder.applicationContext)
 
         /** Creates [DefaultMediaManager] */
-        fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext, context: Context): DefaultMediaManager = DefaultMediaManager(
-            mediaSurfaceProvider,
+        fun create(surfaceBinder: MediaSurfaceBinder?, coroutineContext: CoroutineContext, context: Context): DefaultMediaManager = DefaultMediaManager(
+            surfaceBinder,
             coroutineContext,
             context,
         )

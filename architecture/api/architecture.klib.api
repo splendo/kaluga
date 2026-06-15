@@ -1,6 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
-// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -44,7 +43,7 @@ abstract interface <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.ob
 
 abstract interface <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.observable/MutableDefaultInitialized : com.splendo.kaluga.architecture.observable/DefaultInitialized<#A, #B?>, com.splendo.kaluga.architecture.observable/WithMutableState<#A> // com.splendo.kaluga.architecture.observable/MutableDefaultInitialized|null[0]
 
-abstract interface <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/Navigator : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.architecture.navigation/Navigator|null[0]
+abstract interface <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/Navigator : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.architecture.navigation/Navigator|null[0]
     abstract fun navigate(#A) // com.splendo.kaluga.architecture.navigation/Navigator.navigate|navigate(1:0){}[0]
 }
 
@@ -86,8 +85,6 @@ abstract interface <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/
     abstract val valueDelegate // com.splendo.kaluga.architecture.observable/WithState.valueDelegate|{}valueDelegate[0]
         abstract fun <get-valueDelegate>(): kotlin.properties/ReadOnlyProperty<kotlin/Any?, #A> // com.splendo.kaluga.architecture.observable/WithState.valueDelegate.<get-valueDelegate>|<get-valueDelegate>(){}[0]
 }
-
-abstract interface com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable // com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable|null[0]
 
 abstract interface com.splendo.kaluga.architecture.observable/Disposable { // com.splendo.kaluga.architecture.observable/Disposable|null[0]
     abstract fun addTo(com.splendo.kaluga.architecture.observable/DisposeBag) // com.splendo.kaluga.architecture.observable/Disposable.addTo|addTo(com.splendo.kaluga.architecture.observable.DisposeBag){}[0]
@@ -272,6 +269,14 @@ abstract class <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/Base
         final fun <get-platformSubjectObserver>(): com.splendo.kaluga.architecture.observable/PlatformSubjectObserver<#A> // com.splendo.kaluga.architecture.observable/BaseUninitializedSubject.platformSubjectObserver.<get-platformSubjectObserver>|<get-platformSubjectObserver>(){}[0]
 }
 
+abstract class com.splendo.kaluga.architecture.observable/BaseSimpleDisposable : com.splendo.kaluga.architecture.observable/Disposable, kotlinx.atomicfu.locks/SynchronizedObject { // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable|null[0]
+    constructor <init>(kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.<init>|<init>(kotlin.Function0<kotlin.Unit>){}[0]
+
+    open fun addTo(com.splendo.kaluga.architecture.observable/DisposeBag) // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.addTo|addTo(com.splendo.kaluga.architecture.observable.DisposeBag){}[0]
+    open fun afterDispose() // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.afterDispose|afterDispose(){}[0]
+    open fun dispose() // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.dispose|dispose(){}[0]
+}
+
 final class <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.observable/DefaultFlowObservable : com.splendo.kaluga.architecture.observable/BaseDefaultObservable<#A, #B?> { // com.splendo.kaluga.architecture.observable/DefaultFlowObservable|null[0]
     constructor <init>(#A, #B? = ..., kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ..., kotlinx.coroutines.flow/Flow<#B?>, com.splendo.kaluga.architecture.observable/ObservationDefault<#A, #B?> = ...) // com.splendo.kaluga.architecture.observable/DefaultFlowObservable.<init>|<init>(1:0;1:1?;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext;kotlinx.coroutines.flow.Flow<1:1?>;com.splendo.kaluga.architecture.observable.ObservationDefault<1:0,1:1?>){}[0]
 }
@@ -292,6 +297,21 @@ final class <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.observabl
 
     final fun post(#B?) // com.splendo.kaluga.architecture.observable/SimpleDefaultSubject.post|post(1:1?){}[0]
     final suspend fun set(#B?) // com.splendo.kaluga.architecture.observable/SimpleDefaultSubject.set|set(1:1?){}[0]
+}
+
+final class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/DefaultNavigator : com.splendo.kaluga.architecture.navigation/Navigator<#A> { // com.splendo.kaluga.architecture.navigation/DefaultNavigator|null[0]
+    constructor <init>(kotlin/Function1<#A, kotlin/Unit>) // com.splendo.kaluga.architecture.navigation/DefaultNavigator.<init>|<init>(kotlin.Function1<1:0,kotlin.Unit>){}[0]
+
+    final val onAction // com.splendo.kaluga.architecture.navigation/DefaultNavigator.onAction|{}onAction[0]
+        final fun <get-onAction>(): kotlin/Function1<#A, kotlin/Unit> // com.splendo.kaluga.architecture.navigation/DefaultNavigator.onAction.<get-onAction>|<get-onAction>(){}[0]
+
+    final fun navigate(#A) // com.splendo.kaluga.architecture.navigation/DefaultNavigator.navigate|navigate(1:0){}[0]
+}
+
+final class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/ViewControllerNavigator : com.splendo.kaluga.architecture.navigation/Navigator<#A> { // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator|null[0]
+    constructor <init>(platform.UIKit/UIViewController, kotlin/Function1<#A, com.splendo.kaluga.architecture.navigation/NavigationSpec>) // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator.<init>|<init>(platform.UIKit.UIViewController;kotlin.Function1<1:0,com.splendo.kaluga.architecture.navigation.NavigationSpec>){}[0]
+
+    final fun navigate(#A) // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator.navigate|navigate(1:0){}[0]
 }
 
 final class <#A: com.splendo.kaluga.architecture.navigation/NavigationBundleSpecRow<*>> com.splendo.kaluga.architecture.navigation/NavigationBundle { // com.splendo.kaluga.architecture.navigation/NavigationBundle|null[0]
@@ -377,6 +397,32 @@ final class <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/SimpleI
     final suspend fun set(#A) // com.splendo.kaluga.architecture.observable/SimpleInitializedSubject.set|set(1:0){}[0]
 }
 
+final class com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException { // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException|null[0]
+    constructor <init>(kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType>) // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.<init>|<init>(kotlin.collections.Set<com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType>){}[0]
+
+    final val types // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.types|{}types[0]
+        final fun <get-types>(): kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType> // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.types.<get-types>|<get-types>(){}[0]
+
+    final fun component1(): kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType> // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.component1|component1(){}[0]
+    final fun copy(kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType> = ...): com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.copy|copy(kotlin.collections.Set<com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException { // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException|null[0]
+    constructor <init>(platform.UIKit/UIImagePickerControllerSourceType) // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.<init>|<init>(platform.UIKit.UIImagePickerControllerSourceType){}[0]
+
+    final val source // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.source|{}source[0]
+        final fun <get-source>(): platform.UIKit/UIImagePickerControllerSourceType // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.source.<get-source>|<get-source>(){}[0]
+
+    final fun component1(): platform.UIKit/UIImagePickerControllerSourceType // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.component1|component1(){}[0]
+    final fun copy(platform.UIKit/UIImagePickerControllerSourceType = ...): com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.copy|copy(platform.UIKit.UIImagePickerControllerSourceType){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.toString|toString(){}[0]
+}
+
 final class com.splendo.kaluga.architecture.navigation/NavigationBundleGetError : kotlin/Exception { // com.splendo.kaluga.architecture.navigation/NavigationBundleGetError|null[0]
     constructor <init>() // com.splendo.kaluga.architecture.navigation/NavigationBundleGetError.<init>|<init>(){}[0]
 }
@@ -392,6 +438,10 @@ final class com.splendo.kaluga.architecture.observable/DisposeBag : com.splendo.
 
 final class com.splendo.kaluga.architecture.observable/SimpleDisposable : com.splendo.kaluga.architecture.observable/BaseSimpleDisposable { // com.splendo.kaluga.architecture.observable/SimpleDisposable|null[0]
     constructor <init>(kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.architecture.observable/SimpleDisposable.<init>|<init>(kotlin.Function0<kotlin.Unit>){}[0]
+}
+
+final class com.splendo.kaluga.architecture.viewmodel/LifecycleManager { // com.splendo.kaluga.architecture.viewmodel/LifecycleManager|null[0]
+    final fun unbind() // com.splendo.kaluga.architecture.viewmodel/LifecycleManager.unbind|unbind(){}[0]
 }
 
 open class <#A: #B, #B: kotlin/Any?, #C: com.splendo.kaluga.architecture.observable/ObservableOptional<#A>> com.splendo.kaluga.architecture.observable/Observation : com.splendo.kaluga.architecture.observable/Initial<#A, #B> { // com.splendo.kaluga.architecture.observable/Observation|null[0]
@@ -460,7 +510,7 @@ open class <#A: #B?, #B: kotlin/Any?> com.splendo.kaluga.architecture.observable
 }
 
 open class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel : com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel { // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel|null[0]
-    constructor <init>(com.splendo.kaluga.architecture.navigation/Navigator<#A>, kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.<init>|<init>(com.splendo.kaluga.architecture.navigation.Navigator<1:0>;kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    constructor <init>(com.splendo.kaluga.architecture.navigation/Navigator<#A>, kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.<init>|<init>(com.splendo.kaluga.architecture.navigation.Navigator<1:0>;kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
 
     final val navigator // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.navigator|{}navigator[0]
         final fun <get-navigator>(): com.splendo.kaluga.architecture.navigation/Navigator<#A> // com.splendo.kaluga.architecture.viewmodel/NavigatingViewModel.navigator.<get-navigator>|<get-navigator>(){}[0]
@@ -549,15 +599,15 @@ open class com.splendo.kaluga.architecture.navigation/NavigationException : kotl
 }
 
 open class com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel : com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel { // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel|null[0]
-    constructor <init>(kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.<init>|<init>(kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    constructor <init>(kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.<init>|<init>(kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
 
     final val activeLifecycleSubscribables // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.activeLifecycleSubscribables|{}activeLifecycleSubscribables[0]
-        final fun <get-activeLifecycleSubscribables>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Set<com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>> // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.activeLifecycleSubscribables.<get-activeLifecycleSubscribables>|<get-activeLifecycleSubscribables>(){}[0]
+        final fun <get-activeLifecycleSubscribables>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Set<com.splendo.kaluga.lifecycle/LifecycleSubscribable>> // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.activeLifecycleSubscribables.<get-activeLifecycleSubscribables>|<get-activeLifecycleSubscribables>(){}[0]
 
-    final fun addLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.addLifecycleSubscribables|addLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    final fun addLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.addLifecycleSubscribables|addLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
     final fun didPause() // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.didPause|didPause(){}[0]
     final fun didResume() // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.didResume|didResume(){}[0]
-    final fun removeLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.removeLifecycleSubscribables|removeLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable>...){}[0]
+    final fun removeLifecycleSubscribables(kotlin/Array<out com.splendo.kaluga.lifecycle/LifecycleSubscribable>...) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.removeLifecycleSubscribables|removeLifecycleSubscribables(kotlin.Array<out|com.splendo.kaluga.lifecycle.LifecycleSubscribable>...){}[0]
     open fun onPause() // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.onPause|onPause(){}[0]
     open fun onResume(kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel.onResume|onResume(kotlinx.coroutines.CoroutineScope){}[0]
 }
@@ -1066,89 +1116,6 @@ sealed class <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/Observ
     }
 }
 
-final fun <#A: #B, #B: kotlin/Any?, #C: com.splendo.kaluga.architecture.observable/ObservableOptional<#A>> (com.splendo.kaluga.architecture.observable/BasicSubject<#A, #B, #C>).com.splendo.kaluga.architecture.observable/bind(kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.architecture.observable/bind|bind@com.splendo.kaluga.architecture.observable.BasicSubject<0:0,0:1,0:2>(kotlinx.coroutines.CoroutineScope){0§<0:1>;1§<kotlin.Any?>;2§<com.splendo.kaluga.architecture.observable.ObservableOptional<0:0>>}[0]
-final fun <#A: #B, #B: kotlin/Any?, #C: com.splendo.kaluga.architecture.observable/ObservableOptional<#A>> com.splendo.kaluga.architecture.observable/observeFlow(com.splendo.kaluga.architecture.observable/Observation<#A, #B, #C>, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ..., kotlinx.coroutines.flow/Flow<#B>) // com.splendo.kaluga.architecture.observable/observeFlow|observeFlow(com.splendo.kaluga.architecture.observable.Observation<0:0,0:1,0:2>;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext;kotlinx.coroutines.flow.Flow<0:1>){0§<0:1>;1§<kotlin.Any?>;2§<com.splendo.kaluga.architecture.observable.ObservableOptional<0:0>>}[0]
-final fun <#A: #B, #B: kotlin/Any?> (com.splendo.kaluga.architecture.observable/ObservableOptional<#B>).com.splendo.kaluga.architecture.observable/asResult(com.splendo.kaluga.architecture.observable/ObservableOptional.Value<#A>?): com.splendo.kaluga.architecture.observable/ObservableOptional<#A> // com.splendo.kaluga.architecture.observable/asResult|asResult@com.splendo.kaluga.architecture.observable.ObservableOptional<0:1>(com.splendo.kaluga.architecture.observable.ObservableOptional.Value<0:0>?){0§<0:1>;1§<kotlin.Any?>}[0]
-final fun <#A: #B, #B: kotlin/Any?> (kotlin.properties/ReadOnlyProperty<kotlin/Any?, #B?>).com.splendo.kaluga.architecture.observable/toDefaultObservable(#A): com.splendo.kaluga.architecture.observable/ReadOnlyPropertyDefaultObservable<#A, #B?> // com.splendo.kaluga.architecture.observable/toDefaultObservable|toDefaultObservable@kotlin.properties.ReadOnlyProperty<kotlin.Any?,0:1?>(0:0){0§<0:1>;1§<kotlin.Any?>}[0]
-final fun <#A: #B, #B: kotlin/Any?> (kotlin.properties/ReadWriteProperty<kotlin/Any?, #B?>).com.splendo.kaluga.architecture.observable/toDefaultSubject(#A, kotlinx.coroutines/CoroutineScope? = ..., kotlin.coroutines/CoroutineContext? = ...): com.splendo.kaluga.architecture.observable/ReadWritePropertyDefaultSubject<#A, #B?> // com.splendo.kaluga.architecture.observable/toDefaultSubject|toDefaultSubject@kotlin.properties.ReadWriteProperty<kotlin.Any?,0:1?>(0:0;kotlinx.coroutines.CoroutineScope?;kotlin.coroutines.CoroutineContext?){0§<0:1>;1§<kotlin.Any?>}[0]
-final fun <#A: #B, #B: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#B?>).com.splendo.kaluga.architecture.observable/toDefaultObservable(#A, #B? = ..., kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/DefaultFlowObservable<#A, #B> // com.splendo.kaluga.architecture.observable/toDefaultObservable|toDefaultObservable@kotlinx.coroutines.flow.Flow<0:1?>(0:0;0:1?;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<0:1>;1§<kotlin.Any?>}[0]
-final fun <#A: #B, #B: kotlin/Any?> (kotlinx.coroutines.flow/MutableStateFlow<#B?>).com.splendo.kaluga.architecture.observable/toDefaultSubject(#A, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/StateFlowDefaultSubject<#A, #B> // com.splendo.kaluga.architecture.observable/toDefaultSubject|toDefaultSubject@kotlinx.coroutines.flow.MutableStateFlow<0:1?>(0:0;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<0:1>;1§<kotlin.Any?>}[0]
-final fun <#A: #B?, #B: kotlin/Any?> (kotlinx.coroutines.flow/MutableSharedFlow<#B?>).com.splendo.kaluga.architecture.observable/toDefaultSubject(#A, #B? = ..., kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/SharedFlowDefaultSubject<#A, #B?> // com.splendo.kaluga.architecture.observable/toDefaultSubject|toDefaultSubject@kotlinx.coroutines.flow.MutableSharedFlow<0:1?>(0:0;0:1?;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<0:1?>;1§<kotlin.Any?>}[0]
-final fun <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> (com.splendo.kaluga.architecture.navigation/Navigator<#A>).com.splendo.kaluga.architecture.navigation/navigateOrElse(#A, kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.architecture.navigation/navigateOrElse|navigateOrElse@com.splendo.kaluga.architecture.navigation.Navigator<0:0>(0:0;kotlin.Function0<kotlin.Unit>){0§<com.splendo.kaluga.architecture.navigation.NavigationAction<*>>}[0]
-final fun <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> (com.splendo.kaluga.architecture.navigation/Navigator<#A>).com.splendo.kaluga.architecture.navigation/navigateWithSuccess(#A): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/navigateWithSuccess|navigateWithSuccess@com.splendo.kaluga.architecture.navigation.Navigator<0:0>(0:0){0§<com.splendo.kaluga.architecture.navigation.NavigationAction<*>>}[0]
-final fun <#A: com.splendo.kaluga.architecture.navigation/NavigationBundleSpecRow<*>> (com.splendo.kaluga.architecture.navigation/NavigationBundleSpec<#A>).com.splendo.kaluga.architecture.navigation/toBundle(kotlin/Function1<#A, com.splendo.kaluga.architecture.navigation/NavigationBundleValue<*>>): com.splendo.kaluga.architecture.navigation/NavigationBundle<#A> // com.splendo.kaluga.architecture.navigation/toBundle|toBundle@com.splendo.kaluga.architecture.navigation.NavigationBundleSpec<0:0>(kotlin.Function1<0:0,com.splendo.kaluga.architecture.navigation.NavigationBundleValue<*>>){0§<com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow<*>>}[0]
-final fun <#A: kotlin/Any?> (kotlin.properties/ReadOnlyProperty<kotlin/Any?, #A>).com.splendo.kaluga.architecture.observable/toInitializedObservable(): com.splendo.kaluga.architecture.observable/ReadOnlyPropertyInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/toInitializedObservable|toInitializedObservable@kotlin.properties.ReadOnlyProperty<kotlin.Any?,0:0>(){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> (kotlin.properties/ReadWriteProperty<kotlin/Any?, #A>).com.splendo.kaluga.architecture.observable/toInitializedSubject(kotlinx.coroutines/CoroutineScope? = ..., kotlin.coroutines/CoroutineContext? = ...): com.splendo.kaluga.architecture.observable/ReadWritePropertyInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/toInitializedSubject|toInitializedSubject@kotlin.properties.ReadWriteProperty<kotlin.Any?,0:0>(kotlinx.coroutines.CoroutineScope?;kotlin.coroutines.CoroutineContext?){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.architecture.observable/toInitializedObservable(#A, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/FlowInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/toInitializedObservable|toInitializedObservable@kotlinx.coroutines.flow.Flow<0:0>(0:0;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.architecture.observable/toUninitializedObservable(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/FlowObservable<#A> // com.splendo.kaluga.architecture.observable/toUninitializedObservable|toUninitializedObservable@kotlinx.coroutines.flow.Flow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableSharedFlow<#A>).com.splendo.kaluga.architecture.observable/toInitializedSubject(#A, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/SharedFlowInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/toInitializedSubject|toInitializedSubject@kotlinx.coroutines.flow.MutableSharedFlow<0:0>(0:0;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableSharedFlow<#A>).com.splendo.kaluga.architecture.observable/toUninitializedSubject(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/SharedFlowSubject<#A> // com.splendo.kaluga.architecture.observable/toUninitializedSubject|toUninitializedSubject@kotlinx.coroutines.flow.MutableSharedFlow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableStateFlow<#A>).com.splendo.kaluga.architecture.observable/toInitializedObservable(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/FlowInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/toInitializedObservable|toInitializedObservable@kotlinx.coroutines.flow.MutableStateFlow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableStateFlow<#A>).com.splendo.kaluga.architecture.observable/toInitializedSubject(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/StateFlowInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/toInitializedSubject|toInitializedSubject@kotlinx.coroutines.flow.MutableStateFlow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/observableOf(#A): com.splendo.kaluga.architecture.observable/SimpleInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/observableOf|observableOf(0:0){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/subjectOf(#A): com.splendo.kaluga.architecture.observable/SimpleInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/subjectOf|subjectOf(0:0){0§<kotlin.Any?>}[0]
-final inline fun <#A: reified #B, #B: kotlin/Any?> (com.splendo.kaluga.architecture.observable/ObservableOptional<#B>).com.splendo.kaluga.architecture.observable/resultValueOrDefault(#A): #A // com.splendo.kaluga.architecture.observable/resultValueOrDefault|resultValueOrDefault@com.splendo.kaluga.architecture.observable.ObservableOptional<0:1>(0:0){0§<0:1>;1§<kotlin.Any?>}[0]
-
-// Targets: [ios]
-abstract class com.splendo.kaluga.architecture.observable/BaseSimpleDisposable : com.splendo.kaluga.architecture.observable/Disposable, kotlinx.atomicfu.locks/SynchronizedObject { // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable|null[0]
-    constructor <init>(kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.<init>|<init>(kotlin.Function0<kotlin.Unit>){}[0]
-
-    open fun addTo(com.splendo.kaluga.architecture.observable/DisposeBag) // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.addTo|addTo(com.splendo.kaluga.architecture.observable.DisposeBag){}[0]
-    open fun afterDispose() // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.afterDispose|afterDispose(){}[0]
-    open fun dispose() // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.dispose|dispose(){}[0]
-}
-
-// Targets: [ios]
-final class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/DefaultNavigator : com.splendo.kaluga.architecture.navigation/Navigator<#A> { // com.splendo.kaluga.architecture.navigation/DefaultNavigator|null[0]
-    constructor <init>(kotlin/Function1<#A, kotlin/Unit>) // com.splendo.kaluga.architecture.navigation/DefaultNavigator.<init>|<init>(kotlin.Function1<1:0,kotlin.Unit>){}[0]
-
-    final val onAction // com.splendo.kaluga.architecture.navigation/DefaultNavigator.onAction|{}onAction[0]
-        final fun <get-onAction>(): kotlin/Function1<#A, kotlin/Unit> // com.splendo.kaluga.architecture.navigation/DefaultNavigator.onAction.<get-onAction>|<get-onAction>(){}[0]
-
-    final fun navigate(#A) // com.splendo.kaluga.architecture.navigation/DefaultNavigator.navigate|navigate(1:0){}[0]
-}
-
-// Targets: [ios]
-final class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.architecture.navigation/ViewControllerNavigator : com.splendo.kaluga.architecture.navigation/Navigator<#A> { // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator|null[0]
-    constructor <init>(platform.UIKit/UIViewController, kotlin/Function1<#A, com.splendo.kaluga.architecture.navigation/NavigationSpec>) // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator.<init>|<init>(platform.UIKit.UIViewController;kotlin.Function1<1:0,com.splendo.kaluga.architecture.navigation.NavigationSpec>){}[0]
-
-    final fun navigate(#A) // com.splendo.kaluga.architecture.navigation/ViewControllerNavigator.navigate|navigate(1:0){}[0]
-}
-
-// Targets: [ios]
-final class com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException { // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException|null[0]
-    constructor <init>(kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType>) // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.<init>|<init>(kotlin.collections.Set<com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType>){}[0]
-
-    final val types // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.types|{}types[0]
-        final fun <get-types>(): kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType> // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.types.<get-types>|<get-types>(){}[0]
-
-    final fun component1(): kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType> // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.component1|component1(){}[0]
-    final fun copy(kotlin.collections/Set<com.splendo.kaluga.architecture.navigation/NavigationSpec.ImagePicker.MediaType> = ...): com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.copy|copy(kotlin.collections.Set<com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType>){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/ImagePickerMediaNotAvailableNavigationException.toString|toString(){}[0]
-}
-
-// Targets: [ios]
-final class com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException { // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException|null[0]
-    constructor <init>(platform.UIKit/UIImagePickerControllerSourceType) // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.<init>|<init>(platform.UIKit.UIImagePickerControllerSourceType){}[0]
-
-    final val source // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.source|{}source[0]
-        final fun <get-source>(): platform.UIKit/UIImagePickerControllerSourceType // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.source.<get-source>|<get-source>(){}[0]
-
-    final fun component1(): platform.UIKit/UIImagePickerControllerSourceType // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.component1|component1(){}[0]
-    final fun copy(platform.UIKit/UIImagePickerControllerSourceType = ...): com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.copy|copy(platform.UIKit.UIImagePickerControllerSourceType){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/ImagePickerSourceNotAvailableNavigationException.toString|toString(){}[0]
-}
-
-// Targets: [ios]
-final class com.splendo.kaluga.architecture.viewmodel/LifecycleManager { // com.splendo.kaluga.architecture.viewmodel/LifecycleManager|null[0]
-    final fun unbind() // com.splendo.kaluga.architecture.viewmodel/LifecycleManager.unbind|unbind(){}[0]
-}
-
-// Targets: [ios]
 sealed class com.splendo.kaluga.architecture.navigation/NavigationSpec { // com.splendo.kaluga.architecture.navigation/NavigationSpec|null[0]
     final class Browser : com.splendo.kaluga.architecture.navigation/NavigationSpec { // com.splendo.kaluga.architecture.navigation/NavigationSpec.Browser|null[0]
         constructor <init>(platform.Foundation/NSURL, com.splendo.kaluga.architecture.navigation/NavigationSpec.Browser.Type) // com.splendo.kaluga.architecture.navigation/NavigationSpec.Browser.<init>|<init>(platform.Foundation.NSURL;com.splendo.kaluga.architecture.navigation.NavigationSpec.Browser.Type){}[0]
@@ -1791,26 +1758,34 @@ sealed class com.splendo.kaluga.architecture.navigation/NavigationSpec { // com.
     }
 }
 
-// Targets: [ios]
 final object com.splendo.kaluga.architecture.navigation/MailNotSupportedNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/MailNotSupportedNavigationException|null[0]
 
-// Targets: [ios]
 final object com.splendo.kaluga.architecture.navigation/MissingNavigationControllerNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/MissingNavigationControllerNavigationException|null[0]
 
-// Targets: [ios]
 final object com.splendo.kaluga.architecture.navigation/MissingViewControllerNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/MissingViewControllerNavigationException|null[0]
 
-// Targets: [ios]
 final object com.splendo.kaluga.architecture.navigation/TextNotSupportedNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException // com.splendo.kaluga.architecture.navigation/TextNotSupportedNavigationException|null[0]
 
-// Targets: [ios]
+final fun <#A: #B, #B: kotlin/Any?, #C: com.splendo.kaluga.architecture.observable/ObservableOptional<#A>> (com.splendo.kaluga.architecture.observable/BasicSubject<#A, #B, #C>).com.splendo.kaluga.architecture.observable/bind(kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.architecture.observable/bind|bind@com.splendo.kaluga.architecture.observable.BasicSubject<0:0,0:1,0:2>(kotlinx.coroutines.CoroutineScope){0§<0:1>;1§<kotlin.Any?>;2§<com.splendo.kaluga.architecture.observable.ObservableOptional<0:0>>}[0]
+final fun <#A: #B, #B: kotlin/Any?, #C: com.splendo.kaluga.architecture.observable/ObservableOptional<#A>> com.splendo.kaluga.architecture.observable/observeFlow(com.splendo.kaluga.architecture.observable/Observation<#A, #B, #C>, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ..., kotlinx.coroutines.flow/Flow<#B>) // com.splendo.kaluga.architecture.observable/observeFlow|observeFlow(com.splendo.kaluga.architecture.observable.Observation<0:0,0:1,0:2>;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext;kotlinx.coroutines.flow.Flow<0:1>){0§<0:1>;1§<kotlin.Any?>;2§<com.splendo.kaluga.architecture.observable.ObservableOptional<0:0>>}[0]
+final fun <#A: #B, #B: kotlin/Any?> (com.splendo.kaluga.architecture.observable/ObservableOptional<#B>).com.splendo.kaluga.architecture.observable/asResult(com.splendo.kaluga.architecture.observable/ObservableOptional.Value<#A>?): com.splendo.kaluga.architecture.observable/ObservableOptional<#A> // com.splendo.kaluga.architecture.observable/asResult|asResult@com.splendo.kaluga.architecture.observable.ObservableOptional<0:1>(com.splendo.kaluga.architecture.observable.ObservableOptional.Value<0:0>?){0§<0:1>;1§<kotlin.Any?>}[0]
+final fun <#A: #B, #B: kotlin/Any?> (kotlin.properties/ReadOnlyProperty<kotlin/Any?, #B?>).com.splendo.kaluga.architecture.observable/toDefaultObservable(#A): com.splendo.kaluga.architecture.observable/ReadOnlyPropertyDefaultObservable<#A, #B?> // com.splendo.kaluga.architecture.observable/toDefaultObservable|toDefaultObservable@kotlin.properties.ReadOnlyProperty<kotlin.Any?,0:1?>(0:0){0§<0:1>;1§<kotlin.Any?>}[0]
+final fun <#A: #B, #B: kotlin/Any?> (kotlin.properties/ReadWriteProperty<kotlin/Any?, #B?>).com.splendo.kaluga.architecture.observable/toDefaultSubject(#A, kotlinx.coroutines/CoroutineScope? = ..., kotlin.coroutines/CoroutineContext? = ...): com.splendo.kaluga.architecture.observable/ReadWritePropertyDefaultSubject<#A, #B?> // com.splendo.kaluga.architecture.observable/toDefaultSubject|toDefaultSubject@kotlin.properties.ReadWriteProperty<kotlin.Any?,0:1?>(0:0;kotlinx.coroutines.CoroutineScope?;kotlin.coroutines.CoroutineContext?){0§<0:1>;1§<kotlin.Any?>}[0]
+final fun <#A: #B, #B: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#B?>).com.splendo.kaluga.architecture.observable/toDefaultObservable(#A, #B? = ..., kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/DefaultFlowObservable<#A, #B> // com.splendo.kaluga.architecture.observable/toDefaultObservable|toDefaultObservable@kotlinx.coroutines.flow.Flow<0:1?>(0:0;0:1?;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<0:1>;1§<kotlin.Any?>}[0]
+final fun <#A: #B, #B: kotlin/Any?> (kotlinx.coroutines.flow/MutableStateFlow<#B?>).com.splendo.kaluga.architecture.observable/toDefaultSubject(#A, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/StateFlowDefaultSubject<#A, #B> // com.splendo.kaluga.architecture.observable/toDefaultSubject|toDefaultSubject@kotlinx.coroutines.flow.MutableStateFlow<0:1?>(0:0;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<0:1>;1§<kotlin.Any?>}[0]
+final fun <#A: #B?, #B: kotlin/Any?> (kotlinx.coroutines.flow/MutableSharedFlow<#B?>).com.splendo.kaluga.architecture.observable/toDefaultSubject(#A, #B? = ..., kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/SharedFlowDefaultSubject<#A, #B?> // com.splendo.kaluga.architecture.observable/toDefaultSubject|toDefaultSubject@kotlinx.coroutines.flow.MutableSharedFlow<0:1?>(0:0;0:1?;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<0:1?>;1§<kotlin.Any?>}[0]
+final fun <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> (com.splendo.kaluga.architecture.navigation/Navigator<#A>).com.splendo.kaluga.architecture.navigation/navigateOrElse(#A, kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.architecture.navigation/navigateOrElse|navigateOrElse@com.splendo.kaluga.architecture.navigation.Navigator<0:0>(0:0;kotlin.Function0<kotlin.Unit>){0§<com.splendo.kaluga.architecture.navigation.NavigationAction<*>>}[0]
+final fun <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> (com.splendo.kaluga.architecture.navigation/Navigator<#A>).com.splendo.kaluga.architecture.navigation/navigateWithSuccess(#A): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/navigateWithSuccess|navigateWithSuccess@com.splendo.kaluga.architecture.navigation.Navigator<0:0>(0:0){0§<com.splendo.kaluga.architecture.navigation.NavigationAction<*>>}[0]
+final fun <#A: com.splendo.kaluga.architecture.navigation/NavigationBundleSpecRow<*>> (com.splendo.kaluga.architecture.navigation/NavigationBundleSpec<#A>).com.splendo.kaluga.architecture.navigation/toBundle(kotlin/Function1<#A, com.splendo.kaluga.architecture.navigation/NavigationBundleValue<*>>): com.splendo.kaluga.architecture.navigation/NavigationBundle<#A> // com.splendo.kaluga.architecture.navigation/toBundle|toBundle@com.splendo.kaluga.architecture.navigation.NavigationBundleSpec<0:0>(kotlin.Function1<0:0,com.splendo.kaluga.architecture.navigation.NavigationBundleValue<*>>){0§<com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow<*>>}[0]
 final fun <#A: com.splendo.kaluga.architecture.viewmodel/BaseLifecycleViewModel> (#A).com.splendo.kaluga.architecture.viewmodel/addLifecycleManager(platform.UIKit/UIViewController, kotlin/Function0<kotlin.collections/List<com.splendo.kaluga.architecture.observable/Disposable>>): com.splendo.kaluga.architecture.viewmodel/LifecycleManager // com.splendo.kaluga.architecture.viewmodel/addLifecycleManager|addLifecycleManager@0:0(platform.UIKit.UIViewController;kotlin.Function0<kotlin.collections.List<com.splendo.kaluga.architecture.observable.Disposable>>){0§<com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel>}[0]
-
-// Targets: [js]
-abstract class com.splendo.kaluga.architecture.observable/BaseSimpleDisposable : com.splendo.kaluga.architecture.observable/Disposable { // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable|null[0]
-    constructor <init>(kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.<init>|<init>(kotlin.Function0<kotlin.Unit>){}[0]
-
-    open fun addTo(com.splendo.kaluga.architecture.observable/DisposeBag) // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.addTo|addTo(com.splendo.kaluga.architecture.observable.DisposeBag){}[0]
-    open fun afterDispose() // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.afterDispose|afterDispose(){}[0]
-    open fun dispose() // com.splendo.kaluga.architecture.observable/BaseSimpleDisposable.dispose|dispose(){}[0]
-}
+final fun <#A: kotlin/Any?> (kotlin.properties/ReadOnlyProperty<kotlin/Any?, #A>).com.splendo.kaluga.architecture.observable/toInitializedObservable(): com.splendo.kaluga.architecture.observable/ReadOnlyPropertyInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/toInitializedObservable|toInitializedObservable@kotlin.properties.ReadOnlyProperty<kotlin.Any?,0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlin.properties/ReadWriteProperty<kotlin/Any?, #A>).com.splendo.kaluga.architecture.observable/toInitializedSubject(kotlinx.coroutines/CoroutineScope? = ..., kotlin.coroutines/CoroutineContext? = ...): com.splendo.kaluga.architecture.observable/ReadWritePropertyInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/toInitializedSubject|toInitializedSubject@kotlin.properties.ReadWriteProperty<kotlin.Any?,0:0>(kotlinx.coroutines.CoroutineScope?;kotlin.coroutines.CoroutineContext?){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.architecture.observable/toInitializedObservable(#A, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/FlowInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/toInitializedObservable|toInitializedObservable@kotlinx.coroutines.flow.Flow<0:0>(0:0;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.architecture.observable/toUninitializedObservable(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/FlowObservable<#A> // com.splendo.kaluga.architecture.observable/toUninitializedObservable|toUninitializedObservable@kotlinx.coroutines.flow.Flow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableSharedFlow<#A>).com.splendo.kaluga.architecture.observable/toInitializedSubject(#A, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/SharedFlowInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/toInitializedSubject|toInitializedSubject@kotlinx.coroutines.flow.MutableSharedFlow<0:0>(0:0;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableSharedFlow<#A>).com.splendo.kaluga.architecture.observable/toUninitializedSubject(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/SharedFlowSubject<#A> // com.splendo.kaluga.architecture.observable/toUninitializedSubject|toUninitializedSubject@kotlinx.coroutines.flow.MutableSharedFlow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableStateFlow<#A>).com.splendo.kaluga.architecture.observable/toInitializedObservable(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/FlowInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/toInitializedObservable|toInitializedObservable@kotlinx.coroutines.flow.MutableStateFlow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableStateFlow<#A>).com.splendo.kaluga.architecture.observable/toInitializedSubject(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.architecture.observable/StateFlowInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/toInitializedSubject|toInitializedSubject@kotlinx.coroutines.flow.MutableStateFlow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/observableOf(#A): com.splendo.kaluga.architecture.observable/SimpleInitializedObservable<#A> // com.splendo.kaluga.architecture.observable/observableOf|observableOf(0:0){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.splendo.kaluga.architecture.observable/subjectOf(#A): com.splendo.kaluga.architecture.observable/SimpleInitializedSubject<#A> // com.splendo.kaluga.architecture.observable/subjectOf|subjectOf(0:0){0§<kotlin.Any?>}[0]
+final inline fun <#A: reified #B, #B: kotlin/Any?> (com.splendo.kaluga.architecture.observable/ObservableOptional<#B>).com.splendo.kaluga.architecture.observable/resultValueOrDefault(#A): #A // com.splendo.kaluga.architecture.observable/resultValueOrDefault|resultValueOrDefault@com.splendo.kaluga.architecture.observable.ObservableOptional<0:1>(0:0){0§<0:1>;1§<kotlin.Any?>}[0]

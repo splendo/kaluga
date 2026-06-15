@@ -36,9 +36,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.shared.viewmodel.hud.HudViewModel
+import com.splendo.kaluga.example.feature.hud.HudViewModel
 import com.splendo.kaluga.resources.compose.Composable
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 class ComposeLoadingActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug

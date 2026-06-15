@@ -6,9 +6,6 @@ plugins {
 
 kaluga {
     moduleName = "architecture"
-
-    supportJVM = true
-    supportJS = true
     dependencies {
         android {
             main {
@@ -23,11 +20,13 @@ kaluga {
         common {
             main {
                 implementation(project(":base", ""))
+                api(project(":lifecycle", ""))
                 api(libs.kotlinx.serialization.core)
                 api(libs.kotlinx.serialization.json)
             }
             test {
                 implementation(project(":test-utils-architecture", ""))
+                implementation(project(":test-utils-lifecycle", ""))
             }
         }
         js {

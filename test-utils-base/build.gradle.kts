@@ -8,6 +8,10 @@ kaluga {
 
     supportJVM = true
     supportJS = true
+    supportWasmJS = true
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
 
     dependencies {
         android {
@@ -36,6 +40,12 @@ kaluga {
         js {
             main {
                 api(kotlin("test-js"))
+                api(libs.kotlinx.atomicfu)
+            }
+        }
+        wasmJs {
+            main {
+                api(kotlin("test-wasm-js"))
                 api(libs.kotlinx.atomicfu)
             }
         }

@@ -16,7 +16,6 @@
  */
 
 package com.splendo.kaluga.test.base
-import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -32,22 +31,22 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun captureForOnEmpty(): Unit = runBlocking {
+    fun captureForOnEmpty() = testRunBlocking {
         assertEquals(emptyList(), emptyFlow<String>().captureFor(TIMEOUT))
     }
 
     @Test
-    fun captureForFiniteFlow(): Unit = runBlocking {
+    fun captureForFiniteFlow() = testRunBlocking {
         assertEquals(listOf(1, 2, 3), flowOf(1, 2, 3).captureFor(TIMEOUT))
     }
 
     @Test
-    fun captureForInfiniteFlow(): Unit = runBlocking {
+    fun captureForInfiniteFlow() = testRunBlocking {
         assertEquals(listOf(1), MutableStateFlow(1).captureFor(TIMEOUT))
     }
 
     @Test
-    fun flowAwaitFirstFailsOnEmpty(): Unit = runBlocking {
+    fun flowAwaitFirstFailsOnEmpty() = testRunBlocking {
         assertFails {
             emptyFlow<String>().awaitFirst()
         }
@@ -58,7 +57,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun flowAwaitFirstFailsOnNoMatch(): Unit = runBlocking {
+    fun flowAwaitFirstFailsOnNoMatch() = testRunBlocking {
         assertFails {
             flowOf("A", "B", "C")
                 .awaitFirst { it == "D" }
@@ -71,21 +70,21 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun flowAwaitFirstMatches(): Unit = runBlocking {
+    fun flowAwaitFirstMatches() = testRunBlocking {
         val result = flowOf("A", "B", "C")
             .awaitFirst { it == "B" }
         assertEquals("B", result)
     }
 
     @Test
-    fun flowAwaitFirstMatchesNull(): Unit = runBlocking {
+    fun flowAwaitFirstMatchesNull() = testRunBlocking {
         val result = flowOf("A", "B", "C", null)
             .awaitFirst { it == null }
         assertEquals(null, result)
     }
 
     @Test
-    fun assertEmitsFailsOnEmpty(): Unit = runBlocking {
+    fun assertEmitsFailsOnEmpty() = testRunBlocking {
         assertFails {
             emptyFlow<String>().assertEmits { true }
         }
@@ -96,7 +95,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun assertEmitsFailsOnNoMatch(): Unit = runBlocking {
+    fun assertEmitsFailsOnNoMatch() = testRunBlocking {
         assertFails {
             flowOf("A", "B", "C")
                 .assertEmits { it == "D" }
@@ -109,7 +108,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun assertEmitsMatches(): Unit = runBlocking {
+    fun assertEmitsMatches() = testRunBlocking {
         flowOf("A", "B", "C")
             .assertEmits { it == "B" }
 
@@ -117,7 +116,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun assertEmitsMatchesNull(): Unit = runBlocking {
+    fun assertEmitsMatchesNull() = testRunBlocking {
         flowOf("A", "B", "C", null)
             .assertEmits { it == null }
 
@@ -125,7 +124,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun assertEmitsValueFailsOnEmpty(): Unit = runBlocking {
+    fun assertEmitsValueFailsOnEmpty() = testRunBlocking {
         assertFails {
             emptyFlow<String>().assertEmits(expected = "")
         }
@@ -136,7 +135,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun assertEmitsValueFailsOnNoMatch(): Unit = runBlocking {
+    fun assertEmitsValueFailsOnNoMatch() = testRunBlocking {
         assertFails {
             flowOf("A", "B", "C")
                 .assertEmits(expected = "D")
@@ -149,7 +148,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun assertEmitsValueFirstMatches(): Unit = runBlocking {
+    fun assertEmitsValueFirstMatches() = testRunBlocking {
         flowOf("A", "B", "C")
             .assertEmits(expected = "B")
 
@@ -157,7 +156,7 @@ class FlowExtensionsTest {
     }
 
     @Test
-    fun assertEmitsValueMatchesNull(): Unit = runBlocking {
+    fun assertEmitsValueMatchesNull() = testRunBlocking {
         flowOf("A", "B", "C", null)
             .assertEmits(expected = null)
 

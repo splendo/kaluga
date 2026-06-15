@@ -26,7 +26,6 @@ import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.plus
 import com.splendo.kaluga.base.utils.toStartOfDay
 import com.splendo.kaluga.base.utils.utc
-import com.splendo.kaluga.test.base.IgnoreJs
 import kotlin.math.roundToLong
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,7 +35,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-@IgnoreJs
 class DateTest {
 
     @Test

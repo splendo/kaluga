@@ -15,7 +15,7 @@
 //
 
 import SwiftUI
-import KalugaExampleShared
+import KalugaExample
 
 struct BottomSheetView: View, Equatable {
     static func == (lhs: BottomSheetView, rhs: BottomSheetView) -> Bool {

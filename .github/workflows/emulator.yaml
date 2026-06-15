@@ -27,14 +27,73 @@ jobs:
       project: ${{ inputs.project }}
       projectBlacklist: hud
 
+  # Creates the AVDs fresh once per run and shares them with the test matrix through a
+  # per-run cache that the cleanup job deletes afterwards. Persistent AVD caches were
+  # multi-GB and duplicated per branch, keeping the repo over its cache quota so that
+  # freshly saved caches (including other workflows') were immediately evicted.
+  # google_atd (headless Automated Test Device) would be faster, but as of 2026-06 the
+  # android-36 google_atd image is only on the dev sdkmanager channel (stable tops out at 35)
+  # and we install from stable, so both legs use google_apis for now. ATD also cannot render
+  # for video recording (recordAndroid), so check that trade-off before switching.
+  avd:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        api-level: [24, 36]
+        include:
+          - api-level: 24
+            target: google_apis
+          - api-level: 36
+            target: google_apis
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: create AVD and generate snapshot
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
+          disable-animations: true
+          arch: x86_64
+          disk-size: 3G
+          ram-size: 3G
+          heap-size: 1500M
+          profile: 3.4in WQVGA
+          # ubuntu-latest runners have 4 vCPUs; requesting more makes qemu warn and oversubscribe
+          cores: 4
+          script: ./script/check_emulator.sh
+
+      - name: save AVD cache for this run
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ github.run_id }}-${{ matrix.api-level }}
+
   test:
-    needs: build
+    needs: [build, avd]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         api-level: [24, 36]
         project: ${{ fromJSON(needs.build.outputs.projects) }}
+        # Keep targets in sync with the avd job (see comment there about google_atd).
+        include:
+          - api-level: 24
+            target: google_apis
+          - api-level: 36
+            target: google_apis
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -51,30 +110,30 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: AVD cache
-        uses: actions/cache@v5
+        uses: actions/cache/restore@v5
         id: avd-cache
         with:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd.v12-${{ matrix.api-level }}
+          key: avd-${{ github.run_id }}-${{ matrix.api-level }}
 
-      - name: create AVD and generate snapshot for caching
+      # Fallback when the per-run cache was evicted between the avd job and this leg.
+      - name: create AVD and generate snapshot
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
           disable-animations: true
           arch: x86_64
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
           profile: 3.4in WQVGA
-          channel: canary
-          cores: 6
+          cores: 4
           script: ./script/check_emulator.sh
 
       - name: install ffmpeg
@@ -89,17 +148,16 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
           disable-animations: true
           arch: x86_64
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
           profile: 3.4in WQVGA
-          channel: canary
-          cores: 6
+          cores: 4
           script: |
             ./script/check_emulator.sh
             ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedAndroidTest
@@ -122,3 +180,20 @@ jobs:
         with:
           name: recording-${{ matrix.project }}-${{ matrix.api-level }}
           path: recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
+
+  # Per-run caches are only useful within this run; delete them so they don't pile up
+  # against the repo's 10GB cache quota.
+  cleanup-caches:
+    needs: [build, avd, test]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: delete per-run caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh cache delete "avd-${{ github.run_id }}-24" --repo ${{ github.repository }} || true
+          gh cache delete "avd-${{ github.run_id }}-36" --repo ${{ github.repository }} || true
+          gh cache delete "build-linux-${{ github.workflow }}-${{ github.sha }}-${{ inputs.project }}" --repo ${{ github.repository }} || true

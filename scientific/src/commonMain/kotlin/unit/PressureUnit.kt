@@ -28,6 +28,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
 
 /**
  * Set of all [MetricPressure]
@@ -170,6 +172,9 @@ sealed class USCustomaryPressure :
     override val quantity = PhysicalQuantity.Pressure
 }
 
+// Obj-C-renamed: clang reserves `pascal` as a calling-convention keyword.
+@OptIn(ExperimentalObjCName::class)
+@ObjCName("PascalUnit")
 @Serializable
 data object Pascal : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure> {
     override val symbol: String = "P"

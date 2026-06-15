@@ -17,14 +17,13 @@
 
 package com.splendo.kaluga.test.keyboard
 
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.datetimepicker.DateTimePicker
 import com.splendo.kaluga.datetimepicker.buildDatePicker
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.base.UIThreadTest
 import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.datetimepicker.MockDateTimePickerPresenter
@@ -36,13 +35,10 @@ import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class MockDateTimePickerPresenterTest : UIThreadViewModelTest<MockDateTimePickerPresenterTest.TestContext, MockDateTimePickerPresenterTest.ViewModel>() {
+class MockDateTimePickerPresenterTest : UIThreadTest<MockDateTimePickerPresenterTest.TestContext>() {
 
-    class ViewModel(val dateTimePickerPresenterBuilder: MockDateTimePickerPresenter.Builder) : BaseLifecycleViewModel(dateTimePickerPresenterBuilder)
-
-    class TestContext : ViewModelTestContext<ViewModel> {
+    class TestContext : UIThreadTest.TestContext {
         val mockDateTimePickerPresenterBuilder = MockDateTimePickerPresenter.Builder()
-        override val viewModel: ViewModel = ViewModel(mockDateTimePickerPresenterBuilder)
     }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> TestContext = { TestContext() }
@@ -56,7 +52,7 @@ class MockDateTimePickerPresenterTest : UIThreadViewModelTest<MockDateTimePicker
         val done = CompletableDeferred<KalugaDate?>()
         withTimeout(2.seconds) {
             // we can use date time picker from our viewModel
-            viewModel.dateTimePickerPresenterBuilder.buildDatePicker(this, earliest, latest) {
+            mockDateTimePickerPresenterBuilder.buildDatePicker(this, earliest, latest) {
                 setMessage("Hello world")
                 setSelectedDate(selected)
                 setConfirmButtonTitle("OK")

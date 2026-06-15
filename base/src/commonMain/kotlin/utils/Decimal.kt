@@ -23,6 +23,8 @@ import kotlin.math.pow
 
 /**
  * Immutable, arbitrary-precision signed decimal numbers.
+ *
+ * On JavaScript [Decimal] is backed by a custom implementation that may not cover every edge case; validate results when relying on it for JS.
  */
 sealed class Decimal : Comparable<Decimal> {
 
@@ -324,18 +326,13 @@ internal expect fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode =
 /**
  * Converts a [Number] to a [Decimal]
  */
-fun Number.toDecimal(): Decimal = when (this) {
-    is Long -> toFiniteDecimalOrNaN()
-
-    is Int -> toFiniteDecimalOrNaN()
-
-    is Short -> toFiniteDecimalOrNaN()
-
-    else -> when {
-        toDouble().isFinite() -> toFiniteDecimalOrNaN()
-        toDouble().isNaN() -> Decimal.NaN
-        toDouble() == Double.POSITIVE_INFINITY -> Decimal.PositiveInfinity
-        else -> Decimal.NegativeInfinity
+fun Number.toDecimal(): Decimal {
+    val d = toDouble()
+    return when {
+        d.isNaN() -> Decimal.NaN
+        d == Double.POSITIVE_INFINITY -> Decimal.PositiveInfinity
+        d == Double.NEGATIVE_INFINITY -> Decimal.NegativeInfinity
+        else -> toFiniteDecimalOrNaN()
     }
 }
 

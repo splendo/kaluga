@@ -7,7 +7,6 @@ public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/ka
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;)V
 	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun action (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getFilter ()Lkotlin/jvm/functions/Function1;
 	public final fun getFirstTestBlock ()Z
@@ -22,8 +21,8 @@ public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/ka
 	public final fun setJob (Lkotlinx/coroutines/Job;)V
 	public final fun test (ILkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun test$default (Lcom/splendo/kaluga/test/base/BaseFlowTest;ILkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public final fun testWithFlowAndTestContext (Ljava/lang/Object;ZZLkotlin/jvm/functions/Function3;)V
-	public static synthetic fun testWithFlowAndTestContext$default (Lcom/splendo/kaluga/test/base/BaseFlowTest;Ljava/lang/Object;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+	public final fun testWithFlowAndTestContext (Ljava/lang/Object;ZLkotlin/jvm/functions/Function3;)V
+	public static synthetic fun testWithFlowAndTestContext$default (Lcom/splendo/kaluga/test/base/BaseFlowTest;Ljava/lang/Object;ZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
 }
 
 public class com/splendo/kaluga/test/base/BaseTest {
@@ -57,11 +56,6 @@ public final class com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext$Def
 	public static fun dispose (Lcom/splendo/kaluga/test/base/BaseUIThreadTest$TestContext;)V
 }
 
-public final class com/splendo/kaluga/test/base/DeliberateCancellationException : java/util/concurrent/CancellationException {
-	public fun <init> (Ljava/lang/Object;)V
-	public final fun getResult ()Ljava/lang/Object;
-}
-
 public final class com/splendo/kaluga/test/base/FlowExtensionsKt {
 	public static final fun assertEmits-1Y68eR8 (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun assertEmits-1Y68eR8$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -91,6 +85,12 @@ public abstract class com/splendo/kaluga/test/base/FlowableTest : com/splendo/ka
 public abstract interface annotation class com/splendo/kaluga/test/base/IgnoreJs : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class com/splendo/kaluga/test/base/IgnoreWasm : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/test/base/IgnoreWeb : java/lang/annotation/Annotation {
+}
+
 public abstract class com/splendo/kaluga/test/base/SimpleFlowTest : com/splendo/kaluga/test/base/FlowTest {
 	public fun <init> ()V
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
@@ -106,6 +106,16 @@ public final class com/splendo/kaluga/test/base/SimpleUIThreadTest$SimpleTestCon
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
 	public fun dispose ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public final class com/splendo/kaluga/test/base/TestBlockingAndCancelScopeKt {
+	public static final fun testBlockingAndCancelScope (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun testBlockingAndCancelScope$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/test/base/TestRunBlockingKt {
+	public static final fun testRunBlocking (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun testRunBlocking$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
 public abstract class com/splendo/kaluga/test/base/UIThreadTest : com/splendo/kaluga/test/base/BaseUIThreadTest {

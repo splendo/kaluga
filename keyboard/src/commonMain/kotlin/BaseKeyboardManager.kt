@@ -19,7 +19,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 
 /**

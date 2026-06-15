@@ -21,9 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.pow
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class IlluminanceUnitTest {
 
     @Test

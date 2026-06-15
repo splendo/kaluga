@@ -12,10 +12,13 @@ kaluga {
             test {
                 implementation(libs.androidx.fragment.ktx)
             }
+            device {
+                implementation(project(":architecture", ""))
+            }
         }
         common {
             main {
-                implementation(project(":architecture", ""))
+                api(project(":lifecycle", ""))
                 implementation(project(":base", ""))
             }
             test {

@@ -18,16 +18,8 @@
 package com.splendo.kaluga.test.media
 
 import com.splendo.kaluga.media.MediaSurface
-import com.splendo.kaluga.media.MediaSurfaceProvider
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 /**
  * Creates a Mock implementation of [MediaSurface]
  */
 expect fun createMockMediaSurface(): MediaSurface
-
-/**
- * Mock implementation of [MediaSurfaceProvider]
- * @param surface A [MutableSharedFlow] of the [MediaSurface] currently associated with the lifecycle
- */
-class MockMediaSurfaceProvider(override val surface: MutableSharedFlow<MediaSurface?>) : MediaSurfaceProvider

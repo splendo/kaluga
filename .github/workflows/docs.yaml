@@ -67,7 +67,6 @@ jobs:
           path: build/readmes
 
       - name: Trigger website rebuild
-        if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
         run: |

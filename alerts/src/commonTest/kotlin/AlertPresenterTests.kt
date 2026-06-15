@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ abstract class AlertPresenterTests {
     abstract val builder: AlertPresenter.Builder
 
     @Test
-    fun testAlertBuilderExceptionNoActions() = runBlocking {
+    fun testAlertBuilderExceptionNoActions() = testRunBlocking {
         assertFailsWith<IllegalArgumentException> {
             builder.buildAlert(this) {
                 setTitle("OK")
@@ -41,7 +41,7 @@ abstract class AlertPresenterTests {
     }
 
     @Test
-    fun testAlertBuilderExceptionNoTitleOrMessage() = runBlocking {
+    fun testAlertBuilderExceptionNoTitleOrMessage() = testRunBlocking {
         assertFailsWith<IllegalArgumentException> {
             builder.buildAlert(this) {
                 setPositiveButton("OK")
@@ -51,7 +51,7 @@ abstract class AlertPresenterTests {
     }
 
     @Test
-    fun testAlertFlowCancel() = runBlocking {
+    fun testAlertFlowCancel() = testRunBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
             val presenter = builder.buildAlert(this) {
                 setTitle("Hello")
@@ -67,7 +67,7 @@ abstract class AlertPresenterTests {
     }
 
     @Test
-    fun testActionSheetFlowCancel() = runBlocking {
+    fun testActionSheetFlowCancel() = testRunBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
             val presenter = builder.buildActionSheet(this) {
                 setTitle("Choose")

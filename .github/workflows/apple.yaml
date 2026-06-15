@@ -1,0 +1,146 @@
+name: Apple tests
+on: pull_request
+
+jobs:
+  build:
+    uses: ./.github/workflows/setup_macos.yaml
+    with:
+      gradleTask: compileKotlinIosSimulatorArm64
+
+  validation:
+    needs: build
+    runs-on: macos-26
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+      - name: ktLint
+        run: ./gradlew lintKotlin
+
+      - name: ktLint report
+        uses: actions/upload-artifact@v7
+        with:
+          name: ktLint report
+          path: build/reports/ktlint
+        if: ${{ failure() }}
+
+      - name: run checkLegacyAbi
+        run: ./gradlew checkLegacyAbi
+
+  test:
+    needs: build
+    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJSON(needs.build.outputs.projects) }}
+        target:
+          - name: iOS
+            test: iosSimulatorArm64Test
+            flag: ''
+          - name: macOS
+            test: macosArm64Test
+            flag: supportMacOS
+          - name: tvOS
+            test: tvosSimulatorArm64Test
+            flag: supportTvOS
+          - name: watchOS
+            test: watchosSimulatorArm64Test
+            flag: supportWatchOS
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+      - name: run ${{ matrix.target.name }} tests for ${{ matrix.module }}
+        run: |
+          flag='${{ matrix.target.flag }}'
+          if [ -z "$flag" ] || grep -qE "$flag\s*=\s*true" "${{ matrix.module }}/build.gradle.kts" 2>/dev/null; then
+            ./gradlew :${{ matrix.module }}:${{ matrix.target.test }}
+          else
+            echo "Module ${{ matrix.module }} does not declare $flag = true, skipping ${{ matrix.target.name }}"
+          fi
+
+      - name: Upload ${{ matrix.target.name }} test artifact
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: ${{ matrix.module }} ${{ matrix.target.name }} Test Report HTML
+          path: ${{ format('**{0}/build/reports/tests/{1}', matrix.module, matrix.target.test) }}
+
+  example-ios:
+    needs: build
+    runs-on: macos-26
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+      - name: run install
+        working-directory: example/ios
+        run: |
+          brew install sourcery
+          ./install.sh
+
+      - name: build example
+        working-directory: example/ios
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest'
+        shell: bash
+
+      - name: 'upload xcodebuild.log'
+        uses: actions/upload-artifact@v7
+        with:
+          name: 'ios xcodebuild.log'
+          path: 'example/ios/xcodebuild.log'
+
+  example-macos:
+    needs: build
+    runs-on: macos-26
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+      - name: build example
+        working-directory: example/macos
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -scheme Demo -destination 'platform=macOS'
+        shell: bash
+
+      - name: 'upload xcodebuild.log'
+        uses: actions/upload-artifact@v7
+        with:
+          name: 'macos xcodebuild.log'
+          path: 'example/macos/xcodebuild.log'
+
+  # The per-run workspace cache is only useful within this run; delete it so it doesn't
+  # pile up against the repo's 10GB cache quota.
+  cleanup-caches:
+    needs: [build, validation, test, example-ios, example-macos]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: delete per-run caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache delete "build-iOS-${{ github.sha }}-" --repo ${{ github.repository }} || true

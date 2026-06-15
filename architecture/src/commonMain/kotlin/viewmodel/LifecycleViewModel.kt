@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren

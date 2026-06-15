@@ -17,16 +17,15 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.testRunBlocking
 import com.splendo.kaluga.test.media.MockBaseMediaManager
 import com.splendo.kaluga.test.media.MockMediaSurfaceController
-import com.splendo.kaluga.test.media.MockMediaSurfaceProvider
 import com.splendo.kaluga.test.media.MockPlayableMedia
 import com.splendo.kaluga.test.media.MockPlaybackState
 import com.splendo.kaluga.test.media.MockPlaybackStateRepo
@@ -36,7 +35,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlin.test.Test
@@ -51,10 +49,9 @@ import kotlin.time.Duration.Companion.seconds
 class MediaPlayerTest {
 
     @Test
-    fun testPlay() = runBlocking {
+    fun testPlay() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val hasStartedPlaying = CompletableDeferred<Float>()
         mediaManager.playMock.on().doExecute { (rate) -> hasStartedPlaying.complete(rate) }
@@ -76,10 +73,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testForcePlay() = runBlocking {
+    fun testForcePlay() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val hasStartedInitialPlaying = CompletableDeferred<Float>()
         mediaManager.playMock.on().doExecute { (rate) -> hasStartedInitialPlaying.complete(rate) }
@@ -108,10 +104,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testPlayWithException() = runBlocking {
+    fun testPlayWithException() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val hasStartedPlaying = CompletableDeferred<Float>()
         mediaManager.playMock.on().doExecute { (rate) -> hasStartedPlaying.complete(rate) }
@@ -137,10 +132,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testInitializeNewSourceWhenInitialized() = runBlocking {
+    fun testInitializeNewSourceWhenInitialized() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val source = mediaSourceFromUrl("https://example.com")!!
         val firstInitialize = CompletableDeferred<PlayableMedia>()
@@ -160,10 +154,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testInitializeNewSourceWhenIdle() = runBlocking {
+    fun testInitializeNewSourceWhenIdle() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val source = mediaSourceFromUrl("https://example.com")!!
         mediaPlayer.initializeFor(source)
@@ -180,10 +173,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testInitializeNewSourceWhenError() = runBlocking {
+    fun testInitializeNewSourceWhenError() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val source = mediaSourceFromUrl("https://example.com")!!
         mediaManager.initializeMock.on().doExecute { mediaManager.handleError(PlaybackError.Unknown) }
@@ -201,10 +193,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testFailToInitializeNewSourceAfterError() = runBlocking {
+    fun testFailToInitializeNewSourceAfterError() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val source = mediaSourceFromUrl("https://example.com")!!
         mediaManager.initializeMock.on().doExecute { mediaManager.handleError(PlaybackError.Unknown) }
@@ -222,10 +213,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testFailToInitializeNewSourceAfterEnded() = runBlocking {
+    fun testFailToInitializeNewSourceAfterEnded() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
 
         val didCleanUp = EmptyCompletableDeferred()
@@ -242,10 +232,9 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testReinitializeSourceWhenActive() = runBlocking {
+    fun testReinitializeSourceWhenActive() = testRunBlocking {
         val mediaManagerBuilder = MockBaseMediaManager.Builder()
-        val surfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val mediaPlayer = DefaultMediaPlayer(surfaceProvider, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
         val source = mediaSourceFromUrl("https://example.com")!!
         mediaPlayer.initializeFor(source)
@@ -264,10 +253,10 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testVolumeController() = runBlocking {
+    fun testVolumeController() = testRunBlocking {
         val volumeController = MockVolumeController()
         val mediaManagerBuilder = MockBaseMediaManager.Builder(volumeController)
-        val mediaPlayer = DefaultMediaPlayer(null, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
 
         volumeController.currentVolume.value = 0.5f
@@ -285,10 +274,10 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testSurfaceController() = runBlocking {
+    fun testSurfaceController() = testRunBlocking {
         val mediaSurfaceController = MockMediaSurfaceController()
         val mediaManagerBuilder = MockBaseMediaManager.Builder(mediaSurfaceController = mediaSurfaceController)
-        val mediaPlayer = DefaultMediaPlayer(null, mediaManagerBuilder, coroutineContext)
+        val mediaPlayer = DefaultMediaPlayer(mediaManagerBuilder, coroutineContext)
         val mediaManager = mediaManagerBuilder.builtMediaManagers.first()
 
         val surface = createMockMediaSurface()
@@ -309,7 +298,7 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testControlsPlay() = runBlocking {
+    fun testControlsPlay() = testRunBlocking {
         val configuration = MockPlaybackState.Configuration()
         val repo = MockPlaybackStateRepo({ MockPlaybackState.Uninitialized(configuration) }, coroutineContext)
         val mediaPlayer = DefaultMediaPlayer({ repo }, coroutineContext)
@@ -384,7 +373,7 @@ class MediaPlayerTest {
     }
 
     @Test
-    fun testPauseControls() = runBlocking {
+    fun testPauseControls() = testRunBlocking {
         val parameters = PlaybackState.PlaybackParameters(2.0f, PlaybackState.LoopMode.LoopingForever)
         val source = mediaSourceFromUrl("https://example.com")!!
         val configuration = MockPlaybackState.Configuration()

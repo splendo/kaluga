@@ -7,8 +7,9 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":test-utils-architecture"))
                 api(project(":date-time-picker"))
+                api(project(":test-utils-base"))
+                api(project(":test-utils-lifecycle"))
             }
         }
     }

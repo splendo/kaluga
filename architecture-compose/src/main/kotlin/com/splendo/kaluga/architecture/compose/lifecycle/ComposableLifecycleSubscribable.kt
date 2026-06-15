@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.EmptyCoroutineContext

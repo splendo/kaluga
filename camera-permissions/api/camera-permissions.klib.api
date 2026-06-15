@@ -1,5 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, wasmJs]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -10,19 +11,14 @@ abstract interface com.splendo.kaluga.permissions.camera/BaseCameraPermissionMan
     abstract fun create(com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ..., kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.permissions.base/PermissionManager<com.splendo.kaluga.permissions.camera/CameraPermission> // com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder.create|create(com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
 }
 
-final class com.splendo.kaluga.permissions.camera/AVTypeCamera : com.splendo.kaluga.permissions.base.av/AVType { // com.splendo.kaluga.permissions.camera/AVTypeCamera|null[0]
-    constructor <init>() // com.splendo.kaluga.permissions.camera/AVTypeCamera.<init>|<init>(){}[0]
-
-    final val avMediaType // com.splendo.kaluga.permissions.camera/AVTypeCamera.avMediaType|{}avMediaType[0]
-        final fun <get-avMediaType>(): kotlin/String? // com.splendo.kaluga.permissions.camera/AVTypeCamera.avMediaType.<get-avMediaType>|<get-avMediaType>(){}[0]
-    final val declarationName // com.splendo.kaluga.permissions.camera/AVTypeCamera.declarationName|{}declarationName[0]
-        final fun <get-declarationName>(): kotlin/String // com.splendo.kaluga.permissions.camera/AVTypeCamera.declarationName.<get-declarationName>|<get-declarationName>(){}[0]
-}
-
 final class com.splendo.kaluga.permissions.camera/CameraPermissionManagerBuilder : com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder { // com.splendo.kaluga.permissions.camera/CameraPermissionManagerBuilder|null[0]
+    final fun create(com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.permissions.base/PermissionManager<com.splendo.kaluga.permissions.camera/CameraPermission> // com.splendo.kaluga.permissions.camera/CameraPermissionManagerBuilder.create|create(com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+
+    // Targets: [apple]
     constructor <init>(platform.Foundation/NSBundle = ...) // com.splendo.kaluga.permissions.camera/CameraPermissionManagerBuilder.<init>|<init>(platform.Foundation.NSBundle){}[0]
 
-    final fun create(com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.permissions.base/PermissionManager<com.splendo.kaluga.permissions.camera/CameraPermission> // com.splendo.kaluga.permissions.camera/CameraPermissionManagerBuilder.create|create(com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+    // Targets: [js, wasmJs]
+    constructor <init>(com.splendo.kaluga.permissions.base/PermissionContext = ...) // com.splendo.kaluga.permissions.camera/CameraPermissionManagerBuilder.<init>|<init>(com.splendo.kaluga.permissions.base.PermissionContext){}[0]
 }
 
 final class com.splendo.kaluga.permissions.camera/CameraPermissionStateRepo : com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.camera/CameraPermission> { // com.splendo.kaluga.permissions.camera/CameraPermissionStateRepo|null[0]
@@ -30,7 +26,11 @@ final class com.splendo.kaluga.permissions.camera/CameraPermissionStateRepo : co
 }
 
 final class com.splendo.kaluga.permissions.camera/DefaultCameraPermissionManager : com.splendo.kaluga.permissions.base/BasePermissionManager<com.splendo.kaluga.permissions.camera/CameraPermission> { // com.splendo.kaluga.permissions.camera/DefaultCameraPermissionManager|null[0]
+    // Targets: [apple]
     constructor <init>(platform.Foundation/NSBundle, com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.permissions.camera/DefaultCameraPermissionManager.<init>|<init>(platform.Foundation.NSBundle;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>(com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.permissions.camera/DefaultCameraPermissionManager.<init>|<init>(com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
 }
 
 final object com.splendo.kaluga.permissions.camera/CameraPermission : com.splendo.kaluga.permissions.base/Permission { // com.splendo.kaluga.permissions.camera/CameraPermission|null[0]
@@ -42,7 +42,26 @@ final object com.splendo.kaluga.permissions.camera/CameraPermission : com.splend
     final fun toString(): kotlin/String // com.splendo.kaluga.permissions.camera/CameraPermission.toString|toString(){}[0]
 }
 
+// Targets: [apple]
 final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermission(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermission|registerCameraPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [apple]
 final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermission(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin/Function2<com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.camera/CameraPermission>>): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermission|registerCameraPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.Function2<com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.camera.CameraPermission>>){}[0]
+
+// Targets: [apple]
 final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered|registerCameraPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [apple]
 final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin/Function2<com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.camera/CameraPermission>>): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered|registerCameraPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.Function2<com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.camera.CameraPermission>>){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermission(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermission|registerCameraPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermission(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin/Function2<com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.camera/CameraPermission>>): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermission|registerCameraPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.Function2<com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.camera.CameraPermission>>){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered|registerCameraPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder> = ..., kotlin/Function2<com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.camera/CameraPermission>>): com.splendo.kaluga.permissions.camera/BaseCameraPermissionManagerBuilder // com.splendo.kaluga.permissions.camera/registerCameraPermissionIfNotRegistered|registerCameraPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder>;kotlin.Function2<com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.camera.CameraPermission>>){}[0]

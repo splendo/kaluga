@@ -20,7 +20,7 @@ package com.splendo.kaluga.architecture.navigation
 import com.splendo.kaluga.architecture.KalugaStoreProductViewControllerDelegateProtocol
 import com.splendo.kaluga.architecture.KalugaStoreProductViewControllerWrapper
 import com.splendo.kaluga.architecture.KalugaUIImagePickerControllerWrapper
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleSubscribable
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.CFBridgingRelease
 import platform.Foundation.NSNumber
@@ -322,7 +322,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
     private fun openBrowser(browserSpec: NavigationSpec.Browser) {
         when (val spec = browserSpec.viewType) {
             NavigationSpec.Browser.Type.Normal -> {
-                UIApplication.sharedApplication.openURL(browserSpec.url)
+                UIApplication.sharedApplication.openURL(browserSpec.url, emptyMap<Any?, Any>(), null)
             }
 
             is NavigationSpec.Browser.Type.SafariView -> {
@@ -350,7 +350,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
 
     private fun openThirdPartyApp(urlScheme: NSURL, storeInfo: NavigationSpec.ThirdParty.StoreInfo?) {
         if (UIApplication.sharedApplication.canOpenURL(urlScheme)) {
-            UIApplication.sharedApplication.openURL(urlScheme)
+            UIApplication.sharedApplication.openURL(urlScheme, emptyMap<Any?, Any>(), null)
         } else {
             storeInfo?.let {
                 openAppStore(storeInfo)

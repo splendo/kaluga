@@ -28,8 +28,8 @@ kaluga {
 dependencies {
     api(project(":base"))
     api(project(":architecture"))
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.navigation)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.browser)
 }

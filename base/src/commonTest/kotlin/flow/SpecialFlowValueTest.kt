@@ -21,8 +21,8 @@ import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.Last
 import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.More
 import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.Normal
 import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.NotImportant
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -42,7 +42,7 @@ class SpecialFlowValueTest : BaseTest() {
     private fun flow() = flowOf(Normal, NotImportant, Last, More)
 
     @Test
-    fun testSpecialValues() = runBlocking {
+    fun testSpecialValues() = testRunBlocking {
         assertEquals(
             expected = listOf(Normal, NotImportant, Last, More),
             actual = flow().toList(),

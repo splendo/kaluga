@@ -4,6 +4,9 @@ plugins {
 
 kaluga {
     moduleName = "permissions.camera"
+    supportJS = true
+    supportWasmJS = true
+    supportMacOS = true
     dependencies {
         common {
             main {

@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.base.collections
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.testRunBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 class ConcurrentMutableSetTest : BaseTest() {
 
     @Test
-    fun testConcurrentMutableSet() = runBlocking {
+    fun testConcurrentMutableSet() = testRunBlocking {
         val set = concurrentMutableSetOf(0, 1, 2)
         withContext(Dispatchers.Main.immediate) {
             set.add(3)
@@ -58,7 +58,7 @@ class ConcurrentMutableSetTest : BaseTest() {
     }
 
     @Test
-    fun testConcurrency() = runBlocking {
+    fun testConcurrency() = testRunBlocking {
         val dispatchers = List(10) { singleThreadDispatcher("Thread $it") }
         val set = concurrentMutableSetOf<Int>()
         val jobs = dispatchers.mapIndexed { index, dispatcher ->

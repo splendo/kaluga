@@ -134,9 +134,7 @@ import com.splendo.kaluga.scientific.unit.ukImperial
 import com.splendo.kaluga.scientific.unit.usCustomary
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class EnergyUnitTest {
 
     @Test

@@ -18,9 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class MolarEnergyUnitTest {
 
     @Test

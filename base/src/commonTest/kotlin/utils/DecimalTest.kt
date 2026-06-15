@@ -21,9 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class DecimalTest {
 
     @Test
@@ -78,5 +76,28 @@ class DecimalTest {
         assertTrue("1.23456".toDecimal() > "0.123456".toDecimal())
         assertFalse("1.23456".toDecimal() <= "0.123456".toDecimal())
         assertEquals("1.23456".toDecimal(), "1.23456".toDecimal())
+
+        // Values with the same magnitude but different scales must still compare equal.
+        assertEquals("1".toDecimal(), "1.0".toDecimal())
+        assertEquals("1".toDecimal(), "1.00".toDecimal())
+        assertEquals(0, "1".toDecimal().compareTo("1.000".toDecimal()))
+    }
+
+    @Test
+    fun testLargeLongPrecision() {
+        // 2^53 + 1: cannot survive a round-trip through Double.
+        val n = 9007199254740993L
+        assertEquals(n, n.toDecimal().toLong())
+    }
+
+    @Test
+    fun testHalfEvenRounding() {
+        // Banker's rounding at the exact halfway point: round to even.
+        assertEquals("0.2".toDecimal(), "0.25".toDecimal().round(1, RoundingMode.RoundHalfEven))
+        assertEquals("0.4".toDecimal(), "0.35".toDecimal().round(1, RoundingMode.RoundHalfEven))
+        assertEquals("0.4".toDecimal(), "0.45".toDecimal().round(1, RoundingMode.RoundHalfEven))
+        // And symmetric for negatives.
+        assertEquals("-0.2".toDecimal(), "-0.25".toDecimal().round(1, RoundingMode.RoundHalfEven))
+        assertEquals("-0.4".toDecimal(), "-0.35".toDecimal().round(1, RoundingMode.RoundHalfEven))
     }
 }

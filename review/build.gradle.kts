@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "review"
+    supportMacOS = true
     dependencies {
         android {
             main {
@@ -13,7 +14,7 @@ kaluga {
         }
         common {
             main {
-                implementation(project(":architecture", ""))
+                api(project(":lifecycle", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
             }

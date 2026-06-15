@@ -127,4 +127,8 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
         } else {
             "\""
         }
+
+    // `data class` would otherwise auto-generate a useless `KalugaLocale(locale=…)` toString
+    // that shadows the parent's `lang_country_variant` formatting. Delegate back to it.
+    override fun toString(): String = super.toString()
 }

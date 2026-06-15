@@ -30,9 +30,7 @@ import com.splendo.kaluga.scientific.unit.Nit
 import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class SolidAngleUnitTest {
 
     @Test

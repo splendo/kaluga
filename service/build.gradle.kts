@@ -4,9 +4,13 @@ plugins {
 
 kaluga {
     moduleName = "service"
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
 
     supportJVM = true
     supportJS = true
+    supportWasmJS = true
 
     dependencies {
         common {

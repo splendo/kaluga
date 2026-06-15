@@ -36,9 +36,7 @@ import com.splendo.kaluga.scientific.unit.Siemens
 import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class ElectricConductanceUnitTest {
 
     @Test
