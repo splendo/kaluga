@@ -196,38 +196,31 @@ internal actual class DefaultDeviceConnectionManager(
             is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
 
             is DeviceAction.Write.Characteristic -> {
-                val wasReady = peripheral.canSendWriteWithoutResponse
                 val withResponse = when (action.writeType) {
                     WriteType.WithResponse -> true
                     WriteType.WithoutResponse -> false
                     null -> action.characteristic.hasProperty(CharacteristicProperty.Write)
                 }
-                if (!withResponse) {
-                    peripheralDelegate.resetAwaitingSendWriteWithoutResponse()
-                }
-                // The first write doubles as the attempt that triggers peripheralIsReadyToSendWriteWithoutResponse
-                // when the queue is full.
-                action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, withResponse)
-                if (!withResponse) {
+                if (withResponse) {
+                    // With-response completes via didWriteValueForCharacteristic.
+                    action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, true)
+                } else {
                     // Write-without-response has no didWriteValueForCharacteristic callback, so completion is
-                    // reported here: immediately if it could be sent, otherwise once the peripheral signals it
-                    // is ready again (then the value is resent).
-                    if (wasReady) {
-                        handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
-                    } else {
-                        val isAvailable = withTimeoutOrNull(MAX_WRITE_WITHOUT_RESPONSE_WAIT) {
-                            peripheralDelegate.awaitSendWriteWithoutResponse()
-                            true
-                        } ?: false
-                        if (isAvailable) {
-                            action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, false)
-                            handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
-                        } else {
-                            handleCharacteristicWritten(action.characteristic.uuid, GattResponse.InsufficientResources)
-                        }
-                    }
+                    // derived from the send loop.
+                    val wasReady = peripheral.canSendWriteWithoutResponse
+                    peripheralDelegate.resetAwaitingSendWriteWithoutResponse()
+                    val response = sendWriteWithoutResponse(
+                        canSendNow = wasReady,
+                        write = { action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, false) },
+                        awaitReady = {
+                            withTimeoutOrNull(MAX_WRITE_WITHOUT_RESPONSE_WAIT) {
+                                peripheralDelegate.awaitSendWriteWithoutResponse()
+                                true
+                            } ?: false
+                        },
+                    )
+                    handleCharacteristicWritten(action.characteristic.uuid, response)
                 }
-                // With-response completes via didWriteValueForCharacteristic.
             }
 
             is DeviceAction.Write.Descriptor -> {
