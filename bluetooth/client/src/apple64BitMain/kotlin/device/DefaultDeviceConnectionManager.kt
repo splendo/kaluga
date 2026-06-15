@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
