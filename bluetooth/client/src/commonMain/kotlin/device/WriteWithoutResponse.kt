@@ -25,14 +25,12 @@ import com.splendo.kaluga.bluetooth.GattResponse
  * write now ([canSendNow]) or, otherwise, once [awaitReady] reports it became ready again.
  * Returns [GattResponse.InsufficientResources] without sending if it never became ready.
  */
-internal suspend fun sendWriteWithoutResponse(canSendNow: Boolean, write: () -> Unit, awaitReady: suspend () -> Boolean): GattResponse.WriteResponse {
+internal suspend fun sendWriteWithoutResponse(canSendNow: Boolean, write: () -> Unit, awaitReady: suspend () -> Boolean): GattResponse.WriteResponse = if (canSendNow) {
     write()
-    return if (canSendNow) {
-        GattResponse.WriteSuccess
-    } else if (awaitReady()) {
-        write()
-        GattResponse.WriteSuccess
-    } else {
-        GattResponse.InsufficientResources
-    }
+    GattResponse.WriteSuccess
+} else if (awaitReady()) {
+    write()
+    GattResponse.WriteSuccess
+} else {
+    GattResponse.InsufficientResources
 }
