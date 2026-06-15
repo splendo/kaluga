@@ -66,7 +66,11 @@ fun restoreBluetoothAdapterName(context: Context): Boolean {
     val override = store.override ?: return false
     val original = store.original
     val adapter = (context.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter
-    val restored = original != null && adapter?.name == override && adapter.setName(original) == true
+    val restored = try {
+        original != null && adapter?.name == override && adapter.setName(original)
+    } catch (_: SecurityException) {
+        false
+    }
     store.clear()
     return restored
 }
