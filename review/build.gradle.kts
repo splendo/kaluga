@@ -14,8 +14,8 @@ kaluga {
         }
         common {
             main {
-                api(project(":lifecycle", ""))
-                implementation(project(":base", ""))
+                api(project(":lifecycle:lifecycle", ""))
+                implementation(project(":base:base", ""))
                 implementation(project(":logging", ""))
             }
         }

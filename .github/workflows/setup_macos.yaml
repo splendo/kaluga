@@ -55,7 +55,9 @@ jobs:
 
       - name: generate file with single requested project for build matrix
         if: inputs.project != ''
-        run: echo "projects=['${{ inputs.project }}']" > non_dependent_projects.properties
+        run: |
+          PROJECT='${{ inputs.project }}'
+          echo "projects=[{\"dir\":\"$PROJECT\",\"name\":\"${PROJECT//[:\/]/-}\",\"ios\":true,\"supportMacOS\":true,\"supportTvOS\":true,\"supportWatchOS\":true,\"supportJS\":true,\"supportWasmJS\":true}]" > non_dependent_projects.properties
 
       - name: show projects for Matrix
         run: cat non_dependent_projects.properties
@@ -73,7 +75,7 @@ jobs:
 
       - name: run custom Gradle task for single project
         if: inputs.project != ''
-        run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
+        run: ./gradlew -p ${{ inputs.project }} ${{ inputs.gradleTask }}
 
       - name: Make cache of workspace
         uses: actions/cache/save@v5

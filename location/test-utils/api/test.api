@@ -1,0 +1,157 @@
+public final class com/splendo/kaluga/location/test/MockBaseLocationManager : com/splendo/kaluga/location/BaseLocationManager {
+	public fun <init> (ZLcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
+	public final fun getLocationEnabled ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public synthetic fun getLocationMonitor ()Lcom/splendo/kaluga/location/LocationMonitor;
+	public final fun getRequestEnableLocationMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStartMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStartMonitoringLocationMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStopMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStopMonitoringLocationMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public fun handleLocationChanged (Lcom/splendo/kaluga/location/Location$KnownLocation;)V
+	public fun handleLocationChanged (Ljava/util/List;)V
+	public fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/location/test/MockBaseLocationManager$Builder : com/splendo/kaluga/location/BaseLocationManager$Builder {
+	public fun <init> (ZZ)V
+	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/location/BaseLocationManager;
+	public final fun getBuiltLocationManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getCreateMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
+	public final fun getInitialLocationEnabled ()Z
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationManager : com/splendo/kaluga/location/LocationManager {
+	public fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlinx/coroutines/flow/MutableSharedFlow;Lkotlinx/coroutines/flow/MutableSharedFlow;)V
+	public synthetic fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	public fun getEvents ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+	public fun getLocationPermission ()Lcom/splendo/kaluga/permissions/location/LocationPermission;
+	public synthetic fun getLocations ()Lkotlinx/coroutines/flow/Flow;
+	public fun getLocations ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+	public final fun getRequestEnableLocationMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStartMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStartMonitoringLocationMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStopMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStopMonitoringLocationMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public fun isLocationEnabled ()Z
+	public final fun isLocationEnabledMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
+	public fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationMonitor : com/splendo/kaluga/service/test/MockServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
+	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
+	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
+	public fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;
+}
+
+public abstract class com/splendo/kaluga/location/test/MockLocationState {
+}
+
+public abstract class com/splendo/kaluga/location/test/MockLocationState$Active : com/splendo/kaluga/location/test/MockLocationState {
+	public final fun getDeinitialized ()Lkotlin/jvm/functions/Function1;
+	public abstract fun getLocation ()Lcom/splendo/kaluga/location/Location;
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationState$Deinitialized : com/splendo/kaluga/location/test/MockLocationState$Inactive, com/splendo/kaluga/location/LocationState$Deinitialized {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;)V
+	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
+	public final fun copy (Lcom/splendo/kaluga/location/Location;)Lcom/splendo/kaluga/location/test/MockLocationState$Deinitialized;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/test/MockLocationState$Deinitialized;Lcom/splendo/kaluga/location/Location;ILjava/lang/Object;)Lcom/splendo/kaluga/location/test/MockLocationState$Deinitialized;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/location/test/MockLocationState$Disabled : com/splendo/kaluga/location/test/MockLocationState$Active {
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationState$Disabled$NoGPS : com/splendo/kaluga/location/test/MockLocationState$Disabled, com/splendo/kaluga/location/LocationState$Disabled$NoGPS {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;)V
+	public fun getEnable ()Lkotlin/jvm/functions/Function1;
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationState$Disabled$NotPermitted : com/splendo/kaluga/location/test/MockLocationState$Disabled, com/splendo/kaluga/location/LocationState$Disabled$NotPermitted {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;)V
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun permit (Z)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationState$Enabled : com/splendo/kaluga/location/test/MockLocationState$Active, com/splendo/kaluga/location/LocationState$Enabled {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;)V
+	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
+	public final fun copy (Lcom/splendo/kaluga/location/Location;)Lcom/splendo/kaluga/location/test/MockLocationState$Enabled;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/test/MockLocationState$Enabled;Lcom/splendo/kaluga/location/Location;ILjava/lang/Object;)Lcom/splendo/kaluga/location/test/MockLocationState$Enabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDisable ()Lkotlin/jvm/functions/Function1;
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+	public fun updateWithLocation (Lcom/splendo/kaluga/location/Location$KnownLocation;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract class com/splendo/kaluga/location/test/MockLocationState$Inactive : com/splendo/kaluga/location/test/MockLocationState {
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationState$Initializing : com/splendo/kaluga/location/test/MockLocationState$Active, com/splendo/kaluga/location/LocationState$Initializing {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;)V
+	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
+	public final fun copy (Lcom/splendo/kaluga/location/Location;)Lcom/splendo/kaluga/location/test/MockLocationState$Initializing;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/test/MockLocationState$Initializing;Lcom/splendo/kaluga/location/Location;ILjava/lang/Object;)Lcom/splendo/kaluga/location/test/MockLocationState$Initializing;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun hashCode ()I
+	public fun initialize (ZZ)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationState$NotInitialized : com/splendo/kaluga/location/test/MockLocationState$Inactive, com/splendo/kaluga/location/LocationState$NotInitialized {
+	public static final field INSTANCE Lcom/splendo/kaluga/location/test/MockLocationState$NotInitialized;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public final fun startInitializing ()Lkotlin/jvm/functions/Function0;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationState$PermittedHandler {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;)V
+	public final fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public final fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/test/MockLocationStateRepoBuilder : com/splendo/kaluga/location/BaseLocationStateRepoBuilder {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Z)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
+	public final fun getBuiltLocationStateRepo ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getCreateMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
+	public final fun getLocationManagerBuilder ()Lcom/splendo/kaluga/location/BaseLocationManager$Builder;
+}
+

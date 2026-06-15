@@ -7,7 +7,7 @@ kaluga {
     dependencies {
         common {
             main {
-                api("com.splendo.kaluga:resources:${project.rootProject.version}")
+                api("com.splendo.kaluga.resources:resources:${project.rootProject.version}")
             }
         }
     }

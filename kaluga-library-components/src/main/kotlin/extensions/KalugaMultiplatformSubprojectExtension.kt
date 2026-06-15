@@ -43,8 +43,8 @@ import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
-import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 import java.io.BufferedWriter
 import java.io.File
@@ -663,7 +663,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
                 binaries {
                     getTest("DEBUG").apply {
-                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
+                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.base.test.mainBackground")
                     }
                 }
             }

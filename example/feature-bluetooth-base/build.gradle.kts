@@ -10,7 +10,7 @@ kaluga {
     dependencies {
         common {
             main {
-                api("com.splendo.kaluga:bluetooth-base:${project.rootProject.version}")
+                api("com.splendo.kaluga.bluetooth:core:${project.rootProject.version}")
             }
         }
     }

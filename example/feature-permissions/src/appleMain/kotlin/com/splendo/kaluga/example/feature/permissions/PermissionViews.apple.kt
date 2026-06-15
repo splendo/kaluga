@@ -17,14 +17,24 @@
 
 package com.splendo.kaluga.example.feature.permissions
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
 import com.splendo.kaluga.permissions.calendar.CalendarPermission
+import com.splendo.kaluga.permissions.calendar.registerCalendarPermission
 import com.splendo.kaluga.permissions.camera.CameraPermission
+import com.splendo.kaluga.permissions.camera.registerCameraPermission
 import com.splendo.kaluga.permissions.contacts.ContactsPermission
+import com.splendo.kaluga.permissions.contacts.registerContactsPermission
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.permissions.microphone.MicrophonePermission
+import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.notifications.NotificationsPermission
+import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 import com.splendo.kaluga.permissions.storage.StoragePermission
+import com.splendo.kaluga.permissions.storage.registerStoragePermission
 
 internal object BluetoothPermissionView : PermissionView("Bluetooth", "Bluetooth") {
     override val permission = BluetoothPermission(BluetoothPermission.Type.Client(useForLocation = USE_LOCATION_FOR_BLUETOOTH))
@@ -61,3 +71,14 @@ actual val availablePermissionViews: List<PermissionView> = listOf(
     NotificationsPermissionView,
     StoragePermissionView,
 )
+
+actual fun PermissionsBuilder.registerExamplePermissions(settings: BasePermissionManager.Settings) {
+    registerBluetoothPermission(settings = settings)
+    registerCalendarPermission(settings = settings)
+    registerCameraPermission(settings = settings)
+    registerContactsPermission(settings = settings)
+    registerLocationPermission(settings = settings)
+    registerMicrophonePermission(settings = settings)
+    registerNotificationsPermission(settings = settings)
+    registerStoragePermission(settings = settings)
+}

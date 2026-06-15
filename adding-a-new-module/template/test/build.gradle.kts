@@ -3,15 +3,15 @@ plugins {
 }
 
 kaluga {
-    moduleName = "test-utils-%PACKAGE%"
+    moduleName = "%PACKAGE%"
 %TARGET_CONFIG%
     dependencies {
         common {
             main {
-                implementation(project(":base"))
+                implementation(project(":base:base"))
             }
             test {
-                implementation(project(":test-utils-base"))
+                implementation(project(":base:test"))
             }
         }
     }

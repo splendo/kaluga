@@ -8,6 +8,7 @@ jobs:
       gradleTask: compileKotlinJs compileKotlinWasmJs
 
   test:
+    name: ${{ matrix.target.name }} · ${{ matrix.module.name }}
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -17,10 +18,10 @@ jobs:
         target:
           - name: JS
             test: jsNodeTest
-            flag: supportJS
+            support: supportJS
           - name: Wasm
             test: wasmJsNodeTest
-            flag: supportWasmJS
+            support: supportWasmJS
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -28,21 +29,16 @@ jobs:
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_linux/
 
-      - name: run ${{ matrix.target.name }} tests for ${{ matrix.module }}
-        run: |
-          flag='${{ matrix.target.flag }}'
-          if [ -z "$flag" ] || grep -qE "$flag\s*=\s*true" "${{ matrix.module }}/build.gradle.kts" 2>/dev/null; then
-            ./gradlew :${{ matrix.module }}:${{ matrix.target.test }}
-          else
-            echo "Module ${{ matrix.module }} does not declare $flag = true, skipping ${{ matrix.target.name }}"
-          fi
+      - name: run ${{ matrix.target.name }} tests for ${{ matrix.module.name }}
+        if: ${{ matrix.module[matrix.target.support] }}
+        run: ./gradlew -p ${{ matrix.module.dir }} ${{ matrix.target.test }}
 
       - name: Upload ${{ matrix.target.name }} test artifact
         uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: ${{ matrix.module }} ${{ matrix.target.name }} Test Report HTML
-          path: ${{ format('**{0}/build/reports/tests/{1}', matrix.module, matrix.target.test) }}
+          name: ${{ matrix.module.name }} ${{ matrix.target.name }} Test Report HTML
+          path: ${{ format('{0}/**/build/reports/tests/{1}', matrix.module.dir, matrix.target.test) }}
 
   example-web:
     needs: test

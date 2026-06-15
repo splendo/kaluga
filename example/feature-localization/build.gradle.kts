@@ -12,7 +12,7 @@ kaluga {
         common {
             main {
                 api(project(":core-arch"))
-                api("com.splendo.kaluga:base:${project.rootProject.version}")
+                api("com.splendo.kaluga.base:base:${project.rootProject.version}")
             }
         }
     }

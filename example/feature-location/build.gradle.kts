@@ -13,7 +13,7 @@ kaluga {
                 api(project(":core-arch"))
                 api(project(":core-koin"))
                 api(project(":feature-permissions"))
-                api("com.splendo.kaluga:location:${project.rootProject.version}")
+                api("com.splendo.kaluga.location:location:${project.rootProject.version}")
             }
         }
     }
