@@ -67,7 +67,7 @@ private fun ensureRegistry() {
         """
         if (!globalThis.__kbt) {
             globalThis.__kbt = {
-                devices: {}, chars: {}, descs: {},
+                devices: {}, chars: {}, descs: {}, listeners: {},
                 props: function (p) {
                     var v = 0;
                     if (p.broadcast) v |= 1;
@@ -495,10 +495,17 @@ private fun jsStartNotifications(
 ) {
     js(
         """
+        var reg = globalThis.__kbt;
         var key = identifier + '|' + service + '|' + characteristic;
-        var c = globalThis.__kbt.chars[key];
+        var c = reg.chars[key];
         if (!c) { onError(''); return; }
-        c.addEventListener('characteristicvaluechanged', function (event) { onValue(event.target.value); });
+        // Keep the listener reference so jsStopNotifications can remove it; replace any prior one for
+        // this characteristic so re-enabling never stacks duplicate listeners.
+        var previous = reg.listeners[key];
+        if (previous) c.removeEventListener('characteristicvaluechanged', previous);
+        var listener = function (event) { onValue(event.target.value); };
+        reg.listeners[key] = listener;
+        c.addEventListener('characteristicvaluechanged', listener);
         c.startNotifications().then(function () { onResult(); }, function (e) { onError(e && e.name ? e.name : ''); });
         """,
     )
