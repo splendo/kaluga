@@ -19,8 +19,8 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
@@ -31,9 +31,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 class MockBluetoothService(
-    val discoveredDevicesFlow: MutableStateFlow<List<Device>> = MutableStateFlow(emptyList()),
-    val filteredDevicesFlow: MutableStateFlow<Map<Filter, List<Device>>> = MutableStateFlow(emptyMap()),
-    val pairedDevicesFlow: MutableStateFlow<Map<Set<UUID>, List<Device>>> = MutableStateFlow(emptyMap()),
+    val discoveredDevicesFlow: MutableStateFlow<List<ConnectableDevice>> = MutableStateFlow(emptyList()),
+    val filteredDevicesFlow: MutableStateFlow<Map<Filter, List<ConnectableDevice>>> = MutableStateFlow(emptyMap()),
+    val pairedDevicesFlow: MutableStateFlow<Map<Set<UUID>, List<ConnectableDevice>>> = MutableStateFlow(emptyMap()),
     override val isEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true),
     setupMocks: Boolean = true,
 ) : BluetoothService {
@@ -77,11 +77,11 @@ class MockBluetoothService(
     }
 
     override fun stopScanning(cleanMode: BluetoothService.CleanMode): Unit = stopScanningMock.call(cleanMode)
-    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> =
+    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<ConnectableDevice>> =
         pairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
-    override fun scannedDevices(filter: Filter): Flow<List<Device>> = scannedDevicesMock.call(filter)
-    override fun allDevices(): Flow<List<Device>> = allDevicesMock.call()
-    override fun devices(): Flow<List<Device>> = devicesMock.call()
+    override fun scannedDevices(filter: Filter): Flow<List<ConnectableDevice>> = scannedDevicesMock.call(filter)
+    override fun allDevices(): Flow<List<ConnectableDevice>> = allDevicesMock.call()
+    override fun devices(): Flow<List<ConnectableDevice>> = devicesMock.call()
     override suspend fun isScanning(): Flow<Boolean> = isScanningMock.call()
 }

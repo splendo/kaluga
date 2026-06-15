@@ -133,14 +133,11 @@
         <activity android:name=".architecture.xml.ArchitectureDetailsActivity"
             android:label="@string/feature_architecture"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".bluetooth.BluetoothActivity"
-            android:label="@string/feature_bluetooth"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".bluetooth.BluetoothMoreActivity"
-            android:label="@string/feature_bluetooth"
-            android:screenOrientation="fullSensor"/>
         <activity android:name=".beacons.BeaconsActivity"
             android:label="@string/feature_beacons"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".bluetooth.BluetoothActivity"
+            android:label="@string/feature_bluetooth"
             android:screenOrientation="fullSensor"/>
         <activity android:name=".media.MediaListActivity"
             android:label="@string/feature_media"

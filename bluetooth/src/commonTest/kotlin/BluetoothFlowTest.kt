@@ -20,11 +20,12 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
@@ -58,7 +59,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             characteristics {
                 characteristic {
                     uuid = randomUUID()
-                    properties = 0
+                    properties += setOf(CharacteristicProperty.Read, CharacteristicProperty.Write, CharacteristicProperty.Notify)
                     descriptors {
                         descriptor(uuid = randomUUID())
                     }
@@ -166,7 +167,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                         coroutineContext = scannerContext,
                     ).apply {
                         // Make sure permissionState has been created as it may break the tests otherwise
-                        get(BluetoothPermission())
+                        get(BluetoothPermission(BluetoothPermission.Type.Client()))
                     },
                     configuration.autoRequestPermission,
                     configuration.autoEnableBluetooth,
@@ -185,7 +186,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             rssi: RSSI,
             advertisementData: BaseAdvertisementData,
             deviceConnectionManagerBuilder: (ConnectionSettings) -> BaseDeviceConnectionManager,
-        ): Device = DeviceImpl(
+        ): ConnectableDevice = ConnectableDeviceImpl(
             deviceWrapper.identifier,
             DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
             connectionSettings,
@@ -195,12 +196,12 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
         }
 
-        private suspend fun awaitScanDevice(device: Device, deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData) {
+        private suspend fun awaitScanDevice(device: ConnectableDevice, deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData) {
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             scanner.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { device }
         }
 
-        fun scanDevice(device: Device, deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData) {
+        fun scanDevice(device: ConnectableDevice, deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData) {
             coroutineScope.launch {
                 awaitScanDevice(device, deviceWrapper, rssi, advertisementData)
             }
@@ -220,9 +221,9 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             bluetooth.allDevices()[device.identifier].disconnect()
         }
 
-        suspend fun discoverService(service: Service, device: Device, connectionManager: MockDeviceConnectionManager) {
+        suspend fun discoverService(service: RemoteService, device: ConnectableDevice, connectionManager: MockDeviceConnectionManager) {
             device.state.filter { it is ConnectableDeviceState.Connected.Discovering }.first()
-            connectionManager.handleDiscoverCompleted(listOf(service))
+            connectionManager.discover(listOf(service))
         }
 
         val pairedDevicesTimer = MutableSharedFlow<Unit>(1)
@@ -252,7 +253,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
     sealed class BaseServiceContext<C>(configuration: C, coroutineScope: CoroutineScope) :
         BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
         val serviceUuid = serviceWrapper.uuid
-        val service by lazy { connectionManager.createService(serviceWrapper) }
+        val service by lazy { connectionManager.create(serviceWrapper) }
         suspend fun discoverService() = discoverService(service, device, connectionManager)
     }
     class ServiceContext(configuration: Configuration.DeviceWithService, coroutineScope: CoroutineScope) :

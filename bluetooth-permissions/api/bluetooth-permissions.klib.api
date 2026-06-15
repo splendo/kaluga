@@ -11,18 +11,47 @@ abstract interface com.splendo.kaluga.permissions.bluetooth/BaseBluetoothPermiss
 }
 
 final class com.splendo.kaluga.permissions.bluetooth/BluetoothPermission : com.splendo.kaluga.permissions.base/Permission { // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission|null[0]
-    constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.<init>|<init>(kotlin.Boolean){}[0]
+    constructor <init>(com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type) // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.<init>|<init>(com.splendo.kaluga.permissions.bluetooth.BluetoothPermission.Type){}[0]
 
     final val name // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.name|{}name[0]
         final fun <get-name>(): kotlin/String // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.name.<get-name>|<get-name>(){}[0]
-    final val useForLocation // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.useForLocation|{}useForLocation[0]
-        final fun <get-useForLocation>(): kotlin/Boolean // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.useForLocation.<get-useForLocation>|<get-useForLocation>(){}[0]
+    final val type // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.type|{}type[0]
+        final fun <get-type>(): com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.type.<get-type>|<get-type>(){}[0]
 
-    final fun component1(): kotlin/Boolean // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.component1|component1(){}[0]
-    final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.permissions.bluetooth/BluetoothPermission // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.copy|copy(kotlin.Boolean){}[0]
+    final fun component1(): com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.component1|component1(){}[0]
+    final fun copy(com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type = ...): com.splendo.kaluga.permissions.bluetooth/BluetoothPermission // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.copy|copy(com.splendo.kaluga.permissions.bluetooth.BluetoothPermission.Type){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.toString|toString(){}[0]
+
+    sealed class Type { // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type|null[0]
+        abstract val name // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.name|{}name[0]
+            abstract fun <get-name>(): kotlin/String // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.name.<get-name>|<get-name>(){}[0]
+
+        final class Client : com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type { // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client|null[0]
+            constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.<init>|<init>(kotlin.Boolean){}[0]
+
+            final val name // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.name|{}name[0]
+                final fun <get-name>(): kotlin/String // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.name.<get-name>|<get-name>(){}[0]
+            final val useForLocation // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.useForLocation|{}useForLocation[0]
+                final fun <get-useForLocation>(): kotlin/Boolean // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.useForLocation.<get-useForLocation>|<get-useForLocation>(){}[0]
+
+            final fun component1(): kotlin/Boolean // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.component1|component1(){}[0]
+            final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.copy|copy(kotlin.Boolean){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Client.toString|toString(){}[0]
+        }
+
+        final object Server : com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type { // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Server|null[0]
+            final val name // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Server.name|{}name[0]
+                final fun <get-name>(): kotlin/String // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Server.name.<get-name>|<get-name>(){}[0]
+
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Server.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Server.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.permissions.bluetooth/BluetoothPermission.Type.Server.toString|toString(){}[0]
+        }
+    }
 }
 
 final class com.splendo.kaluga.permissions.bluetooth/BluetoothPermissionManagerBuilder : com.splendo.kaluga.permissions.bluetooth/BaseBluetoothPermissionManagerBuilder { // com.splendo.kaluga.permissions.bluetooth/BluetoothPermissionManagerBuilder|null[0]

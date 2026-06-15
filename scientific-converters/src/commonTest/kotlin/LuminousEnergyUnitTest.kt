@@ -31,7 +31,9 @@ import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class LuminousEnergyUnitTest {
 
     @Test

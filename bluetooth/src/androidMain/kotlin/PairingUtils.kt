@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.Device
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
@@ -26,9 +26,9 @@ import kotlinx.coroutines.flow.transformLatest
 // TODO: consider moving this to commonMain
 
 /**
- * Pairs a ([Flow] of) [Device] by waiting for it to become connected and calling `[ConnectableDeviceState.Connected.pair]`
+ * Pairs a ([Flow] of) [ConnectableDevice] by waiting for it to become connected and calling `[ConnectableDeviceState.Connected.pair]`
  */
-suspend fun Flow<Device?>.pair() = state().transformLatest { deviceState ->
+suspend fun Flow<ConnectableDevice?>.pair() = state().transformLatest { deviceState ->
     when (deviceState) {
         is ConnectableDeviceState.Connected -> {
             emit(deviceState.pair())
@@ -39,9 +39,9 @@ suspend fun Flow<Device?>.pair() = state().transformLatest { deviceState ->
 }.first()
 
 /**
- * Pairs a ([Flow] of) [Device] by calling `[ConnectableDeviceState.unpair]` on the first [ConnectableDeviceState]
+ * Pairs a ([Flow] of) [ConnectableDevice] by calling `[ConnectableDeviceState.unpair]` on the first [ConnectableDeviceState]
  */
-suspend fun Flow<Device?>.unpair() = state().transformLatest { deviceState ->
+suspend fun Flow<ConnectableDevice?>.unpair() = state().transformLatest { deviceState ->
     when (deviceState) {
         is ConnectableDeviceState -> {
             emit(deviceState.unpair())

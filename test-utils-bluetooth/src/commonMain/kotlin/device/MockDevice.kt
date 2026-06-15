@@ -17,12 +17,13 @@
 
 package com.splendo.kaluga.test.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RSSI
-import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -50,7 +51,7 @@ class MockDevice(
     setupMocks: Boolean = true,
     private val connectionDelay: Duration = 1.seconds,
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-) : Device {
+) : ConnectableDevice {
 
     val mockConnectableDeviceManager = MockConnectableDeviceManager()
 
@@ -103,8 +104,9 @@ class MockDevice(
     }
 
     private fun buildServices() = info.value.advertisementData.serviceUUIDs.map {
-        Service(
+        RemoteService(
             service = createServiceWrapper { uuid = it },
+            includedServices = emptyList(),
             emitNewAction = {},
             logger = ContextualLogger(logger, "MockDeviceService"),
         )
@@ -160,11 +162,11 @@ class MockDevice(
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext, ConnectableDeviceState.Connected.NoServices::class) { it.discoverServices }
     }
 
-    fun handleDiscoverServices(services: List<Service>) {
+    fun handleDiscoverServices(services: List<RemoteService>) {
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext, ConnectableDeviceState.Connected.Discovering::class) { it.didDiscoverServices(services) }
     }
 
-    fun addAction(action: DeviceAction) {
+    fun addAction(action: DeviceAction<*>) {
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext) { state ->
             when (state) {
                 is ConnectableDeviceState.Connected.Idle -> state.handleAction(action)
@@ -174,9 +176,9 @@ class MockDevice(
         }
     }
 
-    fun completeAction() {
+    fun completeAction(response: GattResponse) {
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext, ConnectableDeviceState.Connected.HandlingAction::class) {
-            it.actionCompleted
+            it.actionCompleted(response)
         }
     }
 

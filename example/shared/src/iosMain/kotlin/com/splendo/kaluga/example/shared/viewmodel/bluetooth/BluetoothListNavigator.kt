@@ -18,8 +18,15 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.navigation.DefaultNavigator
-import platform.Foundation.NSUUID
 
-fun BluetoothListNavigator(onDetailsPressed: (NSUUID) -> Unit) = DefaultNavigator<DeviceDetails> { action ->
-    onDetailsPressed(action.value.identifier)
+interface IOSBluetoothListNavigator {
+    fun onClientPressed()
+    fun onServerPressed()
+}
+
+fun BluetoothListNavigator(iosNavigator: IOSBluetoothListNavigator) = DefaultNavigator<BluetoothListNavigationAction> { action ->
+    when (action) {
+        is BluetoothListNavigationAction.Client -> iosNavigator.onClientPressed()
+        is BluetoothListNavigationAction.Server -> iosNavigator.onServerPressed()
+    }
 }

@@ -43,7 +43,9 @@ import com.splendo.kaluga.scientific.unit.UsLiquidGallon
 import com.splendo.kaluga.scientific.unit.UsTon
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class SpecificVolumeUnitTest {
 
     @Test

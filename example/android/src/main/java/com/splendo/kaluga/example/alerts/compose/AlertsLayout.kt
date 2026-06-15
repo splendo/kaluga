@@ -23,8 +23,11 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +64,7 @@ fun AlertsLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
+                    .padding(WindowInsets.systemBars.asPaddingValues())
                     .verticalScroll(rememberScrollState()),
             ) {
                 showAlertButton.Composable(modifier = Modifier.fillMaxWidth())

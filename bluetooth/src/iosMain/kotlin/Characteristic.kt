@@ -29,27 +29,24 @@ import platform.Foundation.NSData
 /**
  * Accessor to a [CBCharacteristic]
  */
-actual interface CharacteristicWrapper {
+actual interface RemoteCharacteristicWrapper {
 
     /**
      * The [UUID] of the characteristic
      */
     actual val uuid: CBUUID
 
-    /**
-     * The list of [DescriptorWrapper] of associated with the characteristic
-     */
-    actual val descriptors: List<DescriptorWrapper>
+    actual val service: RemoteServiceWrapper
 
     /**
-     * The current [Value] of the characteristic
+     * The list of [RemoteDescriptorWrapper] of associated with the characteristic
      */
-    actual val value: NSData?
+    actual val descriptors: List<RemoteDescriptorWrapper>
 
     /**
-     * The integer representing all [CharacteristicProperties] of the characteristic
+     * The set of all [CharacteristicProperty] of the characteristic
      */
-    actual val properties: Int
+    actual val properties: Set<CharacteristicProperty>
 
     /**
      * Request a [CBPeripheral] to read the characteristic
@@ -74,19 +71,18 @@ actual interface CharacteristicWrapper {
 }
 
 /**
- * Default implementation of [CharacteristicWrapper]
+ * Default implementation of [RemoteCharacteristicWrapper]
  * @param characteristic the [CBCharacteristic] to wrap
  */
-class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic) : CharacteristicWrapper {
+class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic, override val service: RemoteServiceWrapper) : RemoteCharacteristicWrapper {
 
     override val uuid: CBUUID get() {
         return characteristic.UUID
     }
-    override val descriptors: List<DescriptorWrapper> = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) } ?: emptyList()
-    override val value: NSData? get() {
-        return characteristic.value
+    override val descriptors: List<RemoteDescriptorWrapper> by lazy {
+        characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it, this) } ?: emptyList()
     }
-    override val properties get() = characteristic.properties.toInt()
+    override val properties get() = CharacteristicProperty.fromInt(characteristic.properties.toInt())
 
     override fun readValue(peripheral: CBPeripheral) {
         peripheral.readValueForCharacteristic(characteristic)

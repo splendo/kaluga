@@ -17,14 +17,20 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.ServiceWrapper
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 
-class MockServiceWrapper(override val uuid: UUID = UUID(), override val characteristics: List<CharacteristicWrapper> = emptyList()) : ServiceWrapper {
+class MockServiceWrapper(
+    override val uuid: UUID = UUID(),
+    override val type: Service.Type = Service.Type.PRIMARY,
+    override val characteristics: List<RemoteCharacteristicWrapper> = emptyList(),
+    override val includedServices: List<RemoteServiceWrapper> = emptyList(),
+) : RemoteServiceWrapper {
     constructor(builder: ServiceWrapperBuilder) : this(
         builder.uuid,
-        builder.characteristics.map {
+        characteristics = builder.characteristics.map {
             IOSMockCharacteristicWrapper(
                 uuid = it.uuid,
                 properties = it.properties,

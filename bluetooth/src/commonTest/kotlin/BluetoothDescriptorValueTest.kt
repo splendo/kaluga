@@ -19,23 +19,22 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.base.mock.verifyWithin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
-class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, ByteArray?>() {
+class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, RemoteDescriptor?>() {
 
     override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithDescriptor, CoroutineScope) -> DescriptorContext = { configuration, scope ->
         DescriptorContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<ByteArray?> = {
-        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid].value()
+    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<RemoteDescriptor?> = {
+        bluetooth.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid).descriptors().getOrNull(descriptorUuid)
     }
 
     @Test
@@ -53,16 +52,14 @@ class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configu
         mainAction {
             connectDevice()
             discoverService()
-            yieldMultiple(5)
-            descriptor.writeValue(newValue)
-            yieldMultiple(2)
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.performActionMock.verify(captor)
+        }
+        test { descriptor ->
+            assertNotNull(descriptor)
+            descriptor.startWrite(newValue)
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
+            connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
             connectionManager.handleCurrentAction()
-        }
-        test {
-            assertTrue(newValue contentEquals it)
         }
     }
 }

@@ -30,6 +30,7 @@ abstract class KalugaViewModelActivity<ViewModel : BaseLifecycleViewModel>(@Layo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewModel.bind(this)
     }
 }

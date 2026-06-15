@@ -47,14 +47,19 @@ import kotlin.coroutines.CoroutineContext
 typealias ConnectableDeviceStateFlowRepo = StateRepo<ConnectableDeviceState, MutableStateFlow<ConnectableDeviceState>>
 
 /**
- * A Bluetooth device that can be connected to
+ * A Bluetooth Device that is either the Peripheral (Server) or Central (Client)
  */
 interface Device {
-
     /**
      * The [Identifier] of the device
      */
     val identifier: Identifier
+}
+
+/**
+ * A [Device] that can be connected to
+ */
+interface ConnectableDevice : Device {
 
     /**
      * A [StateFlow] of the latest [DeviceInfo] of the device
@@ -124,7 +129,7 @@ interface Device {
 }
 
 /**
- * Implementation of [Device]
+ * Implementation of [ConnectableDevice]
  * @param identifier The [Identifier] of the device
  * @param initialDeviceInfo the initial [DeviceInfoImpl] known about the device
  * @param connectionSettings the [ConnectionSettings] to apply to the [DeviceConnectionManager] associated with this device
@@ -132,7 +137,7 @@ interface Device {
  * @param coroutineScope the [CoroutineScope] this device is running on]
  * @param createDeviceStateFlow creates a [ConnectableDeviceStateFlowRepo] to manage the device connection state
  */
-class DeviceImpl(
+class ConnectableDeviceImpl(
     override val identifier: Identifier,
     initialDeviceInfo: DeviceInfoImpl,
     private val connectionSettings: ConnectionSettings,
@@ -141,7 +146,7 @@ class DeviceImpl(
     private val createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { connectionManager, context ->
         ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
     },
-) : Device,
+) : ConnectableDevice,
     CoroutineScope by coroutineScope {
 
     companion object {
@@ -200,7 +205,7 @@ class DeviceImpl(
                     is DeviceConnectionManager.Event.Discovering,
                     is DeviceConnectionManager.Event.DiscoveredServices,
                     is DeviceConnectionManager.Event.AddAction,
-                    is DeviceConnectionManager.Event.CompletedAction,
+                    is DeviceConnectionManager.Event.CompletedAction<*>,
                     is DeviceConnectionManager.Event.Disconnecting,
                     is DeviceConnectionManager.Event.Disconnected,
                     -> deviceStateRepo.value
@@ -252,7 +257,7 @@ class DeviceImpl(
         is DeviceConnectionManager.Event.Discovering -> stateTransition(state)
         is DeviceConnectionManager.Event.DiscoveredServices -> stateTransition(state)
         is DeviceConnectionManager.Event.AddAction -> stateTransition(state)
-        is DeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
+        is DeviceConnectionManager.Event.CompletedAction<*> -> stateTransition(state)
     }
 
     private fun DeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectableDeviceState) =
@@ -322,11 +327,11 @@ class DeviceImpl(
         }
     }
 
-    private fun DeviceConnectionManager.Event.CompletedAction.stateTransition(state: ConnectableDeviceState) =
+    private fun DeviceConnectionManager.Event.CompletedAction<*>.stateTransition(state: ConnectableDeviceState) =
         if (state is ConnectableDeviceState.Connected.HandlingAction && state.action === action) {
-            state.action.complete(succeeded)
-            debug(TAG) { "Action $action has been succeeded: $succeeded" }
-            state.actionCompleted
+            debug(TAG) { "Action $action has received response: $response" }
+            complete()
+            state.actionCompleted(response)
         } else {
             state.remain()
         }

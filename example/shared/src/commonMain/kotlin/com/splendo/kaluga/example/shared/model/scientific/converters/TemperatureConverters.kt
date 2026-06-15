@@ -21,7 +21,27 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.temperature.div
 import com.splendo.kaluga.scientific.converter.temperature.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.HeatCapacity
+import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialHeatCapacity
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialTemperature
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.MetricHeatCapacity
+import com.splendo.kaluga.scientific.unit.MetricPower
+import com.splendo.kaluga.scientific.unit.MetricSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.MetricThermalResistance
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.ThermalResistance
+import com.splendo.kaluga.scientific.unit.UKImperialHeatCapacity
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.UKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.USCustomaryHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
+import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
 
 val PhysicalQuantity.Temperature.converters get() = listOf<QuantityConverter<PhysicalQuantity.Temperature, *>>(
     QuantityConverterWithOperator(

@@ -18,7 +18,11 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verifyWithin
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -53,8 +57,9 @@ class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
             assertNull(it)
         }
         mainAction {
-            flowOf(device).requestMtu(newMtu)
+            async { flowOf(device).requestMtu(newMtu) }
             device.state.filterIsInstance<ConnectableDeviceState.Connected.HandlingAction>().first()
+            connectionManager.performActionMock.verifyWithin(value = eq(DeviceAction.RequestMtu(newMtu)))
             connectionManager.handleCurrentAction()
         }
 

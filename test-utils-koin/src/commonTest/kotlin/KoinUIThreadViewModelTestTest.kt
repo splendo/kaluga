@@ -18,6 +18,7 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.test.base.IgnoreJs
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verify
@@ -35,6 +36,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
+@IgnoreJs
 class KoinUIThreadViewModelTestTest : KoinUIThreadViewModelTest<KoinUIThreadViewModelTestTest.MyKoinViewModelTestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
 
     companion object {

@@ -21,7 +21,26 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.molarEnergy.div
 import com.splendo.kaluga.scientific.converter.molarEnergy.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.AmountOfSubstance
+import com.splendo.kaluga.scientific.unit.ImperialMolality
+import com.splendo.kaluga.scientific.unit.ImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.ImperialMolarMass
+import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolality
+import com.splendo.kaluga.scientific.unit.MetricMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolarMass
+import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarEnergy
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.UKImperialMolality
+import com.splendo.kaluga.scientific.unit.UKImperialMolarMass
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.USCustomaryMolality
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarMass
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
 
 val PhysicalQuantity.MolarEnergy.converters get() = listOf<QuantityConverter<PhysicalQuantity.MolarEnergy, *>>(
     QuantityConverterWithOperator(

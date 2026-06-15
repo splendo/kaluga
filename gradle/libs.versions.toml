@@ -1,25 +1,26 @@
 [versions]
 kaluga = "1.6.0"
-java = "17"
+java = "21"
+foojay-resolver = "1.0.0"
 
-androidGradle = "8.13.2"
+androidGradle = "9.1.0"
 androidBuildTools = "36.1.0"
 androidCompileSdk = "36"
 androidMinSdk = "24"
-kotlin = "2.3.0"
+kotlin = "2.3.21"
 kotlinter = "5.3.0"
-kotlinx-kover = "0.9.4"
+kotlinx-kover = "0.9.8"
 dokka = "2.1.0"
-vanniktechMavenPublish = "0.35.0"
+vanniktechMavenPublish = "0.36.0"
 palantir-git-version = "4.2.0"
 
 # higher versions of dependencycheck despite being a minor update break the API
 #noinspection NewerVersionAvailable
 dependencycheck = "12.1.6"
 
-kotlinx-atomicfu = "0.29.0"
+kotlinx-atomicfu = "0.30.0"
 kotlinx-coroutines = "1.10.2"
-kotlinx-serialization = "1.9.0"
+kotlinx-serialization = "1.10.0"
 accompanist = "0.37.3"
 android-material = "1.13.0"
 android-play-review = "2.0.2"
@@ -28,9 +29,9 @@ androidx-activity = "1.12.2"
 androidx-appcompat = "1.7.1"
 androidx-arch-core = "2.2.0"
 androidx-browser = "1.9.0"
-androidx-compose = "1.10.0"
+androidx-compose = "1.10.1"
 androidx-compose-constraintlayout = "1.1.1"
-androidx-compose-ui = "1.10.0"
+androidx-compose-ui = "1.10.1"
 androidx-compose-material = "1.4.0"
 androidx-constraintlayout = "2.2.1"
 androidx-core = "1.17.0"
@@ -42,7 +43,7 @@ androidx-test-runner = "1.7.0"
 androidx-test-espresso = "3.7.0"
 androidx-test-junit = "1.3.0"
 androidx-test-uiautomator = "2.3.0"
-bytebuddy = "1.18.3"
+bytebuddy = "1.18.4"
 junit = "4.13.2"
 koin = "4.1.1"
 mockito = "5.21.0"
@@ -103,6 +104,7 @@ kaluga-testutils-system = { module = "com.splendo.kaluga:test-utils-system", ver
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
 #                                                                                   yes, actually this
 android-multiplatform-gradle = { module = "com.android.kotlin.multiplatform.library:com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "androidGradle" }
+android-legacy-kapt-gradle = { module = "com.android.legacy-kapt:com.android.legacy-kapt.gradle.plugin", version.ref = "androidGradle" }
 compose-gradle = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinter-gradle = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kotlinter" }
@@ -214,6 +216,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "androidGradle" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
@@ -222,5 +225,6 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover"}
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay-resolver" }
 
 [bundles]

@@ -26,11 +26,11 @@ import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -72,7 +72,7 @@ internal val scanningDispatcher: CoroutineDispatcher by lazy {
 }
 
 /**
- * Scans for Bluetooth [com.splendo.kaluga.bluetooth.device.Device]
+ * Scans for Bluetooth [com.splendo.kaluga.bluetooth.device.ConnectableDevice]
  */
 interface Scanner {
 
@@ -83,7 +83,7 @@ interface Scanner {
      * @property advertisementData the [BaseAdvertisementData] of the device discovered
      * @property deviceCreator method for creating a device if it had not yet been discovered.
      */
-    data class DeviceDiscovered(val identifier: Identifier, val rssi: Int, val advertisementData: BaseAdvertisementData, val deviceCreator: (CoroutineContext) -> Device)
+    data class DeviceDiscovered(val identifier: Identifier, val rssi: Int, val advertisementData: BaseAdvertisementData, val deviceCreator: (CoroutineContext) -> ConnectableDevice)
 
     /**
      * Events detected by a [Scanner]
@@ -182,7 +182,7 @@ interface Scanner {
     /**
      * Starts scanning for devices.
      * This will result in [Event.DeviceDiscovered] or [Event.FailedScanning]
-     * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
+     * @param filter if not empty, only [ConnectableDevice] that have at least one [Service] matching one of the [UUID] will be scanned.
      */
     suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings?)
 
@@ -213,9 +213,9 @@ interface Scanner {
     suspend fun requestEnableHardware()
 
     /**
-     * Retrieves the list of paired [Device]
+     * Retrieves the list of paired [ConnectableDevice]
      * This will result in [Event.PairedDevicesRetrieved] on the [events] flow
-     * @param withServices filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
+     * @param withServices filters the list to only return the [ConnectableDevice] that at least one [Service] matching one of the provided [UUID]
      * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
      * @param connectionSettings the [ConnectionSettings] to apply to the paired devices found. If `null` the default will be used
      */
@@ -286,7 +286,7 @@ abstract class BaseScanner constructor(
     private val autoEnableSensors: Boolean = settings.autoEnableSensors
     internal val useLocation: Boolean = settings.useLocation
 
-    internal val bluetoothPermission = BluetoothPermission(useForLocation = settings.useLocation)
+    internal val bluetoothPermission = BluetoothPermission(BluetoothPermission.Type.Client(useForLocation = settings.useLocation))
     private val defaultConnectionSettings = settings.defaultConnectionSettings
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
@@ -465,7 +465,12 @@ abstract class BaseScanner constructor(
         )(coroutineContext)
     }
 
-    protected open fun handleDeviceDiscovered(deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData, deviceCreator: (CoroutineContext) -> Device) {
+    protected open fun handleDeviceDiscovered(
+        deviceWrapper: DeviceWrapper,
+        rssi: RSSI,
+        advertisementData: BaseAdvertisementData,
+        deviceCreator: (CoroutineContext) -> ConnectableDevice,
+    ) {
         logger.info(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
 
@@ -495,8 +500,8 @@ abstract class BaseScanner constructor(
         advertisementData: BaseAdvertisementData,
         connectionManagerBuilder: DeviceConnectionManager.Builder,
         connectionSettings: ConnectionSettings?,
-    ): (CoroutineContext) -> Device = { coroutineContext ->
-        DeviceImpl(
+    ): (CoroutineContext) -> ConnectableDevice = { coroutineContext ->
+        ConnectableDeviceImpl(
             deviceWrapper.identifier,
             DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
             connectionSettings ?: defaultConnectionSettings,

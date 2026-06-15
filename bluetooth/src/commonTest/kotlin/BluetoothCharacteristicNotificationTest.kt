@@ -21,16 +21,18 @@ import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.mock.verifyWithin
 import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager.ActionCompleted
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class BluetoothCharacteristicNotificationTest :
@@ -45,7 +47,9 @@ class BluetoothCharacteristicNotificationTest :
     fun testEnableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
         connect()
         discover()
-        enableNotifications()
+        val subscription = CompletableDeferred<RemoteCharacteristic.SubscriptionResult>()
+        enableNotifications(subscription)
+        subscription.await()
     }
 
     @Test
@@ -53,10 +57,12 @@ class BluetoothCharacteristicNotificationTest :
         connect()
         discover()
 
-        enableNotifications()
+        val subscription = CompletableDeferred<RemoteCharacteristic.SubscriptionResult>()
+        enableNotifications(subscription)
+        subscription.await()
         mainAction {
-            assertNull(characteristic.enableNotification())
-            assertTrue(characteristic.isNotifying)
+            assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(characteristic.subscribe {})
+            assertTrue(characteristic.isNotifying.value)
         }
     }
 
@@ -64,29 +70,32 @@ class BluetoothCharacteristicNotificationTest :
     fun testDisableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
         connect()
         discover()
-        enableNotifications()
+        val subscription = CompletableDeferred<RemoteCharacteristic.SubscriptionResult>()
+        enableNotifications(subscription)
 
         mainAction {
-            characteristic.disableNotification()
-            yieldMultiple(2)
+            val subscriptionResult = subscription.await()
+            assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(subscriptionResult)
+            launch { subscriptionResult.subscription.unsubscribe() }
         }
 
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.performActionMock.verify(captor, 2)
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
+            connectionManager.performActionMock.verifyWithin(value = captor, times = 2)
             assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Disable>(it.action)
         }
         mainAction {
             connectionManager.handleCurrentAction()
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.handleCurrentActionCompletedMock.verify(ParameterMatcher.eq(true), captor, 2)
-            assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
+            val captor = AnyOrNullCaptor<ActionCompleted<*>>()
+            connectionManager.handleCurrentActionCompletedMock.verify(captor, 2)
+            assertIs<GattResponse.WriteSuccess>(captor.lastCaptured?.response)
+            assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured?.action)
         }
         test {
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
-            assertFalse(characteristic.isNotifying)
+            assertFalse(characteristic.isNotifying.value)
         }
     }
 
@@ -100,17 +109,16 @@ class BluetoothCharacteristicNotificationTest :
         discover()
 
         mainAction {
-            assertFalse(characteristic.isNotifying)
-            characteristic.enableNotification()
-            yieldMultiple(2)
+            assertFalse(characteristic.isNotifying.value)
+            launch { characteristic.subscribe {} }
         }
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.performActionMock.verify(captor)
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
+            connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Enable>(it.action)
-            assertFalse(characteristic.isNotifying)
+            assertFalse(characteristic.isNotifying.value)
         }
     }
 
@@ -144,7 +152,7 @@ class BluetoothCharacteristicNotificationTest :
             assertIs<ConnectableDeviceState.Connected.Discovering>(it)
         }
         mainAction {
-            connectionManager.handleDiscoverCompleted(listOf(service))
+            connectionManager.discover(listOf(service))
         }
         test {
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
@@ -152,15 +160,14 @@ class BluetoothCharacteristicNotificationTest :
         }
     }
 
-    private suspend fun enableNotifications() {
+    private suspend fun enableNotifications(subscription: CompletableDeferred<RemoteCharacteristic.SubscriptionResult>) {
         mainAction {
-            assertFalse(characteristic.isNotifying, "Notifications already enabled!")
-            characteristic.enableNotification()
-            yieldMultiple(2)
+            assertFalse(characteristic.isNotifying.value, "Notifications already enabled!")
+            launch { subscription.complete(characteristic.subscribe { }) }
         }
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.performActionMock.verify(captor)
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
+            connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Enable>(it.action)
@@ -169,7 +176,7 @@ class BluetoothCharacteristicNotificationTest :
             connectionManager.handleCurrentAction()
         }
         test {
-            assertTrue(characteristic.isNotifying)
+            assertTrue(characteristic.isNotifying.value)
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
         }
     }

@@ -19,8 +19,9 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
-import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
@@ -73,7 +74,7 @@ sealed class MockDeviceState : KalugaState {
         ) : Connected(),
             ConnectableDeviceState.Connected.Discovering,
             HandleAfterOldStateIsRemoved<MockDeviceState> {
-            override fun didDiscoverServices(services: List<Service>): suspend () -> ConnectableDeviceState.Connected.Idle = {
+            override fun didDiscoverServices(services: List<RemoteService>): suspend () -> ConnectableDeviceState.Connected.Idle = {
                 Idle(reconnectionSettings, null, services, mockConnectableDeviceManager)
             }
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
@@ -92,11 +93,11 @@ sealed class MockDeviceState : KalugaState {
         data class Idle(
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
-            override val services: List<Service>,
+            override val services: List<RemoteService>,
             override val mockConnectableDeviceManager: MockConnectableDeviceManager,
         ) : DiscoveredServices(),
             ConnectableDeviceState.Connected.Idle {
-            override fun handleAction(action: DeviceAction): suspend () -> ConnectableDeviceState.Connected.HandlingAction = {
+            override fun handleAction(action: DeviceAction<*>): suspend () -> ConnectableDeviceState.Connected.HandlingAction = {
                 HandlingAction(reconnectionSettings, mtu, services, action, emptyList(), mockConnectableDeviceManager)
             }
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
@@ -110,20 +111,20 @@ sealed class MockDeviceState : KalugaState {
         data class HandlingAction(
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
-            override val services: List<Service>,
-            override val action: DeviceAction,
-            override val nextActions: List<DeviceAction>,
+            override val services: List<RemoteService>,
+            override val action: DeviceAction<*>,
+            override val nextActions: List<DeviceAction<*>>,
             override val mockConnectableDeviceManager: MockConnectableDeviceManager,
         ) : DiscoveredServices(),
             ConnectableDeviceState.Connected.HandlingAction {
 
-            override fun addAction(newAction: DeviceAction): suspend () -> ConnectableDeviceState.Connected.HandlingAction = {
+            override fun addAction(newAction: DeviceAction<*>): suspend () -> ConnectableDeviceState.Connected.HandlingAction = {
                 HandlingAction(reconnectionSettings, mtu, services, action, nextActions + newAction, mockConnectableDeviceManager)
             }
 
-            override val actionCompleted: suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = {
-                val newMtu = if (action is DeviceAction.RequestMtu) {
-                    action.mtu
+            override fun actionCompleted(response: GattResponse): suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = {
+                val newMtu = if (response is GattResponse.MTUResponse) {
+                    response.mtu
                 } else {
                     mtu
                 }

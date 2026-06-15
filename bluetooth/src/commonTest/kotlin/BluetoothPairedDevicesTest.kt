@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.firstInstance
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
@@ -128,7 +129,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             job.cancel()
         }
 
-        val completablePairedDevice = CompletableDeferred<Device>()
+        val completablePairedDevice = CompletableDeferred<ConnectableDevice>()
         mainAction {
             scanner.retrievePairedDeviceDiscoveredEventsMock.resetCalls()
             val name = "Paired Device"

@@ -38,6 +38,9 @@ class BluetoothDistanceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             advertisementData = MockAdvertisementData(txPowerLevel = -50),
         ),
     ) {
+        test {
+            assertEquals(Double.NaN, it)
+        }
         mainAction {
             bluetooth.startScanning()
             scanDevice(rssi = -50)

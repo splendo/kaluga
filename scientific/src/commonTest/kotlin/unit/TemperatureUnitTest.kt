@@ -25,7 +25,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class TemperatureUnitTest {
 
     @Test

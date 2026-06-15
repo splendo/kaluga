@@ -19,23 +19,29 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.base.utils.toNSData
-import com.splendo.kaluga.bluetooth.DescriptorWrapper
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
+import com.splendo.kaluga.bluetooth.asBytes
 import kotlinx.coroutines.CompletableDeferred
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-class IOSMockCharacteristicWrapper(override val uuid: CBUUID = CBUUID(), override val properties: Int = 0, descriptorUUIDs: List<CBUUID> = emptyList()) :
-    MockCharacteristicWrapper {
+class IOSMockCharacteristicWrapper(
+    override val uuid: CBUUID = CBUUID(),
+    override val properties: Set<CharacteristicProperty> = emptySet(),
+    override val service: RemoteServiceWrapper = MockServiceWrapper(),
+    descriptorUUIDs: List<CBUUID> = emptyList(),
+) : MockCharacteristicWrapper {
 
     val isReadCompleted = EmptyCompletableDeferred()
     val isWriteCompleted = CompletableDeferred<NSData>()
     val isNotificationCompleted = CompletableDeferred<Boolean>()
 
-    override var value: NSData? = null
+    override var value: ByteArray? = null
 
-    override val descriptors: List<DescriptorWrapper> = descriptorUUIDs
+    override val descriptors: List<RemoteDescriptorWrapper> = descriptorUUIDs
         .map(::IOSMockDescriptorWrapper)
 
     override fun readValue(peripheral: CBPeripheral) {
@@ -47,11 +53,7 @@ class IOSMockCharacteristicWrapper(override val uuid: CBUUID = CBUUID(), overrid
     }
 
     override fun writeValue(value: NSData, peripheral: CBPeripheral, withResponse: Boolean) {
-        this.value = value
+        this.value = value.asBytes
         isWriteCompleted.complete(value)
-    }
-
-    override fun updateMockValue(value: ByteArray?) {
-        this.value = value?.toNSData() ?: NSData()
     }
 }

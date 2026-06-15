@@ -17,8 +17,8 @@
 package com.splendo.kaluga.test.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.DefaultDevices
 import com.splendo.kaluga.bluetooth.scanner.Filter
@@ -82,7 +82,7 @@ sealed class MockScanningState {
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
-        protected fun devicesForPairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean) =
+        protected fun devicesForPairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean) =
             this.devices.copyAndSetPaired(devices, filter, removeForAllPairedFilters)
 
         class Idle(override val devices: ScanningState.Devices) :
@@ -96,11 +96,12 @@ sealed class MockScanningState {
             override suspend fun retrievePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Unit =
                 retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
-            override fun pairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = {
-                Idle(
-                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
-                )
-            }
+            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled =
+                {
+                    Idle(
+                        devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
+                    )
+                }
 
             override fun startScanning(
                 filter: Filter,
@@ -130,11 +131,12 @@ sealed class MockScanningState {
             override suspend fun retrievePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Unit =
                 retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
-            override fun pairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = {
-                Scanning(
-                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
-                )
-            }
+            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled =
+                {
+                    Scanning(
+                        devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
+                    )
+                }
 
             override suspend fun discoverDevices(devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>): suspend () -> ScanningState.Enabled.Scanning {
                 devices.mapNotNull { device ->

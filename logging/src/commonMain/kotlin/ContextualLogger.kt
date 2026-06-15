@@ -19,10 +19,33 @@ package com.splendo.kaluga.logging
 
 /**
  * A logger appending contextual data to each message
+ * @param logger the [Logger] to log to
+ * @param tag the tag to use/append when logging within this context
+ * @param context the contextual data to append to each message
  */
 class ContextualLogger(private val logger: Logger, private val tag: String, private val context: Map<String, Any?> = LinkedHashMap()) : Logger {
     private val contextAsString = if (context.isEmpty()) "" else "$context"
 
+    /**
+     * Creates a new [ContextualLogger] that logs the same contextual data as this logger to a new [Logger]
+     * @param logger the [Logger] to log to
+     * @return the new [ContextualLogger]
+     */
+    fun withLogger(logger: Logger) = ContextualLogger(logger, tag, context)
+
+    /**
+     * Creates a new [ContextualLogger] that logs the same contextual data with a new tag
+     * @param tag the new tag to use
+     * @return the new [ContextualLogger]
+     */
+    fun withAppendedTag(tag: String) = ContextualLogger(logger, "${this.tag}:$tag", context)
+
+    /**
+     * Creates a new [ContextualLogger] that logs the same contextual data with additional contextual data
+     * @param keyValue the contextual data to append
+     * @param keysAndValues additional contextual data to append
+     * @return the new [ContextualLogger]
+     */
     fun withAppendedContext(keyValue: Pair<String, Any?>, vararg keysAndValues: Pair<String, Any?>): ContextualLogger = ContextualLogger(
         logger,
         tag,

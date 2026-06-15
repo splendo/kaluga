@@ -51,15 +51,29 @@ actual class DefaultBluetoothPermissionManager(
     private val permissionsManager = AndroidPermissionsManager(
         context,
         buildList {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                add(Manifest.permission.BLUETOOTH_SCAN)
-                add(Manifest.permission.BLUETOOTH_CONNECT)
-            } else {
-                add(Manifest.permission.BLUETOOTH)
-                add(Manifest.permission.BLUETOOTH_ADMIN)
-            }
-            if (bluetoothPermission.useForLocation || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
-                add(Manifest.permission.ACCESS_FINE_LOCATION)
+            when (val type = bluetoothPermission.type) {
+                is BluetoothPermission.Type.Client -> {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                        add(Manifest.permission.BLUETOOTH_SCAN)
+                        add(Manifest.permission.BLUETOOTH_CONNECT)
+                    } else {
+                        add(Manifest.permission.BLUETOOTH)
+                        add(Manifest.permission.BLUETOOTH_ADMIN)
+                    }
+                    if (type.useForLocation || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+                        add(Manifest.permission.ACCESS_FINE_LOCATION)
+                    }
+                }
+
+                is BluetoothPermission.Type.Server -> {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                        add(Manifest.permission.BLUETOOTH_CONNECT)
+                        add(Manifest.permission.BLUETOOTH_ADVERTISE)
+                    } else {
+                        add(Manifest.permission.BLUETOOTH)
+                        add(Manifest.permission.BLUETOOTH_ADMIN)
+                    }
+                }
             }
         }.toTypedArray(),
         coroutineScope,

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth
 
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
+import com.splendo.kaluga.bluetooth.rawValue
 import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,7 +36,7 @@ class ServiceWrapperBuilderTest {
             characteristics {
                 characteristic {
                     uuid = characteristicUUID
-                    properties = 0x42
+                    properties += CharacteristicProperty.fromInt(0x42)
                     descriptors {
                         descriptor(descriptorUUID)
                     }
@@ -48,7 +50,7 @@ class ServiceWrapperBuilderTest {
         assertEquals(expected = 1, wrapper.characteristics.size)
         val characteristic = wrapper.characteristics.first()
         assertEquals(characteristicUUID, characteristic.uuid)
-        assertEquals(expected = 0x42, characteristic.properties)
+        assertEquals(expected = 0x42, characteristic.properties.rawValue(false))
         val descriptor = characteristic.descriptors.first()
         assertEquals(descriptorUUID, descriptor.uuid)
     }

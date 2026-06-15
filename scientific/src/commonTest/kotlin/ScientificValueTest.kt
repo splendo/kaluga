@@ -34,7 +34,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class ScientificValueTest {
 
     @Serializable

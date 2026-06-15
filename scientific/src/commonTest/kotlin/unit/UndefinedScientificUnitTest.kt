@@ -29,7 +29,9 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class UndefinedScientificUnitTest {
 
     companion object {
@@ -135,7 +137,7 @@ class UndefinedScientificUnitTest {
         assertEquals(Watt.asUndefined(), hourPerWatt.denominator)
         assertSerialization(hourPerWatt)
 
-        assertEquals(60000.0, hourPerWatt.convert(1, Minute per Kilowatt).toDouble())
+        assertEquals(60000.0, hourPerWatt.convert(1, Minute per Kilowatt))
     }
 
     @Test

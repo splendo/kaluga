@@ -21,7 +21,16 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.kinematicViscosity.div
 import com.splendo.kaluga.scientific.converter.kinematicViscosity.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.ImperialDensity
+import com.splendo.kaluga.scientific.unit.ImperialKinematicViscosity
+import com.splendo.kaluga.scientific.unit.KinematicViscosity
+import com.splendo.kaluga.scientific.unit.MetricDensity
+import com.splendo.kaluga.scientific.unit.MetricKinematicViscosity
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryDensity
 
 val PhysicalQuantity.KinematicViscosity.converters get() = listOf<QuantityConverter<PhysicalQuantity.KinematicViscosity, *>>(
     QuantityConverterWithOperator(

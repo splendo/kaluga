@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import androidx.core.util.isNotEmpty
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import no.nordicsemi.android.support.v18.scanner.ScanResult
@@ -34,7 +35,7 @@ actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvert
     actual override val name: String?
         get() = scanRecord?.deviceName
     actual override val manufacturerId: Int?
-        get() = scanRecord?.manufacturerSpecificData?.let { if (it.size() > 0) it.keyAt(0) else null }
+        get() = scanRecord?.manufacturerSpecificData?.let { if (it.isNotEmpty()) it.keyAt(0) else null }
     actual override val manufacturerData: ByteArray?
         get() = scanRecord?.manufacturerSpecificData?.let { manufacturerSpecificData ->
             manufacturerId?.let { key ->

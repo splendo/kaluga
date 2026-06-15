@@ -19,102 +19,115 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
+import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteDescriptor
+import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.Service
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 
 /**
- * An action a [Device] can execute on one of its [com.splendo.kaluga.bluetooth.Attribute]
+ * An action a [ConnectableDevice] can execute on one of its [com.splendo.kaluga.bluetooth.RemoteAttribute]
+ * @property Response the type of [GattResponse] the action will receive.
  */
-sealed class DeviceAction {
+sealed class DeviceAction<Response : GattResponse> {
 
-    private val _completedSuccessfully = CompletableDeferred<Boolean>()
-    internal fun complete(succeeded: Boolean) {
-        _completedSuccessfully.complete(succeeded)
+    private val _response = CompletableDeferred<Response>()
+    internal fun complete(succeeded: Response) {
+        _response.complete(succeeded)
+    }
+
+    internal fun fail() {
+        _response.cancel()
     }
 
     /**
-     * A Deferred that will be completed with
-     * `true` if [DeviceAction] was completed successfully, or
-     * `false` if [DeviceAction] failed
+     * A Deferred that will be completed with [Response] when [DeviceAction] has been handled by the [ConnectableDevice]
      * */
-    val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
+    val response: Deferred<Response> by ::_response
 
     /**
-     * A [DeviceAction] that attempts to read an [com.splendo.kaluga.bluetooth.Attribute]
+     * A [DeviceAction] that attempts to read an [com.splendo.kaluga.bluetooth.RemoteAttribute]
+     * Returns a [GattResponse.ReadResponse]
      */
-    sealed class Read : DeviceAction() {
+    sealed class Read : DeviceAction<GattResponse.ReadResponse>() {
+
         /**
-         * A [DeviceAction.Read] on a [com.splendo.kaluga.bluetooth.Characteristic]
-         * @property characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to read the value of
+         * A [DeviceAction.Read] on a [RemoteCharacteristic]
+         * @property characteristic the [RemoteCharacteristic] to read the value of
          */
-        class Characteristic(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Read() {
+        class Characteristic(val characteristic: RemoteCharacteristic) : Read() {
             override fun toString(): String = "DeviceAction.Read.Characteristic(${characteristic.uuid})"
         }
 
         /**
-         * A [DeviceAction.Read] on a [com.splendo.kaluga.bluetooth.Descriptor]
-         * @property descriptor the [com.splendo.kaluga.bluetooth.Descriptor] to read the value of
+         * A [DeviceAction.Read] on a [RemoteDescriptor]
+         * @property descriptor the [RemoteDescriptor] to read the value of
          */
-        class Descriptor(val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Read() {
+        class Descriptor(val descriptor: RemoteDescriptor) : Read() {
             override fun toString(): String = "DeviceAction.Read.Descriptor(${descriptor.uuid})"
         }
     }
 
     /**
-     * A [DeviceAction] that attempts to write a value to an [com.splendo.kaluga.bluetooth.Attribute]
+     * A [DeviceAction] that attempts to write a value to an [com.splendo.kaluga.bluetooth.RemoteAttribute].
+     * Returns a [GattResponse.WriteResponse]
      * @property newValue the [ByteArray] to write
      */
-    sealed class Write(val newValue: ByteArray) : DeviceAction() {
+    sealed class Write(val newValue: ByteArray) : DeviceAction<GattResponse.WriteResponse>() {
 
         /**
-         * A [DeviceAction.Write] on a [com.splendo.kaluga.bluetooth.Characteristic]
+         * A [DeviceAction.Write] on a [RemoteCharacteristic]
          * @param newValue the [ByteArray] to write
-         * @property characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to read the value of
+         * @property characteristic the [RemoteCharacteristic] to read the value of
          */
-        class Characteristic(newValue: ByteArray, val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Write(newValue) {
+        class Characteristic(newValue: ByteArray, val characteristic: RemoteCharacteristic) : Write(newValue) {
             override fun toString(): String = "DeviceAction.Write.Characteristic(${characteristic.uuid})"
         }
 
         /**
-         * A [DeviceAction.Write] on a [com.splendo.kaluga.bluetooth.Descriptor]
+         * A [DeviceAction.Write] on a [RemoteDescriptor]
          * @param newValue the [ByteArray] to write
-         * @property descriptor the [com.splendo.kaluga.bluetooth.Descriptor] to read the value of
+         * @property descriptor the [RemoteDescriptor] to read the value of
          */
-        class Descriptor(newValue: ByteArray, val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Write(newValue) {
+        class Descriptor(newValue: ByteArray, val descriptor: RemoteDescriptor) : Write(newValue) {
             override fun toString(): String = "DeviceAction.Write.Descriptor(${descriptor.uuid})"
         }
     }
 
     /**
-     * A [DeviceAction] that updates that notifying status of a [com.splendo.kaluga.bluetooth.Characteristic]
-     * @property characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to notify
+     * A [DeviceAction] that updates that notifying status of a [RemoteCharacteristic]
+     * Returns a [GattResponse.WriteResponse]
+     * @property characteristic the [RemoteCharacteristic] to notify
      */
-    sealed class Notification(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : DeviceAction() {
+    sealed class Notification(val characteristic: RemoteCharacteristic) : DeviceAction<GattResponse.WriteResponse>() {
 
         /**
          * A [Notification] that starts notifying
-         * @param characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to notify
+         * @param characteristic the [RemoteCharacteristic] to notify
          */
-        class Enable(characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Notification(characteristic) {
+        class Enable(characteristic: RemoteCharacteristic) : Notification(characteristic) {
             override fun toString(): String = "DeviceAction.Notification.Enable(${characteristic.uuid})"
         }
 
         /**
          * A [Notification] that stops notifying
-         * @param characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to no longer notify
+         * @param characteristic the [RemoteCharacteristic] to no longer notify
          */
-        class Disable(characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Notification(characteristic) {
+        class Disable(characteristic: RemoteCharacteristic) : Notification(characteristic) {
             override fun toString(): String = "DeviceAction.Notification.Disable(${characteristic.uuid})"
         }
     }
 
-    /** Requests MTU. */
-    data class RequestMtu(val mtu: MTU) : DeviceAction() {
-        var mtuResponse: MTU? = null
-            internal set
-    }
+    /**
+     * A [DeviceAction] that requests an update to the [MTU] size of the device.
+     * This is unsupported on iOS
+     * Returns a [GattResponse.MTUResponse]
+     * @property mtu the [MTU] to request.
+     */
+    data class RequestMtu(val mtu: MTU) : DeviceAction<GattResponse.MTUResponse>()
 }
 
 /**
@@ -123,29 +136,29 @@ sealed class DeviceAction {
 sealed interface DeviceState
 
 /**
- * A [DeviceState] indicating the [Device] cannot be connected to
+ * A [DeviceState] indicating the [ConnectableDevice] cannot be connected to
  */
 interface NotConnectableDeviceState : DeviceState
 
 /**
- * A [DeviceState] for a [Device] that can be connected to
+ * A [DeviceState] for a [ConnectableDevice] that can be connected to
  */
 sealed interface ConnectableDeviceState :
     DeviceState,
     KalugaState {
 
     /**
-     * A [ConnectableDeviceState] where the [Device] is connected
+     * A [ConnectableDeviceState] where the [ConnectableDevice] is connected
      */
     sealed interface Connected : ConnectableDeviceState {
 
         /**
-         * A [Connected] State where no [Service] has been discovered yet
+         * A [Connected] State where no [RemoteService] has been discovered yet
          */
         interface NoServices : Connected {
 
             /**
-             * Attempts to start discovering the list of [Service] of the [Device]
+             * Attempts to start discovering the list of [RemoteService] of the [ConnectableDevice]
              */
             fun startDiscovering()
 
@@ -156,16 +169,16 @@ sealed interface ConnectableDeviceState :
         }
 
         /**
-         * A [Connected] State where the device is discovering the list of [Service]
+         * A [Connected] State where the device is discovering the list of [RemoteService]
          */
         interface Discovering : Connected {
 
             /**
-             * Discovers a list of [Service] to transition into [Idle]
-             * @param services the list of [Service] discovered
+             * Discovers a list of [RemoteService] to transition into [Idle]
+             * @param services the list of [RemoteService] discovered
              * @return a transition into an [Idle] State
              */
-            fun didDiscoverServices(services: List<Service>): suspend () -> Idle
+            fun didDiscoverServices(services: List<RemoteService>): suspend () -> Idle
         }
 
         /**
@@ -173,9 +186,9 @@ sealed interface ConnectableDeviceState :
          */
         sealed interface DiscoveredServices : Connected {
             /**
-             * The list of [Service] hat where discovered
+             * The list of [RemoteService] hat where discovered
              */
-            val services: List<Service>
+            val services: List<RemoteService>
         }
 
         /**
@@ -207,7 +220,7 @@ sealed interface ConnectableDeviceState :
              * @param action the [DeviceAction] to execute
              * @return a transition into a [HandlingAction] state
              */
-            fun handleAction(action: DeviceAction): suspend () -> HandlingAction
+            fun handleAction(action: DeviceAction<*>): suspend () -> HandlingAction
         }
 
         /**
@@ -220,24 +233,24 @@ sealed interface ConnectableDeviceState :
             /**
              * The [DeviceAction] currently being executed
              */
-            val action: DeviceAction
+            val action: DeviceAction<*>
 
             /**
              * The list of [DeviceAction] to be executed when [action] has been handled
              */
-            val nextActions: List<DeviceAction>
+            val nextActions: List<DeviceAction<*>>
 
             /**
              * Adds an additional [DeviceAction] to the [nextActions]
              * @param newAction the [DeviceAction] to add to the queue
              * @return a transition into [HandlingAction] with [newAction] added to [nextActions]
              */
-            fun addAction(newAction: DeviceAction): suspend () -> HandlingAction
+            fun addAction(newAction: DeviceAction<*>): suspend () -> HandlingAction
 
             /**
              * Transitions into [DiscoveredServices] when [action] has completed
              */
-            val actionCompleted: suspend () -> DiscoveredServices
+            fun actionCompleted(response: GattResponse): suspend () -> DiscoveredServices
         }
 
         /**
@@ -368,7 +381,7 @@ internal sealed class ConnectableDeviceStateImpl {
             ConnectableDeviceState.Connected.Discovering,
             HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
 
-            override fun didDiscoverServices(services: List<Service>): suspend () -> Idle = { Idle(reconnectionSettings, null, services, deviceConnectionManager) }
+            override fun didDiscoverServices(services: List<RemoteService>): suspend () -> Idle = { Idle(reconnectionSettings, null, services, deviceConnectionManager) }
 
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
@@ -382,11 +395,11 @@ internal sealed class ConnectableDeviceStateImpl {
         data class Idle constructor(
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
-            override val services: List<Service>,
+            override val services: List<RemoteService>,
             override val deviceConnectionManager: DeviceConnectionManager,
         ) : Connected(),
             ConnectableDeviceState.Connected.Idle {
-            override fun handleAction(action: DeviceAction) = suspend { HandlingAction(action, emptyList(), reconnectionSettings, mtu, services, deviceConnectionManager) }
+            override fun handleAction(action: DeviceAction<*>) = suspend { HandlingAction(action, emptyList(), reconnectionSettings, mtu, services, deviceConnectionManager) }
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
             }
@@ -394,17 +407,17 @@ internal sealed class ConnectableDeviceStateImpl {
         }
 
         data class HandlingAction constructor(
-            override val action: DeviceAction,
-            override val nextActions: List<DeviceAction>,
+            override val action: DeviceAction<*>,
+            override val nextActions: List<DeviceAction<*>>,
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
-            override val services: List<Service>,
+            override val services: List<RemoteService>,
             override val deviceConnectionManager: DeviceConnectionManager,
         ) : Connected(),
             ConnectableDeviceState.Connected.HandlingAction,
             HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
 
-            override fun addAction(newAction: DeviceAction) = suspend {
+            override fun addAction(newAction: DeviceAction<*>) = suspend {
                 HandlingAction(action, listOf(*nextActions.toTypedArray(), newAction), reconnectionSettings, mtu, services, deviceConnectionManager)
             }
 
@@ -412,24 +425,11 @@ internal sealed class ConnectableDeviceStateImpl {
                 copy(reconnectionSettings = reconnectionSettings)
             }
 
-            override val actionCompleted: suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = suspend {
-                var newMtu = mtu
-                when (action) {
-                    is DeviceAction.Read.Characteristic -> action.characteristic.updateValue()
-
-                    is DeviceAction.Read.Descriptor -> action.descriptor.updateValue()
-
-                    is DeviceAction.Write.Characteristic -> action.characteristic.updateValue()
-
-                    is DeviceAction.Write.Descriptor -> action.descriptor.updateValue()
-
-                    is DeviceAction.Notification.Enable -> action.characteristic.updateValue()
-
-                    is DeviceAction.Notification.Disable -> { }
-
-                    is DeviceAction.RequestMtu -> {
-                        newMtu = action.mtuResponse
-                    }
+            override fun actionCompleted(response: GattResponse): suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = suspend {
+                val newMtu = if (action is DeviceAction.RequestMtu && response is GattResponse.MTUSuccess) {
+                    response.mtu
+                } else {
+                    mtu
                 }
                 if (nextActions.isEmpty()) {
                     Idle(reconnectionSettings, newMtu, services, deviceConnectionManager)

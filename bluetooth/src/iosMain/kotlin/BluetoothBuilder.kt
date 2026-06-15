@@ -2,8 +2,15 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
+import com.splendo.kaluga.bluetooth.server.BluetoothServer
+import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
+import com.splendo.kaluga.bluetooth.server.IOSServerState
+import com.splendo.kaluga.bluetooth.server.KalugaCBPeripheralManagerDelegate
+import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import platform.Foundation.NSBundle
 import kotlin.coroutines.CoroutineContext
@@ -28,11 +35,25 @@ actual class BluetoothBuilder(
     private val scannerBuilder: DefaultScanner.Builder = DefaultScanner.Builder(),
 ) : BaseBluetoothBuilder {
 
-    actual override fun create(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth = Bluetooth(
+    actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth = Bluetooth(
         { scannerContext ->
             scannerSettingsBuilder(permissionsBuilder(scannerContext))
         },
         scannerBuilder,
         coroutineContext,
     )
+
+    actual override suspend fun createServer(
+        settingsBuilder: (Permissions) -> ServerSettings,
+        coroutineContext: CoroutineContext,
+        specs: BluetoothServerDSL.() -> Unit,
+    ): BluetoothServer {
+        val settings = settingsBuilder(permissionsBuilder(coroutineContext))
+        val initialState = IOSServerState.AwaitingPermissions(
+            settings.permissions[BluetoothPermission(BluetoothPermission.Type.Server)] as BluetoothPermissionStateRepo,
+            KalugaCBPeripheralManagerDelegate(settings.logger, coroutineContext),
+            settings.logger,
+        )
+        return BluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
+    }
 }

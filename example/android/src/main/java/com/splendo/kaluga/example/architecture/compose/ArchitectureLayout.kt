@@ -25,7 +25,11 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -126,7 +130,8 @@ fun ArchitectureLayout() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
+                    .padding(WindowInsets.systemBars.asPaddingValues()),
             ) {
                 OutlinedTextField(
                     value = nameInput.value,

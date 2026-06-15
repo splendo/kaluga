@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.firstInstance
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
@@ -57,7 +58,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         val filter = setOf(randomUUID())
-        val deferredDevice = CompletableDeferred<Device>()
+        val deferredDevice = CompletableDeferred<ConnectableDevice>()
 
         mainAction {
             val didStartScanningCalled = EmptyCompletableDeferred()
@@ -102,7 +103,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         val filter = setOf(randomUUID())
-        val deferredDevice1 = CompletableDeferred<Device>()
+        val deferredDevice1 = CompletableDeferred<ConnectableDevice>()
         mainAction {
             bluetooth.startScanning()
 
@@ -114,7 +115,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             assertEquals(listOf(deferredDevice1.getCompleted()), bluetooth.scannedDevices().first())
         }
 
-        val deferredDevice2 = CompletableDeferred<Device>()
+        val deferredDevice2 = CompletableDeferred<ConnectableDevice>()
         mainAction {
             bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
@@ -152,7 +153,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         val filter = setOf(randomUUID())
-        val deferredDevice1 = CompletableDeferred<Device>()
+        val deferredDevice1 = CompletableDeferred<ConnectableDevice>()
         mainAction {
             bluetooth.startScanning()
 
@@ -164,7 +165,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             assertEquals(listOf(deferredDevice1.getCompleted()), bluetooth.scannedDevices().first())
         }
 
-        val deferredDevice2 = CompletableDeferred<Device>()
+        val deferredDevice2 = CompletableDeferred<ConnectableDevice>()
         mainAction {
             bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
@@ -216,7 +217,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
     }
 
-    private fun BluetoothContext.createAndScanDevice(deferred: CompletableDeferred<Device>) {
+    private fun BluetoothContext.createAndScanDevice(deferred: CompletableDeferred<ConnectableDevice>) {
         val rssi = -100
         val advertisementData = MockAdvertisementData()
         val deviceWrapper = createDeviceWrapper()

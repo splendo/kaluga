@@ -18,15 +18,17 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
-import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RSSI
+import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteService
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.server.BluetoothServer.Companion.TAG
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
@@ -52,7 +54,7 @@ interface DeviceConnectionManager {
 
         /**
          * Creates a [DeviceConnectionManager]
-         * @param deviceWrapper the [DeviceWrapper] wrapping the [Device]
+         * @param deviceWrapper the [DeviceWrapper] wrapping the [ConnectableDevice]
          * @param settings the [ConnectionSettings] to apply for connecting
          * @param coroutineScope the [CoroutineScope] on which the device should be managed
          * @return the created [DeviceConnectionManager]
@@ -123,23 +125,26 @@ interface DeviceConnectionManager {
         data object Discovering : Event()
 
         /**
-         * [Event] indicating the device has discovered a list of [Service]
-         * @property services the list of [Service] discovered
+         * [Event] indicating the device has discovered a list of [RemoteService]
+         * @property services the list of [RemoteService] discovered
          */
-        data class DiscoveredServices(val services: List<Service>) : Event()
+        data class DiscoveredServices(val services: List<RemoteService>) : Event()
 
         /**
          * [Event] indicating a [DeviceAction] should be scheduled
          * @property action the [DeviceAction] to schedule
          */
-        data class AddAction(val action: DeviceAction) : Event()
+        data class AddAction(val action: DeviceAction<*>) : Event()
 
         /**
          * [Event] indicating the device completed executing a [DeviceAction]
          * @property action the [DeviceAction] that was executed
-         * @property succeeded if `true`, [action] completed successfully
          */
-        data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
+        data class CompletedAction<R : GattResponse>(val action: DeviceAction<R>?, val response: R) : Event() {
+            fun complete() {
+                action?.complete(response)
+            }
+        }
     }
 
     /**
@@ -181,7 +186,7 @@ interface DeviceConnectionManager {
      * Starts performing a [DeviceAction]
      * @param action the [DeviceAction] to perform
      */
-    suspend fun performAction(action: DeviceAction)
+    suspend fun performAction(action: DeviceAction<*>)
 
     /**
      * Fires an [Event.Connecting]
@@ -245,14 +250,12 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     DeviceConnectionManager,
     CoroutineScope by coroutineScope {
 
-    private val tag = "Bluetooth ${deviceWrapper.identifier.stringValue}"
-    protected val logger = ContextualLogger(settings.logger, tag)
-    protected val dataLogger = ContextualLogger(settings.dataLogger, tag)
+    internal val logger = settings.logger(deviceWrapper.identifier)
 
     private val defaultReconnectionSettings = settings.reconnectionSettings
 
-    protected var currentAction: DeviceAction? = null
-    protected val notifyingCharacteristics = concurrentMutableMapOf<String, Characteristic>()
+    protected var currentAction: DeviceAction<*>? = null
+    protected val notifyingCharacteristics = concurrentMutableMapOf<String, RemoteCharacteristic>()
 
     private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
     override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()
@@ -261,70 +264,74 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     override val rssi = sharedRssi.asSharedFlow()
 
     override suspend fun readRssi() {
-        logger.debug { "Request Read RSSI" }
+        logger.stateLogger.actionLogger.debug { "Request Read RSSI" }
         // TODO call into abstract function?
     }
 
     protected open fun handleNewRssi(rssi: RSSI) {
-        logger.debug { "Updated Rssi $rssi" }
+        logger.stateLogger.actionLogger.debug { "Updated Rssi $rssi" }
         sharedRssi.tryEmit(rssi)
     }
 
-    protected fun handleNewMtu(mtu: MTU, succeeded: Boolean) {
-        logger.debug { "Updated Mtu $mtu" }
+    protected fun handleNewMtu(response: GattResponse.MTUResponse) {
+        logger.stateLogger.actionLogger.debug { "Updated Mtu $response" }
         val action = currentAction
         if (action is DeviceAction.RequestMtu) {
-            action.mtuResponse = mtu
-            handleCurrentActionCompleted(succeeded)
+            action.handleActionCompleted(response)
         }
     }
 
     final override fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?) {
-        logger.info { "Start Connecting" }
+        logger.stateLogger.stateChangeLogger.info { "Start Connecting" }
         emitEvent(DeviceConnectionManager.Event.Connecting(reconnectionSettings ?: defaultReconnectionSettings))
     }
 
     final override fun cancelConnecting() {
-        logger.info { "Cancel Connecting" }
+        logger.stateLogger.stateChangeLogger.info { "Cancel Connecting" }
         emitEvent(DeviceConnectionManager.Event.CancelledConnecting)
     }
 
     final override fun handleConnect() {
-        logger.info { "Did Connect" }
+        logger.stateLogger.stateChangeLogger.info { "Did Connect" }
         emitEvent(DeviceConnectionManager.Event.Connected)
     }
 
     final override fun startDisconnecting() {
-        logger.info { "Start Disconnecting" }
+        logger.stateLogger.stateChangeLogger.info { "Start Disconnecting" }
         emitEvent(DeviceConnectionManager.Event.Disconnecting)
     }
 
-    final override suspend fun performAction(action: DeviceAction) {
-        logger.info { "Perform action $action" }
+    final override suspend fun performAction(action: DeviceAction<*>) {
+        logger.stateLogger.stateChangeLogger.info { "Perform action $action" }
         didStartPerformingAction(action)
     }
 
-    protected abstract suspend fun didStartPerformingAction(action: DeviceAction)
+    protected abstract suspend fun didStartPerformingAction(action: DeviceAction<*>)
 
     final override suspend fun pair() {
-        logger.info { "Pair" }
+        logger.stateLogger.stateChangeLogger.info { "Pair" }
         requestStartPairing()
     }
 
     protected abstract suspend fun requestStartPairing()
 
     final override suspend fun unpair() {
-        logger.info { "Unpair" }
+        logger.stateLogger.stateChangeLogger.info { "Unpair" }
         requestStartUnpairing()
     }
 
     protected abstract suspend fun requestStartUnpairing()
 
-    protected open fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, dataLogger)
+    protected fun createService(wrapper: RemoteServiceWrapper): RemoteService = RemoteService(
+        wrapper,
+        wrapper.includedServices.map { createService(it) },
+        ::emitEvent,
+        logger.dataLogger[wrapper.uuid],
+    )
 
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = this.currentAction
-        currentAction?.completedSuccessfully?.cancel()
+        currentAction?.fail()
         val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
             this.currentAction = null
@@ -332,7 +339,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
             onDisconnect?.invoke()
             Unit
         }
-        logger.info { "Did Disconnect" }
+        logger.stateLogger.stateChangeLogger.info { "Did Disconnect" }
         emitEvent(DeviceConnectionManager.Event.Disconnected(clean))
     }
 
@@ -343,90 +350,75 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     }
 
     final override fun startDiscovering() {
-        logger.info { "Start Discovering Services" }
+        logger.stateLogger.stateChangeLogger.info { "Start Discovering Services" }
         emitEvent(DeviceConnectionManager.Event.Discovering)
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
-    internal fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
+    internal fun handleDiscoverCompleted(serviceWrappers: List<RemoteServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
-    protected open fun handleDiscoverCompleted(services: List<Service>) {
-        logger.info { "Discovered services: ${services.map { it.uuid.uuidString }}" }
+    protected fun handleDiscoverCompleted(services: List<RemoteService>) {
+        logger.stateLogger.stateChangeLogger.info { "Discovered services: ${services.map { it.uuid.uuidString }}" }
         emitEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
-    protected open fun handleCurrentActionCompleted(succeeded: Boolean) {
-        val currentAction = this.currentAction
-        this.currentAction = null
-        if (currentAction != null) {
-            if (succeeded) {
-                logger.info { "Completed $currentAction successfully" }
-            } else {
-                logger.error { "Failed to complete $currentAction" }
-            }
+    protected fun <R : GattResponse> DeviceAction<R>.handleActionCompleted(response: R) {
+        handleActionCompleted(response, this)
+        currentAction = null
+        when (response) {
+            is GattResponse.Success -> logger.stateLogger.actionLogger.info { "Completed $this successfully" }
+            is GattResponse.Error -> logger.stateLogger.actionLogger.error { "Failed to complete $this" }
+            is GattResponse.DeviceUnavailable -> logger.stateLogger.actionLogger.error { "Failed to start $this" }
+            is GattResponse.MTUError -> logger.stateLogger.actionLogger.error { "Failed to update MTU. Set to $this" }
         }
-        emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
+        emitEvent(DeviceConnectionManager.Event.CompletedAction(this, response))
     }
 
-    protected open fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
-        notifyingCharacteristics[uuid.uuidString]?.let {
-            onUpdate?.invoke(it)
-            it.updateValue()
+    protected open fun <R : GattResponse> handleActionCompleted(response: R, deviceAction: DeviceAction<R>) {}
+
+    protected fun DeviceAction.Notification.handleNotificationStateChanged(response: GattResponse.WriteResponse) {
+        val uuid = characteristic.uuid.uuidString
+        when (this) {
+            is DeviceAction.Notification.Enable -> notifyingCharacteristics[uuid] = characteristic
+            is DeviceAction.Notification.Disable -> notifyingCharacteristics.remove(uuid)
         }
-        val characteristicToUpdate = when (val action = currentAction) {
-            is DeviceAction.Read.Characteristic -> {
-                if (action.characteristic.uuid.uuidString == uuid.uuidString) {
-                    action.characteristic
-                } else {
-                    null
-                }
-            }
+        handleActionCompleted(response)
+    }
 
-            is DeviceAction.Write.Characteristic -> {
-                if (action.characteristic.uuid.uuidString == uuid.uuidString) {
-                    action.characteristic
-                } else {
-                    null
+    protected fun handleCharacteristicReadOrNotified(uuid: UUID, response: GattResponse.ReadResponse) {
+        if (response is GattResponse.ReadSuccess) {
+            notifyingCharacteristics[uuid.uuidString]?.let { characteristic ->
+                logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info(TAG) {
+                    "Notify characteristic ${uuid.uuidString} updated to ${response.value.toHexString(" ")}"
                 }
+                characteristic.notify(response.value)
             }
-
-            else -> null
         }
 
-        characteristicToUpdate?.let {
-            onUpdate?.invoke(it)
-            it.updateValue()
-            handleCurrentActionCompleted(succeeded)
+        val action = currentAction
+        if (action is DeviceAction.Read.Characteristic && action.characteristic.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(response)
         }
     }
 
-    protected open fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((Descriptor) -> Unit)? = null) {
-        val descriptorToUpdate = when (val action = currentAction) {
-            is DeviceAction.Read.Descriptor -> {
-                if (action.descriptor.uuid.uuidString == uuid.uuidString) {
-                    action.descriptor
-                } else {
-                    null
-                }
-            }
-
-            is DeviceAction.Write.Descriptor -> {
-                if (action.descriptor.uuid.uuidString == uuid.uuidString) {
-                    action.descriptor
-                } else {
-                    null
-                }
-            }
-
-            else -> {
-                null
-            }
+    protected fun handleCharacteristicWritten(uuid: UUID, response: GattResponse.WriteResponse) {
+        val action = currentAction
+        if (action is DeviceAction.Write.Characteristic && action.characteristic.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(response)
         }
+    }
 
-        descriptorToUpdate?.let {
-            onUpdate?.invoke(it)
-            it.updateValue()
-            handleCurrentActionCompleted(succeeded)
+    protected fun handleDescriptorRead(uuid: UUID, response: GattResponse.ReadResponse) {
+        val action = currentAction
+        if (action is DeviceAction.Read.Descriptor && action.descriptor.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(response)
+        }
+    }
+
+    protected fun handleDescriptorWritten(uuid: UUID, response: GattResponse.WriteResponse) {
+        val action = currentAction
+        if (action is DeviceAction.Write.Descriptor && action.descriptor.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(response)
         }
     }
 
@@ -447,7 +439,7 @@ internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManag
     override fun disconnect()
     override fun getCurrentState(): DeviceConnectionManager.State
     override suspend fun discoverServices()
-    override suspend fun didStartPerformingAction(action: DeviceAction)
+    override suspend fun didStartPerformingAction(action: DeviceAction<*>)
     override suspend fun requestStartPairing()
     override suspend fun requestStartUnpairing()
 }
