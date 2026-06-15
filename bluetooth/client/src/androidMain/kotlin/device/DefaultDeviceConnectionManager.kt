@@ -333,22 +333,25 @@ internal actual class DefaultDeviceConnectionManager(
             return false
         }
 
+        // Raw CCCD values (little-endian uint16), equal to BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE /
+        // ENABLE_INDICATION_VALUE / DISABLE_NOTIFICATION_VALUE — spelled out because the mockable android.jar
+        // used by host tests strips those constants to null.
         val writeValue = when {
             enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Notify) ->
-                BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                byteArrayOf(0x01, 0x00)
 
             enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Indicate) ->
-                BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+                byteArrayOf(0x02, 0x00)
 
             !enable && characteristic.wrapper.properties.containsAny(setOf(CharacteristicProperty.Indicate, CharacteristicProperty.Notify)) ->
-                BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                byteArrayOf(0x00, 0x00)
 
             else -> null
         }
 
         return if (writeValue != null) {
-            characteristic.descriptors.firstOrNull { it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }?.let { descriptor ->
-                writeDescriptor(descriptor.wrapper, writeValue)
+            characteristic.wrapper.descriptors.firstOrNull { it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }?.let { descriptor ->
+                writeDescriptor(descriptor, writeValue)
             } == true
         } else {
             connectionSettings.logger(deviceWrapper.identifier).dataLogger[characteristic.wrapper.service.uuid][characteristic.wrapper.uuid].error {
