@@ -44,6 +44,7 @@ class MockPermissionsBuilder(
         val buildRepos = concurrentMutableListOf<MockBasePermissionStateRepo<P>>()
 
         inline fun <reified O : Permission> castOrNull(): RegistryMock<O>? = if (O::class == permissionClass) {
+            @Suppress("UNCHECKED_CAST")
             this as RegistryMock<O>
         } else {
             null
@@ -57,7 +58,7 @@ class MockPermissionsBuilder(
         registered.castOrNull<P>()
     } ?: RegistryMock(P::class)
 
-    suspend inline fun <reified P : Permission> registerPermissionBuilder() {
+    inline fun <reified P : Permission> registerPermissionBuilder() {
         val registry = RegistryMock(P::class)
         registries.add(registry)
         if (setupMocks) {

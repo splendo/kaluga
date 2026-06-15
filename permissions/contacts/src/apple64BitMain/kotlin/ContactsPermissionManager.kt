@@ -69,7 +69,6 @@ actual class DefaultContactsPermissionManager(private val bundle: NSBundle, cont
                     CNEntityType.CNEntityTypeContacts,
                 ) { success, error ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
-                    Unit
                 }
 
                 try {

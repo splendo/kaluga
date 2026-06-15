@@ -27,19 +27,19 @@ import com.splendo.kaluga.datetimepicker.DateTimePicker
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * Mock implementation of [BaseKeyboardManager]
- * @param setupMocks If `true` configure mocks to display the keyboard
+ * Mock implementation of [BaseDateTimePickerPresenter]
+ * @param setupMocks If `true` configure mocks to display the date time picker
  */
 class MockDateTimePickerPresenter(public override val dateTimePicker: DateTimePicker, setupMocks: Boolean = true) : BaseDateTimePickerPresenter(dateTimePicker) {
 
     /**
-     * Mock implementation of [BaseKeyboardManager.Builder]
-     * @param setupMocks If `true` sets up [createMock] to build [MockDateTimePicker]
+     * Mock implementation of [BaseDateTimePickerPresenter.Builder]
+     * @param setupMocks If `true` sets up [createMock] to build [MockDateTimePickerPresenter]
      */
     class Builder(setupMocks: Boolean = true) : BaseDateTimePickerPresenter.Builder() {
 
         /**
-         * List of created [MockDateTimePicker]
+         * List of created [MockDateTimePickerPresenter]
          */
         val builtDateTimePickerPresenters = concurrentMutableListOf<MockDateTimePickerPresenter>()
 

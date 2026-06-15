@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 class MockMediaPlayer(
     override val playableMedia: MutableStateFlow<PlayableMedia?>,
-    override val controls: MutableStateFlow<MediaPlayer.Controls>,
+    override val controls: MutableStateFlow<Controls>,
     val volumeController: MockVolumeController,
     val mediaSurfaceController: MockMediaSurfaceController,
 ) : MediaPlayer,

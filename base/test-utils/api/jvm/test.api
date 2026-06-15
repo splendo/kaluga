@@ -151,9 +151,6 @@ public final class com/splendo/kaluga/base/test/YieldMultipleKt {
 }
 
 public abstract class com/splendo/kaluga/base/test/mock/BaseMethodMock {
-	protected abstract fun createStub (Lcom/splendo/kaluga/base/test/mock/parameters/ParametersSpec$Matchers;)Lcom/splendo/kaluga/base/test/mock/BaseMethodMock$Stub;
-	protected abstract fun getParametersSpec ()Lcom/splendo/kaluga/base/test/mock/parameters/ParametersSpec;
-	protected final fun getStubFor (Lcom/splendo/kaluga/base/test/mock/parameters/ParametersSpec$Values;)Lcom/splendo/kaluga/base/test/mock/BaseMethodMock$Stub;
 	public final fun reset ()V
 	public final fun resetCalls ()V
 	public final fun resetStubs ()V

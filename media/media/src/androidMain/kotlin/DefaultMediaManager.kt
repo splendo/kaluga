@@ -35,8 +35,8 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-typealias AndroidMediaPlayer = android.media.MediaPlayer
-typealias AndroidTrackInfo = android.media.MediaPlayer.TrackInfo
+typealias AndroidMediaPlayer = MediaPlayer
+typealias AndroidTrackInfo = MediaPlayer.TrackInfo
 
 /**
  * Default implementation of [PlayableMedia]

@@ -82,7 +82,7 @@ enum class Flag(val char: Char) {
         }
 
         // parse those flags which may be provided by users
-        private fun parse(c: Char): Flag = values().find { it.char == c } ?: throw StringFormatterException.UnknownFormatFlagsException(c.toString())
+        private fun parse(c: Char): Flag = entries.find { it.char == c } ?: throw StringFormatterException.UnknownFormatFlagsException(c.toString())
     }
 }
 

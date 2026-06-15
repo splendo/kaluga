@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.utils.BufferedAsListChannel
-import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
@@ -129,14 +128,14 @@ interface Scanner {
             val identifiers = devices.map(DeviceDiscovered::identifier)
 
             /**
-             * The list of [DeviceCreator] to create devices that have not yet been discovered
+             * The list of methods to create devices that have not yet been discovered
              */
             val deviceCreators = devices.map(DeviceDiscovered::deviceCreator)
         }
     }
 
     /**
-     * Events detected by the a Bluetooth Connection observer
+     * Events detected by a Bluetooth Connection observer
      */
     sealed class ConnectionEvent {
         /**
@@ -186,7 +185,7 @@ interface Scanner {
 
     /**
      * Starts scanning for devices.
-     * This will result in [Event.DeviceDiscovered] or [Event.FailedScanning]
+     * This will result in [discoveryEvents] or [Event.FailedScanning]
      * @param filter if not empty, only [ConnectableDevice] that have at least one [Service] matching one of the [UUID] will be scanned.
      */
     suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings?)
@@ -235,7 +234,7 @@ interface Scanner {
  * @param coroutineScope the [CoroutineScope] this scanner runs on
  * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
-abstract class BaseScanner constructor(
+abstract class BaseScanner(
     settings: Settings,
     private val coroutineScope: CoroutineScope,
     private val scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
@@ -321,7 +320,7 @@ abstract class BaseScanner constructor(
 
     private var currentConnectionSettings: ConnectionSettings? = null
 
-    override suspend fun startMonitoringPermissions() = permissionsLock.withLock {
+    override suspend fun startMonitoringPermissions(): Unit = permissionsLock.withLock {
         logger.debug(LOG_TAG) { "Start monitoring permissions" }
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = coroutineScope.launch(coroutineContext) {
@@ -386,7 +385,7 @@ abstract class BaseScanner constructor(
 
     protected abstract suspend fun didStopScanning()
 
-    override suspend fun startMonitoringHardwareEnabled() = enabledJob.withLock {
+    override suspend fun startMonitoringHardwareEnabled(): Unit = enabledJob.withLock {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.startMonitoring()
         if (monitoringBluetoothEnabledJob != null) return
@@ -397,7 +396,7 @@ abstract class BaseScanner constructor(
         }
     }
 
-    override suspend fun stopMonitoringHardwareEnabled() = enabledJob.withLock {
+    override suspend fun stopMonitoringHardwareEnabled(): Unit = enabledJob.withLock {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.stopMonitoring()
         monitoringBluetoothEnabledJob?.cancel()
@@ -423,7 +422,7 @@ abstract class BaseScanner constructor(
 
     protected abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
-    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?) =
+    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Unit =
         isRetrievingPairedDevicesMutex.withLock {
             if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
             retrievingPairedDevicesJob = this@BaseScanner.launch {
@@ -533,7 +532,7 @@ abstract class BaseScanner constructor(
     }
 
     internal fun handleDeviceDisconnected(identifier: Identifier, message: String?) {
-        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected".applyIf(!message.isNullOrEmpty()) { "$this due to $message" } }
+        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected${ if (message.isNullOrEmpty()) "" else " due to $message"}" }
         connectionEventChannel.trySend(Scanner.ConnectionEvent.DeviceDisconnected(identifier))
     }
 

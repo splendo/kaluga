@@ -62,7 +62,6 @@ actual class DefaultNotificationsPermissionManager(notificationsPermission: Noti
             coroutineScope.launch {
                 notificationCenter.getNotificationSettingsWithCompletionHandler { setting ->
                     authorizationStatus.complete(setting?.authorizationStatus?.toAuthorizationStatus() ?: ApplePermissionsHelper.AuthorizationStatus.NotDetermined)
-                    Unit
                 }
             }
             return authorizationStatus.await()
@@ -82,7 +81,6 @@ actual class DefaultNotificationsPermissionManager(notificationsPermission: Noti
                 permission.options?.options ?: UNAuthorizationOptionNone,
             ) { authorization: Boolean, error: NSError? ->
                 error?.let { deferred.completeExceptionally(Throwable(error.localizedDescription)) } ?: run { deferred.complete(authorization) }
-                Unit
             }
 
             try {

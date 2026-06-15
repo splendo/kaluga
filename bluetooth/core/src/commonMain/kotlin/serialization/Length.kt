@@ -49,9 +49,9 @@ enum class Length(val bytes: Int) {
         }
 
         `24_BIT` -> if (signed) {
-            number.toLong() in Int24.Companion.MIN_VALUE.value.toLong()..Int24.Companion.MAX_VALUE.value.toLong()
+            number.toLong() in Int24.MIN_VALUE.value.toLong()..Int24.MAX_VALUE.value.toLong()
         } else {
-            number.toLong().toULong() in UInt24.Companion.MIN_VALUE.value.toULong()..UInt24.Companion.MAX_VALUE.value.toULong()
+            number.toLong().toULong() in UInt24.MIN_VALUE.value.toULong()..UInt24.MAX_VALUE.value.toULong()
         }
 
         `32_BIT` -> if (signed) {

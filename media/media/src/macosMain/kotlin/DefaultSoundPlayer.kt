@@ -182,7 +182,6 @@ actual class DefaultSoundPlayer(source: MediaSource.Local, private val configura
         block = { errorPtr ->
             val path = when (source) {
                 is MediaSource.Bundle -> NSBundle.mainBundle.pathForResource(source.fileName, source.fileType)
-                else -> throw MediaSoundError.UnexpectedMediaSourceShouldBeLocal
             }
             requireNotNull(path)
             val url = NSURL.fileURLWithPath(path)

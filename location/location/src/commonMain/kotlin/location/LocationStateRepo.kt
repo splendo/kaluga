@@ -104,7 +104,7 @@ open class LocationStateImplRepo(createLocationManager: suspend () -> LocationMa
     ) {
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
-    private suspend fun startMonitoringLocationManager(locationManager: LocationManager) {
+    private fun startMonitoringLocationManager(locationManager: LocationManager) {
         CoroutineScope(coroutineContext + superVisorJob).launch {
             locationManager.events.collect { event ->
                 when (event) {

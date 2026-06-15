@@ -32,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
  * Needs to have [com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder] registered.
  */
 actual class BluetoothServerBuilder(
-    private val bundle: NSBundle = NSBundle.Companion.mainBundle,
+    private val bundle: NSBundle = NSBundle.mainBundle,
     private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
             PermissionsBuilder(bundle).apply {

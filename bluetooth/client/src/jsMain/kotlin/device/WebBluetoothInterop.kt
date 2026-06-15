@@ -153,7 +153,7 @@ internal actual fun webShowDevicePicker(
                 }
                 onDevicePicked(id, name)
             },
-            { _ -> Unit }, // user cancelled the picker or it failed
+            { _ -> }, // user cancelled the picker or it failed
         )
     }
     overlay.appendChild(button)

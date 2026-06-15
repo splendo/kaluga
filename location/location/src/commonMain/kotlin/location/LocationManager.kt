@@ -202,9 +202,7 @@ abstract class BaseLocationManager(private val settings: Settings, private val c
             logger.debug(LOG_TAG) { "Start monitoring permission" }
             if (monitoringPermissionsJob != null) return // optimization to skip making a job
 
-            val job = Job(this.coroutineContext[Job])
-            monitoringPermissionsJob = job
-            coroutineScope.launch(job) {
+            monitoringPermissionsJob = coroutineScope.launch {
                 locationPermissionRepo.filterOnlyImportant().collect { state ->
                     handlePermissionState(state)
                 }
@@ -234,7 +232,7 @@ abstract class BaseLocationManager(private val settings: Settings, private val c
         monitoringPermissionsJob = null
     }
 
-    override suspend fun startMonitoringLocationEnabled() = enabledLock.withLock {
+    override suspend fun startMonitoringLocationEnabled(): Unit = enabledLock.withLock {
         locationMonitor.startMonitoring()
         if (monitoringLocationEnabledJob != null) return
         monitoringLocationEnabledJob = coroutineScope.launch {

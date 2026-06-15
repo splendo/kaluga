@@ -1257,7 +1257,6 @@ public final class com/splendo/kaluga/base/collections/ConcurrentMutableIterator
 }
 
 public final class com/splendo/kaluga/base/collections/ConcurrentMutableList : java/util/List, kotlin/jvm/internal/markers/KMutableList {
-	public fun <init> ()V
 	public fun add (ILjava/lang/Object;)V
 	public fun add (Ljava/lang/Object;)Z
 	public fun addAll (ILjava/util/Collection;)Z
@@ -1312,7 +1311,6 @@ public final class com/splendo/kaluga/base/collections/ConcurrentMutableListKt {
 }
 
 public final class com/splendo/kaluga/base/collections/ConcurrentMutableMap : java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
-	public fun <init> ()V
 	public fun clear ()V
 	public fun containsKey (Ljava/lang/Object;)Z
 	public fun containsValue (Ljava/lang/Object;)Z
@@ -1341,7 +1339,6 @@ public final class com/splendo/kaluga/base/collections/ConcurrentMutableMapKt {
 }
 
 public final class com/splendo/kaluga/base/collections/ConcurrentMutableSet : java/util/Set, kotlin/jvm/internal/markers/KMutableSet {
-	public fun <init> ()V
 	public fun add (Ljava/lang/Object;)Z
 	public fun addAll (Ljava/util/Collection;)Z
 	public fun clear ()V
@@ -1625,7 +1622,6 @@ public abstract interface class com/splendo/kaluga/base/text/Formattable {
 
 public final class com/splendo/kaluga/base/text/KalugaDateFormatter : com/splendo/kaluga/base/text/BaseDateFormatter {
 	public static final field Companion Lcom/splendo/kaluga/base/text/KalugaDateFormatter$Companion;
-	public synthetic fun <init> (Ljava/text/SimpleDateFormat;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun format (Lcom/splendo/kaluga/base/utils/KalugaDate;)Ljava/lang/String;
 	public fun getAmString ()Ljava/lang/String;
 	public fun getEras ()Ljava/util/List;

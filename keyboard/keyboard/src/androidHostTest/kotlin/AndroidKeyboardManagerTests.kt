@@ -67,7 +67,6 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
         override fun verifyShow() {
             verify(mockView).requestFocus()
             verify(mockInputMethodManager).showSoftInput(eq(mockView), eq(SHOW_EXPLICIT))
-            Unit
         }
 
         override fun verifyDismiss() {

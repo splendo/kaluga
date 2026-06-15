@@ -28,7 +28,6 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
@@ -114,10 +113,8 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
 
             configure()
         }
-        // AbiValidationExtension is only available on KMP modules, not pure Android modules
-        extensions.findByType<AbiValidationExtension>()?.apply {
-            enabled.set(true)
-            abiExtension()
+        extensions.findByType<KotlinAndroidProjectExtension>()?.abiValidation {
+            configureKalugaAbi(layout.projectDirectory.dir("api"))
         }
         configureSubproject()
     }

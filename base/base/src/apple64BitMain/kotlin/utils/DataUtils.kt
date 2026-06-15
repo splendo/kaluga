@@ -27,7 +27,7 @@ import platform.Foundation.NSData
 import platform.Foundation.create
 
 actual fun NSData.toByteArray(): ByteArray {
-    val bytes = bytes?.let { it } ?: return byteArrayOf()
+    val bytes = bytes ?: return byteArrayOf()
     val ktBytes: CPointer<ByteVar> = bytes.reinterpret()
     return ByteArray(length.toInt()) { index -> ktBytes[index] }
 }

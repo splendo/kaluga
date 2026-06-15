@@ -1103,7 +1103,6 @@ public final class com/splendo/kaluga/scientific/formatter/CommonScientificValue
 
 public final class com/splendo/kaluga/scientific/formatter/DenominatorScientificValueFormatter : com/splendo/kaluga/scientific/formatter/ScientificValueFormatter {
 	public static final field Companion Lcom/splendo/kaluga/scientific/formatter/DenominatorScientificValueFormatter$Companion;
-	public synthetic fun <init> (Ljava/util/Map;Ljava/lang/String;IDLcom/splendo/kaluga/scientific/formatter/DenominatorScientificValueFormatter$IncludeZeroValues;Ljava/util/Map;Ljava/util/Map;Lcom/splendo/kaluga/scientific/formatter/CommonScientificValueFormatter;Lcom/splendo/kaluga/scientific/formatter/CommonScientificValueFormatter;Lcom/splendo/kaluga/scientific/formatter/CommonScientificValueFormatter;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun format (Lcom/splendo/kaluga/scientific/ScientificValue;)Ljava/lang/String;
 }
 
@@ -6978,6 +6977,7 @@ public abstract class com/splendo/kaluga/scientific/unit/ImperialAcceleration : 
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialAcceleration$Companion;
 	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Acceleration;Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public abstract fun getSpeed ()Lcom/splendo/kaluga/scientific/unit/ImperialSpeed;
+	public synthetic fun getSpeed ()Lcom/splendo/kaluga/scientific/unit/Speed;
 	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/ImperialAcceleration;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
@@ -10248,6 +10248,7 @@ public abstract class com/splendo/kaluga/scientific/unit/MetricAcceleration : co
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricAcceleration$Companion;
 	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Acceleration;Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public abstract fun getSpeed ()Lcom/splendo/kaluga/scientific/unit/MetricSpeed;
+	public synthetic fun getSpeed ()Lcom/splendo/kaluga/scientific/unit/Speed;
 	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/MetricAcceleration;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V

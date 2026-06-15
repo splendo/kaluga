@@ -40,7 +40,7 @@ class KoinTestContextFailureTest {
     class MockKoinComponentImpl(override val mockClass: MockClass) : MockKoinComponent
 
     class MockKoinUIThreadTest : KoinUIThreadTest<MockKoinUIThreadTest.Context>() {
-        object Context : KoinUIThreadTest.KoinTestContext(
+        object Context : KoinTestContext(
             koinModules = listOf(
                 module {
                     single<MockKoinComponent> { MockKoinComponentImpl(get()) }

@@ -39,8 +39,8 @@ class StringFormatterTest {
 
     @Test
     fun testMultipleStringFormat() {
-        assertEquals("Test success", "%2\$s %1\$s".format("success", "Test", locale = locale))
-        assertEquals("Test success", "%2\$s %1\$s".format("success", "Test", locale = localeNL))
+        assertEquals("Test success", $$"%2$s %1$s".format("success", "Test", locale = locale))
+        assertEquals("Test success", $$"%2$s %1$s".format("success", "Test", locale = localeNL))
     }
 
     @Test
@@ -87,8 +87,8 @@ class StringFormatterTest {
 
     @Test
     fun testMultipleIntFormat() {
-        assertEquals("Test 2 1 success", "Test %2\$d %1\$d success".format(1, 2, locale = locale))
-        assertEquals("Test 2 1 success", "Test %2\$d %1\$d success".format(1, 2, locale = localeNL))
+        assertEquals("Test 2 1 success", $$"Test %2$d %1$d success".format(1, 2, locale = locale))
+        assertEquals("Test 2 1 success", $$"Test %2$d %1$d success".format(1, 2, locale = localeNL))
     }
 
     @Test
@@ -99,8 +99,8 @@ class StringFormatterTest {
 
     @Test
     fun testIntAndStringFormatOrder() {
-        assertEquals("Test 1 success", "Test %2\$d %1\$s".format("success", 1, locale = locale))
-        assertEquals("Test 1 success", "Test %2\$d %1\$s".format("success", 1, locale = localeNL))
+        assertEquals("Test 1 success", $$"Test %2$d %1$s".format("success", 1, locale = locale))
+        assertEquals("Test 1 success", $$"Test %2$d %1$s".format("success", 1, locale = localeNL))
     }
 
     @Test
@@ -536,9 +536,9 @@ class StringFormatterTest {
             second = 20
         }
 
-        val time = "%1\$tA %1\$tB %1\$te, %1\$tY at %1\$tH:%1\$tM:%1\$tS in %1\$tZ".format(date, locale = locale)
+        val time = $$"%1$tA %1$tB %1$te, %1$tY at %1$tH:%1$tM:%1$tS in %1$tZ".format(date, locale = locale)
         assertEquals("Thursday July 23, 2020 at 08:45:20 in PDT", time)
-        val timeNL = "%1\$tA %1\$tB %1\$te, %1\$tY at %1\$tH:%1\$tM:%1\$tS in %1\$tZ".format(date, locale = localeNL)
+        val timeNL = $$"%1$tA %1$tB %1$te, %1$tY at %1$tH:%1$tM:%1$tS in %1$tZ".format(date, locale = localeNL)
         assertEquals("donderdag juli 23, 2020 at 08:45:20 in $expectedNlPdtZoneName", timeNL)
     }
 }

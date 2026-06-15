@@ -37,7 +37,7 @@ class NavigationBundleTest : BaseTest() {
                 is NestedSpecRow.StringSpecRow -> entry.convertValue(nestedString)
             }
         }
-        val optionalString: String = "Some String"
+        val optionalString = "Some String"
         val optionalFloat: Float? = null
         val dateValue = DefaultKalugaDate.epoch(1606204800000.milliseconds)
         val dateArray = listOf(
