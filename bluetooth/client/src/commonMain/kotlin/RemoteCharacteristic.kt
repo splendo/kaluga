@@ -456,7 +456,7 @@ open class RemoteCharacteristic internal constructor(
     private fun createWriteAction(newValue: ByteArray, writeType: WriteType?): DeviceAction.Write.Characteristic =
         DeviceAction.Write.Characteristic(newValue, this, writeType).apply {
             val required = when (writeType) {
-                WriteType.WithResponse -> setOf(CharacteristicProperty.Write, CharacteristicProperty.SignedWrite)
+                WriteType.WithResponse -> setOf(CharacteristicProperty.Write)
                 WriteType.WithoutResponse -> setOf(CharacteristicProperty.WriteWithoutResponse)
                 null -> setOf(CharacteristicProperty.Write, CharacteristicProperty.WriteWithoutResponse, CharacteristicProperty.SignedWrite)
             }

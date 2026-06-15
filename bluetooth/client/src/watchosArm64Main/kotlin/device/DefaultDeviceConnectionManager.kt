@@ -203,11 +203,8 @@ internal actual class DefaultDeviceConnectionManager(
                 val wasReady = peripheral.canSendWriteWithoutResponse
                 val withResponse = when (action.writeType) {
                     WriteType.WithResponse -> true
-
                     WriteType.WithoutResponse -> false
-
-                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write) ||
-                        !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write)
                 }
                 if (!withResponse) {
                     peripheralDelegate.resetAwaitingSendWriteWithoutResponse()

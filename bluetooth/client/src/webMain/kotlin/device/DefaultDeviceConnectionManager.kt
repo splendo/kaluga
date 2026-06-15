@@ -89,11 +89,8 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
             is DeviceAction.Write.Characteristic -> {
                 val withResponse = when (action.writeType) {
                     WriteType.WithResponse -> true
-
                     WriteType.WithoutResponse -> false
-
-                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write) ||
-                        !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write)
                 }
                 val result =
                     webWriteCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, action.newValue, withResponse)
