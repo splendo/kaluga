@@ -97,7 +97,6 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter)
                 validateDevicesForCurrentScanFilter()
             }
-        Unit
     }
 
     @Test
@@ -143,7 +142,6 @@ class DevicesTest {
                 validateDevicesForPairingFilter(filter2)
                 validateDevicesForCurrentScanFilter()
             }
-        Unit
     }
 
     private fun createMockDevice(coroutineContext: CoroutineContext) = MockDevice(coroutineContext = coroutineContext)

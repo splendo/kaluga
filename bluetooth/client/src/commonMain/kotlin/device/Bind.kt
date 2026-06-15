@@ -145,7 +145,7 @@ interface RemoteAttributeBinding<T> {
      * @property Response the type of Response that will be returned when the [RemoteAttribute] is read.
      * @property Transformation the type of Transformation that should be applied to the object when the [RemoteAttribute] is read.
      */
-    sealed class UnitReadBuilder<T, Response, Transformation> protected constructor(private val builder: ReadBuilder<T, Unit, Response, Transformation>) {
+    sealed class UnitReadBuilder<T, Response, Transformation>(private val builder: ReadBuilder<T, Unit, Response, Transformation>) {
 
         /**
          * A [ReadBuilder] that does not mutate the object when reading from a [RemoteAttribute] after being triggered by a [Unit].
@@ -1592,9 +1592,9 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
                     val builder = ReadBuilder.NonMutating<T, Trigger, Response>().apply(builder)
                     val onReadActions = builder.readActions()
                     val onFailedToReadActions = builder.failedToReadActions()
-                    binding.observations += {
+                    observations += {
                         flow.collect { trigger ->
-                            binding.read(trigger, asValue, onReadActions, onFailedToReadActions)
+                            read(trigger, asValue, onReadActions, onFailedToReadActions)
                         }
                     }
                 }

@@ -44,7 +44,7 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     suspend fun read(): GattResponse.ReadResponse = startRead().response.await()
 
     /**
-     * Requests a read of the a value of [T] of the attribute from the device and suspends until the value is received.
+     * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
      * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the value
      * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
@@ -57,7 +57,7 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     }
 
     /**
-     * Requests a read of the a value of [T] of the attribute from the device and suspends until the value is received.
+     * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
      * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the value
      * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
@@ -67,7 +67,7 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
         runCatching { read(deserializationStrategy, bluetoothFormat) }.getOrNull()
 
     /**
-     * Requests a read of the a value of [T] of the attribute from the device and suspends until the value is received.
+     * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
      * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
      * @throws FailedToReadException if the read fails
@@ -76,7 +76,7 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     suspend inline fun <reified T> read(bluetoothFormat: BluetoothFormat = BluetoothFormat): T = read(bluetoothFormat.serializer<T>(), bluetoothFormat)
 
     /**
-     * Requests a read of the a value of [T] of the attribute from the device and suspends until the value is received.
+     * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
      * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
      * @return the value of type [T] received from the device, or `null` if the request failed

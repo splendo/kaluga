@@ -70,7 +70,7 @@ internal data class BluetoothBinaryDescriptor(
          * @property supportedLengths the [Length] values that are supported. The smallest fitting length will be picked.
          * @property signed if the value can be negative
          */
-        data class Natural(override val supportedLengths: Set<Length>, val signed: Boolean) : BluetoothBinaryDescriptor.NumericSettings() {
+        data class Natural(override val supportedLengths: Set<Length>, val signed: Boolean) : NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
@@ -92,7 +92,7 @@ internal data class BluetoothBinaryDescriptor(
             val decimalExponent: Int,
             val binaryExponent: Int,
             val offset: Int,
-        ) : BluetoothBinaryDescriptor.NumericSettings() {
+        ) : NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
@@ -102,7 +102,7 @@ internal data class BluetoothBinaryDescriptor(
          * Encoding as a Decimal value
          * @property supportedLengths the [Length] values that are supported. The smallest fitting length will be picked. Can only contain 32 and 64 bit lengths
          */
-        data class Decimal(override val supportedLengths: Set<Length>) : BluetoothBinaryDescriptor.NumericSettings() {
+        data class Decimal(override val supportedLengths: Set<Length>) : NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
                 require((supportedLengths - setOf(Length.`32_BIT`, Length.`64_BIT`)).isEmpty()) { "Decimal only supports 32 and 64 bit encoding" }
@@ -113,7 +113,7 @@ internal data class BluetoothBinaryDescriptor(
          * Encoding as a MedFloat value
          * @property supportedLengths the [Length] values that are supported. The smallest fitting length will be picked. Can only contain 16 and 32 bit lengths
          */
-        data class MedFloat(override val supportedLengths: Set<Length>) : BluetoothBinaryDescriptor.NumericSettings() {
+        data class MedFloat(override val supportedLengths: Set<Length>) : NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
                 require((supportedLengths - setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "MedFloat only supports 16 and 32 bit encoding" }

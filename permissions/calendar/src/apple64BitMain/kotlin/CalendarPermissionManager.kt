@@ -70,7 +70,6 @@ actual class DefaultCalendarPermissionManager(private val bundle: NSBundle, cale
                     EKEntityType.EKEntityTypeEvent,
                 ) { success, error ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
-                    Unit
                 }
 
                 try {

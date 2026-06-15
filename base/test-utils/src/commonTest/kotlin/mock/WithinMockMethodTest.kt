@@ -41,14 +41,14 @@ class WithinMockMethodTest {
 
     private val mockableTestMethods: MockableTestMethods = MockableTestMethodsImpl()
 
-    private suspend fun CoroutineScope.short(fn: suspend () -> Unit) {
+    private fun CoroutineScope.short(fn: suspend () -> Unit) {
         launch {
             delay(500)
             fn()
         }
     }
 
-    private suspend fun CoroutineScope.long(fn: suspend () -> Unit) {
+    private fun CoroutineScope.long(fn: suspend () -> Unit) {
         launch {
             delay(60000) // since runTest is used the delay is actually not that long.
             fn()

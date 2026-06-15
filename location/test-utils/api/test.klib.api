@@ -200,7 +200,7 @@ sealed class com.splendo.kaluga.location.test/MockLocationState { // com.splendo
 
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location.test/MockLocationState.NotInitialized.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.location.test/MockLocationState.NotInitialized.hashCode|hashCode(){}[0]
-        final fun startInitializing(): kotlin/Function0<com.splendo.kaluga.location.test/MockLocationState.Initializing> // com.splendo.kaluga.location.test/MockLocationState.NotInitialized.startInitializing|startInitializing(){}[0]
+        final fun startInitializing(): com.splendo.kaluga.location.test/MockLocationState.Initializing // com.splendo.kaluga.location.test/MockLocationState.NotInitialized.startInitializing|startInitializing(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.location.test/MockLocationState.NotInitialized.toString|toString(){}[0]
     }
 }

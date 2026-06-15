@@ -72,7 +72,7 @@ class CommonScientificValueFormatter internal constructor(
             }
         }
 
-        var defaultValueFormatter = CommonScientificValueFormatter.defaultUnitFormatter
+        var defaultValueFormatter = defaultUnitFormatter
         private val customUnitTargets = mutableMapOf<ScientificUnit<*>, ScientificUnit<*>>()
         private val customQuantityTargets = mutableMapOf<PhysicalQuantity, ScientificUnit<*>>()
         private val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()

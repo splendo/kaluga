@@ -29,7 +29,7 @@ sealed class MockLocationState {
     data object NotInitialized : Inactive(), LocationState.NotInitialized {
 
         override val location: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
-        fun startInitializing() = { Initializing(location) }
+        fun startInitializing() = run { Initializing(location) }
     }
 
     data class Deinitialized(override val location: Location) :

@@ -63,7 +63,7 @@ fun Encoding.byteSizeOf(string: String): Int = when (this) {
  * @property endMarking The [EndMarking] to use for encoding when the string ends.
  * @property encoding The [Encoding] to use for encoding the string.
  */
-data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.ByteLength, val encoding: Encoding = Encoding.UTF_8) {
+data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.ByteLength, val encoding: Encoding = UTF_8) {
 
     /**
      * Method used for marking the end of a String when encoding it to a [ByteArray]
@@ -546,7 +546,7 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
         is StringEncodingSettings.NullTerminated -> {
             var hasFoundNull = false
             val stringBytes = withIndex().takeWhile { (index, byte) ->
-                val isCharacterByte = (settings.encoding == Encoding.UTF_16 && index % 2 != 0) || byte != 0x00.toByte()
+                val isCharacterByte = (settings.encoding == UTF_16 && index % 2 != 0) || byte != 0x00.toByte()
                 hasFoundNull = !isCharacterByte
                 isCharacterByte
             }.map { (_, byte) -> byte }.toList()
