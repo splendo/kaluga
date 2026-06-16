@@ -156,10 +156,19 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
         .addFunction(
             generateConfigureFromBluetoothServerDSL(delegateName, interfaceName),
         )
-        .addFunction(
-            generateConfigureFromServiceDSL(delegateName, interfaceName),
-        )
+        .apply {
+            // A service that includes another service can only be a primary (top-level) service:
+            // an included service may not include its own services, so it gets no includable overload.
+            if (!declaration.includesAService) {
+                addFunction(generateConfigureFromServiceDSL(delegateName, interfaceName))
+            }
+        }
         .build()
+
+    private val KSClassDeclaration.includesAService: Boolean
+        get() = declarations.filterIsInstance<KSPropertyDeclaration>().any {
+            (it.type.resolve().declaration as? KSClassDeclaration)?.isAnnotationPresent(BluetoothService::class) == true
+        }
 
     private fun generateConfigureFromBluetoothServerDSL(delegateName: ClassName, interfaceName: ClassName): FunSpec = FunSpec.builder(CONFIGURE)
         .apply {
@@ -395,7 +404,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             NameHelper.serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
         ).addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
-                val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
+                val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
                 when (type) {
                     GenerationType.Type.API -> {}
 
@@ -433,7 +442,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             NameHelper.serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
         ).addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
-                val characteristicNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
+                val characteristicNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
                 when (type) {
                     GenerationType.Type.API -> {}
 

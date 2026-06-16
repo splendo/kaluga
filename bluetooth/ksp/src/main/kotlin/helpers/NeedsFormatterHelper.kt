@@ -61,7 +61,7 @@ internal object NeedsFormatterHelper {
                                 property.isWritable
                             ) && target != Target.SERVER
                         ) ||
-                        ((property.isNotifiable) && target != Target.SERVER_DSL) -> property.type.resolve().toTypeName() != BYTE_ARRAY
+                        property.isNotifiable -> property.type.resolve().toTypeName() != BYTE_ARRAY
 
                     else -> (property.type.resolve().declaration as? KSClassDeclaration)?.let {
                         needsBluetoothFormatter(it, target).needsFormatter

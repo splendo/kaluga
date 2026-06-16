@@ -719,7 +719,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
         .indent()
         .beginControlFlow("$WITH(${declaration.delegateParameterName})")
         .addStatement(
-            "${writeProperty.onWriteMethodName}(${writeProperty.simpleName.asString()}, $IDENTIFIER${if (writeProperty.isByteArray) ", 0" else ""})",
+            "${writeProperty.onWriteMethodName}(${writeProperty.simpleName.asString()}${if (writeProperty.isByteArray) ", 0" else ""}, $IDENTIFIER)",
         )
         .endControlFlow()
         .unindent()

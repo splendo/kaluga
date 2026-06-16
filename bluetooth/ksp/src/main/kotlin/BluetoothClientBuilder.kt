@@ -62,7 +62,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
             if (options.generateBluetoothImplementation) {
                 addFunction(generateAPIBluetoothMethod(needsFormatter))
             }
-            if (options.generateSimulatorImplementation) {
+            if (options.generateSimulatorImplementation && options.generateServer) {
                 addFunction(generateAPISimulatorMethod())
             }
         }
