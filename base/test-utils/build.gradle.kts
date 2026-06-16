@@ -33,7 +33,7 @@ kaluga {
                 api(libs.kotlin.test)
                 api(libs.kotlinx.coroutines.test)
 
-                api(project(":base:base", ""))
+                api(project(":base:core", ""))
                 api(project(":logging", ""))
             }
         }

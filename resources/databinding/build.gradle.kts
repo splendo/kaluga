@@ -24,7 +24,7 @@ kaluga {
 }
 
 dependencies {
-    implementation(project(":base:base"))
+    implementation(project(":base:core"))
     api(project(":resources:resources"))
     implementation(libs.android.material)
 }

@@ -10,7 +10,7 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base:base", ""))
+                implementation(project(":base:core", ""))
                 implementation(project(":logging", ""))
             }
             test {
