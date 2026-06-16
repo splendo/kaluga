@@ -266,7 +266,6 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     override suspend fun readRssi() {
         logger.stateLogger.actionLogger.debug { "Request Read RSSI" }
-        // TODO call into abstract function?
     }
 
     protected open fun handleNewRssi(rssi: RSSI) {
