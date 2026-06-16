@@ -125,6 +125,10 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
         }
     }
 
+    actual override suspend fun requestReadRssi() {
+        // Web Bluetooth has no RSSI support
+    }
+
     actual override suspend fun requestStartPairing(): PairingResult {
         // Web Bluetooth has no pairing API; bonding is handled by the user agent.
         return PairingResult.NOT_SUPPORTED

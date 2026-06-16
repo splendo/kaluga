@@ -189,7 +189,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun readRssi() {
+    actual override suspend fun requestReadRssi() {
         peripheral.readRSSI()
     }
 

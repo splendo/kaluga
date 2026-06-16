@@ -266,7 +266,10 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     override suspend fun readRssi() {
         logger.stateLogger.actionLogger.debug { "Request Read RSSI" }
+        requestReadRssi()
     }
+
+    protected abstract suspend fun requestReadRssi()
 
     protected open fun handleNewRssi(rssi: RSSI) {
         logger.stateLogger.actionLogger.debug { "Updated Rssi $rssi" }
@@ -439,6 +442,7 @@ internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManag
     override fun disconnect()
     override fun getCurrentState(): DeviceConnectionManager.State
     override suspend fun discoverServices()
+    override suspend fun requestReadRssi()
     override suspend fun didStartPerformingAction(action: DeviceAction<*>)
     override suspend fun requestStartPairing(): PairingResult
     override suspend fun requestStartUnpairing(): PairingResult

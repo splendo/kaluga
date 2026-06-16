@@ -166,7 +166,7 @@ class MockDeviceConnectionManager(
 
     override fun disconnect(): Unit = disconnectMock.call()
 
-    override suspend fun readRssi(): Unit = readRssiMock.call()
+    override suspend fun requestReadRssi(): Unit = readRssiMock.call()
 
     override suspend fun requestStartPairing(): PairingResult = pairMock.call()
 

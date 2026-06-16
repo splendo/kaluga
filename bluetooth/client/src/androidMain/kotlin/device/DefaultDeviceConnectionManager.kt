@@ -232,7 +232,7 @@ internal actual class DefaultDeviceConnectionManager(
         gatt = CompletableDeferred()
     }
 
-    override suspend fun readRssi() {
+    actual override suspend fun requestReadRssi() {
         if (!gatt.await().readRemoteRssi()) {
             logger.stateLogger.stateChangeLogger.info { "Failed to start RSSI read" }
         }
