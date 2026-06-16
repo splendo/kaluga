@@ -1,6 +1,11 @@
 name: Apple tests
 on: pull_request
 
+# macOS runners are a scarce, expensive pool; cancel superseded runs on a new push to free them.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   build:
     uses: ./.github/workflows/setup_macos.yaml

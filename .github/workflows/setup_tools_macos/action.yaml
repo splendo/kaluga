@@ -26,10 +26,10 @@ runs:
     - name: use Xcode 26
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '26.3'
+        xcode-version: '26.5'
 
     - name: Gradle cache
-      uses: gradle/actions/setup-gradle@v5
+      uses: gradle/actions/setup-gradle@v6
       with:
         cache-read-only: ${{ inputs.gradle-cache-read-only }}
         gradle-home-cache-includes: |
