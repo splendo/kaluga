@@ -132,7 +132,7 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
                         onWrite(device, bluetoothFormat.decodeFromByteArray(deserializationStrategy, it))
                     } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
-                        GattResponse.WriteSuccess
+                        GattResponse.WriteSuccess.Acknowledged
                     } catch (e: Exception) {
                         onFailedToWrite(device, e)
                     }
@@ -141,7 +141,7 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
         }
 
         /**
-         * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [LocalCharacteristic.Permission.WRITE_ENCRYPTION_REQUIRED].
          * Otherwise will add [LocalCharacteristic.Permission.WRITABLE]
@@ -151,12 +151,12 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
         fun writableAlwaysSuccess(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> Unit) {
             writable(encrypted) { device, value, offset ->
                 onWrite(device, value, offset)
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             }
         }
 
         /**
-         * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param T the type of the data being written
          * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [LocalCharacteristic.Permission.WRITE_ENCRYPTION_REQUIRED].
@@ -175,10 +175,10 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
             encrypted,
             deserializationStrategy,
             bluetoothFormat,
-            { _, _ -> GattResponse.WriteSuccess },
+            { _, _ -> GattResponse.WriteSuccess.Acknowledged },
         ) { device, value ->
             onWrite(device, value)
-            GattResponse.WriteSuccess
+            GattResponse.WriteSuccess.Acknowledged
         }
     }
 
@@ -289,7 +289,7 @@ inline fun <reified T : Any> LocalDescriptor.DSL.writable(
 ) = writable(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
 
 /**
- * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+ * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
  * Cannot be called if [LocalDescriptor.DSL.writable] or [LocalDescriptor.DSL.writableAlwaysSuccess] has been called before
  * @param T the type of the data being written
  * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [LocalCharacteristic.Permission.WRITE_ENCRYPTION_REQUIRED].

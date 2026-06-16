@@ -21,16 +21,18 @@ import com.splendo.kaluga.bluetooth.GattResponse
 
 /**
  * Send policy for a write that has no completion callback (the Apple write-without-response path):
- * the value must be delivered exactly once. [write] is invoked when the peripheral can accept the
- * write now ([canSendNow]) or, otherwise, once [awaitReady] reports it became ready again.
- * Returns [GattResponse.InsufficientResources] without sending if it never became ready.
+ * the value is sent exactly once. [write] runs when the peripheral can accept the write now
+ * ([canSendNow]) or once [awaitReady] reports it became ready — both yield [GattResponse.WriteSuccess.Ready].
+ * If the peripheral never became ready (e.g. [awaitReady] timed out) the write is still attempted
+ * best-effort and [GattResponse.WriteSuccess.NotReady] is returned, since it may have been dropped.
  */
 internal suspend fun sendWriteWithoutResponse(canSendNow: Boolean, write: () -> Unit, awaitReady: suspend () -> Boolean): GattResponse.WriteResponse = if (canSendNow) {
     write()
-    GattResponse.WriteSuccess
+    GattResponse.WriteSuccess.Ready
 } else if (awaitReady()) {
     write()
-    GattResponse.WriteSuccess
+    GattResponse.WriteSuccess.Ready
 } else {
-    GattResponse.InsufficientResources
+    write()
+    GattResponse.WriteSuccess.NotReady
 }

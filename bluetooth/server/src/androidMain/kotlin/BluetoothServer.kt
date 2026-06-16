@@ -311,13 +311,13 @@ internal sealed class AndroidServerState {
                                     put(device, byteArrayOf(lsb, msb))
                                 }
                                 subscribe(device)
-                                GattResponse.WriteSuccess
+                                GattResponse.WriteSuccess.Acknowledged
                             }
 
                             value.contentEquals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE) -> {
                                 deviceStatus[device] = value
                                 unsubscribe(device)
-                                GattResponse.WriteSuccess
+                                GattResponse.WriteSuccess.Acknowledged
                             }
 
                             else -> GattResponse.InvalidHandle

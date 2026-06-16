@@ -92,7 +92,7 @@ class BluetoothServerViewModel(serverBuilder: BluetoothServerBuilder) : ViewMode
                     characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
                         writable<BluetoothSpec.ResetEnergyCommand> { _, _ ->
                             energyExpended.update { 0(Kilojoule) }
-                            GattResponse.WriteSuccess
+                            GattResponse.WriteSuccess.Acknowledged
                         }
                     }
                 }

@@ -127,7 +127,7 @@ class LocalServerAttributesTest : BaseTest() {
 
         val onWrite = fixture.writes.getValue(charUuid)
         val response = runBlocking { onWrite(characteristic, MockConnectedDevice(), byteArrayOf(9), 0) }
-        assertEquals(GattResponse.WriteSuccess, response)
+        assertEquals(GattResponse.WriteSuccess.Acknowledged, response)
         assertContentEquals(byteArrayOf(9), written.single())
     }
 
@@ -140,7 +140,7 @@ class LocalServerAttributesTest : BaseTest() {
             characteristic(charUuid) {
                 writable<Int> { _, value ->
                     decoded.add(value)
-                    GattResponse.WriteSuccess
+                    GattResponse.WriteSuccess.Acknowledged
                 }
             }
         }.build()
@@ -148,7 +148,7 @@ class LocalServerAttributesTest : BaseTest() {
         val onWrite = fixture.writes.getValue(charUuid)
         val bytes = BluetoothFormat.encodeToByteArray(serializer<Int>(), 42)
         val response = runBlocking { onWrite(service.characteristics.single(), MockConnectedDevice(), bytes, 0) }
-        assertEquals(GattResponse.WriteSuccess, response)
+        assertEquals(GattResponse.WriteSuccess.Acknowledged, response)
         assertEquals(listOf(42), decoded)
     }
 
@@ -184,7 +184,7 @@ class LocalServerAttributesTest : BaseTest() {
         assertFailsWith<IllegalArgumentException> {
             fixture.primary().apply {
                 characteristic(randomUUID()) {
-                    writable(properties = emptySet()) { _, _, _ -> GattResponse.WriteSuccess }
+                    writable(properties = emptySet()) { _, _, _ -> GattResponse.WriteSuccess.Acknowledged }
                 }
             }
         }

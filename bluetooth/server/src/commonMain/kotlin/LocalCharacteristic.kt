@@ -167,7 +167,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                         onWrite(device, bluetoothFormat.decodeFromByteArray(deserializationStrategy, it))
                     } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
-                        GattResponse.WriteSuccess
+                        GattResponse.WriteSuccess.Acknowledged
                     } catch (e: Exception) {
                         onFailedToWrite(device, e)
                     }
@@ -176,7 +176,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
          * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
@@ -191,12 +191,12 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         ) {
             writable(properties, encrypted) { device, value, offset ->
                 onWrite(device, value, offset)
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             }
         }
 
         /**
-         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
          * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
          * @param T the type of the data being written
          * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
@@ -218,10 +218,10 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             encrypted,
             deserializationStrategy,
             bluetoothFormat,
-            { _, _ -> GattResponse.WriteSuccess },
+            { _, _ -> GattResponse.WriteSuccess.Acknowledged },
         ) { device, value ->
             onWrite(device, value)
-            GattResponse.WriteSuccess
+            GattResponse.WriteSuccess.Acknowledged
         }
 
         /**
@@ -734,7 +734,7 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
 ) = writable(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
 
 /**
- * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+ * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
  * Cannot be called if [writable] has been called before
  * @param T the type of the data being written
  * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty

@@ -192,7 +192,7 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
                     writeRequest.offset.toInt(),
                 ) ?: GattResponse.InvalidHandle
             }
-            val response = responses.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess
+            val response = responses.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess.Acknowledged
             if (peripheralManager.state == CBPeripheralManagerStatePoweredOn) {
                 peripheralManager.respondToRequest(requests.first(), response.statusCode.toLong())
             }

@@ -29,6 +29,7 @@ import com.splendo.kaluga.bluetooth.client.KalugaBluetoothPeripheralWrapper
 import com.splendo.kaluga.bluetooth.dataValue
 import com.splendo.kaluga.bluetooth.mtu
 import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.warn
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
 import kotlinx.coroutines.CompletableDeferred
@@ -96,7 +97,7 @@ internal actual class DefaultDeviceConnectionManager(
             val action = currentAction
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == characteristic.UUID) {
                 launch {
-                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
                 }
             }
         }
@@ -109,7 +110,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
 
         override fun didWriteValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
-            handleCharacteristicWritten(characteristic.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+            handleCharacteristicWritten(characteristic.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
         }
 
         override fun didUpdateValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
@@ -120,7 +121,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
 
         override fun didWriteValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
-            handleDescriptorWritten(descriptor.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+            handleDescriptorWritten(descriptor.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
         }
 
         override fun didDiscoverCharacteristicsFor(service: CBService, peripheral: CBPeripheral, error: NSError?) {
@@ -219,6 +220,11 @@ internal actual class DefaultDeviceConnectionManager(
                             } ?: false
                         },
                     )
+                    if (response is GattResponse.WriteSuccess.NotReady) {
+                        logger.dataLogger[action.characteristic.wrapper.service.uuid][action.characteristic.wrapper.uuid].warn {
+                            "Write without response sent best-effort: peripheral did not become ready within $MAX_WRITE_WITHOUT_RESPONSE_WAIT and the value may have been dropped"
+                        }
+                    }
                     handleCharacteristicWritten(action.characteristic.uuid, response)
                 }
             }

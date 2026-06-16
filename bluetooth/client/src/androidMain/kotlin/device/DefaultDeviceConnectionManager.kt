@@ -108,7 +108,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info { "onCharacteristicWrite status ${status.gattStatusAsString}" }
-            handleCharacteristicWritten(characteristic.uuid, if (status == GATT_SUCCESS) GattResponse.WriteSuccess else GattResponse.Error.from(status))
+            handleCharacteristicWritten(characteristic.uuid, if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(status))
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -157,7 +157,7 @@ internal actual class DefaultDeviceConnectionManager(
                 "onDescriptorWrite status ${status.gattStatusAsString}"
             }
             val response = if (status == GATT_SUCCESS) {
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             } else {
                 GattResponse.Error.from(status)
             }

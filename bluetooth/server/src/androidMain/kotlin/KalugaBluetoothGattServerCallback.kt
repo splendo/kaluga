@@ -161,9 +161,9 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
                     writeActions[identifier]?.let { writeAction ->
                         writeAction(connectedDevice(device), value, 0)
                     }
-                }.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess
+                }.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess.Acknowledged
             } else {
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             }
             pendingWrites.remove(device.address)
             sendResponse?.invoke(device, requestId, response.statusCode, 0, null)
@@ -238,7 +238,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
                     pendingWritesForDevice[identifier] = (pendingWritesForDevice[identifier] ?: byteArrayOf()) + value
                     put(device.address, pendingWritesForDevice)
                 }
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             } else {
                 logger.info(TAG) { "Device ${device.address} wrote $value for $identifier at offset $offset" }
                 writeActions[identifier]?.let { writeAction ->

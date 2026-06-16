@@ -26,26 +26,26 @@ import kotlin.test.assertIs
 class WriteWithoutResponseTest {
 
     @Test
-    fun sendsOnceWhenReady() = testRunBlocking {
+    fun sendsOnceAsReadyWhenReady() = testRunBlocking {
         var writes = 0
         val response = sendWriteWithoutResponse(canSendNow = true, write = { writes++ }, awaitReady = { error("must not wait when ready") })
         assertEquals(1, writes)
-        assertIs<GattResponse.WriteSuccess>(response)
+        assertIs<GattResponse.WriteSuccess.Ready>(response)
     }
 
     @Test
-    fun sendsExactlyOnceWhenNotReadyThenBecomesReady() = testRunBlocking {
+    fun sendsOnceAsReadyWhenNotReadyThenBecomesReady() = testRunBlocking {
         var writes = 0
         val response = sendWriteWithoutResponse(canSendNow = false, write = { writes++ }, awaitReady = { true })
         assertEquals(1, writes)
-        assertIs<GattResponse.WriteSuccess>(response)
+        assertIs<GattResponse.WriteSuccess.Ready>(response)
     }
 
     @Test
-    fun reportsInsufficientResourcesAndDoesNotSendWhenNeverReady() = testRunBlocking {
+    fun sendsOnceBestEffortAsNotReadyWhenNeverReady() = testRunBlocking {
         var writes = 0
         val response = sendWriteWithoutResponse(canSendNow = false, write = { writes++ }, awaitReady = { false })
-        assertEquals(0, writes)
-        assertIs<GattResponse.InsufficientResources>(response)
+        assertEquals(1, writes)
+        assertIs<GattResponse.WriteSuccess.NotReady>(response)
     }
 }

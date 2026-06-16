@@ -77,7 +77,7 @@ open class RemoteCharacteristic internal constructor(
          * @property subscription the [Subscription] to use to remove the subscription
          */
         data class DidSubscribe(override val subscription: Subscription) : SubscriptionResult() {
-            override val response: GattResponse.WriteResponse = GattResponse.WriteSuccess
+            override val response: GattResponse.WriteResponse = GattResponse.WriteSuccess.Acknowledged
         }
 
         /**
@@ -110,7 +110,7 @@ open class RemoteCharacteristic internal constructor(
          * This will automatically stop notification if this is the last remaining subscription to the characteristic.
          * @return the [GattResponse.WriteResponse] received by the unsubscribe action.
          */
-        suspend fun unsubscribe(): GattResponse.WriteResponse = startUnsubscribe()?.response?.await() ?: GattResponse.WriteSuccess
+        suspend fun unsubscribe(): GattResponse.WriteResponse = startUnsubscribe()?.response?.await() ?: GattResponse.WriteSuccess.Acknowledged
 
         internal fun startUnsubscribe() = onUnsubscribe()
     }
@@ -180,7 +180,7 @@ open class RemoteCharacteristic internal constructor(
      * @see [startDisableNotification]
      * @see [isNotifying]
      */
-    suspend fun enableNotification() = startEnableNotification()?.response?.await() ?: GattResponse.WriteSuccess
+    suspend fun enableNotification() = startEnableNotification()?.response?.await() ?: GattResponse.WriteSuccess.Acknowledged
 
     /**
      * Starts to enable notification or indication for this [RemoteCharacteristic].
@@ -264,7 +264,7 @@ open class RemoteCharacteristic internal constructor(
      * @see [startEnableNotification]
      * @see [isNotifying]
      */
-    suspend fun disableNotification() = startDisableNotification()?.response?.await() ?: GattResponse.WriteSuccess
+    suspend fun disableNotification() = startDisableNotification()?.response?.await() ?: GattResponse.WriteSuccess.Acknowledged
 
     /**
      * Starts disabling notification or indication for this [com.splendo.kaluga.bluetooth.RemoteCharacteristic]
