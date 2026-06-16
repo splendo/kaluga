@@ -18,10 +18,10 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.CRC
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.base.crc.CRC
 import com.splendo.kaluga.base.utils.toHexString
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PolymorphicKind

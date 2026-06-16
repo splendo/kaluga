@@ -1,0 +1,1068 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.base:crc>
+abstract interface com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC|null[0]
+    abstract val width // com.splendo.kaluga.base.crc/CRC.width|{}width[0]
+        abstract fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC.width.<get-width>|<get-width>(){}[0]
+    open val byteWidth // com.splendo.kaluga.base.crc/CRC.byteWidth|{}byteWidth[0]
+        open fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+
+    abstract fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC.compute|compute(kotlin.ByteArray){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.crc/CRC.Companion|null[0]
+        final fun invoke(kotlin/Int, kotlin/ULong, kotlin/ULong, kotlin/ULong = ..., kotlin/Boolean = ..., kotlin/Boolean = ...): com.splendo.kaluga.base.crc/CRC // com.splendo.kaluga.base.crc/CRC.Companion.invoke|invoke(kotlin.Int;kotlin.ULong;kotlin.ULong;kotlin.ULong;kotlin.Boolean;kotlin.Boolean){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CKSUM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CKSUM|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CKSUM.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CKSUM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CKSUM.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CKSUM.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CKSUM.compute|compute(kotlin.ByteArray){}[0]
+}
+
+final object com.splendo.kaluga.base.crc/CRC10 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC10|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC10.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC10.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC10.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC10.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC10.compute|compute(kotlin.ByteArray){}[0]
+
+    final object CDMA2000 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC10.CDMA2000|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC10.CDMA2000.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC10.CDMA2000.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC10.CDMA2000.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC10.CDMA2000.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC10.CDMA2000.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object GSM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC10.GSM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC10.GSM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC10.GSM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC10.GSM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC10.GSM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC10.GSM.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC11 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC11|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC11.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC11.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC11.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC11.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC11.compute|compute(kotlin.ByteArray){}[0]
+
+    final object UMTS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC11.UMTS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC11.UMTS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC11.UMTS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC11.UMTS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC11.UMTS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC11.UMTS.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC12 { // com.splendo.kaluga.base.crc/CRC12|null[0]
+    final object CDMA2000 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC12.CDMA2000|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC12.CDMA2000.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.CDMA2000.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC12.CDMA2000.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.CDMA2000.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC12.CDMA2000.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object DECT : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC12.DECT|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC12.DECT.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.DECT.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC12.DECT.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.DECT.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC12.DECT.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object GSM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC12.GSM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC12.GSM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.GSM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC12.GSM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.GSM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC12.GSM.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object UMTS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC12.UMTS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC12.UMTS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.UMTS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC12.UMTS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC12.UMTS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC12.UMTS.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC13 { // com.splendo.kaluga.base.crc/CRC13|null[0]
+    final object BBC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC13.BBC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC13.BBC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC13.BBC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC13.BBC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC13.BBC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC13.BBC.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC14 { // com.splendo.kaluga.base.crc/CRC14|null[0]
+    final object DARC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC14.DARC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC14.DARC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC14.DARC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC14.DARC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC14.DARC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC14.DARC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object GSM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC14.GSM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC14.GSM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC14.GSM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC14.GSM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC14.GSM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC14.GSM.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC15 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC15|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC15.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC15.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC15.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC15.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC15.compute|compute(kotlin.ByteArray){}[0]
+
+    final object MPT1327 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC15.MPT1327|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC15.MPT1327.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC15.MPT1327.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC15.MPT1327.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC15.MPT1327.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC15.MPT1327.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC16 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC16.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC16.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.compute|compute(kotlin.ByteArray){}[0]
+
+    final object Autosar : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.Autosar|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.Autosar.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Autosar.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.Autosar.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Autosar.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.Autosar.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object CDMA2000 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.CDMA2000|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.CDMA2000.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.CDMA2000.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.CDMA2000.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.CDMA2000.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.CDMA2000.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object CMS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.CMS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.CMS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.CMS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.CMS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.CMS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.CMS.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object DARC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.DARC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.DARC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DARC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.DARC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DARC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.DARC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object DDS110 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.DDS110|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.DDS110.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DDS110.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.DDS110.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DDS110.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.DDS110.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object DECT { // com.splendo.kaluga.base.crc/CRC16.DECT|null[0]
+        final object R : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.DECT.R|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC16.DECT.R.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DECT.R.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC16.DECT.R.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DECT.R.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.DECT.R.compute|compute(kotlin.ByteArray){}[0]
+        }
+
+        final object X : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.DECT.X|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC16.DECT.X.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DECT.X.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC16.DECT.X.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DECT.X.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.DECT.X.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object DNP : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.DNP|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.DNP.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DNP.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.DNP.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.DNP.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.DNP.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object EN13757 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.EN13757|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.EN13757.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.EN13757.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.EN13757.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.EN13757.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.EN13757.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object GSM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.GSM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.GSM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.GSM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.GSM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.GSM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.GSM.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Kermit : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.Kermit|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.Kermit.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Kermit.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.Kermit.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Kermit.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.Kermit.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object LJ1200 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.LJ1200|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.LJ1200.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.LJ1200.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.LJ1200.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.LJ1200.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.LJ1200.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object M17 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.M17|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.M17.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.M17.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.M17.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.M17.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.M17.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object MCRF4XX : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.MCRF4XX|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.MCRF4XX.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.MCRF4XX.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.MCRF4XX.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.MCRF4XX.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.MCRF4XX.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Maxim : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.Maxim|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.Maxim.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Maxim.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.Maxim.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Maxim.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.Maxim.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Modbus : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.Modbus|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.Modbus.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Modbus.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.Modbus.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Modbus.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.Modbus.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object NRSC5 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.NRSC5|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.NRSC5.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.NRSC5.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.NRSC5.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.NRSC5.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.NRSC5.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object OpenSafety { // com.splendo.kaluga.base.crc/CRC16.OpenSafety|null[0]
+        final object A : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.OpenSafety.A|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC16.OpenSafety.A.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.OpenSafety.A.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC16.OpenSafety.A.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.OpenSafety.A.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.OpenSafety.A.compute|compute(kotlin.ByteArray){}[0]
+        }
+
+        final object B : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.OpenSafety.B|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC16.OpenSafety.B.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.OpenSafety.B.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC16.OpenSafety.B.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.OpenSafety.B.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.OpenSafety.B.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object PROFIBUS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.PROFIBUS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.PROFIBUS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.PROFIBUS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.PROFIBUS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.PROFIBUS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.PROFIBUS.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Riello : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.Riello|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.Riello.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Riello.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.Riello.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.Riello.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.Riello.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object SPIFujitsu : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.SPIFujitsu|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.SPIFujitsu.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.SPIFujitsu.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.SPIFujitsu.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.SPIFujitsu.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.SPIFujitsu.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object T10DIF : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.T10DIF|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.T10DIF.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.T10DIF.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.T10DIF.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.T10DIF.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.T10DIF.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object TMS37157 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.TMS37157|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.TMS37157.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.TMS37157.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.TMS37157.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.TMS37157.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.TMS37157.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object TeleDisk : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.TeleDisk|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.TeleDisk.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.TeleDisk.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.TeleDisk.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.TeleDisk.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.TeleDisk.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object UMTS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.UMTS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.UMTS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.UMTS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.UMTS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.UMTS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.UMTS.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object USB : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.USB|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.USB.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.USB.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.USB.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.USB.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.USB.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object XModem : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC16.XModem|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC16.XModem.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.XModem.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC16.XModem.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC16.XModem.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC16.XModem.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC17 { // com.splendo.kaluga.base.crc/CRC17|null[0]
+    final object CANFD : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC17.CANFD|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC17.CANFD.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC17.CANFD.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC17.CANFD.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC17.CANFD.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC17.CANFD.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC21 { // com.splendo.kaluga.base.crc/CRC21|null[0]
+    final object CANFD : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC21.CANFD|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC21.CANFD.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC21.CANFD.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC21.CANFD.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC21.CANFD.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC21.CANFD.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC24 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC24.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC24.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.compute|compute(kotlin.ByteArray){}[0]
+
+    final object BLE : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24.BLE|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC24.BLE.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.BLE.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC24.BLE.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.BLE.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.BLE.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Flexray { // com.splendo.kaluga.base.crc/CRC24.Flexray|null[0]
+        final object A : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24.Flexray.A|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC24.Flexray.A.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.Flexray.A.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC24.Flexray.A.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.Flexray.A.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.Flexray.A.compute|compute(kotlin.ByteArray){}[0]
+        }
+
+        final object B : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24.Flexray.B|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC24.Flexray.B.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.Flexray.B.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC24.Flexray.B.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.Flexray.B.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.Flexray.B.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object Interlaken : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24.Interlaken|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC24.Interlaken.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.Interlaken.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC24.Interlaken.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.Interlaken.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.Interlaken.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object LTE { // com.splendo.kaluga.base.crc/CRC24.LTE|null[0]
+        final object A : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24.LTE.A|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC24.LTE.A.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.LTE.A.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC24.LTE.A.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.LTE.A.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.LTE.A.compute|compute(kotlin.ByteArray){}[0]
+        }
+
+        final object B : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24.LTE.B|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC24.LTE.B.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.LTE.B.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC24.LTE.B.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.LTE.B.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.LTE.B.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object OS9 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC24.OS9|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC24.OS9.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.OS9.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC24.OS9.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC24.OS9.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC24.OS9.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC3 { // com.splendo.kaluga.base.crc/CRC3|null[0]
+    final object GSM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC3.GSM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC3.GSM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC3.GSM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC3.GSM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC3.GSM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC3.GSM.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object ROHC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC3.ROHC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC3.ROHC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC3.ROHC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC3.ROHC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC3.ROHC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC3.ROHC.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC30 { // com.splendo.kaluga.base.crc/CRC30|null[0]
+    final object CDMA : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC30.CDMA|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC30.CDMA.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC30.CDMA.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC30.CDMA.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC30.CDMA.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC30.CDMA.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC31 { // com.splendo.kaluga.base.crc/CRC31|null[0]
+    final object Philips : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC31.Philips|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC31.Philips.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC31.Philips.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC31.Philips.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC31.Philips.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC31.Philips.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC32 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC32.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC32.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.compute|compute(kotlin.ByteArray){}[0]
+
+    final object AIXM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.AIXM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.AIXM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.AIXM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.AIXM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.AIXM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.AIXM.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Autosar : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.Autosar|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.Autosar.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.Autosar.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.Autosar.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.Autosar.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.Autosar.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object BZip2 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.BZip2|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.BZip2.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.BZip2.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.BZip2.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.BZip2.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.BZip2.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Base91D : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.Base91D|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.Base91D.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.Base91D.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.Base91D.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.Base91D.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.Base91D.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object CDROMEDC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.CDROMEDC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.CDROMEDC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.CDROMEDC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.CDROMEDC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.CDROMEDC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.CDROMEDC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object ISCSI : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.ISCSI|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.ISCSI.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.ISCSI.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.ISCSI.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.ISCSI.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.ISCSI.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object MEF : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.MEF|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.MEF.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.MEF.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.MEF.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.MEF.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.MEF.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object MPEG2 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.MPEG2|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.MPEG2.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.MPEG2.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.MPEG2.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.MPEG2.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.MPEG2.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object XFER : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC32.XFER|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC32.XFER.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.XFER.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC32.XFER.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC32.XFER.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC32.XFER.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC4 { // com.splendo.kaluga.base.crc/CRC4|null[0]
+    final object ITU : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC4.ITU|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC4.ITU.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC4.ITU.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC4.ITU.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC4.ITU.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC4.ITU.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Interlaken : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC4.Interlaken|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC4.Interlaken.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC4.Interlaken.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC4.Interlaken.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC4.Interlaken.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC4.Interlaken.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC40 { // com.splendo.kaluga.base.crc/CRC40|null[0]
+    final object GSM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC40.GSM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC40.GSM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC40.GSM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC40.GSM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC40.GSM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC40.GSM.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC5 { // com.splendo.kaluga.base.crc/CRC5|null[0]
+    final object EPC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC5.EPC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC5.EPC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC5.EPC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC5.EPC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC5.EPC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC5.EPC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object ITU : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC5.ITU|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC5.ITU.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC5.ITU.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC5.ITU.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC5.ITU.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC5.ITU.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object USB : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC5.USB|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC5.USB.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC5.USB.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC5.USB.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC5.USB.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC5.USB.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC6 { // com.splendo.kaluga.base.crc/CRC6|null[0]
+    final object CDMA2000 { // com.splendo.kaluga.base.crc/CRC6.CDMA2000|null[0]
+        final object A : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC6.CDMA2000.A|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC6.CDMA2000.A.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.CDMA2000.A.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC6.CDMA2000.A.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.CDMA2000.A.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC6.CDMA2000.A.compute|compute(kotlin.ByteArray){}[0]
+        }
+
+        final object B : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC6.CDMA2000.B|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC6.CDMA2000.B.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.CDMA2000.B.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC6.CDMA2000.B.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.CDMA2000.B.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC6.CDMA2000.B.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object DARC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC6.DARC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC6.DARC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.DARC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC6.DARC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.DARC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC6.DARC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object GSM : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC6.GSM|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC6.GSM.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.GSM.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC6.GSM.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.GSM.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC6.GSM.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object ITU : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC6.ITU|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC6.ITU.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.ITU.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC6.ITU.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC6.ITU.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC6.ITU.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC64 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC64|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC64.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC64.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC64.compute|compute(kotlin.ByteArray){}[0]
+
+    final object GOISO : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC64.GOISO|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC64.GOISO.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.GOISO.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC64.GOISO.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.GOISO.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC64.GOISO.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object MS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC64.MS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC64.MS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.MS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC64.MS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.MS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC64.MS.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object NVME : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC64.NVME|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC64.NVME.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.NVME.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC64.NVME.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.NVME.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC64.NVME.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object REDIS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC64.REDIS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC64.REDIS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.REDIS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC64.REDIS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.REDIS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC64.REDIS.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object WE : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC64.WE|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC64.WE.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.WE.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC64.WE.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.WE.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC64.WE.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object XZ : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC64.XZ|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC64.XZ.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.XZ.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC64.XZ.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC64.XZ.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC64.XZ.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC7 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC7|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC7.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC7.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC7.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC7.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC7.compute|compute(kotlin.ByteArray){}[0]
+
+    final object ROHC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC7.ROHC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC7.ROHC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC7.ROHC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC7.ROHC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC7.ROHC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC7.ROHC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object UMTS : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC7.UMTS|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC7.UMTS.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC7.UMTS.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC7.UMTS.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC7.UMTS.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC7.UMTS.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRC8 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRC8.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRC8.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.compute|compute(kotlin.ByteArray){}[0]
+
+    final object AES : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.AES|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.AES.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.AES.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.AES.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.AES.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.AES.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Autosar : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.Autosar|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.Autosar.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Autosar.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.Autosar.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Autosar.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.Autosar.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Bluetooth : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.Bluetooth|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.Bluetooth.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Bluetooth.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.Bluetooth.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Bluetooth.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.Bluetooth.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object CDMA2000 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.CDMA2000|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.CDMA2000.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.CDMA2000.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.CDMA2000.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.CDMA2000.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.CDMA2000.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object DARC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.DARC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.DARC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.DARC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.DARC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.DARC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.DARC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object DVBS2 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.DVBS2|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.DVBS2.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.DVBS2.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.DVBS2.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.DVBS2.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.DVBS2.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object GSM { // com.splendo.kaluga.base.crc/CRC8.GSM|null[0]
+        final object A : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.GSM.A|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC8.GSM.A.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.GSM.A.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC8.GSM.A.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.GSM.A.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.GSM.A.compute|compute(kotlin.ByteArray){}[0]
+        }
+
+        final object B : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.GSM.B|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC8.GSM.B.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.GSM.B.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC8.GSM.B.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.GSM.B.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.GSM.B.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object HITAG : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.HITAG|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.HITAG.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.HITAG.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.HITAG.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.HITAG.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.HITAG.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object ICODE : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.ICODE|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.ICODE.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.ICODE.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.ICODE.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.ICODE.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.ICODE.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object ITU : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.ITU|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.ITU.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.ITU.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.ITU.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.ITU.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.ITU.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object LTE : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.LTE|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.LTE.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.LTE.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.LTE.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.LTE.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.LTE.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Maxim : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.Maxim|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.Maxim.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Maxim.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.Maxim.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Maxim.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.Maxim.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object Mifare { // com.splendo.kaluga.base.crc/CRC8.Mifare|null[0]
+        final object MAD : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.Mifare.MAD|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC8.Mifare.MAD.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Mifare.MAD.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC8.Mifare.MAD.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.Mifare.MAD.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.Mifare.MAD.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object NRSC5 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.NRSC5|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.NRSC5.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.NRSC5.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.NRSC5.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.NRSC5.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.NRSC5.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object OpenSafety : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.OpenSafety|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.OpenSafety.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.OpenSafety.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.OpenSafety.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.OpenSafety.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.OpenSafety.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object ROHC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.ROHC|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.ROHC.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.ROHC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.ROHC.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.ROHC.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.ROHC.compute|compute(kotlin.ByteArray){}[0]
+    }
+
+    final object SAE { // com.splendo.kaluga.base.crc/CRC8.SAE|null[0]
+        final object J1850 : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.SAE.J1850|null[0]
+            final val byteWidth // com.splendo.kaluga.base.crc/CRC8.SAE.J1850.byteWidth|{}byteWidth[0]
+                final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.SAE.J1850.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+            final val width // com.splendo.kaluga.base.crc/CRC8.SAE.J1850.width|{}width[0]
+                final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.SAE.J1850.width.<get-width>|<get-width>(){}[0]
+
+            final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.SAE.J1850.compute|compute(kotlin.ByteArray){}[0]
+        }
+    }
+
+    final object WCDMA : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRC8.WCDMA|null[0]
+        final val byteWidth // com.splendo.kaluga.base.crc/CRC8.WCDMA.byteWidth|{}byteWidth[0]
+            final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.WCDMA.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+        final val width // com.splendo.kaluga.base.crc/CRC8.WCDMA.width|{}width[0]
+            final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRC8.WCDMA.width.<get-width>|<get-width>(){}[0]
+
+        final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRC8.WCDMA.compute|compute(kotlin.ByteArray){}[0]
+    }
+}
+
+final object com.splendo.kaluga.base.crc/CRCA : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRCA|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRCA.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRCA.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRCA.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRCA.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRCA.compute|compute(kotlin.ByteArray){}[0]
+}
+
+final object com.splendo.kaluga.base.crc/CRCB : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/CRCB|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/CRCB.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/CRCB.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/CRCB.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/CRCB.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/CRCB.compute|compute(kotlin.ByteArray){}[0]
+}
+
+final object com.splendo.kaluga.base.crc/JAMCRC : com.splendo.kaluga.base.crc/CRC { // com.splendo.kaluga.base.crc/JAMCRC|null[0]
+    final val byteWidth // com.splendo.kaluga.base.crc/JAMCRC.byteWidth|{}byteWidth[0]
+        final fun <get-byteWidth>(): kotlin/Int // com.splendo.kaluga.base.crc/JAMCRC.byteWidth.<get-byteWidth>|<get-byteWidth>(){}[0]
+    final val width // com.splendo.kaluga.base.crc/JAMCRC.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.base.crc/JAMCRC.width.<get-width>|<get-width>(){}[0]
+
+    final fun compute(kotlin/ByteArray): kotlin/ULong // com.splendo.kaluga.base.crc/JAMCRC.compute|compute(kotlin.ByteArray){}[0]
+}

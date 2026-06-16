@@ -215,10 +215,10 @@ annotation class NullIfEmpty
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * Adds a [com.splendo.kaluga.base.bytes.CRC] value of size [width] to the end of the body (before any prefix)
+ * Adds a [com.splendo.kaluga.base.crc.CRC] value of size [width] to the end of the body (before any prefix)
  * If the decoded checksum does not match the calculated checksum of the body and [BluetoothFormat.validateChecksum] is `true` will result in a [InvalidChecksumException].
  *
- * @see [com.splendo.kaluga.base.bytes.CRC.invoke]
+ * @see [com.splendo.kaluga.base.crc.CRC.invoke]
  *
  * @param width the width of the CRC in bits. Must be between 1 and 64 bits.
  * @param polynomial the polynomial used to compute the CRC.

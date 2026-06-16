@@ -25,6 +25,7 @@ kaluga {
         common {
             main {
                 api(project(":base:base"))
+                api(project(":base:crc"))
                 api(project(":service:service"))
                 api(libs.kotlinx.serialization.core)
             }

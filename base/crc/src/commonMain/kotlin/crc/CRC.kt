@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.bytes
+package com.splendo.kaluga.base.crc
 
 import kotlin.math.ceil
 

@@ -18,11 +18,11 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.CRC16
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.base.crc.CRC16
 import com.splendo.kaluga.base.utils.MedFloat16
 import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.UInt24
