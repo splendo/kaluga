@@ -21,6 +21,10 @@ import platform.CoreBluetooth.CBCentral
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
 import platform.CoreBluetooth.CBPeripheral
 
+// maximumUpdateValueLength / maximumWriteValueLengthForType return NSUInteger, which is ULong on the
+// 64-bit Apple targets but UInt on watchosArm64 (arm64_32). Referencing them from shared appleMain fails
+// compileAppleMainKotlinMetadata, so this lives in apple64BitMain with a parallel watchosArm64Main copy.
+
 // The 3-byte ATT header. CoreBluetooth exposes the usable payload length; the ATT MTU is that plus this header.
 private const val ATT_HEADER_SIZE = 3
 
