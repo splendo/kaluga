@@ -32,9 +32,6 @@ kaluga {
             }
         }
         common {
-            main {
-                implementation(project(":base:bytes", ""))
-            }
             test {
                 implementation(project(":base:test", ""))
             }
