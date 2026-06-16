@@ -38,6 +38,7 @@ kaluga {
         }
         common {
             main {
+                api(project(":base:bytes", ""))
                 implementation(project(":logging", ""))
             }
             test {

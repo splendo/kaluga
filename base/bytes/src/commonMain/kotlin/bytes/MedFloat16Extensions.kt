@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.utils.MedFloat16
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.math.pow

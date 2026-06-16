@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "base.crc"
+    moduleName = "base.bytes"
 
     supportJVM = true
     supportJS = true
@@ -11,12 +11,4 @@ kaluga {
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true
-
-    dependencies {
-        common {
-            test {
-                implementation(project(":base:bytes", ""))
-            }
-        }
-    }
 }

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString

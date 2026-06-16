@@ -163,7 +163,7 @@ annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, v
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.base.utils.MedFloat16] or [com.splendo.kaluga.base.utils.MedFloat32], depending on [Size]
+ * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.base.bytes.MedFloat16] or [com.splendo.kaluga.base.bytes.MedFloat32], depending on [Size]
  * Can only add [Length.`16_BIT`] or [Length.`32_BIT`] using [Size].
  * Size defaults to:
  * - [Length.`16_BIT`] for [Byte], [Short], and [Float]

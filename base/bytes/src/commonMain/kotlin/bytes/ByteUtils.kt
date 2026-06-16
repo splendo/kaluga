@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
 
 object ByteUtils {
     const val HEX_RADIX = 16

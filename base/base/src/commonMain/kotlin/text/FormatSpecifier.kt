@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.base.text
 
+import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.TimeZoneNameStyle
-import com.splendo.kaluga.base.utils.toHexString
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.milliseconds

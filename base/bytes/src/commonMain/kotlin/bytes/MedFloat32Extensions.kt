@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.utils.Int24
-import com.splendo.kaluga.base.utils.MedFloat32
 import kotlin.math.pow
 
 /**

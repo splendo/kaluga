@@ -15,12 +15,8 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.decodeInt24
-import com.splendo.kaluga.base.bytes.decodeUInt24
-import com.splendo.kaluga.base.bytes.toByteArray
 import kotlin.jvm.JvmInline
 
 /**

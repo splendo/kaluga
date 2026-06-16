@@ -23,11 +23,11 @@ import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.crc.CRC16
-import com.splendo.kaluga.base.utils.MedFloat16
-import com.splendo.kaluga.base.utils.MedFloat32
-import com.splendo.kaluga.base.utils.UInt24
-import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.base.utils.toInt24
+import com.splendo.kaluga.base.bytes.MedFloat16
+import com.splendo.kaluga.base.bytes.MedFloat32
+import com.splendo.kaluga.base.bytes.UInt24
+import com.splendo.kaluga.base.bytes.toHexString
+import com.splendo.kaluga.base.bytes.toInt24
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

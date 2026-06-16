@@ -18,6 +18,8 @@
 package bytes
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.bytesOf
+import com.splendo.kaluga.base.bytes.decodeHex
 import com.splendo.kaluga.base.bytes.decodeInt
 import com.splendo.kaluga.base.bytes.decodeInt24
 import com.splendo.kaluga.base.bytes.decodeLong
@@ -29,11 +31,9 @@ import com.splendo.kaluga.base.bytes.decodeUShort
 import com.splendo.kaluga.base.bytes.isBitSet
 import com.splendo.kaluga.base.bytes.setBit
 import com.splendo.kaluga.base.bytes.toByteArray
-import com.splendo.kaluga.base.utils.bytesOf
-import com.splendo.kaluga.base.utils.decodeHex
-import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.base.utils.toInt24
-import com.splendo.kaluga.base.utils.toUInt24
+import com.splendo.kaluga.base.bytes.toHexString
+import com.splendo.kaluga.base.bytes.toInt24
+import com.splendo.kaluga.base.bytes.toUInt24
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

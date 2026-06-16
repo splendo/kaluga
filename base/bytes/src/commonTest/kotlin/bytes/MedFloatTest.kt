@@ -18,12 +18,12 @@
 package bytes
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.MedFloat16
+import com.splendo.kaluga.base.bytes.MedFloat32
 import com.splendo.kaluga.base.bytes.decodeMedFloat16
 import com.splendo.kaluga.base.bytes.decodeMedFloat32
 import com.splendo.kaluga.base.bytes.toByteArray
-import com.splendo.kaluga.base.utils.MedFloat16
-import com.splendo.kaluga.base.utils.MedFloat32
-import com.splendo.kaluga.base.utils.toInt24
+import com.splendo.kaluga.base.bytes.toInt24
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

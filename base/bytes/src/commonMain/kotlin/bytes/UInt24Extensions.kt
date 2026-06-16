@@ -17,9 +17,6 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.utils.UInt24
-import com.splendo.kaluga.base.utils.toUInt24
-
 infix fun UInt24.shr(bitCount: Int) = (value shr bitCount).toUInt24()
 infix fun UInt24.shl(bitCount: Int) = (value shl bitCount).toUInt24()
 

@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.crc.CRC
-import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.base.bytes.toHexString
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -211,10 +211,10 @@ internal object BluetoothBinaryDescriptorRegistry {
         val annotations = descriptor.annotations + fieldAnnotations + descriptor.getElementAnnotations(0)
         // Unsigned numbers in Kotlin are simply Inline wrappers around a primary type. However since we encode with flexible lengths, we should preserve this information.
         val actualAnnotations = when (descriptor.serialName) {
-            "com.splendo.kaluga.base.utils.MedFloat16" -> annotations + MedFloat() + Size(Length.`16_BIT`)
-            "com.splendo.kaluga.base.utils.MedFloat32" -> annotations + MedFloat() + Size(Length.`32_BIT`)
-            "com.splendo.kaluga.base.utils.Int24" -> annotations + Size(Length.`24_BIT`)
-            "com.splendo.kaluga.base.utils.UInt24" -> annotations + Unsigned() + Size(Length.`24_BIT`)
+            "com.splendo.kaluga.base.bytes.MedFloat16" -> annotations + MedFloat() + Size(Length.`16_BIT`)
+            "com.splendo.kaluga.base.bytes.MedFloat32" -> annotations + MedFloat() + Size(Length.`32_BIT`)
+            "com.splendo.kaluga.base.bytes.Int24" -> annotations + Size(Length.`24_BIT`)
+            "com.splendo.kaluga.base.bytes.UInt24" -> annotations + Unsigned() + Size(Length.`24_BIT`)
             "kotlin.UByte" -> annotations + Unsigned()
             "kotlin.UShort" -> annotations + Unsigned()
             "kotlin.UInt" -> annotations + Unsigned()

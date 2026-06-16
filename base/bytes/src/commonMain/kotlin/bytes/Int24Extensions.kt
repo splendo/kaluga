@@ -17,9 +17,6 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.utils.Int24
-import com.splendo.kaluga.base.utils.toInt24
-
 /**
  * Shifts this value left by the bitCount number of bits.
  * @param bitCount the number of bits to shift by.
