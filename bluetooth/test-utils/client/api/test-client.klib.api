@@ -196,7 +196,6 @@ final class com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager
     final fun handleNewRssi(kotlin/Int) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.handleNewRssi|handleNewRssi(kotlin.Int){}[0]
     final suspend fun discoverServices() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.discoverServices|discoverServices(){}[0]
     final suspend fun handleCurrentAction() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.handleCurrentAction|handleCurrentAction(){}[0]
-    final suspend fun readRssi() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.readRssi|readRssi(){}[0]
 
     final class <#A1: com.splendo.kaluga.bluetooth/GattResponse> ActionCompleted { // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.ActionCompleted|null[0]
         constructor <init>(com.splendo.kaluga.bluetooth.device/DeviceAction<#A1>, #A1) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.ActionCompleted.<init>|<init>(com.splendo.kaluga.bluetooth.device.DeviceAction<1:0>;1:0){}[0]
