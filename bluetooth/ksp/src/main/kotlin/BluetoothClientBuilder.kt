@@ -76,7 +76,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
             .addModifiers(KModifier.SUSPEND)
             .addParameters(
                 listOfNotNull(
-                    ParameterSpec(BLUETOOTH, References.Bluetooth.bluetoothService),
+                    ParameterSpec(BLUETOOTH, References.Bluetooth.bluetoothClient),
                     ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
                     ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
                         .defaultValue("%T", References.Bluetooth.Serialization.bluetoothFormat)

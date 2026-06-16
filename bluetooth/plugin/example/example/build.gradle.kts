@@ -6,20 +6,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.splendo.kaluga.bluetooth.plugin")
-    id("com.android.library")
-}
-
-android {
-    namespace = "com.splendo.kaluga.bluetooth.example"
-    compileSdk = libs.versions.androidCompileSdk.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.androidMinSdk.get().toInt()
-    }
+    id("com.android.kotlin.multiplatform.library")
 }
 
 kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
-    androidTarget()
+
+    androidLibrary {
+        namespace = "com.splendo.kaluga.bluetooth.example"
+        compileSdk = libs.versions.androidCompileSdk.get().toInt()
+        minSdk = libs.versions.androidMinSdk.get().toInt()
+    }
+
     iosSimulatorArm64()
 
     dependencies {

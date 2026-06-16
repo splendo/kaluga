@@ -23,12 +23,12 @@ import org.gradle.kotlin.dsl.setProperty
 
 enum class BluetoothTarget {
     CLIENT,
-    SERVER
+    SERVER,
 }
 
 enum class ImplementFor {
     BLUETOOTH,
-    SIMULATOR
+    SIMULATOR,
 }
 
 open class BluetoothExtension(private val kspExtension: KspExtension, objects: ObjectFactory) {
@@ -42,7 +42,7 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
     }
 
     fun afterEvaluate() {
-        kspExtension.arg("target", target.get().joinToString(separator = ",") { it.name } )
-        kspExtension.arg("implementFor", implementFor.get().joinToString(separator = ",") { it.name } )
+        kspExtension.arg("target", target.get().joinToString(separator = ",") { it.name })
+        kspExtension.arg("implementFor", implementFor.get().joinToString(separator = ",") { it.name })
     }
 }

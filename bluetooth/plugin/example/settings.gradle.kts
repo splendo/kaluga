@@ -13,15 +13,18 @@ pluginManagement {
         mavenCentral()
     }
 
-    includeBuild("../plugin")
-    includeBuild("../../kaluga-library-components")
-    includeBuild("../../gradle-test-recorder/plugin-build/")
+    includeBuild("..")
+    includeBuild("../../../kaluga-library-components")
+}
+
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            from(files("../../gradle/libs.versions.toml"))
+            from(files("../../../gradle/libs.versions.toml"))
         }
     }
 }
@@ -30,4 +33,4 @@ rootProject.name = "Kaluga Bluetooth Generation Example"
 
 include(":example")
 
-includeBuild("../../")
+includeBuild("../../../")

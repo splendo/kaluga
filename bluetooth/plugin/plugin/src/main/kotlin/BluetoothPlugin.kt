@@ -45,26 +45,30 @@ class BluetoothPlugin : Plugin<Project> {
             extensions.configure<KotlinMultiplatformExtension> {
                 project.dependencies.add(
                     "kspCommonMainMetadata",
-                    "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion"
+                    "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion",
                 )
                 targets.configureEach {
                     if (name !in listOf("metadata")) {
                         project.dependencies.add(
                             "ksp${name.uppercaseFirstChar()}",
-                            "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion"
+                            "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion",
                         )
                     }
                 }
                 println(targets.joinToString { it.name })
                 val isSinglePlatform = targets.count { it.name != "metadata" } == 1
-                sourceSets.all {
-                    languageSettings.optIn("com.google.devtools.ksp.KspExperimental")
-                }
+                val bluetoothTargets = bluetoothExtension.target.get()
                 sourceSets.commonMain {
                     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
                     dependencies {
                         implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
-                        implementation("com.splendo.kaluga:bluetooth:core:$kalugaVersion")
+                        implementation("com.splendo.kaluga.bluetooth:core:$kalugaVersion")
+                        if (BluetoothTarget.CLIENT in bluetoothTargets) {
+                            implementation("com.splendo.kaluga.bluetooth:client:$kalugaVersion")
+                        }
+                        if (BluetoothTarget.SERVER in bluetoothTargets) {
+                            implementation("com.splendo.kaluga.bluetooth:server:$kalugaVersion")
+                        }
                     }
                 }
 
