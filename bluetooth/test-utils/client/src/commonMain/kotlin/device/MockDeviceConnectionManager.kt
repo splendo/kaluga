@@ -76,7 +76,6 @@ class MockDeviceConnectionManager(
         init {
             if (setupMocks) {
                 createMock.on().doExecute { (deviceWrapper, settings, coroutineScope) ->
-                    println("Create")
                     MockDeviceConnectionManager(initialWillActionSucceed, deviceWrapper, settings, coroutineScope, setupMocks).also {
                         createdDeviceConnectionManager.add(it)
                     }
