@@ -15,6 +15,7 @@ kaluga {
     dependencies {
         common {
             test {
+                implementation(project(":base:test", ""))
                 implementation(project(":base:bytes", ""))
             }
         }

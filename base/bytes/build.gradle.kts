@@ -11,4 +11,12 @@ kaluga {
     supportMacOS = true
     supportTvOS = true
     supportWatchOS = true
+
+    dependencies {
+        common {
+            test {
+                implementation(project(":base:test", ""))
+            }
+        }
+    }
 }
