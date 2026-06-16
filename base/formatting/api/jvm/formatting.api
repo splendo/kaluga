@@ -1,4 +1,4 @@
-public abstract interface class com/splendo/kaluga/base/text/BaseNumberFormatter {
+public abstract interface class com/splendo/kaluga/base/formatting/BaseNumberFormatter {
 	public abstract fun format (Ljava/lang/Number;)Ljava/lang/String;
 	public abstract fun getAlwaysShowsDecimalSeparator ()Z
 	public abstract fun getCurrencyCode ()Ljava/lang/String;
@@ -9,7 +9,7 @@ public abstract interface class com/splendo/kaluga/base/text/BaseNumberFormatter
 	public abstract fun getGroupingSeparator ()C
 	public abstract fun getGroupingSize ()I
 	public abstract fun getInfinitySymbol ()Ljava/lang/String;
-	public abstract fun getLocale ()Lcom/splendo/kaluga/base/utils/KalugaLocale;
+	public abstract fun getLocale ()Lcom/splendo/kaluga/base/i18n/KalugaLocale;
 	public abstract fun getMinusSign ()C
 	public abstract fun getMultiplier ()I
 	public abstract fun getNegativePrefix ()Ljava/lang/String;
@@ -44,170 +44,170 @@ public abstract interface class com/splendo/kaluga/base/text/BaseNumberFormatter
 	public abstract fun setZeroSymbol (C)V
 }
 
-public final class com/splendo/kaluga/base/text/Flag : java/lang/Enum {
-	public static final field ALTERNATE Lcom/splendo/kaluga/base/text/Flag;
-	public static final field Companion Lcom/splendo/kaluga/base/text/Flag$Companion;
-	public static final field GROUP Lcom/splendo/kaluga/base/text/Flag;
-	public static final field LEADING_SPACE Lcom/splendo/kaluga/base/text/Flag;
-	public static final field LEFT_JUSTIFY Lcom/splendo/kaluga/base/text/Flag;
-	public static final field PARENTHESES Lcom/splendo/kaluga/base/text/Flag;
-	public static final field PLUS Lcom/splendo/kaluga/base/text/Flag;
-	public static final field PREVIOUS Lcom/splendo/kaluga/base/text/Flag;
-	public static final field UPPERCASE Lcom/splendo/kaluga/base/text/Flag;
-	public static final field ZERO_PAD Lcom/splendo/kaluga/base/text/Flag;
+public final class com/splendo/kaluga/base/formatting/Flag : java/lang/Enum {
+	public static final field ALTERNATE Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field Companion Lcom/splendo/kaluga/base/formatting/Flag$Companion;
+	public static final field GROUP Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field LEADING_SPACE Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field LEFT_JUSTIFY Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field PARENTHESES Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field PLUS Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field PREVIOUS Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field UPPERCASE Lcom/splendo/kaluga/base/formatting/Flag;
+	public static final field ZERO_PAD Lcom/splendo/kaluga/base/formatting/Flag;
 	public final fun getChar ()C
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/Flag;
-	public static fun values ()[Lcom/splendo/kaluga/base/text/Flag;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/Flag;
+	public static fun values ()[Lcom/splendo/kaluga/base/formatting/Flag;
 }
 
-public final class com/splendo/kaluga/base/text/Flag$Companion {
+public final class com/splendo/kaluga/base/formatting/Flag$Companion {
 	public final fun parse (Ljava/lang/String;)Ljava/util/Set;
 }
 
-public final class com/splendo/kaluga/base/text/FlagsKt {
+public final class com/splendo/kaluga/base/formatting/FlagsKt {
 	public static final fun toString (Ljava/util/Set;)Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/base/text/Formattable {
-	public abstract fun formatFor (Lcom/splendo/kaluga/base/utils/KalugaLocale;Ljava/util/Set;II)Ljava/lang/String;
+public abstract interface class com/splendo/kaluga/base/formatting/Formattable {
+	public abstract fun formatFor (Lcom/splendo/kaluga/base/i18n/KalugaLocale;Ljava/util/Set;II)Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/LineSeparatorKt {
+public final class com/splendo/kaluga/base/formatting/LineSeparatorKt {
 	public static final fun getLineSeparator ()Ljava/lang/String;
 }
 
-public abstract class com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (Lcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+public abstract class com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/formatting/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatStyle$Currency : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/base/formatting/NumberFormatStyle$Currency : com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public synthetic fun <init> (Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2-pVg5ArA ()I
 	public final fun component3-pVg5ArA ()I
 	public final fun component4-0hXNFcg ()Lkotlin/UInt;
 	public final fun component5-0hXNFcg ()Lkotlin/UInt;
-	public final fun component6 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy-Y9IpkLI (Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Currency;
-	public static synthetic fun copy-Y9IpkLI$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Currency;Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Currency;
+	public final fun component6 ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public final fun copy-Y9IpkLI (Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Currency;
+	public static synthetic fun copy-Y9IpkLI$default (Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Currency;Ljava/lang/String;IILkotlin/UInt;Lkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Currency;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCurrencyCode ()Ljava/lang/String;
 	public final fun getMaxFractionDigits-0hXNFcg ()Lkotlin/UInt;
 	public final fun getMaxIntegerDigits-pVg5ArA ()I
 	public final fun getMinFractionDigits-0hXNFcg ()Lkotlin/UInt;
 	public final fun getMinIntegerDigits-pVg5ArA ()I
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatStyle$Decimal : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/base/formatting/NumberFormatStyle$Decimal : com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-pVg5ArA ()I
 	public final fun component2-pVg5ArA ()I
 	public final fun component3-pVg5ArA ()I
 	public final fun component4-pVg5ArA ()I
-	public final fun component5 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy-guggwrw (IIIILcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Decimal;
-	public static synthetic fun copy-guggwrw$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Decimal;IIIILcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Decimal;
+	public final fun component5 ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public final fun copy-guggwrw (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Decimal;
+	public static synthetic fun copy-guggwrw$default (Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Decimal;IIIILcom/splendo/kaluga/base/formatting/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Decimal;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMaxFractionDigits-pVg5ArA ()I
 	public final fun getMaxIntegerDigits-pVg5ArA ()I
 	public final fun getMinFractionDigits-pVg5ArA ()I
 	public final fun getMinIntegerDigits-pVg5ArA ()I
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatStyle$Integer : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (IILcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IILcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/base/formatting/NumberFormatStyle$Integer : com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public synthetic fun <init> (IILcom/splendo/kaluga/base/formatting/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IILcom/splendo/kaluga/base/formatting/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-pVg5ArA ()I
 	public final fun component2-pVg5ArA ()I
-	public final fun component3 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy-t3GQkyU (IILcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Integer;
-	public static synthetic fun copy-t3GQkyU$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Integer;IILcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Integer;
+	public final fun component3 ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public final fun copy-t3GQkyU (IILcom/splendo/kaluga/base/formatting/RoundingMode;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Integer;
+	public static synthetic fun copy-t3GQkyU$default (Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Integer;IILcom/splendo/kaluga/base/formatting/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Integer;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMaxDigits-pVg5ArA ()I
 	public final fun getMinDigits-pVg5ArA ()I
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatStyle$Pattern : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/text/RoundingMode;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/base/formatting/NumberFormatStyle$Pattern : com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/formatting/RoundingMode;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/formatting/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Pattern;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Pattern;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Pattern;
+	public final fun component3 ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/formatting/RoundingMode;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Pattern;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Pattern;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/base/formatting/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Pattern;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNegativePattern ()Ljava/lang/String;
 	public final fun getPositivePattern ()Ljava/lang/String;
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatStyle$Percentage : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/base/formatting/NumberFormatStyle$Percentage : com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-pVg5ArA ()I
 	public final fun component2-pVg5ArA ()I
 	public final fun component3-pVg5ArA ()I
 	public final fun component4-pVg5ArA ()I
-	public final fun component5 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy-guggwrw (IIIILcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Percentage;
-	public static synthetic fun copy-guggwrw$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Percentage;IIIILcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Percentage;
+	public final fun component5 ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public final fun copy-guggwrw (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Percentage;
+	public static synthetic fun copy-guggwrw$default (Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Percentage;IIIILcom/splendo/kaluga/base/formatting/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Percentage;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMaxFractionDigits-pVg5ArA ()I
 	public final fun getMaxIntegerDigits-pVg5ArA ()I
 	public final fun getMinFractionDigits-pVg5ArA ()I
 	public final fun getMinIntegerDigits-pVg5ArA ()I
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatStyle$Permillage : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/base/formatting/NumberFormatStyle$Permillage : com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-pVg5ArA ()I
 	public final fun component2-pVg5ArA ()I
 	public final fun component3-pVg5ArA ()I
 	public final fun component4-pVg5ArA ()I
-	public final fun component5 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy-guggwrw (IIIILcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Permillage;
-	public static synthetic fun copy-guggwrw$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Permillage;IIIILcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Permillage;
+	public final fun component5 ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public final fun copy-guggwrw (IIIILcom/splendo/kaluga/base/formatting/RoundingMode;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Permillage;
+	public static synthetic fun copy-guggwrw$default (Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Permillage;IIIILcom/splendo/kaluga/base/formatting/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Permillage;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMaxFractionDigits-pVg5ArA ()I
 	public final fun getMaxIntegerDigits-pVg5ArA ()I
 	public final fun getMinFractionDigits-pVg5ArA ()I
 	public final fun getMinIntegerDigits-pVg5ArA ()I
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatStyle$Scientific : com/splendo/kaluga/base/text/NumberFormatStyle {
-	public synthetic fun <init> (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/base/formatting/NumberFormatStyle$Scientific : com/splendo/kaluga/base/formatting/NumberFormatStyle {
+	public synthetic fun <init> (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-pVg5ArA ()I
 	public final fun component2-pVg5ArA ()I
 	public final fun component3-pVg5ArA ()I
 	public final fun component4-pVg5ArA ()I
 	public final fun component5-pVg5ArA ()I
 	public final fun component6-0hXNFcg ()Lkotlin/UInt;
-	public final fun component7 ()Lcom/splendo/kaluga/base/text/RoundingMode;
-	public final fun copy-cgj78Tg (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;
-	public static synthetic fun copy-cgj78Tg$default (Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/text/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/NumberFormatStyle$Scientific;
+	public final fun component7 ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public final fun copy-cgj78Tg (IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Scientific;
+	public static synthetic fun copy-cgj78Tg$default (Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Scientific;IIIIILkotlin/UInt;Lcom/splendo/kaluga/base/formatting/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/NumberFormatStyle$Scientific;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMaxExponentForDecimalNotation-0hXNFcg ()Lkotlin/UInt;
 	public final fun getMaxFractionDigits-pVg5ArA ()I
@@ -216,15 +216,15 @@ public final class com/splendo/kaluga/base/text/NumberFormatStyle$Scientific : c
 	public final fun getMinFractionDigits-pVg5ArA ()I
 	public final fun getMinIntegerDigits-pVg5ArA ()I
 	public final fun getPattern ()Ljava/lang/String;
-	public fun getRoundingMode ()Lcom/splendo/kaluga/base/text/RoundingMode;
+	public fun getRoundingMode ()Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatter : com/splendo/kaluga/base/text/BaseNumberFormatter {
+public final class com/splendo/kaluga/base/formatting/NumberFormatter : com/splendo/kaluga/base/formatting/BaseNumberFormatter {
 	public fun <init> ()V
-	public fun <init> (Lcom/splendo/kaluga/base/utils/KalugaLocale;Lcom/splendo/kaluga/base/text/NumberFormatStyle;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/base/utils/KalugaLocale;Lcom/splendo/kaluga/base/text/NumberFormatStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/base/i18n/KalugaLocale;Lcom/splendo/kaluga/base/formatting/NumberFormatStyle;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/i18n/KalugaLocale;Lcom/splendo/kaluga/base/formatting/NumberFormatStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun format (Ljava/lang/Number;)Ljava/lang/String;
 	public fun getAlwaysShowsDecimalSeparator ()Z
 	public fun getCurrencyCode ()Ljava/lang/String;
@@ -235,7 +235,7 @@ public final class com/splendo/kaluga/base/text/NumberFormatter : com/splendo/ka
 	public fun getGroupingSeparator ()C
 	public fun getGroupingSize ()I
 	public fun getInfinitySymbol ()Ljava/lang/String;
-	public fun getLocale ()Lcom/splendo/kaluga/base/utils/KalugaLocale;
+	public fun getLocale ()Lcom/splendo/kaluga/base/i18n/KalugaLocale;
 	public fun getMinusSign ()C
 	public fun getMultiplier ()I
 	public fun getNegativePrefix ()Ljava/lang/String;
@@ -270,51 +270,51 @@ public final class com/splendo/kaluga/base/text/NumberFormatter : com/splendo/ka
 	public fun setZeroSymbol (C)V
 }
 
-public final class com/splendo/kaluga/base/text/RoundingMode : java/lang/Enum {
-	public static final field Ceiling Lcom/splendo/kaluga/base/text/RoundingMode;
-	public static final field Down Lcom/splendo/kaluga/base/text/RoundingMode;
-	public static final field Floor Lcom/splendo/kaluga/base/text/RoundingMode;
-	public static final field HalfDown Lcom/splendo/kaluga/base/text/RoundingMode;
-	public static final field HalfEven Lcom/splendo/kaluga/base/text/RoundingMode;
-	public static final field HalfUp Lcom/splendo/kaluga/base/text/RoundingMode;
-	public static final field Up Lcom/splendo/kaluga/base/text/RoundingMode;
+public final class com/splendo/kaluga/base/formatting/RoundingMode : java/lang/Enum {
+	public static final field Ceiling Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public static final field Down Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public static final field Floor Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public static final field HalfDown Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public static final field HalfEven Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public static final field HalfUp Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public static final field Up Lcom/splendo/kaluga/base/formatting/RoundingMode;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/RoundingMode;
-	public static fun values ()[Lcom/splendo/kaluga/base/text/RoundingMode;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/RoundingMode;
+	public static fun values ()[Lcom/splendo/kaluga/base/formatting/RoundingMode;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatter {
-	public static final field Companion Lcom/splendo/kaluga/base/text/StringFormatter$Companion;
+public final class com/splendo/kaluga/base/formatting/StringFormatter {
+	public static final field Companion Lcom/splendo/kaluga/base/formatting/StringFormatter$Companion;
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/StringBuilder;Lcom/splendo/kaluga/base/utils/KalugaLocale;)V
-	public synthetic fun <init> (Ljava/lang/StringBuilder;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/StringBuilder;Lcom/splendo/kaluga/base/i18n/KalugaLocale;)V
+	public synthetic fun <init> (Ljava/lang/StringBuilder;Lcom/splendo/kaluga/base/i18n/KalugaLocale;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun format (Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/StringBuilder;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatter$Companion {
+public final class com/splendo/kaluga/base/formatting/StringFormatter$Companion {
 }
 
-public abstract class com/splendo/kaluga/base/text/StringFormatterException : java/lang/Exception {
+public abstract class com/splendo/kaluga/base/formatting/StringFormatterException : java/lang/Exception {
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$DuplicateFormatFlagsException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$DuplicateFormatFlagsException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/StringFormatterException$DuplicateFormatFlagsException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$DuplicateFormatFlagsException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$DuplicateFormatFlagsException;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$DuplicateFormatFlagsException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$DuplicateFormatFlagsException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$DuplicateFormatFlagsException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFlags ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$FormatFlagsConversionMismatchException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$FormatFlagsConversionMismatchException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/String;C)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()C
-	public final fun copy (Ljava/lang/String;C)Lcom/splendo/kaluga/base/text/StringFormatterException$FormatFlagsConversionMismatchException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$FormatFlagsConversionMismatchException;Ljava/lang/String;CILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$FormatFlagsConversionMismatchException;
+	public final fun copy (Ljava/lang/String;C)Lcom/splendo/kaluga/base/formatting/StringFormatterException$FormatFlagsConversionMismatchException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$FormatFlagsConversionMismatchException;Ljava/lang/String;CILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$FormatFlagsConversionMismatchException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCurrentChar ()C
 	public final fun getFlags ()Ljava/lang/String;
@@ -322,12 +322,12 @@ public final class com/splendo/kaluga/base/text/StringFormatterException$FormatF
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$IllegalFormatConversionException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatConversionException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (CLjava/lang/Object;)V
 	public final fun component1 ()C
 	public final fun component2 ()Ljava/lang/Object;
-	public final fun copy (CLjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatConversionException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatConversionException;CLjava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatConversionException;
+	public final fun copy (CLjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatConversionException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatConversionException;CLjava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatConversionException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAny ()Ljava/lang/Object;
 	public final fun getCurrentChar ()C
@@ -335,118 +335,118 @@ public final class com/splendo/kaluga/base/text/StringFormatterException$Illegal
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$IllegalFormatFlagsException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatFlagsException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatFlagsException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatFlagsException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatFlagsException;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatFlagsException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatFlagsException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatFlagsException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFlags ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$IllegalFormatPrecisionException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatPrecisionException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (I)V
 	public final fun component1 ()I
-	public final fun copy (I)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatPrecisionException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatPrecisionException;IILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatPrecisionException;
+	public final fun copy (I)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatPrecisionException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatPrecisionException;IILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatPrecisionException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getPrecision ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$IllegalFormatWidthException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatWidthException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (I)V
 	public final fun component1 ()I
-	public final fun copy (I)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatWidthException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatWidthException;IILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$IllegalFormatWidthException;
+	public final fun copy (I)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatWidthException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatWidthException;IILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$IllegalFormatWidthException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getWidth ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$MalformedValue : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$MalformedValue : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/Object;)V
 	public final fun component1 ()Ljava/lang/Object;
-	public final fun copy (Ljava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$MalformedValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$MalformedValue;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$MalformedValue;
+	public final fun copy (Ljava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$MalformedValue;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$MalformedValue;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$MalformedValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getValue ()Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$MissingFormatArgumentException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatArgumentException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/StringFormatterException$MissingFormatArgumentException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$MissingFormatArgumentException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$MissingFormatArgumentException;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatArgumentException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatArgumentException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatArgumentException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFormatSpecified ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$MissingFormatWidthException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatWidthException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/StringFormatterException$MissingFormatWidthException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$MissingFormatWidthException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$MissingFormatWidthException;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatWidthException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatWidthException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$MissingFormatWidthException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getSpecification ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$NumberFormatException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$NumberFormatException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/NumberFormatException;)V
 	public final fun component1 ()Ljava/lang/NumberFormatException;
-	public final fun copy (Ljava/lang/NumberFormatException;)Lcom/splendo/kaluga/base/text/StringFormatterException$NumberFormatException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$NumberFormatException;Ljava/lang/NumberFormatException;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$NumberFormatException;
+	public final fun copy (Ljava/lang/NumberFormatException;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$NumberFormatException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$NumberFormatException;Ljava/lang/NumberFormatException;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$NumberFormatException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getException ()Ljava/lang/NumberFormatException;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$UnexpectedChar : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$UnexpectedChar : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (C)V
 	public final fun component1 ()C
-	public final fun copy (C)Lcom/splendo/kaluga/base/text/StringFormatterException$UnexpectedChar;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$UnexpectedChar;CILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$UnexpectedChar;
+	public final fun copy (C)Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnexpectedChar;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnexpectedChar;CILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnexpectedChar;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCurrentCharacter ()C
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$UnknownFormatConversionException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatConversionException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/StringFormatterException$UnknownFormatConversionException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$UnknownFormatConversionException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$UnknownFormatConversionException;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatConversionException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatConversionException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatConversionException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getConversion ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterException$UnknownFormatFlagsException : com/splendo/kaluga/base/text/StringFormatterException {
+public final class com/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatFlagsException : com/splendo/kaluga/base/formatting/StringFormatterException {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/StringFormatterException$UnknownFormatFlagsException;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/text/StringFormatterException$UnknownFormatFlagsException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/StringFormatterException$UnknownFormatFlagsException;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatFlagsException;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatFlagsException;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/base/formatting/StringFormatterException$UnknownFormatFlagsException;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFlags ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/StringFormatterKt {
-	public static final fun format (Ljava/lang/String;[Ljava/lang/Object;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
-	public static synthetic fun format$default (Ljava/lang/String;[Ljava/lang/Object;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Ljava/lang/String;
+public final class com/splendo/kaluga/base/formatting/StringFormatterKt {
+	public static final fun format (Ljava/lang/String;[Ljava/lang/Object;Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
+	public static synthetic fun format$default (Ljava/lang/String;[Ljava/lang/Object;Lcom/splendo/kaluga/base/i18n/KalugaLocale;ILjava/lang/Object;)Ljava/lang/String;
 }
 

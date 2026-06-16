@@ -1,11 +1,6 @@
-public final class com/splendo/kaluga/base/text/StringCasingKt {
-	public static final fun lowerCased (Ljava/lang/String;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
-	public static final fun upperCased (Ljava/lang/String;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
-}
-
-public abstract class com/splendo/kaluga/base/utils/BaseLocale {
+public abstract class com/splendo/kaluga/base/i18n/BaseLocale {
 	public fun <init> ()V
-	public abstract fun countryName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
+	public abstract fun countryName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
 	public abstract fun getAlternateQuotationEnd ()Ljava/lang/String;
 	public abstract fun getAlternateQuotationStart ()Ljava/lang/String;
 	public abstract fun getCountryCode ()Ljava/lang/String;
@@ -13,19 +8,19 @@ public abstract class com/splendo/kaluga/base/utils/BaseLocale {
 	public abstract fun getQuotationEnd ()Ljava/lang/String;
 	public abstract fun getQuotationStart ()Ljava/lang/String;
 	public abstract fun getScriptCode ()Ljava/lang/String;
-	public abstract fun getUnitSystem ()Lcom/splendo/kaluga/base/utils/UnitSystem;
+	public abstract fun getUnitSystem ()Lcom/splendo/kaluga/base/i18n/UnitSystem;
 	public abstract fun getVariantCode ()Ljava/lang/String;
-	public abstract fun languageName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
-	public abstract fun name (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
-	public abstract fun scriptName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
+	public abstract fun languageName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
+	public abstract fun name (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
+	public abstract fun scriptName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-	public abstract fun variantName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
+	public abstract fun variantName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/utils/KalugaLocale : com/splendo/kaluga/base/utils/BaseLocale {
-	public static final field Companion Lcom/splendo/kaluga/base/utils/KalugaLocale$Companion;
+public final class com/splendo/kaluga/base/i18n/KalugaLocale : com/splendo/kaluga/base/i18n/BaseLocale {
+	public static final field Companion Lcom/splendo/kaluga/base/i18n/KalugaLocale$Companion;
 	public final fun component1 ()Ljava/util/Locale;
-	public fun countryName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
+	public fun countryName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getAlternateQuotationEnd ()Ljava/lang/String;
 	public fun getAlternateQuotationStart ()Ljava/lang/String;
@@ -35,40 +30,45 @@ public final class com/splendo/kaluga/base/utils/KalugaLocale : com/splendo/kalu
 	public fun getQuotationEnd ()Ljava/lang/String;
 	public fun getQuotationStart ()Ljava/lang/String;
 	public fun getScriptCode ()Ljava/lang/String;
-	public fun getUnitSystem ()Lcom/splendo/kaluga/base/utils/UnitSystem;
+	public fun getUnitSystem ()Lcom/splendo/kaluga/base/i18n/UnitSystem;
 	public fun getVariantCode ()Ljava/lang/String;
 	public fun hashCode ()I
-	public fun languageName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
-	public fun name (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
-	public fun scriptName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
+	public fun languageName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
+	public fun name (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
+	public fun scriptName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-	public fun variantName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
+	public fun variantName (Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/utils/KalugaLocale$Companion {
-	public final fun createLocale (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/KalugaLocale;
-	public final fun createLocale (Ljava/lang/String;Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/KalugaLocale;
-	public final fun createLocale (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/KalugaLocale;
+public final class com/splendo/kaluga/base/i18n/KalugaLocale$Companion {
+	public final fun createLocale (Ljava/lang/String;)Lcom/splendo/kaluga/base/i18n/KalugaLocale;
+	public final fun createLocale (Ljava/lang/String;Ljava/lang/String;)Lcom/splendo/kaluga/base/i18n/KalugaLocale;
+	public final fun createLocale (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/splendo/kaluga/base/i18n/KalugaLocale;
 	public final fun getAvailableLocales ()Ljava/util/List;
-	public final fun getDefaultLocale ()Lcom/splendo/kaluga/base/utils/KalugaLocale;
+	public final fun getDefaultLocale ()Lcom/splendo/kaluga/base/i18n/KalugaLocale;
 }
 
-public final class com/splendo/kaluga/base/utils/KalugaLocaleKt {
-	public static final fun getEnUsPosix (Lcom/splendo/kaluga/base/utils/KalugaLocale$Companion;)Lcom/splendo/kaluga/base/utils/KalugaLocale;
+public final class com/splendo/kaluga/base/i18n/KalugaLocaleKt {
+	public static final fun getEnUsPosix (Lcom/splendo/kaluga/base/i18n/KalugaLocale$Companion;)Lcom/splendo/kaluga/base/i18n/KalugaLocale;
 }
 
-public final class com/splendo/kaluga/base/utils/UnitSystem : java/lang/Enum {
-	public static final field Companion Lcom/splendo/kaluga/base/utils/UnitSystem$Companion;
-	public static final field IMPERIAL Lcom/splendo/kaluga/base/utils/UnitSystem;
-	public static final field METRIC Lcom/splendo/kaluga/base/utils/UnitSystem;
-	public static final field MIXED Lcom/splendo/kaluga/base/utils/UnitSystem;
+public final class com/splendo/kaluga/base/i18n/StringCasingKt {
+	public static final fun lowerCased (Ljava/lang/String;Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
+	public static final fun upperCased (Ljava/lang/String;Lcom/splendo/kaluga/base/i18n/KalugaLocale;)Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/i18n/UnitSystem : java/lang/Enum {
+	public static final field Companion Lcom/splendo/kaluga/base/i18n/UnitSystem$Companion;
+	public static final field IMPERIAL Lcom/splendo/kaluga/base/i18n/UnitSystem;
+	public static final field METRIC Lcom/splendo/kaluga/base/i18n/UnitSystem;
+	public static final field MIXED Lcom/splendo/kaluga/base/i18n/UnitSystem;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/UnitSystem;
-	public static fun values ()[Lcom/splendo/kaluga/base/utils/UnitSystem;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/i18n/UnitSystem;
+	public static fun values ()[Lcom/splendo/kaluga/base/i18n/UnitSystem;
 }
 
-public final class com/splendo/kaluga/base/utils/UnitSystem$Companion {
-	public final fun withCountryCode (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/UnitSystem;
-	public final fun withRawValue (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/UnitSystem;
+public final class com/splendo/kaluga/base/i18n/UnitSystem$Companion {
+	public final fun withCountryCode (Ljava/lang/String;)Lcom/splendo/kaluga/base/i18n/UnitSystem;
+	public final fun withRawValue (Ljava/lang/String;)Lcom/splendo/kaluga/base/i18n/UnitSystem;
 }
 

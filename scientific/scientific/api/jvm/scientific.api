@@ -1085,8 +1085,8 @@ public final class com/splendo/kaluga/scientific/formatter/CommonScientificValue
 	public final fun formatAs (Lcom/splendo/kaluga/scientific/PhysicalQuantity;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
 	public final fun formatAs (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
 	public final fun formatUsing (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function1;)V
-	public final fun getDefaultValueFormatter ()Lcom/splendo/kaluga/base/text/NumberFormatter;
-	public final fun setDefaultValueFormatter (Lcom/splendo/kaluga/base/text/NumberFormatter;)V
+	public final fun getDefaultValueFormatter ()Lcom/splendo/kaluga/base/formatting/NumberFormatter;
+	public final fun setDefaultValueFormatter (Lcom/splendo/kaluga/base/formatting/NumberFormatter;)V
 	public final fun useFormat (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function1;)V
 	public final fun usesCustomSymbol (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Ljava/lang/String;)V
 }
@@ -1111,17 +1111,17 @@ public final class com/splendo/kaluga/scientific/formatter/DenominatorScientific
 	public final fun formatAs (Lcom/splendo/kaluga/scientific/PhysicalQuantity;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
 	public final fun formatAs (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
 	public final fun formatUsing (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function1;)V
-	public final fun getDefaultUnitFormatter ()Lcom/splendo/kaluga/base/text/NumberFormatter;
-	public final fun getDenominatorUnitFormatter ()Lcom/splendo/kaluga/base/text/NumberFormatter;
+	public final fun getDefaultUnitFormatter ()Lcom/splendo/kaluga/base/formatting/NumberFormatter;
+	public final fun getDenominatorUnitFormatter ()Lcom/splendo/kaluga/base/formatting/NumberFormatter;
 	public final fun getIncludeZeroValues ()Lcom/splendo/kaluga/scientific/formatter/DenominatorScientificValueFormatter$IncludeZeroValues;
-	public final fun getLastDenominatorUnitFormatter ()Lcom/splendo/kaluga/base/text/NumberFormatter;
+	public final fun getLastDenominatorUnitFormatter ()Lcom/splendo/kaluga/base/formatting/NumberFormatter;
 	public final fun getRoundingPrecision ()D
 	public final fun getScale-pVg5ArA ()I
 	public final fun getSeparator ()Ljava/lang/String;
-	public final fun setDefaultUnitFormatter (Lcom/splendo/kaluga/base/text/NumberFormatter;)V
-	public final fun setDenominatorUnitFormatter (Lcom/splendo/kaluga/base/text/NumberFormatter;)V
+	public final fun setDefaultUnitFormatter (Lcom/splendo/kaluga/base/formatting/NumberFormatter;)V
+	public final fun setDenominatorUnitFormatter (Lcom/splendo/kaluga/base/formatting/NumberFormatter;)V
 	public final fun setIncludeZeroValues (Lcom/splendo/kaluga/scientific/formatter/DenominatorScientificValueFormatter$IncludeZeroValues;)V
-	public final fun setLastDenominatorUnitFormatter (Lcom/splendo/kaluga/base/text/NumberFormatter;)V
+	public final fun setLastDenominatorUnitFormatter (Lcom/splendo/kaluga/base/formatting/NumberFormatter;)V
 	public final fun setRoundingPrecision (D)V
 	public final fun setScale-WZ4Q5Ns (I)V
 	public final fun setSeparator (Ljava/lang/String;)V
