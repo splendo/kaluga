@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="31"/>
     <!-- If your app targets Android 9 or lower,  -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -23,8 +26,13 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- Legacy storage permissions are only requestable up to Android 12 (API 32). -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <!-- Android 13 (API 33)+ gate shared media access behind granular permissions. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
@@ -50,22 +58,27 @@
         <activity android:name="com.splendo.kaluga.example.ExampleActivity"
             android:label="Features list"
             android:exported="true"
+            android:launchMode="singleTask"
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Inherited from the old LinksActivity. The browser must have a target to hand the
+                 universal link to; ExampleActivity owns the CMP nav graph and routes the URL into
+                 LinksScreen via the `deepLinkUrl` extra. `autoVerify` keeps Android App Links
+                 working when the well-known assetlinks.json is hosted at the matching domain. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:host="kaluga-links.web.app"
+                    android:pathPrefix="/kalugaexample"/>
+            </intent-filter>
         </activity>
-        <activity android:name=".location.LocationActivity"
-            android:label="@string/feature_location"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".permissions.PermissionsListActivity"
-            android:label="@string/permissions_list"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".permissions.PermissionActivity"
-            android:label="Permissions"
-            android:screenOrientation="fullSensor"/>
         <activity android:name=".alerts.AlertsActivity"
             android:label="@string/feature_alerts"
             android:screenOrientation="fullSensor"/>
@@ -74,9 +87,6 @@
             android:screenOrientation="fullSensor"/>
         <activity android:name=".alerts.compose.ComposeAlertsActivity"
             android:label="@string/feature_alerts"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".datetime.TimerActivity"
-            android:label="@string/feature_date_time"
             android:screenOrientation="fullSensor"/>
         <activity android:name=".datetimepicker.DateTimePickerActivity"
             android:label="@string/feature_date_time_picker"
@@ -105,21 +115,6 @@
         <activity android:name=".keyboard.compose.ComposeKeyboardActivity"
             android:label="@string/keyboard_manager"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".link.LinksActivity"
-            android:exported="true"
-            android:label="@string/feature_links"
-            android:launchMode="singleTask"
-            android:screenOrientation="fullSensor">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:scheme="https"
-                    android:host="kaluga-links.web.app"
-                    android:pathPrefix="/kalugaexample"/>
-            </intent-filter>
-        </activity>
         <activity android:name=".architecture.ArchitectureActivity"
             android:label="@string/feature_architecture"
             android:screenOrientation="fullSensor"/>
@@ -132,21 +127,6 @@
 
         <activity android:name=".architecture.xml.ArchitectureDetailsActivity"
             android:label="@string/feature_architecture"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".beacons.BeaconsActivity"
-            android:label="@string/feature_beacons"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".bluetooth.BluetoothActivity"
-            android:label="@string/feature_bluetooth"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".media.MediaListActivity"
-            android:label="@string/feature_media"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".media.MediaActivity"
-            android:label="@string/feature_media"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".media.MediaSoundActivity"
-            android:label="@string/feature_media_sound"
             android:screenOrientation="fullSensor"/>
         <activity android:name=".resources.ResourcesActivity"
             android:label="@string/feature_resources"
@@ -169,20 +149,6 @@
         <activity android:name=".resources.xml.ButtonActivity"
             android:label="@string/feature_resources_button"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".scientific.ScientificActivity"
-            android:label="@string/feature_scientific"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".scientific.ScientificConverterActivity"
-            android:label="@string/feature_scientific"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".system.SystemActivity"
-            android:label="@string/feature_system"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".system.NetworkActivity"
-            android:label="@string/network_feature"
-            android:screenOrientation="fullSensor"/>
-
-
         <service android:name=".location.LocationBackgroundService"/>
 
     </application>

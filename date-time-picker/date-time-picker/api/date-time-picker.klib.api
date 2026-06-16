@@ -1,0 +1,108 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.date-time-picker:date-time-picker>
+abstract interface com.splendo.kaluga.datetimepicker/DateTimePickerActions { // com.splendo.kaluga.datetimepicker/DateTimePickerActions|null[0]
+    abstract fun dismiss(kotlin/Boolean) // com.splendo.kaluga.datetimepicker/DateTimePickerActions.dismiss|dismiss(kotlin.Boolean){}[0]
+    abstract fun showAsync(kotlin/Boolean = ..., kotlin/Function1<com.splendo.kaluga.base.utils/KalugaDate?, kotlin/Unit> = ...) // com.splendo.kaluga.datetimepicker/DateTimePickerActions.showAsync|showAsync(kotlin.Boolean;kotlin.Function1<com.splendo.kaluga.base.utils.KalugaDate?,kotlin.Unit>){}[0]
+    abstract suspend fun show(kotlin/Boolean = ...): com.splendo.kaluga.base.utils/KalugaDate? // com.splendo.kaluga.datetimepicker/DateTimePickerActions.show|show(kotlin.Boolean){}[0]
+}
+
+abstract class com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter : com.splendo.kaluga.datetimepicker/DateTimePickerActions { // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter|null[0]
+    constructor <init>(com.splendo.kaluga.datetimepicker/DateTimePicker) // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.<init>|<init>(com.splendo.kaluga.datetimepicker.DateTimePicker){}[0]
+
+    open val dateTimePicker // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.dateTimePicker|{}dateTimePicker[0]
+        open fun <get-dateTimePicker>(): com.splendo.kaluga.datetimepicker/DateTimePicker // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.dateTimePicker.<get-dateTimePicker>|<get-dateTimePicker>(){}[0]
+
+    abstract fun dismissDateTimePicker(kotlin/Boolean = ...) // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.dismissDateTimePicker|dismissDateTimePicker(kotlin.Boolean){}[0]
+    abstract fun showDateTimePicker(kotlin/Boolean = ..., kotlin/Function1<com.splendo.kaluga.base.utils/KalugaDate?, kotlin/Unit> = ...) // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.showDateTimePicker|showDateTimePicker(kotlin.Boolean;kotlin.Function1<com.splendo.kaluga.base.utils.KalugaDate?,kotlin.Unit>){}[0]
+    open fun dismiss(kotlin/Boolean) // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.dismiss|dismiss(kotlin.Boolean){}[0]
+    open fun showAsync(kotlin/Boolean, kotlin/Function1<com.splendo.kaluga.base.utils/KalugaDate?, kotlin/Unit>) // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.showAsync|showAsync(kotlin.Boolean;kotlin.Function1<com.splendo.kaluga.base.utils.KalugaDate?,kotlin.Unit>){}[0]
+    open suspend fun show(kotlin/Boolean): com.splendo.kaluga.base.utils/KalugaDate? // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.show|show(kotlin.Boolean){}[0]
+
+    abstract class Builder : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder|null[0]
+        constructor <init>() // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder.<init>|<init>(){}[0]
+
+        abstract fun create(com.splendo.kaluga.datetimepicker/DateTimePicker, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter // com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder.create|create(com.splendo.kaluga.datetimepicker.DateTimePicker;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+final class com.splendo.kaluga.datetimepicker/DateTimePicker { // com.splendo.kaluga.datetimepicker/DateTimePicker|null[0]
+    constructor <init>(kotlin/String?, kotlin/String, kotlin/String, com.splendo.kaluga.datetimepicker/DateTimePicker.Type, com.splendo.kaluga.base.utils/KalugaLocale, com.splendo.kaluga.base.utils/KalugaDate) // com.splendo.kaluga.datetimepicker/DateTimePicker.<init>|<init>(kotlin.String?;kotlin.String;kotlin.String;com.splendo.kaluga.datetimepicker.DateTimePicker.Type;com.splendo.kaluga.base.utils.KalugaLocale;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+
+    final val cancelButtonTitle // com.splendo.kaluga.datetimepicker/DateTimePicker.cancelButtonTitle|{}cancelButtonTitle[0]
+        final fun <get-cancelButtonTitle>(): kotlin/String // com.splendo.kaluga.datetimepicker/DateTimePicker.cancelButtonTitle.<get-cancelButtonTitle>|<get-cancelButtonTitle>(){}[0]
+    final val confirmButtonTitle // com.splendo.kaluga.datetimepicker/DateTimePicker.confirmButtonTitle|{}confirmButtonTitle[0]
+        final fun <get-confirmButtonTitle>(): kotlin/String // com.splendo.kaluga.datetimepicker/DateTimePicker.confirmButtonTitle.<get-confirmButtonTitle>|<get-confirmButtonTitle>(){}[0]
+    final val locale // com.splendo.kaluga.datetimepicker/DateTimePicker.locale|{}locale[0]
+        final fun <get-locale>(): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.datetimepicker/DateTimePicker.locale.<get-locale>|<get-locale>(){}[0]
+    final val message // com.splendo.kaluga.datetimepicker/DateTimePicker.message|{}message[0]
+        final fun <get-message>(): kotlin/String? // com.splendo.kaluga.datetimepicker/DateTimePicker.message.<get-message>|<get-message>(){}[0]
+    final val selectedDate // com.splendo.kaluga.datetimepicker/DateTimePicker.selectedDate|{}selectedDate[0]
+        final fun <get-selectedDate>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.datetimepicker/DateTimePicker.selectedDate.<get-selectedDate>|<get-selectedDate>(){}[0]
+    final val type // com.splendo.kaluga.datetimepicker/DateTimePicker.type|{}type[0]
+        final fun <get-type>(): com.splendo.kaluga.datetimepicker/DateTimePicker.Type // com.splendo.kaluga.datetimepicker/DateTimePicker.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): kotlin/String? // com.splendo.kaluga.datetimepicker/DateTimePicker.component1|component1(){}[0]
+    final fun component2(): kotlin/String // com.splendo.kaluga.datetimepicker/DateTimePicker.component2|component2(){}[0]
+    final fun component3(): kotlin/String // com.splendo.kaluga.datetimepicker/DateTimePicker.component3|component3(){}[0]
+    final fun component4(): com.splendo.kaluga.datetimepicker/DateTimePicker.Type // com.splendo.kaluga.datetimepicker/DateTimePicker.component4|component4(){}[0]
+    final fun component5(): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.datetimepicker/DateTimePicker.component5|component5(){}[0]
+    final fun component6(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.datetimepicker/DateTimePicker.component6|component6(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/String = ..., kotlin/String = ..., com.splendo.kaluga.datetimepicker/DateTimePicker.Type = ..., com.splendo.kaluga.base.utils/KalugaLocale = ..., com.splendo.kaluga.base.utils/KalugaDate = ...): com.splendo.kaluga.datetimepicker/DateTimePicker // com.splendo.kaluga.datetimepicker/DateTimePicker.copy|copy(kotlin.String?;kotlin.String;kotlin.String;com.splendo.kaluga.datetimepicker.DateTimePicker.Type;com.splendo.kaluga.base.utils.KalugaLocale;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.datetimepicker/DateTimePicker.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.datetimepicker/DateTimePicker.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.datetimepicker/DateTimePicker.toString|toString(){}[0]
+
+    final class Builder { // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder|null[0]
+        constructor <init>(com.splendo.kaluga.datetimepicker/DateTimePicker.Type = ...) // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder.<init>|<init>(com.splendo.kaluga.datetimepicker.DateTimePicker.Type){}[0]
+
+        final fun build(): com.splendo.kaluga.datetimepicker/DateTimePicker // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder.build|build(){}[0]
+        final fun setCancelButtonTitle(kotlin/String): com.splendo.kaluga.datetimepicker/DateTimePicker.Builder // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder.setCancelButtonTitle|setCancelButtonTitle(kotlin.String){}[0]
+        final fun setConfirmButtonTitle(kotlin/String): com.splendo.kaluga.datetimepicker/DateTimePicker.Builder // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder.setConfirmButtonTitle|setConfirmButtonTitle(kotlin.String){}[0]
+        final fun setLocale(com.splendo.kaluga.base.utils/KalugaLocale): com.splendo.kaluga.datetimepicker/DateTimePicker.Builder // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder.setLocale|setLocale(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+        final fun setMessage(kotlin/String?): com.splendo.kaluga.datetimepicker/DateTimePicker.Builder // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder.setMessage|setMessage(kotlin.String?){}[0]
+        final fun setSelectedDate(com.splendo.kaluga.base.utils/KalugaDate): com.splendo.kaluga.datetimepicker/DateTimePicker.Builder // com.splendo.kaluga.datetimepicker/DateTimePicker.Builder.setSelectedDate|setSelectedDate(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    }
+
+    sealed class Type { // com.splendo.kaluga.datetimepicker/DateTimePicker.Type|null[0]
+        final class DateType : com.splendo.kaluga.datetimepicker/DateTimePicker.Type { // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType|null[0]
+            constructor <init>(com.splendo.kaluga.base.utils/KalugaDate? = ..., com.splendo.kaluga.base.utils/KalugaDate? = ...) // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.<init>|<init>(com.splendo.kaluga.base.utils.KalugaDate?;com.splendo.kaluga.base.utils.KalugaDate?){}[0]
+
+            final val earliestDate // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.earliestDate|{}earliestDate[0]
+                final fun <get-earliestDate>(): com.splendo.kaluga.base.utils/KalugaDate? // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.earliestDate.<get-earliestDate>|<get-earliestDate>(){}[0]
+            final val latestDate // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.latestDate|{}latestDate[0]
+                final fun <get-latestDate>(): com.splendo.kaluga.base.utils/KalugaDate? // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.latestDate.<get-latestDate>|<get-latestDate>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.base.utils/KalugaDate? // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.component1|component1(){}[0]
+            final fun component2(): com.splendo.kaluga.base.utils/KalugaDate? // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.component2|component2(){}[0]
+            final fun copy(com.splendo.kaluga.base.utils/KalugaDate? = ..., com.splendo.kaluga.base.utils/KalugaDate? = ...): com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.copy|copy(com.splendo.kaluga.base.utils.KalugaDate?;com.splendo.kaluga.base.utils.KalugaDate?){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.DateType.toString|toString(){}[0]
+        }
+
+        final object TimeType : com.splendo.kaluga.datetimepicker/DateTimePicker.Type { // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.TimeType|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.TimeType.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.TimeType.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.datetimepicker/DateTimePicker.Type.TimeType.toString|toString(){}[0]
+        }
+    }
+}
+
+final class com.splendo.kaluga.datetimepicker/DateTimePickerPresenter : com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter { // com.splendo.kaluga.datetimepicker/DateTimePickerPresenter|null[0]
+    constructor <init>(com.splendo.kaluga.datetimepicker/DateTimePicker, platform.UIKit/UIViewController) // com.splendo.kaluga.datetimepicker/DateTimePickerPresenter.<init>|<init>(com.splendo.kaluga.datetimepicker.DateTimePicker;platform.UIKit.UIViewController){}[0]
+
+    final class Builder : com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder { // com.splendo.kaluga.datetimepicker/DateTimePickerPresenter.Builder|null[0]
+        constructor <init>(platform.UIKit/UIViewController) // com.splendo.kaluga.datetimepicker/DateTimePickerPresenter.Builder.<init>|<init>(platform.UIKit.UIViewController){}[0]
+
+        final fun create(com.splendo.kaluga.datetimepicker/DateTimePicker, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.datetimepicker/DateTimePickerPresenter // com.splendo.kaluga.datetimepicker/DateTimePickerPresenter.Builder.create|create(com.splendo.kaluga.datetimepicker.DateTimePicker;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+final fun (com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder).com.splendo.kaluga.datetimepicker/buildDatePicker(kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.base.utils/KalugaDate? = ..., com.splendo.kaluga.base.utils/KalugaDate? = ..., kotlin/Function1<com.splendo.kaluga.datetimepicker/DateTimePicker.Builder, kotlin/Unit>): com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter // com.splendo.kaluga.datetimepicker/buildDatePicker|buildDatePicker@com.splendo.kaluga.datetimepicker.BaseDateTimePickerPresenter.Builder(kotlinx.coroutines.CoroutineScope;com.splendo.kaluga.base.utils.KalugaDate?;com.splendo.kaluga.base.utils.KalugaDate?;kotlin.Function1<com.splendo.kaluga.datetimepicker.DateTimePicker.Builder,kotlin.Unit>){}[0]
+final fun (com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter.Builder).com.splendo.kaluga.datetimepicker/buildTimePicker(kotlinx.coroutines/CoroutineScope, kotlin/Function1<com.splendo.kaluga.datetimepicker/DateTimePicker.Builder, kotlin/Unit>): com.splendo.kaluga.datetimepicker/BaseDateTimePickerPresenter // com.splendo.kaluga.datetimepicker/buildTimePicker|buildTimePicker@com.splendo.kaluga.datetimepicker.BaseDateTimePickerPresenter.Builder(kotlinx.coroutines.CoroutineScope;kotlin.Function1<com.splendo.kaluga.datetimepicker.DateTimePicker.Builder,kotlin.Unit>){}[0]

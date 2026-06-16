@@ -3,15 +3,15 @@ An Example project to demonstrate functionality and best practices for using Kal
 
 ## Overview
 This example project has the following parts:
-- An Android app in [android](/android)
-- A shared code module in [shared](/shared). This exposes an Android library, and a Kotlin/Native sourceset that depends on a common source set. These are then included in the build of the Android and iOS example apps respectively.
-- An iOS app in [ios](/ios)
+- An Android app in [android](android)
+- A shared code module in [shared](shared). This exposes an Android library, and a Kotlin/Native sourceset that depends on a common source set. These are then included in the build of the Android and iOS example apps respectively.
+- An iOS app in [ios](ios)
 
 ## Running
 To access the shared code, simply open this folder in Android Studio. From there you can build the Android module and shared code.
 At times the latest Beta or Canary release is needed (see [DEVELOP](../DEVELOP.md))
 
-The iOS example can be built using XCode using the [Demo XCode Project](/ios/Demo.xcodeproj).
+The iOS example can be built using XCode using the [Demo XCode Project](ios/Demo.xcodeproj).
 The iOS projects uses [Kaluga SwiftUI](https://github.com/splendo/kaluga-swiftui) for bridging the project to SwiftUI. This requires installing by running `sh install.sh` from the `ios` folder.
 
 ## Configuration

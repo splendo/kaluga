@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel" />
+            type="com.splendo.kaluga.example.feature.datetimepicker.DateTimePickerViewModel" />
 
     </data>
 <androidx.core.widget.NestedScrollView

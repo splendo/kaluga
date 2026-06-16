@@ -22,12 +22,10 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.closureOf
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.owasp.dependencycheck.gradle.extension.AnalyzerExtension
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import javax.inject.Inject
@@ -97,56 +95,56 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
         tasks.register("generateNonDependentProjectsFile") {
             outputs.upToDateWhen { false }
 
-            val file = project.file("non_dependent_projects.properties")
-            file.delete()
-            file.appendText("projects=[")
-            var firstProject = true
+            val outputFile = rootProject.file("non_dependent_projects.properties")
+            val blacklist = properties["generateNonDependentProjectsFile.blacklist"]?.toString()
+                ?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() } ?: listOf()
 
-            val blacklist = properties["generateNonDependentProjectsFile.blacklist"]?.toString()?.split(',')?.map { it.trim() } ?: listOf()
-
-            subprojects.forEach { thisProject ->
-
-                val dependsOnOtherProject = subprojects.any { otherProject ->
-                    thisProject != otherProject &&
-                        (
-                            thisProject.name.startsWith(
-                                otherProject.name,
-                            ) ||
-                                thisProject.name.endsWith(otherProject.name)
-                            )
-                }
-                val otherProjectsDependOn = subprojects.any { otherProject ->
-                    thisProject != otherProject &&
-                        (
-                            otherProject.name.startsWith(
-                                thisProject.name,
-                            ) ||
-                                otherProject.name.endsWith(thisProject.name)
-                            )
-                }
-
-                if (!blacklist.contains(thisProject.name) && (!dependsOnOtherProject || otherProjectsDependOn)) {
-                    logger.debug("main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
-
-                    if (firstProject) {
-                        firstProject = false
-                    } else {
-                        file.appendText(",")
+            doLast {
+                // One matrix entry per top-level feature group (the first Gradle path segment, e.g.
+                // `bluetooth`, `permissions`, or a flat module like `date-time`). CI runs each entry
+                // with `gradle -p <group> <testTask>`, which cascades to every submodule of the group
+                // (core, client, compose, test-utils, ...) that has the task. A group's platform
+                // capabilities are the union of its multiplatform submodules' configured targets.
+                // A group is included if it has at least one multiplatform module. The set of
+                // *registered* targets is host-dependent (Apple targets are only registered on a macOS
+                // host — see `iosTargets`), so membership must NOT be derived from a specific target:
+                // this same file is generated on the Linux runner that drives the JS/Android matrices.
+                val groupTargets = linkedMapOf<String, MutableSet<String>>()
+                subprojects.forEach { subproject ->
+                    val group = subproject.path.removePrefix(":").substringBefore(":")
+                    if (group in blacklist) {
+                        return@forEach
                     }
-                    file.appendText('"' + thisProject.name + '"')
-                } else {
-                    logger.debug("not a main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
+                    val kotlin = subproject.extensions.findByType(KotlinMultiplatformExtension::class.java)
+                        ?: return@forEach
+                    groupTargets.getOrPut(group) { mutableSetOf() }.addAll(kotlin.targets.map { it.name })
                 }
-            }
 
-            file.appendText("]")
+                val entries = groupTargets.map { (group, targets) ->
+                    fun targetsStartingWith(prefix: String) = targets.any { it.startsWith(prefix) }
+                    // `ios` is always true (every Kaluga multiplatform module targets iOS); the rest
+                    // reflect the targets registered on the host that generated this file.
+                    """{"dir":"$group","name":"$group",""" +
+                        """"ios":true,""" +
+                        """"supportMacOS":${targetsStartingWith("macos")},""" +
+                        """"supportTvOS":${targetsStartingWith("tvos")},""" +
+                        """"supportWatchOS":${targetsStartingWith("watchos")},""" +
+                        """"supportJS":${targets.contains("js")},""" +
+                        """"supportWasmJS":${targets.contains("wasmJs")}}"""
+                }
+
+                outputFile.writeText("projects=[${entries.joinToString(",")}]")
+                logger.lifecycle("Generated ${outputFile.name} with ${entries.size} module groups")
+            }
         }
     }
 
     private fun Project.koverModules() {
         dependencies {
-            subprojects.forEach {
-//                add("kover", it)
+            // Group container projects (e.g. `:bluetooth`, `:permissions`) have no build script and
+            // apply no Kover plugin, so they expose no `kover` variant — skip them.
+            subprojects.filter { it.buildFile.exists() }.forEach {
+                add("kover", it)
             }
         }
     }

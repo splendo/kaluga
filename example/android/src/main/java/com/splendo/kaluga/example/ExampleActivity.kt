@@ -18,61 +18,58 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import com.splendo.kaluga.architecture.navigation.ActivityNavigator
-import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.example.featurelist.FeaturesListFragment
-import com.splendo.kaluga.example.info.InfoFragment
-import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
-import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import com.splendo.kaluga.example.alerts.AlertsActivity
+import com.splendo.kaluga.example.arch.AppRootScreen
+import com.splendo.kaluga.example.arch.DeepLinkBus
+import com.splendo.kaluga.example.architecture.ArchitectureActivity
+import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
+import com.splendo.kaluga.example.keyboard.KeyboardActivity
+import com.splendo.kaluga.example.loading.LoadingActivity
+import com.splendo.kaluga.example.shared.MobileFeatureIds
+import com.splendo.kaluga.example.resources.ResourcesActivity
 
-class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activity_example) {
-
-    override val viewModel: ExampleViewModel by viewModel {
-        parametersOf(
-            ActivityNavigator<ExampleTabNavigation> { action ->
-                when (action) {
-                    ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(
-                        R.id.example_fragment,
-                        createFragment = { FeaturesListFragment() },
-                    )
-                    ExampleTabNavigation.Info -> NavigationSpec.Fragment(
-                        R.id.example_fragment,
-                        createFragment = { InfoFragment() },
-                    )
-                }
-            },
-        )
-    }
+class ExampleActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val tabs: TabLayout = findViewById(R.id.tabs)
-
-        viewModel.tabs.observeInitialized { exampleTabs ->
-            tabs.removeAllTabs()
-            exampleTabs.forEach { tab ->
-                tabs.addTab(tabs.newTab().setText(tab.title).setTag(tab))
+        intent.postDeepLink()
+        setContent {
+            MaterialTheme {
+                AppRootScreen(onNativeLaunch = ::launchFeature)
             }
         }
-
-        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                val exampleTab = tab?.tag as? ExampleViewModel.Tab ?: return
-                viewModel.tab.post(exampleTab)
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val exampleTab = tab?.tag as? ExampleViewModel.Tab ?: return
-                viewModel.tab.post(exampleTab)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) { }
-        })
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // singleTask launch mode: an inbound universal link reuses the running instance. The CMP
+        // root observes the bus, so just push the URL and it'll route there itself — no need to
+        // recreate the Activity, which means the existing nav back-stack stays intact.
+        setIntent(intent)
+        intent.postDeepLink()
+    }
+
+    private fun launchFeature(id: String) {
+        val cls = when (id) {
+            MobileFeatureIds.ALERTS -> AlertsActivity::class.java
+            MobileFeatureIds.ARCHITECTURE -> ArchitectureActivity::class.java
+            MobileFeatureIds.DATE_TIME_PICKER -> DateTimePickerActivity::class.java
+            MobileFeatureIds.KEYBOARD -> KeyboardActivity::class.java
+            MobileFeatureIds.HUD -> LoadingActivity::class.java
+            MobileFeatureIds.RESOURCES -> ResourcesActivity::class.java
+            else -> error("Native launch for unknown feature id: $id")
+        }
+        startActivity(Intent(this, cls))
+    }
+}
+
+private fun Intent.postDeepLink() {
+    if (action != Intent.ACTION_VIEW) return
+    val url = data?.toString() ?: return
+    DeepLinkBus.postUrl(url)
 }

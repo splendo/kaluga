@@ -16,10 +16,10 @@
  */
 package com.splendo.kaluga.datetime.timer
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.test.assertEmits
+import com.splendo.kaluga.base.test.captureFor
+import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.test.base.assertEmits
-import com.splendo.kaluga.test.base.captureFor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -39,7 +39,7 @@ import kotlin.time.TimeSource
 class RecurringTimerTest {
 
     @Test
-    fun stateTransitions(): Unit = runBlocking {
+    fun stateTransitions() = testRunBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
             duration = 1.seconds,
@@ -65,7 +65,7 @@ class RecurringTimerTest {
     }
 
     @Test
-    fun awaitFinish(): Unit = runBlocking {
+    fun awaitFinish() = testRunBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
             duration = 100.milliseconds,
@@ -80,7 +80,7 @@ class RecurringTimerTest {
     }
 
     @Test
-    fun stop(): Unit = runBlocking {
+    fun stop() = testRunBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
             duration = 10000.milliseconds,
@@ -101,7 +101,7 @@ class RecurringTimerTest {
     }
 
     @Test
-    fun stopBeforeStart(): Unit = runBlocking {
+    fun stopBeforeStart() = testRunBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
             duration = 1.seconds,
@@ -114,7 +114,7 @@ class RecurringTimerTest {
     }
 
     @Test
-    fun elapsedFlow(): Unit = runBlocking {
+    fun elapsedFlow() = testRunBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         fun List<Duration>.isAscending(): Boolean = windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
@@ -192,7 +192,7 @@ class RecurringTimerTest {
     }
 
     @Test
-    fun elapsedIrregularFlow(): Unit = runBlocking {
+    fun elapsedIrregularFlow() = testRunBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val totalDuration = 500.milliseconds
 

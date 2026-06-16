@@ -42,6 +42,7 @@ kotlin {
 dependencies {
     implementation(libs.android.gradle)
     implementation(libs.android.multiplatform.gradle)
+    implementation(libs.android.legacy.kapt.gradle)
     implementation(libs.vanniktech.maven.publish)
     implementation(libs.compose.gradle)
     implementation(libs.dependencycheck.gradle)
@@ -58,6 +59,6 @@ dependencies {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        languageVersion.set(KotlinVersion.KOTLIN_2_2)
+        languageVersion.set(KotlinVersion.KOTLIN_2_4)
     }
 }

@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -10,7 +8,7 @@ plugins {
 }
 
 repositories {
-    gradlePluginPortal() // To use 'maven-publish' and 'signing' plugins in our own plugin
+    gradlePluginPortal()
     google()
     mavenCentral()
 }
@@ -28,10 +26,4 @@ gradlePlugin {
 
 kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
-}
-
-val compileKotlin: KotlinCompile by tasks
-
-compileKotlin.kotlinOptions {
-    languageVersion = "2.0"
 }

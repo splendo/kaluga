@@ -1,0 +1,99 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bluetooth:beacons>
+abstract interface com.splendo.kaluga.bluetooth.beacons/Beacons { // com.splendo.kaluga.bluetooth.beacons/Beacons|null[0]
+    abstract val beacons // com.splendo.kaluga.bluetooth.beacons/Beacons.beacons|{}beacons[0]
+        abstract fun <get-beacons>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Set<com.splendo.kaluga.bluetooth.beacons/BeaconInfo>> // com.splendo.kaluga.bluetooth.beacons/Beacons.beacons.<get-beacons>|<get-beacons>(){}[0]
+
+    abstract suspend fun isMonitoring(): kotlinx.coroutines.flow/Flow<kotlin/Boolean> // com.splendo.kaluga.bluetooth.beacons/Beacons.isMonitoring|isMonitoring(){}[0]
+    abstract suspend fun startMonitoring() // com.splendo.kaluga.bluetooth.beacons/Beacons.startMonitoring|startMonitoring(){}[0]
+    abstract suspend fun stopMonitoring() // com.splendo.kaluga.bluetooth.beacons/Beacons.stopMonitoring|stopMonitoring(){}[0]
+}
+
+final class com.splendo.kaluga.bluetooth.beacons/BeaconInfo { // com.splendo.kaluga.bluetooth.beacons/BeaconInfo|null[0]
+    constructor <init>(platform.Foundation/NSUUID, com.splendo.kaluga.bluetooth.beacons/Eddystone.UID, kotlin/Int, kotlin/Int, com.splendo.kaluga.base.utils/KalugaDate) // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.<init>|<init>(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.beacons.Eddystone.UID;kotlin.Int;kotlin.Int;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+
+    final val beaconID // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.beaconID|{}beaconID[0]
+        final fun <get-beaconID>(): com.splendo.kaluga.bluetooth.beacons/Eddystone.UID // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.beaconID.<get-beaconID>|<get-beaconID>(){}[0]
+    final val identifier // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.identifier|{}identifier[0]
+        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val lastSeen // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.lastSeen|{}lastSeen[0]
+        final fun <get-lastSeen>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.lastSeen.<get-lastSeen>|<get-lastSeen>(){}[0]
+    final val rssi // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.rssi|{}rssi[0]
+        final fun <get-rssi>(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.rssi.<get-rssi>|<get-rssi>(){}[0]
+    final val txPower // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.txPower|{}txPower[0]
+        final fun <get-txPower>(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.txPower.<get-txPower>|<get-txPower>(){}[0]
+
+    final fun component1(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.bluetooth.beacons/Eddystone.UID // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.component3|component3(){}[0]
+    final fun component4(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.component4|component4(){}[0]
+    final fun component5(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.component5|component5(){}[0]
+    final fun copy(platform.Foundation/NSUUID = ..., com.splendo.kaluga.bluetooth.beacons/Eddystone.UID = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.base.utils/KalugaDate = ...): com.splendo.kaluga.bluetooth.beacons/BeaconInfo // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.copy|copy(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.beacons.Eddystone.UID;kotlin.Int;kotlin.Int;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/BeaconInfo.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.bluetooth.beacons/DefaultBeacons : com.splendo.kaluga.bluetooth.beacons/Beacons, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons|null[0]
+    constructor <init>(com.splendo.kaluga.bluetooth/BluetoothClient, kotlin.time/Duration = ..., com.splendo.kaluga.logging/Logger = ..., kotlin.coroutines/CoroutineContext = ...) // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.<init>|<init>(com.splendo.kaluga.bluetooth.BluetoothClient;kotlin.time.Duration;com.splendo.kaluga.logging.Logger;kotlin.coroutines.CoroutineContext){}[0]
+
+    final val beacons // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.beacons|{}beacons[0]
+        final fun <get-beacons>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Set<com.splendo.kaluga.bluetooth.beacons/BeaconInfo>> // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.beacons.<get-beacons>|<get-beacons>(){}[0]
+    final val coroutineContext // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.coroutineContext|{}coroutineContext[0]
+        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+
+    final suspend fun isMonitoring(): kotlinx.coroutines.flow/Flow<kotlin/Boolean> // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.isMonitoring|isMonitoring(){}[0]
+    final suspend fun startMonitoring() // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.startMonitoring|startMonitoring(){}[0]
+    final suspend fun stopMonitoring() // com.splendo.kaluga.bluetooth.beacons/DefaultBeacons.stopMonitoring|stopMonitoring(){}[0]
+}
+
+final class com.splendo.kaluga.bluetooth.beacons/Eddystone { // com.splendo.kaluga.bluetooth.beacons/Eddystone|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.beacons/Eddystone.<init>|<init>(){}[0]
+
+    final class Frame { // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame|null[0]
+        constructor <init>(kotlin/Int, com.splendo.kaluga.bluetooth.beacons/Eddystone.UID) // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.<init>|<init>(kotlin.Int;com.splendo.kaluga.bluetooth.beacons.Eddystone.UID){}[0]
+
+        final val txPower // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.txPower|{}txPower[0]
+            final fun <get-txPower>(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.txPower.<get-txPower>|<get-txPower>(){}[0]
+        final val uid // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.uid|{}uid[0]
+            final fun <get-uid>(): com.splendo.kaluga.bluetooth.beacons/Eddystone.UID // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.uid.<get-uid>|<get-uid>(){}[0]
+
+        final fun component1(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.bluetooth.beacons/Eddystone.UID // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.component2|component2(){}[0]
+        final fun copy(kotlin/Int = ..., com.splendo.kaluga.bluetooth.beacons/Eddystone.UID = ...): com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.copy|copy(kotlin.Int;com.splendo.kaluga.bluetooth.beacons.Eddystone.UID){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/Eddystone.Frame.toString|toString(){}[0]
+    }
+
+    final class UID { // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID|null[0]
+        constructor <init>(kotlin/String, kotlin/String) // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+        final val instance // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.instance|{}instance[0]
+            final fun <get-instance>(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.instance.<get-instance>|<get-instance>(){}[0]
+        final val namespace // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.namespace|{}namespace[0]
+            final fun <get-namespace>(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.namespace.<get-namespace>|<get-namespace>(){}[0]
+
+        final fun asString(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.asString|asString(){}[0]
+        final fun component1(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.component1|component1(){}[0]
+        final fun component2(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.component2|component2(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String = ...): com.splendo.kaluga.bluetooth.beacons/Eddystone.UID // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.copy|copy(kotlin.String;kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.beacons/Eddystone.UID.toString|toString(){}[0]
+    }
+
+    final object Companion // com.splendo.kaluga.bluetooth.beacons/Eddystone.Companion|null[0]
+}
+
+final val com.splendo.kaluga.bluetooth.beacons/timeSinceLastSeen // com.splendo.kaluga.bluetooth.beacons/timeSinceLastSeen|@com.splendo.kaluga.bluetooth.beacons.BeaconInfo{}timeSinceLastSeen[0]
+    final fun (com.splendo.kaluga.bluetooth.beacons/BeaconInfo).<get-timeSinceLastSeen>(): kotlin.time/Duration // com.splendo.kaluga.bluetooth.beacons/timeSinceLastSeen.<get-timeSinceLastSeen>|<get-timeSinceLastSeen>@com.splendo.kaluga.bluetooth.beacons.BeaconInfo(){}[0]
+
+final fun (com.splendo.kaluga.bluetooth.beacons/Beacons).com.splendo.kaluga.bluetooth.beacons/isAnyInRange(kotlin.collections/List<com.splendo.kaluga.bluetooth.beacons/Eddystone.UID>): kotlinx.coroutines.flow/Flow<kotlin/Boolean> // com.splendo.kaluga.bluetooth.beacons/isAnyInRange|isAnyInRange@com.splendo.kaluga.bluetooth.beacons.Beacons(kotlin.collections.List<com.splendo.kaluga.bluetooth.beacons.Eddystone.UID>){}[0]
+final fun (kotlinx.coroutines.flow/Flow<kotlin.collections/Set<com.splendo.kaluga.bluetooth.beacons/BeaconInfo>>).com.splendo.kaluga.bluetooth.beacons/get(platform.Foundation/NSUUID): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.beacons/BeaconInfo?> // com.splendo.kaluga.bluetooth.beacons/get|get@kotlinx.coroutines.flow.Flow<kotlin.collections.Set<com.splendo.kaluga.bluetooth.beacons.BeaconInfo>>(platform.Foundation.NSUUID){}[0]

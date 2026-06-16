@@ -1,5 +1,9 @@
 # Date Time
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This library contains multiplatform classes to work with date and time.
 
 ## Installing
