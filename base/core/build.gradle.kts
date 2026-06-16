@@ -33,7 +33,7 @@ kaluga {
         }
         common {
             main {
-                api(project(":base:bytes", ""))
+                implementation(project(":base:bytes", ""))
             }
             test {
                 implementation(project(":base:test", ""))

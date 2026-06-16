@@ -16,7 +16,7 @@ kaluga {
         val luxon = libs.versions.luxon.get()
         common {
             main {
-                api(project(":base:core", ""))
+                implementation(project(":base:core", ""))
                 api(project(":base:i18n", ""))
             }
             test {

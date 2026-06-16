@@ -19,7 +19,7 @@ kaluga {
     dependencies {
         common {
             main {
-                api(project(":base:core", ""))
+                implementation(project(":base:core", ""))
             }
             test {
                 implementation(project(":base:test", ""))
