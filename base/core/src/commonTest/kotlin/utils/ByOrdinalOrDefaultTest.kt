@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.test.utils
+package com.splendo.kaluga.datetime
 
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import kotlin.test.Test

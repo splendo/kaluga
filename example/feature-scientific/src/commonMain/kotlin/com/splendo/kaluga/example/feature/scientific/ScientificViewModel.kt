@@ -18,8 +18,8 @@
 package com.splendo.kaluga.example.feature.scientific
 
 import androidx.lifecycle.ViewModel
-import com.splendo.kaluga.base.text.NumberFormatStyle
-import com.splendo.kaluga.base.text.NumberFormatter
+import com.splendo.kaluga.base.formatting.NumberFormatStyle
+import com.splendo.kaluga.base.formatting.NumberFormatter
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.example.feature.scientific.converters.QuantityConverter
 import com.splendo.kaluga.example.feature.scientific.model.QuantityDetails

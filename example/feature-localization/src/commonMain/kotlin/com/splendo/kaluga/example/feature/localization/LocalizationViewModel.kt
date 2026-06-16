@@ -18,9 +18,9 @@
 package com.splendo.kaluga.example.feature.localization
 
 import androidx.lifecycle.ViewModel
-import com.splendo.kaluga.base.text.NumberFormatStyle
-import com.splendo.kaluga.base.text.NumberFormatter
-import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.formatting.NumberFormatStyle
+import com.splendo.kaluga.base.formatting.NumberFormatter
+import com.splendo.kaluga.base.i18n.KalugaLocale
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

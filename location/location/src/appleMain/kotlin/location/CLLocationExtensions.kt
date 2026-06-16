@@ -18,9 +18,9 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
-import com.splendo.kaluga.base.utils.KalugaTimeZone
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.base.i18n.KalugaLocale.Companion.defaultLocale
+import com.splendo.kaluga.datetime.KalugaTimeZone
 import kotlinx.cinterop.useContents
 import platform.CoreLocation.CLLocation
 import platform.Foundation.timeIntervalSince1970

@@ -18,7 +18,7 @@
 package com.splendo.kaluga.architecture.navigation
 
 import com.splendo.kaluga.base.test.BaseTest
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.datetime.DefaultKalugaDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

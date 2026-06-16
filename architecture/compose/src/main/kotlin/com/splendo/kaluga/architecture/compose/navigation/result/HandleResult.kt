@@ -78,7 +78,7 @@ import com.splendo.kaluga.architecture.navigation.asUnitNull
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.navigation.toTypedPropertyOrNull
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
 import kotlinx.serialization.KSerializer
 
 /**

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
