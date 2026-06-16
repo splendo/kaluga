@@ -79,11 +79,11 @@ tasks.register("generateDefaultCurrencyMap") {
     group = "codegen"
     description = "Regenerates DefaultCurrencyForCountry.kt from CLDR $cldrVersion currencyData.json."
 
-    val outputFile = layout.projectDirectory.file("src/webMain/kotlin/text/DefaultCurrencyForCountry.kt").asFile
+    val outputFile = layout.projectDirectory.file("src/webMain/kotlin/formatting/DefaultCurrencyForCountry.kt").asFile
     outputs.file(outputFile)
 
     doLast {
-        val count = generateFromCldr(cldrVersion, "cldr-core/supplemental/currencyData.json", "generateDefaultCurrencyMap", outputFile, "com.splendo.kaluga.base.text") { root ->
+        val count = generateFromCldr(cldrVersion, "cldr-core/supplemental/currencyData.json", "generateDefaultCurrencyMap", outputFile, "com.splendo.kaluga.base.formatting") { root ->
             @Suppress("UNCHECKED_CAST")
             val regions = ((root["supplemental"] as Map<String, Any>)["currencyData"] as Map<String, Any>)["region"] as Map<String, Any>
             val mapping = sortedMapOf<String, String>()

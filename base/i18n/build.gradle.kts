@@ -77,7 +77,7 @@ tasks.register("generateAvailableLocales") {
     group = "codegen"
     description = "Regenerates AvailableLocales.kt from CLDR $cldrVersion availableLocales.json."
 
-    val outputFile = layout.projectDirectory.file("src/webMain/kotlin/utils/AvailableLocales.kt").asFile
+    val outputFile = layout.projectDirectory.file("src/webMain/kotlin/i18n/AvailableLocales.kt").asFile
     outputs.file(outputFile)
 
     doLast {
@@ -90,7 +90,7 @@ tasks.register("generateAvailableLocales") {
             val dcJson = URI(dcUrl).toURL().openStream().bufferedReader().use { it.readText() }
             (JsonSlurper().parseText(dcJson) as Map<String, Any>)["defaultContent"] as List<String>
         }
-        val count = generateFromCldr(cldrVersion, "cldr-core/availableLocales.json", "generateAvailableLocales", outputFile, "com.splendo.kaluga.base.utils") { root ->
+        val count = generateFromCldr(cldrVersion, "cldr-core/availableLocales.json", "generateAvailableLocales", outputFile, "com.splendo.kaluga.base.i18n") { root ->
             @Suppress("UNCHECKED_CAST")
             // "full" is the exhaustive CLDR locale set (the "modern" subset is empty as of recent CLDR).
             val full = (root["availableLocales"] as Map<String, Any>)["full"] as List<String>

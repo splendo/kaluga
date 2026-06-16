@@ -16,7 +16,7 @@
  */
 
 // Generated from CLDR 48.2.0 cldr-core/supplemental/currencyData.json — do not edit by hand.
-// Refresh: ./gradlew :base:generateDefaultCurrencyMap
+// Refresh: ./gradlew :base:formatting:generateDefaultCurrencyMap
 
 package com.splendo.kaluga.base.formatting
 
