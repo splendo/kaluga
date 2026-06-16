@@ -83,8 +83,11 @@ object References {
         val writeWithoutResponseProperty = className("CharacteristicProperty", "WriteWithoutResponse")
         val signedWriteProperty = className("CharacteristicProperty", "SignedWrite")
         val notifyProperty = className("CharacteristicProperty", "Notify")
-        val indicatableProperty = className("CharacteristicProperty", "Indicatable")
+        val indicatableProperty = className("CharacteristicProperty", "Indicate")
         val uuid = className("UUID")
+
+        val writeTypeWithResponse = MemberName(className("WriteType"), "WithResponse")
+        val writeTypeWithoutResponse = MemberName(className("WriteType"), "WithoutResponse")
 
         val get = memberName("get")
         val getOrNull = memberName("getOrNull")

@@ -24,7 +24,6 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
-import com.splendo.kaluga.bluetooth.annotations.Notifiable
 import com.splendo.kaluga.bluetooth.ksp.helpers.AS
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTICS
@@ -50,6 +49,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateParameterName
+import com.splendo.kaluga.bluetooth.ksp.helpers.isNotifiable
 import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.optionalChainIfNullable
 import com.splendo.kaluga.bluetooth.ksp.helpers.withLetIfNull
@@ -438,7 +438,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     GenerationType.Type.API -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
-                        val isNotifiable = typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isAnnotationPresent(Notifiable::class) }
+                        val isNotifiable = typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isNotifiable }
                         val cast = if (isNotifiable) CodeBlock.of(" $AS %T", References.Bluetooth.Server.localCharacteristicNotifiable) else CodeBlock.of("")
                         delegate(
                             "$LAZY { %L }",

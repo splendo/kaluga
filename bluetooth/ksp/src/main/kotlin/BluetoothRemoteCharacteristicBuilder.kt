@@ -62,6 +62,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -272,10 +273,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 if (propertyDeclaration.isWritable) {
                     if (!hasWriteMethod) {
                         hasWriteMethod = true
-                        val writeMethod = "$WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
-                        addFunction(
-                            generateWriteMethod(writeMethod, propertyDeclaration, type),
-                        )
+                        generateWriteMethods(propertyDeclaration, type).forEach { addFunction(it) }
                     } else {
                         logOnlyOneProperty(Writable::class, WritableWithoutResponse::class, WritableSigned::class)
                     }
@@ -327,7 +325,24 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             }
         }.build()
 
-    private fun generateWriteMethod(writeMethod: String, propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): FunSpec = FunSpec.builder(
+    private data class WriteVariant(val methodSuffix: String, val writeType: MemberName?)
+
+    private fun KSPropertyDeclaration.writeVariants(): List<WriteVariant> = buildList {
+        if (isAnnotationPresent(Writable::class)) add(WriteVariant("", References.Bluetooth.writeTypeWithResponse))
+        if (isAnnotationPresent(WritableWithoutResponse::class)) add(WriteVariant("WithoutResponse", References.Bluetooth.writeTypeWithoutResponse))
+        if (isAnnotationPresent(WritableSigned::class)) add(WriteVariant("Signed", null))
+    }
+
+    private fun generateWriteMethods(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): List<FunSpec> {
+        val variants = propertyDeclaration.writeVariants()
+        val propertyName = propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }
+        return variants.map { variant ->
+            val suffix = if (variants.size == 1) "" else variant.methodSuffix
+            generateWriteMethod("$WRITE$propertyName$suffix", propertyDeclaration, type, variant.writeType)
+        }
+    }
+
+    private fun generateWriteMethod(writeMethod: String, propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type, writeType: MemberName?): FunSpec = FunSpec.builder(
         writeMethod,
     ).addParameter(
         propertyDeclaration.simpleName.asString(),
@@ -339,13 +354,18 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             GenerationType.Type.API -> {}
 
             GenerationType.Type.BLUETOOTH -> {
-                if (propertyDeclaration.isByteArray) {
-                    addStatement("$RETURN $CHARACTERISTIC.$WRITE(${propertyDeclaration.simpleName.asString()})")
+                val valueArgument = if (propertyDeclaration.isByteArray) {
+                    CodeBlock.of(propertyDeclaration.simpleName.asString())
                 } else {
-                    addStatement(
-                        "$RETURN $CHARACTERISTIC.$WRITE($FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, ${propertyDeclaration.simpleName.asString()}))",
+                    CodeBlock.of(
+                        "$FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, ${propertyDeclaration.simpleName.asString()})",
                         propertyDeclaration.type.resolve().toTypeName().serializer(logger),
                     )
+                }
+                if (writeType != null) {
+                    addStatement("$RETURN $CHARACTERISTIC.$WRITE(%L, %M)", valueArgument, writeType)
+                } else {
+                    addStatement("$RETURN $CHARACTERISTIC.$WRITE(%L)", valueArgument)
                 }
             }
 

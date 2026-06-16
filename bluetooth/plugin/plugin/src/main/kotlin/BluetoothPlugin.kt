@@ -55,7 +55,6 @@ class BluetoothPlugin : Plugin<Project> {
                         )
                     }
                 }
-                println(targets.joinToString { it.name })
                 val isSinglePlatform = targets.count { it.name != "metadata" } == 1
                 val bluetoothTargets = bluetoothExtension.target.get()
                 sourceSets.commonMain {
@@ -93,7 +92,6 @@ object BluetoothPluginVersion {
             .classLoader
             .getResourceAsStream("bluetooth.properties")
             ?.use {
-                println("Loading version.properties")
                 Properties().apply { load(it) }
             }
             ?.getProperty("kalugaVersion")

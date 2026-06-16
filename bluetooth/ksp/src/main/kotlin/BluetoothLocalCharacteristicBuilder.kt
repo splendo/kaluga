@@ -615,7 +615,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         properties.firstOrNull { it.isReadable }?.let { readProperty ->
                             add(generateGenerateRemoteOnReadAction(readProperty))
                         }
-                        properties.firstOrNull { it.isAnnotationPresent(Writable::class) }?.let { writeProperty ->
+                        properties.firstOrNull { it.isWritable }?.let { writeProperty ->
                             add(generateGenerateRemoteOnWriteAction(writeProperty))
                         }
                         if (notifiable != null) {
@@ -945,7 +945,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             }
             .build()
 
-    fun isNotifiable() = declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isAnnotationPresent(Notifiable::class) }
+    fun isNotifiable() = declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isNotifiable }
     fun characteristicClass(): ClassName = if (isNotifiable()) {
         References.Bluetooth.Server.localCharacteristicNotifiable
     } else {
