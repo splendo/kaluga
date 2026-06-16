@@ -18,7 +18,7 @@
 // Generated from CLDR 48.2.0 cldr-core/availableLocales.json — do not edit by hand.
 // Refresh: ./gradlew :base:generateAvailableLocales
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.i18n
 
 internal val availableLocaleTags: List<String> by lazy {
     listOf(

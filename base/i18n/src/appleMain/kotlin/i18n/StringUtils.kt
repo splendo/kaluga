@@ -15,21 +15,22 @@
 
  */
 
-@file:JvmName("StringCasingKt")
+@file:Suppress("CAST_NEVER_SUCCEEDS")
 
-package com.splendo.kaluga.base.text
+package com.splendo.kaluga.base.i18n
 
-import com.splendo.kaluga.base.utils.KalugaLocale
-import kotlin.jvm.JvmName
+import platform.Foundation.NSString
+import platform.Foundation.lowercaseStringWithLocale
+import platform.Foundation.uppercaseStringWithLocale
 
 /**
  * Converts a String to its lower cased variant based on a given [KalugaLocale]
  * @param locale The [KalugaLocale] to use for transforming to lower case.
  */
-actual fun String.lowerCased(locale: KalugaLocale): String = this.lowercase(locale.locale)
+actual fun String.lowerCased(locale: KalugaLocale): String = (this as NSString).lowercaseStringWithLocale(locale.nsLocale)
 
 /**
  * Converts a String to its upper cased variant based on a given [KalugaLocale]
  * @param locale The [KalugaLocale] to use for transforming to upper case.
  */
-actual fun String.upperCased(locale: KalugaLocale): String = this.uppercase(locale.locale)
+actual fun String.upperCased(locale: KalugaLocale): String = (this as NSString).uppercaseStringWithLocale(locale.nsLocale)

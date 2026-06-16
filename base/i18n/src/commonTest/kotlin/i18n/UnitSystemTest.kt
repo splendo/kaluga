@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.i18n
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

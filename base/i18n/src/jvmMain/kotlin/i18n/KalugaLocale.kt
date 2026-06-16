@@ -15,12 +15,8 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.i18n
 
-import android.icu.util.LocaleData
-import android.icu.util.ULocale
-import android.os.Build
-import com.splendo.kaluga.base.text.upperCased
 
 /**
  * Default implementation of [BaseLocale]
@@ -87,15 +83,7 @@ actual data class KalugaLocale internal constructor(val locale: java.util.Locale
     actual override val variantCode: String
         get() = locale.variant
     actual override val unitSystem: UnitSystem
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            when (LocaleData.getMeasurementSystem(ULocale.forLocale(locale))) {
-                LocaleData.MeasurementSystem.US -> UnitSystem.IMPERIAL
-                LocaleData.MeasurementSystem.UK -> UnitSystem.MIXED
-                else -> UnitSystem.METRIC
-            }
-        } else {
-            UnitSystem.withCountryCode(countryCode.upperCased(this))
-        }
+        get() = UnitSystem.withCountryCode(countryCode.upperCased(this))
 
     actual override fun name(forLocale: KalugaLocale): String = locale.getDisplayName(forLocale.locale)
     actual override fun countryName(forLocale: KalugaLocale): String = locale.getDisplayCountry(forLocale.locale)
@@ -103,30 +91,10 @@ actual data class KalugaLocale internal constructor(val locale: java.util.Locale
     actual override fun variantName(forLocale: KalugaLocale): String = locale.getDisplayVariant(forLocale.locale)
     actual override fun scriptName(forLocale: KalugaLocale): String = locale.getDisplayScript(forLocale.locale)
 
-    actual override val quotationStart: String
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.QUOTATION_START)
-        } else {
-            "\""
-        }
-    actual override val quotationEnd: String
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.QUOTATION_END)
-        } else {
-            "\""
-        }
-    actual override val alternateQuotationStart: String
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.ALT_QUOTATION_START)
-        } else {
-            "\""
-        }
-    actual override val alternateQuotationEnd: String
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.ALT_QUOTATION_END)
-        } else {
-            "\""
-        }
+    actual override val quotationStart: String = "\""
+    actual override val quotationEnd: String = "\""
+    actual override val alternateQuotationStart: String = "\""
+    actual override val alternateQuotationEnd: String = "\""
 
     // `data class` would otherwise auto-generate a useless `KalugaLocale(locale=…)` toString
     // that shadows the parent's `lang_country_variant` formatting. Delegate back to it.

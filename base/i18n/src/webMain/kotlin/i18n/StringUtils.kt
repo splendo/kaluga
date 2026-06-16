@@ -15,9 +15,8 @@
 
  */
 
-package com.splendo.kaluga.base.text
+package com.splendo.kaluga.base.i18n
 
-import com.splendo.kaluga.base.utils.KalugaLocale
 
 // Typed `js(...)` helpers (no `dynamic`) so this is shared by the JS family. Each is the sole body of
 // a function with String parameters/return, which is the form Kotlin/Wasm requires for `js(...)`.

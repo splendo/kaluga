@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.i18n
 
 /**
  * An object representing a specific geographical, political, or cultural region.

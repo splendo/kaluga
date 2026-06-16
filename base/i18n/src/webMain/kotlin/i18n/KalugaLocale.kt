@@ -15,9 +15,8 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.i18n
 
-import com.splendo.kaluga.base.text.upperCased
 
 /**
  * Default implementation of [BaseLocale] backed by the ECMAScript

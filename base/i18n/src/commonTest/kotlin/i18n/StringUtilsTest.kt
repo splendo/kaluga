@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.base.text
+package com.splendo.kaluga.base.i18n
 
 import com.splendo.kaluga.base.test.BaseTest
-import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
+import com.splendo.kaluga.base.i18n.KalugaLocale.Companion.createLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
