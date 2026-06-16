@@ -41,8 +41,56 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
         add(ImplementFor.BLUETOOTH)
     }
 
+    /**
+     * Additional source directories holding the annotated Bluetooth definitions to generate from.
+     * Use this to share one set of `@Bluetooth` definitions across modules (e.g. a client module and a
+     * server-only module) without duplicating them: point each module at the same directory.
+     */
+    val annotationSourceDirectories = objects.setProperty<String>()
+
+    /**
+     * Adds a source directory holding annotated Bluetooth definitions to generate from.
+     * @see annotationSourceDirectories
+     */
+    fun annotationSource(path: String) {
+        annotationSourceDirectories.add(path)
+    }
+
+    /**
+     * Generates only the API interfaces, without any Bluetooth or simulator implementation.
+     * The resulting module depends only on `bluetooth-core`, so it can be used for previews, fakes
+     * or mocks without pulling in the platform Bluetooth libraries.
+     */
+    fun apiOnly() {
+        implementFor.set(emptySet())
+    }
+
+    private var generateApi = true
+
+    /**
+     * Generates the implementations only; the API interfaces are imported from another module that
+     * generated them with [apiOnly]. That module must be added as a dependency.
+     */
+    fun useExternalApi() {
+        generateApi = false
+    }
+
+    /**
+     * The package the generated code is placed in. Defaults to the package of the annotated definitions.
+     */
+    var generatedPackage: String? = null
+
+    /**
+     * The package the generated API interfaces live in. Defaults to [generatedPackage]. Set this on an
+     * implementation module (see [useExternalApi]) to point at the package of the module that generated the API.
+     */
+    var apiPackage: String? = null
+
     fun afterEvaluate() {
         kspExtension.arg("target", target.get().joinToString(separator = ",") { it.name })
         kspExtension.arg("implementFor", implementFor.get().joinToString(separator = ",") { it.name })
+        kspExtension.arg("generateApi", "$generateApi")
+        generatedPackage?.let { kspExtension.arg("generatedPackage", it) }
+        apiPackage?.let { kspExtension.arg("apiPackage", it) }
     }
 }

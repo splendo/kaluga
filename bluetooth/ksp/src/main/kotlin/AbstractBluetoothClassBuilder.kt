@@ -26,6 +26,8 @@ import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
+import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import kotlin.reflect.KClass
@@ -33,6 +35,11 @@ import kotlin.reflect.KClass
 internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDeclaration, val options: Options, val logger: KSPLogger) {
 
     val declarations get() = declaration.declarations
+
+    protected fun nameFor(declaration: KSClassDeclaration, generationType: GenerationType): ClassName = NameHelper.nameFor(declaration, generationType, options)
+    protected fun clientName(declaration: KSClassDeclaration, type: GenerationType.Type): ClassName = NameHelper.clientName(declaration, type, options)
+    protected fun serverName(declaration: KSClassDeclaration, type: GenerationType.Type): ClassName = NameHelper.serverName(declaration, type, options)
+
     fun generate(generationType: GenerationType): TypeSpec = with(declaration) {
         val nested = generateNested(generationType)
         when (generationType.type) {

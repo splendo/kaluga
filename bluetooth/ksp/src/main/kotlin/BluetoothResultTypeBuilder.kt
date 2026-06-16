@@ -65,7 +65,7 @@ internal class BluetoothResultTypeBuilder(
     internal val hasCustomResult = !propertyDeclaration.isByteArray
 
     val responseClassName: ClassName get() = if (hasCustomResult) {
-        val className = NameHelper.nameFor(classDeclaration, if (options.generateClient) GenerationType.CLIENT_API else GenerationType.SERVER_API)
+        val className = NameHelper.nameFor(classDeclaration, if (options.generateClient) GenerationType.CLIENT_API else GenerationType.SERVER_API, options)
         ClassName(className.packageName, className.simpleNames.dropLast(1) + "${classDeclaration.simpleName.asString()}ReadResponse")
     } else {
         References.Bluetooth.readResponse

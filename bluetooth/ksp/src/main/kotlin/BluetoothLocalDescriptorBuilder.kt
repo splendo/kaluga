@@ -82,7 +82,7 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, private val descriptor: BluetoothDescriptor, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         return TypeSpec.interfaceBuilder(interfaceName)
             .addType(
                 TypeSpec.companionObjectBuilder()
@@ -179,8 +179,8 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
     }
 
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val className = nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -332,10 +332,10 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
     }
 
     override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_SIMULATOR)
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val className = nameFor(declaration, GenerationType.SERVER_SIMULATOR)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         val delegate = interfaceName.nestedClass(DELEGATE)
-        val remote = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
+        val remote = nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
         return TypeSpec.classBuilder(className)
             .primaryConstructor(

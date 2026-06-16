@@ -134,7 +134,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
     }
 
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         return TypeSpec.interfaceBuilder(interfaceName)
             .addType(
                 TypeSpec.companionObjectBuilder()
@@ -197,7 +197,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
                     addProperty(
                         propertyDeclaration.delegateParameterName,
-                        NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
+                        nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
                     )
                 } else {
                     invalidProperty(
@@ -276,8 +276,8 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
     }
 
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val className = nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER)
         return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
@@ -326,7 +326,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         CodeBlock.builder()
                             .beginControlFlow(
                                 "$RETURN $BUILDER.$CHARACTERISTIC(%T.$UUID) {",
-                                NameHelper.nameFor(declaration, GenerationType.SERVER_API),
+                                nameFor(declaration, GenerationType.SERVER_API),
                             )
                             .apply {
                                 var hasReadMethod = false
@@ -389,7 +389,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                         ) { property ->
                                             addStatement(
                                                 "%T.$CONFIGURE($THIS, $property${descriptorNeedsFormatter.functionArgument})",
-                                                NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
+                                                nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
                                             )
                                         }
                                     } else {
@@ -526,10 +526,10 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
     }
 
     override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_SIMULATOR)
-        val apiName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val className = nameFor(declaration, GenerationType.SERVER_SIMULATOR)
+        val apiName = nameFor(declaration, GenerationType.SERVER_API)
         val delegate = apiName.nestedClass(DELEGATE)
-        val remote = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
+        val remote = nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
         val notifiable = properties.firstOrNull { it.isNotifiable }
         return TypeSpec.classBuilder(className)
@@ -910,7 +910,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
     private fun generateDescriptorProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
         PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
-            NameHelper.serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
+            serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
         )
             .addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
@@ -922,9 +922,9 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                             "$LAZY { %L }",
                             CodeBlock.of(
                                 "%T($CHARACTERISTIC.$DESCRIPTORS.%M(%T.$UUID))",
-                                NameHelper.serverName(typeDeclaration, type),
+                                serverName(typeDeclaration, type),
                                 References.Bluetooth.get,
-                                NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API),
+                                nameFor(typeDeclaration, GenerationType.SERVER_API),
                             ),
                         )
                     }
@@ -935,7 +935,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                 .withLetIfNull("${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}", propertyDeclaration) { property ->
                                     addStatement(
                                         "%T($property, $IS_CLOSED)",
-                                        NameHelper.serverName(typeDeclaration, type),
+                                        serverName(typeDeclaration, type),
                                     )
                                 }
                                 .build(),

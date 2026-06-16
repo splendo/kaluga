@@ -57,15 +57,17 @@ class BluetoothPlugin : Plugin<Project> {
                 }
                 val isSinglePlatform = targets.count { it.name != "metadata" } == 1
                 val bluetoothTargets = bluetoothExtension.target.get()
+                val generatesImplementation = bluetoothExtension.implementFor.get().isNotEmpty()
                 sourceSets.commonMain {
                     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+                    bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
                     dependencies {
                         implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
                         implementation("com.splendo.kaluga.bluetooth:core:$kalugaVersion")
-                        if (BluetoothTarget.CLIENT in bluetoothTargets) {
+                        if (generatesImplementation && BluetoothTarget.CLIENT in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:client:$kalugaVersion")
                         }
-                        if (BluetoothTarget.SERVER in bluetoothTargets) {
+                        if (generatesImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:server:$kalugaVersion")
                         }
                     }

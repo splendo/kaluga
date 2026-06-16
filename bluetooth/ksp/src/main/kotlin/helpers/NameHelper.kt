@@ -28,35 +28,52 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.ksp.GenerationType
+import com.splendo.kaluga.bluetooth.ksp.Options
 import com.squareup.kotlinpoet.ClassName
 
 internal object NameHelper {
 
-    fun clientName(declaration: KSClassDeclaration, type: GenerationType.Type) = nameFor(
+    fun clientName(declaration: KSClassDeclaration, type: GenerationType.Type, options: Options) = nameFor(
         declaration,
         when (type) {
             GenerationType.Type.API -> GenerationType.CLIENT_API
             GenerationType.Type.BLUETOOTH -> GenerationType.CLIENT_BLUETOOTH
             GenerationType.Type.SIMULATOR -> GenerationType.CLIENT_SIMULATOR
         },
+        options,
     )
-    fun serverName(declaration: KSClassDeclaration, type: GenerationType.Type) = nameFor(
+    fun serverName(declaration: KSClassDeclaration, type: GenerationType.Type, options: Options) = nameFor(
         declaration,
         when (type) {
             GenerationType.Type.API -> GenerationType.SERVER_API
             GenerationType.Type.BLUETOOTH -> GenerationType.SERVER_BLUETOOTH
             GenerationType.Type.SIMULATOR -> GenerationType.SERVER_SIMULATOR
         },
+        options,
     )
 
-    fun nameFor(declaration: KSClassDeclaration, generationType: GenerationType): ClassName {
+    fun nameFor(declaration: KSClassDeclaration, generationType: GenerationType, options: Options): ClassName {
         val names = mutableListOf(declaration.simpleName(generationType))
         var current = declaration.parentDeclaration
         while (current != null) {
             names.add(0, current.simpleName(generationType))
             current = current.parentDeclaration
         }
-        return ClassName(declaration.packageName.asString(), names)
+        return ClassName(packageFor(declaration, generationType, options), names)
+    }
+
+    private fun packageFor(declaration: KSClassDeclaration, generationType: GenerationType, options: Options): String {
+        val default = declaration.packageName.asString()
+        return when (generationType.type) {
+            GenerationType.Type.API -> options.apiPackage(default)
+            GenerationType.Type.BLUETOOTH, GenerationType.Type.SIMULATOR -> options.generatedPackage(default)
+        }
+    }
+
+    /** The package of the file written for [declaration]: the API package when the API is generated, otherwise the output package. */
+    fun filePackage(declaration: KSClassDeclaration, options: Options): String {
+        val default = declaration.packageName.asString()
+        return if (options.generateApi) options.apiPackage(default) else options.generatedPackage(default)
     }
 
     private fun KSDeclaration.simpleName(generationType: GenerationType): String = when (generationType.side) {

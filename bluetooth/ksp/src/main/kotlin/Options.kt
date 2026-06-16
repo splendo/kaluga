@@ -19,11 +19,28 @@ package com.splendo.kaluga.bluetooth.ksp
 
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 
-data class Options(val generateClient: Boolean, val generateServer: Boolean, val generateBluetoothImplementation: Boolean, val generateSimulatorImplementation: Boolean) {
+data class Options(
+    val generateClient: Boolean,
+    val generateServer: Boolean,
+    val generateApi: Boolean,
+    val generateBluetoothImplementation: Boolean,
+    val generateSimulatorImplementation: Boolean,
+    val generatedPackage: String?,
+    val apiPackage: String?,
+) {
     constructor(environment: SymbolProcessorEnvironment) : this(
         environment.options["target"].orEmpty().split(",").contains("CLIENT"),
         environment.options["target"].orEmpty().split(",").contains("SERVER"),
+        environment.options["generateApi"] != "false",
         environment.options["implementFor"].orEmpty().split(",").contains("BLUETOOTH"),
         environment.options["implementFor"].orEmpty().split(",").contains("SIMULATOR"),
+        environment.options["generatedPackage"]?.takeIf { it.isNotBlank() },
+        environment.options["apiPackage"]?.takeIf { it.isNotBlank() },
     )
+
+    /** The package in which generated code is placed, falling back to [defaultPackage] when not configured. */
+    fun generatedPackage(defaultPackage: String): String = generatedPackage ?: defaultPackage
+
+    /** The package in which the API interfaces live, falling back to [generatedPackage]. */
+    fun apiPackage(defaultPackage: String): String = apiPackage ?: generatedPackage(defaultPackage)
 }

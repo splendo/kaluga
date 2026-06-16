@@ -68,7 +68,7 @@ import com.squareup.kotlinpoet.joinToCode
 internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, private val service: BluetoothService, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         return TypeSpec.interfaceBuilder(interfaceName)
             .addType(
                 TypeSpec.companionObjectBuilder()
@@ -102,7 +102,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
 
                                 PropertySpec.builder(
                                     "${propertyDeclaration.simpleName.asString()}$DELEGATE",
-                                    NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
+                                    nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
                                 ).build()
                             } else {
                                 invalidProperty(propertyDeclaration, BluetoothService::class, BluetoothCharacteristic::class)
@@ -117,8 +117,8 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
     }
 
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val className = nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         val delegateName = interfaceName.nestedClass(DELEGATE)
         val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER)
         return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
@@ -205,7 +205,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                     ) { property ->
                                         addStatement(
                                             "%T.$CONFIGURE($THIS, $property${delegateNeedsFormatter.functionArgument})",
-                                            NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
+                                            nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
                                         )
                                     }
                                 }
@@ -253,7 +253,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                     ) { property ->
                                         addStatement(
                                             "%T.$CONFIGURE($THIS, $property${characteristicNeedsFormatter.functionArgument})",
-                                            NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
+                                            nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
                                         )
                                     }
                                 }
@@ -271,10 +271,10 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
         .build()
 
     override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_SIMULATOR)
-        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val className = nameFor(declaration, GenerationType.SERVER_SIMULATOR)
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         val delegate = interfaceName.nestedClass(DELEGATE)
-        val remote = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
+        val remote = nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
@@ -401,7 +401,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
     private fun generateIncludedServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
         PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
-            NameHelper.serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
+            serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
         ).addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
                 val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
@@ -413,9 +413,9 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                             "$LAZY { %L }",
                             CodeBlock.of(
                                 "%T($SERVICE.$INCLUDED_SERVICES.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
-                                NameHelper.serverName(typeDeclaration, type),
+                                serverName(typeDeclaration, type),
                                 References.Bluetooth.get,
-                                NameHelper.serverName(typeDeclaration, GenerationType.Type.API),
+                                serverName(typeDeclaration, GenerationType.Type.API),
                             ),
                         )
                     }
@@ -426,7 +426,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                 .withLetIfNull("${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}", propertyDeclaration) { property ->
                                     addStatement(
                                         "%T($property, $COROUTINE_SCOPE, $IS_CLOSED)",
-                                        NameHelper.serverName(typeDeclaration, type),
+                                        serverName(typeDeclaration, type),
                                     )
                                 }
                                 .build(),
@@ -439,7 +439,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
     private fun generateCharacteristicProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
         PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
-            NameHelper.serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
+            serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
         ).addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
                 val characteristicNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
@@ -453,9 +453,9 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                             "$LAZY { %L }",
                             CodeBlock.of(
                                 "%T($SERVICE.$CHARACTERISTICS.%M(%T.$UUID)%L${characteristicNeedsFormat.functionArgument})",
-                                NameHelper.serverName(typeDeclaration, type),
+                                serverName(typeDeclaration, type),
                                 References.Bluetooth.get,
-                                NameHelper.serverName(typeDeclaration, GenerationType.Type.API),
+                                serverName(typeDeclaration, GenerationType.Type.API),
                                 cast,
                             ),
                         )
@@ -467,7 +467,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                 .withLetIfNull("${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}", propertyDeclaration) { property ->
                                     addStatement(
                                         "%T($property, $COROUTINE_SCOPE, $IS_CLOSED)",
-                                        NameHelper.serverName(typeDeclaration, type),
+                                        serverName(typeDeclaration, type),
                                     )
                                 }
                                 .build(),
