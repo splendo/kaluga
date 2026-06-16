@@ -25,7 +25,7 @@ import com.splendo.kaluga.base.text.upperCased
 /**
  * Default implementation of [BaseLocale]
  */
-actual data class KalugaLocale internal constructor(internal val locale: java.util.Locale) : BaseLocale() {
+actual data class KalugaLocale internal constructor(val locale: java.util.Locale) : BaseLocale() {
     actual companion object {
 
         /**

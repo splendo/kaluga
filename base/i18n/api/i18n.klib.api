@@ -1,0 +1,116 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.base:i18n>
+final enum class com.splendo.kaluga.base.utils/UnitSystem : kotlin/Enum<com.splendo.kaluga.base.utils/UnitSystem> { // com.splendo.kaluga.base.utils/UnitSystem|null[0]
+    enum entry IMPERIAL // com.splendo.kaluga.base.utils/UnitSystem.IMPERIAL|null[0]
+    enum entry METRIC // com.splendo.kaluga.base.utils/UnitSystem.METRIC|null[0]
+    enum entry MIXED // com.splendo.kaluga.base.utils/UnitSystem.MIXED|null[0]
+
+    final val entries // com.splendo.kaluga.base.utils/UnitSystem.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.base.utils/UnitSystem> // com.splendo.kaluga.base.utils/UnitSystem.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.base.utils/UnitSystem // com.splendo.kaluga.base.utils/UnitSystem.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.base.utils/UnitSystem> // com.splendo.kaluga.base.utils/UnitSystem.values|values#static(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.utils/UnitSystem.Companion|null[0]
+        final fun withCountryCode(kotlin/String): com.splendo.kaluga.base.utils/UnitSystem // com.splendo.kaluga.base.utils/UnitSystem.Companion.withCountryCode|withCountryCode(kotlin.String){}[0]
+        final fun withRawValue(kotlin/String): com.splendo.kaluga.base.utils/UnitSystem // com.splendo.kaluga.base.utils/UnitSystem.Companion.withRawValue|withRawValue(kotlin.String){}[0]
+    }
+}
+
+abstract class com.splendo.kaluga.base.utils/BaseLocale { // com.splendo.kaluga.base.utils/BaseLocale|null[0]
+    constructor <init>() // com.splendo.kaluga.base.utils/BaseLocale.<init>|<init>(){}[0]
+
+    abstract val alternateQuotationEnd // com.splendo.kaluga.base.utils/BaseLocale.alternateQuotationEnd|{}alternateQuotationEnd[0]
+        abstract fun <get-alternateQuotationEnd>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.alternateQuotationEnd.<get-alternateQuotationEnd>|<get-alternateQuotationEnd>(){}[0]
+    abstract val alternateQuotationStart // com.splendo.kaluga.base.utils/BaseLocale.alternateQuotationStart|{}alternateQuotationStart[0]
+        abstract fun <get-alternateQuotationStart>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.alternateQuotationStart.<get-alternateQuotationStart>|<get-alternateQuotationStart>(){}[0]
+    abstract val countryCode // com.splendo.kaluga.base.utils/BaseLocale.countryCode|{}countryCode[0]
+        abstract fun <get-countryCode>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.countryCode.<get-countryCode>|<get-countryCode>(){}[0]
+    abstract val languageCode // com.splendo.kaluga.base.utils/BaseLocale.languageCode|{}languageCode[0]
+        abstract fun <get-languageCode>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    abstract val quotationEnd // com.splendo.kaluga.base.utils/BaseLocale.quotationEnd|{}quotationEnd[0]
+        abstract fun <get-quotationEnd>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.quotationEnd.<get-quotationEnd>|<get-quotationEnd>(){}[0]
+    abstract val quotationStart // com.splendo.kaluga.base.utils/BaseLocale.quotationStart|{}quotationStart[0]
+        abstract fun <get-quotationStart>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.quotationStart.<get-quotationStart>|<get-quotationStart>(){}[0]
+    abstract val scriptCode // com.splendo.kaluga.base.utils/BaseLocale.scriptCode|{}scriptCode[0]
+        abstract fun <get-scriptCode>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.scriptCode.<get-scriptCode>|<get-scriptCode>(){}[0]
+    abstract val unitSystem // com.splendo.kaluga.base.utils/BaseLocale.unitSystem|{}unitSystem[0]
+        abstract fun <get-unitSystem>(): com.splendo.kaluga.base.utils/UnitSystem // com.splendo.kaluga.base.utils/BaseLocale.unitSystem.<get-unitSystem>|<get-unitSystem>(){}[0]
+    abstract val variantCode // com.splendo.kaluga.base.utils/BaseLocale.variantCode|{}variantCode[0]
+        abstract fun <get-variantCode>(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.variantCode.<get-variantCode>|<get-variantCode>(){}[0]
+
+    abstract fun countryName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.countryName|countryName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    abstract fun languageName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.languageName|languageName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    abstract fun name(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.name|name(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    abstract fun scriptName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.scriptName|scriptName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    abstract fun variantName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.variantName|variantName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    open fun toString(): kotlin/String // com.splendo.kaluga.base.utils/BaseLocale.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.base.utils/KalugaLocale : com.splendo.kaluga.base.utils/BaseLocale { // com.splendo.kaluga.base.utils/KalugaLocale|null[0]
+    final val alternateQuotationEnd // com.splendo.kaluga.base.utils/KalugaLocale.alternateQuotationEnd|{}alternateQuotationEnd[0]
+        final fun <get-alternateQuotationEnd>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.alternateQuotationEnd.<get-alternateQuotationEnd>|<get-alternateQuotationEnd>(){}[0]
+    final val alternateQuotationStart // com.splendo.kaluga.base.utils/KalugaLocale.alternateQuotationStart|{}alternateQuotationStart[0]
+        final fun <get-alternateQuotationStart>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.alternateQuotationStart.<get-alternateQuotationStart>|<get-alternateQuotationStart>(){}[0]
+    final val countryCode // com.splendo.kaluga.base.utils/KalugaLocale.countryCode|{}countryCode[0]
+        final fun <get-countryCode>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.countryCode.<get-countryCode>|<get-countryCode>(){}[0]
+    final val languageCode // com.splendo.kaluga.base.utils/KalugaLocale.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val quotationEnd // com.splendo.kaluga.base.utils/KalugaLocale.quotationEnd|{}quotationEnd[0]
+        final fun <get-quotationEnd>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.quotationEnd.<get-quotationEnd>|<get-quotationEnd>(){}[0]
+    final val quotationStart // com.splendo.kaluga.base.utils/KalugaLocale.quotationStart|{}quotationStart[0]
+        final fun <get-quotationStart>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.quotationStart.<get-quotationStart>|<get-quotationStart>(){}[0]
+    final val scriptCode // com.splendo.kaluga.base.utils/KalugaLocale.scriptCode|{}scriptCode[0]
+        final fun <get-scriptCode>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.scriptCode.<get-scriptCode>|<get-scriptCode>(){}[0]
+    final val unitSystem // com.splendo.kaluga.base.utils/KalugaLocale.unitSystem|{}unitSystem[0]
+        final fun <get-unitSystem>(): com.splendo.kaluga.base.utils/UnitSystem // com.splendo.kaluga.base.utils/KalugaLocale.unitSystem.<get-unitSystem>|<get-unitSystem>(){}[0]
+    final val variantCode // com.splendo.kaluga.base.utils/KalugaLocale.variantCode|{}variantCode[0]
+        final fun <get-variantCode>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.variantCode.<get-variantCode>|<get-variantCode>(){}[0]
+
+    final fun countryName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.countryName|countryName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.utils/KalugaLocale.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.utils/KalugaLocale.hashCode|hashCode(){}[0]
+    final fun languageName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.languageName|languageName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    final fun name(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.name|name(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    final fun scriptName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.scriptName|scriptName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.toString|toString(){}[0]
+    final fun variantName(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.variantName|variantName(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.utils/KalugaLocale.Companion|null[0]
+        final val availableLocales // com.splendo.kaluga.base.utils/KalugaLocale.Companion.availableLocales|{}availableLocales[0]
+            final fun <get-availableLocales>(): kotlin.collections/List<com.splendo.kaluga.base.utils/KalugaLocale> // com.splendo.kaluga.base.utils/KalugaLocale.Companion.availableLocales.<get-availableLocales>|<get-availableLocales>(){}[0]
+        final val defaultLocale // com.splendo.kaluga.base.utils/KalugaLocale.Companion.defaultLocale|{}defaultLocale[0]
+            final fun <get-defaultLocale>(): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.base.utils/KalugaLocale.Companion.defaultLocale.<get-defaultLocale>|<get-defaultLocale>(){}[0]
+
+        final fun createLocale(kotlin/String): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.base.utils/KalugaLocale.Companion.createLocale|createLocale(kotlin.String){}[0]
+        final fun createLocale(kotlin/String, kotlin/String): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.base.utils/KalugaLocale.Companion.createLocale|createLocale(kotlin.String;kotlin.String){}[0]
+        final fun createLocale(kotlin/String, kotlin/String, kotlin/String): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.base.utils/KalugaLocale.Companion.createLocale|createLocale(kotlin.String;kotlin.String;kotlin.String){}[0]
+    }
+
+    // Targets: [apple]
+    final val nsLocale // com.splendo.kaluga.base.utils/KalugaLocale.nsLocale|{}nsLocale[0]
+        final fun <get-nsLocale>(): platform.Foundation/NSLocale // com.splendo.kaluga.base.utils/KalugaLocale.nsLocale.<get-nsLocale>|<get-nsLocale>(){}[0]
+
+    // Targets: [apple]
+    final fun component1(): platform.Foundation/NSLocale // com.splendo.kaluga.base.utils/KalugaLocale.component1|component1(){}[0]
+
+    // Targets: [js, wasmJs]
+    final val tag // com.splendo.kaluga.base.utils/KalugaLocale.tag|{}tag[0]
+        final fun <get-tag>(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.tag.<get-tag>|<get-tag>(){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun component1(): kotlin/String // com.splendo.kaluga.base.utils/KalugaLocale.component1|component1(){}[0]
+}
+
+final val com.splendo.kaluga.base.utils/enUsPosix // com.splendo.kaluga.base.utils/enUsPosix|@com.splendo.kaluga.base.utils.KalugaLocale.Companion{}enUsPosix[0]
+    final fun (com.splendo.kaluga.base.utils/KalugaLocale.Companion).<get-enUsPosix>(): com.splendo.kaluga.base.utils/KalugaLocale // com.splendo.kaluga.base.utils/enUsPosix.<get-enUsPosix>|<get-enUsPosix>@com.splendo.kaluga.base.utils.KalugaLocale.Companion(){}[0]
+
+final fun (kotlin/String).com.splendo.kaluga.base.text/lowerCased(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.text/lowerCased|lowerCased@kotlin.String(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
+final fun (kotlin/String).com.splendo.kaluga.base.text/upperCased(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.text/upperCased|upperCased@kotlin.String(com.splendo.kaluga.base.utils.KalugaLocale){}[0]

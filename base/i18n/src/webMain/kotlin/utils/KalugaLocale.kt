@@ -25,7 +25,7 @@ import com.splendo.kaluga.base.text.upperCased
  *
  * Shared by the JS family (js + wasmJs) via typed `Intl` externals.
  */
-actual data class KalugaLocale internal constructor(internal val tag: String) : BaseLocale() {
+actual data class KalugaLocale internal constructor(val tag: String) : BaseLocale() {
 
     private val parsed: IntlLocale = parseIntlLocale(tag)
 
