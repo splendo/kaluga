@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,9 +15,15 @@
 
  */
 
-@file:JsModule("luxon")
+package com.splendo.kaluga.datetime
+import com.splendo.kaluga.base.i18n.KalugaLocale
 
-package com.splendo.kaluga.datetime.externals
 
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+/**
+ * Indicates whether this locale use a 24 hour clock cycle.
+ */
+val KalugaLocale.uses24HourClock: Boolean get() {
+    val formatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, locale = this)
+    val formattedDate = formatter.format(DefaultKalugaDate.now())
+    return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
+}

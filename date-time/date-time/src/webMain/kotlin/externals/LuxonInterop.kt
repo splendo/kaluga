@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.externals
+package com.splendo.kaluga.datetime.externals
 
 /**
  * The `luxon` `DateTime` class object, exposing the static factories Kaluga uses.

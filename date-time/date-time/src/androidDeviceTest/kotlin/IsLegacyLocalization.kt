@@ -15,9 +15,8 @@
 
  */
 
-@file:JsModule("luxon")
+package com.splendo.kaluga.datetime
 
-package com.splendo.kaluga.datetime.externals
+import android.os.Build
 
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+actual val isLegacyLocalization: Boolean = Build.VERSION.SDK_INT <= Build.VERSION_CODES.N

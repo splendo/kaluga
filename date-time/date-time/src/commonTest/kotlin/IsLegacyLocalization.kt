@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 
  */
 
-@file:JsModule("luxon")
+package com.splendo.kaluga.datetime
 
-package com.splendo.kaluga.datetime.externals
-
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+/**
+ * `true` on platforms whose bundled localization data predates modern ICU formatting (Android API <= N), where some formatted values differ.
+ */
+expect val isLegacyLocalization: Boolean

@@ -15,9 +15,6 @@
 
  */
 
-@file:JsModule("luxon")
+package com.splendo.kaluga.datetime
 
-package com.splendo.kaluga.datetime.externals
-
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+actual val isLegacyLocalization: Boolean = false

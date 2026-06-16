@@ -15,9 +15,12 @@
 
  */
 
-@file:JsModule("luxon")
+package com.splendo.kaluga.datetime
 
-package com.splendo.kaluga.datetime.externals
+import com.splendo.kaluga.datetime.externals.LuxonDateTime
 
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+// Kotlin/Wasm has no `kotlin.js.Date`; the holder keeps the epoch milliseconds, which is all the
+// common API exposes (the value is opaque — no members are accessed through `KalugaDate.date`).
+actual class KalugaDateHolder internal constructor(internal val epochMilliseconds: Double)
+
+internal actual fun luxonToDateHolder(dateTime: LuxonDateTime): KalugaDateHolder = KalugaDateHolder(dateTime.toMillis())

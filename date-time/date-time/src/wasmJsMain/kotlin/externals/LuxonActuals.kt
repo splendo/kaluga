@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.externals
+package com.splendo.kaluga.datetime.externals
 
 internal actual fun luxonFromMillis(milliseconds: Double, options: LuxonOptions): LuxonDateTime = DateTime.fromMillis(milliseconds, options)
 internal actual fun luxonFromObject(values: LuxonDateValues, options: LuxonOptions): LuxonDateTime = DateTime.fromObject(values, options)

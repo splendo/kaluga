@@ -18,7 +18,7 @@
 @file:JsModule("luxon")
 @file:JsNonModule
 
-package com.splendo.kaluga.base.externals
+package com.splendo.kaluga.datetime.externals
 
 internal external val DateTime: LuxonDateTimeStatic
 internal external val Info: LuxonInfo

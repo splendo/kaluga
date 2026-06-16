@@ -15,9 +15,12 @@
 
  */
 
-@file:JsModule("luxon")
+package com.splendo.kaluga.datetime
 
-package com.splendo.kaluga.datetime.externals
+import com.splendo.kaluga.datetime.externals.LuxonDateTime
 
-internal external val DateTime: LuxonDateTimeStatic
-internal external val Info: LuxonInfo
+actual typealias KalugaDateHolder = kotlin.js.Date
+
+internal actual fun luxonToDateHolder(dateTime: LuxonDateTime): KalugaDateHolder = luxonToJsDate(dateTime)
+
+private fun luxonToJsDate(dateTime: LuxonDateTime): kotlin.js.Date = js("dateTime.toJSDate()")
