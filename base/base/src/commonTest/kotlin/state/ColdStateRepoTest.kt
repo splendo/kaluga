@@ -24,7 +24,6 @@ import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.base.test.yieldMultiple
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -46,12 +45,10 @@ class ColdStateRepoTest : BaseTest() {
 
         init {
             initialValueMock.on().doExecuteSuspended {
-                debug("ColdStateRepoTest") { "initialValue" }
                 CircuitState.Open
             }
 
             deinitializeMock.on().doExecuteSuspended {
-                debug("ColdStateRepoTest") { "deinitialize" }
             }
         }
 
