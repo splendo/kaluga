@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.splendo.kaluga:date-time>
+// Library unique name: <com.splendo.kaluga.date-time:timer>
 abstract interface com.splendo.kaluga.datetime.timer/ControllableTimer : com.splendo.kaluga.datetime.timer/Timer { // com.splendo.kaluga.datetime.timer/ControllableTimer|null[0]
     abstract suspend fun pause(): kotlin/Boolean // com.splendo.kaluga.datetime.timer/ControllableTimer.pause|pause(){}[0]
     abstract suspend fun start(): kotlin/Boolean // com.splendo.kaluga.datetime.timer/ControllableTimer.start|start(){}[0]
