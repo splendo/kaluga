@@ -17,21 +17,4 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.KalugaLocale
-
-/**
- * The String that serves as a line separator.
- */
-expect val lineSeparator: String
-
-/**
- * Converts a String to its lower cased variant based on a given [KalugaLocale]
- * @param locale The [KalugaLocale] to use for transforming to lower case.
- */
-expect fun String.lowerCased(locale: KalugaLocale): String
-
-/**
- * Converts a String to its upper cased variant based on a given [KalugaLocale]
- * @param locale The [KalugaLocale] to use for transforming to upper case.
- */
-expect fun String.upperCased(locale: KalugaLocale): String
+actual val isLegacyLocalization: Boolean = false
