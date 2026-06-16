@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.i18n
 
-
 /**
  * Default implementation of [BaseLocale]
  */

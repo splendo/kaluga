@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.i18n
 
-
 /**
  * Default implementation of [BaseLocale] backed by the ECMAScript
  * [`Intl`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) API.

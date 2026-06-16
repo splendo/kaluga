@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.datetime.DefaultKalugaDate
 import com.splendo.kaluga.datetime.KalugaDate
-import com.splendo.kaluga.base.utils.minus
+import com.splendo.kaluga.datetime.minus
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.device.Identifier

@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.i18n
 
-
 // Typed `js(...)` helpers (no `dynamic`) so this is shared by the JS family. Each is the sole body of
 // a function with String parameters/return, which is the form Kotlin/Wasm requires for `js(...)`.
 private fun toLocaleLowerCase(value: String, tag: String): String = js("value.toLocaleLowerCase(tag)")

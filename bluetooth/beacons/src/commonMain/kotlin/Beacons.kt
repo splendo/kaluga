@@ -20,8 +20,8 @@ package com.splendo.kaluga.bluetooth.beacons
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.datetime.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.minus
-import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.datetime.minus
+import com.splendo.kaluga.datetime.plus
 import com.splendo.kaluga.bluetooth.BluetoothClient
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Identifier

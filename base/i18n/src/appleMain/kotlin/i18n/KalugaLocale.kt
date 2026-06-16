@@ -16,6 +16,7 @@
  */
 
 package com.splendo.kaluga.base.i18n
+import com.splendo.kaluga.base.utils.typedList
 
 import platform.Foundation.NSLocale
 import platform.Foundation.alternateQuotationBeginDelimiter

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.datetime
 import com.splendo.kaluga.base.i18n.KalugaLocale
 
-
 /**
  * Indicates whether this locale use a 24 hour clock cycle.
  */

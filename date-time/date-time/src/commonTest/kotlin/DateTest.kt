@@ -19,8 +19,6 @@ package com.splendo.kaluga.datetime
 
 import com.splendo.kaluga.base.i18n.KalugaLocale
 import com.splendo.kaluga.base.i18n.enUsPosix
-import com.splendo.kaluga.base.utils.minus
-import com.splendo.kaluga.base.utils.plus
 import kotlin.math.roundToLong
 import kotlin.test.Test
 import kotlin.test.assertEquals
