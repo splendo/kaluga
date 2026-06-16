@@ -29,14 +29,20 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Kaluga Bluetooth Generation Example"
+rootProject.name = "Kaluga Bluetooth Plugin"
 
-include(":example")
-include(":client")
-include(":server")
-include(":api")
-include(":clientimpl")
-include(":demo")
-include(":demoAndroid")
+// The demo/showcase application.
+include(":app:shared")
+include(":app:android")
+
+// Codegen validation fixtures, one per plugin capability (see validation/spec for the shared definitions).
+include(":validation:full")
+include(":validation:contract")
+include(":validation:client")
+include(":validation:server")
+include(":validation:simulator")
+include(":validation:external-api-client")
+include(":validation:external-api-server")
+include(":validation:external-api-simulator")
 
 includeBuild("../../../")

@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":demo"))
+    implementation(project(":app:shared"))
     implementation("com.splendo.kaluga.base:base:${libs.versions.kaluga.get()}")
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.ui)

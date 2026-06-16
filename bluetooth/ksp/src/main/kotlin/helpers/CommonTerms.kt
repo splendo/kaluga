@@ -90,6 +90,8 @@ const val BLUETOOTH = "bluetooth"
 const val IDENTIFIER = "identifier"
 const val SIMULATED = "simulated"
 const val UUID = "UUID"
+const val COMPANION = "Companion"
+const val FACTORY = "Factory"
 
 // Client
 const val GENERATE_CLIENT = "generateClient"

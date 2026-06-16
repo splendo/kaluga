@@ -46,6 +46,8 @@ import com.splendo.kaluga.bluetooth.demo.DemoDeviceClient
 import com.splendo.kaluga.bluetooth.demo.DemoDeviceServer
 import com.splendo.kaluga.bluetooth.demo.DemoServerState
 import com.splendo.kaluga.bluetooth.demo.RemoteDemoService
+import com.splendo.kaluga.bluetooth.demo.bluetooth
+import com.splendo.kaluga.bluetooth.demo.simulated
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
 import com.splendo.kaluga.bluetooth.device.stringValue

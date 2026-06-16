@@ -85,44 +85,38 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
         const val SERVICE_UUIDS = "serviceUUIDs"
     }
 
-    override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
-        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
-        val delegateParameter = ParameterSpec(
-            "$SERVER$DELEGATE".replaceFirstChar {
-                it.lowercase()
-            },
-            interfaceName.nestedClass(DELEGATE),
+    override fun generateAPI(nested: List<TypeSpec>): TypeSpec = TypeSpec.interfaceBuilder(nameFor(declaration, GenerationType.SERVER_API))
+        .addSuperinterface(References.Kotlin.autoCloseable)
+        .addType(companionObject())
+        .addTypes(nested)
+        .addType(
+            generateDelegate(),
         )
-        return TypeSpec.interfaceBuilder(interfaceName)
-            .addSuperinterface(References.Kotlin.autoCloseable)
-            .addType(
-                generateAPICompanionObject(delegateParameter, interfaceName),
-            )
-            .addTypes(nested)
-            .addType(
-                generateDelegate(),
-            )
-            .generateBody(declarations, GenerationType.Type.API)
-            .build()
-    }
-
-    private fun generateAPICompanionObject(delegateParameter: ParameterSpec, interfaceName: ClassName): TypeSpec = TypeSpec.companionObjectBuilder()
-        .apply {
-            if (options.generateBluetoothImplementation) {
-                addFunction(generateAPICreateBluetoothMethod(delegateParameter, interfaceName))
-            }
-            if (options.generateSimulatorImplementation) {
-                addFunction(generateAPICreateSimulatorMethod(delegateParameter, interfaceName))
-            }
-        }
+        .generateBody(declarations, GenerationType.Type.API)
         .build()
 
-    private fun generateAPICreateBluetoothMethod(delegateParameter: ParameterSpec, interfaceName: ClassName): FunSpec = FunSpec.builder(
+    override val needsNamedCompanion: Boolean get() = true
+
+    override fun factoryFor(generationType: GenerationType): FunSpec? = when (generationType) {
+        GenerationType.SERVER_BLUETOOTH -> generateBluetoothFactory()
+        GenerationType.SERVER_SIMULATOR -> generateSimulatorFactory()
+        else -> null
+    }
+
+    private fun delegateParameter(interfaceName: ClassName): ParameterSpec = ParameterSpec(
+        "$SERVER$DELEGATE".replaceFirstChar { it.lowercase() },
+        interfaceName.nestedClass(DELEGATE),
+    )
+
+    private fun generateBluetoothFactory(): FunSpec = FunSpec.builder(
         BLUETOOTH,
     ).apply {
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
+        val delegateParameter = delegateParameter(interfaceName)
         val serverNeedsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER)
         val delegateNeedsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
         val returnType = nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
+        receiver(companionReceiver(GenerationType.SERVER_API))
         returns(returnType)
             .addModifiers(KModifier.SUSPEND)
             .addParameters(
@@ -194,8 +188,11 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
     }
         .build()
 
-    private fun generateAPICreateSimulatorMethod(delegateParameter: ParameterSpec, interfaceName: ClassName): FunSpec = FunSpec.builder(SIMULATED).apply {
+    private fun generateSimulatorFactory(): FunSpec = FunSpec.builder(SIMULATED).apply {
+        val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
+        val delegateParameter = delegateParameter(interfaceName)
         val returnType = nameFor(declaration, GenerationType.SERVER_SIMULATOR)
+        receiver(companionReceiver(GenerationType.SERVER_API))
         addParameter(delegateParameter)
             .addParameter(
                 ParameterSpec.builder(COROUTINE_CONTEXT, References.Kotlin.Coroutines.coroutineContext)

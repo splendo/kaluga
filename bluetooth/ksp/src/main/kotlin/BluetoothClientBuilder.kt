@@ -48,30 +48,24 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: Options, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, options, logger) {
 
-    override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
-        return TypeSpec.interfaceBuilder(nameFor(declaration, GenerationType.CLIENT_API))
-            .addType(generateAPICompanionObject(needsFormatter))
-            .addTypes(nested)
-            .generateBody(declarations, GenerationType.Type.API)
-            .build()
-    }
-
-    private fun generateAPICompanionObject(needsFormatter: NeedsFormatterHelper.NeedsFormatter): TypeSpec = TypeSpec.companionObjectBuilder()
-        .apply {
-            if (options.generateBluetoothImplementation) {
-                addFunction(generateAPIBluetoothMethod(needsFormatter))
-            }
-            if (options.generateSimulatorImplementation && options.generateServer) {
-                addFunction(generateAPISimulatorMethod())
-            }
-        }
+    override fun generateAPI(nested: List<TypeSpec>): TypeSpec = TypeSpec.interfaceBuilder(nameFor(declaration, GenerationType.CLIENT_API))
+        .addType(companionObject())
+        .addTypes(nested)
+        .generateBody(declarations, GenerationType.Type.API)
         .build()
 
-    private fun generateAPIBluetoothMethod(needsFormatter: NeedsFormatterHelper.NeedsFormatter): FunSpec = FunSpec.builder(
+    override fun factoryFor(generationType: GenerationType): FunSpec? = when (generationType) {
+        GenerationType.CLIENT_BLUETOOTH -> generateBluetoothFactory()
+        GenerationType.CLIENT_SIMULATOR -> if (options.generateServer) generateSimulatorFactory() else null
+        else -> null
+    }
+
+    private fun generateBluetoothFactory(): FunSpec = FunSpec.builder(
         BLUETOOTH,
     ).apply {
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
         val returnType = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
+        receiver(companionReceiver(GenerationType.CLIENT_API))
         returns(returnType)
             .addModifiers(KModifier.SUSPEND)
             .addParameters(
@@ -92,9 +86,10 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
             )
     }
         .build()
-    private fun generateAPISimulatorMethod(): FunSpec = FunSpec.builder(SIMULATED).apply {
+    private fun generateSimulatorFactory(): FunSpec = FunSpec.builder(SIMULATED).apply {
         val returnType = nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
         val serverType = nameFor(declaration, GenerationType.SERVER_SIMULATOR)
+        receiver(companionReceiver(GenerationType.CLIENT_API))
         returns(returnType)
             .addParameters(
                 listOf(

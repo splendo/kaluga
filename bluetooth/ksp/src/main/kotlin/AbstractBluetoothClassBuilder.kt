@@ -26,8 +26,11 @@ import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
+import com.splendo.kaluga.bluetooth.ksp.helpers.COMPANION
+import com.splendo.kaluga.bluetooth.ksp.helpers.FACTORY
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import kotlin.reflect.KClass
@@ -52,6 +55,37 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
     abstract fun generateAPI(nested: List<TypeSpec>): TypeSpec
     abstract fun generateBluetooth(nested: List<TypeSpec>): TypeSpec
     abstract fun generateSimulated(nested: List<TypeSpec>): TypeSpec
+
+    /**
+     * The top-level creator function (an extension on the API's `Companion`) for the given implementation type,
+     * or `null` if there is none. Generated alongside the implementation so it lives in the implementation module
+     * even when the API is generated separately (see [Options.generateApi]).
+     */
+    open fun factoryFor(generationType: GenerationType): FunSpec? = null
+
+    protected val hasNestedDevices: Boolean get() = declaration.declarations.any { it.isAnnotationPresent(Bluetooth::class) }
+
+    /** Whether the API's companion object is given an explicit name (so it stays referenceable as a creator-extension receiver beside other nested types). */
+    protected open val needsNamedCompanion: Boolean get() = hasNestedDevices
+
+    private val companionName: String get() = if (needsNamedCompanion) FACTORY else COMPANION
+
+    /** The API's companion object, the receiver for the creator extensions. */
+    protected fun companionObject(): TypeSpec = TypeSpec.companionObjectBuilder(FACTORY.takeIf { needsNamedCompanion }).build()
+
+    /** The companion object of the API of [apiType], the receiver for the creator extensions. */
+    protected fun companionReceiver(apiType: GenerationType): ClassName = nameFor(declaration, apiType).nestedClass(companionName)
+
+    fun generateExtensionFactories(generationType: GenerationType): List<FunSpec> = buildList {
+        factoryFor(generationType)?.let(::add)
+        declaration.declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>().forEach { nested ->
+            val nestedBuilder = when (generationType.side) {
+                GenerationType.Side.CLIENT -> BluetoothClientBuilder(nested, options, logger)
+                GenerationType.Side.SERVER -> BluetoothServerBuilder(nested, options, logger)
+            }
+            addAll(nestedBuilder.generateExtensionFactories(generationType))
+        }
+    }
 
     protected fun generateNested(generationType: GenerationType): List<TypeSpec> = buildList {
         val bluetoothDeclarations = declaration.declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>()

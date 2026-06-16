@@ -13,7 +13,7 @@ kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
 
     android {
-        namespace = "com.splendo.kaluga.bluetooth.sharedclient"
+        namespace = "com.splendo.kaluga.bluetooth.sharedserver"
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
         minSdk = libs.versions.androidMinSdk.get().toInt()
     }
@@ -26,9 +26,9 @@ kotlin {
 }
 
 bluetooth {
-    target.set(setOf(BluetoothTarget.CLIENT))
+    target.set(setOf(BluetoothTarget.SERVER))
     implementFor.set(setOf(ImplementFor.BLUETOOTH))
-    annotationSource("../shared-spec")
+    annotationSource("../spec")
 }
 
 tasks.withType<KotlinCompile>().configureEach {

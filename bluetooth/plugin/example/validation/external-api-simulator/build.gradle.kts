@@ -1,4 +1,5 @@
 import com.splendo.kaluga.bluetooth.plugin.BluetoothTarget
+import com.splendo.kaluga.bluetooth.plugin.ImplementFor
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -12,7 +13,7 @@ kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
 
     android {
-        namespace = "com.splendo.kaluga.bluetooth.sharedapi"
+        namespace = "com.splendo.kaluga.bluetooth.sharedsimulatorimpl"
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
         minSdk = libs.versions.androidMinSdk.get().toInt()
     }
@@ -20,15 +21,18 @@ kotlin {
     iosSimulatorArm64()
 
     dependencies {
+        implementation(project(":validation:contract"))
         implementation(libs.kotlinx.coroutines.core)
     }
 }
 
 bluetooth {
     target.set(setOf(BluetoothTarget.CLIENT, BluetoothTarget.SERVER))
-    apiOnly()
-    generatedPackage = "com.splendo.kaluga.bluetooth.sharedcontract"
-    annotationSource("../shared-spec")
+    implementFor.set(setOf(ImplementFor.SIMULATOR))
+    useExternalApi()
+    generatedPackage = "com.splendo.kaluga.bluetooth.sharedsimulator"
+    apiPackage = "com.splendo.kaluga.bluetooth.sharedcontract"
+    annotationSource("../spec")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
