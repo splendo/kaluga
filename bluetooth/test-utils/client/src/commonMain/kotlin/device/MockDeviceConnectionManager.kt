@@ -33,6 +33,7 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.PairingResult
 import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.test.MockDescriptorWrapper
 import com.splendo.kaluga.logging.debug
@@ -75,7 +76,6 @@ class MockDeviceConnectionManager(
         init {
             if (setupMocks) {
                 createMock.on().doExecute { (deviceWrapper, settings, coroutineScope) ->
-                    println("Create")
                     MockDeviceConnectionManager(initialWillActionSucceed, deviceWrapper, settings, coroutineScope, setupMocks).also {
                         createdDeviceConnectionManager.add(it)
                     }
@@ -144,6 +144,8 @@ class MockDeviceConnectionManager(
     init {
         if (setupMocks) {
             getCurrentStateMock.on().doReturn(DeviceConnectionManager.State.DISCONNECTED)
+            pairMock.on().doReturn(PairingResult.SUCCESS)
+            unpairMock.on().doReturn(PairingResult.SUCCESS)
 
             performActionMock.on().doExecuteSuspended { (action) ->
                 currentAction = action
@@ -163,11 +165,11 @@ class MockDeviceConnectionManager(
 
     override fun disconnect(): Unit = disconnectMock.call()
 
-    override suspend fun readRssi(): Unit = readRssiMock.call()
+    override suspend fun requestReadRssi(): Unit = readRssiMock.call()
 
-    override suspend fun requestStartPairing(): Unit = pairMock.call()
+    override suspend fun requestStartPairing(): PairingResult = pairMock.call()
 
-    override suspend fun requestStartUnpairing(): Unit = unpairMock.call()
+    override suspend fun requestStartUnpairing(): PairingResult = unpairMock.call()
 
     override suspend fun didStartPerformingAction(action: DeviceAction<*>): Unit = performActionMock.call(action)
 
@@ -206,7 +208,7 @@ class MockDeviceConnectionManager(
                 (action.characteristic.wrapper as MockCharacteristicWrapper).updateValue(
                     action.newValue,
                 )
-                handleCharacteristicWritten(action.characteristic.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
+                handleCharacteristicWritten(action.characteristic.uuid, if (willActionSucceed) GattResponse.WriteSuccess.Acknowledged else GattResponse.WriteNotPermitted)
                 debug("Mock Write: ${action.characteristic.uuid} value ${action.newValue.toHexString()}")
             }
 
@@ -214,11 +216,11 @@ class MockDeviceConnectionManager(
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateValue(
                     action.newValue,
                 )
-                handleDescriptorWritten(action.descriptor.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
+                handleDescriptorWritten(action.descriptor.uuid, if (willActionSucceed) GattResponse.WriteSuccess.Acknowledged else GattResponse.WriteNotPermitted)
                 debug("Mock Write: ${action.descriptor.uuid} value ${action.newValue.toHexString()}")
             }
 
-            is DeviceAction.Notification -> action.handleNotificationStateChanged(if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
+            is DeviceAction.Notification -> action.handleNotificationStateChanged(if (willActionSucceed) GattResponse.WriteSuccess.Acknowledged else GattResponse.WriteNotPermitted)
 
             is DeviceAction.RequestMtu -> handleNewMtu(if (willActionSucceed) GattResponse.MTUSuccess(action.mtu) else GattResponse.MTUNotPermitted(action.mtu))
         }

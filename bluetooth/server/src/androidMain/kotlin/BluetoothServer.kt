@@ -40,6 +40,7 @@ import com.splendo.kaluga.bluetooth.server.DefaultBluetoothServer.Companion.TAG
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
@@ -158,7 +159,14 @@ internal sealed class AndroidServerState {
             }
         }
 
+        // Captured once, before this state ever renames the adapter, so restoration targets the real system name.
         private val defaultLocalName = manager.adapter.name
+
+        // Whether this state has overridden the global adapter name; restoration is a no-op otherwise.
+        private var didOverrideLocalName = false
+
+        // Persists the override so a process kill mid-advertise can be repaired on next launch (or via restoreBluetoothAdapterName).
+        private val nameStore = AdapterNameOverrideStore(context)
         private val server = manager.openGattServer(context, callback)
         private val advertiser = manager.adapter.bluetoothLeAdvertiser
         private val advertiserCallback = AdvertisementCallback()
@@ -205,21 +213,37 @@ internal sealed class AndroidServerState {
             val scanResponse = AdvertiseData.Builder().setIncludeDeviceName(data.localName != null).build()
 
             val didComplete = advertiserCallback.reset()
-            data.localName?.let {
-                manager.adapter.name = it
+            // Android has no API to advertise a custom name; the only route is renaming the global adapter.
+            // setName is asynchronous, so the first advertisement may still carry the previous name.
+            data.localName?.let { name ->
+                if (manager.adapter.name != name) {
+                    nameStore.record(defaultLocalName, name)
+                    didOverrideLocalName = true
+                    if (manager.adapter.setName(name) != true) {
+                        logger.warn(TAG) { "Failed to rename Bluetooth adapter to '$name'; advertising the existing name (is BLUETOOTH_CONNECT granted?)" }
+                    }
+                }
             }
             advertiser.startAdvertising(settings, advertiseData, scanResponse, advertiserCallback)
             didComplete.await().also { success ->
-
                 if (!success) {
-                    manager.adapter.name = defaultLocalName
+                    restoreLocalName()
                 }
             }
         }
 
         override fun stopAdvertising() {
             advertiser.stopAdvertising(advertiserCallback)
-            manager.adapter.name = defaultLocalName
+            restoreLocalName()
+        }
+
+        // Restores the adapter name only if this state actually changed it, so it never clobbers an unrelated name.
+        private fun restoreLocalName() {
+            if (didOverrideLocalName) {
+                defaultLocalName?.let { manager.adapter.setName(it) }
+                nameStore.clear()
+                didOverrideLocalName = false
+            }
         }
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
@@ -287,13 +311,13 @@ internal sealed class AndroidServerState {
                                     put(device, byteArrayOf(lsb, msb))
                                 }
                                 subscribe(device)
-                                GattResponse.WriteSuccess
+                                GattResponse.WriteSuccess.Acknowledged
                             }
 
                             value.contentEquals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE) -> {
                                 deviceStatus[device] = value
                                 unsubscribe(device)
-                                GattResponse.WriteSuccess
+                                GattResponse.WriteSuccess.Acknowledged
                             }
 
                             else -> GattResponse.InvalidHandle
@@ -322,7 +346,7 @@ internal sealed class AndroidServerState {
             if (stopMonitoringBluetooth) {
                 bluetoothMonitor.stopMonitoring()
             }
-            manager.adapter.name = defaultLocalName
+            restoreLocalName()
         }
     }
 }

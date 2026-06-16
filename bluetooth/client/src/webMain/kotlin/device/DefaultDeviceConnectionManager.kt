@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineScope
@@ -86,8 +87,11 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
             }
 
             is DeviceAction.Write.Characteristic -> {
-                val withResponse = action.characteristic.hasProperty(CharacteristicProperty.Write) ||
-                    !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
+                val withResponse = when (action.writeType) {
+                    WriteType.WithResponse -> true
+                    WriteType.WithoutResponse -> false
+                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write)
+                }
                 val result =
                     webWriteCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, action.newValue, withResponse)
                 handleCharacteristicWritten(action.characteristic.uuid, result.writeResponse())
@@ -121,11 +125,17 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
         }
     }
 
-    actual override suspend fun requestStartPairing() {
-        // Web Bluetooth has no pairing API; bonding is handled by the user agent.
+    actual override suspend fun requestReadRssi() {
+        // Web Bluetooth has no RSSI support
     }
 
-    actual override suspend fun requestStartUnpairing() {
+    actual override suspend fun requestStartPairing(): PairingResult {
+        // Web Bluetooth has no pairing API; bonding is handled by the user agent.
+        return PairingResult.NOT_SUPPORTED
+    }
+
+    actual override suspend fun requestStartUnpairing(): PairingResult {
         // Web Bluetooth has no unpairing API; the user manages this through the browser.
+        return PairingResult.NOT_SUPPORTED
     }
 }

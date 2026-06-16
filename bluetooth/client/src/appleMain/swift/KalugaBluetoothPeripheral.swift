@@ -30,6 +30,7 @@ public protocol KalugaBluetoothPeripheralDelegate {
     @objc func didDiscoverDescriptors(for characteristic: CBCharacteristic, peripheral: CBPeripheral, error: (any Error)?)
     @objc func didUpdateValue(forDescriptor descriptor: CBDescriptor, peripheral: CBPeripheral, error: (any Error)?)
     @objc func didWriteValue(forDescriptor descriptor: CBDescriptor, peripheral: CBPeripheral, error: (any Error)?)
+    @objc func isReadyToSendWriteWithoutResponse(for peripheral: CBPeripheral)
 }
 
 @objc(KalugaBluetoothPeripheralWrapper)
@@ -85,6 +86,10 @@ public class KalugaBluetoothPeripheralWrapper : NSObject, CBPeripheralDelegate {
 
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor descriptor: CBDescriptor, error: (any Error)?) {
         delegate.didWriteValue(forDescriptor: descriptor, peripheral: peripheral, error: error)
+    }
+
+    public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        delegate.isReadyToSendWriteWithoutResponse(for: peripheral)
     }
 
     @objc public func unlink() {

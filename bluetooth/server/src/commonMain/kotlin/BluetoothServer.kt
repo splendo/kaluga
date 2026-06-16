@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.uuidFrom
@@ -71,7 +72,7 @@ interface BluetoothServerDSL {
      * Adds a [LocalService] using [LocalService.DSL.Primary]
      * @param uuidString the string of the [UUID] of the [LocalService] to add
      * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
-     * @throws UUIDException if [uuidString] is not a valid [UUID]
+     * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
      */
     fun service(uuidString: String, service: LocalService.DSL.Primary.() -> Unit) {
         service(uuidFrom(uuidString), service)
@@ -688,7 +689,16 @@ class DefaultBluetoothServer internal constructor(private val settings: ServerSe
 
 /**
  * Data advertised by a [BluetoothServer]
- * @property localName the name of the device to advertise
+ * @property localName the name of the device to advertise, or `null` to not advertise a name.
+ *
+ * Platform caveats for [localName]:
+ * - **Android** has no API to advertise a custom name, so providing one temporarily renames the device's
+ *   **global** Bluetooth adapter (visible to other apps and the system UI) for the duration of advertising.
+ *   The original name is restored when advertising stops or the server is closed, but if the process is killed
+ *   while advertising the renamed adapter may persist. The rename is asynchronous, so the first advertisement
+ *   may still carry the previous name. Leave this `null` to advertise without touching the adapter name.
+ * - **iOS** drops the local name from the advertisement entirely while the app is in the background, and moves
+ *   service UUIDs into an overflow area only other iOS devices can discover.
  * @property serviceUUIDs the [UUID]s of the [LocalService] to advertise
  */
 data class AdvertiseData(val localName: String?, val serviceUUIDs: List<UUID>) {
@@ -707,4 +717,9 @@ data class AdvertiseData(val localName: String?, val serviceUUIDs: List<UUID>) {
 /**
  * A [Device] that connected to a [BluetoothServer]
  */
-expect interface ConnectedDevice : Device
+expect interface ConnectedDevice : Device {
+    /**
+     * The [MTU] negotiated with this device, or `null` if it is not known. Notification payloads should be sized to at most `mtu - 3` bytes.
+     */
+    val mtu: MTU?
+}

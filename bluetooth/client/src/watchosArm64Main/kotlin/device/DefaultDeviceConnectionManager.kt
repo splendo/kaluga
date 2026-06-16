@@ -21,22 +21,27 @@ import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.client.KalugaBluetoothPeripheralDelegateProtocol
 import com.splendo.kaluga.bluetooth.client.KalugaBluetoothPeripheralWrapper
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.dataValue
+import com.splendo.kaluga.bluetooth.mtu
 import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.warn
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.milliseconds
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBPeripheralStateConnected
@@ -70,6 +75,10 @@ internal actual class DefaultDeviceConnectionManager(
 
     companion object {
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
+
+        // Write-without-response has no completion callback; if the outbound queue is full we wait this long
+        // for peripheralIsReadyToSendWriteWithoutResponse before giving up.
+        private val MAX_WRITE_WITHOUT_RESPONSE_WAIT = 500.milliseconds
     }
 
     private val discoveringMutex = Mutex()
@@ -77,6 +86,20 @@ internal actual class DefaultDeviceConnectionManager(
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
     private val peripheralDelegate = object : NSObject(), KalugaBluetoothPeripheralDelegateProtocol {
+
+        private var awaitingSendWriteWithoutResponse = CompletableDeferred<Unit>()
+
+        fun resetAwaitingSendWriteWithoutResponse() {
+            awaitingSendWriteWithoutResponse = CompletableDeferred()
+        }
+
+        suspend fun awaitSendWriteWithoutResponse() {
+            awaitingSendWriteWithoutResponse.await()
+        }
+
+        override fun isReadyToSendWriteWithoutResponseFor(peripheral: CBPeripheral) {
+            awaitingSendWriteWithoutResponse.complete(Unit)
+        }
 
         override fun didDiscoverDescriptorsFor(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
             didDiscoverDescriptors(characteristic)
@@ -86,7 +109,7 @@ internal actual class DefaultDeviceConnectionManager(
             val action = currentAction
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == characteristic.UUID) {
                 launch {
-                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
                 }
             }
         }
@@ -99,7 +122,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
 
         override fun didWriteValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
-            handleCharacteristicWritten(characteristic.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+            handleCharacteristicWritten(characteristic.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
         }
 
         override fun didUpdateValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
@@ -110,7 +133,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
 
         override fun didWriteValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
-            handleDescriptorWritten(descriptor.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+            handleDescriptorWritten(descriptor.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
         }
 
         override fun didDiscoverCharacteristicsFor(service: CBService, peripheral: CBPeripheral, error: NSError?) {
@@ -166,7 +189,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun readRssi() {
+    actual override suspend fun requestReadRssi() {
         peripheral.readRSSI()
     }
 
@@ -178,11 +201,35 @@ internal actual class DefaultDeviceConnectionManager(
             is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
 
             is DeviceAction.Write.Characteristic -> {
-                val withResponse = action.characteristic.hasProperty(CharacteristicProperty.Write) ||
-                    !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
-                action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, withResponse)
-                if (!withResponse) {
-                    handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
+                val withResponse = when (action.writeType) {
+                    WriteType.WithResponse -> true
+                    WriteType.WithoutResponse -> false
+                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write)
+                }
+                if (withResponse) {
+                    // With-response completes via didWriteValueForCharacteristic.
+                    action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, true)
+                } else {
+                    // Write-without-response has no didWriteValueForCharacteristic callback, so completion is
+                    // derived from the send loop.
+                    val wasReady = peripheral.canSendWriteWithoutResponse
+                    peripheralDelegate.resetAwaitingSendWriteWithoutResponse()
+                    val response = sendWriteWithoutResponse(
+                        canSendNow = wasReady,
+                        write = { action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, false) },
+                        awaitReady = {
+                            withTimeoutOrNull(MAX_WRITE_WITHOUT_RESPONSE_WAIT) {
+                                peripheralDelegate.awaitSendWriteWithoutResponse()
+                                true
+                            } ?: false
+                        },
+                    )
+                    if (response is GattResponse.WriteSuccess.NotReady) {
+                        logger.dataLogger[action.characteristic.wrapper.service.uuid][action.characteristic.wrapper.uuid].warn {
+                            "Write without response sent best-effort: peripheral did not become ready within $MAX_WRITE_WITHOUT_RESPONSE_WAIT and the value may have been dropped"
+                        }
+                    }
+                    handleCharacteristicWritten(action.characteristic.uuid, response)
                 }
             }
 
@@ -199,20 +246,22 @@ internal actual class DefaultDeviceConnectionManager(
             }
 
             is DeviceAction.RequestMtu -> {
-                val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
-                debug(TAG) { "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max" }
-                // Update MTU to current known value, set succeeded to false, because we can't request MTU change from iOS
-                handleNewMtu(GattResponse.MTUNotPermitted(max.toInt()))
+                // iOS negotiates the MTU automatically and exposes no request API; surface the actual ATT MTU.
+                val mtu = peripheral.mtu
+                debug(TAG) { "Reporting negotiated MTU $mtu" }
+                handleNewMtu(GattResponse.MTUSuccess(mtu))
             }
         }
     }
 
-    actual override suspend fun requestStartPairing() {
-        // There is no iOS API to pair peripheral
+    actual override suspend fun requestStartPairing(): PairingResult {
+        // There is no iOS API to pair a peripheral; pairing happens implicitly on encrypted attribute access.
+        return PairingResult.NOT_SUPPORTED
     }
 
-    actual override suspend fun requestStartUnpairing() {
-        // There is no iOS API to unpair peripheral
+    actual override suspend fun requestStartUnpairing(): PairingResult {
+        // There is no iOS API to unpair a peripheral.
+        return PairingResult.NOT_SUPPORTED
     }
 
     private fun didDiscoverServices() {

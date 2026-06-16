@@ -82,7 +82,12 @@ interface Scanner {
      * @property advertisementData the [BaseAdvertisementData] of the device discovered
      * @property deviceCreator method for creating a device if it had not yet been discovered.
      */
-    data class DeviceDiscovered(val identifier: Identifier, val rssi: Int, val advertisementData: BaseAdvertisementData, val deviceCreator: (CoroutineContext) -> ConnectableDevice)
+    data class DeviceDiscovered(
+        val identifier: Identifier,
+        val rssi: RSSI?,
+        val advertisementData: BaseAdvertisementData,
+        val deviceCreator: (CoroutineContext) -> ConnectableDevice,
+    )
 
     /**
      * Events detected by a [Scanner]
@@ -451,7 +456,7 @@ abstract class BaseScanner(
 
     internal fun handleDeviceDiscovered(
         deviceWrapper: DeviceWrapper,
-        rssi: RSSI,
+        rssi: RSSI?,
         advertisementData: BaseAdvertisementData,
         connectionManagerBuilder: DeviceConnectionManager.Builder,
     ) = handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { coroutineContext ->
@@ -466,7 +471,7 @@ abstract class BaseScanner(
 
     protected open fun handleDeviceDiscovered(
         deviceWrapper: DeviceWrapper,
-        rssi: RSSI,
+        rssi: RSSI?,
         advertisementData: BaseAdvertisementData,
         deviceCreator: (CoroutineContext) -> ConnectableDevice,
     ) {
@@ -495,7 +500,7 @@ abstract class BaseScanner(
 
     protected fun getDeviceBuilder(
         deviceWrapper: DeviceWrapper,
-        rssi: RSSI,
+        rssi: RSSI?,
         advertisementData: BaseAdvertisementData,
         connectionManagerBuilder: DeviceConnectionManager.Builder,
         connectionSettings: ConnectionSettings?,

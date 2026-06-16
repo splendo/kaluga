@@ -54,7 +54,7 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
         ?.typedMap<CBUUID, NSData>()
         ?.mapNotNull { Pair(it.key, it.value.toByteArray()) }
         ?.toMap() ?: emptyMap()
-    actual override val txPowerLevel: TxPower get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue ?: Int.MIN_VALUE
+    actual override val txPowerLevel: TxPower? get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue
 
     actual override val isConnectable: Boolean get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue ?: false)
 }

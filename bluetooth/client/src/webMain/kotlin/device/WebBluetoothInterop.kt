@@ -55,7 +55,7 @@ internal fun WebGattResult.readResponse(): GattResponse.ReadResponse = when (thi
 }
 
 internal fun WebGattResult.writeResponse(): GattResponse.WriteResponse = when (this) {
-    is WebGattResult.Success -> GattResponse.WriteSuccess
+    is WebGattResult.Success -> GattResponse.WriteSuccess.Acknowledged
     is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable
 }
 

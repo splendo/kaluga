@@ -141,7 +141,7 @@ sealed class MockScanningState {
             override suspend fun discoverDevices(devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>): suspend () -> ScanningState.Enabled.Scanning {
                 devices.mapNotNull { device ->
                     this.devices.allDevices[device.identifier]?.let { knownDevice ->
-                        knownDevice.rssiDidUpdate(device.rssi)
+                        device.rssi?.let { knownDevice.rssiDidUpdate(it) }
                         knownDevice.advertisementDataDidUpdate(device.advertisementData)
                     }
                 }

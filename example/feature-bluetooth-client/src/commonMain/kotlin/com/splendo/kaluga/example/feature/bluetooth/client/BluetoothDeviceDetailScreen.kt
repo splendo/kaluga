@@ -52,7 +52,7 @@ fun BluetoothDeviceDetailScreen(identifier: Identifier, onBack: () -> Unit) {
     val currentHeartRate by viewModel.heartRate.collectAsState()
     val currentPosition by viewModel.position.collectAsState()
 
-    val title = "${info?.name ?: identifier.stringValue} — ${identifier.stringValue}"
+    val title = listOfNotNull(info?.name, identifier.stringValue).joinToString(" - ")
 
     DetailScaffold(
         title = title,
@@ -75,7 +75,7 @@ fun BluetoothDeviceDetailScreen(identifier: Identifier, onBack: () -> Unit) {
 
             val currentInfo = info
             if (currentInfo != null) {
-                Text("RSSI: ${currentInfo.rssi} dBm")
+                currentInfo.rssi?.let { Text("RSSI: $it dBm") }
                 if (!distance.isNaN()) {
                     Text("Distance: ${"%.1f".format(distance)} m")
                 }

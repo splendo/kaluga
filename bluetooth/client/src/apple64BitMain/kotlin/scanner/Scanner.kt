@@ -227,11 +227,11 @@ actual class DefaultScanner internal constructor(
 
                 Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
-                    rssi = Int.MIN_VALUE,
+                    rssi = null,
                     advertisementData = advertisementData,
                     deviceCreator = getDeviceBuilder(
                         deviceWrapper,
-                        Int.MIN_VALUE,
+                        null,
                         advertisementData,
                         DefaultDeviceConnectionManager.Builder(
                             centralManager,

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGatt.GATT_CONNECTION_CONGESTED
 import android.bluetooth.BluetoothGatt.GATT_CONNECTION_TIMEOUT
@@ -35,7 +36,11 @@ import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.IntentCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.base.utils.getCompletedOrNull
@@ -44,7 +49,9 @@ import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
+import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.extensions.printableString
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.error
@@ -101,7 +108,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info { "onCharacteristicWrite status ${status.gattStatusAsString}" }
-            handleCharacteristicWritten(characteristic.uuid, if (status == GATT_SUCCESS) GattResponse.WriteSuccess else GattResponse.Error.from(status))
+            handleCharacteristicWritten(characteristic.uuid, if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(status))
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -150,7 +157,7 @@ internal actual class DefaultDeviceConnectionManager(
                 "onDescriptorWrite status ${status.gattStatusAsString}"
             }
             val response = if (status == GATT_SUCCESS) {
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             } else {
                 GattResponse.Error.from(status)
             }
@@ -201,7 +208,12 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     actual override suspend fun discoverServices() {
-        gatt.await().discoverServices()
+        // A false return means discovery never started, so the awaited onServicesDiscovered would never fire.
+        // Disconnect instead of leaving the state machine stuck in Discovering with no timeout.
+        if (!gatt.await().discoverServices()) {
+            logger.stateLogger.stateChangeLogger.info { "Failed to start service discovery" }
+            handleDisconnect { closeGatt() }
+        }
     }
 
     actual override fun disconnect() {
@@ -220,8 +232,10 @@ internal actual class DefaultDeviceConnectionManager(
         gatt = CompletableDeferred()
     }
 
-    override suspend fun readRssi() {
-        gatt.await().readRemoteRssi()
+    actual override suspend fun requestReadRssi() {
+        if (!gatt.await().readRemoteRssi()) {
+            logger.stateLogger.stateChangeLogger.info { "Failed to start RSSI read" }
+        }
     }
 
     actual override suspend fun didStartPerformingAction(action: DeviceAction<*>) {
@@ -236,7 +250,7 @@ internal actual class DefaultDeviceConnectionManager(
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
 
-            is DeviceAction.Write.Characteristic -> if (!readyGatt.writeCharacteristic(action.characteristic, action.newValue)) {
+            is DeviceAction.Write.Characteristic -> if (!readyGatt.writeCharacteristic(action.characteristic, action.newValue, action.writeType)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
 
@@ -259,20 +273,58 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    actual override suspend fun requestStartPairing() {
-        if (deviceWrapper.bondState == DeviceWrapper.BondState.NONE) {
-            deviceWrapper.createBond()
-        }
+    actual override suspend fun requestStartPairing(): PairingResult {
+        if (deviceWrapper.bondState == DeviceWrapper.BondState.BONDED) return PairingResult.SUCCESS
+        return awaitBondStateChange(DeviceWrapper.BondState.BONDED) { deviceWrapper.createBond() }
     }
 
     @SuppressLint("MissingPermission")
-    actual override suspend fun requestStartUnpairing() {
-        if (deviceWrapper.bondState != DeviceWrapper.BondState.NONE) {
-            deviceWrapper.removeBond()
+    actual override suspend fun requestStartUnpairing(): PairingResult {
+        if (deviceWrapper.bondState == DeviceWrapper.BondState.NONE) return PairingResult.SUCCESS
+        return awaitBondStateChange(DeviceWrapper.BondState.NONE) { deviceWrapper.removeBond() }
+    }
+
+    /**
+     * Triggers a bond change via [startBondChange] and waits for this device's bond state to settle, using the
+     * system [BluetoothDevice.ACTION_BOND_STATE_CHANGED] broadcast: [PairingResult.SUCCESS] once it reaches
+     * [target], [PairingResult.FAILURE] if it settles into the other terminal state. This suspends until the
+     * bond state settles; wrap the call in `withTimeoutOrNull` to bound the wait (cancelling unregisters the
+     * receiver).
+     */
+    private suspend fun awaitBondStateChange(target: DeviceWrapper.BondState, startBondChange: () -> Unit): PairingResult {
+        val result = CompletableDeferred<PairingResult>()
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(receiverContext: Context?, intent: Intent?) {
+                if (intent?.action != BluetoothDevice.ACTION_BOND_STATE_CHANGED) return
+                val device = IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+                if (device?.address != deviceWrapper.identifier) return
+                when (intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)) {
+                    BluetoothDevice.BOND_BONDED ->
+                        result.complete(if (target == DeviceWrapper.BondState.BONDED) PairingResult.SUCCESS else PairingResult.FAILURE)
+
+                    BluetoothDevice.BOND_NONE ->
+                        result.complete(if (target == DeviceWrapper.BondState.NONE) PairingResult.SUCCESS else PairingResult.FAILURE)
+                    // BOND_BONDING is a transient state; keep waiting for a terminal one.
+                }
+            }
+        }
+        context.registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
+        return try {
+            startBondChange()
+            result.await()
+        } finally {
+            context.unregisterReceiver(receiver)
         }
     }
 
-    private fun BluetoothGattWrapper.writeCharacteristic(characteristic: RemoteCharacteristic, value: ByteArray): Boolean = writeCharacteristic(characteristic.wrapper, value)
+    private fun BluetoothGattWrapper.writeCharacteristic(characteristic: RemoteCharacteristic, value: ByteArray, writeType: WriteType?): Boolean {
+        when (writeType) {
+            WriteType.WithResponse -> characteristic.wrapper.writeType = RemoteCharacteristicWrapper.WriteType.DEFAULT
+            WriteType.WithoutResponse -> characteristic.wrapper.writeType = RemoteCharacteristicWrapper.WriteType.NO_RESPONSE
+            null -> {}
+        }
+        return writeCharacteristic(characteristic.wrapper, value)
+    }
 
     private fun BluetoothGattWrapper.writeDescriptor(descriptor: RemoteDescriptor, value: ByteArray): Boolean = writeDescriptor(descriptor.wrapper, value)
 
@@ -281,22 +333,25 @@ internal actual class DefaultDeviceConnectionManager(
             return false
         }
 
+        // Raw CCCD values (little-endian uint16), equal to BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE /
+        // ENABLE_INDICATION_VALUE / DISABLE_NOTIFICATION_VALUE — spelled out because the mockable android.jar
+        // used by host tests strips those constants to null.
         val writeValue = when {
             enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Notify) ->
-                BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                byteArrayOf(0x01, 0x00)
 
             enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Indicate) ->
-                BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+                byteArrayOf(0x02, 0x00)
 
             !enable && characteristic.wrapper.properties.containsAny(setOf(CharacteristicProperty.Indicate, CharacteristicProperty.Notify)) ->
-                BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                byteArrayOf(0x00, 0x00)
 
             else -> null
         }
 
         return if (writeValue != null) {
-            characteristic.descriptors.firstOrNull { it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }?.let { descriptor ->
-                writeDescriptor(descriptor.wrapper, writeValue)
+            characteristic.wrapper.descriptors.firstOrNull { it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }?.let { descriptor ->
+                writeDescriptor(descriptor, writeValue)
             } == true
         } else {
             connectionSettings.logger(deviceWrapper.identifier).dataLogger[characteristic.wrapper.service.uuid][characteristic.wrapper.uuid].error {

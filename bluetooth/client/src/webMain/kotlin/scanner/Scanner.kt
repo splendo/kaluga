@@ -98,7 +98,7 @@ actual class DefaultScanner internal constructor(
             val deviceName = name.ifEmpty { null }
             handleDeviceDiscovered(
                 WebDeviceWrapper(identifier, deviceName),
-                Int.MIN_VALUE,
+                null,
                 AdvertisementData(deviceName, filter.toList()),
                 DefaultDeviceConnectionManager.Builder(),
             )

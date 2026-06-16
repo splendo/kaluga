@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.test.server
 
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
 import com.splendo.kaluga.bluetooth.server.ConnectedDevice
@@ -29,4 +30,5 @@ import com.splendo.kaluga.bluetooth.server.ConnectedDevice
  */
 expect class MockConnectedDevice(identifier: Identifier = randomIdentifier()) : ConnectedDevice {
     override val identifier: Identifier
+    override val mtu: MTU?
 }

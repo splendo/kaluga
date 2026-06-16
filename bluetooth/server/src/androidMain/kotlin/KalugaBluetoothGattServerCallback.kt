@@ -59,7 +59,12 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
     private var sendResponse: SendResponse? = null
 
     private val mtu = mutableMapOf<String, Int>()
+    private val connectedDevices = concurrentMutableMapOf<String, DefaultConnectedDevice>()
     private val pendingWrites = concurrentMutableMapOf<String, Map<AttributeIdentity, ByteArray>>()
+
+    // One stable [DefaultConnectedDevice] per address, reused across callbacks. Its `mtu` reads the live [mtu] map.
+    private fun connectedDevice(device: BluetoothDevice): DefaultConnectedDevice =
+        connectedDevices.getOrPut(device.address) { DefaultConnectedDevice(device) { mtu[device.address] } }
 
     private val readActions = mutableMapOf<AttributeIdentity, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
     private val writeActions = mutableMapOf<AttributeIdentity, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
@@ -109,6 +114,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
     fun reset() {
         sendResponse = null
         mtu.clear()
+        connectedDevices.clear()
         pendingWrites.clear()
     }
     fun removeAllServices() {
@@ -153,11 +159,11 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
             val response = if (execute) {
                 pendingWrites[device.address]?.entries.orEmpty().map { (identifier, value) ->
                     writeActions[identifier]?.let { writeAction ->
-                        writeAction(DefaultConnectedDevice(device), value, 0)
+                        writeAction(connectedDevice(device), value, 0)
                     }
-                }.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess
+                }.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess.Acknowledged
             } else {
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             }
             pendingWrites.remove(device.address)
             sendResponse?.invoke(device, requestId, response.statusCode, 0, null)
@@ -189,6 +195,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
             BluetoothProfile.STATE_DISCONNECTED -> {
                 logger.info(TAG) { "Device ${device.address} disconnected" }
                 mtu.remove(device.address)
+                connectedDevices.remove(device.address)
             }
 
             else -> logger.warn(TAG) { "Device ${device.address} connection changed to $newState with unexpected status $status" }
@@ -199,7 +206,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         handlingScope.launch {
             logger.info(TAG) { "Device ${device.address} attempting to read $identifier at $offset" }
             val (response, data) = readActions[identifier]?.let { readAction ->
-                val response = readAction(DefaultConnectedDevice(device), offset)
+                val response = readAction(connectedDevice(device), offset)
                 response to when (response) {
                     is GattResponse.ReadSuccess -> {
                         val sizeToSend = (mtu[device.address] ?: DEFAULT_MTU_SIZE) - MTU_HEADER_SIZE
@@ -231,11 +238,11 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
                     pendingWritesForDevice[identifier] = (pendingWritesForDevice[identifier] ?: byteArrayOf()) + value
                     put(device.address, pendingWritesForDevice)
                 }
-                GattResponse.WriteSuccess
+                GattResponse.WriteSuccess.Acknowledged
             } else {
                 logger.info(TAG) { "Device ${device.address} wrote $value for $identifier at offset $offset" }
                 writeActions[identifier]?.let { writeAction ->
-                    writeAction(DefaultConnectedDevice(device), value, offset)
+                    writeAction(connectedDevice(device), value, offset)
                 } ?: GattResponse.InvalidHandle
             }
 

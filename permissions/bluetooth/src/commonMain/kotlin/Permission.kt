@@ -39,6 +39,13 @@ data class BluetoothPermission(val type: Type) : Permission() {
         /**
          * A [BluetoothPermission] that allows client side communication with the Bluetooth sensor, such as scanning, reading, writing etc.
          * @property useForLocation if `true` Bluetooth will scan for location.
+         *
+         * Android manifest requirements (the library declares `BLUETOOTH_SCAN`/`BLUETOOTH_CONNECT`, and
+         * `ACCESS_FINE_LOCATION` with `maxSdkVersion="30"` for pre-31 scanning):
+         * - With [useForLocation] `true`, the consuming app must additionally declare `ACCESS_FINE_LOCATION`
+         *   (without a `maxSdkVersion`), as deriving location is the app's responsibility.
+         * - With [useForLocation] `false` on API 31+, declare `BLUETOOTH_SCAN` with
+         *   `android:usesPermissionFlags="neverForLocation"` to decouple scanning from the location permission.
          */
         data class Client(val useForLocation: Boolean = false) : Type() {
             override val name: String = "BluetoothClient" + if (useForLocation) "ForLocation" else ""

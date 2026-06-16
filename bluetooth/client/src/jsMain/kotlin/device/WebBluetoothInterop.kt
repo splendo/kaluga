@@ -32,6 +32,10 @@ private val descriptors = mutableMapOf<String, dynamic>()
 private val cachedValues = mutableMapOf<String, ByteArray>()
 private val notificationHandlers = mutableMapOf<String, (String, String) -> Unit>()
 
+// The `characteristicvaluechanged` listener per characteristic, kept so it is registered only once and can
+// be removed on disable (otherwise re-subscribing stacks duplicate listeners → duplicated notifications).
+private val notificationListeners = mutableMapOf<String, (dynamic) -> Unit>()
+
 // The `gattserverdisconnected` listener is registered once per device; it dispatches to the latest handler.
 private val disconnectListenerAdded = mutableSetOf<String>()
 private val onDisconnectedHandlers = mutableMapOf<String, () -> Unit>()
@@ -46,6 +50,9 @@ private fun clearConnectionState(identifier: String) {
     characteristics.keys.removeAll { it.startsWith(prefix) }
     descriptors.keys.removeAll { it.startsWith(prefix) }
     cachedValues.keys.removeAll { it.startsWith(prefix) }
+    // Drop listener references too: the characteristic handles they were attached to are gone, and leaving
+    // stale entries would make a post-reconnect re-subscribe skip registering on the new handle.
+    notificationListeners.keys.removeAll { it.startsWith(prefix) }
     notificationHandlers.remove(identifier)
 }
 
@@ -273,16 +280,21 @@ internal actual suspend fun webWriteDescriptor(identifier: String, service: Stri
 }
 
 internal actual suspend fun webSetNotifying(identifier: String, service: String, characteristic: String, enable: Boolean): WebGattResult {
-    val handle = characteristics[characteristicKey(identifier, service, characteristic)] ?: return WebGattResult.Failure(null)
+    val key = characteristicKey(identifier, service, characteristic)
+    val handle = characteristics[key] ?: return WebGattResult.Failure(null)
     return try {
         if (enable) {
-            handle.addEventListener("characteristicvaluechanged") { event: dynamic ->
-                val bytes = dataViewToByteArray(event.target.value)
-                cachedValues[characteristicKey(identifier, service, characteristic)] = bytes
-                notificationHandlers[identifier]?.invoke(service, characteristic)
+            if (notificationListeners[key] == null) {
+                val listener: (dynamic) -> Unit = { event: dynamic ->
+                    cachedValues[key] = dataViewToByteArray(event.target.value)
+                    notificationHandlers[identifier]?.invoke(service, characteristic)
+                }
+                notificationListeners[key] = listener
+                handle.addEventListener("characteristicvaluechanged", listener)
             }
             awaitJs(handle.startNotifications())
         } else {
+            notificationListeners.remove(key)?.let { handle.removeEventListener("characteristicvaluechanged", it) }
             awaitJs(handle.stopNotifications())
         }
         WebGattResult.Success(null)

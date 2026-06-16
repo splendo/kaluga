@@ -50,6 +50,8 @@ abstract interface com.splendo.kaluga.bluetooth.server/BluetoothServerDSL { // c
 abstract interface com.splendo.kaluga.bluetooth.server/ConnectedDevice : com.splendo.kaluga.bluetooth.device/Device { // com.splendo.kaluga.bluetooth.server/ConnectedDevice|null[0]
     abstract val cbCentral // com.splendo.kaluga.bluetooth.server/ConnectedDevice.cbCentral|{}cbCentral[0]
         abstract fun <get-cbCentral>(): platform.CoreBluetooth/CBCentral // com.splendo.kaluga.bluetooth.server/ConnectedDevice.cbCentral.<get-cbCentral>|<get-cbCentral>(){}[0]
+    abstract val mtu // com.splendo.kaluga.bluetooth.server/ConnectedDevice.mtu|{}mtu[0]
+        abstract fun <get-mtu>(): kotlin/Int? // com.splendo.kaluga.bluetooth.server/ConnectedDevice.mtu.<get-mtu>|<get-mtu>(){}[0]
 }
 
 abstract interface com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper { // com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper|null[0]
@@ -154,6 +156,11 @@ final class com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice : com.spl
         final fun <get-cbCentral>(): platform.CoreBluetooth/CBCentral // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.cbCentral.<get-cbCentral>|<get-cbCentral>(){}[0]
     final val identifier // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.identifier|{}identifier[0]
         final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val mtu // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.mtu|{}mtu[0]
+        final fun <get-mtu>(): kotlin/Int // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.mtu.<get-mtu>|<get-mtu>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.server/DefaultConnectedDevice.hashCode|hashCode(){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.server/DefaultLocalCharacteristicWrapper : com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper { // com.splendo.kaluga.bluetooth.server/DefaultLocalCharacteristicWrapper|null[0]

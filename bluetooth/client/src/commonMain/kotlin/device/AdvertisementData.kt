@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
@@ -51,9 +52,9 @@ interface BaseAdvertisementData {
     val serviceData: Map<UUID, ByteArray?>
 
     /**
-     * The [TxPower] of the packet
+     * The [TxPower] of the packet, or `null` if the device did not advertise it.
      */
-    val txPowerLevel: TxPower
+    val txPowerLevel: TxPower?
 
     /**
      * If `true` the [Device] can be connected to
@@ -70,14 +71,14 @@ expect class AdvertisementData : BaseAdvertisementData {
     override val manufacturerData: ByteArray?
     override val serviceUUIDs: List<UUID>
     override val serviceData: Map<UUID, ByteArray?>
-    override val txPowerLevel: TxPower
+    override val txPowerLevel: TxPower?
     override val isConnectable: Boolean
 }
 
 val BaseAdvertisementData.description: String get() = listOfNotNull(
     name?.let { "Name: $it" },
     manufacturerId?.let { "ManufacturerId: $it" },
-    manufacturerData?.let { "ManufacturerData: $it" },
+    manufacturerData?.let { "ManufacturerData: ${it.toHexString()}" },
     if (serviceUUIDs.isEmpty()) {
         null
     } else {
@@ -86,9 +87,9 @@ val BaseAdvertisementData.description: String get() = listOfNotNull(
     if (serviceData.isEmpty()) {
         null
     } else {
-        "ServiceData: ${serviceData.entries.joinToString(",") { (uuid, data) -> "[${uuid.uuidString} : $data]" } }"
+        "ServiceData: ${serviceData.entries.joinToString(",") { (uuid, data) -> "[${uuid.uuidString} : ${data?.toHexString()}]" } }"
     },
-    "TxPowerLevel: $txPowerLevel",
+    txPowerLevel?.let { "TxPowerLevel: $it" },
     "IsConnectable: $isConnectable",
 ).joinToString("\n")
 
@@ -96,6 +97,6 @@ internal data class PairedAdvertisementData(override val name: String? = null, o
     override val manufacturerId: Int? = null
     override val manufacturerData: ByteArray? = null
     override val serviceData: Map<UUID, ByteArray?> = emptyMap()
-    override val txPowerLevel = Int.MIN_VALUE
+    override val txPowerLevel: TxPower? = null
     override val isConnectable = true
 }

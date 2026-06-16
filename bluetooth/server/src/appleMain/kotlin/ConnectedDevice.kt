@@ -17,11 +17,15 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.bluetooth.MTU
+import com.splendo.kaluga.bluetooth.mtu
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import platform.CoreBluetooth.CBCentral
 
 actual interface ConnectedDevice : Device {
+    actual val mtu: MTU?
+
     /**
      * The platform [CBCentral] of the connected device
      */
@@ -34,4 +38,11 @@ actual interface ConnectedDevice : Device {
  */
 class DefaultConnectedDevice(override val cbCentral: CBCentral) : ConnectedDevice {
     override val identifier: Identifier = cbCentral.identifier
+
+    override val mtu: MTU get() = cbCentral.mtu
+
+    // Equality is keyed on the identifier only, so a device used as a map key (e.g. write reassembly caches)
+    // keeps matching across callbacks even though [mtu] is read live from the central.
+    override fun equals(other: Any?): Boolean = other is DefaultConnectedDevice && other.identifier == identifier
+    override fun hashCode(): Int = identifier.hashCode()
 }

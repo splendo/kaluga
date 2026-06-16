@@ -36,8 +36,8 @@ class MockDeviceBuilder(private val context: CoroutineContext) {
     /** MockDevice's name */
     var name: String? = null
 
-    /** RSSI value */
-    var rssi: RSSI = Int.MIN_VALUE
+    /** RSSI value, or `null` if not known */
+    var rssi: RSSI? = null
 
     /** Is connectable flag in advertisement data */
     var isConnectable = true
@@ -48,8 +48,8 @@ class MockDeviceBuilder(private val context: CoroutineContext) {
     /** Manufacturer data in advertisement data */
     var manufacturerData: ByteArray? = null
 
-    /** Tx power level in advertisement data */
-    var txPower: TxPower = Int.MIN_VALUE
+    /** Tx power level in advertisement data, or `null` if not known */
+    var txPower: TxPower? = null
 
     /** Setup mocks */
     var setupMocks = true

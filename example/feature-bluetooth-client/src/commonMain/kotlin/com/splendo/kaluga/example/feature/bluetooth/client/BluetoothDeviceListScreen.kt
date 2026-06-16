@@ -149,9 +149,9 @@ private fun DeviceRow(device: ConnectableDevice, viewModel: BluetoothDeviceListV
             Column(modifier = Modifier.weight(1f)) {
                 Text(info.name ?: "Unknown", fontWeight = FontWeight.SemiBold)
                 Text(info.identifier.stringValue, style = MaterialTheme.typography.bodySmall)
-                Text("RSSI: ${info.rssi} dBm")
-                if (info.advertisementData.txPowerLevel != Int.MIN_VALUE) {
-                    Text("TX Power: ${info.advertisementData.txPowerLevel} dBm", style = MaterialTheme.typography.bodySmall)
+                info.rssi?.let { Text("RSSI: $it dBm") }
+                info.advertisementData.txPowerLevel?.let {
+                    Text("TX Power: $it dBm", style = MaterialTheme.typography.bodySmall)
                 }
             }
             DeviceActions(

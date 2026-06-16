@@ -92,9 +92,30 @@ sealed interface GattResponse {
     sealed interface WriteResponse : GattResponse
 
     /**
-     * A [Success] [WriteResponse]
+     * A [Success] [WriteResponse].
      */
-    data object WriteSuccess : WriteResponse, Success
+    sealed interface WriteSuccess :
+        WriteResponse,
+        Success {
+
+        /**
+         * The write was acknowledged or otherwise completed with full confidence: a with-response write
+         * confirmed by the peripheral, a local GATT server reply, or a no-op where the desired state already held.
+         */
+        data object Acknowledged : WriteSuccess
+
+        /**
+         * A write-without-response handed to the OS while the peripheral could accept it (it was ready).
+         * Not confirmed by the peripheral.
+         */
+        data object Ready : WriteSuccess
+
+        /**
+         * A write-without-response sent best-effort without the peripheral confirming it could accept it
+         * (it never became ready within the timeout). It may have been dropped before transmission.
+         */
+        data object NotReady : WriteSuccess
+    }
 
     /**
      * A [GattResponse] given to a MTU request

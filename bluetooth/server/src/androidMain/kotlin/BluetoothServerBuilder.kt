@@ -54,6 +54,9 @@ actual class BluetoothServerBuilder(
         specs: BluetoothServerDSL.() -> Unit,
     ): BluetoothServer {
         val settings = settingsBuilder(permissionsBuilder(coroutineContext))
+        // Repair a leaked adapter name from a prior advertising session that was killed before restoring it,
+        // before any state captures the (possibly still-overridden) current name.
+        restoreBluetoothAdapterName(applicationContext)
         val manager = applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
         val initialState = manager?.let {
             AndroidServerState.AwaitingPermissions(

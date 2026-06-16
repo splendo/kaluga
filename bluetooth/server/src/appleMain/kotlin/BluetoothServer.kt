@@ -156,13 +156,15 @@ internal sealed class IOSServerState {
             bluetoothServerWrapper.stopAdvertising()
         }
 
-        override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
-            val isAvailable = delegate.resetAvailable()
-            if (characteristic.wrapper.updateValue(bluetoothServerWrapper, value.toNSData(), listOf(device.cbCentral))) {
-                true
-            } else {
+        override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean {
+            // peripheralManagerIsReadyToUpdateSubscribers is manager-wide, so a single shared deferred is correct.
+            // Retry in a loop (not recursion) until the value is queued.
+            while (true) {
+                val isAvailable = delegate.resetAvailable()
+                if (characteristic.wrapper.updateValue(bluetoothServerWrapper, value.toNSData(), listOf(device.cbCentral))) {
+                    return true
+                }
                 isAvailable.await()
-                execute(characteristic, device, value)
             }
         }
 

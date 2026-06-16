@@ -28,6 +28,6 @@ actual class AdvertisementData(actual override val name: String?, actual overrid
     actual override val manufacturerId: Int? = null
     actual override val manufacturerData: ByteArray? = null
     actual override val serviceData: Map<UUID, ByteArray?> = emptyMap()
-    actual override val txPowerLevel: TxPower = Int.MIN_VALUE
+    actual override val txPowerLevel: TxPower? = null
     actual override val isConnectable: Boolean = true
 }

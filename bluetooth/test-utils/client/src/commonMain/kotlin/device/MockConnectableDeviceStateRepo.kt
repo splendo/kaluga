@@ -18,11 +18,13 @@
 package com.splendo.kaluga.bluetooth.test.device
 
 import com.splendo.kaluga.base.test.mock.call
+import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.device.BaseConnectableDeviceStateRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.PairingResult
 import kotlin.coroutines.CoroutineContext
 
 class MockConnectableDeviceStateRepo(mockConnectableDeviceManager: MockConnectableDeviceManager, coroutineContext: CoroutineContext) :
@@ -42,10 +44,10 @@ class MockConnectableDeviceManager {
     suspend fun requestMtu(mtu: MTU): DeviceAction.RequestMtu = mockRequestMtu.call(mtu)
 
     val mockPair = this::pair.mock()
-    suspend fun pair(): Unit = mockPair.call()
+    suspend fun pair(): PairingResult = mockPair.call()
 
     val mockUnpair = this::unpair.mock()
-    suspend fun unpair(): Unit = mockUnpair.call()
+    suspend fun unpair(): PairingResult = mockUnpair.call()
 
     val mockConnect = this::connect.mock()
     suspend fun connect(): Unit = mockConnect.call()
@@ -67,4 +69,9 @@ class MockConnectableDeviceManager {
 
     val mockStartConnecting = this::startConnecting.mock()
     fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?): Unit = mockStartConnecting.call(reconnectionSettings)
+
+    init {
+        mockPair.on().doReturn(PairingResult.SUCCESS)
+        mockUnpair.on().doReturn(PairingResult.SUCCESS)
+    }
 }

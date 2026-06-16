@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
+import com.splendo.kaluga.logging.error
 
 /**
  * Accessor to the [BluetoothDevice]
@@ -100,6 +101,7 @@ class DefaultDeviceWrapper(private val device: BluetoothDevice) : DeviceWrapper 
         try {
             device.javaClass.getMethod("removeBond").invoke(device)
         } catch (localException: Exception) {
+            error(LOG_TAG, localException) { "Failed to remove bond for ${device.address}" }
         }
     }
 
@@ -107,6 +109,11 @@ class DefaultDeviceWrapper(private val device: BluetoothDevice) : DeviceWrapper 
         try {
             device.createBond()
         } catch (localException: Exception) {
+            error(LOG_TAG, localException) { "Failed to create bond for ${device.address}" }
         }
+    }
+
+    private companion object {
+        const val LOG_TAG = "DefaultDeviceWrapper"
     }
 }

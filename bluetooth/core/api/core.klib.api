@@ -416,6 +416,26 @@ sealed interface com.splendo.kaluga.bluetooth/GattResponse { // com.splendo.kalu
 
     sealed interface WriteResponse : com.splendo.kaluga.bluetooth/GattResponse // com.splendo.kaluga.bluetooth/GattResponse.WriteResponse|null[0]
 
+    sealed interface WriteSuccess : com.splendo.kaluga.bluetooth/GattResponse.Success, com.splendo.kaluga.bluetooth/GattResponse.WriteResponse { // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess|null[0]
+        final object Acknowledged : com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess { // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Acknowledged|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Acknowledged.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Acknowledged.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Acknowledged.toString|toString(){}[0]
+        }
+
+        final object NotReady : com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess { // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.NotReady|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.NotReady.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.NotReady.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.NotReady.toString|toString(){}[0]
+        }
+
+        final object Ready : com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess { // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Ready|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Ready.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Ready.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.Ready.toString|toString(){}[0]
+        }
+    }
+
     final class ApplicationError : com.splendo.kaluga.bluetooth/GattResponse.Error { // com.splendo.kaluga.bluetooth/GattResponse.ApplicationError|null[0]
         constructor <init>(kotlin/Int = ...) // com.splendo.kaluga.bluetooth/GattResponse.ApplicationError.<init>|<init>(kotlin.Int){}[0]
 
@@ -708,12 +728,6 @@ sealed interface com.splendo.kaluga.bluetooth/GattResponse { // com.splendo.kalu
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.WriteRequestRejected.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.WriteRequestRejected.toString|toString(){}[0]
     }
-
-    final object WriteSuccess : com.splendo.kaluga.bluetooth/GattResponse.Success, com.splendo.kaluga.bluetooth/GattResponse.WriteResponse { // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess|null[0]
-        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.equals|equals(kotlin.Any?){}[0]
-        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.hashCode|hashCode(){}[0]
-        final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.WriteSuccess.toString|toString(){}[0]
-    }
 }
 
 final class com.splendo.kaluga.bluetooth.device/SerializableIdentifier { // com.splendo.kaluga.bluetooth.device/SerializableIdentifier|null[0]
@@ -946,6 +960,14 @@ final val com.splendo.kaluga.bluetooth.device/stringValue // com.splendo.kaluga.
 // Targets: [apple]
 final val com.splendo.kaluga.bluetooth/asBytes // com.splendo.kaluga.bluetooth/asBytes|@platform.Foundation.NSData{}asBytes[0]
     final fun (platform.Foundation/NSData).<get-asBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth/asBytes.<get-asBytes>|<get-asBytes>@platform.Foundation.NSData(){}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.bluetooth/mtu // com.splendo.kaluga.bluetooth/mtu|@platform.CoreBluetooth.CBCentral{}mtu[0]
+    final fun (platform.CoreBluetooth/CBCentral).<get-mtu>(): kotlin/Int // com.splendo.kaluga.bluetooth/mtu.<get-mtu>|<get-mtu>@platform.CoreBluetooth.CBCentral(){}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.bluetooth/mtu // com.splendo.kaluga.bluetooth/mtu|@platform.CoreBluetooth.CBPeripheral{}mtu[0]
+    final fun (platform.CoreBluetooth/CBPeripheral).<get-mtu>(): kotlin/Int // com.splendo.kaluga.bluetooth/mtu.<get-mtu>|<get-mtu>@platform.CoreBluetooth.CBPeripheral(){}[0]
 
 // Targets: [apple]
 final val com.splendo.kaluga.bluetooth/uuidString // com.splendo.kaluga.bluetooth/uuidString|@platform.CoreBluetooth.CBUUID{}uuidString[0]

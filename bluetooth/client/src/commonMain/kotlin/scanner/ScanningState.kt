@@ -272,7 +272,7 @@ sealed interface ScanningState : KalugaState {
              * @param advertisementData the [BaseAdvertisementData] of the [ConnectableDevice] discovered
              * @param deviceCreator Method for creating a [ConnectableDevice] if it had not been scanned previously.
              */
-            data class DiscoveredDevice(val identifier: Identifier, val rssi: RSSI, val advertisementData: BaseAdvertisementData, val deviceCreator: () -> ConnectableDevice)
+            data class DiscoveredDevice(val identifier: Identifier, val rssi: RSSI?, val advertisementData: BaseAdvertisementData, val deviceCreator: () -> ConnectableDevice)
 
             /**
              * Transitions into a [Scanning] state where a list of [ConnectableDevice] is added or updated
@@ -332,12 +332,12 @@ sealed interface ScanningState : KalugaState {
 /**
  * Transitions into a [Scanning] state where a [ConnectableDevice] is added or updated
  * @param identifier the [Identifier] of the [ConnectableDevice] discovered
- * @param rssi the [RSSI] value of the [ConnectableDevice] discovered
+ * @param rssi the [RSSI] value of the [ConnectableDevice] discovered, or `null` if not known
  * @param advertisementData the [BaseAdvertisementData] of the [ConnectableDevice] discovered
  * @param deviceCreator Method for creating a [ConnectableDevice] if it had not been scanned previously.
  * @return method for transitioning into a [Scanning] state where the [ConnectableDevice] is discovered
  */
-suspend fun Scanning.discoverDevice(identifier: Identifier, rssi: RSSI, advertisementData: BaseAdvertisementData, deviceCreator: () -> ConnectableDevice) =
+suspend fun Scanning.discoverDevice(identifier: Identifier, rssi: RSSI?, advertisementData: BaseAdvertisementData, deviceCreator: () -> ConnectableDevice) =
     discoverDevices(listOf(Scanning.DiscoveredDevice(identifier, rssi, advertisementData, deviceCreator)))
 
 /**
@@ -582,7 +582,7 @@ internal sealed class ScanningStateImpl {
             override suspend fun discoverDevices(devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>): suspend () -> ScanningState.Enabled.Scanning {
                 devices.mapNotNull { device ->
                     this.devices.allDevices[device.identifier]?.let { knownDevice ->
-                        knownDevice.rssiDidUpdate(device.rssi)
+                        device.rssi?.let { knownDevice.rssiDidUpdate(it) }
                         knownDevice.advertisementDataDidUpdate(device.advertisementData)
                     }
                 }

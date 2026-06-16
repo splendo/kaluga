@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
+import com.splendo.kaluga.bluetooth.scanner.WebDevicePickerSettings
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
@@ -39,8 +40,29 @@ actual class BluetoothClientBuilder(
             context,
         )
     },
-    private val scannerBuilder: DefaultScanner.Builder = DefaultScanner.Builder(),
+    private val scannerBuilder: BaseScanner.Builder = DefaultScanner.Builder(),
 ) : BaseBluetoothClientBuilder {
+
+    /**
+     * Constructor that creates a [BaseBluetoothClientBuilder] with a [DefaultScanner]
+     * @param permissionsBuilder a method for creating the [Permissions] object to manage the Bluetooth permissions.
+     * Needs to have [com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder] registered.
+     * @param optionalServices the advertisement-independent service access allowlist passed to `requestDevice`.
+     * Services that are not advertised (or only available after connecting) must be listed here to be reachable.
+     * @param pickerSettings the [WebDevicePickerSettings] configuring the "Add Device" overlay
+     */
+    constructor(
+        permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
+            Permissions(
+                PermissionsBuilder().apply {
+                    registerBluetoothPermissionIfNotRegistered()
+                },
+                context,
+            )
+        },
+        optionalServices: List<UUID>,
+        pickerSettings: WebDevicePickerSettings = WebDevicePickerSettings(),
+    ) : this(permissionsBuilder, DefaultScanner.Builder(optionalServices, pickerSettings))
 
     actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): BluetoothClient = DefaultBluetoothClient(
         { scannerContext ->

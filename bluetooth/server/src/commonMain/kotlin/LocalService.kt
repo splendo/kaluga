@@ -24,7 +24,7 @@ import com.splendo.kaluga.bluetooth.uuidFrom
 
 /**
  * A [Service] available from a [BluetoothServer]
- * @property wrapper the [com.splendo.kaluga.bluetooth.LocalServiceWrapper] to access the platform service.
+ * @property wrapper the [com.splendo.kaluga.bluetooth.server.LocalServiceWrapper] to access the platform service.
  */
 class LocalService internal constructor(
     val wrapper: LocalServiceWrapper,
@@ -54,7 +54,7 @@ class LocalService internal constructor(
              * Includes a [LocalService] to the service being built
              * @param uuidString string of the [UUID] of the [LocalService] to include
              * @param service the [LocalService.DSL.Secondary] to use to set up the included [LocalService]
-             * @throws UUIDException if [uuidString] is not a valid [UUID]
+             * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
              */
             fun includedService(uuidString: String, service: Secondary.() -> Unit) {
                 includedService(uuidFrom(uuidString), service)
@@ -77,7 +77,7 @@ class LocalService internal constructor(
          * Adds a [LocalCharacteristic] to the service being built
          * @param uuidString string of the [UUID] of the [LocalCharacteristic] to add
          * @param characteristic the [LocalCharacteristic.DSL] to use to set up the [LocalCharacteristic]
-         * @throws UUIDException if [uuidString] is not a valid [UUID]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
          */
         fun characteristic(uuidString: String, characteristic: LocalCharacteristic.DSL.() -> Unit) {
             characteristic(uuidFrom(uuidString), characteristic)

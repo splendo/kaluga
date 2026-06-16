@@ -64,6 +64,8 @@ final class com.splendo.kaluga.bluetooth.test.server/MockConnectedDevice : com.s
         final fun <get-cbCentral>(): platform.CoreBluetooth/CBCentral // com.splendo.kaluga.bluetooth.test.server/MockConnectedDevice.cbCentral.<get-cbCentral>|<get-cbCentral>(){}[0]
     final val identifier // com.splendo.kaluga.bluetooth.test.server/MockConnectedDevice.identifier|{}identifier[0]
         final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.test.server/MockConnectedDevice.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val mtu // com.splendo.kaluga.bluetooth.test.server/MockConnectedDevice.mtu|{}mtu[0]
+        final fun <get-mtu>(): kotlin/Int? // com.splendo.kaluga.bluetooth.test.server/MockConnectedDevice.mtu.<get-mtu>|<get-mtu>(){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.test.server/MockLocalCharacteristicWrapper : com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper { // com.splendo.kaluga.bluetooth.test.server/MockLocalCharacteristicWrapper|null[0]

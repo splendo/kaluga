@@ -74,6 +74,7 @@ private fun seedNotifyingCharacteristic(key: String): Unit = js(
     """{
     globalThis.__kbt.chars[key] = {
         addEventListener: function (name, listener) { globalThis.__testNotifyListener = listener; },
+        removeEventListener: function (name, listener) {},
         startNotifications: function () { return Promise.resolve(); },
         stopNotifications: function () { return Promise.resolve(); }
     };
@@ -81,6 +82,21 @@ private fun seedNotifyingCharacteristic(key: String): Unit = js(
 )
 
 private fun fireNotification(): Unit = js("globalThis.__testNotifyListener({ target: { value: new DataView(new Uint8Array([9, 8, 7]).buffer) } })")
+
+private fun seedListenerTrackingCharacteristic(key: String): Unit = js(
+    """{
+    globalThis.__testListeners = { added: [], removed: [] };
+    globalThis.__kbt.chars[key] = {
+        addEventListener: function (name, listener) { globalThis.__testListeners.added.push(listener); },
+        removeEventListener: function (name, listener) { globalThis.__testListeners.removed.push(listener); },
+        startNotifications: function () { return Promise.resolve(); },
+        stopNotifications: function () { return Promise.resolve(); }
+    };
+    }""",
+)
+
+private fun listenersAdded(): Int = js("globalThis.__testListeners.added.length")
+private fun listenersRemoved(): Int = js("globalThis.__testListeners.removed.length")
 
 class WebBluetoothInteropTest {
 
@@ -163,5 +179,19 @@ class WebBluetoothInteropTest {
         assertEquals("svc" to "char", notified)
         assertContentEquals(byteArrayOf(9, 8, 7), webCachedCharacteristicValue("dev6", "svc", "char"))
         assertIs<WebGattResult.Success>(webSetNotifying("dev6", "svc", "char", enable = false))
+    }
+
+    @Test
+    fun disablingNotificationsRemovesTheListener() = testRunBlocking {
+        val key = registryKey("dev7", "svc", "char")
+        seedListenerTrackingCharacteristic(key)
+        webSetNotificationHandler("dev7") { _, _ -> }
+
+        assertIs<WebGattResult.Success>(webSetNotifying("dev7", "svc", "char", enable = true))
+        assertEquals(1, listenersAdded())
+
+        assertIs<WebGattResult.Success>(webSetNotifying("dev7", "svc", "char", enable = false))
+
+        assertEquals(1, listenersRemoved())
     }
 }
