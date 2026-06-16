@@ -25,8 +25,10 @@ rootProject.name = "Kaluga"
 /* REMINDER (see header), files should be kept up to date with Gradle and the [.git/workflows] */
 
 include(":base:base")
+include(":bluetooth:annotations")
 include(":bluetooth:core")
 include(":bluetooth:client")
+include(":bluetooth:ksp")
 include(":bluetooth:server")
 include(":bluetooth:beacons")
 include(":architecture:architecture")

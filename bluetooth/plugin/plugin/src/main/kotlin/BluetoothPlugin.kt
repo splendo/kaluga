@@ -45,13 +45,13 @@ class BluetoothPlugin : Plugin<Project> {
             extensions.configure<KotlinMultiplatformExtension> {
                 project.dependencies.add(
                     "kspCommonMainMetadata",
-                    "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
+                    "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion"
                 )
                 targets.configureEach {
                     if (name !in listOf("metadata")) {
                         project.dependencies.add(
                             "ksp${name.uppercaseFirstChar()}",
-                            "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
+                            "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion"
                         )
                     }
                 }
@@ -63,8 +63,8 @@ class BluetoothPlugin : Plugin<Project> {
                 sourceSets.commonMain {
                     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
                     dependencies {
-                        implementation("com.splendo.kaluga:bluetooth-annotations:$kalugaVersion")
-                        implementation("com.splendo.kaluga:bluetooth:$kalugaVersion")
+                        implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
+                        implementation("com.splendo.kaluga:bluetooth:core:$kalugaVersion")
                     }
                 }
 

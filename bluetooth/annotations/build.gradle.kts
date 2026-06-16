@@ -5,4 +5,9 @@ plugins {
 kaluga {
     moduleName = "bluetooth.annotations"
     supportJVM = true
+    supportJS = true
+    supportWasmJS = true
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
 }

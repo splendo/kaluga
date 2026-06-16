@@ -7,5 +7,5 @@ kaluga {
 }
 
 dependencies {
-    implementation(project(":bluetooth-annotations"))
+    implementation(project(":bluetooth:annotations"))
 }
