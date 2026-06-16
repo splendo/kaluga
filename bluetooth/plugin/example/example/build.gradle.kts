@@ -12,7 +12,7 @@ plugins {
 kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
 
-    androidLibrary {
+    android {
         namespace = "com.splendo.kaluga.bluetooth.example"
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
         minSdk = libs.versions.androidMinSdk.get().toInt()

@@ -36,5 +36,7 @@ include(":client")
 include(":server")
 include(":api")
 include(":clientimpl")
+include(":demo")
+include(":demoAndroid")
 
 includeBuild("../../../")
