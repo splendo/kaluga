@@ -39,8 +39,10 @@ import androidx.lifecycle.viewModelScope
 import com.splendo.kaluga.bluetooth.demo.DemoDeviceServer
 import com.splendo.kaluga.bluetooth.demo.DemoServerState
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class ServerViewModel(private val server: DemoDeviceServer, private val state: DemoServerState) : ViewModel() {
 
@@ -49,9 +51,9 @@ class ServerViewModel(private val server: DemoDeviceServer, private val state: D
     val lastThresholdWritten = state.lastThresholdWritten
 
     val liveSubscribers = server.demoService.sensor.liveSubscribers
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), emptyList())
     val statusSubscribers = server.demoService.config.statusSubscribers
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), emptyList())
 
     fun setReading(value: Int) { state.reading.value = value }
     fun setName(value: String) { state.name.value = value }

@@ -62,7 +62,12 @@ class ClientViewModel(private val client: DemoDeviceClient) : ViewModel() {
     }
 
     fun readName() = viewModelScope.launch {
-        _name.value = (client.demoService.config.info.readName() as? RemoteConfigCharacteristic.InfoReadResponse.Success)?.response
+        // The Info descriptor is absent on peripherals that cannot expose custom descriptors (e.g. Apple servers).
+        _name.value = try {
+            (client.demoService.config.info.readName() as? RemoteConfigCharacteristic.InfoReadResponse.Success)?.response
+        } catch (_: NoSuchElementException) {
+            "unavailable"
+        }
     }
 
     fun writeThreshold(threshold: Int) = viewModelScope.launch {

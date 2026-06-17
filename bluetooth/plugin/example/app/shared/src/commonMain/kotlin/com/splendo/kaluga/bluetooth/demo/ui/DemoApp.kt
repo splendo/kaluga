@@ -84,9 +84,9 @@ fun DemoApp() {
 private fun MenuScreen(onSelect: (Screen) -> Unit) {
     Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("Kaluga Bluetooth Demo", style = MaterialTheme.typography.headlineSmall)
-        Button(onClick = { onSelect(Screen.Client) }, modifier = Modifier.fillMaxWidth()) { Text("Client (scan & connect)") }
-        Button(onClick = { onSelect(Screen.Server) }, modifier = Modifier.fillMaxWidth()) { Text("Server (advertise)") }
-        Button(onClick = { onSelect(Screen.Simulator) }, modifier = Modifier.fillMaxWidth()) { Text("Simulator (bidirectional)") }
+        Button(onClick = { onSelect(Screen.Client) }, modifier = Modifier.fillMaxWidth()) { Text("Bluetooth Client") }
+        Button(onClick = { onSelect(Screen.Server) }, modifier = Modifier.fillMaxWidth()) { Text("Bluetooth Server") }
+        Button(onClick = { onSelect(Screen.Simulator) }, modifier = Modifier.fillMaxWidth()) { Text("Simulator") }
     }
 }
 

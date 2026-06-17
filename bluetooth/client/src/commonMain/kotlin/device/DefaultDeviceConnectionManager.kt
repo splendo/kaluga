@@ -31,6 +31,7 @@ import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -389,18 +390,38 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     }
 
     protected fun handleCharacteristicReadOrNotified(uuid: UUID, response: GattResponse.ReadResponse) {
-        if (response is GattResponse.ReadSuccess) {
-            notifyingCharacteristics[uuid.uuidString]?.let { characteristic ->
-                logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info("DeviceConnectionManager") {
-                    "Notify characteristic ${uuid.uuidString} updated to ${response.value.toHexString(" ")}"
-                }
-                characteristic.notify(response.value)
-            }
+        val action = currentAction
+        val isReadResponse = action is DeviceAction.Read.Characteristic && action.characteristic.uuid.uuidString == uuid.uuidString
+
+        // A read response must not be delivered to notification subscribers, even while the characteristic is notifying.
+        if (response is GattResponse.ReadSuccess && !isReadResponse) {
+            handleCharacteristicNotified(uuid, response)
         }
 
+        if (isReadResponse) {
+            notifyingCharacteristics[uuid.uuidString]?.let { characteristic ->
+                logger.dataLogger[characteristic.service.uuid][characteristic.uuid].warn("DeviceConnectionManager") {
+                    "Characteristic ${uuid.uuidString} updated while a read was in flight and notifications are enabled; " +
+                        "consuming it as the read response. A notification arriving in this window cannot be distinguished from the read response and will not reach subscribers."
+                }
+            }
+            handleCharacteristicRead(uuid, response)
+        }
+    }
+
+    protected fun handleCharacteristicRead(uuid: UUID, response: GattResponse.ReadResponse) {
         val action = currentAction
         if (action is DeviceAction.Read.Characteristic && action.characteristic.uuid.uuidString == uuid.uuidString) {
             action.handleActionCompleted(response)
+        }
+    }
+
+    protected fun handleCharacteristicNotified(uuid: UUID, response: GattResponse.ReadSuccess) {
+        notifyingCharacteristics[uuid.uuidString]?.let { characteristic ->
+            logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info("DeviceConnectionManager") {
+                "Notify characteristic ${uuid.uuidString} updated to ${response.value.toHexString(" ")}"
+            }
+            characteristic.notify(response.value)
         }
     }
 

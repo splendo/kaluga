@@ -38,6 +38,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.IT
+import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
 import com.splendo.kaluga.bluetooth.ksp.helpers.LET
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
@@ -422,10 +423,10 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     GenerationType.Type.API -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
-                        initializer(
-                            "%T.$FROM_CHARACTERISTIC${propertyDeclaration.orNullIfNullable}(" +
+                        delegate(
+                            "$LAZY { %T.$FROM_CHARACTERISTIC${propertyDeclaration.orNullIfNullable}(" +
                                 "$CHARACTERISTIC${NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument}" +
-                                ")",
+                                ") }",
                             clientName(typeDeclaration, type),
                         )
                     }

@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_DISCOVERED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.INCLUDED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.IT
+import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
 import com.splendo.kaluga.bluetooth.ksp.helpers.LET
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
@@ -266,8 +267,10 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                     GenerationType.Type.API -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
-                        initializer(
-                            "%T.$FROM_SERVICE${propertyDeclaration.orNullIfNullable}($SERVICE${NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument})",
+                        delegate(
+                            "$LAZY { %T.$FROM_SERVICE${propertyDeclaration.orNullIfNullable}($SERVICE${NeedsFormatterHelper.needsBluetoothFormatter(
+                                typeDeclaration,
+                            ).functionArgument}) }",
                             clientName(typeDeclaration, type),
                         )
                     }

@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_DISCOVERED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.GENERATE_CLIENT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
+import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
@@ -180,10 +181,10 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
                     GenerationType.Type.API -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
-                        initializer(
-                            "%T.$FROM_DISCOVERED_SERVICES${propertyDeclaration.orNullIfNullable}(" +
+                        delegate(
+                            "$LAZY { %T.$FROM_DISCOVERED_SERVICES${propertyDeclaration.orNullIfNullable}(" +
                                 "${DISCOVERED_SERVICES}${NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument}" +
-                                ")",
+                                ") }",
                             clientName(typeDeclaration, type),
                         )
                     }

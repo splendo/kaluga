@@ -34,6 +34,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RESPONSE
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SUCCESS
+import com.splendo.kaluga.bluetooth.ksp.helpers.TO_BYTE_ARRAY
 import com.splendo.kaluga.bluetooth.ksp.helpers.VAL
 import com.splendo.kaluga.bluetooth.ksp.helpers.VALUE
 import com.splendo.kaluga.bluetooth.ksp.helpers.WHEN
@@ -138,7 +139,7 @@ internal class BluetoothResultTypeBuilder(
             .beginControlFlow("$WHEN ($VAL $RESPONSE = %L)) {", addReadStatement)
             .beginControlFlow("$IS %T.$SUCCESS -> {", responseClassName)
             .addStatement(
-                "%T($FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, $RESPONSE.$RESPONSE).$DROP($OFFSET))",
+                "%T($FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, $RESPONSE.$RESPONSE).$DROP($OFFSET).$TO_BYTE_ARRAY())",
                 References.Bluetooth.readSuccess,
                 propertyDeclaration.type.resolve().toTypeName().serializer(logger),
             )
