@@ -1,13 +1,13 @@
-## Base
+## Core
 
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-This Base Library for Kaluga contains Data types and accessors for easy use across all Kaluga projects.
+This Core Library for Kaluga contains the data types and accessors used across all Kaluga projects: threading, state machines, flowables, concurrent collections and decimals.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Base as follows:
+This library is available on Maven Central. You can import Kaluga Core as follows:
 
 ```kotlin
 repositories {
@@ -17,7 +17,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga.base:base:$kalugaVersion")
+    implementation("com.splendo.kaluga.base:core:$kalugaVersion")
 }
 ```
 
@@ -30,8 +30,9 @@ You can run code on the OS Main Thread by using `runOnMain`. Use the `MainQueueD
 - (iOS Only) you can flow on Key-Value Observed values by using the `NSObject.observeKeyValueAsFlow(keyPath:options:)` method
 
 ## Data Converters
-- Convert a `ByteArray` to a hexadecimal String using `toHexString()`
 - (iOS Only) Convert `NSData` to `ByteArray` and vice versa using `toByteArray()` and `toNSData()` respectively.
+
+For converting a `ByteArray` to a hexadecimal String and other byte utilities, see [`:base:bytes`](../bytes/).
 
 ## State
 The Kaluga library offers usage of State Machines.
@@ -97,30 +98,9 @@ Consuming a flow may often take longer than producing it. Kotlin Flows can handl
 Kaluga offers a `BufferedAsListChannel` to buffer all data produced between consumption into a list. This allows the consumer to deal with groups of data and ideally prevent increasing delays.
 The `BufferedAsListChannel` is a `Channel` that always buffers an unlimited amount of data points.
 
-## Date
-Kaluga includes a `Date` class to manage and compare time.
-Dates can be created using either `Date.now()` or `Date.epoch()`.
-Dates are mutable be default and can be compared.
-
-```kotlin
-val today = Date.now()
-val tomorrow = today.copy().apply {
-    day += 1
-}
-assertTrue(today < tomorrow)
-```
-
 ## Decimal
 
 Kaluga includes a `Decimal` class to manage decimal numbers with high precision.
 Decimal can be created from any `Number` using `toDecimal()` or back to a `Double`/`Int` using `toDouble()`/`toInt()` respectively.
 
 Use Decimals to do standard arithmetic operations. A Rounding mode or scale can be provided for these calculations.
-
-## Formating
-
-It's possible to format to and from some data types using Kaluga.
-
-- `Date` can be formatted and parsed using a `KalugaDateFormatter`
-- `Number` can be formatted and parsed using a `NumberFormatter`
-- `String` can be formatted to include different data types using `StringFormatter`

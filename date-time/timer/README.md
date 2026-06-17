@@ -1,13 +1,13 @@
-# Date Time
+## Timer
 
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-This library contains multiplatform classes to work with date and time.
+This library provides a `RecurringTimer` which, once started, emits ticks at regular intervals.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Date Time as follows:
+This library is available on Maven Central. You can import Kaluga Timer as follows:
 
 ```kotlin
 repositories {
@@ -17,13 +17,11 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga:date-time:$kalugaVersion")
+    implementation("com.splendo.kaluga.date-time:timer:$kalugaVersion")
 }
 ```
 
-## Usage
-
-### RecurringTimer
+## RecurringTimer
 `RecurringTimer` is a timer which once started provides ticks at regular intervals.
 
 Sample code to instantiate and operate a timer:
