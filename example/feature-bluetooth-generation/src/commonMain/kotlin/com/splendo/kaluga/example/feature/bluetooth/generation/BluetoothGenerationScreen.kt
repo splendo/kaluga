@@ -18,85 +18,92 @@
 package com.splendo.kaluga.example.feature.bluetooth.generation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.splendo.kaluga.bluetooth.BluetoothClient
-import com.splendo.kaluga.bluetooth.device.ConnectableDevice
-import com.splendo.kaluga.bluetooth.device.randomIdentifier
 import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.bluetooth.server.BluetoothServerBuilder
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun GenerationMenuScreen(onClient: () -> Unit, onServer: () -> Unit, onSimulator: () -> Unit) {
-    Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("Pick a mode", style = MaterialTheme.typography.titleMedium)
-        Button(onClick = onClient, modifier = Modifier.fillMaxWidth()) { Text("Bluetooth Client") }
-        Button(onClick = onServer, modifier = Modifier.fillMaxWidth()) { Text("Bluetooth Server") }
-        Button(onClick = onSimulator, modifier = Modifier.fillMaxWidth()) { Text("Simulator") }
-    }
-}
-
-class ClientModeViewModel(private val client: BluetoothClient) : ViewModel() {
-    val devices = client.devices().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
-
-    private val _connected = MutableStateFlow<DemoDeviceClient?>(null)
-    val connected = _connected.asStateFlow()
-
-    fun startScanning() = client.startScanning(filter = setOf(RemoteDemoService.UUID))
-    fun stopScanning() = client.stopScanning()
-
-    fun connect(device: ConnectableDevice) = viewModelScope.launch {
-        if (device.connect()) {
-            _connected.value = DemoDeviceClient.bluetooth(client, device.identifier)
+fun GenerationScreen(viewModel: GenerationViewModel = koinViewModel()) {
+    var tab by remember { mutableStateOf(0) }
+    Column(Modifier.fillMaxSize()) {
+        PrimaryTabRow(selectedTabIndex = tab) {
+            Tab(selected = tab == 0, onClick = { tab = 0 }, text = { Text("Client") })
+            Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text("Server") })
+        }
+        when (tab) {
+            0 -> ClientTab(viewModel)
+            else -> ServerTab(viewModel)
         }
     }
 }
 
 @Composable
-internal fun ClientModeScreen(viewModel: ClientModeViewModel = koinViewModel()) {
-    val devices by viewModel.devices.collectAsState()
-    val connected by viewModel.connected.collectAsState()
+private fun ClientTab(viewModel: GenerationViewModel) {
+    val selected by viewModel.selected.collectAsState()
+    val connecting by viewModel.connecting.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val current = selected
+    when {
+        current != null -> {
+            Column(Modifier.fillMaxSize()) {
+                TextButton(onClick = { viewModel.deselect() }, modifier = Modifier.padding(horizontal = 8.dp)) { Text("‹ Devices") }
+                ClientView(viewModel(key = current.key) { ClientViewModel(current.client) })
+            }
+        }
 
-    val api = connected
-    if (api != null) {
-        ClientView(viewModel { ClientViewModel(api) })
-    } else {
-        LaunchedScanning(viewModel)
-        Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Scanning for KalugaDemo…", style = MaterialTheme.typography.titleMedium)
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(devices) { device ->
-                    Button(onClick = { viewModel.connect(device) }, modifier = Modifier.fillMaxWidth()) {
-                        Text(device.identifier.stringValue)
+        connecting -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    CircularProgressIndicator()
+                    Text("Connecting…")
+                }
+            }
+        }
+
+        else -> {
+            DisposableEffect(Unit) {
+                viewModel.startScanning()
+                onDispose { viewModel.stopScanning() }
+            }
+            val scanned by viewModel.scannedDevices.collectAsState()
+            val message = error
+            Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Devices", style = MaterialTheme.typography.titleMedium)
+                if (message != null) {
+                    Text(message, color = MaterialTheme.colorScheme.error)
+                }
+                Button(onClick = { viewModel.selectSimulated() }, modifier = Modifier.fillMaxWidth()) { Text("Simulated") }
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(scanned) { device ->
+                        Button(onClick = { viewModel.connect(device) }, modifier = Modifier.fillMaxWidth()) {
+                            Text(device.identifier.stringValue)
+                        }
                     }
                 }
             }
@@ -105,46 +112,41 @@ internal fun ClientModeScreen(viewModel: ClientModeViewModel = koinViewModel()) 
 }
 
 @Composable
-private fun LaunchedScanning(viewModel: ClientModeViewModel) {
+private fun ServerTab(viewModel: GenerationViewModel) {
+    val reading by viewModel.reading.collectAsState()
+    val name by viewModel.name.collectAsState()
+    val lastThreshold by viewModel.lastThresholdWritten.collectAsState()
+    val liveSubscribers by viewModel.liveSubscriberCount.collectAsState()
+    val statusSubscribers by viewModel.statusSubscriberCount.collectAsState()
+    var liveInput by remember { mutableStateOf("0") }
+    var statusInput by remember { mutableStateOf("0") }
+
     DisposableEffect(Unit) {
-        viewModel.startScanning()
-        onDispose { viewModel.stopScanning() }
+        viewModel.startServer()
+        onDispose { viewModel.stopServer() }
     }
-}
 
-@Composable
-internal fun ServerModeScreen() {
-    val builder = koinInject<BluetoothServerBuilder>()
-    val delegate = koinInject<DemoDeviceServer.Delegate>()
-    val state = koinInject<DemoServerState>()
-    var server: DemoDeviceServer? by remember { mutableStateOf(null) }
-    LaunchedEffect(Unit) {
-        server = DemoDeviceServer.bluetooth(builder, delegate)
-    }
-    val s = server
-    if (s == null) {
-        Text("Starting server…", Modifier.padding(16.dp))
-    } else {
-        ServerView(viewModel { ServerViewModel(s, state) })
-    }
-}
-
-@Composable
-internal fun SimulatorModeScreen() {
-    val delegate = koinInject<DemoDeviceServer.Delegate>()
-    val state = koinInject<DemoServerState>()
-    val simServer = remember { DemoDeviceServer.simulated(delegate) }
-    val simClient = remember { DemoDeviceClient.simulated(randomIdentifier(), simServer) }
-    var tab by remember { mutableStateOf(0) }
-
-    Column(Modifier.fillMaxSize()) {
-        PrimaryTabRow(selectedTabIndex = tab) {
-            Tab(selected = tab == 0, onClick = { tab = 0 }, text = { Text("Client") })
-            Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text("Server") })
+    Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        OutlinedTextField(
+            value = reading.toString(),
+            onValueChange = { it.toIntOrNull()?.let(viewModel::setReading) },
+            label = { Text("reading (served on read)") },
+        )
+        OutlinedTextField(
+            value = name,
+            onValueChange = viewModel::setName,
+            label = { Text("name (descriptor)") },
+        )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OutlinedTextField(value = liveInput, onValueChange = { liveInput = it }, label = { Text("live value") }, modifier = Modifier.weight(1f))
+            Button(onClick = { liveInput.toShortOrNull()?.let(viewModel::pushLive) }) { Text("Notify") }
         }
-        when (tab) {
-            0 -> ClientView(viewModel(key = "simulatedClient") { ClientViewModel(simClient) })
-            else -> ServerView(viewModel(key = "simulatedServer") { ServerViewModel(simServer, state) })
+        Text("live subscribers (real + simulated): $liveSubscribers")
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OutlinedTextField(value = statusInput, onValueChange = { statusInput = it }, label = { Text("status value") }, modifier = Modifier.weight(1f))
+            Button(onClick = { statusInput.toShortOrNull()?.let(viewModel::pushStatus) }) { Text("Indicate") }
         }
+        Text("status subscribers (real + simulated): $statusSubscribers")
+        Text("last threshold written = ${lastThreshold ?: "-"}")
     }
 }

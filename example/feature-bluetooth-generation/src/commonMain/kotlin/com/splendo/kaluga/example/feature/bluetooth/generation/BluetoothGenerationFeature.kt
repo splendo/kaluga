@@ -33,26 +33,7 @@ class BluetoothGenerationContribution : FeatureContribution.Compose {
     override fun register(builder: NavGraphBuilder, navController: NavController) {
         builder.composable(id) {
             DetailScaffold(title = label, onBack = { navController.popBackStack() }) {
-                GenerationMenuScreen(
-                    onClient = { navController.navigate("$id/client") },
-                    onServer = { navController.navigate("$id/server") },
-                    onSimulator = { navController.navigate("$id/simulator") },
-                )
-            }
-        }
-        builder.composable("$id/client") {
-            DetailScaffold(title = "Client", onBack = { navController.popBackStack() }) {
-                ClientModeScreen()
-            }
-        }
-        builder.composable("$id/server") {
-            DetailScaffold(title = "Server", onBack = { navController.popBackStack() }) {
-                ServerModeScreen()
-            }
-        }
-        builder.composable("$id/simulator") {
-            DetailScaffold(title = "Simulator", onBack = { navController.popBackStack() }) {
-                SimulatorModeScreen()
+                GenerationScreen()
             }
         }
     }
@@ -62,6 +43,6 @@ class BluetoothGenerationContribution : FeatureContribution.Compose {
 val bluetoothGenerationFeatureModule: Module = module {
     single { DemoServerState() }
     single<DemoDeviceServer.Delegate> { DemoServerDelegate(get()) }
-    viewModel { ClientModeViewModel(get()) }
+    viewModel { GenerationViewModel(get(), get(), get(), get()) }
     single { BluetoothGenerationContribution() } bind FeatureContribution::class
 }
