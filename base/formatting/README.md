@@ -1,5 +1,4 @@
-## Formatting
-
+# Base Formatting
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -7,7 +6,7 @@
 This library formats and parses numbers and strings in a locale-aware manner.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Formatting as follows:
+This library is available on Maven Central. You can import Kaluga Base Formatting as follows:
 
 ```kotlin
 repositories {

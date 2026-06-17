@@ -1,5 +1,4 @@
-## Bytes
-
+# Base Bytes
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -7,7 +6,7 @@
 This library provides utilities for working with `ByteArray`s: hexadecimal conversion, building byte arrays from primitive values, bitwise helpers and the `MedFloat` IEEE 11073 medical float types.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Bytes as follows:
+This library is available on Maven Central. You can import Kaluga Base Bytes as follows:
 
 ```kotlin
 repositories {

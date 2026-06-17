@@ -1,5 +1,4 @@
-## Timer
-
+# Date Time Timer
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -7,7 +6,7 @@
 This library provides a `RecurringTimer` which, once started, emits ticks at regular intervals.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Timer as follows:
+This library is available on Maven Central. You can import Kaluga Date Time Timer as follows:
 
 ```kotlin
 repositories {

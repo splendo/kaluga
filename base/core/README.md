@@ -1,5 +1,4 @@
-## Core
-
+# Base Core
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -7,7 +6,7 @@
 This library provides the core data types and accessors used across all Kaluga projects: threading, state machines, flowables, concurrent collections and decimals.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Core as follows:
+This library is available on Maven Central. You can import Kaluga Base Core as follows:
 
 ```kotlin
 repositories {

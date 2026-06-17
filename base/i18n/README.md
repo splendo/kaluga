@@ -1,5 +1,4 @@
-## i18n
-
+# Base i18n
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -7,7 +6,7 @@
 This library provides localization primitives for Kaluga: locales, unit systems and locale-aware String casing.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga i18n as follows:
+This library is available on Maven Central. You can import Kaluga Base i18n as follows:
 
 ```kotlin
 repositories {
