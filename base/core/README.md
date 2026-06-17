@@ -4,7 +4,7 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-This Core Library for Kaluga contains the data types and accessors used across all Kaluga projects: threading, state machines, flowables, concurrent collections and decimals.
+This library provides the core data types and accessors used across all Kaluga projects: threading, state machines, flowables, concurrent collections and decimals.
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Core as follows:
