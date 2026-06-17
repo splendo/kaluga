@@ -1,10 +1,10 @@
 # Bluetooth code generation plugin
 
 `com.splendo.kaluga.bluetooth.plugin` is a Gradle plugin that generates typed Bluetooth **clients** and **servers**
-from a declarative, annotated definition of a device. You describe the GATT layout once — services, characteristics,
-descriptors and how each value is accessed — and the plugin generates strongly-typed APIs (and their implementations)
-on top of [`bluetooth-client`](../client/) and [`bluetooth-server`](../server/), so you never hand-write attribute
-(de)serialization or characteristic plumbing.
+from a declarative, annotated definition of a device. You describe the GATT layout (services, characteristics,
+descriptors, and how each value is accessed) and the plugin generates strongly-typed APIs and their implementations
+on top of [`bluetooth-client`](../client/) and [`bluetooth-server`](../server/). 
+This removes the need to hand-write attribute (de)serialization or characteristic plumbing.
 
 It is built from three pieces:
 
@@ -16,9 +16,8 @@ It is built from three pieces:
 
 ## Applying the plugin
 
-The plugin applies the Kotlin Multiplatform and KSP plugins itself, and adds the `annotations`, `core` and (depending
-on configuration) `client` / `server` runtime dependencies to `commonMain`. Apply it and configure your targets as
-usual:
+The plugin applies the Kotlin Multiplatform and KSP plugins automatically, and adds the `annotations`, `core`, and (depending
+on configuration) `client` / `server` runtime dependencies to `commonMain`. Apply it and configure your targets as usual:
 
 ```kotlin
 plugins {
@@ -35,9 +34,10 @@ kotlin {
 
 ## Defining a device
 
-A device is a class or interface annotated with `@Bluetooth`. It exposes its services as properties; a service exposes
-its characteristics; a characteristic exposes its values, each marked with how it can be accessed. Descriptors are
-nested in the same way.
+A device is a class or interface annotated with `@Bluetooth`. It exposes its services as properties. 
+These services in turn expose their characteristics. 
+A characteristic exposes its values, each marked with how it can be accessed. 
+Descriptors are nested in the same way (though note that Descriptors are not supported by Apple servers).
 
 ```kotlin
 import com.splendo.kaluga.bluetooth.annotations.*
@@ -148,11 +148,3 @@ a server app — generate the API once and import it elsewhere:
 - API module: `bluetooth { apiOnly() }` (depends only on `bluetooth-core`).
 - Implementation module: `bluetooth { useExternalApi(); apiPackage = "<api package>" }`, depending on the API module,
   and `annotationSource("<path to the shared definitions>")` so it generates against the same device.
-
-## Validation
-
-[`example/`](example/) is a standalone composite build of validation fixtures — one module per plugin capability
-(`full`, `client`, `server`, `simulator`, `external-api-*`) — that exercises the generator and confirms the generated
-code compiles on every supported target. It is built in CI; see [`.github/workflows`](../../.github/workflows). A
-runnable demo of the generated code lives in the main example app under
-[`example/feature-bluetooth-generation`](../../example/feature-bluetooth-generation/).
