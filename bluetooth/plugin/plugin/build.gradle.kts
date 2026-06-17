@@ -42,6 +42,12 @@ kotlin {
 dependencies {
     implementation(libs.kotlin.gradle)
     implementation(libs.google.devtools.ksp.gradle)
+    implementation(libs.kotlinpoet)
+    testImplementation(kotlin("test-junit5"))
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile>().configureEach {
