@@ -70,6 +70,28 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
+    fun parsesConditionalCharacteristicVariants() {
+        val characteristic = characteristic("/gatt/sensor_reading.xml")
+        assertTrue(characteristic.isVariant, "expected a variant characteristic")
+        assertEquals(listOf("Temperature" to 1, "Humidity" to 2), characteristic.variants.map { it.name to it.discriminator })
+    }
+
+    @Test
+    fun generatesSealedClassForConditionalCharacteristic() {
+        val code = generator.generateValueClass(characteristic("/gatt/sensor_reading.xml")).toString()
+
+        assertTrue("sealed class SensorReadingValue" in code, code)
+        assertTrue("@SerializedByteValue(value = 1)" in code, code)
+        assertTrue("@SerializedByteValue(value = 2)" in code, code)
+        assertTrue("data class Temperature" in code, code)
+        assertTrue("data class Humidity" in code, code)
+        // each variant extends the sealed value class
+        assertTrue(": SensorReadingValue()" in code, code)
+        // and still carries the field annotations
+        assertTrue("@Scalar(decimalExponent = -2)" in code, code)
+    }
+
+    @Test
     fun generatesDeviceServiceAndCharacteristicStructure() {
         val files = generator.generate(
             deviceName = "Environmental Sensor",

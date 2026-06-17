@@ -17,8 +17,17 @@
 
 package com.splendo.kaluga.bluetooth.plugin.gatt
 
-/** A parsed Bluetooth SIG GATT characteristic definition, limited to what the prototype generator consumes. */
-data class GattCharacteristic(val name: String, val uuid: String, val fields: List<GattField>)
+/**
+ * A parsed Bluetooth SIG GATT characteristic definition, limited to what the prototype generator consumes.
+ * A characteristic is either a single structure ([fields]) or, when its value varies by a leading discriminator,
+ * a set of [variants] (generated as a sealed class).
+ */
+data class GattCharacteristic(val name: String, val uuid: String, val fields: List<GattField>, val variants: List<GattVariant> = emptyList()) {
+    val isVariant: Boolean get() = variants.isNotEmpty()
+}
+
+/** One variant of a conditional [GattCharacteristic], selected on the wire by its [discriminator] byte. */
+data class GattVariant(val name: String, val discriminator: Int, val fields: List<GattField>)
 
 /**
  * A single value field of a [GattCharacteristic]. [format] is the raw GATT format token (e.g. `uint16`, `sint8`,

@@ -47,22 +47,30 @@ object GattXmlParser {
 
     private fun parseCharacteristic(root: Element): GattCharacteristic {
         require(root.tagName == "Characteristic") { "Expected a <Characteristic> root, but was <${root.tagName}>" }
-        val fields = root.children("Value").firstOrNull()
-            ?.children("Field")
-            .orEmpty()
-            .map { field ->
-                GattField(
-                    name = field.getAttribute("name"),
-                    format = field.childText("Format").orEmpty(),
-                    multiplier = field.childText("Multiplier")?.toIntOrNull() ?: 1,
-                    decimalExponent = field.childText("DecimalExponent")?.toIntOrNull() ?: 0,
-                    binaryExponent = field.childText("BinaryExponent")?.toIntOrNull() ?: 0,
-                )
-            }
+        val value = root.children("Value").firstOrNull()
+        val variantsElement = value?.directChildren("Variants")?.firstOrNull()
+        val variants = variantsElement?.directChildren("Variant")?.map { variant ->
+            GattVariant(
+                name = variant.getAttribute("name"),
+                discriminator = variant.getAttribute("value").toInt(),
+                fields = fieldsOf(variant),
+            )
+        }.orEmpty()
         return GattCharacteristic(
             name = root.getAttribute("name").ifBlank { root.getAttribute("type") },
             uuid = root.getAttribute("uuid"),
-            fields = fields,
+            fields = if (variantsElement != null || value == null) emptyList() else fieldsOf(value),
+            variants = variants,
+        )
+    }
+
+    private fun fieldsOf(parent: Element): List<GattField> = parent.directChildren("Field").map { field ->
+        GattField(
+            name = field.getAttribute("name"),
+            format = field.childText("Format").orEmpty(),
+            multiplier = field.childText("Multiplier")?.toIntOrNull() ?: 1,
+            decimalExponent = field.childText("DecimalExponent")?.toIntOrNull() ?: 0,
+            binaryExponent = field.childText("BinaryExponent")?.toIntOrNull() ?: 0,
         )
     }
 
@@ -104,6 +112,8 @@ object GattXmlParser {
         val nodes = getElementsByTagName(tag)
         return (0 until nodes.length).map { nodes.item(it) as Element }
     }
+
+    private fun Element.directChildren(tag: String): List<Element> = children(tag).filter { it.parentNode === this }
 
     private fun Element.childText(tag: String): String? = children(tag).firstOrNull { it.parentNode === this }?.textContent?.trim()?.takeIf { it.isNotEmpty() }
 }

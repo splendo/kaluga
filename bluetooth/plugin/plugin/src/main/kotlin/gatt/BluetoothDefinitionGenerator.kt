@@ -38,8 +38,10 @@ import com.squareup.kotlinpoet.TypeSpec
  * characteristic (translating field formats/scaling into `BluetoothFormat` annotations), the `@BluetoothCharacteristic`
  * and `@BluetoothService` interfaces, and the `@Bluetooth` device that ties them together.
  *
- * Prototype: handles plain (non flag-conditional) characteristics only; conditional characteristics will map to sealed
- * classes in a later increment.
+ * Conditional characteristics — whose value varies by a leading discriminator byte — map to a sealed class with one
+ * `@SerializedByteValue`-tagged subclass per variant, which the `BluetoothFormat` already dispatches on. Optional
+ * fields map to nullable properties and 8/16-bit selectors to multiple `@Size` annotations (both handled by the
+ * existing format). Not yet handled: dispatch on a bit within a shared flags byte.
  *
  * @param packageName the package the generated definitions are placed in.
  */
@@ -120,12 +122,33 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
         return FileSpec.builder(packageName, className).addType(valueType(characteristic, className)).build()
     }
 
-    private fun valueType(characteristic: GattCharacteristic, className: String): TypeSpec {
+    private fun valueType(characteristic: GattCharacteristic, className: String): TypeSpec =
+        if (characteristic.isVariant) sealedValueType(characteristic, className) else dataValueType(characteristic.fields, className)
+
+    // A conditional characteristic becomes a sealed class; each variant is a subclass selected on the wire by its
+    // discriminator byte (@SerializedByteValue), which the BluetoothFormat already dispatches on.
+    private fun sealedValueType(characteristic: GattCharacteristic, className: String): TypeSpec {
+        val superType = ClassName(packageName, className)
+        val sealed = TypeSpec.classBuilder(className)
+            .addModifiers(KModifier.SEALED)
+            .addAnnotation(SERIALIZABLE)
+        characteristic.variants.forEach { variant ->
+            sealed.addType(
+                dataValueType(variant.fields, variant.name.toPascalCase()).toBuilder()
+                    .addAnnotation(serializedByteValue(variant.discriminator))
+                    .superclass(superType)
+                    .build(),
+            )
+        }
+        return sealed.build()
+    }
+
+    private fun dataValueType(fields: List<GattField>, className: String): TypeSpec {
         val constructor = FunSpec.constructorBuilder()
         val type = TypeSpec.classBuilder(className)
             .addModifiers(KModifier.DATA)
             .addAnnotation(SERIALIZABLE)
-        characteristic.fields.forEach { field ->
+        fields.forEach { field ->
             val propertyName = field.name.toCamelCase()
             val mapping = field.toMapping()
             constructor.addParameter(ParameterSpec.builder(propertyName, mapping.type).build())
@@ -138,6 +161,10 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
         }
         return type.primaryConstructor(constructor.build()).build()
     }
+
+    private fun serializedByteValue(discriminator: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "SerializedByteValue"))
+        .addMember("value = %L", discriminator)
+        .build()
 
     private class Mapping(val type: TypeName, val annotations: List<AnnotationSpec>)
 
