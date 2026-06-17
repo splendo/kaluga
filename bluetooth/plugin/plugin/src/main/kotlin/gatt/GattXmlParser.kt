@@ -18,20 +18,35 @@
 package com.splendo.kaluga.bluetooth.plugin.gatt
 
 import org.w3c.dom.Element
+import java.io.File
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
-/** Parses a Bluetooth SIG GATT characteristic XML into a [GattCharacteristic]. Prototype: plain fields only. */
+/** A parsed GATT definition: either a [GattCharacteristic] (value structure) or a [GattService] (structure + access). */
+sealed interface GattDefinition {
+    data class Characteristic(val value: GattCharacteristic) : GattDefinition
+    data class Service(val value: GattService) : GattDefinition
+}
+
+/** Parses Bluetooth SIG GATT characteristic and service XML. Prototype: plain fields and flat services only. */
 object GattXmlParser {
 
-    fun parse(input: InputStream): GattCharacteristic {
-        val root = DocumentBuilderFactory.newInstance()
-            .apply { isNamespaceAware = false }
-            .newDocumentBuilder()
-            .parse(input)
-            .documentElement
-        require(root.tagName == "Characteristic") { "Expected a <Characteristic> root, but was <${root.tagName}>" }
+    /** Parses [file], dispatching on its root element to a characteristic or service definition. */
+    fun parse(file: File): GattDefinition = file.inputStream().use { input ->
+        val root = document(input)
+        when (root.tagName) {
+            "Characteristic" -> GattDefinition.Characteristic(parseCharacteristic(root))
+            "Service" -> GattDefinition.Service(parseService(root))
+            else -> error("Unsupported root <${root.tagName}> in ${file.name}")
+        }
+    }
 
+    fun parseCharacteristic(input: InputStream): GattCharacteristic = parseCharacteristic(document(input))
+
+    fun parseService(input: InputStream): GattService = parseService(document(input))
+
+    private fun parseCharacteristic(root: Element): GattCharacteristic {
+        require(root.tagName == "Characteristic") { "Expected a <Characteristic> root, but was <${root.tagName}>" }
         val fields = root.children("Value").firstOrNull()
             ?.children("Field")
             .orEmpty()
@@ -50,6 +65,40 @@ object GattXmlParser {
             fields = fields,
         )
     }
+
+    private fun parseService(root: Element): GattService {
+        require(root.tagName == "Service") { "Expected a <Service> root, but was <${root.tagName}>" }
+        val characteristics = root.children("Characteristics").firstOrNull()
+            ?.children("Characteristic")
+            .orEmpty()
+            .map { characteristic ->
+                val properties = characteristic.children("Properties").firstOrNull()
+                val granted = GattProperty.entries.filter { property ->
+                    properties?.childText(property.elementName)?.let { it != "Excluded" } == true
+                }.toSet()
+                GattServiceCharacteristic(uuid = characteristic.getAttribute("uuid"), properties = granted)
+            }
+        return GattService(
+            name = root.getAttribute("name").ifBlank { root.getAttribute("type") },
+            uuid = root.getAttribute("uuid"),
+            characteristics = characteristics,
+        )
+    }
+
+    private fun document(input: InputStream): Element = DocumentBuilderFactory.newInstance()
+        .apply { isNamespaceAware = false }
+        .newDocumentBuilder()
+        .parse(input)
+        .documentElement
+
+    private val GattProperty.elementName: String
+        get() = when (this) {
+            GattProperty.READ -> "Read"
+            GattProperty.WRITE -> "Write"
+            GattProperty.WRITE_WITHOUT_RESPONSE -> "WriteWithoutResponse"
+            GattProperty.NOTIFY -> "Notify"
+            GattProperty.INDICATE -> "Indicate"
+        }
 
     private fun Element.children(tag: String): List<Element> {
         val nodes = getElementsByTagName(tag)

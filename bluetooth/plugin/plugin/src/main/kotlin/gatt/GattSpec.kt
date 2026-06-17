@@ -26,6 +26,15 @@ data class GattCharacteristic(val name: String, val uuid: String, val fields: Li
  */
 data class GattField(val name: String, val format: String, val multiplier: Int = 1, val decimalExponent: Int = 0, val binaryExponent: Int = 0)
 
+/** A parsed GATT service definition: the characteristics it contains and how each may be accessed. */
+data class GattService(val name: String, val uuid: String, val characteristics: List<GattServiceCharacteristic>)
+
+/** A characteristic as referenced by a [GattService], by [uuid], together with the access [properties] the service grants it. */
+data class GattServiceCharacteristic(val uuid: String, val properties: Set<GattProperty>)
+
+/** A GATT characteristic access property, mapping onto the Kaluga access annotations. */
+enum class GattProperty { READ, WRITE, WRITE_WITHOUT_RESPONSE, NOTIFY, INDICATE }
+
 internal fun String.toPascalCase(): String = split(Regex("[^A-Za-z0-9]+"))
     .filter { it.isNotEmpty() }
     .joinToString("") { part -> part.replaceFirstChar { it.uppercaseChar() } }

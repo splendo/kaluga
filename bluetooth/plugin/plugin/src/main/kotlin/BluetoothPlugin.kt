@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.plugin
 import com.google.devtools.ksp.gradle.KspAATask
 import com.google.devtools.ksp.gradle.KspExtension
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
+import com.splendo.kaluga.bluetooth.plugin.gatt.GattGeneration
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
@@ -66,6 +67,7 @@ class BluetoothPlugin : Plugin<Project> {
                 val generatesImplementation = bluetoothExtension.implementFor.get().isNotEmpty()
                 sourceSets.commonMain {
                     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+                    if (bluetoothExtension.xmlGeneration != null) kotlin.srcDir("build/$XML_GENERATED_DIR")
                     bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
                     dependencies {
                         implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
@@ -89,8 +91,29 @@ class BluetoothPlugin : Plugin<Project> {
                     arg("isSingleTarget", "$isSinglePlatform")
                 }
             }
+            bluetoothExtension.xmlGeneration?.let { xml ->
+                val outputDir = layout.buildDirectory.dir(XML_GENERATED_DIR)
+                val sourceDirectories = xml.sourceDirectories.map { file(it) }
+                val packageName = xml.packageName ?: bluetoothExtension.generatedPackage ?: DEFAULT_XML_PACKAGE
+                val generate = tasks.register("generateBluetoothXmlDefinitions") {
+                    inputs.files(sourceDirectories)
+                    outputs.dir(outputDir)
+                    doLast {
+                        GattGeneration.generateTo(outputDir.get().asFile, sourceDirectories, xml.deviceName, packageName)
+                    }
+                }
+                // The generated definitions must exist before KSP processes them and before anything is compiled.
+                tasks.matching { it.name.startsWith("ksp") || it.name.startsWith("compile") }.configureEach {
+                    dependsOn(generate)
+                }
+            }
             bluetoothExtension.afterEvaluate()
         }
+    }
+
+    private companion object {
+        const val XML_GENERATED_DIR = "generated/bluetooth-xml/commonMain/kotlin"
+        const val DEFAULT_XML_PACKAGE = "com.splendo.kaluga.bluetooth.generated"
     }
 }
 

@@ -108,6 +108,26 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
      */
     var apiPackage: String? = null
 
+    /** Configuration for generating `@Bluetooth` definitions from Bluetooth SIG GATT XML; see [generateFromXml]. */
+    class XmlGeneration(val deviceName: String, val sourceDirectories: Set<String>, val packageName: String?)
+
+    internal var xmlGeneration: XmlGeneration? = null
+        private set
+
+    /**
+     * Generates the `@Bluetooth` device, services and characteristics (with `@Serializable` value classes) for
+     * [deviceName] from the Bluetooth SIG GATT characteristic and service XML found under [sourceDirectories]. The
+     * generated definitions then feed the normal code generation. [packageName] defaults to [generatedPackage].
+     *
+     * The generated value classes are `@Serializable`, so the module must apply the Kotlin serialization plugin
+     * (`org.jetbrains.kotlin.plugin.serialization`).
+     *
+     * Prototype: handles plain (non flag-conditional) characteristics.
+     */
+    fun generateFromXml(deviceName: String, vararg sourceDirectories: String, packageName: String? = null) {
+        xmlGeneration = XmlGeneration(deviceName, sourceDirectories.toSet(), packageName)
+    }
+
     /** Forwards this configuration to KSP as processor options. Invoked by [BluetoothPlugin]; not intended to be called directly. */
     fun afterEvaluate() {
         kspExtension.arg("target", target.get().joinToString(separator = ",") { it.name })
