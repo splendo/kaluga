@@ -21,22 +21,44 @@ import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.setProperty
 
+/**
+ * The roles to generate from the annotated `@Bluetooth` definitions.
+ */
 enum class BluetoothTarget {
+    /** Generate a client to connect to and interact with the device as a central. */
     CLIENT,
+
+    /** Generate a server to host the device as a peripheral. */
     SERVER,
 }
 
+/**
+ * The implementations to generate for each [BluetoothTarget].
+ */
 enum class ImplementFor {
+    /** Generate the implementation backed by the platform Bluetooth stack (`bluetooth-client` / `bluetooth-server`). */
     BLUETOOTH,
+
+    /** Generate an in-process simulated implementation, where a simulated client talks directly to a simulated server. */
     SIMULATOR,
 }
 
+/**
+ * Configures the `com.splendo.kaluga.bluetooth.plugin` code generation through the `bluetooth { }` DSL.
+ */
 open class BluetoothExtension(private val kspExtension: KspExtension, objects: ObjectFactory) {
 
+    /**
+     * The roles to generate. Defaults to [BluetoothTarget.CLIENT] only.
+     */
     val target = objects.setProperty<BluetoothTarget>().apply {
         add(BluetoothTarget.CLIENT)
     }
 
+    /**
+     * The implementations to generate for each [target]. Defaults to [ImplementFor.BLUETOOTH] only;
+     * set to empty (or call [apiOnly]) to generate only the API interfaces.
+     */
     val implementFor = objects.setProperty<ImplementFor>().apply {
         add(ImplementFor.BLUETOOTH)
     }
@@ -86,6 +108,7 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
      */
     var apiPackage: String? = null
 
+    /** Forwards this configuration to KSP as processor options. Invoked by [BluetoothPlugin]; not intended to be called directly. */
     fun afterEvaluate() {
         kspExtension.arg("target", target.get().joinToString(separator = ",") { it.name })
         kspExtension.arg("implementFor", implementFor.get().joinToString(separator = ",") { it.name })

@@ -31,6 +31,12 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.util.Properties
 
+/**
+ * Gradle plugin (`com.splendo.kaluga.bluetooth.plugin`) that generates typed Bluetooth clients and servers from
+ * `@Bluetooth` annotated definitions. It applies the Kotlin Multiplatform and KSP plugins, wires in the Kaluga
+ * Bluetooth KSP processor and the runtime dependencies it needs, and exposes the [BluetoothExtension] (`bluetooth { }`)
+ * for configuration.
+ */
 class BluetoothPlugin : Plugin<Project> {
 
     override fun apply(target: Project) = target.run {

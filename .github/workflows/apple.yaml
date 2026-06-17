@@ -80,6 +80,25 @@ jobs:
           name: ${{ matrix.module.name }} ${{ matrix.target.name }} Test Report HTML
           path: ${{ format('{0}/**/build/reports/tests/{1}', matrix.module.dir, matrix.target.test) }}
 
+  bluetooth-plugin:
+    needs: build
+    runs-on: macos-26
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+      # Validate that the Bluetooth code generation plugin produces code that compiles for iOS.
+      - name: validate bluetooth code generation
+        run: ./gradlew compileKotlinIosSimulatorArm64
+        working-directory: bluetooth/plugin/example
+
   example-ios:
     needs: build
     runs-on: macos-26
@@ -135,7 +154,7 @@ jobs:
   # The per-run workspace cache is only useful within this run; delete it so it doesn't
   # pile up against the repo's 10GB cache quota.
   cleanup-caches:
-    needs: [build, validation, test, example-ios, example-macos]
+    needs: [build, validation, test, example-ios, example-macos, bluetooth-plugin]
     if: always()
     runs-on: ubuntu-latest
     permissions:

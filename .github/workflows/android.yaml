@@ -21,6 +21,25 @@ jobs:
         run: ./gradlew --stacktrace android:assembleDebug
         working-directory: example
 
+  bluetooth-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      # Validate that the Bluetooth code generation plugin produces code that compiles for Android.
+      - name: validate bluetooth code generation
+        run: ./gradlew --stacktrace compileAndroidMain
+        working-directory: bluetooth/plugin/example
+
   test:
     runs-on: ubuntu-latest
     steps:

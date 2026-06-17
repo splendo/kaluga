@@ -73,10 +73,12 @@ kaluga-architecture-testutils = { module = "com.splendo.kaluga.architecture:test
 kaluga-base = { module = "com.splendo.kaluga.base:base", version.ref = "kaluga" }
 kaluga-base-testutils = { module = "com.splendo.kaluga.base:test", version.ref = "kaluga" }
 kaluga-beacons = { module = "com.splendo.kaluga.bluetooth:beacons", version.ref = "kaluga" }
+kaluga-bluetooth-annotations = { module = "com.splendo.kaluga.bluetooth:annotations", version.ref = "kaluga" }
 kaluga-bluetooth-client = { module = "com.splendo.kaluga.bluetooth:client", version.ref = "kaluga" }
 kaluga-bluetooth-client-testutils = { module = "com.splendo.kaluga.bluetooth:test-client", version.ref = "kaluga" }
 kaluga-bluetooth-core = { module = "com.splendo.kaluga.bluetooth:core", version.ref = "kaluga" }
 kaluga-bluetooth-core-testutils = { module = "com.splendo.kaluga.bluetooth:test-core", version.ref = "kaluga" }
+kaluga-bluetooth-ksp = { module = "com.splendo.kaluga.bluetooth:ksp", version.ref = "kaluga" }
 kaluga-bluetooth-server = { module = "com.splendo.kaluga.bluetooth:server", version.ref = "kaluga" }
 kaluga-bluetooth-server-testutils = { module = "com.splendo.kaluga.bluetooth:test-server", version.ref = "kaluga" }
 kaluga-datetime = { module = "com.splendo.kaluga:date-time", version.ref = "kaluga" }
@@ -258,5 +260,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay-resolver" }
 palantir-git-version = { id = "com.palantir.git-version", version.ref = "palantir-git-version" }
+
+kaluga-bluetooth = { id = "com.splendo.kaluga.bluetooth.plugin", version.ref = "kaluga" }
 
 [bundles]

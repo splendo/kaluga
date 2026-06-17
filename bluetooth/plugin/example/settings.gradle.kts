@@ -2,7 +2,8 @@
  *
  * Changes made to this file should also be reflected in the `settings.gradle` under [example/ios/Supporting Files]
  *
- * Also any new modules should be added to the build matrix in [.git/workflows]
+ * CI compiles this whole composite (the `bluetooth-plugin` jobs in [.github/workflows]), so new validation
+ * modules added below are picked up automatically.
  *
  ***********************************************/
 

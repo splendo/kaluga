@@ -23,10 +23,8 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
-import com.google.devtools.ksp.processing.UnknownPlatformInfo
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.Origin
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothClientName
@@ -48,8 +46,6 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
     private val options = Options(environment)
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        logger.warn("------ PROCESSING for ${environment.platforms.joinToString { it.platformName }} ----")
-        logger.warn("Options:")
         for ((key, value) in environment.options.entries) {
             logger.warn("\t$key = $value")
         }
@@ -87,7 +83,6 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         descriptorDeclarations.forEach { descriptorDeclaration ->
             descriptorDeclaration.generateBluetoothDescriptorFile(descriptorDeclaration.getAnnotationsByType(BluetoothDescriptor::class).first())
         }
-        logger.warn("------ DONE ----")
         return emptyList()
     }
 
