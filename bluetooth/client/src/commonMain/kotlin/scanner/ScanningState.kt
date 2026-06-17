@@ -29,7 +29,6 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
-import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
@@ -374,7 +373,7 @@ data class DefaultDevices(
 
         val newDevices = deviceWithFiltersRemoved.allDevices + newPairedDevices
 
-        return DefaultDevices(newDevices, newIdentifiersForDiscoveryMode, currentScanFilter).also(::disconnectDevicesRemovedIn)
+        return DefaultDevices(newDevices, newIdentifiersForDiscoveryMode, currentScanFilter)
     }
 
     private fun copyAndAdd(identifier: Identifier, filter: ScanningState.DeviceDiscoveryMode, createDevice: () -> ConnectableDevice): DefaultDevices {
@@ -389,14 +388,6 @@ data class DefaultDevices(
         BluetoothClient.CleanMode.RETAIN_ALL -> DefaultDevices(allDevices, identifiersFoundForDeviceDiscoveryMode, ScanningState.DeviceDiscoveryMode.Scanning(filter))
         BluetoothClient.CleanMode.ONLY_PROVIDED_FILTER -> cleanFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
         BluetoothClient.CleanMode.REMOVE_ALL -> DefaultDevices(emptyMap(), emptyMap(), ScanningState.DeviceDiscoveryMode.Scanning(filter))
-    }.also(::disconnectDevicesRemovedIn)
-
-    // Devices dropped from the cache must be disconnected, otherwise the platform keeps a connection Kaluga can no longer reach.
-    private fun disconnectDevicesRemovedIn(newDevices: ScanningState.Devices) {
-        val retained = newDevices.allDevices.keys
-        allDevices.forEach { (identifier, device) ->
-            if (identifier !in retained) (device as? ConnectableDeviceImpl)?.disconnectAndForget()
-        }
     }
 
     private fun cleanFilter(filter: ScanningState.DeviceDiscoveryMode): DefaultDevices {

@@ -230,11 +230,6 @@ class ConnectableDeviceImpl(
         sharedInfo.value = sharedInfo.value.copy(advertisementData = advertisementData)
     }
 
-    /** Tears down the platform connection without awaiting; used when a device is evicted from the scan cache. */
-    internal fun disconnectAndForget() {
-        connectionManager.getCompletedOrNull()?.disconnect()
-    }
-
     private fun createConnectionManagerIfNotCreated(): DeviceConnectionManager = if (connectionManager.isCompleted) {
         connectionManager.getCompleted()
     } else {
