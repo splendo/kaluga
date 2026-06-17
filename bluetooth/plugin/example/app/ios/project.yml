@@ -1,0 +1,46 @@
+# XcodeGen spec for the iOS demo. Run `xcodegen generate` from this directory to (re)generate
+# `iosApp.xcodeproj`. The framework binary is built and embedded by the
+# `:app:shared:embedAndSignAppleFrameworkForXcode` Gradle task wired in as a pre-build script below.
+
+name: iosApp
+options:
+  bundleIdPrefix: com.splendo.kaluga.bluetooth
+  deploymentTarget:
+    iOS: "15.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: iosApp
+    preBuildScripts:
+      - name: "Build & embed Kotlin framework"
+        script: |
+          cd "$SRCROOT/../.."
+          ./gradlew :app:shared:embedAndSignAppleFrameworkForXcode
+        basedOnDependencyAnalysis: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.splendo.kaluga.bluetooth.demo
+        INFOPLIST_FILE: iosApp/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1,2"
+        FRAMEWORK_SEARCH_PATHS:
+          - $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        LD_RUNPATH_SEARCH_PATHS:
+          - $(inherited)
+          - "@executable_path/Frameworks"
+    dependencies:
+      # `embed: false` — the gradle task embeds & signs the framework itself; this entry only
+      # provides the link reference (the real binary is resolved via FRAMEWORK_SEARCH_PATHS).
+      - framework: ../shared/build/xcode-frameworks/Debug/iphoneos/Shared.framework
+        embed: false
