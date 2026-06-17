@@ -124,6 +124,10 @@ class GenerationViewModel(
 
     private var connectedDevice: ConnectableDevice? = null
 
+    // Bumped per connection so each selection gets a unique key, forcing a fresh ClientViewModel (a reconnect must
+    // not inherit the previous session's client state).
+    private var clientSessionId = 0
+
     fun startScanning() = client.startScanning(
         // Retain devices across scan restarts so an already-connected device is reused (its connect() short-circuits).
         filter = setOf(RemoteDemoService.UUID),
@@ -135,7 +139,7 @@ class GenerationViewModel(
     fun stopScanning() = client.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
 
     fun selectSimulated() {
-        _selected.value = SelectedClient("simulated", simulatedClient)
+        _selected.value = SelectedClient("simulated#${clientSessionId++}", simulatedClient)
     }
 
     // Connect and disconnect operate on the same (reused) device, so serialize them: a new operation waits for the
@@ -160,7 +164,7 @@ class GenerationViewModel(
                 }
                 if (connectedClient != null) {
                     connectedDevice = device
-                    _selected.value = SelectedClient(device.identifier.stringValue, connectedClient)
+                    _selected.value = SelectedClient("${device.identifier.stringValue}#${clientSessionId++}", connectedClient)
                 } else {
                     _error.value = "Could not connect to ${device.identifier.stringValue}"
                 }
