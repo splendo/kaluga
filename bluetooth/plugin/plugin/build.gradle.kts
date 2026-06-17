@@ -9,6 +9,7 @@ plugins {
     `kotlin-dsl`
     `version-catalog`
     `maven-publish`
+    alias(libs.plugins.plugin.publish)
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.palantir.git.version)
 }
@@ -19,12 +20,18 @@ repositories {
     mavenCentral()
 }
 
+group = "com.splendo.kaluga.bluetooth"
 version = kalugaVersion
 
 gradlePlugin {
+    website = "https://github.com/splendo/kaluga"
+    vcsUrl = "https://github.com/splendo/kaluga.git"
     plugins.register("com.splendo.kaluga.bluetooth.plugin") {
         id = "com.splendo.kaluga.bluetooth.plugin"
         implementationClass = "com.splendo.kaluga.bluetooth.plugin.BluetoothPlugin"
+        displayName = "Kaluga Bluetooth code generation"
+        description = "Generates typed Bluetooth clients and servers from annotated device definitions."
+        tags = listOf("kotlin", "kotlin-multiplatform", "bluetooth", "ble", "ksp", "codegen")
     }
 }
 
