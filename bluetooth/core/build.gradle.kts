@@ -5,7 +5,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "bluetooth.base"
+    moduleName = "bluetooth.core"
     supportJS = true
     supportWasmJS = true
     supportMacOS = true
