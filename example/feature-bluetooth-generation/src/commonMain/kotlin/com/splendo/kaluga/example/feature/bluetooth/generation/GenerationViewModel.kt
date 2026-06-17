@@ -26,8 +26,6 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.server.BluetoothServerBuilder
-import com.splendo.kaluga.logging.RestrictedLogLevel
-import com.splendo.kaluga.logging.RestrictedLogger
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -97,6 +95,7 @@ class GenerationViewModel(
         realServer.value?.demoService?.config?.notifyAllStatusChanged(value)
     }
 
+    // Built once on first Server-tab visit and kept alive for the feature's lifetime (closed in onCleared).
     fun startServer() {
         if (serverJob != null) {
             return
@@ -104,11 +103,10 @@ class GenerationViewModel(
         serverJob = viewModelScope.launch { realServer.value = DemoDeviceServer.bluetooth(serverBuilder, delegate) }
     }
 
-    fun stopServer() {
+    override fun onCleared() {
+        super.onCleared()
         serverJob?.cancel()
-        serverJob = null
         realServer.value?.close()
-        realServer.value = null
     }
 
     // ----- Client: the simulated loopback + scanned real devices -----
@@ -127,16 +125,11 @@ class GenerationViewModel(
     private var connectedDevice: ConnectableDevice? = null
 
     fun startScanning() = client.startScanning(
-        // Retain devices across scan restarts so an already-connected device is reused (its connect() short-circuits)
-        // rather than re-discovered as a fresh, disconnected instance over a peripheral that is still connected.
+        // Retain devices across scan restarts so an already-connected device is reused (its connect() short-circuits).
         filter = setOf(RemoteDemoService.UUID),
         cleanMode = BluetoothClient.CleanMode.RETAIN_ALL,
-        // Never auto-reconnect: an explicit disconnect (on deselect) must stick, and CoreBluetooth will not report a
-        // connect on an already-connected peripheral. Verbose logging surfaces the connection state machine.
-        connectionSettings = ConnectionSettings(
-            reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never,
-            logger = RestrictedLogger(RestrictedLogLevel.Verbose),
-        ),
+        // Never auto-reconnect: an explicit disconnect (on deselect) must stick.
+        connectionSettings = ConnectionSettings(reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never),
     )
 
     fun stopScanning() = client.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
@@ -145,27 +138,35 @@ class GenerationViewModel(
         _selected.value = SelectedClient("simulated", simulatedClient)
     }
 
-    fun connect(device: ConnectableDevice) = viewModelScope.launch {
+    // Connect and disconnect operate on the same (reused) device, so serialize them: a new operation waits for the
+    // previous one to finish, otherwise a quick back-then-reconnect races a lingering disconnect against the connect.
+    private var connectionJob: Job? = null
+
+    fun connect(device: ConnectableDevice) {
         _error.value = null
         _connecting.value = true
-        try {
-            // Bounds both the connect and the service discovery that DemoDeviceClient.bluetooth(...) awaits.
-            val connectedClient = withTimeoutOrNull(1.minutes) {
-                if (device.connect()) {
-                    println("Did Connect")
-                    DemoDeviceClient.bluetooth(client, device.identifier)
-                } else {
-                    null
+        val previous = connectionJob
+        connectionJob = viewModelScope.launch {
+            try {
+                // Bounds the wait on any pending disconnect plus the connect and the service discovery that
+                // DemoDeviceClient.bluetooth(...) awaits, so a stalled prior operation surfaces as an error.
+                val connectedClient = withTimeoutOrNull(1.minutes) {
+                    previous?.join()
+                    if (device.connect(reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never)) {
+                        DemoDeviceClient.bluetooth(client, device.identifier)
+                    } else {
+                        null
+                    }
                 }
+                if (connectedClient != null) {
+                    connectedDevice = device
+                    _selected.value = SelectedClient(device.identifier.stringValue, connectedClient)
+                } else {
+                    _error.value = "Could not connect to ${device.identifier.stringValue}"
+                }
+            } finally {
+                _connecting.value = false
             }
-            if (connectedClient != null) {
-                connectedDevice = device
-                _selected.value = SelectedClient(device.identifier.stringValue, connectedClient)
-            } else {
-                _error.value = "Could not connect to ${device.identifier.stringValue}"
-            }
-        } finally {
-            _connecting.value = false
         }
     }
 
@@ -173,6 +174,10 @@ class GenerationViewModel(
         val device = connectedDevice
         connectedDevice = null
         _selected.value = null
-        device?.let { viewModelScope.launch { it.disconnect() } }
+        val previous = connectionJob
+        connectionJob = viewModelScope.launch {
+            previous?.join()
+            device?.disconnect()
+        }
     }
 }

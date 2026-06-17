@@ -25,6 +25,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -227,6 +228,11 @@ class ConnectableDeviceImpl(
 
     override fun advertisementDataDidUpdate(advertisementData: BaseAdvertisementData) {
         sharedInfo.value = sharedInfo.value.copy(advertisementData = advertisementData)
+    }
+
+    /** Tears down the platform connection without awaiting; used when a device is evicted from the scan cache. */
+    internal fun disconnectAndForget() {
+        connectionManager.getCompletedOrNull()?.disconnect()
     }
 
     private fun createConnectionManagerIfNotCreated(): DeviceConnectionManager = if (connectionManager.isCompleted) {

@@ -176,13 +176,18 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
-        if (state is ScanningState.Enabled) {
-            state.devices.allDevices[identifier]?.let { device ->
-                if (connected) {
-                    device.handleConnected()
-                } else {
-                    device.handleDisconnected()
-                }
+        // A connected device's state change must be routed whenever the device is still known, not only while Enabled:
+        // the repo can be (re)Initializing or Deinitialized (e.g. no scan subscribers) when a connect/disconnect arrives.
+        val device = when (state) {
+            is ScanningState.Active -> state.devices.allDevices[identifier]
+            is ScanningState.Deinitialized -> state.previousDevices.allDevices[identifier]
+            else -> null
+        }
+        device?.let {
+            if (connected) {
+                it.handleConnected()
+            } else {
+                it.handleDisconnected()
             }
         }
     }
