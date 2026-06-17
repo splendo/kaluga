@@ -1,0 +1,67 @@
+/*
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.example.feature.bluetooth.generation
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import com.splendo.kaluga.example.arch.DetailScaffold
+import com.splendo.kaluga.example.arch.FeatureContribution
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+class BluetoothGenerationContribution : FeatureContribution.Compose {
+    override val id = "bluetooth-generation"
+    override val label = "Bluetooth Generation"
+    override fun register(builder: NavGraphBuilder, navController: NavController) {
+        builder.composable(id) {
+            DetailScaffold(title = label, onBack = { navController.popBackStack() }) {
+                GenerationMenuScreen(
+                    onClient = { navController.navigate("$id/client") },
+                    onServer = { navController.navigate("$id/server") },
+                    onSimulator = { navController.navigate("$id/simulator") },
+                )
+            }
+        }
+        builder.composable("$id/client") {
+            DetailScaffold(title = "Client", onBack = { navController.popBackStack() }) {
+                ClientModeScreen()
+            }
+        }
+        builder.composable("$id/server") {
+            DetailScaffold(title = "Server", onBack = { navController.popBackStack() }) {
+                ServerModeScreen()
+            }
+        }
+        builder.composable("$id/simulator") {
+            DetailScaffold(title = "Simulator", onBack = { navController.popBackStack() }) {
+                SimulatorModeScreen()
+            }
+        }
+    }
+}
+
+// The BluetoothClient and the server builder are reused from the bluetooth-client / bluetooth-server features.
+val bluetoothGenerationFeatureModule: Module = module {
+    single { DemoServerState() }
+    single<DemoDeviceServer.Delegate> { DemoServerDelegate(get()) }
+    viewModel { ClientModeViewModel(get()) }
+    single { BluetoothGenerationContribution() } bind FeatureContribution::class
+}

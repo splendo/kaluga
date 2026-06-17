@@ -8,6 +8,7 @@ pluginManagement {
     }
 
     includeBuild("../kaluga-library-components")
+    includeBuild("../bluetooth/plugin")
     includeBuild("./embedding")
 }
 
@@ -36,6 +37,7 @@ include(":feature-architecture")
 include(":feature-beacons")
 include(":feature-bluetooth-base")
 include(":feature-bluetooth-client")
+include(":feature-bluetooth-generation")
 include(":feature-bluetooth-server")
 include(":feature-datetime")
 include(":feature-datetimepicker")

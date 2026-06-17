@@ -15,15 +15,16 @@
 
  */
 
-package com.splendo.kaluga.example.shared.di
+package com.splendo.kaluga.example.feature.bluetooth.generation
 
-import com.splendo.kaluga.example.feature.beacons.beaconsFeatureModule
-import com.splendo.kaluga.example.feature.bluetooth.generation.bluetoothGenerationFeatureModule
-import com.splendo.kaluga.example.feature.bluetooth.server.bluetoothServerFeatureModule
-import com.splendo.kaluga.example.feature.review.reviewFeatureModule
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import kotlinx.coroutines.flow.MutableStateFlow
 
-actual val platformSharedFeaturesModule: Module = module {
-    includes(bluetoothServerFeatureModule, bluetoothGenerationFeatureModule, beaconsFeatureModule, reviewFeatureModule)
+/**
+ * The app-controlled source of truth a server exposes. The [DemoServerDelegate] reads from it, and the
+ * server view edits it — shared identically by the real Bluetooth server and the simulator.
+ */
+class DemoServerState {
+    val reading = MutableStateFlow(0)
+    val name = MutableStateFlow("Kaluga Demo Sensor")
+    val lastThresholdWritten = MutableStateFlow<Int?>(null)
 }
