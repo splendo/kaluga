@@ -104,7 +104,9 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [architecture/compose](architecture/compose/) | Compose extensions for architecture | `com.splendo.kaluga.architecture:compose` | ✅ |  |  |  |  |  |  |  |
 | [architecture/test-utils](architecture/test-utils/) | Test helpers for the architecture module | `com.splendo.kaluga.architecture:test` | ✅ | ✅ |  |  |  |  |  |  |
 | [architecture/test-koin](architecture/test-koin/) | Koin-based test helpers | `com.splendo.kaluga.architecture:test-koin` | ✅ | ✅ |  |  |  |  |  |  |
-| [base/core](base/core/) | Threading, state machines, flowables, collections and decimals | `com.splendo.kaluga.base:core` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/core](base/core/) | Threading, flowables and concurrent collections | `com.splendo.kaluga.base:core` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/state](base/state/) | State machines (`KalugaState`, `StateRepo`) | `com.splendo.kaluga.base:state` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/decimal](base/decimal/) | High-precision decimal arithmetic | `com.splendo.kaluga.base:decimal` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/bytes](base/bytes/) | ByteArray utilities, hex conversion and numeric byte encoding | `com.splendo.kaluga.base:bytes` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/crc](base/crc/) | Cyclic Redundancy Check (CRC) calculation | `com.splendo.kaluga.base:crc` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/i18n](base/i18n/) | Locales, unit systems and locale-aware String casing | `com.splendo.kaluga.base:i18n` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
