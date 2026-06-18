@@ -50,6 +50,8 @@ annotation class Postfix(val value: ByteArray)
  *
  * When applied, the position of the header flag(s) to be used for storing headers will be set to [index].
  * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
+ * If applied to an enum, its ordinal is stored in the flags starting at [index], across enough bits for all its
+ * cases (i.e. `ceil(log2(caseCount))`) unless a wider [FlagWidth] is given.
  *
  * If the index was already claimed by another property a [FlagIndexException] may be thrown.
  *

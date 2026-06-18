@@ -69,9 +69,17 @@ internal class BluetoothBinaryDecoder(
 
     override fun decodeDouble(): Double = binaryDescriptor.decodeDoubleElement(decoder)
 
-    // When decoding enums, we deal with (known) unsized elements being encoded. Check for the first match
-    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = binaryDescriptor.enumMap.firstNotNullOf { (key, value) ->
-        key.takeIf { decoder.peekNextIs(value.array, true) }
+    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
+        val offset = if (binaryDescriptor.isNullable) 1 else 0
+        return if (binaryDescriptor.bitIndex >= 0 && binaryDescriptor.bitWidth > offset) {
+            // Packed into the flags as the ordinal, least-significant bit first.
+            (0 until binaryDescriptor.bitWidth - offset).fold(0) { acc, bit ->
+                if (decoder.flags[binaryDescriptor.bitIndex + offset + bit]) acc or (1 shl bit) else acc
+            }
+        } else {
+            // Otherwise the enum is an (unsized) identifier in the body; check for the first match.
+            binaryDescriptor.enumMap.firstNotNullOf { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
+        }
     }
 
     override fun decodeFloat(): Float = binaryDescriptor.decodeFloatElement(decoder)

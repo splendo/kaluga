@@ -160,9 +160,17 @@ internal class BluetoothBinaryEncoder(
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
         markNotNull()
-        binaryDescriptor.enumMap[index]?.array?.let {
-            builder.addAction(it.size) {
-                add(bytes = it)
+        val offset = if (binaryDescriptor.isNullable) 1 else 0
+        if (binaryDescriptor.bitIndex >= 0 && binaryDescriptor.bitWidth > offset) {
+            // Packed into the flags as the ordinal, least-significant bit first.
+            for (bit in 0 until binaryDescriptor.bitWidth - offset) {
+                builder.addFlag(binaryDescriptor.bitIndex + offset + bit, index.isBitSet(bit))
+            }
+        } else {
+            binaryDescriptor.enumMap[index]?.array?.let {
+                builder.addAction(it.size) {
+                    add(bytes = it)
+                }
             }
         }
     }

@@ -65,6 +65,13 @@ class BluetoothFormatTest {
     }
 
     @Serializable
+    enum class SensorContact {
+        NotSupported,
+        NotDetected,
+        Detected,
+    }
+
+    @Serializable
     @Prefix([0x22, 0x44])
     @Postfix([0x33])
     data object Object
@@ -136,6 +143,30 @@ class BluetoothFormatTest {
         validateEncoding(Container(false, flagValue = true, nullableValue = null, ValueContainer(true), null), byteArrayOf(0b10001))
         validateEncoding(Container(true, flagValue = false, nullableValue = false, ValueContainer(false), ValueContainer(true)), byteArrayOf(0b1001110))
         validateEncoding(Container(true, flagValue = true, nullableValue = true, ValueContainer(true), ValueContainer(true)), byteArrayOf(0b1111111))
+    }
+
+    @Test
+    fun encodeEnumInFlags() {
+        // 3 cases -> ceil(log2(3)) = 2 flag bits, ordinal stored LSB-first at index 0.
+        @Serializable
+        data class OnlyContact(@FlagIndex(0) val contact: SensorContact)
+
+        validateEncoding(OnlyContact(SensorContact.NotSupported), byteArrayOf(0b00))
+        validateEncoding(OnlyContact(SensorContact.NotDetected), byteArrayOf(0b01))
+        validateEncoding(OnlyContact(SensorContact.Detected), byteArrayOf(0b10))
+
+        // Flags byte (the enum) followed by a body field.
+        @Serializable
+        data class Reading(@FlagIndex(0) val contact: SensorContact, @Size(Length.`8_BIT`) val rate: Byte)
+        validateEncoding(Reading(SensorContact.Detected, 42), byteArrayOf(0b10, 42))
+
+        // A nullable flag-enum: the presence bit sits at the index, the ordinal in the bits above it.
+        @Serializable
+        data class OptionalContact(@FlagIndex(0) val contact: SensorContact?)
+
+        validateEncoding(OptionalContact(null), byteArrayOf(0b000))
+        validateEncoding(OptionalContact(SensorContact.NotSupported), byteArrayOf(0b001))
+        validateEncoding(OptionalContact(SensorContact.Detected), byteArrayOf(0b101))
     }
 
     @Test

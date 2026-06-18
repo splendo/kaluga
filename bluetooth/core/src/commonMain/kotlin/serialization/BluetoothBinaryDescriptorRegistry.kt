@@ -251,6 +251,10 @@ internal object BluetoothBinaryDescriptorRegistry {
         if (descriptor.kind is PrimitiveKind.BOOLEAN && customIndex != null) {
             desiredFlagBitWidth.raise(1)
         }
+        // An enum with an explicit FlagIndex is packed into the flags as its ordinal, across enough bits for all its cases.
+        if (descriptor.kind is SerialKind.ENUM && customIndex != null) {
+            desiredFlagBitWidth.raise(flagWidthForCases(descriptor.elementsCount))
+        }
         val supportedLengths = lengths(annotations, descriptor)
         val numericSettings = numericSettings(supportedLengths, descriptor, desiredFlagBitWidth, annotations)
         val stringSettings = stringSettings(descriptor, annotations, supportedLengths)
@@ -457,9 +461,12 @@ internal object BluetoothBinaryDescriptorRegistry {
     // Number of flag bits needed to store which of [size] options was chosen, i.e. ceil(log2(size)).
     // Computed with integer arithmetic to avoid floating-point rounding at the boundaries:
     // the highest representable index is size - 1, and 32 - countLeadingZeroBits() is its bit width.
-    private fun Set<Length>.sizingWidth() = when {
-        size <= 1 -> 0
-        else -> 32 - (size - 1).countLeadingZeroBits()
+    private fun Set<Length>.sizingWidth() = flagWidthForCases(size)
+
+    // Number of flag bits needed to store one of [cases] options, i.e. ceil(log2(cases)).
+    private fun flagWidthForCases(cases: Int) = when {
+        cases <= 1 -> 0
+        else -> 32 - (cases - 1).countLeadingZeroBits()
     }
 
     private fun numericSettings(
