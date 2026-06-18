@@ -109,23 +109,27 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
     var apiPackage: String? = null
 
     /** Configuration for generating `@Bluetooth` definitions from Bluetooth SIG GATT XML; see [generateFromXml]. */
-    class XmlGeneration(val deviceName: String, val sourceDirectories: Set<String>, val packageName: String?)
+    class XmlGeneration(val deviceName: String, val sourceDirectories: Set<String>, val packageName: String?, val outputDirectory: String?)
 
     internal var xmlGeneration: XmlGeneration? = null
         private set
 
     /**
      * Generates the `@Bluetooth` device, services and characteristics (with `@Serializable` value classes) for
-     * [deviceName] from the Bluetooth SIG GATT characteristic and service XML found under [sourceDirectories]. The
+     * [deviceName] from the Bluetooth SIG GATT characteristic and service XML found under [sourceDirectories].
+     * Conditional characteristics (whose value varies by a leading discriminator byte) map to sealed classes. The
      * generated definitions then feed the normal code generation. [packageName] defaults to [generatedPackage].
+     *
+     * By default the definitions are (re)generated into the build directory on every build. Set [outputDirectory] to a
+     * dedicated, project-relative source directory to emit them there instead: one module can then generate (and commit)
+     * the definitions and other modules consume them via [annotationSource] without re-running the XML generation. The
+     * output directory is managed by the generator and cleared on each run, so it must not hold hand-written sources.
      *
      * The generated value classes are `@Serializable`, so the module must apply the Kotlin serialization plugin
      * (`org.jetbrains.kotlin.plugin.serialization`).
-     *
-     * Prototype: handles plain (non flag-conditional) characteristics.
      */
-    fun generateFromXml(deviceName: String, vararg sourceDirectories: String, packageName: String? = null) {
-        xmlGeneration = XmlGeneration(deviceName, sourceDirectories.toSet(), packageName)
+    fun generateFromXml(deviceName: String, vararg sourceDirectories: String, packageName: String? = null, outputDirectory: String? = null) {
+        xmlGeneration = XmlGeneration(deviceName, sourceDirectories.toSet(), packageName, outputDirectory)
     }
 
     /** Forwards this configuration to KSP as processor options. Invoked by [BluetoothPlugin]; not intended to be called directly. */
