@@ -20,8 +20,8 @@ package com.splendo.kaluga.scientific.formatter
 import com.splendo.kaluga.base.formatting.NumberFormatStyle
 import com.splendo.kaluga.base.formatting.NumberFormatter
 import com.splendo.kaluga.base.formatting.RoundingMode
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.convert

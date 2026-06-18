@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
+import com.splendo.kaluga.base.decimal.pow
 import kotlin.test.Test
 
 class AreaDensityUnitTest {

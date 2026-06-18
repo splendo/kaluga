@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.formatting.NumberFormatStyle
 import com.splendo.kaluga.base.formatting.NumberFormatter
 import com.splendo.kaluga.base.i18n.KalugaLocale
 import com.splendo.kaluga.base.i18n.enUsPosix
-import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.decimal.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.plus

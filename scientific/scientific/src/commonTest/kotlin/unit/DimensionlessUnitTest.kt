@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.decimal.toDecimal
 import com.splendo.kaluga.scientific.decimalFraction
 import com.splendo.kaluga.scientific.div
 import com.splendo.kaluga.scientific.invoke

@@ -18,7 +18,7 @@
 
 package com.splendo.kaluga.scientific.converter.undefined.reciprocal
 
-import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing

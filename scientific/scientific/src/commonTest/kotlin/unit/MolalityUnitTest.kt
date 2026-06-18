@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
 import kotlin.test.Test
 
 class MolalityUnitTest {

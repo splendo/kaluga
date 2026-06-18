@@ -17,6 +17,7 @@ kaluga {
         common {
             main {
                 implementation(project(":base:core"))
+                api(project(":base:decimal"))
                 implementation(project(":scientific:scientific"))
             }
             test {
