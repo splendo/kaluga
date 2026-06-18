@@ -17,7 +17,7 @@
 
 @file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.decimal
 
 import kotlin.math.pow
 

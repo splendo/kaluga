@@ -18,11 +18,11 @@
 @file:JvmName("DecimalJVM")
 @file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.decimal
 
-import com.splendo.kaluga.base.utils.RoundingMode.RoundDown
-import com.splendo.kaluga.base.utils.RoundingMode.RoundHalfEven
-import com.splendo.kaluga.base.utils.RoundingMode.RoundUp
+import com.splendo.kaluga.base.decimal.RoundingMode.RoundDown
+import com.splendo.kaluga.base.decimal.RoundingMode.RoundHalfEven
+import com.splendo.kaluga.base.decimal.RoundingMode.RoundUp
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode as NativeRoundingMode

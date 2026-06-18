@@ -18,7 +18,7 @@
 @file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 @file:OptIn(ExperimentalJsDecimal::class)
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.decimal
 
 /**
  * Platform specific representation of a finite immutable, arbitrary-precision signed decimal number

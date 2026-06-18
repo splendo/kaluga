@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.decimal
 
 // Typed handle to a JavaScript [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt),
 // with each operation as a sole-body `js(...)` helper. This avoids `dynamic` (unavailable on Kotlin/Wasm)

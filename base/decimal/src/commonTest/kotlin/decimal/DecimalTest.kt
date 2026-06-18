@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.decimal
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

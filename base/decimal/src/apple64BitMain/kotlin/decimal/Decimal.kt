@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.decimal
 
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSDecimalNumberHandler
@@ -155,7 +155,7 @@ actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: R
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = if (n < 0) {
     1.toFiniteDecimal()!! / pow(n.absoluteValue)
 } else {
-    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toUInt()))
+    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
 }
 
 actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0) {
@@ -163,7 +163,7 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0) {
 } else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
-            n.toUInt(),
+            n.toULong(),
             NSDecimalNumberHandler(
                 roundingMode = NSRoundingMode.NSRoundPlain,
                 scale = scale.toShort(),
@@ -181,7 +181,7 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): Fi
 } else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
-            n.toUInt(),
+            n.toULong(),
             withBehavior = NSDecimalNumberHandler(
                 roundingMode = roundingMode.nsRoundingMode,
                 scale = scale.toShort(),
@@ -212,7 +212,7 @@ actual fun String.toFiniteDecimal(): FiniteDecimal? = when (val decimal = NSDeci
 
 actual fun FiniteDecimal.toDouble() = nsDecimal.doubleValue
 actual fun FiniteDecimal.toInt() = nsDecimal.intValue
-actual fun FiniteDecimal.toLong() = nsDecimal.longValue.toLong()
+actual fun FiniteDecimal.toLong() = nsDecimal.longValue
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual fun FiniteDecimal.stringValue() = nsDecimal.stringValue

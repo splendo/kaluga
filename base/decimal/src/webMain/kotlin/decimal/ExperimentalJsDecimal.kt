@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.decimal
 
 /**
  * Marks the custom JavaScript [BigDecimal] implementation backing [Decimal], which may not cover every edge case of the platform decimal types used on other targets.
