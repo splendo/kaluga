@@ -44,12 +44,12 @@ object GattYamlParser {
 
     private fun Map<String, Any?>.toService() = GattService(
         name = string("name").orEmpty(),
-        uuid = string("uuid").orEmpty(),
+        uuid = resolveUuid(GattUuids::service),
         characteristics = list("characteristics").map { it.asMap().toServiceCharacteristic() },
     )
 
     private fun Map<String, Any?>.toServiceCharacteristic() = GattServiceCharacteristic(
-        uuid = string("uuid").orEmpty(),
+        uuid = resolveUuid(GattUuids::characteristic),
         properties = list("access").map { gattProperty(it.toString()) }.toSet(),
     )
 
@@ -57,10 +57,18 @@ object GattYamlParser {
         val variants = list("variants").map { it.asMap().toVariant() }
         return GattCharacteristic(
             name = string("name").orEmpty(),
-            uuid = string("uuid").orEmpty(),
+            uuid = resolveUuid(GattUuids::characteristic),
             fields = if (variants.isEmpty()) list("fields").map { it.asMap().toField() } else emptyList(),
             variants = variants,
         )
+    }
+
+    // An explicit 'uuid' always wins; otherwise the 'name' is resolved against the bundled Bluetooth SIG assigned numbers.
+    private fun Map<String, Any?>.resolveUuid(byName: (String) -> String?): String {
+        this["uuid"]?.let { return GattUuids.shortUuid(it) }
+        val name = string("name").orEmpty()
+        return name.takeIf { it.isNotEmpty() }?.let(byName)
+            ?: error("Cannot resolve a UUID for '${name.ifEmpty { "<unnamed>" }}': set 'uuid' or use a standard Bluetooth SIG name.")
     }
 
     private fun Map<String, Any?>.toVariant() = GattVariant(

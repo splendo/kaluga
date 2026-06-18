@@ -1,0 +1,16 @@
+# Curated subset of common Bluetooth SIG-assigned characteristic UUIDs, for resolving names in Kaluga GATT YAML.
+# These are public 16-bit assignments; this is not the Bluetooth SIG assigned_numbers document. Point the resolver
+# at the full SIG assigned_numbers set for complete coverage.
+uuids:
+  - { uuid: 0x2A00, name: Device Name, id: org.bluetooth.characteristic.gap.device_name }
+  - { uuid: 0x2A01, name: Appearance, id: org.bluetooth.characteristic.gap.appearance }
+  - { uuid: 0x2A19, name: Battery Level, id: org.bluetooth.characteristic.battery_level }
+  - { uuid: 0x2A1C, name: Temperature Measurement, id: org.bluetooth.characteristic.temperature_measurement }
+  - { uuid: 0x2A24, name: Model Number String, id: org.bluetooth.characteristic.model_number_string }
+  - { uuid: 0x2A26, name: Firmware Revision String, id: org.bluetooth.characteristic.firmware_revision_string }
+  - { uuid: 0x2A29, name: Manufacturer Name String, id: org.bluetooth.characteristic.manufacturer_name_string }
+  - { uuid: 0x2A37, name: Heart Rate Measurement, id: org.bluetooth.characteristic.heart_rate_measurement }
+  - { uuid: 0x2A38, name: Body Sensor Location, id: org.bluetooth.characteristic.body_sensor_location }
+  - { uuid: 0x2A6D, name: Pressure, id: org.bluetooth.characteristic.pressure }
+  - { uuid: 0x2A6E, name: Temperature, id: org.bluetooth.characteristic.temperature }
+  - { uuid: 0x2A6F, name: Humidity, id: org.bluetooth.characteristic.humidity }

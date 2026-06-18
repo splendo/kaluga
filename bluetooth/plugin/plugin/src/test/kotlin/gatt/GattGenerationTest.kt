@@ -59,4 +59,19 @@ class GattGenerationTest {
         assertTrue("sealed class SensorReadingValue" in code, code)
         assertTrue("@SerializedByteValue(value = 1)" in code, code)
     }
+
+    @Test
+    fun resolvesStandardUuidsFromNamesInDeviceYaml() {
+        val code = GattGeneration.generateFromYaml(resourceFile("/gatt/heart_rate_monitor.yaml"), packageName = "com.example.generated")
+            .joinToString("\n") { it.toString() }
+
+        // services resolved by name: Heart Rate -> 180D, Battery -> 180F
+        assertTrue("@BluetoothService(\"180D\")" in code, code)
+        assertTrue("@BluetoothService(\"180F\")" in code, code)
+        // characteristics resolved by name: Heart Rate Measurement -> 2A37, Body Sensor Location -> 2A38, Battery Level -> 2A19
+        assertTrue("@BluetoothCharacteristic(\"2A37\")" in code, code)
+        assertTrue("@BluetoothCharacteristic(\"2A38\")" in code, code)
+        assertTrue("@BluetoothCharacteristic(\"2A19\")" in code, code)
+        assertTrue("interface HeartRateMonitor" in code, code)
+    }
 }

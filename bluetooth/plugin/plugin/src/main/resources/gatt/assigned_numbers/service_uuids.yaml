@@ -1,0 +1,11 @@
+# Curated subset of common Bluetooth SIG-assigned service UUIDs, for resolving names in Kaluga GATT YAML.
+# These are public 16-bit assignments; this is not the Bluetooth SIG assigned_numbers document. Point the resolver
+# at the full SIG assigned_numbers set for complete coverage.
+uuids:
+  - { uuid: 0x1800, name: GAP, id: org.bluetooth.service.gap }
+  - { uuid: 0x1801, name: GATT, id: org.bluetooth.service.gatt }
+  - { uuid: 0x1809, name: Health Thermometer, id: org.bluetooth.service.health_thermometer }
+  - { uuid: 0x180A, name: Device Information, id: org.bluetooth.service.device_information }
+  - { uuid: 0x180D, name: Heart Rate, id: org.bluetooth.service.heart_rate }
+  - { uuid: 0x180F, name: Battery, id: org.bluetooth.service.battery_service }
+  - { uuid: 0x181A, name: Environmental Sensing, id: org.bluetooth.service.environmental_sensing }
