@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.plugin.gatt
 
+import com.squareup.kotlinpoet.KModifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class BluetoothDefinitionGeneratorTest {
@@ -52,21 +54,28 @@ class BluetoothDefinitionGeneratorTest {
 
     @Test
     fun generatesSerializableValueClassWithFieldAnnotations() {
-        val code = generator.generateValueClass(characteristic()).toString()
+        val value = generator.generateValueClass(characteristic()).singleType()
 
-        assertTrue("@Serializable" in code, code)
-        assertTrue("data class EnvironmentalSampleValue" in code, code)
-        // sint16 + decimal scaling -> Int with @Size(16) + @Scalar(decimalExponent = -2)
-        assertTrue("public val temperature: Int" in code, code)
-        assertTrue("@Size(Length.`16_BIT`)" in code, code)
-        assertTrue("@Scalar(decimalExponent = -2)" in code, code)
-        // uint16 -> Int + @Unsigned
-        assertTrue("public val humidity: Int" in code, code)
-        assertTrue("@Unsigned" in code, code)
-        // uint32 -> Long (overflows a signed Int) + @Scalar(multiplier = 10)
-        assertTrue("public val pressure: Long" in code, code)
-        assertTrue("@Size(Length.`32_BIT`)" in code, code)
-        assertTrue("@Scalar(multiplier = 10)" in code, code)
+        assertEquals("EnvironmentalSampleValue", value.name)
+        assertTrue(KModifier.DATA in value.modifiers)
+        assertNotNull(value.annotation("Serializable"))
+
+        // sint16 + decimal scaling -> Int with @Size(16_BIT) + @Scalar(decimalExponent = -2)
+        val temperature = checkNotNull(value.property("temperature"))
+        assertEquals("Int", temperature.type.simpleName)
+        assertTrue(checkNotNull(temperature.annotation("Size")).argument.endsWith("Length.`16_BIT`"))
+        assertEquals("decimalExponent = -2", checkNotNull(temperature.annotation("Scalar")).argument)
+
+        // uint16 -> unsigned Int
+        val humidity = checkNotNull(value.property("humidity"))
+        assertEquals("Int", humidity.type.simpleName)
+        assertTrue("Unsigned" in humidity.annotationNames)
+
+        // uint32 -> Long (overflows a signed Int), @Scalar(multiplier = 10)
+        val pressure = checkNotNull(value.property("pressure"))
+        assertEquals("Long", pressure.type.simpleName)
+        assertTrue(checkNotNull(pressure.annotation("Size")).argument.endsWith("Length.`32_BIT`"))
+        assertEquals("multiplier = 10", checkNotNull(pressure.annotation("Scalar")).argument)
     }
 
     @Test
@@ -78,44 +87,51 @@ class BluetoothDefinitionGeneratorTest {
 
     @Test
     fun generatesSealedClassForConditionalCharacteristic() {
-        val code = generator.generateValueClass(characteristic("/gatt/sensor_reading.xml")).toString()
+        val sealed = generator.generateValueClass(characteristic("/gatt/sensor_reading.xml")).singleType()
 
-        assertTrue("sealed class SensorReadingValue" in code, code)
-        assertTrue("@SerializedByteValue(value = 1)" in code, code)
-        assertTrue("@SerializedByteValue(value = 2)" in code, code)
-        assertTrue("data class Temperature" in code, code)
-        assertTrue("data class Humidity" in code, code)
-        // each variant extends the sealed value class
-        assertTrue(": SensorReadingValue()" in code, code)
+        assertEquals("SensorReadingValue", sealed.name)
+        assertTrue(KModifier.SEALED in sealed.modifiers)
+        assertNotNull(sealed.annotation("Serializable"))
+
+        val temperature = checkNotNull(sealed.nestedType("Temperature"))
+        assertTrue(KModifier.DATA in temperature.modifiers)
+        assertEquals("value = 1", checkNotNull(temperature.annotation("SerializedByteValue")).argument)
+        // the variant extends the sealed value class
+        assertEquals("SensorReadingValue", temperature.superclass.simpleName)
         // and still carries the field annotations
-        assertTrue("@Scalar(decimalExponent = -2)" in code, code)
+        assertEquals("decimalExponent = -2", checkNotNull(temperature.property("temperature")).annotation("Scalar")?.argument)
+
+        val humidity = checkNotNull(sealed.nestedType("Humidity"))
+        assertEquals("value = 2", checkNotNull(humidity.annotation("SerializedByteValue")).argument)
+        assertEquals("SensorReadingValue", humidity.superclass.simpleName)
     }
 
     @Test
     fun generatesDeviceServiceAndCharacteristicStructure() {
-        val files = generator.generate(
+        val types = generator.generate(
             deviceName = "Environmental Sensor",
             services = listOf(service()),
             characteristics = listOf(characteristic()),
-        )
-        val code = files.joinToString("\n") { it.toString() }
+        ).types()
 
-        // characteristic: interface + value, with the service's access applied
-        assertTrue("@BluetoothCharacteristic(\"2BCE\")" in code, code)
-        assertTrue("interface EnvironmentalSample" in code, code)
-        assertTrue("@Readable" in code, code)
-        assertTrue("@Notifiable" in code, code)
-        assertTrue("public val `value`: EnvironmentalSampleValue" in code || "public val value: EnvironmentalSampleValue" in code, code)
+        // device: @Bluetooth, exposes the service as an advertised property typed as the service interface
+        val device = types.getValue("EnvironmentalSensor")
+        assertNotNull(device.annotation("Bluetooth"))
+        val serviceProperty = checkNotNull(device.property("environmentalSensingSample"))
+        assertEquals("EnvironmentalSensingSample", serviceProperty.type.simpleName)
+        assertTrue("Advertising" in serviceProperty.annotationNames)
 
-        // service references the characteristic interface
-        assertTrue("@BluetoothService(\"181A\")" in code, code)
-        assertTrue("interface EnvironmentalSensingSample" in code, code)
-        assertTrue("public val environmentalSample: EnvironmentalSample" in code, code)
+        // service: @BluetoothService("181A"), links the characteristic by its interface type
+        val service = types.getValue("EnvironmentalSensingSample")
+        assertEquals("\"181A\"", checkNotNull(service.annotation("BluetoothService")).argument)
+        val characteristicProperty = checkNotNull(service.property("environmentalSample"))
+        assertEquals("EnvironmentalSample", characteristicProperty.type.simpleName)
 
-        // device exposes the (advertised) service
-        assertTrue("@Bluetooth" in code, code)
-        assertTrue("interface EnvironmentalSensor" in code, code)
-        assertTrue("@Advertising" in code, code)
-        assertTrue("public val environmentalSensingSample: EnvironmentalSensingSample" in code, code)
+        // characteristic: @BluetoothCharacteristic("2BCE"), value typed and carrying the service's access (read + notify)
+        val characteristic = types.getValue("EnvironmentalSample")
+        assertEquals("\"2BCE\"", checkNotNull(characteristic.annotation("BluetoothCharacteristic")).argument)
+        val valueProperty = checkNotNull(characteristic.property("value"))
+        assertEquals("EnvironmentalSampleValue", valueProperty.type.simpleName)
+        assertEquals(setOf("Readable", "Notifiable"), valueProperty.annotationNames)
     }
 }
