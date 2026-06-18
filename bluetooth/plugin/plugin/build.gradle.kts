@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.kotlin.gradle)
     implementation(libs.google.devtools.ksp.gradle)
     implementation(libs.kotlinpoet)
+    implementation(libs.snakeyaml)
     testImplementation(kotlin("test-junit5"))
 }
 

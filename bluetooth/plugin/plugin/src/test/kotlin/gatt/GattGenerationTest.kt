@@ -39,4 +39,24 @@ class GattGenerationTest {
         assertTrue("@BluetoothCharacteristic(\"2BCE\")" in code, code)
         assertTrue("data class EnvironmentalSampleValue" in code, code)
     }
+
+    @Test
+    fun generatesAllDefinitionsFromDeviceYaml() {
+        val code = GattGeneration.generateFromYaml(resourceFile("/gatt/environmental_sensor.yaml"), packageName = "com.example.generated")
+            .joinToString("\n") { it.toString() }
+
+        // device + service + access, same model as the XML path
+        assertTrue("interface EnvironmentalSensor" in code, code)
+        assertTrue("@BluetoothService(\"181A\")" in code, code)
+        assertTrue("@BluetoothCharacteristic(\"2BCE\")" in code, code)
+        assertTrue("@Readable" in code, code)
+        assertTrue("@Notifiable" in code, code)
+        // fields + scaling
+        assertTrue("data class EnvironmentalSampleValue" in code, code)
+        assertTrue("@Scalar(decimalExponent = -2)" in code, code)
+        assertTrue("public val pressure: Long" in code, code)
+        // conditional characteristic -> sealed class with discriminated variants
+        assertTrue("sealed class SensorReadingValue" in code, code)
+        assertTrue("@SerializedByteValue(value = 1)" in code, code)
+    }
 }

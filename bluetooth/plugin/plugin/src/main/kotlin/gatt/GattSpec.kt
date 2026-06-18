@@ -35,6 +35,9 @@ data class GattVariant(val name: String, val discriminator: Int, val fields: Lis
  */
 data class GattField(val name: String, val format: String, val multiplier: Int = 1, val decimalExponent: Int = 0, val binaryExponent: Int = 0)
 
+/** A whole device: its [name] and the [services] and [characteristics] it exposes, as parsed from a single source. */
+data class GattDevice(val name: String, val services: List<GattService>, val characteristics: List<GattCharacteristic>)
+
 /** A parsed GATT service definition: the characteristics it contains and how each may be accessed. */
 data class GattService(val name: String, val uuid: String, val characteristics: List<GattServiceCharacteristic>)
 
