@@ -498,26 +498,26 @@ public final class com/splendo/kaluga/scientific/converter/catalysticActivity/Co
 }
 
 public final class com/splendo/kaluga/scientific/converter/decimal/ConvertFromDimensionlessKt {
-	public static final fun div (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static final fun times (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun div (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun times (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/decimal/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/converter/decimal/ConvertToFrequencyKt {
-	public static final fun decimalDivMinute (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static final fun decimalDivTime (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun decimalDivMinute (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun decimalDivTime (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun numberDivMinute (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun numberDivTime (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/decimal/ConvertToRadioactivityKt {
-	public static final fun decimalDivTime (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun decimalDivTime (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun numberDivTime (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/decimal/ConvertToTimeKt {
-	public static final fun decimalDivBPM (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static final fun decimalDivFrequency (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static final fun decimalDivRadioactivity (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun decimalDivBPM (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun decimalDivFrequency (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun decimalDivRadioactivity (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun numberDivBPM (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun numberDivFrequency (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun numberDivRadioactivity (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
@@ -660,10 +660,10 @@ public final class com/splendo/kaluga/scientific/converter/dimensionless/Convert
 }
 
 public final class com/splendo/kaluga/scientific/converter/dimensionless/ConvertToDecimalKt {
-	public static final fun convertToOneByDividing (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/utils/Decimal;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static final fun convertToOneByMultiplying (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/utils/Decimal;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static final fun div (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun times (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun convertToOneByDividing (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/decimal/Decimal;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun convertToOneByMultiplying (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/decimal/Decimal;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun div (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun times (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/dynamicViscosity/ConvertFromKinematicViscosityAndDensityKt {
@@ -1511,14 +1511,14 @@ public final class com/splendo/kaluga/scientific/converter/frequency/ConvertFrom
 }
 
 public final class com/splendo/kaluga/scientific/converter/frequency/ConvertFromTimeKt {
-	public static final fun frequency (Lcom/splendo/kaluga/scientific/unit/Frequency;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun frequency (Lcom/splendo/kaluga/scientific/unit/Frequency;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun frequency (Lcom/splendo/kaluga/scientific/unit/Frequency;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun frequency (Lcom/splendo/kaluga/scientific/unit/Frequency;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun frequencyFromInvertedTime (Lcom/splendo/kaluga/scientific/unit/Frequency;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun frequencyFromInvertedTimeDefault (Lcom/splendo/kaluga/scientific/unit/Frequency;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/frequency/ConvertToDecimalKt {
-	public static final fun frequencyTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun frequencyTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/decimal/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/converter/frequency/ConvertToElectricConductanceKt {
@@ -2945,14 +2945,14 @@ public final class com/splendo/kaluga/scientific/converter/radioactivity/Convert
 }
 
 public final class com/splendo/kaluga/scientific/converter/radioactivity/ConvertFromTimeKt {
-	public static final fun radioactivity (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun radioactivity (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun radioactivity (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun radioactivity (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun radioactivityFromInvertedTime (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun radioactivityFromInvertedTimeDefault (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/radioactivity/ConvertToDecimalKt {
-	public static final fun radioactivityTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun radioactivityTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/decimal/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/converter/solidAngle/ConvertFromIlluminanceAndLuminanceKt {
@@ -3434,8 +3434,8 @@ public final class com/splendo/kaluga/scientific/converter/time/ConvertFromForce
 }
 
 public final class com/splendo/kaluga/scientific/converter/time/ConvertFromFrequencyKt {
-	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun timeFromInvertedFrequency (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun timeFromInvertedFrequencyDefault (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
@@ -3471,8 +3471,8 @@ public final class com/splendo/kaluga/scientific/converter/time/ConvertFromMagne
 }
 
 public final class com/splendo/kaluga/scientific/converter/time/ConvertFromRadioactivityKt {
-	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun time (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun timeFromInvertedRadioactivity (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun timeFromInvertedRadioactivityDefault (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
@@ -3520,8 +3520,8 @@ public final class com/splendo/kaluga/scientific/converter/time/ConvertToAreaKt 
 }
 
 public final class com/splendo/kaluga/scientific/converter/time/ConvertToDecimalKt {
-	public static final fun timeTimesFrequency (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static final fun timeTimesRadioactivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun timeTimesFrequency (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun timeTimesRadioactivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/decimal/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/converter/time/ConvertToDynamicViscosityKt {
