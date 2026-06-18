@@ -12,6 +12,7 @@ kaluga {
         common {
             main {
                 implementation(project(":base:core"))
+                api(project(":base:state", ""))
                 implementation(project(":logging"))
             }
             test {

@@ -21,6 +21,7 @@ kaluga {
         common {
             main {
                 implementation(project(":service:service"))
+                api(project(":base:state", ""))
                 api(project(":date-time:date-time"))
                 api(project(":permissions:location", ""))
             }

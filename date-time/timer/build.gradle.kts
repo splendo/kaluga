@@ -16,6 +16,7 @@ kaluga {
         common {
             main {
                 implementation(project(":base:core", ""))
+                implementation(project(":base:state", ""))
             }
             test {
                 implementation(project(":base:test", ""))

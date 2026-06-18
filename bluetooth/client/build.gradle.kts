@@ -26,6 +26,7 @@ kaluga {
         common {
             main {
                 api(project(":bluetooth:core"))
+                api(project(":base:state", ""))
                 api(project(":date-time:date-time"))
                 api(project(":permissions:bluetooth", ""))
             }
