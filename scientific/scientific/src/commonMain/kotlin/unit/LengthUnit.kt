@@ -43,6 +43,7 @@ val MetricLengthUnits: Set<MetricLength> get() = setOf(
     Megameter,
     Gigameter,
     NauticalMile,
+    Parsec,
 )
 
 /**
@@ -141,6 +142,16 @@ data object NauticalMile : MetricLength() {
     override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_NAUTICAL_MILE
 }
 
+@Serializable
+data object Parsec : MetricLength() {
+    private val METER_IN_PARSEC = "3.0856775814913673e16".toDecimal()
+    override val symbol: String = "pc"
+    override val system = MeasurementSystem.Metric
+    override val quantity = PhysicalQuantity.Length
+    override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_PARSEC
+    override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_PARSEC
+}
+
 // Imperial Length
 @Serializable
 data object Inch : ImperialLength() {
@@ -204,6 +215,7 @@ internal fun PolymorphicModuleBuilder<MetricLength>.registerMetricLengthClasses(
     subclass(Millimeter::class, Millimeter.serializer())
     subclass(Nanometer::class, Nanometer.serializer())
     subclass(NauticalMile::class, NauticalMile.serializer())
+    subclass(Parsec::class, Parsec.serializer())
 }
 
 internal fun PolymorphicModuleBuilder<ImperialLength>.registerImperialLengthClasses() {

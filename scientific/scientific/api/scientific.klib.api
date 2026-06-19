@@ -8401,6 +8401,23 @@ final object com.splendo.kaluga.scientific.unit/Ampere : com.splendo.kaluga.scie
     final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/Ampere.toString|toString(){}[0]
 }
 
+final object com.splendo.kaluga.scientific.unit/AmpereHour : com.splendo.kaluga.scientific.unit/ElectricCharge, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/AmpereHour|null[0]
+    final val quantity // com.splendo.kaluga.scientific.unit/AmpereHour.quantity|{}quantity[0]
+        final fun <get-quantity>(): com.splendo.kaluga.scientific/PhysicalQuantity.ElectricCharge // com.splendo.kaluga.scientific.unit/AmpereHour.quantity.<get-quantity>|<get-quantity>(){}[0]
+    final val symbol // com.splendo.kaluga.scientific.unit/AmpereHour.symbol|{}symbol[0]
+        final fun <get-symbol>(): kotlin/String // com.splendo.kaluga.scientific.unit/AmpereHour.symbol.<get-symbol>|<get-symbol>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/AmpereHour.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.MetricAndImperial // com.splendo.kaluga.scientific.unit/AmpereHour.system.<get-system>|<get-system>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/AmpereHour.equals|equals(kotlin.Any?){}[0]
+    final fun fromSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/AmpereHour.fromSIUnit|fromSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/AmpereHour.hashCode|hashCode(){}[0]
+    final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/AmpereHour> // com.splendo.kaluga.scientific.unit/AmpereHour.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific.unit/AmpereHour.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    final fun toSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/AmpereHour.toSIUnit|toSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/AmpereHour.toString|toString(){}[0]
+}
+
 final object com.splendo.kaluga.scientific.unit/Apostilb : com.splendo.kaluga.scientific.unit/MetricLuminance, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/Apostilb|null[0]
     final val quantity // com.splendo.kaluga.scientific.unit/Apostilb.quantity|{}quantity[0]
         final fun <get-quantity>(): com.splendo.kaluga.scientific/PhysicalQuantity.Luminance // com.splendo.kaluga.scientific.unit/Apostilb.quantity.<get-quantity>|<get-quantity>(){}[0]
@@ -8484,6 +8501,23 @@ final object com.splendo.kaluga.scientific.unit/Bar : com.splendo.kaluga.scienti
     final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific.unit/Bar.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
     final fun toSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/Bar.toSIUnit|toSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/Bar.toString|toString(){}[0]
+}
+
+final object com.splendo.kaluga.scientific.unit/Barn : com.splendo.kaluga.scientific.unit/MetricArea, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/Barn|null[0]
+    final val quantity // com.splendo.kaluga.scientific.unit/Barn.quantity|{}quantity[0]
+        final fun <get-quantity>(): com.splendo.kaluga.scientific/PhysicalQuantity.Area // com.splendo.kaluga.scientific.unit/Barn.quantity.<get-quantity>|<get-quantity>(){}[0]
+    final val symbol // com.splendo.kaluga.scientific.unit/Barn.symbol|{}symbol[0]
+        final fun <get-symbol>(): kotlin/String // com.splendo.kaluga.scientific.unit/Barn.symbol.<get-symbol>|<get-symbol>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/Barn.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.Metric // com.splendo.kaluga.scientific.unit/Barn.system.<get-system>|<get-system>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/Barn.equals|equals(kotlin.Any?){}[0]
+    final fun fromSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/Barn.fromSIUnit|fromSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/Barn.hashCode|hashCode(){}[0]
+    final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/Barn> // com.splendo.kaluga.scientific.unit/Barn.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific.unit/Barn.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    final fun toSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/Barn.toSIUnit|toSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/Barn.toString|toString(){}[0]
 }
 
 final object com.splendo.kaluga.scientific.unit/Barye : com.splendo.kaluga.scientific.unit/MetricBaseUnit<com.splendo.kaluga.scientific.unit/MeasurementSystem.Metric, com.splendo.kaluga.scientific/PhysicalQuantity.Pressure>, com.splendo.kaluga.scientific.unit/MetricPressure, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/Barye|null[0]
@@ -18236,6 +18270,23 @@ final object com.splendo.kaluga.scientific.unit/OunceSquareInch : com.splendo.ka
     final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific.unit/OunceSquareInch.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
     final fun toSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/OunceSquareInch.toSIUnit|toSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/OunceSquareInch.toString|toString(){}[0]
+}
+
+final object com.splendo.kaluga.scientific.unit/Parsec : com.splendo.kaluga.scientific.unit/MetricLength, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/Parsec|null[0]
+    final val quantity // com.splendo.kaluga.scientific.unit/Parsec.quantity|{}quantity[0]
+        final fun <get-quantity>(): com.splendo.kaluga.scientific/PhysicalQuantity.Length // com.splendo.kaluga.scientific.unit/Parsec.quantity.<get-quantity>|<get-quantity>(){}[0]
+    final val symbol // com.splendo.kaluga.scientific.unit/Parsec.symbol|{}symbol[0]
+        final fun <get-symbol>(): kotlin/String // com.splendo.kaluga.scientific.unit/Parsec.symbol.<get-symbol>|<get-symbol>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/Parsec.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.Metric // com.splendo.kaluga.scientific.unit/Parsec.system.<get-system>|<get-system>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/Parsec.equals|equals(kotlin.Any?){}[0]
+    final fun fromSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/Parsec.fromSIUnit|fromSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/Parsec.hashCode|hashCode(){}[0]
+    final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/Parsec> // com.splendo.kaluga.scientific.unit/Parsec.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific.unit/Parsec.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    final fun toSIUnit(com.splendo.kaluga.base.utils/Decimal): com.splendo.kaluga.base.utils/Decimal // com.splendo.kaluga.scientific.unit/Parsec.toSIUnit|toSIUnit(com.splendo.kaluga.base.utils.Decimal){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/Parsec.toString|toString(){}[0]
 }
 
 final object com.splendo.kaluga.scientific.unit/Pascal : com.splendo.kaluga.scientific.unit/MetricBaseUnit<com.splendo.kaluga.scientific.unit/MeasurementSystem.Metric, com.splendo.kaluga.scientific/PhysicalQuantity.Pressure>, com.splendo.kaluga.scientific.unit/MetricPressure, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/Pascal|null[0]

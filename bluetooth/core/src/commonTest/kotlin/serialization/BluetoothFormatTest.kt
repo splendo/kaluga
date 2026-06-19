@@ -28,6 +28,9 @@ import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.UInt24
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.base.utils.toInt24
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.unit.Joule
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -115,6 +118,17 @@ class BluetoothFormatTest {
     @JvmInline
     value class NumberValueContainer<T>(@Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val value: T)
 
+    // Spike: a value class that IS a Kaluga ScientificValue and also carries BluetoothFormat annotations.
+    @Serializable
+    @JvmInline
+    value class EnergyExpended(
+        @Size(Length.`16_BIT`)
+        @Unsigned
+        override val value: Int,
+    ) : ScientificValue<PhysicalQuantity.Energy, Joule> {
+        override val unit: Joule get() = Joule
+    }
+
     @Serializable
     @JvmInline
     value class RRInterval(
@@ -123,6 +137,15 @@ class BluetoothFormatTest {
         val seconds: Double,
     ) {
         constructor(duration: Duration) : this(duration.toDouble(DurationUnit.SECONDS))
+    }
+
+    @Test
+    fun encodeScientificValueClass() {
+        // round-trips through BluetoothFormat as a 16-bit unsigned little-endian value...
+        validateRoundTrip(EnergyExpended(500), EnergyExpended.serializer(), byteArrayOf(0xF4.toByte(), 0x01))
+        // ...while still being a usable ScientificValue
+        assertEquals(Joule, EnergyExpended(500).unit)
+        assertEquals(500, EnergyExpended(500).value)
     }
 
     @Test

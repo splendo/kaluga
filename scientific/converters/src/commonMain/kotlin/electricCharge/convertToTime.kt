@@ -20,10 +20,17 @@ package com.splendo.kaluga.scientific.converter.electricCharge
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.duration
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.AmpereHour
 import com.splendo.kaluga.scientific.unit.ElectricCharge
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
+
+@JvmName("ampereHourDivAmpere")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, AmpereHour>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Ampere>) =
+    Hour.duration(this, current)
 
 @JvmName("chargeDivCurrent")
 infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
