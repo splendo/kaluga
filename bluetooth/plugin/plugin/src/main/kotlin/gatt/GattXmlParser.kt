@@ -49,15 +49,18 @@ object GattXmlParser {
         require(root.tagName == "Characteristic") { "Expected a <Characteristic> root, but was <${root.tagName}>" }
         val name = root.getAttribute("name").ifBlank { root.getAttribute("type") }
         val uuid = root.getAttribute("uuid")
-        val descriptors = descriptorsOf(root)
-        val value = root.directChildren("Value").firstOrNull() ?: return GattCharacteristic(name, uuid, emptyList(), descriptors = descriptors)
+        return baseCharacteristic(root, name, uuid).copy(type = root.getAttribute("type").ifBlank { null }, descriptors = descriptorsOf(root))
+    }
+
+    private fun baseCharacteristic(root: Element, name: String, uuid: String): GattCharacteristic {
+        val value = root.directChildren("Value").firstOrNull() ?: return GattCharacteristic(name, uuid, emptyList())
 
         val variantsElement = value.directChildren("Variants").firstOrNull()
         if (variantsElement != null) {
             val variants = variantsElement.directChildren("Variant").map { variant ->
                 GattVariant(variant.getAttribute("name"), variant.getAttribute("value").toInt(), fieldsOf(variant))
             }
-            return GattCharacteristic(name, uuid, emptyList(), variants, descriptors = descriptors)
+            return GattCharacteristic(name, uuid, emptyList(), variants)
         }
 
         val fieldElements = value.directChildren("Field")
@@ -65,9 +68,9 @@ object GattXmlParser {
         if (flagElements.isEmpty()) {
             val fields = fieldElements.map { it.toField() }
             requireTrailingRepeated(name, fields)
-            return GattCharacteristic(name, uuid, fields, descriptors = descriptors)
+            return GattCharacteristic(name, uuid, fields)
         }
-        return resolveConditional(name, uuid, flagElements, fieldElements - flagElements).copy(descriptors = descriptors)
+        return resolveConditional(name, uuid, flagElements, fieldElements - flagElements)
     }
 
     private fun fieldsOf(parent: Element): List<GattField> = parent.directChildren("Field").map { it.toField() }
@@ -99,6 +102,10 @@ object GattXmlParser {
         description = fieldDescription(),
         // A `<Reference>` to another characteristic by UUID: the field embeds that characteristic's value structure.
         reference = childText("Reference"),
+        // Top-level `<Enumerations>` (not in a `<BitField>`): an enumerated byte value, e.g. Body Sensor Location.
+        enumCases = directChildren("Enumerations").firstOrNull()?.directChildren("Enumeration").orEmpty().map { e ->
+            GattFlagCase(e.getAttribute("key").toInt(), e.getAttribute("value").ifBlank { null })
+        },
     )
 
     // A repeated field carries no length and consumes the remainder, so it can only be the last field.
@@ -213,6 +220,7 @@ object GattXmlParser {
             .map { characteristic ->
                 GattServiceCharacteristic(
                     uuid = characteristic.getAttribute("uuid"),
+                    type = characteristic.getAttribute("type").ifBlank { null },
                     properties = grantedProperties(characteristic.children("Properties").firstOrNull()),
                 )
             }

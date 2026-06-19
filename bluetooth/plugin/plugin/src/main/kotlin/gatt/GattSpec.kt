@@ -29,6 +29,9 @@ data class GattCharacteristic(
     val variants: List<GattVariant> = emptyList(),
     val flagFields: List<GattFlagField> = emptyList(),
     val descriptors: List<GattDescriptor> = emptyList(),
+    // The SIG type identifier (e.g. `org.bluetooth.characteristic.heart_rate_measurement`); services reference
+    // characteristics by this when they carry no UUID.
+    val type: String? = null,
 ) {
     val isVariant: Boolean get() = variants.isNotEmpty()
 }
@@ -80,6 +83,9 @@ data class GattField(
     // resolves to more than one bit. When set, the field is nullable and generated with `@PresentWhenAllSet` instead of
     // a single `@FlagIndex`.
     val presenceFlagIndices: List<Int> = emptyList(),
+    // A field whose `<Format>` carries top-level `<Enumerations>` (not a `<BitField>`): an enumerated byte value,
+    // generated as a nested enum with a `@SerializedByteValue` per case.
+    val enumCases: List<GattFlagCase> = emptyList(),
 )
 
 /**
@@ -93,8 +99,14 @@ data class GattService(
     val includedServiceUuids: List<String> = emptyList(),
 )
 
-/** A characteristic as referenced by a [GattService], by [uuid], together with the access [properties] the service grants it. */
-data class GattServiceCharacteristic(val uuid: String, val properties: Set<GattProperty>)
+/**
+ * A characteristic as referenced by a [GattService], together with the access [properties] the service grants it. The
+ * reference is by [uuid] when present, otherwise by SIG [type] (the SIG service XML references characteristics by type).
+ */
+data class GattServiceCharacteristic(val uuid: String, val properties: Set<GattProperty>, val type: String? = null) {
+    /** The characteristic this reference resolves to in [byKey] (keyed by both UUID and type), or null if unknown. */
+    fun resolve(byKey: Map<String, GattCharacteristic>): GattCharacteristic? = byKey[uuid] ?: type?.let { byKey[it] }
+}
 
 /** A GATT characteristic access property, mapping onto the Kaluga access annotations. */
 enum class GattProperty { READ, WRITE, WRITE_WITHOUT_RESPONSE, NOTIFY, INDICATE }

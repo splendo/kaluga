@@ -58,16 +58,23 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
      * from [characteristics] (linked by UUID). Returns one [FileSpec] per characteristic and service plus the device.
      */
     fun generate(deviceName: String, services: List<GattService>, characteristics: List<GattCharacteristic>): List<FileSpec> {
-        val byUuid = characteristics.associateBy { it.uuid }
+        // Characteristics are referenced by UUID or by SIG type, so index by both.
+        val byKey = buildMap {
+            characteristics.forEach { characteristic ->
+                characteristic.uuid.takeIf(String::isNotBlank)?.let { put(it, characteristic) }
+                characteristic.type?.takeIf(String::isNotBlank)?.let { put(it, characteristic) }
+            }
+        }
         val accessByUuid = services.flatMap { it.characteristics }
-            .groupBy { it.uuid }
-            .mapValues { (_, refs) -> refs.flatMap { it.properties }.toSet() }
+            .mapNotNull { ref -> ref.resolve(byKey)?.let { it.uuid to ref.properties } }
+            .groupBy({ it.first }, { it.second })
+            .mapValues { (_, sets) -> sets.flatten().toSet() }
 
         val servicesByUuid = services.associateBy { it.uuid }
-        val characteristicFiles = byUuid.values.map { characteristic ->
-            characteristicFile(characteristic, accessByUuid[characteristic.uuid].orEmpty(), byUuid)
+        val characteristicFiles = characteristics.map { characteristic ->
+            characteristicFile(characteristic, accessByUuid[characteristic.uuid].orEmpty(), byKey)
         }
-        val serviceFiles = services.map { service -> serviceFile(service, byUuid, servicesByUuid) }
+        val serviceFiles = services.map { service -> serviceFile(service, byKey, servicesByUuid) }
         return characteristicFiles + serviceFiles + deviceFile(deviceName, services)
     }
 
@@ -133,7 +140,8 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         val builder = TypeSpec.interfaceBuilder(serviceName)
             .addAnnotation(annotation("BluetoothService", service.uuid))
         service.characteristics.forEach { ref ->
-            val characteristic = characteristics[ref.uuid] ?: error("Service '${service.name}' references unknown characteristic UUID '${ref.uuid}'")
+            val characteristic = ref.resolve(characteristics)
+                ?: error("Service '${service.name}' references unknown characteristic '${ref.uuid.ifBlank { ref.type }}'")
             val interfaceName = characteristic.name.toPascalCase()
             builder.addProperty(
                 PropertySpec.builder(interfaceName.replaceFirstChar { it.lowercaseChar() }, ClassName(packageName, interfaceName))
@@ -233,6 +241,14 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         fields.forEach { field ->
             val propertyName = field.name.toCamelCase()
             val (propertyType, annotations) = when {
+                // A field carrying top-level enumerations becomes a (nested) enum encoded as its byte value.
+                field.enumCases.isNotEmpty() -> {
+                    val enumName = field.name.toPascalCase()
+                    type.addType(bodyEnum(field, enumName))
+                    val enumType = ClassName(packageName, className, enumName)
+                    (if (field.optional) enumType.copy(nullable = true) else enumType) to field.gatingAnnotations()
+                }
+
                 // A field that references another characteristic embeds that characteristic's value class (no wire
                 // format of its own); the nested structure handles its own encoding.
                 field.reference != null -> {
@@ -327,6 +343,21 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         flag.cases.sortedBy { it.key }.forEach { case ->
             val caseName = enumCaseName(case.description, case.key, used)
             builder.addEnumConstant(caseName)
+            case.description?.let { kdoc.appendLine("[$caseName]: $it") }
+        }
+        kdoc.toString().trim().takeIf { it.isNotEmpty() }?.let { builder.addKdoc("%L", it) }
+        return builder.build()
+    }
+
+    // An enum whose constants are encoded as their byte value via @SerializedByteValue, for a field with top-level
+    // enumerations (e.g. Body Sensor Location). Reserved/unlisted byte values have no constant.
+    private fun bodyEnum(field: GattField, enumName: String): TypeSpec {
+        val builder = TypeSpec.enumBuilder(enumName).addAnnotation(SERIALIZABLE)
+        val used = mutableSetOf<String>()
+        val kdoc = StringBuilder()
+        field.enumCases.sortedBy { it.key }.forEach { case ->
+            val caseName = enumCaseName(case.description, case.key, used)
+            builder.addEnumConstant(caseName, TypeSpec.anonymousClassBuilder().addAnnotation(serializedByteValue(case.key)).build())
             case.description?.let { kdoc.appendLine("[$caseName]: $it") }
         }
         kdoc.toString().trim().takeIf { it.isNotEmpty() }?.let { builder.addKdoc("%L", it) }

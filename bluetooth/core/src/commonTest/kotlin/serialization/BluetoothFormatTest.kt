@@ -34,6 +34,7 @@ import com.splendo.kaluga.base.utils.toUInt40
 import com.splendo.kaluga.base.utils.toUInt48
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Joule
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -148,8 +149,7 @@ class BluetoothFormatTest {
         // round-trips through BluetoothFormat as a 16-bit unsigned little-endian value...
         validateRoundTrip(EnergyExpended(500), EnergyExpended.serializer(), byteArrayOf(0xF4.toByte(), 0x01))
         // ...while still being a usable ScientificValue
-        assertEquals(Joule, EnergyExpended(500).unit)
-        assertEquals(500, EnergyExpended(500).value)
+        assertEquals(500(Joule).compareTo(EnergyExpended(500)), 0, EnergyExpended(500).toString())
     }
 
     @Test
@@ -750,10 +750,40 @@ class BluetoothFormatTest {
 
         // a, b present -> bits 0 and 1 set (0b11), so c is present too
         validateEncoding(Container(a = 10, b = 20, c = 30), byteArrayOf(0b11, 10, 20, 30))
-        // b absent -> bit 1 clear, so c is necessarily absent
+        // a absent -> bit 0 clear, so c is necessarily absent (only b present)
+        validateEncoding(Container(a = null, b = 20, c = null), byteArrayOf(0b10, 20))
+        // b absent -> bit 1 clear, so c is necessarily absent (only a present)
         validateEncoding(Container(a = 10, b = null, c = null), byteArrayOf(0b01, 10))
         // nothing present
         validateEncoding(Container(a = null, b = null, c = null), byteArrayOf(0b00))
+    }
+
+    @Test
+    fun encodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlags() {
+        @Serializable
+        data class Container(
+            @Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?,
+            @Size(Length.`8_BIT`) @FlagIndex(1) val b: Byte?,
+            @Size(Length.`8_BIT`) @PresentWhenAllSet(0, 1) val c: Byte?,
+        )
+
+        // `c` owns no flag bit: its presence is *derived* from bits 0 and 1, so a value whose `c` disagrees with those
+        // bits cannot round-trip. These are still valid instances; we just pin the (lossy) wire behaviour.
+
+        // c set while its gating bits are clear: c's byte is written, but on decode bits 0/1 are clear so c reads back
+        // as null — the value is silently lost (and its stray body byte is ignored).
+        val cWithoutGate = Container(a = null, b = null, c = 30)
+        val encoded = BluetoothFormat.encodeToByteArray(Container.serializer(), cWithoutGate)
+        assertTrue(encoded.contentEquals(byteArrayOf(0b00, 30)), encoded.toHexString(separator = " "))
+        assertEquals(Container(a = null, b = null, c = null), BluetoothFormat.decodeFromByteArray(Container.serializer(), encoded))
+
+        // c null while its gating bits are set: decode expects c's byte but none was written, so decoding fails outright.
+        val gateWithoutC = Container(a = 10, b = 20, c = null)
+        val truncated = BluetoothFormat.encodeToByteArray(Container.serializer(), gateWithoutC)
+        assertTrue(truncated.contentEquals(byteArrayOf(0b11, 10, 20)), truncated.toHexString(separator = " "))
+        assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> {
+            BluetoothFormat.decodeFromByteArray(Container.serializer(), truncated)
+        }
     }
 
     @Test

@@ -54,46 +54,56 @@ class GeneratedSerializationTest {
         assertEquals(Pascal, decoded.pressure.unit)
     }
 
+    // The Heart Rate service (180D) and its characteristics are the unmodified SIG XML (oesmith), reused here by the
+    // Thermometer service's <IncludedServices>. These round-trips exercise its notify/read/write characteristics.
+
     @Test
-    fun heartRateMinimalRoundTrips() {
-        // 8-bit rate (format bit 0 = 0), sensor contact "supported & detected" (ordinal 3 in bits 1-2 -> 0b0110),
-        // no energy (bit 3), no RR intervals (bit 4). Flags 0x06, then the single rate byte.
+    fun heartRateMeasurementMinimalRoundTrips() {
+        // 8-bit rate, sensor contact detected (ordinal 3 -> bits 1-2 = 0b0110), no energy, no RR interval.
         val value = HeartRateMeasurementValue(
-            sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_SUPPORTED_CONTACT_3,
+            sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_3,
             heartRateMeasurementValue = 70,
             energyExpended = null,
-            rRInterval = emptyList(),
+            rRInterval = null,
         )
         validateHeartRate(value, byteArrayOf(0x06, 0x46))
     }
 
     @Test
-    fun heartRateWithIntervalsRoundTrips() {
-        // 8-bit rate, contact "not supported" (ordinal 0), no energy, RR intervals present (bit 4 = 0x10).
-        // 1.0 s -> raw round(1.0 * 2^10) = 1024 (0x0400), little-endian.
+    fun heartRateMeasurementFullRoundTrips() {
+        // 16-bit rate (bit 0), contact "supported, not detected" (ordinal 2 -> 0b0100), energy (bit 3) and RR (bit 4)
+        // present: flags 0x1D. Body: rate 300, energy 500 J, RR 512 (raw 1/1024 s units, no machine-readable scaling).
         val value = HeartRateMeasurementValue(
-            sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_NOT_SUPPORTED,
-            heartRateMeasurementValue = 55,
-            energyExpended = null,
-            rRInterval = listOf(1.0),
+            sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_2,
+            heartRateMeasurementValue = 300,
+            energyExpended = HeartRateMeasurementValue.EnergyExpended(500),
+            rRInterval = HeartRateMeasurementValue.RRInterval(512),
         )
-        validateHeartRate(value, byteArrayOf(0x10, 0x37, 0x00, 0x04))
+        validateHeartRate(value, byteArrayOf(0x1D, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x02))
     }
 
     @Test
-    fun heartRateFullRoundTrips() {
-        // 16-bit rate (format bit 0 = 1), contact "supported, not detected" (ordinal 2 -> 0b0100), energy present
-        // (bit 3 = 0x08), RR intervals present (bit 4 = 0x10): flags 0x1D. Body is rate, energy, then each interval.
-        // 0.5 s -> 512 (0x0200), 0.25 s -> 256 (0x0100).
-        val value = HeartRateMeasurementValue(
-            sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_SUPPORTED_CONTACT,
-            heartRateMeasurementValue = 300,
-            energyExpended = HeartRateMeasurementValue.EnergyExpended(500),
-            rRInterval = listOf(0.5, 0.25),
+    fun bodySensorLocationEnumRoundTrips() {
+        // 8-bit field with top-level <Enumerations> -> a byte-valued enum (read-only characteristic).
+        validateRoundTrip(
+            BodySensorLocationValue.serializer(),
+            BodySensorLocationValue(BodySensorLocationValue.BodySensorLocation.CHEST),
+            byteArrayOf(0x01),
         )
-        validateHeartRate(
-            value,
-            byteArrayOf(0x1D, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x02, 0x00, 0x01),
+        validateRoundTrip(
+            BodySensorLocationValue.serializer(),
+            BodySensorLocationValue(BodySensorLocationValue.BodySensorLocation.WRIST),
+            byteArrayOf(0x02),
+        )
+    }
+
+    @Test
+    fun heartRateControlPointEnumRoundTrips() {
+        // write-only enum characteristic; its single defined value is 1.
+        validateRoundTrip(
+            HeartRateControlPointValue.serializer(),
+            HeartRateControlPointValue(HeartRateControlPointValue.HeartRateControlPoint.RESET_ENERGY_EXPENDED_RESETS),
+            byteArrayOf(0x01),
         )
     }
 
@@ -177,6 +187,12 @@ class GeneratedSerializationTest {
         assertEquals(value, decoded)
         assertEquals(celsius, decoded.temperature.value)
         assertEquals(Celsius, decoded.temperature.unit)
+    }
+
+    private fun <T> validateRoundTrip(serializer: kotlinx.serialization.KSerializer<T>, value: T, expectedBytes: ByteArray) {
+        val bytes = BluetoothFormat.encodeToByteArray(serializer, value)
+        assertTrue(bytes.contentEquals(expectedBytes), "Expected ${expectedBytes.hex()} but got ${bytes.hex()}")
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(serializer, bytes))
     }
 
     private fun ByteArray.hex() = joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }

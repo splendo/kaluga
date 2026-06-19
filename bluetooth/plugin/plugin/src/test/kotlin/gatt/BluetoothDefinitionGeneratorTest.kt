@@ -202,6 +202,39 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
+    fun generatesByteValuedEnumForEnumerationField() {
+        // The real SIG Body Sensor Location is an 8-bit field with top-level <Enumerations> -> a byte-valued enum.
+        val value = generator.generateValueClass(characteristic("/gatt/sig_body_sensor_location.xml")).singleType()
+        val enum = checkNotNull(value.nestedType("BodySensorLocation"))
+        assertEquals(7, enum.enumConstants.size)
+        assertEquals("value = 1", checkNotNull(enum.enumConstants.getValue("CHEST").annotation("SerializedByteValue")).argument)
+        assertEquals("BodySensorLocation", checkNotNull(value.property("bodySensorLocation")).type.simpleName)
+    }
+
+    @Test
+    fun resolvesServiceCharacteristicsReferencedByType() {
+        // The real SIG service references its characteristics by `type` (no uuid on the references).
+        val types = generator.generate(
+            deviceName = "Heart Rate Sensor",
+            services = listOf(service("/gatt/sig_heart_rate_service.xml")),
+            characteristics = listOf(
+                characteristic("/gatt/sig_heart_rate_measurement.xml"),
+                characteristic("/gatt/sig_body_sensor_location.xml"),
+                characteristic("/gatt/sig_heart_rate_control_point.xml"),
+            ),
+        ).types()
+
+        val service = types.getValue("HeartRate")
+        assertEquals("\"180D\"", checkNotNull(service.annotation("BluetoothService")).argument)
+        assertEquals("HeartRateMeasurement", checkNotNull(service.property("heartRateMeasurement")).type.simpleName)
+        assertEquals("BodySensorLocation", checkNotNull(service.property("bodySensorLocation")).type.simpleName)
+        // notify-only on the measurement, read-only on the location, write-only on the control point
+        assertEquals(setOf("Notifiable"), checkNotNull(types.getValue("HeartRateMeasurement").property("value")).annotationNames)
+        assertEquals(setOf("Readable"), checkNotNull(types.getValue("BodySensorLocation").property("value")).annotationNames)
+        assertEquals(setOf("Writable"), checkNotNull(types.getValue("HeartRateControlPoint").property("value")).annotationNames)
+    }
+
+    @Test
     fun parsesConditionalCharacteristicVariants() {
         val characteristic = characteristic("/gatt/sensor_reading.xml")
         assertTrue(characteristic.isVariant, "expected a variant characteristic")
