@@ -111,13 +111,7 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
     /** Configuration for generating `@Bluetooth` definitions from Bluetooth SIG GATT XML; see [generateFromXml]. */
     class XmlGeneration(val deviceName: String, val sourceDirectories: Set<String>, val packageName: String?, val outputDirectory: String?)
 
-    /** Configuration for generating `@Bluetooth` definitions from a Kaluga GATT device YAML; see [generateFromYaml]. */
-    class YamlGeneration(val file: String, val packageName: String?, val outputDirectory: String?)
-
     internal var xmlGeneration: XmlGeneration? = null
-        private set
-
-    internal var yamlGeneration: YamlGeneration? = null
         private set
 
     /**
@@ -135,23 +129,7 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
      * (`org.jetbrains.kotlin.plugin.serialization`).
      */
     fun generateFromXml(deviceName: String, vararg sourceDirectories: String, packageName: String? = null, outputDirectory: String? = null) {
-        check(yamlGeneration == null) { "Configure either generateFromXml or generateFromYaml, not both." }
         xmlGeneration = XmlGeneration(deviceName, sourceDirectories.toSet(), packageName, outputDirectory)
-    }
-
-    /**
-     * Generates the `@Bluetooth` device, services and characteristics (with `@Serializable` value classes) from the
-     * Kaluga GATT device YAML at [file]. A single file describes the whole device — its services (with per-characteristic
-     * access) and characteristics (fields, scaling, and conditional variants, the last mapping to sealed classes). The
-     * device name is taken from the YAML. [packageName] defaults to [generatedPackage]; [outputDirectory] behaves as in
-     * [generateFromXml].
-     *
-     * The generated value classes are `@Serializable`, so the module must apply the Kotlin serialization plugin
-     * (`org.jetbrains.kotlin.plugin.serialization`).
-     */
-    fun generateFromYaml(file: String, packageName: String? = null, outputDirectory: String? = null) {
-        check(xmlGeneration == null) { "Configure either generateFromXml or generateFromYaml, not both." }
-        yamlGeneration = YamlGeneration(file, packageName, outputDirectory)
     }
 
     /** Forwards this configuration to KSP as processor options. Invoked by [BluetoothPlugin]; not intended to be called directly. */

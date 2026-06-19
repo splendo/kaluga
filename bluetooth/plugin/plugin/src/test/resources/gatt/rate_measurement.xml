@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hand-authored fixture mirroring the SIG flags-byte structure (BitField + Requirement); original wording. -->
+<Characteristic type="org.example.characteristic.rate_measurement" uuid="2A37" name="Rate Measurement">
+  <Value>
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Rate Value Format bit">
+          <Enumerations>
+            <Enumeration key="0" value="Rate value is a uint8" requires="C1" />
+            <Enumeration key="1" value="Rate value is a uint16" requires="C2" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="2" name="Contact Status bits">
+          <Enumerations>
+            <Enumeration key="0" value="Contact not supported" />
+            <Enumeration key="1" value="Contact not supported" />
+            <Enumeration key="2" value="Contact supported, not detected" />
+            <Enumeration key="3" value="Contact supported and detected" />
+          </Enumerations>
+        </Bit>
+        <Bit index="3" size="1" name="Energy Expended Status bit">
+          <Enumerations>
+            <Enumeration key="0" value="Energy Expended field not present" />
+            <Enumeration key="1" value="Energy Expended field present" requires="C3" />
+          </Enumerations>
+        </Bit>
+        <Bit index="4" size="1" name="Interval Status bit">
+          <Enumerations>
+            <Enumeration key="0" value="Interval values not present" />
+            <Enumeration key="1" value="One or more Interval values present" requires="C4" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="5" size="3" />
+      </BitField>
+    </Field>
+    <Field name="Rate Measurement Value (uint8)">
+      <Requirement>C1</Requirement>
+      <Format>uint8</Format>
+      <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+    </Field>
+    <Field name="Rate Measurement Value (uint16)">
+      <Requirement>C2</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.period.beats_per_minute</Unit>
+    </Field>
+    <Field name="Energy Expended">
+      <InformativeText>Present when bit 3 of the Flags field is set.</InformativeText>
+      <Requirement>C3</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.energy.joule</Unit>
+    </Field>
+    <Field name="Interval">
+      <Requirement>C4</Requirement>
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.time.second</Unit>
+      <Description>Resolution of 1/1024 second</Description>
+      <Repeated>true</Repeated>
+    </Field>
+  </Value>
+</Characteristic>

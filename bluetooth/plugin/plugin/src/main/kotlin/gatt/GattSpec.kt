@@ -19,10 +19,16 @@ package com.splendo.kaluga.bluetooth.plugin.gatt
 
 /**
  * A parsed Bluetooth SIG GATT characteristic definition, limited to what the prototype generator consumes.
- * A characteristic is either a single structure ([fields]) or, when its value varies by a leading discriminator,
- * a set of [variants] (generated as a sealed class).
+ * A characteristic is either a single structure ([fields], optionally with values carried in a leading flags byte
+ * via [flagFields]) or, when its value varies by a leading discriminator, a set of [variants] (a sealed class).
  */
-data class GattCharacteristic(val name: String, val uuid: String, val fields: List<GattField>, val variants: List<GattVariant> = emptyList()) {
+data class GattCharacteristic(
+    val name: String,
+    val uuid: String,
+    val fields: List<GattField>,
+    val variants: List<GattVariant> = emptyList(),
+    val flagFields: List<GattFlagField> = emptyList(),
+) {
     val isVariant: Boolean get() = variants.isNotEmpty()
 }
 
@@ -30,13 +36,36 @@ data class GattCharacteristic(val name: String, val uuid: String, val fields: Li
 data class GattVariant(val name: String, val discriminator: Int, val fields: List<GattField>)
 
 /**
+ * An enumerated value carried inside the leading flags byte, occupying [size] bits at bit [index] (e.g. a status
+ * field packed into the flags). Generated as an enum stored in the flags region. [cases] are ordered by [GattFlagCase.key].
+ */
+data class GattFlagField(val name: String, val index: Int, val size: Int, val cases: List<GattFlagCase>, val description: String? = null)
+
+/** One case of a [GattFlagField], stored on the wire as [key]. [description] is the spec text, surfaced as KDoc. */
+data class GattFlagCase(val key: Int, val description: String?)
+
+/**
  * A single value field of a [GattCharacteristic]. [format] is the raw GATT format token (e.g. `uint16`, `sint8`,
  * `SFLOAT`, `utf8s`); [multiplier]/[decimalExponent]/[binaryExponent] capture the field's scaling.
+ *
+ * [alternateFormats] holds additional widths when a flags bit selects the format (e.g. uint8/uint16), generated as
+ * multiple `@Size`. [optional] marks a field whose presence is gated by a flags bit (generated as nullable). [repeated]
+ * is the SIG `<Repeated>` flag: the field has no length and fills the rest of the packet, so it generates as an unsized
+ * list and must be the last field. [flagIndex] is the bit driving that selection/presence. [description] is the spec's
+ * free text, surfaced as KDoc.
  */
-data class GattField(val name: String, val format: String, val multiplier: Int = 1, val decimalExponent: Int = 0, val binaryExponent: Int = 0)
-
-/** A whole device: its [name] and the [services] and [characteristics] it exposes, as parsed from a single source. */
-data class GattDevice(val name: String, val services: List<GattService>, val characteristics: List<GattCharacteristic>)
+data class GattField(
+    val name: String,
+    val format: String,
+    val multiplier: Int = 1,
+    val decimalExponent: Int = 0,
+    val binaryExponent: Int = 0,
+    val alternateFormats: List<String> = emptyList(),
+    val optional: Boolean = false,
+    val repeated: Boolean = false,
+    val flagIndex: Int? = null,
+    val description: String? = null,
+)
 
 /** A parsed GATT service definition: the characteristics it contains and how each may be accessed. */
 data class GattService(val name: String, val uuid: String, val characteristics: List<GattServiceCharacteristic>)

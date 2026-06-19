@@ -50,12 +50,9 @@ class BluetoothPlugin : Plugin<Project> {
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
         afterEvaluate {
-            val configuredOutput = bluetoothExtension.xmlGeneration?.outputDirectory ?: bluetoothExtension.yamlGeneration?.outputDirectory
-            val generatesDefinitions = bluetoothExtension.xmlGeneration != null || bluetoothExtension.yamlGeneration != null
-            val generatedSourceDir = if (generatesDefinitions) {
-                configuredOutput?.let { file(it) } ?: layout.buildDirectory.dir(GENERATED_DIR).get().asFile
-            } else {
-                null
+            val xmlGeneration = bluetoothExtension.xmlGeneration
+            val generatedSourceDir = xmlGeneration?.let {
+                it.outputDirectory?.let(::file) ?: layout.buildDirectory.dir(GENERATED_DIR).get().asFile
             }
             extensions.configure<KotlinMultiplatformExtension> {
                 project.dependencies.add(
@@ -99,21 +96,15 @@ class BluetoothPlugin : Plugin<Project> {
                     arg("isSingleTarget", "$isSinglePlatform")
                 }
             }
-            if (generatesDefinitions) {
+            if (xmlGeneration != null) {
                 val outputDir = checkNotNull(generatedSourceDir)
-                val xml = bluetoothExtension.xmlGeneration
-                val yaml = bluetoothExtension.yamlGeneration
-                val packageName = (xml?.packageName ?: yaml?.packageName) ?: bluetoothExtension.generatedPackage ?: DEFAULT_GENERATED_PACKAGE
-                val sources = xml?.sourceDirectories?.map { file(it) } ?: listOf(file(checkNotNull(yaml).file))
+                val packageName = xmlGeneration.packageName ?: bluetoothExtension.generatedPackage ?: DEFAULT_GENERATED_PACKAGE
+                val sources = xmlGeneration.sourceDirectories.map { file(it) }
                 val generate = tasks.register("generateBluetoothDefinitions") {
                     inputs.files(sources)
                     outputs.dir(outputDir)
                     doLast {
-                        if (xml != null) {
-                            GattGeneration.generateTo(outputDir, sources, xml.deviceName, packageName)
-                        } else {
-                            GattGeneration.generateYamlTo(outputDir, sources.single(), packageName)
-                        }
+                        GattGeneration.generateTo(outputDir, sources, xmlGeneration.deviceName, packageName)
                     }
                 }
                 // The generated definitions must exist before KSP processes them and before anything is compiled.

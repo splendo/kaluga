@@ -17,9 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.plugin.gatt
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -83,6 +86,83 @@ class BluetoothDefinitionGeneratorTest {
         val characteristic = characteristic("/gatt/sensor_reading.xml")
         assertTrue(characteristic.isVariant, "expected a variant characteristic")
         assertEquals(listOf("Temperature" to 1, "Humidity" to 2), characteristic.variants.map { it.name to it.discriminator })
+    }
+
+    @Test
+    fun parsesFlagsByteBitFieldAndRequirements() {
+        val characteristic = characteristic("/gatt/rate_measurement.xml")
+        assertFalse(characteristic.isVariant)
+
+        // selector bit 0 (every value gates a field) -> one field with the format alternatives, placed at the bit
+        val rate = characteristic.fields.single { it.name == "Rate Measurement Value" }
+        assertEquals(0, rate.flagIndex)
+        assertEquals("uint16", rate.format)
+        assertEquals(listOf("uint8"), rate.alternateFormats)
+        assertFalse(rate.optional)
+
+        // presence bit 3 (some values gate, not trailing) -> optional single field
+        val energy = characteristic.fields.single { it.name == "Energy Expended" }
+        assertTrue(energy.optional)
+        assertFalse(energy.repeated)
+        assertEquals(3, energy.flagIndex)
+        assertEquals("uint16", energy.format)
+
+        // a <Repeated> field gated by bit 4 -> a list (fills the rest of the packet)
+        val interval = characteristic.fields.single { it.name == "Interval" }
+        assertTrue(interval.repeated)
+        assertFalse(interval.optional)
+        assertEquals(4, interval.flagIndex)
+
+        // value bit 1 (no value gates) -> enum carried in the flags
+        val contact = characteristic.flagFields.single()
+        assertEquals("Contact Status", contact.name)
+        assertEquals(1, contact.index)
+        assertEquals(2, contact.size)
+        assertEquals(listOf(0, 1, 2, 3), contact.cases.map { it.key })
+    }
+
+    @Test
+    fun rejectsNonTrailingRepeatedField() {
+        // a <Repeated> field has no length, so it cannot be followed by another field
+        assertFailsWith<IllegalArgumentException> { characteristic("/gatt/non_trailing_repeated.xml") }
+    }
+
+    @Test
+    fun generatesFlagsByteValueClass() {
+        val value = generator.generateValueClass(characteristic("/gatt/rate_measurement.xml")).singleType()
+        assertEquals("RateMeasurementValue", value.name)
+        assertTrue(KModifier.DATA in value.modifiers)
+
+        // dual-size selector: @FlagIndex(0), two @Size, @Unsigned, widest type
+        val rate = checkNotNull(value.property("rateMeasurementValue"))
+        assertEquals("Int", rate.type.simpleName)
+        assertEquals("0", checkNotNull(rate.annotation("FlagIndex")).argument)
+        assertEquals(2, rate.annotations.count { (it.typeName as? ClassName)?.simpleName == "Size" })
+        assertTrue("Unsigned" in rate.annotationNames)
+
+        // presence-gated field -> nullable + @FlagIndex(3)
+        val energy = checkNotNull(value.property("energyExpended"))
+        assertTrue(energy.type.isNullable)
+        assertEquals("3", checkNotNull(energy.annotation("FlagIndex")).argument)
+
+        // trailing presence-gated field -> unsized list with element formats, present via @NullIfEmpty
+        val interval = checkNotNull(value.property("interval"))
+        assertTrue(interval.type.toString().contains("List"), interval.type.toString())
+        assertEquals("4", checkNotNull(interval.annotation("FlagIndex")).argument)
+        assertTrue("NullIfEmpty" in interval.annotationNames)
+        assertTrue("Unsized" in interval.annotationNames)
+        assertTrue("ItemUnsigned" in interval.annotationNames)
+        // the element format must carry its argument, e.g. @ItemSize(Length.`16_BIT`)
+        assertTrue(checkNotNull(interval.annotation("ItemSize")).argument.endsWith("Length.`16_BIT`"))
+
+        // enum-in-flags: nested enum + @FlagIndex(1) @FlagWidth(bits = 2)
+        val contact = checkNotNull(value.property("contactStatus"))
+        assertEquals("ContactStatus", contact.type.simpleName)
+        assertEquals("1", checkNotNull(contact.annotation("FlagIndex")).argument)
+        assertEquals("bits = 2", checkNotNull(contact.annotation("FlagWidth")).argument)
+        val contactEnum = checkNotNull(value.nestedType("ContactStatus"))
+        assertEquals(4, contactEnum.enumConstants.size)
+        assertTrue("CONTACT_NOT_SUPPORTED" in contactEnum.enumConstants.keys, contactEnum.enumConstants.keys.toString())
     }
 
     @Test

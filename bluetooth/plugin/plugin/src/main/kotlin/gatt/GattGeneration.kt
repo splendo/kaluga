@@ -31,21 +31,10 @@ object GattGeneration {
         return BluetoothDefinitionGenerator(packageName).generate(deviceName, services, characteristics)
     }
 
-    /** Parses the device described by [yamlFile] (a single Kaluga GATT YAML) and generates all its definitions in [packageName]. */
-    fun generateFromYaml(yamlFile: File, packageName: String): List<FileSpec> {
-        val device = GattYamlParser.parse(yamlFile)
-        return BluetoothDefinitionGenerator(packageName).generate(device.name, device.services, device.characteristics)
-    }
-
     /** Generates definitions from the XML under [sourceDirectories] and writes them under [outputDirectory] (cleared first). */
     fun generateTo(outputDirectory: File, sourceDirectories: List<File>, deviceName: String, packageName: String) {
         val xmlFiles = sourceDirectories.flatMap { dir -> dir.walkTopDown().filter { it.isFile } }
         writeTo(outputDirectory, generate(xmlFiles, deviceName, packageName))
-    }
-
-    /** Generates definitions from the device [yamlFile] and writes them under [outputDirectory] (cleared first). */
-    fun generateYamlTo(outputDirectory: File, yamlFile: File, packageName: String) {
-        writeTo(outputDirectory, generateFromYaml(yamlFile, packageName))
     }
 
     private fun writeTo(outputDirectory: File, definitions: List<FileSpec>) {

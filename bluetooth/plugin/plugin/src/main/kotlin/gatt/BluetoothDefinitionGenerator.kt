@@ -26,8 +26,10 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
@@ -38,10 +40,10 @@ import com.squareup.kotlinpoet.TypeSpec
  * characteristic (translating field formats/scaling into `BluetoothFormat` annotations), the `@BluetoothCharacteristic`
  * and `@BluetoothService` interfaces, and the `@Bluetooth` device that ties them together.
  *
- * Conditional characteristics — whose value varies by a leading discriminator byte — map to a sealed class with one
- * `@SerializedByteValue`-tagged subclass per variant, which the `BluetoothFormat` already dispatches on. Optional
- * fields map to nullable properties and 8/16-bit selectors to multiple `@Size` annotations (both handled by the
- * existing format). Not yet handled: dispatch on a bit within a shared flags byte.
+ * Conditional characteristics map according to their shape: a leading discriminator byte becomes a sealed class
+ * (one `@SerializedByteValue`-tagged subclass per variant); a leading flags byte becomes a flat class where each bit
+ * either selects a field's width (multiple `@Size`), gates a field's presence (nullable, or an `@Unsized` list for a
+ * `repeated` field) or carries an enumerated value (`@FlagIndex` enum), all keyed by `@FlagIndex`.
  *
  * @param packageName the package the generated definitions are placed in.
  */
@@ -123,7 +125,7 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
     }
 
     private fun valueType(characteristic: GattCharacteristic, className: String): TypeSpec =
-        if (characteristic.isVariant) sealedValueType(characteristic, className) else dataValueType(characteristic.fields, className)
+        if (characteristic.isVariant) sealedValueType(characteristic, className) else dataValueType(characteristic.fields, className, characteristic.flagFields)
 
     // A conditional characteristic becomes a sealed class; each variant is a subclass selected on the wire by its
     // discriminator byte (@SerializedByteValue), which the BluetoothFormat already dispatches on.
@@ -143,24 +145,88 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
         return sealed.build()
     }
 
-    private fun dataValueType(fields: List<GattField>, className: String): TypeSpec {
+    private fun dataValueType(fields: List<GattField>, className: String, flagFields: List<GattFlagField> = emptyList()): TypeSpec {
         val constructor = FunSpec.constructorBuilder()
         val type = TypeSpec.classBuilder(className)
             .addModifiers(KModifier.DATA)
             .addAnnotation(SERIALIZABLE)
+
+        // Values carried in the leading flags byte: a (nested) enum stored at its bit, by ordinal.
+        flagFields.forEach { flag ->
+            val enumName = flag.name.toPascalCase()
+            type.addType(flagEnum(flag, enumName))
+            val propertyName = flag.name.toCamelCase()
+            val enumType = ClassName(packageName, className, enumName)
+            constructor.addParameter(ParameterSpec.builder(propertyName, enumType).build())
+            type.addProperty(
+                PropertySpec.builder(propertyName, enumType)
+                    .initializer(propertyName)
+                    .addAnnotation(flagIndex(flag.index))
+                    .addAnnotation(flagWidth(flag.size))
+                    .apply { flag.description?.let { addKdoc("%L", it) } }
+                    .build(),
+            )
+        }
+
         fields.forEach { field ->
             val propertyName = field.name.toCamelCase()
             val mapping = field.toMapping()
-            constructor.addParameter(ParameterSpec.builder(propertyName, mapping.type).build())
+            val (propertyType, annotations) = when {
+                // A repeated field fills the rest of the packet as an unsized list; the element formatting moves onto
+                // the list via the @Item* annotations. When gated by a flag bit, presence is encoded via @NullIfEmpty.
+                field.repeated -> LIST.parameterizedBy(mapping.type) to
+                    mapping.annotations.map { it.asItemAnnotation() } + UNSIZED +
+                    (field.flagIndex?.let { listOf(flagIndex(it), NULL_IF_EMPTY) } ?: emptyList())
+
+                else -> (if (field.optional) mapping.type.copy(nullable = true) else mapping.type) to
+                    mapping.annotations + listOfNotNull(field.flagIndex?.let(::flagIndex))
+            }
+            constructor.addParameter(ParameterSpec.builder(propertyName, propertyType).build())
             type.addProperty(
-                PropertySpec.builder(propertyName, mapping.type)
+                PropertySpec.builder(propertyName, propertyType)
                     .initializer(propertyName)
-                    .apply { mapping.annotations.forEach(::addAnnotation) }
+                    .apply {
+                        annotations.forEach(::addAnnotation)
+                        field.description?.let { addKdoc("%L", it) }
+                    }
                     .build(),
             )
         }
         return type.primaryConstructor(constructor.build()).build()
     }
+
+    // The element of a generated list carries its format through the @Item* variant of each field annotation.
+    private fun AnnotationSpec.asItemAnnotation(): AnnotationSpec {
+        val builder = AnnotationSpec.builder(ClassName(SERIALIZATION, "Item${(typeName as ClassName).simpleName}"))
+        members.forEach(builder::addMember)
+        return builder.build()
+    }
+
+    private fun flagEnum(flag: GattFlagField, enumName: String): TypeSpec {
+        val builder = TypeSpec.enumBuilder(enumName).addAnnotation(SERIALIZABLE)
+        val used = mutableSetOf<String>()
+        val kdoc = StringBuilder()
+        flag.cases.sortedBy { it.key }.forEach { case ->
+            val caseName = enumCaseName(case.description, case.key, used)
+            builder.addEnumConstant(caseName)
+            case.description?.let { kdoc.appendLine("[$caseName]: $it") }
+        }
+        kdoc.toString().trim().takeIf { it.isNotEmpty() }?.let { builder.addKdoc("%L", it) }
+        return builder.build()
+    }
+
+    // A readable UPPER_SNAKE constant from the spec's case text, falling back to the wire key; disambiguated on clash.
+    private fun enumCaseName(description: String?, key: Int, used: MutableSet<String>): String {
+        val slug = description?.uppercase()?.replace(Regex("[^A-Z0-9]+"), "_")?.trim('_')
+            ?.split("_")?.filter { it.isNotEmpty() }?.take(4)?.joinToString("_")
+            ?.takeIf { it.isNotEmpty() && it.first().isLetter() }
+            ?: "VALUE_$key"
+        return if (used.add(slug)) slug else "${slug}_$key".also { used.add(it) }
+    }
+
+    private fun flagIndex(index: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagIndex")).addMember("%L", index).build()
+
+    private fun flagWidth(bits: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagWidth")).addMember("bits = %L", bits).build()
 
     private fun serializedByteValue(discriminator: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "SerializedByteValue"))
         .addMember("value = %L", discriminator)
@@ -195,10 +261,11 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
 
             format.startsWith("uint") || format.startsWith("sint") -> {
                 val signed = format.startsWith("sint")
-                val bits = format.drop(4).toIntOrNull() ?: error("Unsupported integer format '$format' for field '$name'")
-                annotations += size(bits)
+                // A flags bit may select between widths (e.g. uint8/uint16); emit a @Size for each, picking the widest type.
+                val widths = (listOf(format) + alternateFormats).map { it.drop(4).toIntOrNull() ?: error("Unsupported integer format '$it' for field '$name'") }
+                widths.sorted().forEach { annotations += size(it) }
                 if (!signed) annotations += UNSIGNED
-                integerType(bits, signed)
+                integerType(widths.max(), signed)
             }
 
             else -> error("Unsupported GATT format '$format' for field '$name'")
@@ -254,5 +321,7 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
         val SERIALIZABLE = AnnotationSpec.builder(ClassName("kotlinx.serialization", "Serializable")).build()
         val UNSIGNED = AnnotationSpec.builder(ClassName(SERIALIZATION, "Unsigned")).build()
         val MED_FLOAT = AnnotationSpec.builder(ClassName(SERIALIZATION, "MedFloat")).build()
+        val NULL_IF_EMPTY = AnnotationSpec.builder(ClassName(SERIALIZATION, "NullIfEmpty")).build()
+        val UNSIZED = AnnotationSpec.builder(ClassName(SERIALIZATION, "Unsized")).build()
     }
 }
