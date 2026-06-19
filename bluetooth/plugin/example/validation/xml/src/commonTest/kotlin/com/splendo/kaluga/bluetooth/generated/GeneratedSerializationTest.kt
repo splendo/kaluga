@@ -126,6 +126,37 @@ class GeneratedSerializationTest {
         assertEquals(value, BluetoothFormat.decodeFromByteArray(ReadingPairValue.serializer(), bytes))
     }
 
+    @Test
+    fun dualFlagFieldsSpanA16BitFlagsRegion() {
+        // Two Flags bytes: Value A's presence bit is index 0, Value B's is index 8 (second flags byte). The flags
+        // region is therefore 2 bytes, followed by whichever values are present.
+        validateDualFlags(DualFlagsValue(valueA = 10, valueB = 300), byteArrayOf(0x01, 0x01, 0x0A, 0x2C, 0x01))
+        validateDualFlags(DualFlagsValue(valueA = 7, valueB = null), byteArrayOf(0x01, 0x00, 0x07))
+        validateDualFlags(DualFlagsValue(valueA = null, valueB = 500), byteArrayOf(0x00, 0x01, 0xF4.toByte(), 0x01))
+        validateDualFlags(DualFlagsValue(valueA = null, valueB = null), byteArrayOf(0x00, 0x00))
+    }
+
+    @Test
+    fun compoundRequirementGatesOnAllConditions() {
+        // "Combined" requires both C1 (bit 0) and C2 (bit 1): it is present only when Value A and Value B both are.
+        validateCompoundFlags(CompoundFlagsValue(valueA = 10, valueB = 20, combined = 30), byteArrayOf(0x03, 0x0A, 0x14, 0x1E))
+        // only A present -> bit 1 clear -> Combined necessarily absent
+        validateCompoundFlags(CompoundFlagsValue(valueA = 10, valueB = null, combined = null), byteArrayOf(0x01, 0x0A))
+        validateCompoundFlags(CompoundFlagsValue(valueA = null, valueB = null, combined = null), byteArrayOf(0x00))
+    }
+
+    private fun validateCompoundFlags(value: CompoundFlagsValue, expectedBytes: ByteArray) {
+        val bytes = BluetoothFormat.encodeToByteArray(CompoundFlagsValue.serializer(), value)
+        assertTrue(bytes.contentEquals(expectedBytes), "Expected ${expectedBytes.hex()} but got ${bytes.hex()}")
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(CompoundFlagsValue.serializer(), bytes))
+    }
+
+    private fun validateDualFlags(value: DualFlagsValue, expectedBytes: ByteArray) {
+        val bytes = BluetoothFormat.encodeToByteArray(DualFlagsValue.serializer(), value)
+        assertTrue(bytes.contentEquals(expectedBytes), "Expected ${expectedBytes.hex()} but got ${bytes.hex()}")
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(DualFlagsValue.serializer(), bytes))
+    }
+
     private fun validateHeartRate(value: HeartRateMeasurementValue, expectedBytes: ByteArray) {
         val bytes = BluetoothFormat.encodeToByteArray(HeartRateMeasurementValue.serializer(), value)
         assertTrue(

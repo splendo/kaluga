@@ -76,6 +76,10 @@ data class GattField(
     // The UUID of another characteristic whose value structure this field embeds (the SIG `<Reference>`); when set,
     // [format] is empty and the field is typed as the referenced characteristic's generated value class.
     val reference: String? = null,
+    // The flag bits whose conjunction gates this (optional) field's presence, for a compound `<Requirement>` that
+    // resolves to more than one bit. When set, the field is nullable and generated with `@PresentWhenAllSet` instead of
+    // a single `@FlagIndex`.
+    val presenceFlagIndices: List<Int> = emptyList(),
 )
 
 /**

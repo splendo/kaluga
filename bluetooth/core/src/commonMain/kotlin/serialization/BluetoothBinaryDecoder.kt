@@ -95,7 +95,7 @@ internal class BluetoothBinaryDecoder(
     override fun decodeLong(): Long = binaryDescriptor.decodeLongElement(decoder)
 
     @ExperimentalSerializationApi
-    override fun decodeNotNullMark(): Boolean = !binaryDescriptor.isNullable || decoder.flags[binaryDescriptor.bitIndex]
+    override fun decodeNotNullMark(): Boolean = binaryDescriptor.isPresent(decoder.flags)
 
     @ExperimentalSerializationApi
     override fun decodeNull(): Nothing? = null
@@ -234,7 +234,7 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
     @ExperimentalSerializationApi
     override fun <T : Any> decodeNullableSerializableElement(descriptor: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T?>, previousValue: T?): T? {
         val binaryDescriptor = binaryDescriptorAtIndex(index)
-        return if (decoderAtIndex(index).flags[binaryDescriptor.bitIndex]) {
+        return if (binaryDescriptor.isPresent(decoderAtIndex(index).flags)) {
             decodeSerializableElement(descriptor, index, deserializer, previousValue)
         } else {
             null

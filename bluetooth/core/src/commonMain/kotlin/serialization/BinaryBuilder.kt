@@ -65,7 +65,8 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
     private var isOfUnconstrainedSize: Boolean = false
 
     override fun addFlag(index: Int, value: Boolean) {
-        flagBits[index] = value
+        // A negative index marks a property with no flag bit of its own (e.g. derived presence); nothing to write.
+        if (index >= 0) flagBits[index] = value
     }
 
     override fun addBit(value: Boolean) {

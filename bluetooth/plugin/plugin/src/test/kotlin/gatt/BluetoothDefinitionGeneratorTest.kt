@@ -174,6 +174,34 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
+    fun parsesMultipleFlagFieldsWithOffsetBitIndices() {
+        // Two 8-bit Flags fields: the second field's bits are offset by 8, so Value B's presence bit is index 8.
+        val characteristic = characteristic("/gatt/dual_flags.xml")
+        assertEquals(0, checkNotNull(characteristic.fields.single { it.name == "Value A" }).flagIndex)
+        val valueB = checkNotNull(characteristic.fields.single { it.name == "Value B" })
+        assertEquals(8, valueB.flagIndex)
+        assertTrue(valueB.optional)
+
+        val value = generator.generateValueClass(characteristic).singleType()
+        assertEquals("8", checkNotNull(value.property("valueB")?.annotation("FlagIndex")).argument)
+    }
+
+    @Test
+    fun generatesPresentWhenAllSetForCompoundRequirement() {
+        // "Combined" requires both C1 (bit 0) and C2 (bit 1) -> a compound presence over both bits.
+        val characteristic = characteristic("/gatt/compound_flags.xml")
+        val combined = checkNotNull(characteristic.fields.single { it.name == "Combined" })
+        assertEquals(listOf(0, 1), combined.presenceFlagIndices)
+
+        val value = generator.generateValueClass(characteristic).singleType()
+        val property = checkNotNull(value.property("combined"))
+        assertTrue(property.type.isNullable)
+        val presence = checkNotNull(property.annotation("PresentWhenAllSet")).toString()
+        assertTrue("0" in presence && "1" in presence, presence)
+        assertNull(property.annotation("FlagIndex"))
+    }
+
+    @Test
     fun parsesConditionalCharacteristicVariants() {
         val characteristic = characteristic("/gatt/sensor_reading.xml")
         assertTrue(characteristic.isVariant, "expected a variant characteristic")

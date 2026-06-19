@@ -739,6 +739,24 @@ class BluetoothFormatTest {
     }
 
     @Test
+    fun encodePresentWhenAllSet() {
+        @Serializable
+        data class Container(
+            @Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?,
+            @Size(Length.`8_BIT`) @FlagIndex(1) val b: Byte?,
+            // Present on the wire exactly when both bit 0 and bit 1 (a's and b's presence bits) are set; owns no bit.
+            @Size(Length.`8_BIT`) @PresentWhenAllSet(0, 1) val c: Byte?,
+        )
+
+        // a, b present -> bits 0 and 1 set (0b11), so c is present too
+        validateEncoding(Container(a = 10, b = 20, c = 30), byteArrayOf(0b11, 10, 20, 30))
+        // b absent -> bit 1 clear, so c is necessarily absent
+        validateEncoding(Container(a = 10, b = null, c = null), byteArrayOf(0b01, 10))
+        // nothing present
+        validateEncoding(Container(a = null, b = null, c = null), byteArrayOf(0b00))
+    }
+
+    @Test
     fun encodeFloat() {
         validateEncoding(42.0f, 42.0f.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
 

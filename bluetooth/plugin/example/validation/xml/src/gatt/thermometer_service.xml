@@ -32,5 +32,15 @@
         <Read>Mandatory</Read>
       </Properties>
     </Characteristic>
+    <Characteristic name="Dual Flags" type="org.example.characteristic.dual_flags" uuid="2BE2">
+      <Properties>
+        <Read>Mandatory</Read>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Compound Flags" type="org.example.characteristic.compound_flags" uuid="2BE3">
+      <Properties>
+        <Read>Mandatory</Read>
+      </Properties>
+    </Characteristic>
   </Characteristics>
 </Service>

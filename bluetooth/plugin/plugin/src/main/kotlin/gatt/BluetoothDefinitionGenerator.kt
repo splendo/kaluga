@@ -239,7 +239,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
                     val referenced = characteristicsByUuid[field.reference]
                         ?: error("Field '${field.name}' references unknown characteristic UUID '${field.reference}'")
                     val referencedType = ClassName(packageName, referenced.name.toPascalCase() + VALUE_SUFFIX)
-                    (if (field.optional) referencedType.copy(nullable = true) else referencedType) to listOfNotNull(field.flagIndex?.let(::flagIndex))
+                    (if (field.optional) referencedType.copy(nullable = true) else referencedType) to field.gatingAnnotations()
                 }
 
                 else -> {
@@ -251,7 +251,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
                             val valueClassName = field.name.toPascalCase()
                             type.addType(scientificValueClass(valueClassName, mapping, checkNotNull(field.scientificUnit())))
                             val valueClass = ClassName(packageName, className, valueClassName)
-                            (if (field.optional) valueClass.copy(nullable = true) else valueClass) to listOfNotNull(field.flagIndex?.let(::flagIndex))
+                            (if (field.optional) valueClass.copy(nullable = true) else valueClass) to field.gatingAnnotations()
                         }
 
                         // A repeated field fills the rest of the packet as an unsized list; the element formatting moves onto
@@ -261,7 +261,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
                             (field.flagIndex?.let { listOf(flagIndex(it), NULL_IF_EMPTY) } ?: emptyList())
 
                         else -> (if (field.optional) mapping.type.copy(nullable = true) else mapping.type) to
-                            mapping.annotations + listOfNotNull(field.flagIndex?.let(::flagIndex))
+                            mapping.annotations + field.gatingAnnotations()
                     }
                 }
             }
@@ -343,6 +343,18 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     }
 
     private fun flagIndex(index: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagIndex")).addMember("%L", index).build()
+
+    private fun presentWhenAllSet(indices: List<Int>) = AnnotationSpec.builder(ClassName(SERIALIZATION, "PresentWhenAllSet"))
+        .apply { indices.forEach { addMember("%L", it) } }
+        .build()
+
+    // The flag annotation gating a field's presence: a compound condition becomes @PresentWhenAllSet, a single bit
+    // becomes @FlagIndex, and an ungated field gets neither.
+    private fun GattField.gatingAnnotations(): List<AnnotationSpec> = when {
+        presenceFlagIndices.isNotEmpty() -> listOf(presentWhenAllSet(presenceFlagIndices))
+        flagIndex != null -> listOf(flagIndex(flagIndex))
+        else -> emptyList()
+    }
 
     private fun flagWidth(bits: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagWidth")).addMember("bits = %L", bits).build()
 

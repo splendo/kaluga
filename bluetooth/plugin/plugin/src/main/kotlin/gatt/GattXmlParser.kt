@@ -61,13 +61,13 @@ object GattXmlParser {
         }
 
         val fieldElements = value.directChildren("Field")
-        val flagsElement = fieldElements.firstOrNull { it.directChildren("BitField").isNotEmpty() }
-        if (flagsElement == null) {
+        val flagElements = fieldElements.filter { it.directChildren("BitField").isNotEmpty() }
+        if (flagElements.isEmpty()) {
             val fields = fieldElements.map { it.toField() }
             requireTrailingRepeated(name, fields)
             return GattCharacteristic(name, uuid, fields, descriptors = descriptors)
         }
-        return resolveConditional(name, uuid, flagsElement, fieldElements - flagsElement).copy(descriptors = descriptors)
+        return resolveConditional(name, uuid, flagElements, fieldElements - flagElements).copy(descriptors = descriptors)
     }
 
     private fun fieldsOf(parent: Element): List<GattField> = parent.directChildren("Field").map { it.toField() }
@@ -119,19 +119,26 @@ object GattXmlParser {
     private class Bit(val index: Int, val size: Int, val name: String, val enumerations: List<Enumeration>)
     private class Enumeration(val key: Int, val value: String, val requires: String?)
 
-    // A characteristic whose leading Flags field carries a <BitField>: each bit either selects a field's format
-    // (every enumeration `requires` one), gates a field's presence (some enumerations `requires`), or carries an
-    // enumerated value (no `requires`). Conditional fields reference a bit through their <Requirement>.
-    private fun resolveConditional(name: String, uuid: String, flagsField: Element, valueFields: List<Element>): GattCharacteristic {
-        val bits = flagsField.directChildren("BitField").first().directChildren("Bit").map { bit ->
-            Bit(
-                index = bit.getAttribute("index").toInt(),
-                size = bit.getAttribute("size").toIntOrNull() ?: 1,
-                name = bit.getAttribute("name"),
-                enumerations = bit.directChildren("Enumerations").firstOrNull()?.directChildren("Enumeration").orEmpty().map { e ->
-                    Enumeration(e.getAttribute("key").toInt(), e.getAttribute("value"), e.getAttribute("requires").ifBlank { null })
-                },
-            )
+    // One or more leading Flags fields carry a <BitField>: each bit either selects a field's format (every enumeration
+    // `requires` one), gates a field's presence (some enumerations `requires`), or carries an enumerated value (no
+    // `requires`). Conditional fields reference a bit through their <Requirement>. When several Flags fields are present
+    // (e.g. two bytes, or a 16-bit field), each contributes its bits offset by the declared width of those before it,
+    // so the bit indices span the whole multi-byte flags region.
+    private fun resolveConditional(name: String, uuid: String, flagFields: List<Element>, valueFields: List<Element>): GattCharacteristic {
+        var bitOffset = 0
+        val bits = flagFields.flatMap { flagField ->
+            val fieldBits = flagField.directChildren("BitField").first().directChildren("Bit").map { bit ->
+                Bit(
+                    index = bitOffset + bit.getAttribute("index").toInt(),
+                    size = bit.getAttribute("size").toIntOrNull() ?: 1,
+                    name = bit.getAttribute("name"),
+                    enumerations = bit.directChildren("Enumerations").firstOrNull()?.directChildren("Enumeration").orEmpty().map { e ->
+                        Enumeration(e.getAttribute("key").toInt(), e.getAttribute("value"), e.getAttribute("requires").ifBlank { null })
+                    },
+                )
+            }
+            bitOffset += formatWidth(flagField.childText("Format").orEmpty()).takeIf { it > 0 } ?: Byte.SIZE_BITS
+            fieldBits
         }
         val bitByCondition = bits.flatMap { bit -> bit.enumerations.mapNotNull { it.requires?.to(bit) } }.toMap()
 
@@ -150,13 +157,22 @@ object GattXmlParser {
         val fields = mutableListOf<GattField>()
         valueFields.forEach { field ->
             if (field in consumed) return@forEach
-            val bit = field.childText("Requirement")?.takeUnless { it.equals("Mandatory", ignoreCase = true) }?.let { bitByCondition[it] }
+            val conditionBits = field.conditionBits(bitByCondition)
             when {
-                bit == null -> fields += field.toField()
+                conditionBits.isEmpty() -> fields += field.toField()
+
+                // A compound condition over several bits: the field is present only when all of them are set.
+                conditionBits.size > 1 -> {
+                    consumed += field
+                    val gated = field.toField()
+                    require(!gated.repeated) { "Characteristic '$name' field '${gated.name}' cannot be both <Repeated> and gated by a compound condition." }
+                    fields += gated.copy(optional = true, presenceFlagIndices = conditionBits.map { it.index })
+                }
 
                 // Selector bit: every value gates a field -> the gated fields are format alternatives of one field.
-                bit.enumerations.all { it.requires != null } -> {
-                    val group = valueFields.filter { it.childText("Requirement")?.let(bitByCondition::get)?.index == bit.index }
+                conditionBits.single().enumerations.all { it.requires != null } -> {
+                    val bit = conditionBits.single()
+                    val group = valueFields.filter { it.conditionBits(bitByCondition).map(Bit::index) == listOf(bit.index) }
                     consumed += group
                     val widest = group.maxBy { formatWidth(it.childText("Format").orEmpty()) }
                     fields += widest.toField().copy(
@@ -171,13 +187,21 @@ object GattXmlParser {
                 else -> {
                     consumed += field
                     val gated = field.toField()
-                    fields += gated.copy(optional = !gated.repeated, flagIndex = bit.index)
+                    fields += gated.copy(optional = !gated.repeated, flagIndex = conditionBits.single().index)
                 }
             }
         }
         requireTrailingRepeated(name, fields)
         return GattCharacteristic(name, uuid, fields, flagFields = flagFields)
     }
+
+    // The flag bits a field's <Requirement>s resolve to, supporting several <Requirement> elements and a single one
+    // listing multiple conditions (e.g. "C1 and C2" or "C1,C2"). `Mandatory` and unknown tokens contribute nothing.
+    private fun Element.conditionBits(bitByCondition: Map<String, Bit>): List<Bit> =
+        directChildren("Requirement")
+            .flatMap { it.textContent.trim().split(Regex("[,\\s]+")) }
+            .mapNotNull { bitByCondition[it] }
+            .distinctBy { it.index }
 
     private fun formatWidth(format: String): Int = format.dropWhile { !it.isDigit() }.toIntOrNull() ?: 0
 

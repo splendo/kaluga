@@ -65,6 +65,21 @@ annotation class FlagIndex(val index: Int)
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
+ * Marks a nullable property whose presence is *derived* from the flag bits at [indices] rather than from a dedicated
+ * flag bit of its own: it is present on the wire exactly when all of those bits are set, and reserves no flag bit
+ * itself. The listed bits are owned (and reserved) by the properties or flags they belong to. Use for a field gated by
+ * a compound condition such as "present if C1 and C2".
+ *
+ * @property indices the flag bit positions that must all be set for this property to be present
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class PresentWhenAllSet(vararg val indices: Int)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
  * When applied, the width of the flags to be used by this element will be at minimum [bits] bits
  *
  * @property bits the number of bits the flag for this property will take up at a minimum

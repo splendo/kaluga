@@ -47,15 +47,30 @@ internal data class BluetoothBinaryDescriptor(
     val polymorphicMap: Map<String, ByteArrayHolder>,
     val structureSettings: StructureSettings,
     val children: List<BluetoothBinaryDescriptor>,
+    // The flag bits (owned by other properties) whose conjunction determines this property's presence; empty for a
+    // property that owns its presence bit at [bitIndex] (or is not nullable).
+    val presenceFlagIndices: List<Int> = emptyList(),
 ) {
 
     /**
-     * Number of bits used by this flag based on its children.
+     * Number of bits used by this flag based on its children, including any bits a child derives its presence from.
      */
     val flagBitSize = if (children.isNotEmpty()) {
-        children.maxOf { if (it.bitIndex >= 0) it.bitIndex + it.bitWidth else 0 }
+        children.maxOf {
+            maxOf(
+                if (it.bitIndex >= 0) it.bitIndex + it.bitWidth else 0,
+                it.presenceFlagIndices.maxOrNull()?.plus(1) ?: 0,
+            )
+        }
     } else {
         0
+    }
+
+    /** Whether this property is present given the decoded [flags]: derived from [presenceFlagIndices], else its own bit. */
+    fun isPresent(flags: BooleanArray): Boolean = when {
+        presenceFlagIndices.isNotEmpty() -> presenceFlagIndices.all { flags.getOrElse(it) { false } }
+        isNullable -> flags[bitIndex]
+        else -> true
     }
 
     /**
@@ -240,9 +255,12 @@ internal object BluetoothBinaryDescriptorRegistry {
         val annotations = descriptor.annotations + fieldAnnotations
         val desiredFlagBitWidth = DesiredFlagBitWidth(0)
 
+        // A property whose presence is derived from other flag bits owns no bit of its own.
+        val presenceFlagIndices = annotations.filterIsInstance<PresentWhenAllSet>().firstOrNull()?.indices?.toList().orEmpty()
+
         // Nullable elements will have a flag bit. This is always the first bit of the flags for this object
         val isNullable = isNullable || (descriptor.kind in setOf(StructureKind.LIST, StructureKind.MAP) && annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
-        if (isNullable) {
+        if (isNullable && presenceFlagIndices.isEmpty()) {
             desiredFlagBitWidth.raise(1)
         }
         val customIndex = annotations.filterIsInstance<FlagIndex>().firstOrNull()?.index
@@ -296,6 +314,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                 StructureKind.LIST -> listDescriptorChildren(descriptor, annotations, byteOrder, serializersModule)
                 else -> descriptorChildren(descriptor, byteOrder, serializersModule, bitIndex)
             },
+            presenceFlagIndices,
         )
     }
 
