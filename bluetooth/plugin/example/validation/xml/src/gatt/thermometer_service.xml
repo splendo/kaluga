@@ -7,5 +7,11 @@
         <Notify>Optional</Notify>
       </Properties>
     </Characteristic>
+    <Characteristic name="Pressure" type="org.example.characteristic.pressure" uuid="2A6D">
+      <Properties>
+        <Read>Mandatory</Read>
+        <Notify>Optional</Notify>
+      </Properties>
+    </Characteristic>
   </Characteristics>
 </Service>

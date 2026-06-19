@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Service type="org.example.service.heart_rate" uuid="180D" name="Heart Rate Service">
+  <Characteristics>
+    <Characteristic name="Heart Rate Measurement" type="org.example.characteristic.heart_rate_measurement" uuid="2A37">
+      <Properties>
+        <Notify>Mandatory</Notify>
+      </Properties>
+    </Characteristic>
+  </Characteristics>
+</Service>

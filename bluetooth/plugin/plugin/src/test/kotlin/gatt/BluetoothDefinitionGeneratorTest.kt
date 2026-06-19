@@ -66,22 +66,59 @@ class BluetoothDefinitionGeneratorTest {
         assertTrue(KModifier.DATA in value.modifiers)
         assertNotNull(value.annotation("Serializable"))
 
-        // sint16 + decimal scaling -> Int with @Size(16_BIT) + @Scalar(decimalExponent = -2)
+        // sint16 + decimal scaling -> Double with @Size(16_BIT) + @Scalar(decimalExponent = 2) (the inverse of GATT's -2)
         val temperature = checkNotNull(value.property("temperature"))
-        assertEquals("Int", temperature.type.simpleName)
+        assertEquals("Double", temperature.type.simpleName)
         assertTrue(checkNotNull(temperature.annotation("Size")).argument.endsWith("Length.`16_BIT`"))
-        assertEquals("decimalExponent = -2", checkNotNull(temperature.annotation("Scalar")).argument)
+        assertEquals("decimalExponent = 2", checkNotNull(temperature.annotation("Scalar")).argument)
 
-        // uint16 -> unsigned Int
+        // uint16 + decimal scaling -> unsigned Double
         val humidity = checkNotNull(value.property("humidity"))
-        assertEquals("Int", humidity.type.simpleName)
+        assertEquals("Double", humidity.type.simpleName)
         assertTrue("Unsigned" in humidity.annotationNames)
 
-        // uint32 -> Long (overflows a signed Int), @Scalar(multiplier = 10)
+        // uint32 with multiplier 10 -> Double; the multiplier folds into @Scalar(decimalExponent = -1)
         val pressure = checkNotNull(value.property("pressure"))
-        assertEquals("Long", pressure.type.simpleName)
+        assertEquals("Double", pressure.type.simpleName)
         assertTrue(checkNotNull(pressure.annotation("Size")).argument.endsWith("Length.`32_BIT`"))
-        assertEquals("multiplier = 10", checkNotNull(pressure.annotation("Scalar")).argument)
+        assertEquals("decimalExponent = -1", checkNotNull(pressure.annotation("Scalar")).argument)
+    }
+
+    @Test
+    fun negativeMultiplierKeepsSignInScalarAndFoldsMagnitude() {
+        // GATT multiplier is an integer in [-10, 10]; @Scalar encodes the inverse, so the sign survives as the @Scalar
+        // multiplier (its own reciprocal) and the magnitude's powers fold into the exponents.
+        val characteristic = GattCharacteristic(
+            name = "Signed Scale",
+            uuid = "2BCD",
+            fields = listOf(
+                GattField(name = "Inverted", format = "sint16", multiplier = -1),
+                GattField(name = "InvertedDeci", format = "sint16", multiplier = -10),
+            ),
+        )
+        val value = generator.generateValueClass(characteristic).singleType()
+
+        // -1 is its own reciprocal: only the sign, no exponent
+        val inverted = checkNotNull(value.property("inverted"))
+        assertEquals("Double", inverted.type.simpleName)
+        assertEquals("multiplier = -1", checkNotNull(inverted.annotation("Scalar")).argument)
+
+        // -10 -> sign in the multiplier, the factor of ten folded into decimalExponent = -1
+        val scalar = checkNotNull(value.property("invertedDeci")?.annotation("Scalar")).toString()
+        assertTrue("multiplier = -1" in scalar, scalar)
+        assertTrue("decimalExponent = -1" in scalar, scalar)
+    }
+
+    @Test
+    fun rejectsMultiplierWithoutIntegerReciprocal() {
+        // A magnitude that is not a product of powers of 10 and 2 (here 3) has no integer reciprocal, so @Scalar cannot
+        // represent the inverse scaling and generation fails rather than emitting wrong bytes.
+        val characteristic = GattCharacteristic(
+            name = "Tripled Scale",
+            uuid = "2BCC",
+            fields = listOf(GattField(name = "Tripled", format = "sint16", multiplier = 3)),
+        )
+        assertFailsWith<IllegalArgumentException> { generator.generateValueClass(characteristic) }
     }
 
     @Test
@@ -139,9 +176,9 @@ class BluetoothDefinitionGeneratorTest {
         assertTrue(superInterface.endsWith("Celsius>"), superInterface)
         // the wire format moves onto the value class's `value`
         val raw = checkNotNull(temperature.property("value"))
-        assertEquals("Int", raw.type.simpleName)
+        assertEquals("Double", raw.type.simpleName)
         assertTrue(checkNotNull(raw.annotation("Size")).argument.endsWith("Length.`16_BIT`"))
-        assertEquals("decimalExponent = -2", checkNotNull(raw.annotation("Scalar")).argument)
+        assertEquals("decimalExponent = 2", checkNotNull(raw.annotation("Scalar")).argument)
         // the data-class property is typed as the value class
         assertEquals("Temperature", checkNotNull(value.property("temperature")).type.simpleName)
     }
@@ -159,9 +196,9 @@ class BluetoothDefinitionGeneratorTest {
 
     @Test
     fun keepsPlainNumericWhenScientificUnitsDisabled() {
-        // default generator (flag off) -> plain Int, no nested value class
+        // default generator (flag off) -> plain numeric, no nested value class
         val value = generator.generateValueClass(characteristic("/gatt/internal_temperature.xml")).singleType()
-        assertEquals("Int", checkNotNull(value.property("temperature")).type.simpleName)
+        assertEquals("Double", checkNotNull(value.property("temperature")).type.simpleName)
         assertNull(value.nestedType("Temperature"))
     }
 
@@ -223,7 +260,7 @@ class BluetoothDefinitionGeneratorTest {
         // the variant extends the sealed value class
         assertEquals("SensorReadingValue", temperature.superclass.simpleName)
         // and still carries the field annotations
-        assertEquals("decimalExponent = -2", checkNotNull(temperature.property("temperature")).annotation("Scalar")?.argument)
+        assertEquals("decimalExponent = 2", checkNotNull(temperature.property("temperature")).annotation("Scalar")?.argument)
 
         val humidity = checkNotNull(sealed.nestedType("Humidity"))
         assertEquals("value = 2", checkNotNull(humidity.annotation("SerializedByteValue")).argument)

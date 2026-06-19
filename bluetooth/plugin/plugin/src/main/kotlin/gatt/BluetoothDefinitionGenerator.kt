@@ -36,6 +36,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import kotlin.math.abs
 
 /**
  * Generates Kaluga `@Bluetooth` definitions from parsed GATT XML: the `@Serializable` value class for each
@@ -315,10 +316,10 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
 
             else -> error("Unsupported GATT format '$format' for field '$name'")
         }
-        if (multiplier != 1 || decimalExponent != 0 || binaryExponent != 0) {
-            annotations += scalar()
-        }
-        return Mapping(type, annotations)
+        val scaled = multiplier != 1 || decimalExponent != 0 || binaryExponent != 0
+        if (scaled) annotations += scalar()
+        // A scaled field holds a fractional physical value, so it is represented as a Double regardless of wire width.
+        return Mapping(if (scaled) DOUBLE else type, annotations)
     }
 
     // A signed Kotlin type wide enough to hold the format's value range; the wire width is fixed by @Size.
@@ -331,11 +332,27 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         .addMember("%T.%L", ClassName(SERIALIZATION, "Length"), "`${bits}_BIT`")
         .build()
 
-    private fun GattField.scalar(): AnnotationSpec = AnnotationSpec.builder(ClassName(SERIALIZATION, "Scalar")).apply {
-        if (multiplier != 1) addMember("multiplier = %L", multiplier)
-        if (decimalExponent != 0) addMember("decimalExponent = %L", decimalExponent)
-        if (binaryExponent != 0) addMember("binaryExponent = %L", binaryExponent)
-    }.build()
+    // GATT defines the physical value as `raw * multiplier * 10^decimalExponent * 2^binaryExponent` (GATT Specification
+    // Supplement; the multiplier is an integer in [-10, 10] and there is no offset term). @Scalar encodes the inverse
+    // (physical -> raw), so each factor is reciprocated: the exponents negate, the multiplier's sign survives as the
+    // integer @Scalar multiplier, and its magnitude folds into the exponents. A magnitude that is not a product of powers
+    // of 10 and 2 has no integer reciprocal, so it cannot be represented and is rejected.
+    private fun GattField.scalar(): AnnotationSpec {
+        var magnitude = abs(multiplier)
+        var decimalFromMultiplier = 0
+        var binaryFromMultiplier = 0
+        while (magnitude > 1 && magnitude % 10 == 0) { magnitude /= 10; decimalFromMultiplier++ }
+        while (magnitude > 1 && magnitude % 2 == 0) { magnitude /= 2; binaryFromMultiplier++ }
+        require(magnitude == 1) { "Unsupported GATT multiplier '$multiplier' for field '$name': magnitude is not a product of powers of 10 and 2" }
+        val scalarMultiplier = if (multiplier < 0) -1 else 1
+        val scalarDecimalExponent = -(decimalExponent + decimalFromMultiplier)
+        val scalarBinaryExponent = -(binaryExponent + binaryFromMultiplier)
+        return AnnotationSpec.builder(ClassName(SERIALIZATION, "Scalar")).apply {
+            if (scalarMultiplier != 1) addMember("multiplier = %L", scalarMultiplier)
+            if (scalarDecimalExponent != 0) addMember("decimalExponent = %L", scalarDecimalExponent)
+            if (scalarBinaryExponent != 0) addMember("binaryExponent = %L", scalarBinaryExponent)
+        }.build()
+    }
 
     private fun encoded(encoding: String) = AnnotationSpec.builder(ClassName(SERIALIZATION, "Encoded"))
         .addMember("%T.%L", ClassName(BASE_BYTES, "Encoding"), encoding)
