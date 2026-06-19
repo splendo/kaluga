@@ -79,6 +79,7 @@ object GattXmlParser {
         binaryExponent = childText("BinaryExponent")?.toIntOrNull() ?: 0,
         // The SIG `<Repeated>` element: a field with no length, so it repeats to the end of the packet.
         repeated = childText("Repeated").toBoolean(),
+        unit = childText("Unit"),
         description = fieldDescription(),
     )
 

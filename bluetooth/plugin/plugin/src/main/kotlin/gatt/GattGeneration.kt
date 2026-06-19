@@ -24,17 +24,17 @@ import java.io.File
 object GattGeneration {
 
     /** Parses [xmlFiles] (characteristics and services) and generates all definitions for [deviceName] in [packageName]. */
-    fun generate(xmlFiles: List<File>, deviceName: String, packageName: String): List<FileSpec> {
+    fun generate(xmlFiles: List<File>, deviceName: String, packageName: String, useScientificUnits: Boolean = false): List<FileSpec> {
         val definitions = xmlFiles.filter { it.extension.equals("xml", ignoreCase = true) }.map { GattXmlParser.parse(it) }
         val characteristics = definitions.filterIsInstance<GattDefinition.Characteristic>().map { it.value }
         val services = definitions.filterIsInstance<GattDefinition.Service>().map { it.value }
-        return BluetoothDefinitionGenerator(packageName).generate(deviceName, services, characteristics)
+        return BluetoothDefinitionGenerator(packageName, useScientificUnits).generate(deviceName, services, characteristics)
     }
 
     /** Generates definitions from the XML under [sourceDirectories] and writes them under [outputDirectory] (cleared first). */
-    fun generateTo(outputDirectory: File, sourceDirectories: List<File>, deviceName: String, packageName: String) {
+    fun generateTo(outputDirectory: File, sourceDirectories: List<File>, deviceName: String, packageName: String, useScientificUnits: Boolean = false) {
         val xmlFiles = sourceDirectories.flatMap { dir -> dir.walkTopDown().filter { it.isFile } }
-        writeTo(outputDirectory, generate(xmlFiles, deviceName, packageName))
+        writeTo(outputDirectory, generate(xmlFiles, deviceName, packageName, useScientificUnits))
     }
 
     private fun writeTo(outputDirectory: File, definitions: List<FileSpec>) {

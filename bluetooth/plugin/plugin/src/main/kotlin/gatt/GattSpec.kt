@@ -64,6 +64,7 @@ data class GattField(
     val optional: Boolean = false,
     val repeated: Boolean = false,
     val flagIndex: Int? = null,
+    val unit: String? = null,
     val description: String? = null,
 )
 

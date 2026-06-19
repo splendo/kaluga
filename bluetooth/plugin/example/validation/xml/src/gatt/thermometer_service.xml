@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Service type="org.example.service.thermometer" uuid="1809" name="Thermometer Service">
+  <Characteristics>
+    <Characteristic name="Internal Temperature" type="org.example.characteristic.internal_temperature" uuid="2A1C">
+      <Properties>
+        <Read>Mandatory</Read>
+        <Notify>Optional</Notify>
+      </Properties>
+    </Characteristic>
+  </Characteristics>
+</Service>

@@ -24,6 +24,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class BluetoothDefinitionGeneratorTest {
@@ -35,6 +36,8 @@ class BluetoothDefinitionGeneratorTest {
         GattXmlParser.parseService(checkNotNull(javaClass.getResourceAsStream(resource)) { "missing $resource" })
 
     private val generator = BluetoothDefinitionGenerator("com.example.generated")
+
+    private val scientificGenerator = BluetoothDefinitionGenerator("com.example.generated", useScientificUnits = true)
 
     @Test
     fun parsesCharacteristicFieldsAndScaling() {
@@ -119,6 +122,47 @@ class BluetoothDefinitionGeneratorTest {
         assertEquals(1, contact.index)
         assertEquals(2, contact.size)
         assertEquals(listOf(0, 1, 2, 3), contact.cases.map { it.key })
+    }
+
+    @Test
+    fun generatesScientificValueClassForUnitField() {
+        val value = scientificGenerator.generateValueClass(characteristic("/gatt/internal_temperature.xml")).singleType()
+
+        // the unit field becomes a nested @JvmInline value class implementing ScientificValue
+        val temperature = checkNotNull(value.nestedType("Temperature"))
+        assertTrue(KModifier.VALUE in temperature.modifiers)
+        assertNotNull(temperature.annotation("Serializable"))
+        assertNotNull(temperature.annotation("JvmInline"))
+        val superInterface = temperature.superinterfaces.keys.single().toString()
+        assertTrue("ScientificValue" in superInterface, superInterface)
+        assertTrue("PhysicalQuantity.Temperature" in superInterface, superInterface)
+        assertTrue(superInterface.endsWith("Celsius>"), superInterface)
+        // the wire format moves onto the value class's `value`
+        val raw = checkNotNull(temperature.property("value"))
+        assertEquals("Int", raw.type.simpleName)
+        assertTrue(checkNotNull(raw.annotation("Size")).argument.endsWith("Length.`16_BIT`"))
+        assertEquals("decimalExponent = -2", checkNotNull(raw.annotation("Scalar")).argument)
+        // the data-class property is typed as the value class
+        assertEquals("Temperature", checkNotNull(value.property("temperature")).type.simpleName)
+    }
+
+    @Test
+    fun generatesCompoundUnitValueClass() {
+        val code = scientificGenerator.generateValueClass(characteristic("/gatt/ground_speed.xml")).toString()
+
+        assertTrue("ScientificValue<PhysicalQuantity.Speed, MetricSpeed>" in code, code)
+        // the compound unit is built from imported objects + the `per` infix, not fully-qualified
+        assertTrue("get() = Meter per Second" in code, code)
+        assertTrue("import com.splendo.kaluga.scientific.unit.Meter" in code, code)
+        assertTrue("import com.splendo.kaluga.scientific.unit.Second" in code, code)
+    }
+
+    @Test
+    fun keepsPlainNumericWhenScientificUnitsDisabled() {
+        // default generator (flag off) -> plain Int, no nested value class
+        val value = generator.generateValueClass(characteristic("/gatt/internal_temperature.xml")).singleType()
+        assertEquals("Int", checkNotNull(value.property("temperature")).type.simpleName)
+        assertNull(value.nestedType("Temperature"))
     }
 
     @Test

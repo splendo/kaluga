@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.plugin.gatt
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.DOUBLE
 import com.squareup.kotlinpoet.FLOAT
 import com.squareup.kotlinpoet.FileSpec
@@ -28,6 +29,7 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LONG
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -47,7 +49,7 @@ import com.squareup.kotlinpoet.TypeSpec
  *
  * @param packageName the package the generated definitions are placed in.
  */
-class BluetoothDefinitionGenerator(private val packageName: String) {
+class BluetoothDefinitionGenerator(private val packageName: String, private val useScientificUnits: Boolean = false) {
 
     /**
      * Generates all definitions for [deviceName] exposing [services], whose characteristic value structures are taken
@@ -172,6 +174,15 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
             val propertyName = field.name.toCamelCase()
             val mapping = field.toMapping()
             val (propertyType, annotations) = when {
+                // A field with a known unit becomes a (nested) ScientificValue value class carrying the wire format;
+                // only the presence flag stays on the property here.
+                field.scientificUnit() != null -> {
+                    val valueClassName = field.name.toPascalCase()
+                    type.addType(scientificValueClass(valueClassName, mapping, checkNotNull(field.scientificUnit())))
+                    val valueClass = ClassName(packageName, className, valueClassName)
+                    (if (field.optional) valueClass.copy(nullable = true) else valueClass) to listOfNotNull(field.flagIndex?.let(::flagIndex))
+                }
+
                 // A repeated field fills the rest of the packet as an unsized list; the element formatting moves onto
                 // the list via the @Item* annotations. When gated by a flag bit, presence is encoded via @NullIfEmpty.
                 field.repeated -> LIST.parameterizedBy(mapping.type) to
@@ -193,6 +204,40 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
             )
         }
         return type.primaryConstructor(constructor.build()).build()
+    }
+
+    // The Kaluga Scientific unit this field maps onto, or null to keep a plain numeric. Only plain single fields
+    // (not repeated, not width-selected) are wrapped; presence/nullability is handled by the containing property.
+    private fun GattField.scientificUnit(): ScientificUnit? =
+        if (useScientificUnits && !repeated && alternateFormats.isEmpty()) unit?.let { bluetoothScientificUnits[it] } else null
+
+    // A @Serializable value class that is a ScientificValue<Quantity, Unit> and carries the wire format on its value.
+    private fun scientificValueClass(name: String, mapping: Mapping, scientificUnit: ScientificUnit): TypeSpec {
+        val quantity = ClassName(SCIENTIFIC, "PhysicalQuantity").nestedClass(scientificUnit.quantity)
+        val unitType = ClassName(SCIENTIFIC_UNIT, scientificUnit.unitType)
+        // Unit objects are referenced by type (data objects); `per`/`x` are infix members joining a compound unit.
+        val tokens = scientificUnit.unit.split(" ").map { token ->
+            if (token == "per" || token == "x") "%M" to MemberName(SCIENTIFIC_UNIT, token) else "%T" to ClassName(SCIENTIFIC_UNIT, token)
+        }
+        val unitExpression = CodeBlock.of(tokens.joinToString(" ") { it.first }, *tokens.map { it.second }.toTypedArray())
+        return TypeSpec.classBuilder(name)
+            .addModifiers(KModifier.VALUE)
+            .addAnnotation(SERIALIZABLE)
+            .addAnnotation(JVM_INLINE)
+            .addSuperinterface(ClassName(SCIENTIFIC, "ScientificValue").parameterizedBy(quantity, unitType))
+            .primaryConstructor(FunSpec.constructorBuilder().addParameter("value", mapping.type).build())
+            .addProperty(
+                PropertySpec.builder("value", mapping.type, KModifier.OVERRIDE)
+                    .initializer("value")
+                    .apply { mapping.annotations.forEach(::addAnnotation) }
+                    .build(),
+            )
+            .addProperty(
+                PropertySpec.builder("unit", unitType, KModifier.OVERRIDE)
+                    .getter(FunSpec.getterBuilder().addStatement("return %L", unitExpression).build())
+                    .build(),
+            )
+            .build()
     }
 
     // The element of a generated list carries its format through the @Item* variant of each field annotation.
@@ -317,7 +362,10 @@ class BluetoothDefinitionGenerator(private val packageName: String) {
         const val SERIALIZATION = "com.splendo.kaluga.bluetooth.serialization"
         const val BASE_BYTES = "com.splendo.kaluga.base.bytes"
         const val ANNOTATIONS = "com.splendo.kaluga.bluetooth.annotations"
+        const val SCIENTIFIC = "com.splendo.kaluga.scientific"
+        const val SCIENTIFIC_UNIT = "com.splendo.kaluga.scientific.unit"
         const val VALUE_SUFFIX = "Value"
+        val JVM_INLINE = AnnotationSpec.builder(ClassName("kotlin.jvm", "JvmInline")).build()
         val SERIALIZABLE = AnnotationSpec.builder(ClassName("kotlinx.serialization", "Serializable")).build()
         val UNSIGNED = AnnotationSpec.builder(ClassName(SERIALIZATION, "Unsigned")).build()
         val MED_FLOAT = AnnotationSpec.builder(ClassName(SERIALIZATION, "MedFloat")).build()

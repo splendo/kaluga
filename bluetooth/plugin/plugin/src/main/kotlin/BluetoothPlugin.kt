@@ -83,6 +83,9 @@ class BluetoothPlugin : Plugin<Project> {
                         if (generatesImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:server:$kalugaVersion")
                         }
+                        if (bluetoothExtension.useScientificUnits) {
+                            implementation("com.splendo.kaluga.scientific:scientific:$kalugaVersion")
+                        }
                     }
                 }
 
@@ -104,7 +107,7 @@ class BluetoothPlugin : Plugin<Project> {
                     inputs.files(sources)
                     outputs.dir(outputDir)
                     doLast {
-                        GattGeneration.generateTo(outputDir, sources, xmlGeneration.deviceName, packageName)
+                        GattGeneration.generateTo(outputDir, sources, xmlGeneration.deviceName, packageName, bluetoothExtension.useScientificUnits)
                     }
                 }
                 // The generated definitions must exist before KSP processes them and before anything is compiled.

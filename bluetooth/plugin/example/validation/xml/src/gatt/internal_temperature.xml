@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic type="org.example.characteristic.internal_temperature" uuid="2A1C" name="Internal Temperature">
+  <Value>
+    <Field name="Temperature">
+      <Format>sint16</Format>
+      <Unit>org.bluetooth.unit.thermodynamic_temperature.degree_celsius</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+  </Value>
+</Characteristic>

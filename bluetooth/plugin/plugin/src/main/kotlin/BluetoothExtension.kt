@@ -98,6 +98,13 @@ open class BluetoothExtension(private val kspExtension: KspExtension, objects: O
     }
 
     /**
+     * When `true`, a generated value field carrying a Bluetooth SIG unit that maps onto the Kaluga Scientific library
+     * is generated as a `ScientificValue` value class (adding a dependency on `com.splendo.kaluga.scientific:scientific`).
+     * Defaults to `false`, generating plain numeric values. Only applies to definitions generated via [generateFromXml].
+     */
+    var useScientificUnits: Boolean = false
+
+    /**
      * The package the generated code is placed in. Defaults to the package of the annotated definitions.
      */
     var generatedPackage: String? = null
