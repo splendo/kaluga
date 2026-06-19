@@ -97,6 +97,35 @@ class GeneratedSerializationTest {
         )
     }
 
+    @Test
+    fun wideCountersRoundTripThrough40And48BitWidths() {
+        // uint40 -> 5 bytes, sint48 -> 6 bytes, both little-endian. 0x123456789A and -42 (sign-extended across 6 bytes).
+        val value = WideCountersValue(packetCounter = 0x123456789AL, signedOffset = -42L)
+        val bytes = BluetoothFormat.encodeToByteArray(WideCountersValue.serializer(), value)
+        val expected = byteArrayOf(
+            0x9A.toByte(), 0x78, 0x56, 0x34, 0x12,
+            0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(),
+        )
+        assertTrue(bytes.contentEquals(expected), "Expected ${expected.hex()} but got ${bytes.hex()}")
+        val decoded = BluetoothFormat.decodeFromByteArray(WideCountersValue.serializer(), bytes)
+        assertEquals(value, decoded)
+        assertEquals(0x123456789AL, decoded.packetCounter)
+        assertEquals(-42L, decoded.signedOffset)
+    }
+
+    @Test
+    fun referenceFieldsEmbedTheReferencedValue() {
+        // Reading Pair's two fields each reference the Reading characteristic (2BE0), so they embed ReadingValue.
+        // Each Reading is a uint16; 100 -> 0x0064, 200 -> 0x00C8, both little-endian and concatenated.
+        val value = ReadingPairValue(first = ReadingValue(100), second = ReadingValue(200))
+        val bytes = BluetoothFormat.encodeToByteArray(ReadingPairValue.serializer(), value)
+        assertTrue(
+            bytes.contentEquals(byteArrayOf(0x64, 0x00, 0xC8.toByte(), 0x00)),
+            "Expected 64 00 c8 00 but got ${bytes.hex()}",
+        )
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ReadingPairValue.serializer(), bytes))
+    }
+
     private fun validateHeartRate(value: HeartRateMeasurementValue, expectedBytes: ByteArray) {
         val bytes = BluetoothFormat.encodeToByteArray(HeartRateMeasurementValue.serializer(), value)
         assertTrue(

@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.plugin.gatt
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.TypeSpec
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -119,6 +120,57 @@ class BluetoothDefinitionGeneratorTest {
             fields = listOf(GattField(name = "Tripled", format = "sint16", multiplier = 3)),
         )
         assertFailsWith<IllegalArgumentException> { generator.generateValueClass(characteristic) }
+    }
+
+    @Test
+    fun generatesNestedDescriptorInterface() {
+        val characteristic = GattCharacteristic(
+            name = "Reading",
+            uuid = "2BE0",
+            fields = listOf(GattField(name = "Reading", format = "uint16")),
+            descriptors = listOf(
+                GattDescriptor(
+                    name = "Client Characteristic Configuration",
+                    uuid = "2902",
+                    properties = setOf(GattProperty.READ, GattProperty.WRITE),
+                    fields = listOf(GattField(name = "Configuration", format = "uint16")),
+                ),
+            ),
+        )
+        val readingInterface = generator.characteristicFile(characteristic, setOf(GattProperty.READ))
+            .members.filterIsInstance<TypeSpec>().single { it.name == "Reading" }
+
+        // nested @BluetoothDescriptor interface with its own value class, exposed with the descriptor's access
+        val descriptor = checkNotNull(readingInterface.nestedType("ClientCharacteristicConfiguration"))
+        assertEquals("\"2902\"", checkNotNull(descriptor.annotation("BluetoothDescriptor")).argument)
+        assertEquals(setOf("Readable", "Writable"), checkNotNull(descriptor.property("value")).annotationNames)
+        assertNotNull(descriptor.nestedType("ClientCharacteristicConfigurationValue"))
+        // the characteristic exposes the descriptor as a property
+        assertEquals("ClientCharacteristicConfiguration", checkNotNull(readingInterface.property("clientCharacteristicConfiguration")).type.simpleName)
+    }
+
+    @Test
+    fun generatesIncludedServiceProperty() {
+        val included = GattService("Battery Service", "180F", emptyList())
+        val including = GattService("Thermometer Service", "1809", emptyList(), includedServiceUuids = listOf("180F"))
+        val service = generator.generate("Device", listOf(including, included), emptyList()).types().getValue("ThermometerService")
+        assertEquals("BatteryService", checkNotNull(service.property("batteryService")).type.simpleName)
+    }
+
+    @Test
+    fun generatesReferenceFieldTypedAsReferencedValue() {
+        val reading = GattCharacteristic("Reading", "2BE0", listOf(GattField("Reading", "uint16")))
+        val pair = GattCharacteristic(
+            name = "Reading Pair",
+            uuid = "2BE1",
+            fields = listOf(
+                GattField(name = "First", format = "", reference = "2BE0"),
+                GattField(name = "Second", format = "", reference = "2BE0"),
+            ),
+        )
+        val value = generator.generateValueClass(pair, mapOf("2BE0" to reading)).singleType()
+        assertEquals("ReadingValue", checkNotNull(value.property("first")).type.simpleName)
+        assertEquals("ReadingValue", checkNotNull(value.property("second")).type.simpleName)
     }
 
     @Test

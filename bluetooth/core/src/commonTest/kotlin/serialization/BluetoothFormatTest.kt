@@ -28,6 +28,10 @@ import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.UInt24
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.base.utils.toInt24
+import com.splendo.kaluga.base.utils.toInt40
+import com.splendo.kaluga.base.utils.toInt48
+import com.splendo.kaluga.base.utils.toUInt40
+import com.splendo.kaluga.base.utils.toUInt48
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.unit.Joule
@@ -678,6 +682,58 @@ class BluetoothFormatTest {
                 add(-8000000000L)
                 add(1234567890123u)
                 add(1234567890123456789u)
+            },
+        )
+    }
+
+    @Test
+    fun encode40And48Bit() {
+        @Serializable
+        data class Container(
+            @Size(Length.`40_BIT`) val `40bit`: Long,
+            @Size(Length.`48_BIT`) val `48bit`: Long,
+            @Size(Length.`40_BIT`) @Unsigned val unsigned40: ULong,
+            @Size(Length.`48_BIT`) @Unsigned val unsigned48: ULong,
+            @Size(Length.`32_BIT`) @Size(Length.`40_BIT`) @Size(Length.`48_BIT`) val variableSizing: Long,
+        )
+
+        // variableSizing 0x123456789A overflows 32 bits, so the flexible sizing picks 40-bit (index 1 of {32,40,48}).
+        validateEncoding(
+            Container(
+                `40bit` = 0x123456789A,
+                `48bit` = -42,
+                unsigned40 = 0xFFFFFFFFFFuL,
+                unsigned48 = 0xAABBCCDDEEFFuL,
+                variableSizing = 0x123456789A,
+            ),
+            buildByteArray {
+                add(true) // variableSizing length bits (0b01 -> 40-bit)
+                add(false)
+                add(0x123456789A.toInt40())
+                add((-42L).toInt48())
+                add(0xFFFFFFFFFFuL.toUInt40())
+                add(0xAABBCCDDEEFFuL.toUInt48())
+                add(0x123456789A.toInt40())
+            },
+        )
+
+        // negative values exercise sign extension; variableSizing -2 now fits 32-bit (index 0 -> 0b00).
+        validateEncoding(
+            Container(
+                `40bit` = -549755813888, // Int40.MIN_VALUE
+                `48bit` = 140737488355327, // Int48.MAX_VALUE
+                unsigned40 = 42uL,
+                unsigned48 = 0uL,
+                variableSizing = -2,
+            ),
+            buildByteArray {
+                add(false) // variableSizing length bits (0b00 -> 32-bit)
+                add(false)
+                add((-549755813888L).toInt40())
+                add(140737488355327L.toInt48())
+                add(42uL.toUInt40())
+                add(0uL.toUInt48())
+                add(int = -2)
             },
         )
     }

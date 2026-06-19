@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.plugin.gatt
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.BYTE_ARRAY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.DOUBLE
@@ -62,33 +63,72 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
             .groupBy { it.uuid }
             .mapValues { (_, refs) -> refs.flatMap { it.properties }.toSet() }
 
+        val servicesByUuid = services.associateBy { it.uuid }
         val characteristicFiles = byUuid.values.map { characteristic ->
-            characteristicFile(characteristic, accessByUuid[characteristic.uuid].orEmpty())
+            characteristicFile(characteristic, accessByUuid[characteristic.uuid].orEmpty(), byUuid)
         }
-        val serviceFiles = services.map { service -> serviceFile(service, byUuid) }
+        val serviceFiles = services.map { service -> serviceFile(service, byUuid, servicesByUuid) }
         return characteristicFiles + serviceFiles + deviceFile(deviceName, services)
     }
 
     /** The `@BluetoothCharacteristic` interface for [characteristic] plus its `@Serializable` value class. */
-    fun characteristicFile(characteristic: GattCharacteristic, access: Set<GattProperty>): FileSpec {
+    fun characteristicFile(
+        characteristic: GattCharacteristic,
+        access: Set<GattProperty>,
+        characteristicsByUuid: Map<String, GattCharacteristic> = emptyMap(),
+    ): FileSpec {
         val interfaceName = characteristic.name.toPascalCase()
         val valueType = ClassName(packageName, interfaceName + VALUE_SUFFIX)
         val value = PropertySpec.builder("value", valueType)
             .addModifiers(KModifier.ABSTRACT)
             .apply { access.ifEmpty { setOf(GattProperty.READ) }.forEach { addAnnotation(accessAnnotation(it)) } }
             .build()
-        val characteristicInterface = TypeSpec.interfaceBuilder(interfaceName)
+        val interfaceBuilder = TypeSpec.interfaceBuilder(interfaceName)
             .addAnnotation(annotation("BluetoothCharacteristic", characteristic.uuid))
             .addProperty(value)
-            .build()
+        // Each descriptor becomes a nested @BluetoothDescriptor interface plus a property exposing it.
+        characteristic.descriptors.forEach { descriptor ->
+            val descriptorName = descriptor.name.toPascalCase()
+            interfaceBuilder.addType(descriptorInterface(descriptor, interfaceName, descriptorName))
+            interfaceBuilder.addProperty(
+                PropertySpec.builder(descriptorName.toCamelCase(), ClassName(packageName, interfaceName, descriptorName))
+                    .addModifiers(KModifier.ABSTRACT)
+                    .build(),
+            )
+        }
         return FileSpec.builder(packageName, interfaceName)
-            .addType(characteristicInterface)
-            .addType(valueType(characteristic, valueType.simpleName))
+            .addType(interfaceBuilder.build())
+            .addType(valueType(characteristic, valueType.simpleName, characteristicsByUuid))
             .build()
     }
 
-    /** The `@BluetoothService` interface for [service], referencing the characteristic interfaces resolved from [characteristics]. */
-    fun serviceFile(service: GattService, characteristics: Map<String, GattCharacteristic>): FileSpec {
+    // A nested @BluetoothDescriptor interface whose `value` carries the descriptor's structure (a generated value class
+    // when it declares fields, otherwise a raw ByteArray), exposed with the descriptor's access.
+    private fun descriptorInterface(descriptor: GattDescriptor, enclosingInterfaceName: String, descriptorName: String): TypeSpec {
+        val builder = TypeSpec.interfaceBuilder(descriptorName)
+            .addAnnotation(annotation("BluetoothDescriptor", descriptor.uuid))
+        val valueType: TypeName = if (descriptor.fields.isEmpty()) {
+            BYTE_ARRAY
+        } else {
+            val valueClassName = descriptorName + VALUE_SUFFIX
+            builder.addType(dataValueType(descriptor.fields, valueClassName))
+            ClassName(packageName, enclosingInterfaceName, descriptorName, valueClassName)
+        }
+        builder.addProperty(
+            PropertySpec.builder("value", valueType)
+                .addModifiers(KModifier.ABSTRACT)
+                .apply { descriptor.properties.ifEmpty { setOf(GattProperty.READ) }.forEach { addAnnotation(accessAnnotation(it)) } }
+                .build(),
+        )
+        return builder.build()
+    }
+
+    /** The `@BluetoothService` interface for [service], referencing its characteristic and included-service interfaces. */
+    fun serviceFile(
+        service: GattService,
+        characteristics: Map<String, GattCharacteristic>,
+        servicesByUuid: Map<String, GattService> = emptyMap(),
+    ): FileSpec {
         val serviceName = service.name.toPascalCase()
         val builder = TypeSpec.interfaceBuilder(serviceName)
             .addAnnotation(annotation("BluetoothService", service.uuid))
@@ -97,6 +137,16 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
             val interfaceName = characteristic.name.toPascalCase()
             builder.addProperty(
                 PropertySpec.builder(interfaceName.replaceFirstChar { it.lowercaseChar() }, ClassName(packageName, interfaceName))
+                    .addModifiers(KModifier.ABSTRACT)
+                    .build(),
+            )
+        }
+        // An included service is exposed as a property typed as that service's interface.
+        service.includedServiceUuids.forEach { includedUuid ->
+            val included = servicesByUuid[includedUuid] ?: error("Service '${service.name}' includes unknown service UUID '$includedUuid'")
+            val includedName = included.name.toPascalCase()
+            builder.addProperty(
+                PropertySpec.builder(includedName.toCamelCase(), ClassName(packageName, includedName))
                     .addModifiers(KModifier.ABSTRACT)
                     .build(),
             )
@@ -122,24 +172,28 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     }
 
     /** Standalone value class (no characteristic interface); used to exercise the field → serialization mapping. */
-    fun generateValueClass(characteristic: GattCharacteristic): FileSpec {
+    fun generateValueClass(characteristic: GattCharacteristic, characteristicsByUuid: Map<String, GattCharacteristic> = emptyMap()): FileSpec {
         val className = characteristic.name.toPascalCase() + VALUE_SUFFIX
-        return FileSpec.builder(packageName, className).addType(valueType(characteristic, className)).build()
+        return FileSpec.builder(packageName, className).addType(valueType(characteristic, className, characteristicsByUuid)).build()
     }
 
-    private fun valueType(characteristic: GattCharacteristic, className: String): TypeSpec =
-        if (characteristic.isVariant) sealedValueType(characteristic, className) else dataValueType(characteristic.fields, className, characteristic.flagFields)
+    private fun valueType(characteristic: GattCharacteristic, className: String, characteristicsByUuid: Map<String, GattCharacteristic> = emptyMap()): TypeSpec =
+        if (characteristic.isVariant) {
+            sealedValueType(characteristic, className, characteristicsByUuid)
+        } else {
+            dataValueType(characteristic.fields, className, characteristic.flagFields, characteristicsByUuid)
+        }
 
     // A conditional characteristic becomes a sealed class; each variant is a subclass selected on the wire by its
     // discriminator byte (@SerializedByteValue), which the BluetoothFormat already dispatches on.
-    private fun sealedValueType(characteristic: GattCharacteristic, className: String): TypeSpec {
+    private fun sealedValueType(characteristic: GattCharacteristic, className: String, characteristicsByUuid: Map<String, GattCharacteristic>): TypeSpec {
         val superType = ClassName(packageName, className)
         val sealed = TypeSpec.classBuilder(className)
             .addModifiers(KModifier.SEALED)
             .addAnnotation(SERIALIZABLE)
         characteristic.variants.forEach { variant ->
             sealed.addType(
-                dataValueType(variant.fields, variant.name.toPascalCase()).toBuilder()
+                dataValueType(variant.fields, variant.name.toPascalCase(), characteristicsByUuid = characteristicsByUuid).toBuilder()
                     .addAnnotation(serializedByteValue(variant.discriminator))
                     .superclass(superType)
                     .build(),
@@ -148,7 +202,12 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         return sealed.build()
     }
 
-    private fun dataValueType(fields: List<GattField>, className: String, flagFields: List<GattFlagField> = emptyList()): TypeSpec {
+    private fun dataValueType(
+        fields: List<GattField>,
+        className: String,
+        flagFields: List<GattFlagField> = emptyList(),
+        characteristicsByUuid: Map<String, GattCharacteristic> = emptyMap(),
+    ): TypeSpec {
         val constructor = FunSpec.constructorBuilder()
         val type = TypeSpec.classBuilder(className)
             .addModifiers(KModifier.DATA)
@@ -173,25 +232,38 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
 
         fields.forEach { field ->
             val propertyName = field.name.toCamelCase()
-            val mapping = field.toMapping()
             val (propertyType, annotations) = when {
-                // A field with a known unit becomes a (nested) ScientificValue value class carrying the wire format;
-                // only the presence flag stays on the property here.
-                field.scientificUnit() != null -> {
-                    val valueClassName = field.name.toPascalCase()
-                    type.addType(scientificValueClass(valueClassName, mapping, checkNotNull(field.scientificUnit())))
-                    val valueClass = ClassName(packageName, className, valueClassName)
-                    (if (field.optional) valueClass.copy(nullable = true) else valueClass) to listOfNotNull(field.flagIndex?.let(::flagIndex))
+                // A field that references another characteristic embeds that characteristic's value class (no wire
+                // format of its own); the nested structure handles its own encoding.
+                field.reference != null -> {
+                    val referenced = characteristicsByUuid[field.reference]
+                        ?: error("Field '${field.name}' references unknown characteristic UUID '${field.reference}'")
+                    val referencedType = ClassName(packageName, referenced.name.toPascalCase() + VALUE_SUFFIX)
+                    (if (field.optional) referencedType.copy(nullable = true) else referencedType) to listOfNotNull(field.flagIndex?.let(::flagIndex))
                 }
 
-                // A repeated field fills the rest of the packet as an unsized list; the element formatting moves onto
-                // the list via the @Item* annotations. When gated by a flag bit, presence is encoded via @NullIfEmpty.
-                field.repeated -> LIST.parameterizedBy(mapping.type) to
-                    mapping.annotations.map { it.asItemAnnotation() } + UNSIZED +
-                    (field.flagIndex?.let { listOf(flagIndex(it), NULL_IF_EMPTY) } ?: emptyList())
+                else -> {
+                    val mapping = field.toMapping()
+                    when {
+                        // A field with a known unit becomes a (nested) ScientificValue value class carrying the wire format;
+                        // only the presence flag stays on the property here.
+                        field.scientificUnit() != null -> {
+                            val valueClassName = field.name.toPascalCase()
+                            type.addType(scientificValueClass(valueClassName, mapping, checkNotNull(field.scientificUnit())))
+                            val valueClass = ClassName(packageName, className, valueClassName)
+                            (if (field.optional) valueClass.copy(nullable = true) else valueClass) to listOfNotNull(field.flagIndex?.let(::flagIndex))
+                        }
 
-                else -> (if (field.optional) mapping.type.copy(nullable = true) else mapping.type) to
-                    mapping.annotations + listOfNotNull(field.flagIndex?.let(::flagIndex))
+                        // A repeated field fills the rest of the packet as an unsized list; the element formatting moves onto
+                        // the list via the @Item* annotations. When gated by a flag bit, presence is encoded via @NullIfEmpty.
+                        field.repeated -> LIST.parameterizedBy(mapping.type) to
+                            mapping.annotations.map { it.asItemAnnotation() } + UNSIZED +
+                            (field.flagIndex?.let { listOf(flagIndex(it), NULL_IF_EMPTY) } ?: emptyList())
+
+                        else -> (if (field.optional) mapping.type.copy(nullable = true) else mapping.type) to
+                            mapping.annotations + listOfNotNull(field.flagIndex?.let(::flagIndex))
+                    }
+                }
             }
             constructor.addParameter(ParameterSpec.builder(propertyName, propertyType).build())
             type.addProperty(

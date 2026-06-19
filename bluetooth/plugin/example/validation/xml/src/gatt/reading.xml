@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A simple characteristic with a descriptor (the CCCD), referenced as a composite field by reading_pair.xml. -->
+<Characteristic type="org.example.characteristic.reading" uuid="2BE0" name="Reading">
+  <Value>
+    <Field name="Reading">
+      <Format>uint16</Format>
+    </Field>
+  </Value>
+  <Descriptors>
+    <Descriptor type="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902" name="Client Characteristic Configuration">
+      <Properties>
+        <Read>Mandatory</Read>
+        <Write>Mandatory</Write>
+      </Properties>
+      <Value>
+        <Field name="Configuration">
+          <Format>uint16</Format>
+        </Field>
+      </Value>
+    </Descriptor>
+  </Descriptors>
+</Characteristic>

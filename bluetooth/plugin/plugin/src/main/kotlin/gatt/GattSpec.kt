@@ -28,9 +28,16 @@ data class GattCharacteristic(
     val fields: List<GattField>,
     val variants: List<GattVariant> = emptyList(),
     val flagFields: List<GattFlagField> = emptyList(),
+    val descriptors: List<GattDescriptor> = emptyList(),
 ) {
     val isVariant: Boolean get() = variants.isNotEmpty()
 }
+
+/**
+ * A GATT descriptor of a [GattCharacteristic], generated as a nested `@BluetoothDescriptor` interface. Its value
+ * structure is the descriptor's [fields] (often a single value, e.g. the CCCD); [properties] are the access it grants.
+ */
+data class GattDescriptor(val name: String, val uuid: String, val properties: Set<GattProperty>, val fields: List<GattField> = emptyList())
 
 /** One variant of a conditional [GattCharacteristic], selected on the wire by its [discriminator] byte. */
 data class GattVariant(val name: String, val discriminator: Int, val fields: List<GattField>)
@@ -66,10 +73,21 @@ data class GattField(
     val flagIndex: Int? = null,
     val unit: String? = null,
     val description: String? = null,
+    // The UUID of another characteristic whose value structure this field embeds (the SIG `<Reference>`); when set,
+    // [format] is empty and the field is typed as the referenced characteristic's generated value class.
+    val reference: String? = null,
 )
 
-/** A parsed GATT service definition: the characteristics it contains and how each may be accessed. */
-data class GattService(val name: String, val uuid: String, val characteristics: List<GattServiceCharacteristic>)
+/**
+ * A parsed GATT service definition: the characteristics it contains and how each may be accessed, plus the UUIDs of any
+ * services it includes ([includedServiceUuids], the SIG `<IncludedServices>`), generated as service-typed properties.
+ */
+data class GattService(
+    val name: String,
+    val uuid: String,
+    val characteristics: List<GattServiceCharacteristic>,
+    val includedServiceUuids: List<String> = emptyList(),
+)
 
 /** A characteristic as referenced by a [GattService], by [uuid], together with the access [properties] the service grants it. */
 data class GattServiceCharacteristic(val uuid: String, val properties: Set<GattProperty>)

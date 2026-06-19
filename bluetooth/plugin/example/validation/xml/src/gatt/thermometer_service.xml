@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Service type="org.example.service.thermometer" uuid="1809" name="Thermometer Service">
+  <IncludedServices>
+    <IncludedService type="org.example.service.heart_rate" uuid="180D" />
+  </IncludedServices>
   <Characteristics>
     <Characteristic name="Internal Temperature" type="org.example.characteristic.internal_temperature" uuid="2A1C">
       <Properties>
@@ -11,6 +14,22 @@
       <Properties>
         <Read>Mandatory</Read>
         <Notify>Optional</Notify>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Wide Counters" type="org.example.characteristic.wide_counters" uuid="2BDE">
+      <Properties>
+        <Read>Mandatory</Read>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Reading" type="org.example.characteristic.reading" uuid="2BE0">
+      <Properties>
+        <Read>Mandatory</Read>
+        <Notify>Optional</Notify>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Reading Pair" type="org.example.characteristic.reading_pair" uuid="2BE1">
+      <Properties>
+        <Read>Mandatory</Read>
       </Properties>
     </Characteristic>
   </Characteristics>

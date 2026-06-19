@@ -49,14 +49,15 @@ object GattXmlParser {
         require(root.tagName == "Characteristic") { "Expected a <Characteristic> root, but was <${root.tagName}>" }
         val name = root.getAttribute("name").ifBlank { root.getAttribute("type") }
         val uuid = root.getAttribute("uuid")
-        val value = root.children("Value").firstOrNull() ?: return GattCharacteristic(name, uuid, emptyList())
+        val descriptors = descriptorsOf(root)
+        val value = root.directChildren("Value").firstOrNull() ?: return GattCharacteristic(name, uuid, emptyList(), descriptors = descriptors)
 
         val variantsElement = value.directChildren("Variants").firstOrNull()
         if (variantsElement != null) {
             val variants = variantsElement.directChildren("Variant").map { variant ->
                 GattVariant(variant.getAttribute("name"), variant.getAttribute("value").toInt(), fieldsOf(variant))
             }
-            return GattCharacteristic(name, uuid, emptyList(), variants)
+            return GattCharacteristic(name, uuid, emptyList(), variants, descriptors = descriptors)
         }
 
         val fieldElements = value.directChildren("Field")
@@ -64,12 +65,27 @@ object GattXmlParser {
         if (flagsElement == null) {
             val fields = fieldElements.map { it.toField() }
             requireTrailingRepeated(name, fields)
-            return GattCharacteristic(name, uuid, fields)
+            return GattCharacteristic(name, uuid, fields, descriptors = descriptors)
         }
-        return resolveConditional(name, uuid, flagsElement, fieldElements - flagsElement)
+        return resolveConditional(name, uuid, flagsElement, fieldElements - flagsElement).copy(descriptors = descriptors)
     }
 
     private fun fieldsOf(parent: Element): List<GattField> = parent.directChildren("Field").map { it.toField() }
+
+    /** The descriptors declared by a characteristic's `<Descriptors>`; each becomes a nested `@BluetoothDescriptor`. */
+    private fun descriptorsOf(root: Element): List<GattDescriptor> =
+        root.directChildren("Descriptors").firstOrNull()?.directChildren("Descriptor").orEmpty().map { descriptor ->
+            GattDescriptor(
+                name = descriptor.getAttribute("name").ifBlank { descriptor.getAttribute("type") },
+                uuid = descriptor.getAttribute("uuid"),
+                properties = grantedProperties(descriptor.directChildren("Properties").firstOrNull()),
+                fields = descriptor.directChildren("Value").firstOrNull()?.let { fieldsOf(it) }.orEmpty(),
+            )
+        }
+
+    /** The access [GattProperty] set granted by a `<Properties>` element (anything not `Excluded`). */
+    private fun grantedProperties(properties: Element?): Set<GattProperty> =
+        GattProperty.entries.filter { property -> properties?.childText(property.elementName)?.let { it != "Excluded" } == true }.toSet()
 
     private fun Element.toField(): GattField = GattField(
         name = getAttribute("name"),
@@ -81,6 +97,8 @@ object GattXmlParser {
         repeated = childText("Repeated").toBoolean(),
         unit = childText("Unit"),
         description = fieldDescription(),
+        // A `<Reference>` to another characteristic by UUID: the field embeds that characteristic's value structure.
+        reference = childText("Reference"),
     )
 
     // A repeated field carries no length and consumes the remainder, so it can only be the last field.
@@ -169,16 +187,20 @@ object GattXmlParser {
             ?.children("Characteristic")
             .orEmpty()
             .map { characteristic ->
-                val properties = characteristic.children("Properties").firstOrNull()
-                val granted = GattProperty.entries.filter { property ->
-                    properties?.childText(property.elementName)?.let { it != "Excluded" } == true
-                }.toSet()
-                GattServiceCharacteristic(uuid = characteristic.getAttribute("uuid"), properties = granted)
+                GattServiceCharacteristic(
+                    uuid = characteristic.getAttribute("uuid"),
+                    properties = grantedProperties(characteristic.children("Properties").firstOrNull()),
+                )
             }
+        val includedServiceUuids = root.children("IncludedServices").firstOrNull()
+            ?.children("IncludedService")
+            .orEmpty()
+            .map { it.getAttribute("uuid") }
         return GattService(
             name = root.getAttribute("name").ifBlank { root.getAttribute("type") },
             uuid = root.getAttribute("uuid"),
             characteristics = characteristics,
+            includedServiceUuids = includedServiceUuids,
         )
     }
 

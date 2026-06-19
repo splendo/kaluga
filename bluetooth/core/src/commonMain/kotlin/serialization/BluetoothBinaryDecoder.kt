@@ -24,6 +24,8 @@ import com.splendo.kaluga.base.bytes.decodeDouble
 import com.splendo.kaluga.base.bytes.decodeFloat
 import com.splendo.kaluga.base.bytes.decodeInt
 import com.splendo.kaluga.base.bytes.decodeInt24
+import com.splendo.kaluga.base.bytes.decodeInt40
+import com.splendo.kaluga.base.bytes.decodeInt48
 import com.splendo.kaluga.base.bytes.decodeLong
 import com.splendo.kaluga.base.bytes.decodeMedFloat16
 import com.splendo.kaluga.base.bytes.decodeMedFloat32
@@ -31,6 +33,8 @@ import com.splendo.kaluga.base.bytes.decodeShort
 import com.splendo.kaluga.base.bytes.decodeString
 import com.splendo.kaluga.base.bytes.decodeUInt
 import com.splendo.kaluga.base.bytes.decodeUInt24
+import com.splendo.kaluga.base.bytes.decodeUInt40
+import com.splendo.kaluga.base.bytes.decodeUInt48
 import com.splendo.kaluga.base.bytes.decodeULong
 import com.splendo.kaluga.base.bytes.decodeUShort
 import com.splendo.kaluga.base.bytes.decodeUTF16Char
@@ -301,6 +305,8 @@ internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: Blue
         Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, byteOrder).toLong() else bytes.decodeUShort(0, byteOrder).toUInt().toLong()
         Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, byteOrder).value.toLong() else bytes.decodeUInt24(0, byteOrder).value.toULong().toLong()
         Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, byteOrder).toLong() else bytes.decodeUInt(0, byteOrder).toULong().toLong()
+        Length.`40_BIT` -> if (settings.signed) bytes.decodeInt40(0, byteOrder).value else bytes.decodeUInt40(0, byteOrder).value.toLong()
+        Length.`48_BIT` -> if (settings.signed) bytes.decodeInt48(0, byteOrder).value else bytes.decodeUInt48(0, byteOrder).value.toLong()
         Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, byteOrder) else bytes.decodeULong(0, byteOrder).toLong()
     }
 }

@@ -24,7 +24,11 @@ import com.splendo.kaluga.base.bytes.isBitSet
 import com.splendo.kaluga.base.utils.MedFloat16
 import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.toInt24
+import com.splendo.kaluga.base.utils.toInt40
+import com.splendo.kaluga.base.utils.toInt48
 import com.splendo.kaluga.base.utils.toUInt24
+import com.splendo.kaluga.base.utils.toUInt40
+import com.splendo.kaluga.base.utils.toUInt48
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.PolymorphicKind
@@ -359,6 +363,10 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                     }
 
                     Length.`32_BIT` -> if (settings.signed) add(value.toInt(), binaryDescriptor.byteOrder) else add(value.toInt().toUInt(), binaryDescriptor.byteOrder)
+
+                    Length.`40_BIT` -> if (settings.signed) add(value.toLong().toInt40(), binaryDescriptor.byteOrder) else add(value.toLong().toULong().toUInt40(), binaryDescriptor.byteOrder)
+
+                    Length.`48_BIT` -> if (settings.signed) add(value.toLong().toInt48(), binaryDescriptor.byteOrder) else add(value.toLong().toULong().toUInt48(), binaryDescriptor.byteOrder)
 
                     Length.`64_BIT` -> if (settings.signed) add(value.toLong(), binaryDescriptor.byteOrder) else add(value.toLong().toULong(), binaryDescriptor.byteOrder)
                 }
