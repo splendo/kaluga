@@ -19,31 +19,51 @@ package com.splendo.kaluga.bluetooth.plugin.gatt
 
 /**
  * A parsed Bluetooth SIG GATT characteristic definition, limited to what the prototype generator consumes.
- * A characteristic is either a single structure ([fields], optionally with values carried in a leading flags byte
- * via [flagFields]) or, when its value varies by a leading discriminator, a set of [variants] (a sealed class).
+ * A characteristic is a single value structure ([fields]), optionally with enumerated values carried in a leading
+ * flags byte via [flagFields].
  */
 data class GattCharacteristic(
     val name: String,
     val uuid: String,
     val fields: List<GattField>,
-    val variants: List<GattVariant> = emptyList(),
     val flagFields: List<GattFlagField> = emptyList(),
     val descriptors: List<GattDescriptor> = emptyList(),
     // The SIG type identifier (e.g. `org.bluetooth.characteristic.heart_rate_measurement`); services reference
     // characteristics by this when they carry no UUID.
     val type: String? = null,
-) {
-    val isVariant: Boolean get() = variants.isNotEmpty()
-}
+)
 
 /**
- * A GATT descriptor of a [GattCharacteristic], generated as a nested `@BluetoothDescriptor` interface. Its value
- * structure is the descriptor's [fields] (often a single value, e.g. the CCCD); [properties] are the access it grants.
+ * A GATT descriptor of a [GattCharacteristic], generated as a nested `@BluetoothDescriptor` interface. Its [uuid] and
+ * value structure ([fields], optionally [flagFields]) come from the descriptor's own type XML ([GattDescriptorDefinition]);
+ * [properties] are the access granted by the service's [GattDescriptorReference].
  */
-data class GattDescriptor(val name: String, val uuid: String, val properties: Set<GattProperty>, val fields: List<GattField> = emptyList())
+data class GattDescriptor(
+    val name: String,
+    val uuid: String,
+    val properties: Set<GattProperty>,
+    val fields: List<GattField> = emptyList(),
+    val flagFields: List<GattFlagField> = emptyList(),
+)
 
-/** One variant of a conditional [GattCharacteristic], selected on the wire by its [discriminator] byte. */
-data class GattVariant(val name: String, val discriminator: Int, val fields: List<GattField>)
+/**
+ * A standalone descriptor definition parsed from a descriptor's own type XML (root `<Descriptor>`): the source of a
+ * descriptor's [uuid] and value structure ([fields]/[flagFields]), resolved against a service's [GattDescriptorReference]s
+ * by [type]. The access a descriptor grants is not declared here but on each referencing service.
+ */
+data class GattDescriptorDefinition(
+    val type: String,
+    val uuid: String,
+    val name: String,
+    val fields: List<GattField> = emptyList(),
+    val flagFields: List<GattFlagField> = emptyList(),
+)
+
+/**
+ * A descriptor as referenced by a [GattServiceCharacteristic]: named by [type], granting access [properties]. Resolved
+ * against the parsed [GattDescriptorDefinition]s to obtain its UUID and value structure.
+ */
+data class GattDescriptorReference(val type: String, val name: String, val properties: Set<GattProperty>)
 
 /**
  * An enumerated value carried inside the leading flags byte, occupying [size] bits at bit [index] (e.g. a status
@@ -89,27 +109,31 @@ data class GattField(
 )
 
 /**
- * A parsed GATT service definition: the characteristics it contains and how each may be accessed, plus the UUIDs of any
- * services it includes ([includedServiceUuids], the SIG `<IncludedServices>`), generated as service-typed properties.
+ * A parsed GATT service definition: the characteristics it contains and how each may be accessed.
  */
 data class GattService(
     val name: String,
     val uuid: String,
     val characteristics: List<GattServiceCharacteristic>,
-    val includedServiceUuids: List<String> = emptyList(),
 )
 
 /**
- * A characteristic as referenced by a [GattService], together with the access [properties] the service grants it. The
- * reference is by [uuid] when present, otherwise by SIG [type] (the SIG service XML references characteristics by type).
+ * A characteristic as referenced by a [GattService], together with the access [properties] the service grants it and any
+ * [descriptorReferences] it declares. The reference is by [uuid] when present, otherwise by SIG [type] (the SIG service
+ * XML references characteristics by type).
  */
-data class GattServiceCharacteristic(val uuid: String, val properties: Set<GattProperty>, val type: String? = null) {
+data class GattServiceCharacteristic(
+    val uuid: String,
+    val properties: Set<GattProperty>,
+    val type: String? = null,
+    val descriptorReferences: List<GattDescriptorReference> = emptyList(),
+) {
     /** The characteristic this reference resolves to in [byKey] (keyed by both UUID and type), or null if unknown. */
     fun resolve(byKey: Map<String, GattCharacteristic>): GattCharacteristic? = byKey[uuid] ?: type?.let { byKey[it] }
 }
 
 /** A GATT characteristic access property, mapping onto the Kaluga access annotations. */
-enum class GattProperty { READ, WRITE, WRITE_WITHOUT_RESPONSE, NOTIFY, INDICATE }
+enum class GattProperty { READ, WRITE, WRITE_WITHOUT_RESPONSE, SIGNED_WRITE, NOTIFY, INDICATE }
 
 internal fun String.toPascalCase(): String = split(Regex("[^A-Za-z0-9]+"))
     .filter { it.isNotEmpty() }

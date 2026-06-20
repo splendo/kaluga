@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Service type="org.example.service.thermometer" uuid="1809" name="Thermometer Service">
-  <IncludedServices>
-    <IncludedService type="org.example.service.heart_rate" uuid="180D" />
-  </IncludedServices>
   <Characteristics>
     <Characteristic name="Internal Temperature" type="org.example.characteristic.internal_temperature" uuid="2A1C">
       <Properties>
@@ -26,6 +23,14 @@
         <Read>Mandatory</Read>
         <Notify>Optional</Notify>
       </Properties>
+      <Descriptors>
+        <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
     </Characteristic>
     <Characteristic name="Reading Pair" type="org.example.characteristic.reading_pair" uuid="2BE1">
       <Properties>

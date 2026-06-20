@@ -54,8 +54,8 @@ class GeneratedSerializationTest {
         assertEquals(Pascal, decoded.pressure.unit)
     }
 
-    // The Heart Rate service (180D) and its characteristics are the unmodified SIG XML (oesmith), reused here by the
-    // Thermometer service's <IncludedServices>. These round-trips exercise its notify/read/write characteristics.
+    // The Heart Rate service (180D) and its characteristics are the unmodified SIG XML (oesmith), generated as a
+    // standalone service alongside the Thermometer. These round-trips exercise its notify/read/write characteristics.
 
     @Test
     fun heartRateMeasurementMinimalRoundTrips() {

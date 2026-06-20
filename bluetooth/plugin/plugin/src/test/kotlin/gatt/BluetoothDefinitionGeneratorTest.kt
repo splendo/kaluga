@@ -36,6 +36,9 @@ class BluetoothDefinitionGeneratorTest {
     private fun service(resource: String = "/gatt/environmental_sensing_service.xml") =
         GattXmlParser.parseService(checkNotNull(javaClass.getResourceAsStream(resource)) { "missing $resource" })
 
+    private fun descriptor(resource: String) =
+        GattXmlParser.parseDescriptor(checkNotNull(javaClass.getResourceAsStream(resource)) { "missing $resource" })
+
     private val generator = BluetoothDefinitionGenerator("com.example.generated")
 
     private val scientificGenerator = BluetoothDefinitionGenerator("com.example.generated", useScientificUnits = true)
@@ -150,11 +153,65 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
-    fun generatesIncludedServiceProperty() {
-        val included = GattService("Battery Service", "180F", emptyList())
-        val including = GattService("Thermometer Service", "1809", emptyList(), includedServiceUuids = listOf("180F"))
-        val service = generator.generate("Device", listOf(including, included), emptyList()).types().getValue("ThermometerService")
-        assertEquals("BatteryService", checkNotNull(service.property("batteryService")).type.simpleName)
+    fun resolvesServiceDescriptorAgainstDescriptorDefinition() {
+        // The SIG service references a descriptor by type only; its UUID and value structure come from the descriptor's
+        // own type XML, which is parsed separately and resolved here. The CCCD is referenced too but never generated:
+        // it is managed by the notify/indicate layer.
+        val types = generator.generate(
+            deviceName = "Heart Rate Sensor",
+            services = listOf(service("/gatt/sig_descriptor_service.xml")),
+            characteristics = listOf(characteristic("/gatt/sig_heart_rate_measurement.xml")),
+            descriptors = listOf(descriptor("/gatt/sig_user_description_descriptor.xml"), descriptor("/gatt/sig_cccd_descriptor.xml")),
+        ).types()
+
+        val measurement = types.getValue("HeartRateMeasurement")
+        val userDescription = checkNotNull(measurement.nestedType("CharacteristicUserDescription"))
+        assertEquals("\"2901\"", checkNotNull(userDescription.annotation("BluetoothDescriptor")).argument)
+        assertEquals(setOf("Readable"), checkNotNull(userDescription.property("value")).annotationNames)
+        assertNotNull(userDescription.nestedType("CharacteristicUserDescriptionValue"))
+        assertEquals("CharacteristicUserDescription", checkNotNull(measurement.property("characteristicUserDescription")).type.simpleName)
+
+        // the CCCD is deliberately omitted even though its definition was provided
+        assertNull(measurement.nestedType("ClientCharacteristicConfiguration"))
+        assertNull(measurement.property("clientCharacteristicConfiguration"))
+    }
+
+    @Test
+    fun skipsServiceDescriptorWithoutDefinition() {
+        // With no descriptor definition the reference can't be resolved to a UUID, so it is skipped rather than emitted.
+        val types = generator.generate(
+            deviceName = "Heart Rate Sensor",
+            services = listOf(service("/gatt/sig_descriptor_service.xml")),
+            characteristics = listOf(characteristic("/gatt/sig_heart_rate_measurement.xml")),
+            descriptors = emptyList(),
+        ).types()
+        assertNull(types.getValue("HeartRateMeasurement").nestedType("CharacteristicUserDescription"))
+    }
+
+    @Test
+    fun generatesUnsignedIntForBitWidthFormat() {
+        // A bare bit-width token (e.g. `8bit`, `16bit`) is an unsigned integer of that width.
+        val characteristic = GattCharacteristic(
+            name = "Raw",
+            uuid = "2B00",
+            fields = listOf(GattField(name = "Byte", format = "8bit"), GattField(name = "Word", format = "16bit")),
+        )
+        val value = generator.generateValueClass(characteristic).singleType()
+        val byte = checkNotNull(value.property("byte"))
+        assertTrue("Unsigned" in byte.annotationNames)
+        assertTrue(checkNotNull(byte.annotation("Size")).argument.endsWith("Length.`8_BIT`"))
+        assertTrue(checkNotNull(value.property("word")?.annotation("Size")).argument.endsWith("Length.`16_BIT`"))
+    }
+
+    @Test
+    fun rejectsUnsupportedIntegerWidth() {
+        // 12-bit isn't byte-aligned and 128-bit has no Kotlin primitive; neither has a Length, so both fail loudly.
+        assertFailsWith<IllegalArgumentException> {
+            generator.generateValueClass(GattCharacteristic("Odd", "2B01", listOf(GattField("V", "uint12"))))
+        }
+        assertFailsWith<IllegalArgumentException> {
+            generator.generateValueClass(GattCharacteristic("Big", "2B02", listOf(GattField("V", "uint128"))))
+        }
     }
 
     @Test
@@ -235,16 +292,8 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
-    fun parsesConditionalCharacteristicVariants() {
-        val characteristic = characteristic("/gatt/sensor_reading.xml")
-        assertTrue(characteristic.isVariant, "expected a variant characteristic")
-        assertEquals(listOf("Temperature" to 1, "Humidity" to 2), characteristic.variants.map { it.name to it.discriminator })
-    }
-
-    @Test
     fun parsesFlagsByteBitFieldAndRequirements() {
         val characteristic = characteristic("/gatt/rate_measurement.xml")
-        assertFalse(characteristic.isVariant)
 
         // selector bit 0 (every value gates a field) -> one field with the format alternatives, placed at the bit
         val rate = characteristic.fields.single { it.name == "Rate Measurement Value" }
@@ -272,6 +321,13 @@ class BluetoothDefinitionGeneratorTest {
         assertEquals(1, contact.index)
         assertEquals(2, contact.size)
         assertEquals(listOf(0, 1, 2, 3), contact.cases.map { it.key })
+    }
+
+    @Test
+    fun rejectsSelectorBitOverStructurallyDifferentFields() {
+        // A selector bit may only choose between width alternatives of one field (same base name, e.g. `Value (uint8)`/
+        // `Value (uint16)`). When it gates structurally different fields, collapsing them would drop data, so it fails.
+        assertFailsWith<IllegalArgumentException> { characteristic("/gatt/structural_selector.xml") }
     }
 
     @Test
@@ -357,27 +413,6 @@ class BluetoothDefinitionGeneratorTest {
         val contactEnum = checkNotNull(value.nestedType("ContactStatus"))
         assertEquals(4, contactEnum.enumConstants.size)
         assertTrue("CONTACT_NOT_SUPPORTED" in contactEnum.enumConstants.keys, contactEnum.enumConstants.keys.toString())
-    }
-
-    @Test
-    fun generatesSealedClassForConditionalCharacteristic() {
-        val sealed = generator.generateValueClass(characteristic("/gatt/sensor_reading.xml")).singleType()
-
-        assertEquals("SensorReadingValue", sealed.name)
-        assertTrue(KModifier.SEALED in sealed.modifiers)
-        assertNotNull(sealed.annotation("Serializable"))
-
-        val temperature = checkNotNull(sealed.nestedType("Temperature"))
-        assertTrue(KModifier.DATA in temperature.modifiers)
-        assertEquals("value = 1", checkNotNull(temperature.annotation("SerializedByteValue")).argument)
-        // the variant extends the sealed value class
-        assertEquals("SensorReadingValue", temperature.superclass.simpleName)
-        // and still carries the field annotations
-        assertEquals("decimalExponent = 2", checkNotNull(temperature.property("temperature")).annotation("Scalar")?.argument)
-
-        val humidity = checkNotNull(sealed.nestedType("Humidity"))
-        assertEquals("value = 2", checkNotNull(humidity.annotation("SerializedByteValue")).argument)
-        assertEquals("SensorReadingValue", humidity.superclass.simpleName)
     }
 
     @Test

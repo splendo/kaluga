@@ -28,7 +28,8 @@ object GattGeneration {
         val definitions = xmlFiles.filter { it.extension.equals("xml", ignoreCase = true) }.map { GattXmlParser.parse(it) }
         val characteristics = definitions.filterIsInstance<GattDefinition.Characteristic>().map { it.value }
         val services = definitions.filterIsInstance<GattDefinition.Service>().map { it.value }
-        return BluetoothDefinitionGenerator(packageName, useScientificUnits).generate(deviceName, services, characteristics)
+        val descriptors = definitions.filterIsInstance<GattDefinition.Descriptor>().map { it.value }
+        return BluetoothDefinitionGenerator(packageName, useScientificUnits).generate(deviceName, services, characteristics, descriptors)
     }
 
     /** Generates definitions from the XML under [sourceDirectories] and writes them under [outputDirectory] (cleared first). */

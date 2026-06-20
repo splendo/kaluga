@@ -44,10 +44,9 @@ import kotlin.math.abs
  * characteristic (translating field formats/scaling into `BluetoothFormat` annotations), the `@BluetoothCharacteristic`
  * and `@BluetoothService` interfaces, and the `@Bluetooth` device that ties them together.
  *
- * Conditional characteristics map according to their shape: a leading discriminator byte becomes a sealed class
- * (one `@SerializedByteValue`-tagged subclass per variant); a leading flags byte becomes a flat class where each bit
- * either selects a field's width (multiple `@Size`), gates a field's presence (nullable, or an `@Unsized` list for a
- * `repeated` field) or carries an enumerated value (`@FlagIndex` enum), all keyed by `@FlagIndex`.
+ * A leading flags byte becomes a flat class where each bit either selects a field's width (multiple `@Size`), gates a
+ * field's presence (nullable, or an `@Unsized` list for a `repeated` field) or carries an enumerated value
+ * (`@FlagIndex` enum), all keyed by `@FlagIndex`.
  *
  * @param packageName the package the generated definitions are placed in.
  */
@@ -55,9 +54,16 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
 
     /**
      * Generates all definitions for [deviceName] exposing [services], whose characteristic value structures are taken
-     * from [characteristics] (linked by UUID). Returns one [FileSpec] per characteristic and service plus the device.
+     * from [characteristics] (linked by UUID). Descriptors a service references are resolved against [descriptors] (the
+     * descriptor type definitions) for their UUID and value structure. Returns one [FileSpec] per characteristic and
+     * service plus the device.
      */
-    fun generate(deviceName: String, services: List<GattService>, characteristics: List<GattCharacteristic>): List<FileSpec> {
+    fun generate(
+        deviceName: String,
+        services: List<GattService>,
+        characteristics: List<GattCharacteristic>,
+        descriptors: List<GattDescriptorDefinition> = emptyList(),
+    ): List<FileSpec> {
         // Characteristics are referenced by UUID or by SIG type, so index by both.
         val byKey = buildMap {
             characteristics.forEach { characteristic ->
@@ -70,13 +76,45 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
             .groupBy({ it.first }, { it.second })
             .mapValues { (_, sets) -> sets.flatten().toSet() }
 
-        val servicesByUuid = services.associateBy { it.uuid }
+        // A service references descriptors by type; resolve each to the parsed definition (UUID + value structure) and
+        // attach the resolved descriptors to the characteristic they belong to, keyed by its UUID.
+        val descriptorsByType = descriptors.associateBy { it.type }
+        val descriptorsByUuid = services.flatMap { it.characteristics }
+            .mapNotNull { ref -> ref.resolve(byKey)?.let { it.uuid to resolveDescriptors(ref, descriptorsByType) } }
+            .groupBy({ it.first }, { it.second })
+            .mapValues { (_, lists) -> lists.flatten().distinctBy { it.uuid } }
+
         val characteristicFiles = characteristics.map { characteristic ->
-            characteristicFile(characteristic, accessByUuid[characteristic.uuid].orEmpty(), byKey)
+            val resolved = descriptorsByUuid[characteristic.uuid].orEmpty()
+            val withDescriptors = if (resolved.isEmpty()) characteristic else characteristic.copy(descriptors = resolved)
+            characteristicFile(withDescriptors, accessByUuid[characteristic.uuid].orEmpty(), byKey)
         }
-        val serviceFiles = services.map { service -> serviceFile(service, byKey, servicesByUuid) }
+        val serviceFiles = services.map { service -> serviceFile(service, byKey) }
         return characteristicFiles + serviceFiles + deviceFile(deviceName, services)
     }
+
+    // Resolves a characteristic's descriptor references to concrete descriptors: the service ref grants the access, the
+    // descriptor's own type definition supplies the UUID and value structure. The Client Characteristic Configuration
+    // descriptor is never generated (see below). A reference whose type has no definition (its type XML was not provided)
+    // cannot be resolved to a UUID, so it is skipped with a warning.
+    private fun resolveDescriptors(ref: GattServiceCharacteristic, descriptorsByType: Map<String, GattDescriptorDefinition>): List<GattDescriptor> =
+        ref.descriptorReferences.mapNotNull { descriptorRef ->
+            val definition = descriptorsByType[descriptorRef.type]
+            when {
+                // The Client Characteristic Configuration descriptor (CCCD, 0x2902) enables notify/indicate and is
+                // managed by Kaluga's notification layer, so it is deliberately never surfaced as a @BluetoothDescriptor.
+                descriptorRef.type == CCCD_TYPE || definition?.let { isCccdUuid(it.uuid) } == true -> null
+                definition == null -> {
+                    System.err.println("Warning: descriptor '${descriptorRef.type}' has no definition file; skipping (no UUID/value to generate).")
+                    null
+                }
+                else -> GattDescriptor(definition.name, definition.uuid, descriptorRef.properties, definition.fields, definition.flagFields)
+            }
+        }
+
+    // The CCCD identified by its standard type or 0x2902 UUID (16-bit shorthand or the full 128-bit base form).
+    private fun isCccdUuid(uuid: String): Boolean =
+        uuid.equals(CCCD_UUID, ignoreCase = true) || uuid.equals("0000$CCCD_UUID-0000-1000-8000-00805f9b34fb", ignoreCase = true)
 
     /** The `@BluetoothCharacteristic` interface for [characteristic] plus its `@Serializable` value class. */
     fun characteristicFile(
@@ -114,11 +152,11 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     private fun descriptorInterface(descriptor: GattDescriptor, enclosingInterfaceName: String, descriptorName: String): TypeSpec {
         val builder = TypeSpec.interfaceBuilder(descriptorName)
             .addAnnotation(annotation("BluetoothDescriptor", descriptor.uuid))
-        val valueType: TypeName = if (descriptor.fields.isEmpty()) {
+        val valueType: TypeName = if (descriptor.fields.isEmpty() && descriptor.flagFields.isEmpty()) {
             BYTE_ARRAY
         } else {
             val valueClassName = descriptorName + VALUE_SUFFIX
-            builder.addType(dataValueType(descriptor.fields, valueClassName))
+            builder.addType(dataValueType(descriptor.fields, valueClassName, descriptor.flagFields))
             ClassName(packageName, enclosingInterfaceName, descriptorName, valueClassName)
         }
         builder.addProperty(
@@ -130,11 +168,10 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         return builder.build()
     }
 
-    /** The `@BluetoothService` interface for [service], referencing its characteristic and included-service interfaces. */
+    /** The `@BluetoothService` interface for [service], referencing each of its characteristic interfaces. */
     fun serviceFile(
         service: GattService,
         characteristics: Map<String, GattCharacteristic>,
-        servicesByUuid: Map<String, GattService> = emptyMap(),
     ): FileSpec {
         val serviceName = service.name.toPascalCase()
         val builder = TypeSpec.interfaceBuilder(serviceName)
@@ -145,16 +182,6 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
             val interfaceName = characteristic.name.toPascalCase()
             builder.addProperty(
                 PropertySpec.builder(interfaceName.replaceFirstChar { it.lowercaseChar() }, ClassName(packageName, interfaceName))
-                    .addModifiers(KModifier.ABSTRACT)
-                    .build(),
-            )
-        }
-        // An included service is exposed as a property typed as that service's interface.
-        service.includedServiceUuids.forEach { includedUuid ->
-            val included = servicesByUuid[includedUuid] ?: error("Service '${service.name}' includes unknown service UUID '$includedUuid'")
-            val includedName = included.name.toPascalCase()
-            builder.addProperty(
-                PropertySpec.builder(includedName.toCamelCase(), ClassName(packageName, includedName))
                     .addModifiers(KModifier.ABSTRACT)
                     .build(),
             )
@@ -186,29 +213,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     }
 
     private fun valueType(characteristic: GattCharacteristic, className: String, characteristicsByUuid: Map<String, GattCharacteristic> = emptyMap()): TypeSpec =
-        if (characteristic.isVariant) {
-            sealedValueType(characteristic, className, characteristicsByUuid)
-        } else {
-            dataValueType(characteristic.fields, className, characteristic.flagFields, characteristicsByUuid)
-        }
-
-    // A conditional characteristic becomes a sealed class; each variant is a subclass selected on the wire by its
-    // discriminator byte (@SerializedByteValue), which the BluetoothFormat already dispatches on.
-    private fun sealedValueType(characteristic: GattCharacteristic, className: String, characteristicsByUuid: Map<String, GattCharacteristic>): TypeSpec {
-        val superType = ClassName(packageName, className)
-        val sealed = TypeSpec.classBuilder(className)
-            .addModifiers(KModifier.SEALED)
-            .addAnnotation(SERIALIZABLE)
-        characteristic.variants.forEach { variant ->
-            sealed.addType(
-                dataValueType(variant.fields, variant.name.toPascalCase(), characteristicsByUuid = characteristicsByUuid).toBuilder()
-                    .addAnnotation(serializedByteValue(variant.discriminator))
-                    .superclass(superType)
-                    .build(),
-            )
-        }
-        return sealed.build()
-    }
+        dataValueType(characteristic.fields, className, characteristic.flagFields, characteristicsByUuid)
 
     private fun dataValueType(
         fields: List<GattField>,
@@ -420,10 +425,18 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
 
             format == "float64" -> DOUBLE
 
+            // A bare bit-width token (e.g. `8bit`, `16bit`) is an unsigned integer of that width.
+            Regex("\\d+bit").matches(format) -> {
+                val bits = integerWidth(format)
+                annotations += size(bits)
+                annotations += UNSIGNED
+                integerType(bits, signed = false)
+            }
+
             format.startsWith("uint") || format.startsWith("sint") -> {
                 val signed = format.startsWith("sint")
                 // A flags bit may select between widths (e.g. uint8/uint16); emit a @Size for each, picking the widest type.
-                val widths = (listOf(format) + alternateFormats).map { it.drop(4).toIntOrNull() ?: error("Unsupported integer format '$it' for field '$name'") }
+                val widths = (listOf(format) + alternateFormats).map { integerWidth(it) }
                 widths.sorted().forEach { annotations += size(it) }
                 if (!signed) annotations += UNSIGNED
                 integerType(widths.max(), signed)
@@ -435,6 +448,18 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         if (scaled) annotations += scalar()
         // A scaled field holds a fractional physical value, so it is represented as a Double regardless of wire width.
         return Mapping(if (scaled) DOUBLE else type, annotations)
+    }
+
+    // The wire width (bits) of an integer or bare bit-width format token, validated against the @Size widths the
+    // serializer's Length supports. A width with no Length (e.g. sub-byte 2/4-bit, the non-aligned 12-bit, or 128-bit
+    // which has no Kotlin primitive) is rejected loudly rather than emitting a non-compiling @Size or overflowing.
+    private fun GattField.integerWidth(format: String): Int {
+        val bits = Regex("\\d+").find(format)?.value?.toIntOrNull()
+            ?: error("Unsupported integer format '$format' for field '$name'")
+        require(bits in SUPPORTED_INTEGER_WIDTHS) {
+            "Unsupported integer width '$format' for field '$name'; supported widths (bits): ${SUPPORTED_INTEGER_WIDTHS.sorted()}"
+        }
+        return bits
     }
 
     // A signed Kotlin type wide enough to hold the format's value range; the wire width is fixed by @Size.
@@ -484,6 +509,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
                 GattProperty.READ -> "Readable"
                 GattProperty.WRITE -> "Writable"
                 GattProperty.WRITE_WITHOUT_RESPONSE -> "WritableWithoutResponse"
+                GattProperty.SIGNED_WRITE -> "WritableSigned"
                 GattProperty.NOTIFY -> "Notifiable"
                 GattProperty.INDICATE -> "Indicatable"
             },
@@ -497,6 +523,11 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         const val SCIENTIFIC = "com.splendo.kaluga.scientific"
         const val SCIENTIFIC_UNIT = "com.splendo.kaluga.scientific.unit"
         const val VALUE_SUFFIX = "Value"
+        // The Client Characteristic Configuration descriptor; not generated as it is managed by the notify/indicate layer.
+        const val CCCD_TYPE = "org.bluetooth.descriptor.gatt.client_characteristic_configuration"
+        const val CCCD_UUID = "2902"
+        // The integer wire widths the serializer's `Length` enum can encode via @Size (byte-aligned, up to 64-bit).
+        val SUPPORTED_INTEGER_WIDTHS = setOf(8, 16, 24, 32, 40, 48, 64)
         val JVM_INLINE = AnnotationSpec.builder(ClassName("kotlin.jvm", "JvmInline")).build()
         val SERIALIZABLE = AnnotationSpec.builder(ClassName("kotlinx.serialization", "Serializable")).build()
         val UNSIGNED = AnnotationSpec.builder(ClassName(SERIALIZATION, "Unsigned")).build()

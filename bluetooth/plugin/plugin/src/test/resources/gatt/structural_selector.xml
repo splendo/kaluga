@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hand-authored fixture: a selector bit choosing between structurally different fields (not width alternatives of one
+     value). The parser supports only width alternatives of a single field, so this must be rejected rather than silently
+     collapsed into one field. -->
+<Characteristic type="org.example.characteristic.sensor_reading" uuid="2BCF" name="Sensor Reading">
+  <Value>
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Reading Type bit">
+          <Enumerations>
+            <Enumeration key="0" value="Temperature reading" requires="C1" />
+            <Enumeration key="1" value="Humidity reading" requires="C2" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="1" size="7" />
+      </BitField>
+    </Field>
+    <Field name="Temperature">
+      <Requirement>C1</Requirement>
+      <Format>sint16</Format>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+    <Field name="Humidity">
+      <Requirement>C2</Requirement>
+      <Format>uint16</Format>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+  </Value>
+</Characteristic>

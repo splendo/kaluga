@@ -22,21 +22,24 @@ import java.io.File
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
-/** A parsed GATT definition: either a [GattCharacteristic] (value structure) or a [GattService] (structure + access). */
+/** A parsed GATT definition: a [GattCharacteristic] value structure, a [GattService], or a standalone descriptor
+ *  definition (a [GattDescriptorDefinition] parsed from a descriptor's own type XML). */
 sealed interface GattDefinition {
     data class Characteristic(val value: GattCharacteristic) : GattDefinition
     data class Service(val value: GattService) : GattDefinition
+    data class Descriptor(val value: GattDescriptorDefinition) : GattDefinition
 }
 
-/** Parses Bluetooth SIG GATT characteristic and service XML. Prototype: plain fields and flat services only. */
+/** Parses Bluetooth SIG GATT characteristic, service and descriptor XML. Prototype: plain fields and flat services only. */
 object GattXmlParser {
 
-    /** Parses [file], dispatching on its root element to a characteristic or service definition. */
+    /** Parses [file], dispatching on its root element to a characteristic, service or descriptor definition. */
     fun parse(file: File): GattDefinition = file.inputStream().use { input ->
         val root = document(input)
         when (root.tagName) {
             "Characteristic" -> GattDefinition.Characteristic(parseCharacteristic(root))
             "Service" -> GattDefinition.Service(parseService(root))
+            "Descriptor" -> GattDefinition.Descriptor(parseDescriptor(root))
             else -> error("Unsupported root <${root.tagName}> in ${file.name}")
         }
     }
@@ -45,44 +48,61 @@ object GattXmlParser {
 
     fun parseService(input: InputStream): GattService = parseService(document(input))
 
+    fun parseDescriptor(input: InputStream): GattDescriptorDefinition = parseDescriptor(document(input))
+
     private fun parseCharacteristic(root: Element): GattCharacteristic {
         require(root.tagName == "Characteristic") { "Expected a <Characteristic> root, but was <${root.tagName}>" }
         val name = root.getAttribute("name").ifBlank { root.getAttribute("type") }
-        val uuid = root.getAttribute("uuid")
-        return baseCharacteristic(root, name, uuid).copy(type = root.getAttribute("type").ifBlank { null }, descriptors = descriptorsOf(root))
+        val value = parseValue(name, root.directChildren("Value").firstOrNull())
+        return GattCharacteristic(
+            name = name,
+            uuid = root.getAttribute("uuid"),
+            fields = value.fields,
+            flagFields = value.flagFields,
+            type = root.getAttribute("type").ifBlank { null },
+        )
     }
 
-    private fun baseCharacteristic(root: Element, name: String, uuid: String): GattCharacteristic {
-        val value = root.directChildren("Value").firstOrNull() ?: return GattCharacteristic(name, uuid, emptyList())
+    // A descriptor's own type XML (root <Descriptor>): the source of its UUID and value structure. The access it grants
+    // is declared not here but on each service's <Descriptor> reference, so it is supplied during generation.
+    private fun parseDescriptor(root: Element): GattDescriptorDefinition {
+        require(root.tagName == "Descriptor") { "Expected a <Descriptor> root, but was <${root.tagName}>" }
+        val name = root.getAttribute("name").ifBlank { root.getAttribute("type") }
+        val value = parseValue(name, root.directChildren("Value").firstOrNull())
+        return GattDescriptorDefinition(
+            type = root.getAttribute("type"),
+            uuid = root.getAttribute("uuid"),
+            name = name,
+            fields = value.fields,
+            flagFields = value.flagFields,
+        )
+    }
 
-        val variantsElement = value.directChildren("Variants").firstOrNull()
-        if (variantsElement != null) {
-            val variants = variantsElement.directChildren("Variant").map { variant ->
-                GattVariant(variant.getAttribute("name"), variant.getAttribute("value").toInt(), fieldsOf(variant))
-            }
-            return GattCharacteristic(name, uuid, emptyList(), variants)
-        }
+    private class ParsedValue(val fields: List<GattField>, val flagFields: List<GattFlagField>)
 
+    // Parses a <Value> into its field structure: a flat field list, or — when a leading <Field> carries a <BitField> —
+    // the flags-resolved fields plus the enums packed in the flags region. Shared by characteristics and descriptors,
+    // whose value structures are identical.
+    private fun parseValue(name: String, value: Element?): ParsedValue {
+        if (value == null) return ParsedValue(emptyList(), emptyList())
         val fieldElements = value.directChildren("Field")
         val flagElements = fieldElements.filter { it.directChildren("BitField").isNotEmpty() }
         if (flagElements.isEmpty()) {
             val fields = fieldElements.map { it.toField() }
             requireTrailingRepeated(name, fields)
-            return GattCharacteristic(name, uuid, fields)
+            return ParsedValue(fields, emptyList())
         }
-        return resolveConditional(name, uuid, flagElements, fieldElements - flagElements)
+        return resolveConditional(name, flagElements, fieldElements - flagElements)
     }
 
-    private fun fieldsOf(parent: Element): List<GattField> = parent.directChildren("Field").map { it.toField() }
-
-    /** The descriptors declared by a characteristic's `<Descriptors>`; each becomes a nested `@BluetoothDescriptor`. */
-    private fun descriptorsOf(root: Element): List<GattDescriptor> =
-        root.directChildren("Descriptors").firstOrNull()?.directChildren("Descriptor").orEmpty().map { descriptor ->
-            GattDescriptor(
+    // The <Descriptor> references declared by a service's <Characteristic>: each names a descriptor by type and grants
+    // access. Its UUID and value structure come from the descriptor's own type XML, resolved during generation.
+    private fun descriptorReferencesOf(reference: Element): List<GattDescriptorReference> =
+        reference.directChildren("Descriptors").firstOrNull()?.directChildren("Descriptor").orEmpty().map { descriptor ->
+            GattDescriptorReference(
+                type = descriptor.getAttribute("type"),
                 name = descriptor.getAttribute("name").ifBlank { descriptor.getAttribute("type") },
-                uuid = descriptor.getAttribute("uuid"),
                 properties = grantedProperties(descriptor.directChildren("Properties").firstOrNull()),
-                fields = descriptor.directChildren("Value").firstOrNull()?.let { fieldsOf(it) }.orEmpty(),
             )
         }
 
@@ -131,7 +151,7 @@ object GattXmlParser {
     // `requires`). Conditional fields reference a bit through their <Requirement>. When several Flags fields are present
     // (e.g. two bytes, or a 16-bit field), each contributes its bits offset by the declared width of those before it,
     // so the bit indices span the whole multi-byte flags region.
-    private fun resolveConditional(name: String, uuid: String, flagFields: List<Element>, valueFields: List<Element>): GattCharacteristic {
+    private fun resolveConditional(name: String, flagFields: List<Element>, valueFields: List<Element>): ParsedValue {
         var bitOffset = 0
         val bits = flagFields.flatMap { flagField ->
             val fieldBits = flagField.directChildren("BitField").first().directChildren("Bit").map { bit ->
@@ -150,7 +170,7 @@ object GattXmlParser {
         val bitByCondition = bits.flatMap { bit -> bit.enumerations.mapNotNull { it.requires?.to(bit) } }.toMap()
 
         // Bits whose value is not a gate (no `requires`) become enums packed in the flags.
-        val flagFields = bits.filter { bit -> bit.enumerations.isNotEmpty() && bit.enumerations.none { it.requires != null } }.map { bit ->
+        val enumFlagFields = bits.filter { bit -> bit.enumerations.isNotEmpty() && bit.enumerations.none { it.requires != null } }.map { bit ->
             GattFlagField(
                 name = bit.name.removeSuffix("bits").removeSuffix("bit").trim().ifBlank { "Flag${bit.index}" },
                 index = bit.index,
@@ -176,14 +196,20 @@ object GattXmlParser {
                     fields += gated.copy(optional = true, presenceFlagIndices = conditionBits.map { it.index })
                 }
 
-                // Selector bit: every value gates a field -> the gated fields are format alternatives of one field.
+                // Selector bit: every value gates a field -> the gated fields are width alternatives of one field,
+                // distinguished only by a `(<format>)` suffix on the SIG name (e.g. `Value (uint8)`/`Value (uint16)`).
                 conditionBits.single().enumerations.all { it.requires != null } -> {
                     val bit = conditionBits.single()
                     val group = valueFields.filter { it.conditionBits(bitByCondition).map(Bit::index) == listOf(bit.index) }
                     consumed += group
+                    val baseNames = group.map { it.getAttribute("name").replace(Regex("\\s*\\(.*\\)\\s*$"), "") }.distinct()
+                    require(baseNames.size == 1) {
+                        "Characteristic '$name' selector bit ${bit.index} chooses between structurally different fields $baseNames; " +
+                            "only width alternatives of a single field are supported."
+                    }
                     val widest = group.maxBy { formatWidth(it.childText("Format").orEmpty()) }
                     fields += widest.toField().copy(
-                        name = widest.getAttribute("name").replace(Regex("\\s*\\(.*\\)\\s*$"), ""),
+                        name = baseNames.single(),
                         alternateFormats = group.map { it.childText("Format").orEmpty() } - widest.childText("Format").orEmpty(),
                         flagIndex = bit.index,
                     )
@@ -199,7 +225,7 @@ object GattXmlParser {
             }
         }
         requireTrailingRepeated(name, fields)
-        return GattCharacteristic(name, uuid, fields, flagFields = flagFields)
+        return ParsedValue(fields, enumFlagFields)
     }
 
     // The flag bits a field's <Requirement>s resolve to, supporting several <Requirement> elements and a single one
@@ -210,29 +236,27 @@ object GattXmlParser {
             .mapNotNull { bitByCondition[it] }
             .distinctBy { it.index }
 
-    private fun formatWidth(format: String): Int = format.dropWhile { !it.isDigit() }.toIntOrNull() ?: 0
+    // The bit width declared in a format token, taken from its first digit run so both trailing-digit forms (`uint16`)
+    // and leading-digit forms (`16bit`) resolve; tokens with no digits (e.g. `SFLOAT`) have no declared width.
+    private fun formatWidth(format: String): Int = Regex("\\d+").find(format)?.value?.toIntOrNull() ?: 0
 
     private fun parseService(root: Element): GattService {
         require(root.tagName == "Service") { "Expected a <Service> root, but was <${root.tagName}>" }
-        val characteristics = root.children("Characteristics").firstOrNull()
-            ?.children("Characteristic")
+        val characteristics = root.directChildren("Characteristics").firstOrNull()
+            ?.directChildren("Characteristic")
             .orEmpty()
             .map { characteristic ->
                 GattServiceCharacteristic(
                     uuid = characteristic.getAttribute("uuid"),
                     type = characteristic.getAttribute("type").ifBlank { null },
-                    properties = grantedProperties(characteristic.children("Properties").firstOrNull()),
+                    properties = grantedProperties(characteristic.directChildren("Properties").firstOrNull()),
+                    descriptorReferences = descriptorReferencesOf(characteristic),
                 )
             }
-        val includedServiceUuids = root.children("IncludedServices").firstOrNull()
-            ?.children("IncludedService")
-            .orEmpty()
-            .map { it.getAttribute("uuid") }
         return GattService(
             name = root.getAttribute("name").ifBlank { root.getAttribute("type") },
             uuid = root.getAttribute("uuid"),
             characteristics = characteristics,
-            includedServiceUuids = includedServiceUuids,
         )
     }
 
@@ -247,6 +271,7 @@ object GattXmlParser {
             GattProperty.READ -> "Read"
             GattProperty.WRITE -> "Write"
             GattProperty.WRITE_WITHOUT_RESPONSE -> "WriteWithoutResponse"
+            GattProperty.SIGNED_WRITE -> "SignedWrite"
             GattProperty.NOTIFY -> "Notify"
             GattProperty.INDICATE -> "Indicate"
         }
