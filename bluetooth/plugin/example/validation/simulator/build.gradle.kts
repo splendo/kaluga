@@ -1,3 +1,4 @@
+import com.splendo.kaluga.bluetooth.plugin.BluetoothPluginVersion
 import com.splendo.kaluga.bluetooth.plugin.BluetoothTarget
 import com.splendo.kaluga.bluetooth.plugin.ImplementFor
 
@@ -8,6 +9,14 @@ plugins {
 
 kaluga {
     moduleName = "bluetooth.validation.simulator"
+    dependencies {
+        common {
+            test {
+                // base test-utils provides testRunBlocking; resolved from the kaluga root via the composite includeBuild.
+                implementation("com.splendo.kaluga.base:test:${BluetoothPluginVersion.kalugaVersion}")
+            }
+        }
+    }
 }
 
 bluetooth {

@@ -1,3 +1,4 @@
+import com.splendo.kaluga.bluetooth.plugin.BluetoothPluginVersion
 import com.splendo.kaluga.bluetooth.plugin.BluetoothTarget
 import com.splendo.kaluga.bluetooth.plugin.ImplementFor
 
@@ -12,6 +13,10 @@ kaluga {
         common {
             main {
                 implementation(project(":validation:contract"))
+            }
+            test {
+                // testRunBlocking, resolved from the kaluga root via the composite includeBuild.
+                implementation("com.splendo.kaluga.base:test:${BluetoothPluginVersion.kalugaVersion}")
             }
         }
     }
