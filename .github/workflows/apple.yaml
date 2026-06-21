@@ -94,9 +94,10 @@ jobs:
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
 
-      # Validate that the Bluetooth code generation plugin produces code that compiles for iOS.
+      # Validate the Bluetooth code generation plugin: the validation fixtures' tests both compile the generated code for
+      # iOS and run it (implementing the generated interfaces and round-tripping the simulated client/server).
       - name: validate bluetooth code generation
-        run: ./gradlew compileKotlinIosSimulatorArm64
+        run: ./gradlew iosSimulatorArm64Test
         working-directory: bluetooth/plugin/example
 
   example-ios:

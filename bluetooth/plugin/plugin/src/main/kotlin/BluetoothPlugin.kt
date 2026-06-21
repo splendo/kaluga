@@ -49,6 +49,13 @@ class BluetoothPlugin : Plugin<Project> {
 
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
+        extensions.configure<KotlinMultiplatformExtension> {
+            sourceSets.commonMain {
+                kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+                kotlin.srcDir("build/$GENERATED_DIR")
+            }
+        }
+
         afterEvaluate {
             val xmlGeneration = bluetoothExtension.xmlGeneration
             val generatedSourceDir = xmlGeneration?.let {
@@ -71,7 +78,6 @@ class BluetoothPlugin : Plugin<Project> {
                 val bluetoothTargets = bluetoothExtension.target.get()
                 val generatesImplementation = bluetoothExtension.implementFor.get().isNotEmpty()
                 sourceSets.commonMain {
-                    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
                     generatedSourceDir?.let { kotlin.srcDir(it) }
                     bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
                     dependencies {

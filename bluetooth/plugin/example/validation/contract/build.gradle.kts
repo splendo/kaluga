@@ -1,3 +1,4 @@
+import com.splendo.kaluga.bluetooth.plugin.BluetoothPluginVersion
 import com.splendo.kaluga.bluetooth.plugin.BluetoothTarget
 
 plugins {
@@ -7,6 +8,14 @@ plugins {
 
 kaluga {
     moduleName = "bluetooth.validation.contract"
+    dependencies {
+        common {
+            test {
+                // Provides the iOS test entry point (mainBackground) + kotlin.test; resolved from the kaluga root.
+                implementation("com.splendo.kaluga.base:test:${BluetoothPluginVersion.kalugaVersion}")
+            }
+        }
+    }
 }
 
 bluetooth {
