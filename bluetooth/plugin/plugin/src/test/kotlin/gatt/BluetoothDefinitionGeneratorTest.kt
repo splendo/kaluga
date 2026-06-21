@@ -204,6 +204,24 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
+    fun generatesUnsignedIntForRawBitFieldValue() {
+        // BitField bits with no enumerations are raw sub-byte numerics, packed in the flags via @FlagIndex/@FlagWidth.
+        val value = generator.generateValueClass(characteristic("/gatt/numeric_in_flags.xml")).singleType()
+
+        val counter = checkNotNull(value.property("counter"))
+        assertEquals("Int", counter.type.simpleName)
+        assertEquals("0", checkNotNull(counter.annotation("FlagIndex")).argument)
+        assertEquals("bits = 4", checkNotNull(counter.annotation("FlagWidth")).argument)
+        assertTrue("Unsigned" in counter.annotationNames)
+        assertNull(value.nestedType("Counter")) // a raw numeric, not an enum
+
+        val reading = checkNotNull(value.property("reading"))
+        assertEquals("Int", reading.type.simpleName)
+        assertEquals("4", checkNotNull(reading.annotation("FlagIndex")).argument)
+        assertEquals("bits = 12", checkNotNull(reading.annotation("FlagWidth")).argument)
+    }
+
+    @Test
     fun rejectsUnsupportedIntegerWidth() {
         // 12-bit isn't byte-aligned and 128-bit has no Kotlin primitive; neither has a Length, so both fail loudly.
         assertFailsWith<IllegalArgumentException> {

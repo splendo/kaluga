@@ -283,6 +283,15 @@ internal fun BluetoothBinaryDescriptor.decodeBoolean(decoder: BluetoothBinaryDes
 }
 
 internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.Natural): Long {
+    settings.inFlagsBits?.let { bits ->
+        // Value packed into the flag region, least-significant bit first (mirrors the encoder).
+        var raw = (0 until bits).fold(0L) { acc, bit -> if (decoder.flags[bitIndex + bit]) acc or (1L shl bit) else acc }
+        // Sign-extend a signed value whose top bit is set.
+        if (settings.signed && bits < Long.SIZE_BITS && (raw shr (bits - 1)) and 1L == 1L) {
+            raw = raw or (-1L shl bits)
+        }
+        return raw
+    }
     val supportedLengths = settings.supportedLengths.toList()
     val expectedLength = when (supportedLengths.size) {
         0 -> throw IllegalArgumentException("Size should be set")

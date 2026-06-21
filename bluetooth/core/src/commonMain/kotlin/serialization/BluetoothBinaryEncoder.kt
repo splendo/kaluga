@@ -321,9 +321,26 @@ internal fun BinaryBuilder.encodeBooleanElement(value: Boolean, binaryDescriptor
 // sizing decision (and thus the byte layout) is identical on every platform.
 private fun Number.fitsLosslesslyIn32BitFloat(): Boolean = toDouble() == Float.fromBits(toFloat().toRawBits()).toDouble()
 
+// Whether [value] fits in [bits] bits with the given signedness, so a flag-packed numeric can't silently truncate.
+private fun fitsInBits(value: Long, bits: Int, signed: Boolean): Boolean = when {
+    bits >= Long.SIZE_BITS -> true
+    signed -> value in -(1L shl (bits - 1)) until (1L shl (bits - 1))
+    else -> value in 0L until (1L shl bits)
+}
+
 internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor: BluetoothBinaryDescriptor, settings: BluetoothBinaryDescriptor.NumericSettings) {
     when (settings) {
-        is BluetoothBinaryDescriptor.NumericSettings.Natural -> {
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> if (settings.inFlagsBits != null) {
+            // Sub-byte value packed straight into the flag region, least-significant bit first (like an enum ordinal).
+            val bits = settings.inFlagsBits
+            val raw = value.toLong()
+            require(fitsInBits(raw, bits, settings.signed)) {
+                "Value $raw does not fit in a ${if (settings.signed) "signed" else "unsigned"} $bits-bit flag field"
+            }
+            for (bit in 0 until bits) {
+                addFlag(binaryDescriptor.bitIndex + bit, (raw shr bit) and 1L == 1L)
+            }
+        } else {
             val supportedLengths = settings.supportedLengths
             // Grab desired length
             val lengthToAdd = when (supportedLengths.size) {

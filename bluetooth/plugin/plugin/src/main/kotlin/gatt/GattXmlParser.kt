@@ -169,8 +169,9 @@ object GattXmlParser {
         }
         val bitByCondition = bits.flatMap { bit -> bit.enumerations.mapNotNull { it.requires?.to(bit) } }.toMap()
 
-        // Bits whose value is not a gate (no `requires`) become enums packed in the flags.
-        val enumFlagFields = bits.filter { bit -> bit.enumerations.isNotEmpty() && bit.enumerations.none { it.requires != null } }.map { bit ->
+        // A bit whose value is not a gate (no `requires`) carries a value packed in the flags region: an enum when it
+        // lists enumerations, otherwise a raw unsigned integer of its width (a sub-byte numeric subfield).
+        val packedFlagFields = bits.filter { bit -> bit.enumerations.none { it.requires != null } }.map { bit ->
             GattFlagField(
                 name = bit.name.removeSuffix("bits").removeSuffix("bit").trim().ifBlank { "Flag${bit.index}" },
                 index = bit.index,
@@ -225,7 +226,7 @@ object GattXmlParser {
             }
         }
         requireTrailingRepeated(name, fields)
-        return ParsedValue(fields, enumFlagFields)
+        return ParsedValue(fields, packedFlagFields)
     }
 
     // The flag bits a field's <Requirement>s resolve to, supporting several <Requirement> elements and a single one

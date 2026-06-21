@@ -226,19 +226,27 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
             .addModifiers(KModifier.DATA)
             .addAnnotation(SERIALIZABLE)
 
-        // Values carried in the leading flags byte: a (nested) enum stored at its bit, by ordinal.
+        // Values carried in the leading flags region, stored at their bit(s): an enum (by ordinal) when the bit lists
+        // cases, otherwise a raw unsigned integer packed across its width (a sub-byte numeric subfield).
         flagFields.forEach { flag ->
-            val enumName = flag.name.toPascalCase()
-            type.addType(flagEnum(flag, enumName))
             val propertyName = flag.name.toCamelCase()
-            val enumType = ClassName(packageName, className, enumName)
-            constructor.addParameter(ParameterSpec.builder(propertyName, enumType).build())
+            val propertyType = if (flag.cases.isEmpty()) {
+                INT
+            } else {
+                val enumName = flag.name.toPascalCase()
+                type.addType(flagEnum(flag, enumName))
+                ClassName(packageName, className, enumName)
+            }
+            constructor.addParameter(ParameterSpec.builder(propertyName, propertyType).build())
             type.addProperty(
-                PropertySpec.builder(propertyName, enumType)
+                PropertySpec.builder(propertyName, propertyType)
                     .initializer(propertyName)
                     .addAnnotation(flagIndex(flag.index))
                     .addAnnotation(flagWidth(flag.size))
-                    .apply { flag.description?.let { addKdoc("%L", it) } }
+                    .apply {
+                        if (flag.cases.isEmpty()) addAnnotation(UNSIGNED)
+                        flag.description?.let { addKdoc("%L", it) }
+                    }
                     .build(),
             )
         }

@@ -197,6 +197,38 @@ class BluetoothFormatTest {
     }
 
     @Test
+    fun encodeNumericInFlags() {
+        // A sub-byte numeric subfield of a bit field: @FlagIndex + @FlagWidth and no @Size packs the value straight into
+        // the flag region, least-significant bit first (like an enum ordinal), rather than as body bytes.
+        @Serializable
+        data class Packed(
+            @FlagIndex(0) @FlagWidth(bits = 4) val nibble: Int,
+            @FlagIndex(4) @FlagWidth(bits = 12) val wide: Int,
+        )
+        // nibble = 5 -> bits 0..3 = 0b0101; wide = 0x123 -> bits 4..15. Two flag bytes: byte0 = 0x35, byte1 = 0x12.
+        validateEncoding(Packed(nibble = 5, wide = 0x123), byteArrayOf(0x35, 0x12))
+
+        // A single unsigned 4-bit value occupies one flags byte (the high nibble stays zero).
+        @Serializable
+        data class Nibble(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        validateEncoding(Nibble(0xA), byteArrayOf(0x0A))
+
+        // A signed sub-byte value round-trips through two's-complement sign extension: -3 in 4 bits = 0b1101.
+        @Serializable
+        data class Signed(@FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        validateEncoding(Signed(-3), byteArrayOf(0x0D))
+        validateEncoding(Signed(7), byteArrayOf(0x07))
+    }
+
+    @Test
+    fun rejectsNumericTooLargeForFlagWidth() {
+        // 16 needs 5 bits; an unsigned 4-bit flag field holds 0..15, so encoding must fail rather than truncate.
+        @Serializable
+        data class TooBig(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        assertFailsWith<IllegalArgumentException> { BluetoothFormat.encodeToByteArray(TooBig.serializer(), TooBig(16)) }
+    }
+
+    @Test
     fun encodeByte() {
         validateEncoding(42.toByte(), byteArrayOf(42.toByte()))
 
