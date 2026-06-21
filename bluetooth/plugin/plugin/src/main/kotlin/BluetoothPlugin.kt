@@ -47,6 +47,12 @@ class BluetoothPlugin : Plugin<Project> {
 
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
+        extensions.configure<KotlinMultiplatformExtension> {
+            sourceSets.commonMain {
+                kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+            }
+        }
+
         afterEvaluate {
             extensions.configure<KotlinMultiplatformExtension> {
                 project.dependencies.add(
@@ -65,7 +71,6 @@ class BluetoothPlugin : Plugin<Project> {
                 val bluetoothTargets = bluetoothExtension.target.get()
                 val generatesImplementation = bluetoothExtension.implementFor.get().isNotEmpty()
                 sourceSets.commonMain {
-                    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
                     bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
                     dependencies {
                         implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
