@@ -40,7 +40,7 @@ class GeneratedExternalApiMockStructureTest : BaseTest() {
     fun mockClientStubsAndVerifiesThroughTheExternalApi() = testRunBlocking {
         val client = SharedDeviceClient.mock()
 
-        val characteristic = client.sharedService.sharedCharacteristic as MockRemoteSharedCharacteristic
+        val characteristic = client.sharedService.sharedCharacteristic
         characteristic.readLevelMock.on().doReturn(SharedCharacteristicReadResponse.Success(42))
         characteristic.writeTargetMock.on().doExecuteSuspended { GattResponse.WriteSuccess.Acknowledged }
 

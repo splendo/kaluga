@@ -114,7 +114,7 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
                 constructorParameters += ParameterSpec.builder(property.name, childMockType)
                     .defaultValue("%T()", childMockType.copy(nullable = false))
                     .build()
-                overrideProperties += PropertySpec.builder(property.name, property.type, KModifier.OVERRIDE)
+                overrideProperties += PropertySpec.builder(property.name, childMockType, KModifier.OVERRIDE)
                     .initializer(property.name)
                     .build()
             } else {

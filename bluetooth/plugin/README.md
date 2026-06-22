@@ -120,7 +120,7 @@ For a `@Bluetooth DemoDevice` the plugin generates, according to `target` / `imp
 - A `DemoDeviceClient` / `DemoDeviceServer` API (interfaces mirroring the device's services, characteristics and descriptors).
 - A `BluetoothDemoDeviceClient` / `BluetoothDemoDeviceServer` backed by the platform Bluetooth stack (`ImplementFor.BLUETOOTH`).
 - A `SimulatedDemoDeviceClient` / `SimulatedDemoDeviceServer` that talk to each other in-process (`ImplementFor.SIMULATOR`).
-- A `MockDemoDeviceClient` / `MockDemoDeviceServer` whose every operation is backed by a Kaluga [`base:test`](../../base/test-utils/) mock — stub with `.on().doReturn(…)` / `.doExecuteSuspended { … }` and assert with `verify()` (`ImplementFor.MOCK`).
+- A `MockDemoDeviceClient` / `MockDemoDeviceServer` whose every operation is backed by a Kaluga [`base:test`](../../base/test-utils/) mock — stub with `.on().doReturn(…)` / `.doExecuteSuspended { … }` and assert with `verify()` / `verifyWithin()` (`ImplementFor.MOCK`).
 - Factory functions to obtain them, e.g.:
 
 ```kotlin
@@ -139,10 +139,10 @@ val simulatedClient = DemoDeviceClient.simulated(identifier, simulatedServer)
 
 // mock test double — stub and verify, no transport at all
 val mockClient = DemoDeviceClient.mock()
-val reading = mockClient.sensor.reading as MockReadingCharacteristic
+val reading = mockClient.sensor.reading
 reading.readValueMock.on().doExecuteSuspended { /* return a stubbed read response */ }
-mockClient.sensor.reading.readValue()    // returns the stubbed value
-reading.readValueMock.verify()           // assert it was called
+reading.readValue()    // returns the stubbed value
+reading.readValueMock.verifyWithin()           // assert it was called
 ```
 
 The generated client and server APIs are implementation-agnostic: the same `DemoDeviceClient` code works against the

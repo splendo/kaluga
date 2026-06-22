@@ -37,8 +37,8 @@ class GeneratedMockStructureTest : BaseTest() {
     fun mockClientStubsAndVerifiesThroughTheGeneratedApi() = testRunBlocking {
         val client = SharedDeviceClient.mock()
 
-        // Reach the leaf characteristic mock through the generated mock tree.
-        val characteristic = client.sharedService.sharedCharacteristic as MockRemoteSharedCharacteristic
+        // Reach the leaf characteristic mock through the generated mock tree (nested properties are typed as their mocks).
+        val characteristic = client.sharedService.sharedCharacteristic
         characteristic.readLevelMock.on().doReturn(SharedCharacteristicReadResponse.Success(42))
         characteristic.writeTargetMock.on().doExecuteSuspended { GattResponse.WriteSuccess.Acknowledged }
 
@@ -59,7 +59,7 @@ class GeneratedMockStructureTest : BaseTest() {
     fun mockServerRecordsAndVerifiesNotifyAllStateChanged() = testRunBlocking {
         val server = MockSharedDeviceServer()
 
-        val characteristic = server.sharedService.sharedCharacteristic as MockLocalSharedCharacteristic
+        val characteristic = server.sharedService.sharedCharacteristic
         characteristic.notifyAllStateChangedMock.on().doReturn(true)
 
         withTimeout(5.seconds) {
