@@ -323,6 +323,8 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(GenerationType.Side.SERVER, nested)
+
     private fun generateSimulatorGenerateRemoteMethod(remote: ClassName, properties: Sequence<KSPropertyDeclaration>): FunSpec = FunSpec.builder(GENERATE_REMOTE)
         .addParameter(IDENTIFIER, References.Bluetooth.Device.identifier)
         .returns(remote)
@@ -406,7 +408,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             .apply {
                 val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
                 when (type) {
-                    GenerationType.Type.API -> {}
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(
@@ -444,7 +446,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             .apply {
                 val characteristicNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
                 when (type) {
-                    GenerationType.Type.API -> {}
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
                         val isNotifiable = typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isNotifiable }

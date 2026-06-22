@@ -41,6 +41,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
 import com.splendo.kaluga.bluetooth.ksp.helpers.IS_CLOSED
 import com.splendo.kaluga.bluetooth.ksp.helpers.IT
 import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
+import com.splendo.kaluga.bluetooth.ksp.helpers.MOCK
 import com.splendo.kaluga.bluetooth.ksp.helpers.MUTABLE_MAP_OF
 import com.splendo.kaluga.bluetooth.ksp.helpers.NULL
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
@@ -100,8 +101,16 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
     override fun factoryFor(generationType: GenerationType): FunSpec? = when (generationType) {
         GenerationType.SERVER_BLUETOOTH -> generateBluetoothFactory()
         GenerationType.SERVER_SIMULATOR -> generateSimulatorFactory()
+        GenerationType.SERVER_MOCK -> generateMockFactory()
         else -> null
     }
+
+    private fun generateMockFactory(): FunSpec = FunSpec.builder(MOCK).apply {
+        val returnType = nameFor(declaration, GenerationType.SERVER_MOCK)
+        receiver(companionReceiver(GenerationType.SERVER_API))
+        returns(returnType)
+            .addStatement("$RETURN %T()", returnType)
+    }.build()
 
     private fun delegateParameter(interfaceName: ClassName): ParameterSpec = ParameterSpec(
         "$SERVER$DELEGATE".replaceFirstChar { it.lowercase() },
@@ -388,6 +397,13 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(
+        GenerationType.Side.SERVER,
+        nested,
+        // close() is inherited from AutoCloseable, so it is not declared on the generated API interface.
+        additionalFunctions = listOf(FunSpec.builder(CLOSE).build()),
+    )
+
     private fun generateSimulatorGenerateRemoteMethod(remote: ClassName, properties: Sequence<KSPropertyDeclaration>): FunSpec = FunSpec.builder(GENERATE_CLIENT)
         .addParameter(IDENTIFIER, References.Bluetooth.Device.identifier)
         .returns(remote)
@@ -450,7 +466,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
             .apply {
                 val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
                 when (type) {
-                    GenerationType.Type.API -> {}
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(

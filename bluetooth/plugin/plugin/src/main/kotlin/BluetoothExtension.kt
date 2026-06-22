@@ -41,6 +41,12 @@ enum class ImplementFor {
 
     /** Generate an in-process simulated implementation, where a simulated client talks directly to a simulated server. */
     SIMULATOR,
+
+    /**
+     * Generate a Kaluga `base:test` mock-backed test double (`Mock<Name>`) for each generated interface, where every
+     * function member is backed by a Kaluga mock so consumers can stub it via `.on()` and verify calls with `verify()`.
+     */
+    MOCK,
 }
 
 /**

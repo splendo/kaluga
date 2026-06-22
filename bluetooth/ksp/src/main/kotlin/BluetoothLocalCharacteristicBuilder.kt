@@ -557,6 +557,8 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(GenerationType.Side.SERVER, nested)
+
     private fun generateSimulatorProperties(notifiable: KSPropertyDeclaration?, delegate: ClassName, remote: ClassName): List<PropertySpec> = listOfNotNull(
         PropertySpec.builder(declaration.delegateParameterName, delegate)
             .initializer(declaration.delegateParameterName)
@@ -793,7 +795,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
         .addModifiers(*type.additionalModifiers.toTypedArray())
         .apply {
             when (type) {
-                GenerationType.Type.API -> {}
+                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                 GenerationType.Type.BLUETOOTH -> {
                     initializer(
@@ -821,7 +823,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 .returns(BOOLEAN)
                 .apply {
                     when (type) {
-                        GenerationType.Type.API -> {}
+                        GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                         GenerationType.Type.BLUETOOTH -> {
                             if (propertyDeclaration.isByteArray) {
@@ -859,7 +861,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 .returns(BOOLEAN)
                 .apply {
                     when (type) {
-                        GenerationType.Type.API -> {}
+                        GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                         GenerationType.Type.BLUETOOTH -> {
                             val notifyCode = if (propertyDeclaration.isByteArray) {
@@ -915,7 +917,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             .addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
                 when (type) {
-                    GenerationType.Type.API -> {}
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(

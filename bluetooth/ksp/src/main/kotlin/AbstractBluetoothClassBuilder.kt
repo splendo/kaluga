@@ -29,10 +29,19 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.ksp.helpers.COMPANION
 import com.splendo.kaluga.bluetooth.ksp.helpers.FACTORY
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
+import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.UNIT
 import kotlin.reflect.KClass
 
 internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDeclaration, val options: Options, val logger: KSPLogger) {
@@ -49,12 +58,118 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
             GenerationType.Type.API -> generateAPI(nested)
             GenerationType.Type.BLUETOOTH -> generateBluetooth(nested)
             GenerationType.Type.SIMULATOR -> generateSimulated(nested)
+            GenerationType.Type.MOCK -> generateMock(nested)
         }
     }
 
     abstract fun generateAPI(nested: List<TypeSpec>): TypeSpec
     abstract fun generateBluetooth(nested: List<TypeSpec>): TypeSpec
     abstract fun generateSimulated(nested: List<TypeSpec>): TypeSpec
+    abstract fun generateMock(nested: List<TypeSpec>): TypeSpec
+
+    /**
+     * Builds a `base:test` mock-backed test double for [side]. Every function member of the generated API interface is
+     * backed by a Kaluga mock (`::member.mock()`), with its override delegating to `memberMock.call(...)` so consumers can
+     * stub via `.on()` and assert with `verify()`. Properties whose type is a nested generated interface are exposed as a
+     * constructor parameter defaulting to a fresh child mock; all other (leaf) properties become a public settable backing.
+     *
+     * @param nested the already-generated child mock [TypeSpec]s to nest inside the mock.
+     * @param additionalFunctions functions inherited from a superinterface (e.g. [AutoCloseable.close]) that are not
+     * declared on the generated API interface but must still be mocked and overridden.
+     */
+    protected fun buildMock(side: GenerationType.Side, nested: List<TypeSpec>, additionalFunctions: List<FunSpec> = emptyList()): TypeSpec {
+        val mockGenerationType = if (side == GenerationType.Side.CLIENT) GenerationType.CLIENT_MOCK else GenerationType.SERVER_MOCK
+        fun nameForType(typeDeclaration: KSClassDeclaration): ClassName =
+            if (side == GenerationType.Side.CLIENT) clientName(typeDeclaration, GenerationType.Type.MOCK) else serverName(typeDeclaration, GenerationType.Type.MOCK)
+
+        val apiInterface = generate(if (side == GenerationType.Side.CLIENT) GenerationType.CLIENT_API else GenerationType.SERVER_API)
+        val apiName = nameFor(declaration, if (side == GenerationType.Side.CLIENT) GenerationType.CLIENT_API else GenerationType.SERVER_API)
+        val mockName = nameFor(declaration, mockGenerationType)
+
+        // Classify each generated property as either a nested generated interface (child mock) or a leaf.
+        val nestedProperties = declaration.declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
+            val typeDeclaration = propertyDeclaration.type.resolve().declaration
+            if (typeDeclaration is KSClassDeclaration &&
+                (
+                    typeDeclaration.isAnnotationPresent(Bluetooth::class) ||
+                        typeDeclaration.isAnnotationPresent(BluetoothService::class) ||
+                        typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class) ||
+                        typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)
+                    )
+            ) {
+                propertyDeclaration.simpleName.asString() to nameForType(typeDeclaration).nullIfPropertyIsNull(propertyDeclaration)
+            } else {
+                null
+            }
+        }.toMap()
+
+        val constructorParameters = nestedProperties.map { (name, childMockType) ->
+            ParameterSpec.builder(name, childMockType)
+                .defaultValue("%T()", childMockType.copy(nullable = false))
+                .build()
+        }
+
+        val typeBuilder = TypeSpec.classBuilder(mockName)
+            .apply { if (constructorParameters.isNotEmpty()) primaryConstructor(FunSpec.constructorBuilder().addParameters(constructorParameters).build()) }
+            .addSuperinterface(apiName)
+            .addTypes(nested)
+
+        // Properties: nested → constructor-backed override; leaf → public settable backing.
+        apiInterface.propertySpecs.forEach { property ->
+            if (nestedProperties.containsKey(property.name)) {
+                typeBuilder.addProperty(
+                    PropertySpec.builder(property.name, property.type)
+                        .addModifiers(KModifier.OVERRIDE)
+                        .initializer(property.name)
+                        .build(),
+                )
+            } else {
+                typeBuilder.addProperty(
+                    PropertySpec.builder(property.name, property.type, KModifier.OVERRIDE)
+                        .mutable(true)
+                        .initializer(leafPropertyDefault(property))
+                        .build(),
+                )
+            }
+        }
+
+        // Functions: each backed by a Kaluga mock; the override delegates to `memberMock.call(...)`.
+        (apiInterface.funSpecs.filterNot { it.isConstructor } + additionalFunctions).forEach { function ->
+            val mockPropertyName = "${function.name}Mock"
+            val suspended = KModifier.SUSPEND in function.modifiers
+            val mockTypeArguments = function.parameters.map { it.type } + function.returnType.orUnit()
+            val mockType = References.Base.Test.methodMock(function.parameters.size, suspended).parameterizedBy(mockTypeArguments)
+            typeBuilder.addProperty(
+                PropertySpec.builder(mockPropertyName, mockType)
+                    .initializer("::%N.%M()", function.name, References.Base.Test.mockFactory)
+                    .build(),
+            )
+            val arguments = function.parameters.joinToString(separator = ", ") { it.name }
+            typeBuilder.addFunction(
+                function.toBuilder()
+                    .apply { modifiers.remove(KModifier.ABSTRACT) }
+                    .addModifiers(KModifier.OVERRIDE)
+                    .addStatement("return %N.%M($arguments)", mockPropertyName, References.Base.Test.call)
+                    .build(),
+            )
+        }
+
+        return typeBuilder.build()
+    }
+
+    /** The initializer for a leaf (non-nested) mock property: a `Flow` defaults to `emptyFlow()`; other leaf kinds are unexpected. */
+    private fun leafPropertyDefault(property: PropertySpec): CodeBlock {
+        val type = property.type
+        val isFlow = type is ParameterizedTypeName && type.rawType == References.KotlinX.Coroutines.Flow.flow
+        return if (isFlow) {
+            CodeBlock.of("%M()", References.KotlinX.Coroutines.Flow.emptyFlow)
+        } else {
+            logger.error("Cannot generate a mock backing for leaf property ${property.name} of type $type")
+            CodeBlock.of("%M()", References.KotlinX.Coroutines.Flow.emptyFlow)
+        }
+    }
+
+    private fun TypeName?.orUnit(): TypeName = this ?: UNIT
 
     /**
      * The top-level creator function (an extension on the API's `Companion`) for the given implementation type,

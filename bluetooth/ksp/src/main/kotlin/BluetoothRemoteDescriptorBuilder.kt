@@ -217,6 +217,8 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(GenerationType.Side.CLIENT, nested)
+
     private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, type: GenerationType.Type): TypeSpec.Builder = apply {
         var hasReadMethod = false
         var hasWriteMethod = false
@@ -253,7 +255,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
             resultType.responseClassName,
         ).apply {
             when (type) {
-                GenerationType.Type.API -> {}
+                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                 GenerationType.Type.BLUETOOTH -> {
                     resultType.generateBluetoothResult(this, DESCRIPTOR)
@@ -278,7 +280,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
             References.Bluetooth.writeResponse,
         ).apply {
             when (type) {
-                GenerationType.Type.API -> {}
+                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                 GenerationType.Type.BLUETOOTH -> {
                     if (propertyDeclaration.isByteArray) {

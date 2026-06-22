@@ -22,9 +22,11 @@ internal enum class GenerationType(val side: Side, val type: Type) {
     CLIENT_API(Side.CLIENT, Type.API),
     CLIENT_BLUETOOTH(Side.CLIENT, Type.BLUETOOTH),
     CLIENT_SIMULATOR(Side.CLIENT, Type.SIMULATOR),
+    CLIENT_MOCK(Side.CLIENT, Type.MOCK),
     SERVER_API(Side.SERVER, Type.API),
     SERVER_BLUETOOTH(Side.SERVER, Type.BLUETOOTH),
     SERVER_SIMULATOR(Side.SERVER, Type.SIMULATOR),
+    SERVER_MOCK(Side.SERVER, Type.MOCK),
     ;
 
     enum class Side {
@@ -36,5 +38,6 @@ internal enum class GenerationType(val side: Side, val type: Type) {
         API,
         BLUETOOTH,
         SIMULATOR,
+        MOCK,
     }
 }

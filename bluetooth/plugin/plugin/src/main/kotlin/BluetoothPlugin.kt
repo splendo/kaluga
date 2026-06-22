@@ -84,7 +84,9 @@ class BluetoothPlugin : Plugin<Project> {
                 }
                 val isSinglePlatform = targets.count { it.name != "metadata" } == 1
                 val bluetoothTargets = bluetoothExtension.target.get()
-                val generatesImplementation = bluetoothExtension.implementFor.get().isNotEmpty()
+                val implementations = bluetoothExtension.implementFor.get()
+                val generatesImplementation = implementations.isNotEmpty()
+                val generatesMock = ImplementFor.MOCK in implementations
                 sourceSets.commonMain {
                     generatedSourceDir?.let { kotlin.srcDir(it) }
                     bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
@@ -96,6 +98,9 @@ class BluetoothPlugin : Plugin<Project> {
                         }
                         if (generatesImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:server:$kalugaVersion")
+                        }
+                        if (generatesMock) {
+                            implementation("com.splendo.kaluga.base:test:$kalugaVersion")
                         }
                         if (bluetoothExtension.useScientificUnits) {
                             implementation("com.splendo.kaluga.scientific:scientific:$kalugaVersion")
