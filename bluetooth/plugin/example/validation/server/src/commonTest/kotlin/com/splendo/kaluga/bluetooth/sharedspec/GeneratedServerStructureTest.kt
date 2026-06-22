@@ -17,60 +17,91 @@
 
 package com.splendo.kaluga.bluetooth.sharedspec
 
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.device.Identifier
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bluetooth.test.server.MockBluetoothServerBuilder
+import com.splendo.kaluga.bluetooth.test.server.MockConnectedDevice
+import kotlinx.coroutines.withTimeout
+import kotlinx.serialization.serializer
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
-// Implementing every generated server interface (and its delegates) proves the plugin emitted the SERVER API with the
-// notify members and delegate callbacks we expect; a missing or renamed member fails to compile.
-//
-// Note: the generated Bluetooth-backed server (`SharedDeviceServer.bluetooth(...)`) is exercised at runtime in the
-// `simulator` module, whose simulated transport runs in-memory. Standing up the real Bluetooth server here would require
-// the core library's peripheral/service-graph harness, which validates the BLE runtime rather than the generated code.
-class GeneratedServerStructureTest {
+// Real runtime round-trip against a behavioral mock Bluetooth server: the generated SharedDeviceServer.bluetooth() factory
+// builds a behavioral MockBluetoothServer, the generated delegate tree wires the read/write/notify callbacks, and a simulated
+// central drives reads/writes/subscriptions through the captured GATT actions. This proves the generated SERVER API talks
+// to the bluetooth runtime, not merely that it compiles.
+class GeneratedServerStructureTest : BaseTest() {
 
-    private object LocalCharacteristic : LocalSharedCharacteristic {
-        override val stateSubscribers: Flow<List<Identifier>> = flowOf(emptyList())
-        override suspend fun notifyAllStateChanged(state: Short): Boolean = true
-        override suspend fun notifyStateChanged(identifier: Identifier, state: Short): Boolean = true
-    }
+    private class CharacteristicDelegate : LocalSharedCharacteristic.Delegate {
+        var written: Int? = null
+        var subscribed = false
 
-    private object LocalCharacteristicDelegate : LocalSharedCharacteristic.Delegate {
         override suspend fun LocalSharedCharacteristic.onReadLevel(identifier: Identifier): SharedCharacteristicReadResponse =
-            SharedCharacteristicReadResponse.Success(0)
-        override suspend fun LocalSharedCharacteristic.onWriteTarget(target: Int, identifier: Identifier): GattResponse.WriteResponse =
-            GattResponse.WriteSuccess.Acknowledged
+            SharedCharacteristicReadResponse.Success(42)
+
+        override suspend fun LocalSharedCharacteristic.onWriteTarget(target: Int, identifier: Identifier): GattResponse.WriteResponse {
+            written = target
+            return GattResponse.WriteSuccess.Acknowledged
+        }
+
         override suspend fun LocalSharedCharacteristic.onFailedToWriteTarget(exception: Exception, identifier: Identifier): GattResponse.WriteResponse =
-            GattResponse.WriteSuccess.Acknowledged
-        override fun LocalSharedCharacteristic.onSubscribeToState(identifier: Identifier) {}
-        override fun LocalSharedCharacteristic.onUnsubscribeToState(identifier: Identifier) {}
+            GattResponse.ApplicationError(0x80)
+
+        override fun LocalSharedCharacteristic.onSubscribeToState(identifier: Identifier) {
+            subscribed = true
+        }
+
+        override fun LocalSharedCharacteristic.onUnsubscribeToState(identifier: Identifier) {
+            subscribed = false
+        }
     }
 
-    private object LocalService : LocalSharedService {
-        override val sharedCharacteristic = LocalCharacteristic
-    }
+    private class ServiceDelegate(override val sharedCharacteristicDelegate: CharacteristicDelegate) : LocalSharedService.Delegate
 
-    private object LocalServiceDelegate : LocalSharedService.Delegate {
-        override val sharedCharacteristicDelegate = LocalCharacteristicDelegate
-    }
-
-    private object Server : SharedDeviceServer {
-        override val sharedService = LocalService
-        override fun close() {}
-    }
-
-    private object ServerDelegate : SharedDeviceServer.Delegate {
-        override val sharedServiceDelegate = LocalServiceDelegate
-    }
+    private class ServerDelegate(override val sharedServiceDelegate: ServiceDelegate) : SharedDeviceServer.Delegate
 
     @Test
-    fun serverApiExists() {
-        assertNotNull(Server.sharedService.sharedCharacteristic)
-        assertNotNull(ServerDelegate.sharedServiceDelegate.sharedCharacteristicDelegate)
-        assertNotNull(LocalSharedService.UUID)
-        assertNotNull(LocalSharedCharacteristic.UUID)
+    fun serverRoundTrip() = testRunBlocking {
+        withTimeout(10.seconds) {
+            val characteristicDelegate = CharacteristicDelegate()
+            val builder = MockBluetoothServerBuilder()
+            val server = SharedDeviceServer.bluetooth(
+                builder,
+                ServerDelegate(ServiceDelegate(characteristicDelegate)),
+            )
+            val mock = builder.createdServers.last()
+            try {
+                // The generated service/characteristic graph resolved from the server's services.
+                assertNotNull(server.sharedService.sharedCharacteristic)
+
+                // Read round-trip: the delegate produced 42.
+                val readResponse = mock.triggerRead(LocalSharedCharacteristic.UUID)
+                val readSuccess = assertIs<GattResponse.ReadSuccess>(readResponse)
+                assertEquals(42, BluetoothFormat.decodeFromByteArray(serializer<Int>(), readSuccess.value))
+
+                // Write round-trip: the central writes 7 and the delegate records it.
+                val writeResponse = mock.triggerWrite(
+                    LocalSharedCharacteristic.UUID,
+                    BluetoothFormat.encodeToByteArray(serializer<Int>(), 7),
+                )
+                assertIs<GattResponse.WriteSuccess>(writeResponse)
+                assertEquals(7, characteristicDelegate.written)
+
+                // Notify round-trip: subscribe a central, then notify all.
+                val device = MockConnectedDevice()
+                mock.subscribe(LocalSharedCharacteristic.UUID, device)
+                assertTrue(characteristicDelegate.subscribed)
+                assertTrue(server.sharedService.sharedCharacteristic.notifyAllStateChanged(5))
+            } finally {
+                server.close()
+            }
+        }
     }
 }
