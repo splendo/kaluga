@@ -22,12 +22,17 @@ import com.google.devtools.ksp.gradle.KspExtension
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
+import org.gradle.process.CommandLineArgumentProvider
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.util.Properties
 
@@ -92,13 +97,26 @@ class BluetoothPlugin : Plugin<Project> {
                     }
                 }
                 this@run.extensions.configure<KspExtension> {
-                    arg("commonSource", sourceSets.commonMain.get().kotlin.sourceDirectories.files.joinToString(separator = ":") { it.absolutePath })
+                    arg(CommonSourceArgumentProvider(sourceSets.commonMain.get().kotlin.sourceDirectories))
                     arg("isSingleTarget", "$isSinglePlatform")
                 }
             }
             bluetoothExtension.afterEvaluate()
         }
     }
+}
+
+/**
+ * Passes the common source directories to the processor as the `commonSource` option. The directories are declared as
+ * a relative-path-sensitive input so the KSP task stays cacheable and relocatable across machines/checkout locations,
+ * while the option value handed to the processor remains an absolute path (it is matched against absolute file paths).
+ */
+internal class CommonSourceArgumentProvider(
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    val commonSources: FileCollection,
+) : CommandLineArgumentProvider {
+    override fun asArguments(): Iterable<String> = listOf("commonSource=${commonSources.files.joinToString(separator = ":") { it.absolutePath }}")
 }
 
 object BluetoothPluginVersion {
