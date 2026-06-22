@@ -25,13 +25,16 @@ val mobileFeatureProjects = listOf(
  *  Swift consumes (`Navigator<X>` constructor parameters, `AlertPresenter.Builder`, etc.).
  *  Exported only on iOS for the same reason as `mobileFeatureProjects`. */
 val mobileKalugaModules = listOf(
-    "alerts",
-    "architecture",
-    "base",
-    "date-time-picker",
-    "hud",
-    "keyboard",
-    "resources",
+    "alerts:alerts",
+    "architecture:architecture",
+    "base:core",
+    "base:i18n",
+    "base:formatting",
+    "date-time:date-time",
+    "date-time-picker:date-time-picker",
+    "hud:hud",
+    "keyboard:keyboard",
+    "resources:resources",
 )
 
 /** Feature modules supported on macOS/iOS/Android but with no `wasmJs` target (their Kaluga libraries
@@ -121,7 +124,7 @@ afterEvaluate {
             binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework>().configureEach {
                 mobileFeatureProjects.forEach { export(project(it)) }
                 mobileKalugaModules.forEach {
-                    export("com.splendo.kaluga.$it:$it:${project.rootProject.version}")
+                    export("com.splendo.kaluga.$it:${project.rootProject.version}")
                 }
             }
         }

@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.base.test.mock.singleParametersMock
-import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.RemoteService

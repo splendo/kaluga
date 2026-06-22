@@ -334,7 +334,7 @@ abstract interface com.splendo.kaluga.bluetooth.device/DeviceInfo { // com.splen
     abstract val rssi // com.splendo.kaluga.bluetooth.device/DeviceInfo.rssi|{}rssi[0]
         abstract fun <get-rssi>(): kotlin/Int? // com.splendo.kaluga.bluetooth.device/DeviceInfo.rssi.<get-rssi>|<get-rssi>(){}[0]
     abstract val updatedAt // com.splendo.kaluga.bluetooth.device/DeviceInfo.updatedAt|{}updatedAt[0]
-        abstract fun <get-updatedAt>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.device/DeviceInfo.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
+        abstract fun <get-updatedAt>(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.bluetooth.device/DeviceInfo.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
 
     open fun distance(kotlin/Double = ...): kotlin/Double // com.splendo.kaluga.bluetooth.device/DeviceInfo.distance|distance(kotlin.Double){}[0]
 }
@@ -1448,7 +1448,7 @@ final class com.splendo.kaluga.bluetooth.device/DeviceInfoImpl : com.splendo.kal
     final val rssi // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.rssi|{}rssi[0]
         final fun <get-rssi>(): kotlin/Int? // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.rssi.<get-rssi>|<get-rssi>(){}[0]
     final val updatedAt // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.updatedAt|{}updatedAt[0]
-        final fun <get-updatedAt>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
+        final fun <get-updatedAt>(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
 
     final fun component1(): kotlin/String? // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.component1|component1(){}[0]
     final fun component3(): kotlin/Int? // com.splendo.kaluga.bluetooth.device/DeviceInfoImpl.component3|component3(){}[0]

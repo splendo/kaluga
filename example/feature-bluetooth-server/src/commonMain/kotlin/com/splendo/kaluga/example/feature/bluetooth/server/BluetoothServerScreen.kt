@@ -38,8 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.base.text.NumberFormatStyle
-import com.splendo.kaluga.base.text.NumberFormatter
+import com.splendo.kaluga.base.formatting.NumberFormatStyle
+import com.splendo.kaluga.base.formatting.NumberFormatter
 import com.splendo.kaluga.example.feature.bluetooth.base.BluetoothSpec
 import com.splendo.kaluga.scientific.formatter.CommonScientificValueFormatter
 import org.koin.compose.viewmodel.koinViewModel

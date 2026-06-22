@@ -16,6 +16,7 @@ kaluga {
         common {
             main {
                 api(project(":core-arch"))
+                implementation("com.splendo.kaluga.base:decimal:${project.rootProject.version}")
                 implementation("com.splendo.kaluga.scientific:scientific:${project.rootProject.version}")
                 implementation("com.splendo.kaluga.scientific:converters:${project.rootProject.version}")
             }

@@ -27,7 +27,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
 import kotlinx.serialization.KSerializer
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast

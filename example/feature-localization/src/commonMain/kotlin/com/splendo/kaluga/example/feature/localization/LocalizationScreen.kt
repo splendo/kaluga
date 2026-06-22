@@ -42,10 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.base.text.DateFormatStyle
-import com.splendo.kaluga.base.text.KalugaDateFormatter
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.datetime.DateFormatStyle
+import com.splendo.kaluga.datetime.KalugaDateFormatter
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.base.i18n.KalugaLocale
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

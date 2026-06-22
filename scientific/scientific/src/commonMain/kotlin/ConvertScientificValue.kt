@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.scientific
 
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.RoundingMode
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.RoundingMode
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.DefinedScientificUnit

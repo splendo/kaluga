@@ -163,7 +163,7 @@ annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, v
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.base.utils.MedFloat16] or [com.splendo.kaluga.base.utils.MedFloat32], depending on [Size]
+ * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.base.bytes.MedFloat16] or [com.splendo.kaluga.base.bytes.MedFloat32], depending on [Size]
  * Can only add [Length.`16_BIT`] or [Length.`32_BIT`] using [Size].
  * Size defaults to:
  * - [Length.`16_BIT`] for [Byte], [Short], and [Float]
@@ -215,10 +215,10 @@ annotation class NullIfEmpty
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * Adds a [com.splendo.kaluga.base.bytes.CRC] value of size [width] to the end of the body (before any prefix)
+ * Adds a [com.splendo.kaluga.base.crc.CRC] value of size [width] to the end of the body (before any prefix)
  * If the decoded checksum does not match the calculated checksum of the body and [BluetoothFormat.validateChecksum] is `true` will result in a [InvalidChecksumException].
  *
- * @see [com.splendo.kaluga.base.bytes.CRC.invoke]
+ * @see [com.splendo.kaluga.base.crc.CRC.invoke]
  *
  * @param width the width of the CRC in bits. Must be between 1 and 64 bits.
  * @param polynomial the polynomial used to compute the CRC.

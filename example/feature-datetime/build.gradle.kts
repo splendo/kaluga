@@ -12,7 +12,8 @@ kaluga {
         common {
             main {
                 api(project(":core-arch"))
-                api("com.splendo.kaluga:date-time:${project.rootProject.version}")
+                api("com.splendo.kaluga.date-time:date-time:${project.rootProject.version}")
+                api("com.splendo.kaluga.date-time:timer:${project.rootProject.version}")
             }
         }
     }

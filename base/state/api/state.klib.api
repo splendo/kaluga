@@ -1,0 +1,133 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.base:state>
+abstract interface <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/HandleAfterCreating { // com.splendo.kaluga.base.state/HandleAfterCreating|null[0]
+    abstract suspend fun afterCreatingNewState(#A) // com.splendo.kaluga.base.state/HandleAfterCreating.afterCreatingNewState|afterCreatingNewState(1:0){}[0]
+}
+
+abstract interface <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/HandleAfterNewStateIsSet { // com.splendo.kaluga.base.state/HandleAfterNewStateIsSet|null[0]
+    abstract suspend fun afterNewStateIsSet(#A) // com.splendo.kaluga.base.state/HandleAfterNewStateIsSet.afterNewStateIsSet|afterNewStateIsSet(1:0){}[0]
+}
+
+abstract interface <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/HandleAfterOldStateIsRemoved { // com.splendo.kaluga.base.state/HandleAfterOldStateIsRemoved|null[0]
+    abstract suspend fun afterOldStateIsRemoved(#A) // com.splendo.kaluga.base.state/HandleAfterOldStateIsRemoved.afterOldStateIsRemoved|afterOldStateIsRemoved(1:0){}[0]
+}
+
+abstract interface <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/HandleBeforeOldStateIsRemoved { // com.splendo.kaluga.base.state/HandleBeforeOldStateIsRemoved|null[0]
+    abstract suspend fun beforeOldStateIsRemoved(#A) // com.splendo.kaluga.base.state/HandleBeforeOldStateIsRemoved.beforeOldStateIsRemoved|beforeOldStateIsRemoved(1:0){}[0]
+}
+
+abstract interface <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/StateFlowRepo { // com.splendo.kaluga.base.state/StateFlowRepo|null[0]
+    abstract val stateFlow // com.splendo.kaluga.base.state/StateFlowRepo.stateFlow|{}stateFlow[0]
+        abstract fun <get-stateFlow>(): kotlinx.coroutines.flow/StateFlow<#A> // com.splendo.kaluga.base.state/StateFlowRepo.stateFlow.<get-stateFlow>|<get-stateFlow>(){}[0]
+}
+
+abstract interface com.splendo.kaluga.base.state/HandleBeforeCreating { // com.splendo.kaluga.base.state/HandleBeforeCreating|null[0]
+    abstract suspend fun beforeCreatingNewState() // com.splendo.kaluga.base.state/HandleBeforeCreating.beforeCreatingNewState|beforeCreatingNewState(){}[0]
+}
+
+abstract interface com.splendo.kaluga.base.state/KalugaState { // com.splendo.kaluga.base.state/KalugaState|null[0]
+    open fun <#A1: com.splendo.kaluga.base.state/KalugaState> remain(): kotlin.coroutines/SuspendFunction0<#A1> // com.splendo.kaluga.base.state/KalugaState.remain|remain(){0§<com.splendo.kaluga.base.state.KalugaState>}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.base.state/KalugaState, #B: kotlinx.coroutines.flow/MutableSharedFlow<#A>> com.splendo.kaluga.base.state/BaseColdStateRepo : com.splendo.kaluga.base.state/StateRepo<#A, #B> { // com.splendo.kaluga.base.state/BaseColdStateRepo|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ...) // com.splendo.kaluga.base.state/BaseColdStateRepo.<init>|<init>(kotlin.coroutines.CoroutineContext){}[0]
+
+    abstract val lazyMutableFlow // com.splendo.kaluga.base.state/BaseColdStateRepo.lazyMutableFlow|{}lazyMutableFlow[0]
+        abstract fun <get-lazyMutableFlow>(): kotlin/Lazy<#B> // com.splendo.kaluga.base.state/BaseColdStateRepo.lazyMutableFlow.<get-lazyMutableFlow>|<get-lazyMutableFlow>(){}[0]
+    open val mutableFlow // com.splendo.kaluga.base.state/BaseColdStateRepo.mutableFlow|{}mutableFlow[0]
+        open fun <get-mutableFlow>(): #B // com.splendo.kaluga.base.state/BaseColdStateRepo.mutableFlow.<get-mutableFlow>|<get-mutableFlow>(){}[0]
+
+    abstract suspend fun firstCollection() // com.splendo.kaluga.base.state/BaseColdStateRepo.firstCollection|firstCollection(){}[0]
+    abstract suspend fun laterCollections(): #A // com.splendo.kaluga.base.state/BaseColdStateRepo.laterCollections|laterCollections(){}[0]
+    abstract suspend fun noMoreCollections(): #A // com.splendo.kaluga.base.state/BaseColdStateRepo.noMoreCollections|noMoreCollections(){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.base.state/KalugaState, #B: kotlinx.coroutines.flow/MutableSharedFlow<#A>> com.splendo.kaluga.base.state/BaseHotStateRepo : com.splendo.kaluga.base.state/StateRepo<#A, #B> { // com.splendo.kaluga.base.state/BaseHotStateRepo|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ...) // com.splendo.kaluga.base.state/BaseHotStateRepo.<init>|<init>(kotlin.coroutines.CoroutineContext){}[0]
+
+    abstract val lazyMutableSharedFlow // com.splendo.kaluga.base.state/BaseHotStateRepo.lazyMutableSharedFlow|{}lazyMutableSharedFlow[0]
+        abstract fun <get-lazyMutableSharedFlow>(): kotlin/Lazy<#B> // com.splendo.kaluga.base.state/BaseHotStateRepo.lazyMutableSharedFlow.<get-lazyMutableSharedFlow>|<get-lazyMutableSharedFlow>(){}[0]
+    open val mutableFlow // com.splendo.kaluga.base.state/BaseHotStateRepo.mutableFlow|{}mutableFlow[0]
+        open fun <get-mutableFlow>(): #B // com.splendo.kaluga.base.state/BaseHotStateRepo.mutableFlow.<get-mutableFlow>|<get-mutableFlow>(){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.base.state/KalugaState, #B: kotlinx.coroutines.flow/MutableSharedFlow<#A>> com.splendo.kaluga.base.state/StateRepo : kotlinx.coroutines.flow/Flow<#A>, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.base.state/StateRepo|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ...) // com.splendo.kaluga.base.state/StateRepo.<init>|<init>(kotlin.coroutines.CoroutineContext){}[0]
+
+    abstract val mutableFlow // com.splendo.kaluga.base.state/StateRepo.mutableFlow|{}mutableFlow[0]
+        abstract fun <get-mutableFlow>(): #B // com.splendo.kaluga.base.state/StateRepo.mutableFlow.<get-mutableFlow>|<get-mutableFlow>(){}[0]
+    final val subscriptionCount // com.splendo.kaluga.base.state/StateRepo.subscriptionCount|{}subscriptionCount[0]
+        final fun <get-subscriptionCount>(): kotlinx.coroutines.flow/StateFlow<kotlin/Int> // com.splendo.kaluga.base.state/StateRepo.subscriptionCount.<get-subscriptionCount>|<get-subscriptionCount>(){}[0]
+    open val coroutineContext // com.splendo.kaluga.base.state/StateRepo.coroutineContext|{}coroutineContext[0]
+        open fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.base.state/StateRepo.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+
+    abstract suspend fun initialValue(): #A // com.splendo.kaluga.base.state/StateRepo.initialValue|initialValue(){}[0]
+    final fun <#A1: #A> launchTakeAndChangeState(kotlin.coroutines/CoroutineContext = ..., kotlin.reflect/KClass<#A1>, kotlin.coroutines/SuspendFunction1<#A1, kotlin.coroutines/SuspendFunction0<#A>>): kotlinx.coroutines/Job // com.splendo.kaluga.base.state/StateRepo.launchTakeAndChangeState|launchTakeAndChangeState(kotlin.coroutines.CoroutineContext;kotlin.reflect.KClass<0:0>;kotlin.coroutines.SuspendFunction1<0:0,kotlin.coroutines.SuspendFunction0<1:0>>){0§<1:0>}[0]
+    final fun <#A1: kotlin/Any?> launchUseState(kotlin.coroutines/CoroutineContext = ..., kotlin.coroutines/SuspendFunction1<#A, #A1>): kotlinx.coroutines/Job // com.splendo.kaluga.base.state/StateRepo.launchUseState|launchUseState(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<1:0,0:0>){0§<kotlin.Any?>}[0]
+    final fun launchTakeAndChangeState(kotlin.coroutines/CoroutineContext = ..., kotlin.coroutines/SuspendFunction1<#A, kotlin.coroutines/SuspendFunction0<#A>>): kotlinx.coroutines/Job // com.splendo.kaluga.base.state/StateRepo.launchTakeAndChangeState|launchTakeAndChangeState(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<1:0,kotlin.coroutines.SuspendFunction0<1:0>>){}[0]
+    final fun peekState(): #A // com.splendo.kaluga.base.state/StateRepo.peekState|peekState(){}[0]
+    final suspend fun <#A1: #A> takeAndChangeState(kotlin.reflect/KClass<#A1>, kotlin.coroutines/SuspendFunction1<#A1, kotlin.coroutines/SuspendFunction0<#A>>): #A // com.splendo.kaluga.base.state/StateRepo.takeAndChangeState|takeAndChangeState(kotlin.reflect.KClass<0:0>;kotlin.coroutines.SuspendFunction1<0:0,kotlin.coroutines.SuspendFunction0<1:0>>){0§<1:0>}[0]
+    final suspend fun <#A1: kotlin/Any?> useState(kotlin.coroutines/SuspendFunction1<#A, #A1>): #A1 // com.splendo.kaluga.base.state/StateRepo.useState|useState(kotlin.coroutines.SuspendFunction1<1:0,0:0>){0§<kotlin.Any?>}[0]
+    final suspend fun takeAndChangeState(kotlin.coroutines/SuspendFunction1<#A, kotlin.coroutines/SuspendFunction0<#A>>): #A // com.splendo.kaluga.base.state/StateRepo.takeAndChangeState|takeAndChangeState(kotlin.coroutines.SuspendFunction1<1:0,kotlin.coroutines.SuspendFunction0<1:0>>){}[0]
+    open suspend fun collect(kotlinx.coroutines.flow/FlowCollector<#A>): kotlin/Nothing // com.splendo.kaluga.base.state/StateRepo.collect|collect(kotlinx.coroutines.flow.FlowCollector<1:0>){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/ColdStateRepo : com.splendo.kaluga.base.state/BaseColdStateRepo<#A, kotlinx.coroutines.flow/MutableSharedFlow<#A>> { // com.splendo.kaluga.base.state/ColdStateRepo|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ..., kotlin/Lazy<kotlinx.coroutines.flow/MutableSharedFlow<#A>> = ...) // com.splendo.kaluga.base.state/ColdStateRepo.<init>|<init>(kotlin.coroutines.CoroutineContext;kotlin.Lazy<kotlinx.coroutines.flow.MutableSharedFlow<1:0>>){}[0]
+
+    open val lazyMutableFlow // com.splendo.kaluga.base.state/ColdStateRepo.lazyMutableFlow|{}lazyMutableFlow[0]
+        open fun <get-lazyMutableFlow>(): kotlin/Lazy<kotlinx.coroutines.flow/MutableSharedFlow<#A>> // com.splendo.kaluga.base.state/ColdStateRepo.lazyMutableFlow.<get-lazyMutableFlow>|<get-lazyMutableFlow>(){}[0]
+
+    abstract suspend fun deinitialize(#A) // com.splendo.kaluga.base.state/ColdStateRepo.deinitialize|deinitialize(1:0){}[0]
+    final suspend fun firstCollection() // com.splendo.kaluga.base.state/ColdStateRepo.firstCollection|firstCollection(){}[0]
+    final suspend fun laterCollections(): #A // com.splendo.kaluga.base.state/ColdStateRepo.laterCollections|laterCollections(){}[0]
+    final suspend fun noMoreCollections(): #A // com.splendo.kaluga.base.state/ColdStateRepo.noMoreCollections|noMoreCollections(){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/HotStateFlowRepo : com.splendo.kaluga.base.state/BaseHotStateRepo<#A, kotlinx.coroutines.flow/MutableStateFlow<#A>>, com.splendo.kaluga.base.state/StateFlowRepo<#A> { // com.splendo.kaluga.base.state/HotStateFlowRepo|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ..., kotlin/Function1<com.splendo.kaluga.base.state/HotStateFlowRepo<#A>, #A>) // com.splendo.kaluga.base.state/HotStateFlowRepo.<init>|<init>(kotlin.coroutines.CoroutineContext;kotlin.Function1<com.splendo.kaluga.base.state.HotStateFlowRepo<1:0>,1:0>){}[0]
+
+    final val initialState // com.splendo.kaluga.base.state/HotStateFlowRepo.initialState|{}initialState[0]
+        final fun <get-initialState>(): kotlin/Function1<com.splendo.kaluga.base.state/HotStateFlowRepo<#A>, #A> // com.splendo.kaluga.base.state/HotStateFlowRepo.initialState.<get-initialState>|<get-initialState>(){}[0]
+    open val lazyMutableSharedFlow // com.splendo.kaluga.base.state/HotStateFlowRepo.lazyMutableSharedFlow|{}lazyMutableSharedFlow[0]
+        open fun <get-lazyMutableSharedFlow>(): kotlin/Lazy<kotlinx.coroutines.flow/MutableStateFlow<#A>> // com.splendo.kaluga.base.state/HotStateFlowRepo.lazyMutableSharedFlow.<get-lazyMutableSharedFlow>|<get-lazyMutableSharedFlow>(){}[0]
+    open val stateFlow // com.splendo.kaluga.base.state/HotStateFlowRepo.stateFlow|{}stateFlow[0]
+        open fun <get-stateFlow>(): kotlinx.coroutines.flow/StateFlow<#A> // com.splendo.kaluga.base.state/HotStateFlowRepo.stateFlow.<get-stateFlow>|<get-stateFlow>(){}[0]
+
+    final suspend fun initialValue(): #A // com.splendo.kaluga.base.state/HotStateFlowRepo.initialValue|initialValue(){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/HotStateRepo : com.splendo.kaluga.base.state/BaseHotStateRepo<#A, kotlinx.coroutines.flow/MutableSharedFlow<#A>> { // com.splendo.kaluga.base.state/HotStateRepo|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ...) // com.splendo.kaluga.base.state/HotStateRepo.<init>|<init>(kotlin.coroutines.CoroutineContext){}[0]
+
+    final val lazyMutableSharedFlow // com.splendo.kaluga.base.state/HotStateRepo.lazyMutableSharedFlow|{}lazyMutableSharedFlow[0]
+        final fun <get-lazyMutableSharedFlow>(): kotlin/Lazy<kotlinx.coroutines.flow/MutableSharedFlow<#A>> // com.splendo.kaluga.base.state/HotStateRepo.lazyMutableSharedFlow.<get-lazyMutableSharedFlow>|<get-lazyMutableSharedFlow>(){}[0]
+}
+
+open class <#A: com.splendo.kaluga.base.state/KalugaState> com.splendo.kaluga.base.state/ColdStateFlowRepo : com.splendo.kaluga.base.state/BaseColdStateRepo<#A, kotlinx.coroutines.flow/MutableStateFlow<#A>>, com.splendo.kaluga.base.state/StateFlowRepo<#A> { // com.splendo.kaluga.base.state/ColdStateFlowRepo|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ..., kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.base.state/ColdStateFlowRepo<#A>, #A>, kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.base.state/ColdStateFlowRepo<#A>, #A?>, kotlin/Function0<#A>) // com.splendo.kaluga.base.state/ColdStateFlowRepo.<init>|<init>(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<com.splendo.kaluga.base.state.ColdStateFlowRepo<1:0>,1:0>;kotlin.coroutines.SuspendFunction1<com.splendo.kaluga.base.state.ColdStateFlowRepo<1:0>,1:0?>;kotlin.Function0<1:0>){}[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ..., kotlin.coroutines/SuspendFunction2<#A, com.splendo.kaluga.base.state/ColdStateFlowRepo<#A>, kotlin.coroutines/SuspendFunction0<#A>>, kotlin.coroutines/SuspendFunction2<#A, com.splendo.kaluga.base.state/ColdStateFlowRepo<#A>, kotlin.coroutines/SuspendFunction0<#A>?>, kotlin/Function0<#A>) // com.splendo.kaluga.base.state/ColdStateFlowRepo.<init>|<init>(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction2<1:0,com.splendo.kaluga.base.state.ColdStateFlowRepo<1:0>,kotlin.coroutines.SuspendFunction0<1:0>>;kotlin.coroutines.SuspendFunction2<1:0,com.splendo.kaluga.base.state.ColdStateFlowRepo<1:0>,kotlin.coroutines.SuspendFunction0<1:0>?>;kotlin.Function0<1:0>){}[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext = ..., kotlin/Function0<#A>, kotlin.coroutines/SuspendFunction1<#A, kotlin.coroutines/SuspendFunction0<#A>>, kotlin.coroutines/SuspendFunction1<#A, kotlin.coroutines/SuspendFunction0<#A>>) // com.splendo.kaluga.base.state/ColdStateFlowRepo.<init>|<init>(kotlin.coroutines.CoroutineContext;kotlin.Function0<1:0>;kotlin.coroutines.SuspendFunction1<1:0,kotlin.coroutines.SuspendFunction0<1:0>>;kotlin.coroutines.SuspendFunction1<1:0,kotlin.coroutines.SuspendFunction0<1:0>>){}[0]
+
+    final val deinitChangeStateWithRepo // com.splendo.kaluga.base.state/ColdStateFlowRepo.deinitChangeStateWithRepo|{}deinitChangeStateWithRepo[0]
+        final fun <get-deinitChangeStateWithRepo>(): kotlin.coroutines/SuspendFunction2<#A, com.splendo.kaluga.base.state/ColdStateFlowRepo<#A>, kotlin.coroutines/SuspendFunction0<#A>?> // com.splendo.kaluga.base.state/ColdStateFlowRepo.deinitChangeStateWithRepo.<get-deinitChangeStateWithRepo>|<get-deinitChangeStateWithRepo>(){}[0]
+    final val firstState // com.splendo.kaluga.base.state/ColdStateFlowRepo.firstState|{}firstState[0]
+        final fun <get-firstState>(): kotlin/Function0<#A> // com.splendo.kaluga.base.state/ColdStateFlowRepo.firstState.<get-firstState>|<get-firstState>(){}[0]
+    final val initChangeStateWithRepo // com.splendo.kaluga.base.state/ColdStateFlowRepo.initChangeStateWithRepo|{}initChangeStateWithRepo[0]
+        final fun <get-initChangeStateWithRepo>(): kotlin.coroutines/SuspendFunction2<#A, com.splendo.kaluga.base.state/ColdStateFlowRepo<#A>, kotlin.coroutines/SuspendFunction0<#A>> // com.splendo.kaluga.base.state/ColdStateFlowRepo.initChangeStateWithRepo.<get-initChangeStateWithRepo>|<get-initChangeStateWithRepo>(){}[0]
+    open val lazyMutableFlow // com.splendo.kaluga.base.state/ColdStateFlowRepo.lazyMutableFlow|{}lazyMutableFlow[0]
+        open fun <get-lazyMutableFlow>(): kotlin/Lazy<kotlinx.coroutines.flow/MutableStateFlow<#A>> // com.splendo.kaluga.base.state/ColdStateFlowRepo.lazyMutableFlow.<get-lazyMutableFlow>|<get-lazyMutableFlow>(){}[0]
+    open val stateFlow // com.splendo.kaluga.base.state/ColdStateFlowRepo.stateFlow|{}stateFlow[0]
+        open fun <get-stateFlow>(): kotlinx.coroutines.flow/StateFlow<#A> // com.splendo.kaluga.base.state/ColdStateFlowRepo.stateFlow.<get-stateFlow>|<get-stateFlow>(){}[0]
+
+    final suspend fun initialValue(): #A // com.splendo.kaluga.base.state/ColdStateFlowRepo.initialValue|initialValue(){}[0]
+    final suspend fun noMoreCollections(): #A // com.splendo.kaluga.base.state/ColdStateFlowRepo.noMoreCollections|noMoreCollections(){}[0]
+    open suspend fun firstCollection() // com.splendo.kaluga.base.state/ColdStateFlowRepo.firstCollection|firstCollection(){}[0]
+    open suspend fun laterCollections(): #A // com.splendo.kaluga.base.state/ColdStateFlowRepo.laterCollections|laterCollections(){}[0]
+}

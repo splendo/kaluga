@@ -21,10 +21,10 @@ import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.byteArraySize
 import com.splendo.kaluga.base.bytes.isBitSet
-import com.splendo.kaluga.base.utils.MedFloat16
-import com.splendo.kaluga.base.utils.MedFloat32
-import com.splendo.kaluga.base.utils.toInt24
-import com.splendo.kaluga.base.utils.toUInt24
+import com.splendo.kaluga.base.bytes.MedFloat16
+import com.splendo.kaluga.base.bytes.MedFloat32
+import com.splendo.kaluga.base.bytes.toInt24
+import com.splendo.kaluga.base.bytes.toUInt24
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.PolymorphicKind

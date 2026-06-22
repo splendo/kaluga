@@ -8,7 +8,7 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base:base", ""))
+                implementation(project(":base:core", ""))
                 implementation(project(":logging", ""))
                 api(libs.kotlinx.serialization.core)
             }

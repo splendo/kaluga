@@ -18,7 +18,7 @@
 
 package com.splendo.kaluga.scientific.converter.undefined.dividing.numerator.defined.and.denominator.extended
 
-import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType

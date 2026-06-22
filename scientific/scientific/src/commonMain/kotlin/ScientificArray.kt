@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.scientific
 
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.base.utils.toDecimalList
-import com.splendo.kaluga.base.utils.toDoubleArray
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.toDecimal
+import com.splendo.kaluga.base.decimal.toDecimalList
+import com.splendo.kaluga.base.decimal.toDoubleArray
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.convert

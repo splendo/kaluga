@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.base.KalugaBluetoothEnabledDelegateProtocol
-import com.splendo.kaluga.bluetooth.base.KalugaBluetoothWrapper
+import com.splendo.kaluga.bluetooth.core.KalugaBluetoothEnabledDelegateProtocol
+import com.splendo.kaluga.bluetooth.core.KalugaBluetoothWrapper
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
 import kotlinx.atomicfu.atomic

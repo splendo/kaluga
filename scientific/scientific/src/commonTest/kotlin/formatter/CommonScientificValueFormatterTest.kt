@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.scientific.formatter
 
-import com.splendo.kaluga.base.text.NumberFormatStyle
-import com.splendo.kaluga.base.text.NumberFormatter
-import com.splendo.kaluga.base.utils.KalugaLocale
-import com.splendo.kaluga.base.utils.enUsPosix
+import com.splendo.kaluga.base.formatting.NumberFormatStyle
+import com.splendo.kaluga.base.formatting.NumberFormatter
+import com.splendo.kaluga.base.i18n.KalugaLocale
+import com.splendo.kaluga.base.i18n.enUsPosix
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.invoke

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer

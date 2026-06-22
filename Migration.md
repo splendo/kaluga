@@ -66,20 +66,20 @@ The general rule:
 | `com.splendo.kaluga:<x>-permissions` | `com.splendo.kaluga.permissions:<x>` |
 | `com.splendo.kaluga:test-utils-<feature>` | `com.splendo.kaluga.<feature>:test` |
 
-A few utilities **keep the flat groupId** (no change): `com.splendo.kaluga:date-time`,
-`com.splendo.kaluga:links`, `com.splendo.kaluga:logging`, `com.splendo.kaluga:review`.
+A few utilities **keep the flat groupId** (no change): `com.splendo.kaluga:links`,
+`com.splendo.kaluga:logging`, `com.splendo.kaluga:review`.
 
 ### Full mapping
 
 | 1.6.0 coordinate | 2.0.0 coordinate |
 |------------------|------------------|
-| `com.splendo.kaluga:base` | `com.splendo.kaluga.base:base` |
+| `com.splendo.kaluga:base` | **split** — see [Base and date-time split](#base-and-date-time-split) (`…base:core` + `state` / `decimal` / `bytes` / `crc` / `i18n` / `formatting`) |
 | `com.splendo.kaluga:alerts` | `com.splendo.kaluga.alerts:alerts` |
 | `com.splendo.kaluga:architecture` | `com.splendo.kaluga.architecture:architecture` |
 | `com.splendo.kaluga:architecture-compose` | `com.splendo.kaluga.architecture:compose` |
 | `com.splendo.kaluga:beacons` | `com.splendo.kaluga.bluetooth:beacons` |
 | `com.splendo.kaluga:bluetooth` | **removed** — see [Bluetooth](#bluetooth) (use `…bluetooth:client` / `…bluetooth:server`) |
-| `com.splendo.kaluga:date-time` | `com.splendo.kaluga:date-time` *(unchanged)* |
+| `com.splendo.kaluga:date-time` | **split** — see [Base and date-time split](#base-and-date-time-split) (`com.splendo.kaluga.date-time:date-time` + `…date-time:timer`) |
 | `com.splendo.kaluga:date-time-picker` | `com.splendo.kaluga.date-time-picker:date-time-picker` |
 | `com.splendo.kaluga:hud` | `com.splendo.kaluga.hud:hud` |
 | `com.splendo.kaluga:keyboard` | `com.splendo.kaluga.keyboard:keyboard` |
@@ -134,6 +134,31 @@ These were not separately published in 1.6.0 (the Lifecycle module was previousl
 ---
 
 ## 4. Breaking changes that need code edits
+
+### Base and date-time split
+
+The single `base` module and the single `date-time` module have each been split into
+focused modules, and several types moved to a package that matches their new module. Add a
+dependency on the specific module(s) you use, and update the affected imports.
+
+`base` → `base:core` plus `base:state`, `base:decimal`, `base:bytes`, `base:crc`, `base:i18n`,
+`base:formatting`. `date-time` → `date-time:date-time` (the calendar types and date formatter)
+and `date-time:timer` (`RecurringTimer`).
+
+The following types changed package (find-and-replace the import):
+
+| Type(s) | Old package (1.6.0 / earlier 2.0.0) | New package | Module |
+|---------|-------------------------------------|-------------|--------|
+| `KalugaDate`, `DefaultKalugaDate`, `KalugaTimeZone`, `KalugaDateFormatter` (+ the `KalugaDate` extensions) | `com.splendo.kaluga.base.utils` / `…base.text` | `com.splendo.kaluga.datetime` | `date-time:date-time` |
+| `KalugaLocale`, `UnitSystem`, `AvailableLocales`, `String.lowerCased`/`upperCased` | `com.splendo.kaluga.base.utils` / `…base.text` | `com.splendo.kaluga.base.i18n` | `base:i18n` |
+| `NumberFormatter`, `StringFormatter`, `FormatSpecifier`, `lineSeparator`, … | `com.splendo.kaluga.base.text` | `com.splendo.kaluga.base.formatting` | `base:formatting` |
+| `Decimal`, `toDecimal`, `RoundingMode` (the `Decimal` one) | `com.splendo.kaluga.base.utils` | `com.splendo.kaluga.base.decimal` | `base:decimal` |
+
+Types whose package is **unchanged** but which now live in a smaller module (so you only need to
+add the module dependency): `KalugaState`/`StateRepo` (`com.splendo.kaluga.base.state` → `base:state`),
+the byte utilities (`com.splendo.kaluga.base.bytes` → `base:bytes`), and CRC
+(`com.splendo.kaluga.base.crc` → `base:crc`). The Luxon JS interop moved from
+`com.splendo.kaluga.base.externals` to `com.splendo.kaluga.datetime.externals`.
 
 ### Bluetooth
 

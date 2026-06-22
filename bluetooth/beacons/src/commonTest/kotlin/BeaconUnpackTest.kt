@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import com.splendo.kaluga.base.utils.bytesOf
+import com.splendo.kaluga.base.bytes.bytesOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

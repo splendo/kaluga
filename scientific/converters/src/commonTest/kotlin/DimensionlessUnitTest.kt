@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter
 
-import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.base.decimal.toDecimal
+import com.splendo.kaluga.base.decimal.toDouble
 import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.decimal.times
 import com.splendo.kaluga.scientific.converter.dimensionless.div

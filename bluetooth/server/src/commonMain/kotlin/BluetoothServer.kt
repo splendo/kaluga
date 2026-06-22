@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.getCompletedOrNull
-import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.UUID

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific
 
-import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
