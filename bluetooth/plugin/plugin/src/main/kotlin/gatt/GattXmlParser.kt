@@ -87,12 +87,13 @@ object GattXmlParser {
         if (value == null) return ParsedValue(emptyList(), emptyList())
         val fieldElements = value.directChildren("Field")
         val flagElements = fieldElements.filter { it.directChildren("BitField").isNotEmpty() }
-        if (flagElements.isEmpty()) {
+        return if (flagElements.isEmpty()) {
             val fields = fieldElements.map { it.toField() }
             requireTrailingRepeated(name, fields)
-            return ParsedValue(fields, emptyList())
+            ParsedValue(fields, emptyList())
+        } else {
+            resolveConditional(name, flagElements, fieldElements - flagElements)
         }
-        return resolveConditional(name, flagElements, fieldElements - flagElements)
     }
 
     // The <Descriptor> references declared by a service's <Characteristic>: each names a descriptor by type and grants
@@ -171,7 +172,7 @@ object GattXmlParser {
 
         // A bit whose value is not a gate (no `requires`) carries a value packed in the flags region: an enum when it
         // lists enumerations, otherwise a raw unsigned integer of its width (a sub-byte numeric subfield).
-        val packedFlagFields = bits.filter { bit -> bit.enumerations.none { it.requires != null } }.map { bit ->
+        val packedFlagFields = bits.filter { bit -> bit.enumerations.all { it.requires == null } }.map { bit ->
             GattFlagField(
                 name = bit.name.removeSuffix("bits").removeSuffix("bit").trim().ifBlank { "Flag${bit.index}" },
                 index = bit.index,

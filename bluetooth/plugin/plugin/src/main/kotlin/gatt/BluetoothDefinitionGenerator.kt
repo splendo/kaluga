@@ -71,22 +71,24 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
                 characteristic.type?.takeIf(String::isNotBlank)?.let { put(it, characteristic) }
             }
         }
-        val accessByUuid = services.flatMap { it.characteristics }
-            .mapNotNull { ref -> ref.resolve(byKey)?.let { it.uuid to ref.properties } }
-            .groupBy({ it.first }, { it.second })
+
+        val gattServiceCharacteristics = services.flatMap { it.characteristics }
+            .mapNotNull { ref -> ref.resolve(byKey)?.let { it.uuid to ref } }
+
+        val accessByUuid = gattServiceCharacteristics
+            .groupBy({ it.first }, { it.second.properties })
             .mapValues { (_, sets) -> sets.flatten().toSet() }
 
         // A service references descriptors by type; resolve each to the parsed definition (UUID + value structure) and
         // attach the resolved descriptors to the characteristic they belong to, keyed by its UUID.
         val descriptorsByType = descriptors.associateBy { it.type }
-        val descriptorsByUuid = services.flatMap { it.characteristics }
-            .mapNotNull { ref -> ref.resolve(byKey)?.let { it.uuid to resolveDescriptors(ref, descriptorsByType) } }
-            .groupBy({ it.first }, { it.second })
+        val descriptorsByUuid = gattServiceCharacteristics
+            .groupBy({ it.first }, { resolveDescriptors(it.second, descriptorsByType) })
             .mapValues { (_, lists) -> lists.flatten().distinctBy { it.uuid } }
 
         val characteristicFiles = characteristics.map { characteristic ->
-            val resolved = descriptorsByUuid[characteristic.uuid].orEmpty()
-            val withDescriptors = if (resolved.isEmpty()) characteristic else characteristic.copy(descriptors = resolved)
+            val resolvedDescriptors = descriptorsByUuid[characteristic.uuid].orEmpty()
+            val withDescriptors = if (resolvedDescriptors.isEmpty()) characteristic else characteristic.copy(descriptors = resolvedDescriptors)
             characteristicFile(withDescriptors, accessByUuid[characteristic.uuid].orEmpty(), byKey)
         }
         val serviceFiles = services.map { service -> serviceFile(service, byKey) }
@@ -103,7 +105,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
             when {
                 // The Client Characteristic Configuration descriptor (CCCD, 0x2902) enables notify/indicate and is
                 // managed by Kaluga's notification layer, so it is deliberately never surfaced as a @BluetoothDescriptor.
-                descriptorRef.type == CCCD_TYPE || definition?.let { isCccdUuid(it.uuid) } == true -> null
+                descriptorRef.type == CCCD_TYPE || definition?.let { isCCCDUuid(it.uuid) } == true -> null
                 definition == null -> {
                     System.err.println("Warning: descriptor '${descriptorRef.type}' has no definition file; skipping (no UUID/value to generate).")
                     null
@@ -113,7 +115,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         }
 
     // The CCCD identified by its standard type or 0x2902 UUID (16-bit shorthand or the full 128-bit base form).
-    private fun isCccdUuid(uuid: String): Boolean =
+    private fun isCCCDUuid(uuid: String): Boolean =
         uuid.equals(CCCD_UUID, ignoreCase = true) || uuid.equals("0000$CCCD_UUID-0000-1000-8000-00805f9b34fb", ignoreCase = true)
 
     /** The `@BluetoothCharacteristic` interface for [characteristic] plus its `@Serializable` value class. */
