@@ -2,7 +2,6 @@ import com.palantir.gradle.gitversion.VersionDetails
 import org.gradle.internal.extensions.core.extra
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Properties
 
 plugins {
     `java-gradle-plugin`
@@ -53,17 +52,16 @@ tasks.withType<KotlinCompile>().configureEach {
 val generatePluginVersion by tasks.registering {
     val outputDir = layout.buildDirectory.dir("generated/resources/main")
     val outputFile = outputDir.map { it.file("bluetooth.properties") }
+    val version = kalugaVersion
 
+    inputs.property("kalugaVersion", version)
     outputs.file(outputFile)
 
     doLast {
         val file = outputFile.get().asFile
         file.parentFile.mkdirs()
 
-        Properties().apply {
-            setProperty("kalugaVersion", kalugaVersion)
-            file.outputStream().use { store(it, null) }
-        }
+        file.writeText("kalugaVersion=$version\n")
     }
 }
 
