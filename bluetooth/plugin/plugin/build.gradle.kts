@@ -2,7 +2,6 @@ import com.palantir.gradle.gitversion.VersionDetails
 import org.gradle.internal.extensions.core.extra
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Properties
 
 plugins {
     `java-gradle-plugin`
@@ -62,10 +61,7 @@ val generatePluginVersion by tasks.registering {
         val file = outputFile.get().asFile
         file.parentFile.mkdirs()
 
-        Properties().apply {
-            setProperty("kalugaVersion", version)
-            file.outputStream().use { store(it, null) }
-        }
+        file.writeText("kalugaVersion=$version\n")
     }
 }
 
