@@ -32,7 +32,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
@@ -104,35 +103,36 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
             }
         }.toMap()
 
-        val constructorParameters = nestedProperties.map { (name, childMockType) ->
-            ParameterSpec.builder(name, childMockType)
-                .defaultValue("%T()", childMockType.copy(nullable = false))
-                .build()
+        // Every generated property is exposed as a constructor-injectable backing:
+        //  - a nested generated interface → a child mock (defaulting to a fresh child mock),
+        //  - a leaf Flow → a MutableSharedFlow the test can drive (narrowing the API's read-only `Flow`).
+        val constructorParameters = mutableListOf<ParameterSpec>()
+        val overrideProperties = mutableListOf<PropertySpec>()
+        apiInterface.propertySpecs.forEach { property ->
+            val childMockType = nestedProperties[property.name]
+            if (childMockType != null) {
+                constructorParameters += ParameterSpec.builder(property.name, childMockType)
+                    .defaultValue("%T()", childMockType.copy(nullable = false))
+                    .build()
+                overrideProperties += PropertySpec.builder(property.name, property.type, KModifier.OVERRIDE)
+                    .initializer(property.name)
+                    .build()
+            } else {
+                val backingType = mutableSharedFlowBacking(property)
+                constructorParameters += ParameterSpec.builder(property.name, backingType)
+                    .defaultValue("%T()", backingType.rawType)
+                    .build()
+                overrideProperties += PropertySpec.builder(property.name, backingType, KModifier.OVERRIDE)
+                    .initializer(property.name)
+                    .build()
+            }
         }
 
         val typeBuilder = TypeSpec.classBuilder(mockName)
             .apply { if (constructorParameters.isNotEmpty()) primaryConstructor(FunSpec.constructorBuilder().addParameters(constructorParameters).build()) }
             .addSuperinterface(apiName)
             .addTypes(nested)
-
-        // Properties: nested → constructor-backed override; leaf → public settable backing.
-        apiInterface.propertySpecs.forEach { property ->
-            if (nestedProperties.containsKey(property.name)) {
-                typeBuilder.addProperty(
-                    PropertySpec.builder(property.name, property.type)
-                        .addModifiers(KModifier.OVERRIDE)
-                        .initializer(property.name)
-                        .build(),
-                )
-            } else {
-                typeBuilder.addProperty(
-                    PropertySpec.builder(property.name, property.type, KModifier.OVERRIDE)
-                        .mutable(true)
-                        .initializer(leafPropertyDefault(property))
-                        .build(),
-                )
-            }
-        }
+            .addProperties(overrideProperties)
 
         // Functions: each backed by a Kaluga mock; the override delegates to `memberMock.call(...)`.
         (apiInterface.funSpecs.filterNot { it.isConstructor } + additionalFunctions).forEach { function ->
@@ -158,16 +158,20 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         return typeBuilder.build()
     }
 
-    /** The initializer for a leaf (non-nested) mock property: a `Flow` defaults to `emptyFlow()`; other leaf kinds are unexpected. */
-    private fun leafPropertyDefault(property: PropertySpec): CodeBlock {
+    /**
+     * The `MutableSharedFlow` backing type for a leaf Flow property: `Flow<E>` → `MutableSharedFlow<E>`. The override narrows
+     * the API's read-only `Flow` to a mutable shared flow so tests can drive emissions, while the constructor parameter keeps
+     * it injectable. A shared flow needs no initial value, so the parameter always defaults to an empty `MutableSharedFlow()`.
+     */
+    private fun mutableSharedFlowBacking(property: PropertySpec): ParameterizedTypeName {
         val type = property.type
-        val isFlow = type is ParameterizedTypeName && type.rawType == References.KotlinX.Coroutines.Flow.flow
-        return if (isFlow) {
-            CodeBlock.of("%M()", References.KotlinX.Coroutines.Flow.emptyFlow)
+        val elementTypes = if (type is ParameterizedTypeName && type.rawType == References.KotlinX.Coroutines.Flow.flow) {
+            type.typeArguments
         } else {
-            logger.error("Cannot generate a mock backing for leaf property ${property.name} of type $type")
-            CodeBlock.of("%M()", References.KotlinX.Coroutines.Flow.emptyFlow)
+            logger.error("Cannot generate a mock backing for leaf property ${property.name} of type $type; expected a Flow")
+            listOf(type)
         }
+        return References.KotlinX.Coroutines.Flow.mutableSharedFlow.parameterizedBy(elementTypes)
     }
 
     private fun TypeName?.orUnit(): TypeName = this ?: UNIT
