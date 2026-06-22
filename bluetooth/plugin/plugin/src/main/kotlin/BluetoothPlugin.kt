@@ -47,9 +47,11 @@ class BluetoothPlugin : Plugin<Project> {
 
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
+        val generatedKspDir = layout.buildDirectory.dir("generated/ksp/metadata/commonMain/kotlin")
+
         extensions.configure<KotlinMultiplatformExtension> {
             sourceSets.commonMain {
-                kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+                kotlin.srcDir(generatedKspDir)
             }
         }
 
