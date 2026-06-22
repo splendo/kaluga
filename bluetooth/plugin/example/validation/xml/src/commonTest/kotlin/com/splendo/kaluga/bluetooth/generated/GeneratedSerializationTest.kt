@@ -62,9 +62,9 @@ class GeneratedSerializationTest {
         // 8-bit rate, sensor contact detected (ordinal 3 -> bits 1-2 = 0b0110), no energy, no RR interval.
         val value = HeartRateMeasurementValue(
             sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_3,
-            heartRateMeasurementValue = 70,
+            heartRateMeasurementValue = HeartRateMeasurementValue.Value(70),
             energyExpended = null,
-            rRInterval = null,
+            rRInterval = emptyList(),
         )
         validateHeartRate(value, byteArrayOf(0x06, 0x46))
     }
@@ -75,9 +75,9 @@ class GeneratedSerializationTest {
         // present: flags 0x1D. Body: rate 300, energy 500 J, RR 512 (raw 1/1024 s units, no machine-readable scaling).
         val value = HeartRateMeasurementValue(
             sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_2,
-            heartRateMeasurementValue = 300,
+            heartRateMeasurementValue = HeartRateMeasurementValue.Value(300),
             energyExpended = HeartRateMeasurementValue.EnergyExpended(500),
-            rRInterval = HeartRateMeasurementValue.RRInterval(512),
+            rRInterval = listOf(HeartRateMeasurementValue.RRInterval(512)),
         )
         validateHeartRate(value, byteArrayOf(0x1D, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x02))
     }
