@@ -53,7 +53,9 @@ tasks.withType<KotlinCompile>().configureEach {
 val generatePluginVersion by tasks.registering {
     val outputDir = layout.buildDirectory.dir("generated/resources/main")
     val outputFile = outputDir.map { it.file("bluetooth.properties") }
+    val version = kalugaVersion
 
+    inputs.property("kalugaVersion", version)
     outputs.file(outputFile)
 
     doLast {
@@ -61,7 +63,7 @@ val generatePluginVersion by tasks.registering {
         file.parentFile.mkdirs()
 
         Properties().apply {
-            setProperty("kalugaVersion", kalugaVersion)
+            setProperty("kalugaVersion", version)
             file.outputStream().use { store(it, null) }
         }
     }
