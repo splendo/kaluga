@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.test.BaseFlowTest
 import com.splendo.kaluga.base.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.yieldMultiple
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.datetime.DefaultKalugaDate
 import com.splendo.kaluga.location.test.MockBaseLocationManager
 import com.splendo.kaluga.location.test.MockLocationStateRepoBuilder
 import com.splendo.kaluga.permissions.base.Permissions

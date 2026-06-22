@@ -16,6 +16,7 @@ kaluga {
                 api(project(":feature-bluetooth-base"))
                 api(project(":feature-permissions"))
                 api("com.splendo.kaluga.bluetooth:client:${project.rootProject.version}")
+                implementation("com.splendo.kaluga.base:formatting:${project.rootProject.version}")
             }
         }
     }

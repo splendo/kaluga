@@ -104,7 +104,13 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [architecture/compose](architecture/compose/) | Compose extensions for architecture | `com.splendo.kaluga.architecture:compose` | ✅ |  |  |  |  |  |  |  |
 | [architecture/test-utils](architecture/test-utils/) | Test helpers for the architecture module | `com.splendo.kaluga.architecture:test` | ✅ | ✅ |  |  |  |  |  |  |
 | [architecture/test-koin](architecture/test-koin/) | Koin-based test helpers | `com.splendo.kaluga.architecture:test-koin` | ✅ | ✅ |  |  |  |  |  |  |
-| [base/base](base/base/) | Core components of Kaluga: threading, flowables and localization | `com.splendo.kaluga.base:base` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/core](base/core/) | Threading, flowables and concurrent collections | `com.splendo.kaluga.base:core` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/state](base/state/) | State machines (`KalugaState`, `StateRepo`) | `com.splendo.kaluga.base:state` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/decimal](base/decimal/) | High-precision decimal arithmetic | `com.splendo.kaluga.base:decimal` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/bytes](base/bytes/) | ByteArray utilities, hex conversion and numeric byte encoding | `com.splendo.kaluga.base:bytes` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/crc](base/crc/) | Cyclic Redundancy Check (CRC) calculation | `com.splendo.kaluga.base:crc` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/i18n](base/i18n/) | Locales, unit systems and locale-aware String casing | `com.splendo.kaluga.base:i18n` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/formatting](base/formatting/) | Formatting and parsing of numbers and strings | `com.splendo.kaluga.base:formatting` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/test-utils](base/test-utils/) | Test helpers built on top of base | `com.splendo.kaluga.base:test` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bluetooth/core](bluetooth/core/) | Shared Bluetooth attributes and the BluetoothFormat (de)serialization framework | `com.splendo.kaluga.bluetooth:core` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bluetooth/client](bluetooth/client/) | Scanning for and connecting to BLE devices as a Client | `com.splendo.kaluga.bluetooth:client` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -113,7 +119,8 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [bluetooth/test-utils/core](bluetooth/test-utils/core/) | Test helpers for the Bluetooth core module | `com.splendo.kaluga.bluetooth:test-core` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bluetooth/test-utils/client](bluetooth/test-utils/client/) | Test helpers for the Bluetooth client module | `com.splendo.kaluga.bluetooth:test-client` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bluetooth/test-utils/server](bluetooth/test-utils/server/) | Test helpers for the Bluetooth server module | `com.splendo.kaluga.bluetooth:test-server` | ✅ | ✅ |  |  |  | ✅ |  |  |
-| [date-time](date-time/) | Multiplatform classes to work with date and time | `com.splendo.kaluga:date-time` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [date-time/date-time](date-time/date-time/) | Dates, time zones and date formatting | `com.splendo.kaluga.date-time:date-time` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [date-time/timer](date-time/timer/) | A RecurringTimer providing ticks at regular intervals | `com.splendo.kaluga.date-time:timer` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time-picker/date-time-picker](date-time-picker/date-time-picker/) | Showing a Date or Time Picker | `com.splendo.kaluga.date-time-picker:date-time-picker` | ✅ | ✅ |  |  |  |  |  |  |
 | [date-time-picker/test-utils](date-time-picker/test-utils/) | Test helpers for the Date Time Picker module | `com.splendo.kaluga.date-time-picker:test` | ✅ | ✅ |  |  |  |  |  |  |
 | [hud/hud](hud/hud/) | Showing a loading-indicator HUD | `com.splendo.kaluga.hud:hud` | ✅ | ✅ |  |  |  |  |  |  |

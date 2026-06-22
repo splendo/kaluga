@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.decimal
 
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity

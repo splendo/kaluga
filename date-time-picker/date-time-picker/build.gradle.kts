@@ -14,7 +14,8 @@ kaluga {
         common {
             main {
                 api(project(":lifecycle:lifecycle", ""))
-                implementation(project(":base:base", ""))
+                implementation(project(":base:core", ""))
+                api(project(":date-time:date-time", ""))
             }
             test {
                 implementation(project(":date-time-picker:test", ""))

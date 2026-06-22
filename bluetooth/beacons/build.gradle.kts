@@ -10,7 +10,8 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base:base"))
+                implementation(project(":base:core"))
+                api(project(":date-time:date-time"))
                 api(project(":bluetooth:client"))
                 api(project(":logging", ""))
             }

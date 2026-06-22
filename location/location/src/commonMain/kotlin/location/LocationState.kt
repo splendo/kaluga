@@ -22,10 +22,10 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.minus
-import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
+import com.splendo.kaluga.datetime.minus
+import com.splendo.kaluga.datetime.plus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

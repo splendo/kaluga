@@ -1,5 +1,4 @@
-# Bluetooth Base
-
+# Bluetooth Core
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -7,7 +6,7 @@
 This library provides the shared foundation for the Bluetooth modules: the common GATT attribute types (`Service`, `Characteristic`, `Descriptor`), `GattResponse`, and the `BluetoothFormat` (de)serialization framework. It is consumed by both [`client`](../client/) and [`server`](../server/).
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Bluetooth Base as follows:
+This library is available on Maven Central. You can import Kaluga Bluetooth Core as follows:
 
 ```kotlin
 repositories {

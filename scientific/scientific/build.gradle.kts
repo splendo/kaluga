@@ -16,7 +16,10 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base:base"))
+                implementation(project(":base:core"))
+                api(project(":base:decimal"))
+                api(project(":base:i18n"))
+                api(project(":base:formatting"))
                 api(libs.kotlinx.serialization.core)
             }
             test {

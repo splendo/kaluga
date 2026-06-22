@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter
 
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.decimal.div
+import com.splendo.kaluga.base.decimal.toDecimal
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.massFlowRate.div

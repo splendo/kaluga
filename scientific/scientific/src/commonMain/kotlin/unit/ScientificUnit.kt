@@ -16,11 +16,11 @@
  */
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.RoundingMode
-import com.splendo.kaluga.base.utils.round
-import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.RoundingMode
+import com.splendo.kaluga.base.decimal.round
+import com.splendo.kaluga.base.decimal.toDecimal
+import com.splendo.kaluga.base.decimal.toDouble
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
