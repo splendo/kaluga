@@ -155,6 +155,11 @@ class GeneratedFullStructureTest : BaseTest() {
             IncludedFixtureCharacteristicReadResponse.Success(included)
     }
 
+    private class DeepIncludedFixtureCharacteristicDelegate(val deep: String) : LocalDeepIncludedFixtureCharacteristic.Delegate {
+        override suspend fun LocalDeepIncludedFixtureCharacteristic.onReadDeepValue(identifier: Identifier): DeepIncludedFixtureCharacteristicReadResponse =
+            DeepIncludedFixtureCharacteristicReadResponse.Success(deep)
+    }
+
     private class FixtureServerDelegate(
         val indicateDelegate: IndicateFixtureDelegate,
         val multiWriteDelegate: MultiWriteFixtureDelegate,
@@ -162,6 +167,7 @@ class GeneratedFullStructureTest : BaseTest() {
         val encryptedDelegate: EncryptedFixtureDelegate,
         val byteArrayDelegate: ByteArrayFixtureDelegate,
         val includedCharacteristicDelegate: IncludedFixtureCharacteristicDelegate,
+        val deepIncludedCharacteristicDelegate: DeepIncludedFixtureCharacteristicDelegate,
     ) : FixtureDeviceServer.Delegate {
         override val fixtureServiceDelegate: LocalFixtureService.Delegate = object : LocalFixtureService.Delegate {
             override val indicateCharacteristicDelegate = indicateDelegate
@@ -171,6 +177,9 @@ class GeneratedFullStructureTest : BaseTest() {
             override val byteArrayCharacteristicDelegate = byteArrayDelegate
             override val includedServiceDelegate = object : LocalIncludedFixtureService.Delegate {
                 override val includedCharacteristicDelegate = this@FixtureServerDelegate.includedCharacteristicDelegate
+                override val deepIncludedServiceDelegate = object : LocalDeepIncludedFixtureService.Delegate {
+                    override val deepCharacteristicDelegate = this@FixtureServerDelegate.deepIncludedCharacteristicDelegate
+                }
             }
         }
     }
@@ -183,6 +192,7 @@ class GeneratedFullStructureTest : BaseTest() {
         val encryptedDelegate = EncryptedFixtureDelegate(secret = "topsecret")
         val byteArrayDelegate = ByteArrayFixtureDelegate(raw = byteArrayOf(1, 2, 3))
         val includedCharacteristicDelegate = IncludedFixtureCharacteristicDelegate(included = "included-value")
+        val deepIncludedCharacteristicDelegate = DeepIncludedFixtureCharacteristicDelegate(deep = "deep-value")
         val serverDelegate = FixtureServerDelegate(
             indicateDelegate,
             multiWriteDelegate,
@@ -190,6 +200,7 @@ class GeneratedFullStructureTest : BaseTest() {
             encryptedDelegate,
             byteArrayDelegate,
             includedCharacteristicDelegate,
+            deepIncludedCharacteristicDelegate,
         )
         val server = FixtureDeviceServer.simulated(serverDelegate)
         try {
@@ -224,6 +235,11 @@ class GeneratedFullStructureTest : BaseTest() {
             val included = service.includedService.includedCharacteristic.readIncludedValue()
             assertIs<IncludedFixtureCharacteristicReadResponse.Success>(included)
             assertEquals("included-value", included.response)
+
+            // included service -> deeper included service -> characteristic read (includes nest to any depth)
+            val deep = service.includedService.deepIncludedService.deepCharacteristic.readDeepValue()
+            assertIs<DeepIncludedFixtureCharacteristicReadResponse.Success>(deep)
+            assertEquals("deep-value", deep.response)
 
             // indicate characteristic state flow exists
             assertNotNull(service.indicateCharacteristic.indicateState)

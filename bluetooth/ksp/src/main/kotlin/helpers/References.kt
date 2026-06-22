@@ -86,7 +86,6 @@ object References {
 
             val localService = className("LocalService")
             val localServiceDSL = className("LocalService", "DSL")
-            val localServiceDSLPrimary = className("LocalService", "DSL", "Primary")
             val localCharacteristic = className("LocalCharacteristic")
             val localCharacteristicDSL = className("LocalCharacteristic", "DSL")
             val localCharacteristicNotifiable = className("LocalCharacteristic", "Notifiable")

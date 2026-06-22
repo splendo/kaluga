@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.toNSData
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
@@ -179,8 +180,9 @@ internal sealed class IOSServerState {
             return AwaitingPermissions(permissionStateRepo, delegate, logger)
         }
 
-        override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL.Primary = LocalServiceDSL.Primary(
+        override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL = LocalServiceDSL(
             uuid,
+            Service.Type.PRIMARY,
             notify,
             delegate::registerReadAction,
             delegate::registerWriteAction,

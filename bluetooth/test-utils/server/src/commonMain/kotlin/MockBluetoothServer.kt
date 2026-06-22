@@ -145,7 +145,7 @@ class MockBluetoothServer(initialStatus: ServerStatus = ServerStatus.AVAILABLE, 
         }
     }
 
-    private fun buildService(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService {
+    private fun buildService(uuid: UUID, service: LocalService.DSL.() -> Unit): LocalService {
         val captured = buildCapturingLocalService(
             uuid,
             MockLocalServiceWrapperBuilder(),
@@ -176,7 +176,7 @@ class MockBluetoothServer(initialStatus: ServerStatus = ServerStatus.AVAILABLE, 
     override fun stopAdvertising() {
         stopAdvertisingMock.call()
     }
-    override suspend fun add(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService? = addMock.call(uuid, service)
+    override suspend fun add(uuid: UUID, service: LocalService.DSL.() -> Unit): LocalService? = addMock.call(uuid, service)
     override suspend fun remove(service: LocalService): Boolean = removeMock.call(service)
     override suspend fun removeAllServices(): Boolean = removeAllServicesMock.call()
     override fun close() {

@@ -24,6 +24,7 @@ public protocol KalugaBluetoothPeripheralDelegate {
     @objc func didRead(rssi RSSI: NSNumber, forPeripheral peripheral: CBPeripheral, error: (any Error)?)
     @objc func didDiscoverServices(for peripheral: CBPeripheral, error: (any Error)?)
     @objc func didDiscoverCharacteristics(for service: CBService, peripheral: CBPeripheral, error: (any Error)?)
+    @objc func didDiscoverIncludedServices(for service: CBService, peripheral: CBPeripheral, error: (any Error)?)
     @objc func didUpdateValue(forCharacteristic characteristic: CBCharacteristic, peripheral: CBPeripheral, error: (any Error)?)
     @objc func didWriteValue(forCharacteristic characteristic: CBCharacteristic, peripheral: CBPeripheral, error: (any Error)?)
     @objc func didUpdateNotificationState(for characteristic: CBCharacteristic, peripheral: CBPeripheral, error: (any Error)?)
@@ -62,6 +63,10 @@ public class KalugaBluetoothPeripheralWrapper : NSObject, CBPeripheralDelegate {
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: (any Error)?) {
         delegate.didDiscoverCharacteristics(for: service, peripheral: peripheral, error: error)
+    }
+
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: (any Error)?) {
+        delegate.didDiscoverIncludedServices(for: service, peripheral: peripheral, error: error)
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: (any Error)?) {

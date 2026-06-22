@@ -76,13 +76,13 @@ class MockBluetoothServerBuilder(setupMocks: Boolean = true) : BaseBluetoothServ
      */
     private class DSL(private val server: BluetoothServer) : BluetoothServerDSL {
         private var advertisement: (AdvertiseData.Builder.() -> Unit)? = null
-        private val services = mutableListOf<Pair<UUID, LocalService.DSL.Primary.() -> Unit>>()
+        private val services = mutableListOf<Pair<UUID, LocalService.DSL.() -> Unit>>()
 
         override fun advertise(data: AdvertiseData.Builder.() -> Unit) {
             advertisement = data
         }
 
-        override fun service(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit) {
+        override fun service(uuid: UUID, service: LocalService.DSL.() -> Unit) {
             services.add(uuid to service)
         }
 
