@@ -60,7 +60,7 @@ class GeneratedStructureTest {
             sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_3,
             heartRateMeasurementValue = HeartRateMeasurementValue.Value(70),
             energyExpended = null,
-            rRInterval = emptyList(),
+            rrInterval = emptyList(),
         )
     }
 

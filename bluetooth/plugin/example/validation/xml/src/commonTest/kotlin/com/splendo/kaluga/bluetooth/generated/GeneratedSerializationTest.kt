@@ -64,7 +64,7 @@ class GeneratedSerializationTest {
             sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_3,
             heartRateMeasurementValue = HeartRateMeasurementValue.Value(70),
             energyExpended = null,
-            rRInterval = emptyList(),
+            rrInterval = emptyList(),
         )
         validateHeartRate(value, byteArrayOf(0x06, 0x46))
     }
@@ -77,7 +77,7 @@ class GeneratedSerializationTest {
             sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_2,
             heartRateMeasurementValue = HeartRateMeasurementValue.Value(300),
             energyExpended = HeartRateMeasurementValue.EnergyExpended(500),
-            rRInterval = listOf(HeartRateMeasurementValue.RRInterval(512)),
+            rrInterval = listOf(HeartRateMeasurementValue.RRInterval(512)),
         )
         validateHeartRate(value, byteArrayOf(0x1D, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x02))
     }
