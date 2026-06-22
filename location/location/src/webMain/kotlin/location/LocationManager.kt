@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.datetime.DefaultKalugaDate
 import com.splendo.kaluga.location.BaseLocationManager.Settings
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder

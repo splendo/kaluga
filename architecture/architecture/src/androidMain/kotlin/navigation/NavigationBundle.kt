@@ -18,7 +18,7 @@
 package com.splendo.kaluga.architecture.navigation
 
 import android.os.Bundle
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.datetime.DefaultKalugaDate
 import kotlin.time.Duration.Companion.milliseconds
 
 /**

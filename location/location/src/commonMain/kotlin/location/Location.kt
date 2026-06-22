@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
 import kotlin.math.absoluteValue
 
 /**

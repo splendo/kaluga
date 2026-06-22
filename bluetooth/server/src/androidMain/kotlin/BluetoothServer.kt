@@ -30,7 +30,7 @@ import android.os.ParcelUuid
 import android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor

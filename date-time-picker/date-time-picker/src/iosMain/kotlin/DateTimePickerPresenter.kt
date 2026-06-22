@@ -19,8 +19,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.datetimepicker
 
 import com.splendo.kaluga.base.IOSVersion
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSCalendar

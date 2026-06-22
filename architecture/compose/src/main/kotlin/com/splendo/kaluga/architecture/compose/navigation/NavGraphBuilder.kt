@@ -35,9 +35,9 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleValue
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.navigation.toBundle
-import com.splendo.kaluga.base.text.KalugaDateFormatter
-import com.splendo.kaluga.base.text.iso8601Pattern
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.KalugaDateFormatter
+import com.splendo.kaluga.datetime.iso8601Pattern
+import com.splendo.kaluga.datetime.KalugaDate
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.BooleanArraySerializer
 import kotlinx.serialization.builtins.ByteArraySerializer

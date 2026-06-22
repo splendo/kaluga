@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
 import com.splendo.kaluga.datetimepicker.BaseDateTimePickerPresenter
 import com.splendo.kaluga.datetimepicker.DateTimePicker
 import kotlinx.coroutines.CoroutineScope

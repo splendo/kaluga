@@ -8,7 +8,7 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base:base"))
+                implementation(project(":base:core"))
             }
             test {
                 implementation(project(":base:test"))

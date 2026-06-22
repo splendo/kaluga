@@ -20,10 +20,10 @@ package com.splendo.kaluga.keyboard.test
 import com.splendo.kaluga.base.test.UIThreadTest
 import com.splendo.kaluga.base.test.mock.matcher.AnyCaptor
 import com.splendo.kaluga.base.test.mock.verify
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.KalugaLocale
-import com.splendo.kaluga.base.utils.enUsPosix
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
+import com.splendo.kaluga.base.i18n.KalugaLocale
+import com.splendo.kaluga.base.i18n.enUsPosix
 import com.splendo.kaluga.datetimepicker.DateTimePicker
 import com.splendo.kaluga.datetimepicker.buildDatePicker
 import com.splendo.kaluga.datetimepicker.test.MockDateTimePickerPresenter

@@ -14,6 +14,7 @@ kaluga {
             main {
                 api(project(":bluetooth:test-core"))
                 api(project(":bluetooth:client"))
+                api(project(":base:state", ""))
             }
         }
     }

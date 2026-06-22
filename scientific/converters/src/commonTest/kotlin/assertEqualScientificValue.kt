@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter
 
-import com.splendo.kaluga.base.utils.round
+import com.splendo.kaluga.base.decimal.round
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import kotlin.test.assertEquals

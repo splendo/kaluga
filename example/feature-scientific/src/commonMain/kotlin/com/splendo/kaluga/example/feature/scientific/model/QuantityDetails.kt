@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.example.feature.scientific.model
 
-import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.example.feature.scientific.converters.QuantityConverter
 import com.splendo.kaluga.example.feature.scientific.converters.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue

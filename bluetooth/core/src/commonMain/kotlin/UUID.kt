@@ -20,7 +20,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.text.format
+import com.splendo.kaluga.base.formatting.format
 import kotlin.jvm.JvmName
 
 private object Constants {

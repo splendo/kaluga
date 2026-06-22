@@ -16,7 +16,8 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base:base"))
+                implementation(project(":base:core"))
+                api(project(":base:decimal"))
                 implementation(project(":scientific:scientific"))
             }
             test {

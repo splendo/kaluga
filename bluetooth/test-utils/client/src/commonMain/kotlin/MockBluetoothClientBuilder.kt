@@ -28,15 +28,15 @@ import com.splendo.kaluga.permissions.base.Permissions
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A mock implementation of [BaseBluetoothClientBuilder] that creates [MockBluetoothService]s.
+ * A mock implementation of [BaseBluetoothClientBuilder] that creates [MockBluetoothClient]s.
  * @param setupMocks if `true` the mocks are configured with sensible default behaviour
  */
 class MockBluetoothClientBuilder(setupMocks: Boolean = true) : BaseBluetoothClientBuilder {
 
     /**
-     * A list of all [MockBluetoothService]s created by this builder
+     * A list of all [MockBluetoothClient]s created by this builder
      */
-    val createdClients = concurrentMutableListOf<MockBluetoothService>()
+    val createdClients = concurrentMutableListOf<MockBluetoothClient>()
 
     /**
      * Mock for [createClient]
@@ -46,7 +46,7 @@ class MockBluetoothClientBuilder(setupMocks: Boolean = true) : BaseBluetoothClie
     init {
         if (setupMocks) {
             createClientMock.on().doExecute {
-                MockBluetoothService().also { createdClients.add(it) }
+                MockBluetoothClient().also { createdClients.add(it) }
             }
         }
     }

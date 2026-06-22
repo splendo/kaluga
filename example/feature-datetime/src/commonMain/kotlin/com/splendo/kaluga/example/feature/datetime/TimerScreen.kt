@@ -44,8 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.base.utils.KalugaTimeZone
-import com.splendo.kaluga.base.utils.TimeZoneNameStyle
+import com.splendo.kaluga.datetime.KalugaTimeZone
+import com.splendo.kaluga.datetime.TimeZoneNameStyle
 import com.splendo.kaluga.datetime.timer.Timer
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration

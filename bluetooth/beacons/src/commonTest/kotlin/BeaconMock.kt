@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import com.splendo.kaluga.base.utils.bytesOf
-import com.splendo.kaluga.base.utils.decodeHex
+import com.splendo.kaluga.base.bytes.bytesOf
+import com.splendo.kaluga.base.bytes.decodeHex
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
