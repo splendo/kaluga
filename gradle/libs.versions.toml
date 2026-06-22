@@ -18,7 +18,7 @@ palantir-git-version = "4.2.0"
 dependencycheck = "12.1.6"
 
 kotlinx-atomicfu = "0.29.0"
-kotlinx-coroutines = "1.10.2"
+kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.9.0"
 accompanist = "0.37.3"
 android-material = "1.13.0"
