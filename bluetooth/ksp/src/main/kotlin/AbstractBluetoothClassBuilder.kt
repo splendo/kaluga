@@ -82,8 +82,9 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         fun nameForType(typeDeclaration: KSClassDeclaration): ClassName =
             if (side == GenerationType.Side.CLIENT) clientName(typeDeclaration, GenerationType.Type.MOCK) else serverName(typeDeclaration, GenerationType.Type.MOCK)
 
-        val apiInterface = generate(if (side == GenerationType.Side.CLIENT) GenerationType.CLIENT_API else GenerationType.SERVER_API)
-        val apiName = nameFor(declaration, if (side == GenerationType.Side.CLIENT) GenerationType.CLIENT_API else GenerationType.SERVER_API)
+        val generationType = if (side == GenerationType.Side.CLIENT) GenerationType.CLIENT_API else GenerationType.SERVER_API
+        val apiInterface = generate(generationType)
+        val apiName = nameFor(declaration, generationType)
         val mockName = nameFor(declaration, mockGenerationType)
 
         // Classify each generated property as either a nested generated interface (child mock) or a leaf.
@@ -141,7 +142,7 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
             val mockType = References.Base.Test.methodMock(function.parameters.size, suspended).parameterizedBy(mockTypeArguments)
             typeBuilder.addProperty(
                 PropertySpec.builder(mockPropertyName, mockType)
-                    .initializer("::%N.%M()", function.name, References.Base.Test.mockFactory)
+                    .initializer("::%N.%M()", function.name, References.Base.Test.Parameters.mock)
                     .build(),
             )
             val arguments = function.parameters.joinToString(separator = ", ") { it.name }

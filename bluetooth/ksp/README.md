@@ -6,7 +6,7 @@
 
 The [KSP](https://kotlinlang.org/docs/ksp-overview.html) symbol processor that powers Bluetooth code generation. 
 It reads a device described with the [`@Bluetooth` annotations](../annotations/) and generates the typed client and server
-APIs (and their `Bluetooth` / `Simulated` implementations) on top of [`bluetooth-core`](../core/),
+APIs (and their `Bluetooth` / `Simulated` / `Mock` implementations) on top of [`bluetooth-core`](../core/),
 [`bluetooth-client`](../client/) and [`bluetooth-server`](../server/). 
 Being a KSP processor it is a build-time, JVM-only artifact and produces no runtime library of its own.
 
@@ -36,7 +36,7 @@ Generation is configured through KSP options (`ksp { arg("name", "value") }`), w
 | Option | Values | Description |
 |---|---|---|
 | `target` | `CLIENT`, `SERVER` (comma-separated) | Roles to generate. |
-| `implementFor` | `BLUETOOTH`, `SIMULATOR` (comma-separated) | Implementations to generate; omit for API-only. |
+| `implementFor` | `BLUETOOTH`, `SIMULATOR`, `MOCK` (comma-separated) | Implementations to generate; omit for API-only. `MOCK` emits `base:test` mock-backed test doubles. |
 | `generateApi` | `true` / `false` | Whether to generate the API interfaces (`false` imports them from another module). |
 | `generatedPackage` | package name | Package for the generated code (defaults to the definitions' package). |
 | `apiPackage` | package name | Package the generated API interfaces live in (defaults to `generatedPackage`). |

@@ -43,5 +43,6 @@ include(":validation:mock")
 include(":validation:external-api-client")
 include(":validation:external-api-server")
 include(":validation:external-api-simulator")
+include(":validation:external-api-mock")
 
 includeBuild("../../../")

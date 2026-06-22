@@ -42,8 +42,12 @@ object References {
         object Test : ClassNameProvider {
             override val packageName: String = "${Base.packageName}.test.mock"
 
-            val mockFactory = MemberName("${Base.packageName}.test.mock.parameters", "mock")
-            val call = MemberName("${Base.packageName}.test.mock", "call")
+            object Parameters : ClassNameProvider {
+                override val packageName: String = "${Test.packageName}.parameters"
+                val mock = memberName("mock")
+            }
+
+            val call = memberName("call")
 
             /** The `[Suspend]{Void,Single,Pair,...}ParametersMock` type alias for a method of [parameterCount] parameters. */
             fun methodMock(parameterCount: Int, suspended: Boolean): ClassName {

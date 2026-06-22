@@ -106,7 +106,7 @@ bluetooth {
 | Option | Default | Description |
 |---|---|---|
 | `target` | `[CLIENT]` | Roles to generate: `CLIENT` (central), `SERVER` (peripheral), or both. |
-| `implementFor` | `[BLUETOOTH]` | Implementations to generate per role: `BLUETOOTH` (real platform stack) and/or `SIMULATOR` (in-process loopback). |
+| `implementFor` | `[BLUETOOTH]` | Implementations to generate per role: `BLUETOOTH` (real platform stack), `SIMULATOR` (in-process loopback), and/or `MOCK` (Kaluga `base:test` mock-backed test doubles). |
 | `apiOnly()` | — | Generate only the API interfaces (no implementation); the module then depends only on `bluetooth-core`. |
 | `useExternalApi()` | — | Generate implementations only, importing the API from another module that used `apiOnly()`. |
 | `generatedPackage` | package of the definitions | Package the generated code is placed in. |
@@ -120,6 +120,7 @@ For a `@Bluetooth DemoDevice` the plugin generates, according to `target` / `imp
 - A `DemoDeviceClient` / `DemoDeviceServer` API (interfaces mirroring the device's services, characteristics and descriptors).
 - A `BluetoothDemoDeviceClient` / `BluetoothDemoDeviceServer` backed by the platform Bluetooth stack (`ImplementFor.BLUETOOTH`).
 - A `SimulatedDemoDeviceClient` / `SimulatedDemoDeviceServer` that talk to each other in-process (`ImplementFor.SIMULATOR`).
+- A `MockDemoDeviceClient` / `MockDemoDeviceServer` whose every operation is backed by a Kaluga [`base:test`](../../base/test-utils/) mock — stub with `.on().doReturn(…)` / `.doExecuteSuspended { … }` and assert with `verify()` (`ImplementFor.MOCK`).
 - Factory functions to obtain them, e.g.:
 
 ```kotlin
@@ -135,10 +136,18 @@ val server = DemoDeviceServer.bluetooth(serverBuilder, delegate)
 // in-process simulation, no radio involved
 val simulatedServer = DemoDeviceServer.simulated(delegate)
 val simulatedClient = DemoDeviceClient.simulated(identifier, simulatedServer)
+
+// mock test double — stub and verify, no transport at all
+val mockClient = DemoDeviceClient.mock()
+val reading = mockClient.sensor.reading as MockReadingCharacteristic
+reading.readValueMock.on().doExecuteSuspended { /* return a stubbed read response */ }
+mockClient.sensor.reading.readValue()    // returns the stubbed value
+reading.readValueMock.verify()           // assert it was called
 ```
 
 The generated client and server APIs are implementation-agnostic: the same `DemoDeviceClient` code works against the
-real `Bluetooth*` implementation or the `Simulated*` one, which makes the simulator useful for previews and tests.
+real `Bluetooth*` implementation, the `Simulated*` one (useful for previews), or the `Mock*` one (useful for stubbing and
+verifying interactions in tests of code that *consumes* the generated API).
 
 ## Sharing definitions across modules
 
@@ -148,3 +157,35 @@ a server app — generate the API once and import it elsewhere:
 - API module: `bluetooth { apiOnly() }` (depends only on `bluetooth-core`).
 - Implementation module: `bluetooth { useExternalApi(); apiPackage = "<api package>" }`, depending on the API module,
   and `annotationSource("<path to the shared definitions>")` so it generates against the same device.
+
+## Generating mocks (recommended pattern)
+
+`ImplementFor.MOCK` makes the plugin add `com.splendo.kaluga.base:test` to `commonMain`, because the generated `Mock*`
+classes are built on its mock library. Since KSP generates common code into a single source set per module (it cannot
+split generation between `commonMain` and `commonTest`), you should **not** mix the mock variant into a production
+feature module — doing so would leak `base:test` onto its main classpath.
+
+Instead, generate the mocks in a dedicated test-fixtures module that imports the API, mirroring Kaluga's own
+[`bluetooth:test-client`](../test-utils/client/) / [`bluetooth:test-server`](../test-utils/server/):
+
+1. **API module** — `bluetooth { apiOnly() }`. Holds the generated interfaces only.
+2. **Implementation module(s)** — `bluetooth { useExternalApi(); apiPackage = "<api package>"; implementFor.set(setOf(BLUETOOTH)) }`,
+   for the real client/server app code.
+3. **Mock module** — `bluetooth { useExternalApi(); apiPackage = "<api package>"; implementFor.set(setOf(MOCK)) }`,
+   depending on the API module and `annotationSource("<shared definitions>")`. This module legitimately ships
+   `base:test` in its `commonMain` because it *is* a test artifact. Consumers then depend on it as a **test**
+   dependency and use `DemoDeviceClient.mock()` to stub and verify against the generated API.
+
+```kotlin
+// build.gradle.kts of the mock test-fixtures module
+kaluga {
+    dependencies { common { main { implementation(project(":<api module>")) } } }
+}
+bluetooth {
+    target.set(setOf(BluetoothTarget.CLIENT, BluetoothTarget.SERVER))
+    implementFor.set(setOf(ImplementFor.MOCK))
+    useExternalApi()
+    apiPackage = "<api package>"
+    annotationSource("<path to the shared definitions>")
+}
+```
