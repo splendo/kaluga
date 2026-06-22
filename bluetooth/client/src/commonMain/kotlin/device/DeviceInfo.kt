@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
 import com.splendo.kaluga.bluetooth.RSSI
 import kotlin.math.pow
 

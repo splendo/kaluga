@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter
 
-import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.decimal.toDecimal
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.acceleration.div
 import com.splendo.kaluga.scientific.converter.action.div

@@ -30,7 +30,7 @@ kaluga {
     dependencies {
         common {
             main {
-                implementation(project(":base:base", ""))
+                implementation(project(":base:core", ""))
                 api(libs.kotlinx.serialization.core)
             }
             test {

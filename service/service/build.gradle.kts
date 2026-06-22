@@ -16,7 +16,7 @@ kaluga {
         common {
             main {
                 implementation(project(":logging"))
-                implementation(project(":base:base"))
+                implementation(project(":base:core"))
             }
         }
     }

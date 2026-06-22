@@ -18,6 +18,7 @@ kaluga {
                 // `scientific` only used inside the server screen (BeatsPerMinute literals).
                 // `implementation` keeps unit classes out of the framework's public header.
                 implementation("com.splendo.kaluga.scientific:scientific:${project.rootProject.version}")
+                implementation("com.splendo.kaluga.base:formatting:${project.rootProject.version}")
             }
         }
     }

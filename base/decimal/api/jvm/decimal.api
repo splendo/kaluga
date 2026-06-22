@@ -1,0 +1,142 @@
+public abstract class com/splendo/kaluga/base/decimal/Decimal : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/base/decimal/Decimal$Companion;
+	public fun compareTo (Lcom/splendo/kaluga/base/decimal/Decimal;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+}
+
+public final class com/splendo/kaluga/base/decimal/Decimal$Companion {
+	public final fun getHUNDRED ()Lcom/splendo/kaluga/base/decimal/Decimal;
+	public final fun getONE ()Lcom/splendo/kaluga/base/decimal/Decimal;
+	public final fun getPI ()Lcom/splendo/kaluga/base/decimal/Decimal;
+	public final fun getTEN ()Lcom/splendo/kaluga/base/decimal/Decimal;
+	public final fun getTHOUSAND ()Lcom/splendo/kaluga/base/decimal/Decimal;
+	public final fun getZERO ()Lcom/splendo/kaluga/base/decimal/Decimal;
+}
+
+public final class com/splendo/kaluga/base/decimal/Decimal$Finite : com/splendo/kaluga/base/decimal/Decimal {
+	public fun <init> (Ljava/math/BigDecimal;)V
+	public final fun copy (Ljava/math/BigDecimal;)Lcom/splendo/kaluga/base/decimal/Decimal$Finite;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/decimal/Decimal$Finite;Ljava/math/BigDecimal;ILjava/lang/Object;)Lcom/splendo/kaluga/base/decimal/Decimal$Finite;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/decimal/Decimal$NaN : com/splendo/kaluga/base/decimal/Decimal {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/decimal/Decimal$NaN;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/decimal/Decimal$NegativeInfinity : com/splendo/kaluga/base/decimal/Decimal {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/decimal/Decimal$NegativeInfinity;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/decimal/Decimal$PositiveInfinity : com/splendo/kaluga/base/decimal/Decimal {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/decimal/Decimal$PositiveInfinity;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/decimal/DecimalJVM {
+	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
+	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Ljava/math/BigDecimal;
+	public static synthetic fun div$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
+	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
+	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Ljava/math/BigDecimal;
+	public static synthetic fun minus$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
+	public static final fun plus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun plus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
+	public static final fun plus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Ljava/math/BigDecimal;
+	public static synthetic fun plus$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
+	public static final fun pow (Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
+	public static final fun pow (Ljava/math/BigDecimal;II)Ljava/math/BigDecimal;
+	public static final fun pow (Ljava/math/BigDecimal;IILcom/splendo/kaluga/base/decimal/RoundingMode;)Ljava/math/BigDecimal;
+	public static synthetic fun pow$default (Ljava/math/BigDecimal;IILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
+	public static final fun round (Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Ljava/math/BigDecimal;
+	public static synthetic fun round$default (Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
+	public static final fun stringValue (Ljava/math/BigDecimal;)Ljava/lang/String;
+	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
+	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Ljava/math/BigDecimal;
+	public static synthetic fun times$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
+	public static final fun toDouble (Ljava/math/BigDecimal;)D
+	public static final fun toFiniteDecimal (Ljava/lang/Number;)Ljava/math/BigDecimal;
+	public static final fun toFiniteDecimal (Ljava/lang/String;)Ljava/math/BigDecimal;
+	public static final fun toInt (Ljava/math/BigDecimal;)I
+	public static final fun toLong (Ljava/math/BigDecimal;)J
+}
+
+public final class com/splendo/kaluga/base/decimal/DecimalKt {
+	public static final fun div (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun div (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;I)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun div (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static synthetic fun div$default (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun minus (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun minus (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;I)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun minus (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static synthetic fun minus$default (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun plus (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun plus (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;I)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun plus (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static synthetic fun plus$default (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun pow (Lcom/splendo/kaluga/base/decimal/Decimal;I)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun pow (Lcom/splendo/kaluga/base/decimal/Decimal;II)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun pow (Lcom/splendo/kaluga/base/decimal/Decimal;IILcom/splendo/kaluga/base/decimal/RoundingMode;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static synthetic fun pow$default (Lcom/splendo/kaluga/base/decimal/Decimal;IILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun round (Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static synthetic fun round$default (Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun times (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun times (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;I)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun times (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static synthetic fun times$default (Lcom/splendo/kaluga/base/decimal/Decimal;Lcom/splendo/kaluga/base/decimal/Decimal;ILcom/splendo/kaluga/base/decimal/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun toDecimal (Ljava/lang/Number;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun toDecimal (Ljava/lang/String;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final fun toDecimalList (Ljava/util/Collection;)Ljava/util/List;
+	public static final fun toDecimalList ([B)Ljava/util/List;
+	public static final fun toDecimalList ([D)Ljava/util/List;
+	public static final fun toDecimalList ([F)Ljava/util/List;
+	public static final fun toDecimalList ([I)Ljava/util/List;
+	public static final fun toDecimalList ([J)Ljava/util/List;
+	public static final fun toDecimalList ([S)Ljava/util/List;
+	public static final fun toDouble (Lcom/splendo/kaluga/base/decimal/Decimal;)D
+	public static final fun toDoubleArray (Ljava/util/Collection;)[D
+	public static final fun toInt (Lcom/splendo/kaluga/base/decimal/Decimal;)I
+	public static final fun toIntArray (Ljava/util/Collection;)[I
+	public static final fun toLong (Lcom/splendo/kaluga/base/decimal/Decimal;)J
+	public static final fun toLongArray (Ljava/util/Collection;)[J
+	public static final fun toString (Lcom/splendo/kaluga/base/decimal/Decimal;)Ljava/lang/String;
+	public static final fun toStringList (Ljava/util/Collection;)Ljava/util/List;
+}
+
+public abstract class com/splendo/kaluga/base/decimal/RoundingMode {
+}
+
+public final class com/splendo/kaluga/base/decimal/RoundingMode$RoundDown : com/splendo/kaluga/base/decimal/RoundingMode {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/decimal/RoundingMode$RoundDown;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/decimal/RoundingMode$RoundHalfEven : com/splendo/kaluga/base/decimal/RoundingMode {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/decimal/RoundingMode$RoundHalfEven;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/decimal/RoundingMode$RoundUp : com/splendo/kaluga/base/decimal/RoundingMode {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/decimal/RoundingMode$RoundUp;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

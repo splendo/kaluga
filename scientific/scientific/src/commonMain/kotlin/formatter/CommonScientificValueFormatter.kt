@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.scientific.formatter
 
-import com.splendo.kaluga.base.text.NumberFormatStyle
-import com.splendo.kaluga.base.text.NumberFormatter
+import com.splendo.kaluga.base.formatting.NumberFormatStyle
+import com.splendo.kaluga.base.formatting.NumberFormatter
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.formatter.CommonScientificValueFormatter.Builder.Companion.build
@@ -49,7 +49,7 @@ class CommonScientificValueFormatter internal constructor(
         fun with(builder: Builder.() -> Unit): CommonScientificValueFormatter = Builder().apply(builder).build()
 
         /**
-         * A default [CommonScientificValueFormatter] that formats all units as themselves using the current user [com.splendo.kaluga.base.utils.KalugaLocale]
+         * A default [CommonScientificValueFormatter] that formats all units as themselves using the current user [com.splendo.kaluga.base.i18n.KalugaLocale]
          */
         val default get() = with {}
     }

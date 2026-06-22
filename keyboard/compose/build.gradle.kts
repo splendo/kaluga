@@ -7,7 +7,7 @@ kaluga {
 }
 
 dependencies {
-    implementation(project(":base:base"))
+    implementation(project(":base:core"))
     api(project(":keyboard:keyboard"))
     api(project(":architecture:compose"))
 }

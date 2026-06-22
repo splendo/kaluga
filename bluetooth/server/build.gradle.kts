@@ -21,7 +21,7 @@ kaluga {
             main {
                 api(project(":bluetooth:core"))
                 api(project(":permissions:bluetooth", ""))
-                api(project(":base:base"))
+                api(project(":base:core"))
             }
             test {
                 implementation(project(":base:test", ""))

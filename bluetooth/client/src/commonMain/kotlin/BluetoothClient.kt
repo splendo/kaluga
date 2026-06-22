@@ -18,9 +18,9 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.base.text.lowerCased
-import com.splendo.kaluga.base.utils.KalugaLocale
-import com.splendo.kaluga.base.utils.enUsPosix
+import com.splendo.kaluga.base.i18n.lowerCased
+import com.splendo.kaluga.base.i18n.KalugaLocale
+import com.splendo.kaluga.base.i18n.enUsPosix
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState

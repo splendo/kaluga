@@ -20,7 +20,7 @@ package com.splendo.kaluga.location
 
 import android.os.Build
 import com.google.android.gms.location.LocationResult
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.datetime.DefaultKalugaDate
 import kotlin.time.Duration.Companion.milliseconds
 
 /**

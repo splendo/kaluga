@@ -710,15 +710,15 @@ sealed class <#A: kotlin/Any?> com.splendo.kaluga.architecture.navigation/Naviga
         final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.CharType.toString|toString(){}[0]
     }
 
-    final object DateArrayType : com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.NonNullableNavigationBundleSpecType<kotlin.collections/List<com.splendo.kaluga.base.utils/KalugaDate>> { // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateArrayType|null[0]
-        final fun convertValue(kotlin.collections/List<com.splendo.kaluga.base.utils/KalugaDate>): com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateArrayType.convertValue|convertValue(kotlin.collections.List<com.splendo.kaluga.base.utils.KalugaDate>){}[0]
+    final object DateArrayType : com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.NonNullableNavigationBundleSpecType<kotlin.collections/List<com.splendo.kaluga.datetime/KalugaDate>> { // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateArrayType|null[0]
+        final fun convertValue(kotlin.collections/List<com.splendo.kaluga.datetime/KalugaDate>): com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateArrayType.convertValue|convertValue(kotlin.collections.List<com.splendo.kaluga.datetime.KalugaDate>){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateArrayType.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateArrayType.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateArrayType.toString|toString(){}[0]
     }
 
-    final object DateType : com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.NonNullableNavigationBundleSpecType<com.splendo.kaluga.base.utils/KalugaDate> { // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateType|null[0]
-        final fun convertValue(com.splendo.kaluga.base.utils/KalugaDate): com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateType.convertValue|convertValue(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    final object DateType : com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.NonNullableNavigationBundleSpecType<com.splendo.kaluga.datetime/KalugaDate> { // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateType|null[0]
+        final fun convertValue(com.splendo.kaluga.datetime/KalugaDate): com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateType.convertValue|convertValue(com.splendo.kaluga.datetime.KalugaDate){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateType.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateType.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/NavigationBundleSpecType.DateType.toString|toString(){}[0]
@@ -929,21 +929,21 @@ sealed class <#A: kotlin/Any?> com.splendo.kaluga.architecture.navigation/Naviga
         final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.CharValue.toString|toString(){}[0]
     }
 
-    final class DateArrayValue : com.splendo.kaluga.architecture.navigation/NavigationBundleValue.ListNavigationBundleValue<com.splendo.kaluga.base.utils/KalugaDate> { // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue|null[0]
+    final class DateArrayValue : com.splendo.kaluga.architecture.navigation/NavigationBundleValue.ListNavigationBundleValue<com.splendo.kaluga.datetime/KalugaDate> { // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue|null[0]
         final val value // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.value|{}value[0]
-            final fun <get-value>(): kotlin.collections/List<com.splendo.kaluga.base.utils/KalugaDate> // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.value.<get-value>|<get-value>(){}[0]
+            final fun <get-value>(): kotlin.collections/List<com.splendo.kaluga.datetime/KalugaDate> // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.value.<get-value>|<get-value>(){}[0]
 
-        final fun component1(): kotlin.collections/List<com.splendo.kaluga.base.utils/KalugaDate> // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.component1|component1(){}[0]
+        final fun component1(): kotlin.collections/List<com.splendo.kaluga.datetime/KalugaDate> // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.component1|component1(){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateArrayValue.toString|toString(){}[0]
     }
 
-    final class DateValue : com.splendo.kaluga.architecture.navigation/NavigationBundleValue.NonNullableNavigationBundleValue<com.splendo.kaluga.base.utils/KalugaDate> { // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue|null[0]
+    final class DateValue : com.splendo.kaluga.architecture.navigation/NavigationBundleValue.NonNullableNavigationBundleValue<com.splendo.kaluga.datetime/KalugaDate> { // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue|null[0]
         final val value // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.value|{}value[0]
-            final fun <get-value>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.value.<get-value>|<get-value>(){}[0]
+            final fun <get-value>(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.value.<get-value>|<get-value>(){}[0]
 
-        final fun component1(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.component1|component1(){}[0]
+        final fun component1(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.component1|component1(){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.architecture.navigation/NavigationBundleValue.DateValue.toString|toString(){}[0]

@@ -2,9 +2,9 @@ package com.splendo.kaluga.example.feature.datetimepicker
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.base.text.DateFormatStyle
-import com.splendo.kaluga.base.text.KalugaDateFormatter
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.datetime.DateFormatStyle
+import com.splendo.kaluga.datetime.KalugaDateFormatter
+import com.splendo.kaluga.datetime.DefaultKalugaDate
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.datetimepicker.buildDatePicker
 import com.splendo.kaluga.datetimepicker.buildTimePicker

@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.decodeULong
 import com.splendo.kaluga.base.bytes.isBitSet
-import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.base.bytes.toHexString
 import kotlinx.serialization.SerializationException
 
 /**

@@ -19,7 +19,7 @@ kaluga {
         common {
             main {
                 api(project(":lifecycle:lifecycle", ""))
-                implementation(project(":base:base", ""))
+                implementation(project(":base:core", ""))
             }
             test {
                 implementation(project(":hud:test", ""))

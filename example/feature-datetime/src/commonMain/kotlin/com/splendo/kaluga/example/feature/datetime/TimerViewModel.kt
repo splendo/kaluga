@@ -19,10 +19,10 @@ package com.splendo.kaluga.example.feature.datetime
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.splendo.kaluga.base.text.DateFormatStyle
-import com.splendo.kaluga.base.text.KalugaDateFormatter
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaTimeZone
+import com.splendo.kaluga.datetime.DateFormatStyle
+import com.splendo.kaluga.datetime.KalugaDateFormatter
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.datetime.KalugaTimeZone
 import com.splendo.kaluga.datetime.timer.RecurringTimer
 import com.splendo.kaluga.datetime.timer.Timer
 import com.splendo.kaluga.datetime.timer.elapsed

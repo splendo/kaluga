@@ -54,7 +54,7 @@ import kotlinx.serialization.serializer
  * - Use [Unsigned] to encode numbers as unsigned.
  * - Use [Scalar] to encode numbers as a scalar value. Length can be modified using [Size], defaults to [Length.`16_BIT`] for Floats and [Length.`32_BIT`] for Doubles
  * - Use [MedFloat] to encode numbers as a MedFloat value. Can have its sizing determined by [Size].
- * When [Length.`16_BIT`] encodes as [com.splendo.kaluga.base.utils.MedFloat16], when [Length.`32_BIT`] encodes as [com.splendo.kaluga.base.utils.MedFloat32].
+ * When [Length.`16_BIT`] encodes as [com.splendo.kaluga.base.bytes.MedFloat16], when [Length.`32_BIT`] encodes as [com.splendo.kaluga.base.bytes.MedFloat32].
  * Any other [Size] is not allowed.
  * - Use [Size] to change the length of the bytes used to encode a numeric value.
  * When multiple are added, the smallest [Length] that fits the entire number will be used and flags will be added to the header to indicate which size was picked.

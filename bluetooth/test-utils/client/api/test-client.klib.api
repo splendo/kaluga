@@ -245,33 +245,33 @@ final class com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo : com.splend
     final val rssi // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.rssi|{}rssi[0]
         final fun <get-rssi>(): kotlin/Int? // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.rssi.<get-rssi>|<get-rssi>(){}[0]
     final val updatedAt // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.updatedAt|{}updatedAt[0]
-        final fun <get-updatedAt>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
+        final fun <get-updatedAt>(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
 
     final fun component2(): com.splendo.kaluga.bluetooth.device/BaseAdvertisementData // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.component2|component2(){}[0]
     final fun component3(): kotlin/String? // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.component3|component3(){}[0]
     final fun component4(): kotlin/Int? // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.component4|component4(){}[0]
-    final fun component5(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.component5|component5(){}[0]
+    final fun component5(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.component5|component5(){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.toString|toString(){}[0]
 
     // Targets: [apple]
-    constructor <init>(platform.Foundation/NSUUID = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.base.utils/KalugaDate = ...) // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.<init>|<init>(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    constructor <init>(platform.Foundation/NSUUID = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.datetime/KalugaDate = ...) // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.<init>|<init>(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.datetime.KalugaDate){}[0]
 
     // Targets: [apple]
     final fun component1(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.component1|component1(){}[0]
 
     // Targets: [apple]
-    final fun copy(platform.Foundation/NSUUID = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.base.utils/KalugaDate = ...): com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.copy|copy(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    final fun copy(platform.Foundation/NSUUID = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.datetime/KalugaDate = ...): com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.copy|copy(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.datetime.KalugaDate){}[0]
 
     // Targets: [js, wasmJs]
-    constructor <init>(kotlin/String = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.base.utils/KalugaDate = ...) // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.<init>|<init>(kotlin.String;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    constructor <init>(kotlin/String = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.datetime/KalugaDate = ...) // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.<init>|<init>(kotlin.String;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.datetime.KalugaDate){}[0]
 
     // Targets: [js, wasmJs]
     final fun component1(): kotlin/String // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.component1|component1(){}[0]
 
     // Targets: [js, wasmJs]
-    final fun copy(kotlin/String = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.base.utils/KalugaDate = ...): com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.copy|copy(kotlin.String;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    final fun copy(kotlin/String = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int? = ..., com.splendo.kaluga.datetime/KalugaDate = ...): com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo // com.splendo.kaluga.bluetooth.test.device/MockDeviceInfo.copy|copy(kotlin.String;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int?;com.splendo.kaluga.datetime.KalugaDate){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.test.scanner/MockBaseScanner : com.splendo.kaluga.bluetooth.scanner/BaseScanner { // com.splendo.kaluga.bluetooth.test.scanner/MockBaseScanner|null[0]
