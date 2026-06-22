@@ -17,7 +17,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga.links:$kalugaVersion")
+    implementation("com.splendo.kaluga:links:$kalugaVersion")
 }
 ```
 
