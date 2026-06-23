@@ -275,14 +275,25 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
 
                 else -> {
                     val mapping = field.toMapping()
+                    val scientificUnit = field.scientificUnit()
                     when {
-                        // A field with a known unit becomes a (nested) ScientificValue value class carrying the wire format;
-                        // only the presence flag stays on the property here.
-                        field.scientificUnit() != null -> {
-                            val valueClassName = field.name.toPascalCase()
-                            type.addType(scientificValueClass(valueClassName, mapping, checkNotNull(field.scientificUnit())))
+                        // A field with a known unit becomes a (nested) ScientificValue value class carrying the wire format.
+                        // A repeated one is a list of those value classes: the element carries its own format, so no @Item*
+                        // annotations are needed. A single one stays on the property with just its presence flag.
+                        scientificUnit != null -> {
+                            // A field repeating the characteristic name (e.g. "Heart Rate Measurement Value") would name its
+                            // nested value class identically to the containing data class; drop the characteristic-name prefix.
+                            val valueClassName = field.name.toPascalCase().let {
+                                if (it == className) it.removePrefix(className.removeSuffix(VALUE_SUFFIX)) else it
+                            }
+                            type.addType(scientificValueClass(valueClassName, mapping, scientificUnit))
                             val valueClass = ClassName(packageName, className, valueClassName)
-                            (if (field.optional) valueClass.copy(nullable = true) else valueClass) to field.gatingAnnotations()
+                            if (field.repeated) {
+                                LIST.parameterizedBy(valueClass) to
+                                    listOf(UNSIZED) + (field.flagIndex?.let { listOf(flagIndex(it), NULL_IF_EMPTY) } ?: emptyList())
+                            } else {
+                                (if (field.optional) valueClass.copy(nullable = true) else valueClass) to field.gatingAnnotations()
+                            }
                         }
 
                         // A repeated field fills the rest of the packet as an unsized list; the element formatting moves onto
@@ -310,10 +321,12 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         return type.primaryConstructor(constructor.build()).build()
     }
 
-    // The Kaluga Scientific unit this field maps onto, or null to keep a plain numeric. Only plain single fields
-    // (not repeated, not width-selected) are wrapped; presence/nullability is handled by the containing property.
+    // The Kaluga Scientific unit this field maps onto, or null to keep a plain numeric. Width-selected fields (multiple
+    // @Size chosen by a flag bit) and repeated fields are both wrapped: the serializer merges the value class' @Size with
+    // the property's @FlagIndex across the inline boundary, and a repeated field becomes a list of value-class elements
+    // that each carry their own format. Presence/nullability is handled by the containing property.
     private fun GattField.scientificUnit(): ScientificUnit? =
-        if (useScientificUnits && !repeated && alternateFormats.isEmpty()) unit?.let { bluetoothScientificUnits[it] } else null
+        if (useScientificUnits) unit?.let { bluetoothScientificUnits[it] } else null
 
     // A @Serializable value class that is a ScientificValue<Quantity, Unit> and carries the wire format on its value.
     private fun scientificValueClass(name: String, mapping: Mapping, scientificUnit: ScientificUnit): TypeSpec {

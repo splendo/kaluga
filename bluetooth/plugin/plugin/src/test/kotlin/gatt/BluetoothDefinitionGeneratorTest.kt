@@ -371,6 +371,51 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
+    fun wrapsWidthSelectedFieldAsScientificValue() {
+        // The Heart Rate Measurement Value field selects uint8/uint16 via a flag bit. With scientific units on it is still
+        // wrapped: both @Size widths live on the value class while the selector @FlagIndex stays on the property (the
+        // serializer merges them across the inline boundary). The nested type is renamed to `Value` because the field name
+        // repeats the characteristic name and would otherwise collide with the containing `HeartRateMeasurementValue`.
+        val value = scientificGenerator.generateValueClass(characteristic("/gatt/sig_heart_rate_measurement.xml")).singleType()
+
+        val rate = checkNotNull(value.nestedType("Value"))
+        assertTrue(KModifier.VALUE in rate.modifiers)
+        val superInterface = rate.superinterfaces.keys.single().toString()
+        assertTrue("ScientificValue" in superInterface, superInterface)
+        assertTrue("PhysicalQuantity.Frequency" in superInterface, superInterface)
+        assertTrue(superInterface.endsWith("BeatsPerMinute>"), superInterface)
+        // both wire widths are carried on the value class' value
+        val raw = rate.toString()
+        assertTrue("Length.`8_BIT`" in raw && "Length.`16_BIT`" in raw, raw)
+        // the selector flag stays on the property, which is typed as the value class
+        val property = checkNotNull(value.property("heartRateMeasurementValue"))
+        assertEquals("Value", property.type.simpleName)
+        assertEquals("0", checkNotNull(property.annotation("FlagIndex")).argument)
+    }
+
+    @Test
+    fun wrapsRepeatedUnitFieldAsListOfScientificValues() {
+        // A repeated unit field (the Interval, resolution 1/1024 s) becomes a List of ScientificValue value classes: the
+        // element value class carries its own @Size, so the list needs no @Item* annotations, only @Unsized + presence.
+        val type = scientificGenerator.generateValueClass(characteristic("/gatt/rate_measurement.xml")).singleType()
+
+        val interval = checkNotNull(type.nestedType("Interval"))
+        assertTrue(KModifier.VALUE in interval.modifiers)
+        val superInterface = interval.superinterfaces.keys.single().toString()
+        assertTrue("ScientificValue" in superInterface, superInterface)
+        assertTrue("PhysicalQuantity.Time" in superInterface, superInterface)
+        assertTrue(superInterface.endsWith("Second>"), superInterface)
+        assertTrue(checkNotNull(interval.property("value")).annotation("Size")?.argument?.endsWith("Length.`16_BIT`") == true)
+
+        // the property is a List of that value class, gated by its flag bit, with no @Item* annotations
+        val property = checkNotNull(type.property("interval"))
+        assertEquals(setOf("Unsized", "FlagIndex", "NullIfEmpty"), property.annotationNames)
+        assertEquals("4", checkNotNull(property.annotation("FlagIndex")).argument)
+        val rendered = property.toString()
+        assertTrue("List<" in rendered && "Interval>" in rendered, rendered)
+    }
+
+    @Test
     fun generatesCompoundUnitValueClass() {
         val code = scientificGenerator.generateValueClass(characteristic("/gatt/ground_speed.xml")).toString()
 

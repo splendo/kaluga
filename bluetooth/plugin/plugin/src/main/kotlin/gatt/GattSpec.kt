@@ -139,4 +139,13 @@ internal fun String.toPascalCase(): String = split(Regex("[^A-Za-z0-9]+"))
     .filter { it.isNotEmpty() }
     .joinToString("") { part -> part.replaceFirstChar { it.uppercaseChar() } }
 
-internal fun String.toCamelCase(): String = toPascalCase().replaceFirstChar { it.lowercaseChar() }
+// When the name is several delimited words, the whole first word is lower-cased (not just its first character) so a
+// leading acronym reads naturally, e.g. "RR-Interval" -> "rrInterval" rather than "rRInterval". A single token (no
+// delimiter, e.g. an already-camel/pascal name like "InvertedDeci") only has its first character decapitalized so its
+// internal capitals survive.
+internal fun String.toCamelCase(): String {
+    val words = split(Regex("[^A-Za-z0-9]+")).filter { it.isNotEmpty() }
+    if (words.size <= 1) return toPascalCase().replaceFirstChar { it.lowercaseChar() }
+    return words.first().lowercase() +
+        words.drop(1).joinToString("") { part -> part.replaceFirstChar { it.uppercaseChar() } }
+}
