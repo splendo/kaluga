@@ -96,6 +96,7 @@ uuid="2A37" name="Heart Rate Measurement">
       <Format>uint16</Format>
       <Unit>org.bluetooth.unit.time.second</Unit>
       <Description>Resolution of 1/1024 second</Description>
+      <Repeated>true</Repeated>
     </Field>
   </Value>
   <Note>

@@ -58,9 +58,9 @@ class GeneratedStructureTest {
     private object HeartRateMeasurementImpl : HeartRateMeasurement {
         override val value = HeartRateMeasurementValue(
             sensorContactStatus = HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_3,
-            heartRateMeasurementValue = 70,
+            heartRateMeasurementValue = HeartRateMeasurementValue.Value(70),
             energyExpended = null,
-            rRInterval = null,
+            rrInterval = emptyList(),
         )
     }
 
@@ -108,7 +108,7 @@ class GeneratedStructureTest {
         assertEquals(1, device.thermometerService.dualFlags.value.valueA)
         assertEquals(2, device.thermometerService.readingPair.value.second.reading)
 
-        assertEquals(70, device.heartRate.heartRateMeasurement.value.heartRateMeasurementValue)
+        assertEquals(70, device.heartRate.heartRateMeasurement.value.heartRateMeasurementValue.value)
         assertEquals(
             HeartRateMeasurementValue.SensorContactStatus.SENSOR_CONTACT_FEATURE_IS_3,
             device.heartRate.heartRateMeasurement.value.sensorContactStatus,

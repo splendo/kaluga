@@ -53,6 +53,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
@@ -1887,9 +1888,9 @@ class BluetoothFormatTest {
             @Size(Length.`16_BIT`)
             @Unsigned
             val heartRate: Int,
-            @FlagIndex(1)
-            val contactSupported: Boolean,
             @FlagIndex(2)
+            val contactSupported: Boolean,
+            @FlagIndex(1)
             val contactDetected: Boolean = !contactSupported,
             @Unsigned
             @Size(Length.`16_BIT`)
@@ -1906,7 +1907,7 @@ class BluetoothFormatTest {
                 contactDetected = false,
                 rrIntervals = emptyList(),
             ),
-            byteArrayOf(0x02, 0x55),
+            byteArrayOf(0x04, 0x55),
         )
         validateEncoding(
             HeartRate(
@@ -1916,7 +1917,7 @@ class BluetoothFormatTest {
                 energyExpended = 500,
                 rrIntervals = listOf(RRInterval(1.seconds), RRInterval(0.5.seconds)),
             ),
-            byteArrayOf(0x1B, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x04, 0x00, 0x02),
+            byteArrayOf(0x1D, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x04, 0x00, 0x02),
         )
 
         validateEncoding(
@@ -1925,7 +1926,7 @@ class BluetoothFormatTest {
                 HeartRate(500, contactSupported = true, contactDetected = false, rrIntervals = listOf(RRInterval(2.seconds), RRInterval(0.25.seconds))),
             ),
             ListSerializer(HeartRate.serializer()),
-            byteArrayOf(0x02, 0x06, 0x32, 0x13, 0xF4.toByte(), 0x01, 0x00, 0x08, 0x00, 0x01),
+            byteArrayOf(0x02, 0x06, 0x32, 0x15, 0xF4.toByte(), 0x01, 0x00, 0x08, 0x00, 0x01),
         )
     }
 
