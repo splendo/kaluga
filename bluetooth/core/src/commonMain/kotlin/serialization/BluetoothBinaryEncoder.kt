@@ -381,9 +381,23 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
 
                     Length.`32_BIT` -> if (settings.signed) add(value.toInt(), binaryDescriptor.byteOrder) else add(value.toInt().toUInt(), binaryDescriptor.byteOrder)
 
-                    Length.`40_BIT` -> if (settings.signed) add(value.toLong().toInt40(), binaryDescriptor.byteOrder) else add(value.toLong().toULong().toUInt40(), binaryDescriptor.byteOrder)
+                    Length.`40_BIT` -> if (settings.signed) {
+                        add(
+                            value.toLong().toInt40(),
+                            binaryDescriptor.byteOrder,
+                        )
+                    } else {
+                        add(value.toLong().toULong().toUInt40(), binaryDescriptor.byteOrder)
+                    }
 
-                    Length.`48_BIT` -> if (settings.signed) add(value.toLong().toInt48(), binaryDescriptor.byteOrder) else add(value.toLong().toULong().toUInt48(), binaryDescriptor.byteOrder)
+                    Length.`48_BIT` -> if (settings.signed) {
+                        add(
+                            value.toLong().toInt48(),
+                            binaryDescriptor.byteOrder,
+                        )
+                    } else {
+                        add(value.toLong().toULong().toUInt48(), binaryDescriptor.byteOrder)
+                    }
 
                     Length.`64_BIT` -> if (settings.signed) add(value.toLong(), binaryDescriptor.byteOrder) else add(value.toLong().toULong(), binaryDescriptor.byteOrder)
                 }

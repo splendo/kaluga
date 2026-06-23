@@ -203,6 +203,13 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/Prefix : kotlin
         final fun <get-value>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth.serialization/Prefix.value.<get-value>|<get-value>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bluetooth.serialization/PresentWhenAllSet : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/PresentWhenAllSet|null[0]
+    constructor <init>(kotlin/IntArray...) // com.splendo.kaluga.bluetooth.serialization/PresentWhenAllSet.<init>|<init>(kotlin.IntArray...){}[0]
+
+    final val indices // com.splendo.kaluga.bluetooth.serialization/PresentWhenAllSet.indices|{}indices[0]
+        final fun <get-indices>(): kotlin/IntArray // com.splendo.kaluga.bluetooth.serialization/PresentWhenAllSet.indices.<get-indices>|<get-indices>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bluetooth.serialization/Scalar : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/Scalar|null[0]
     constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.bluetooth.serialization/Scalar.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 
@@ -299,6 +306,8 @@ final enum class com.splendo.kaluga.bluetooth.serialization/Length : kotlin/Enum
     enum entry 16_BIT // com.splendo.kaluga.bluetooth.serialization/Length.16_BIT|null[0]
     enum entry 24_BIT // com.splendo.kaluga.bluetooth.serialization/Length.24_BIT|null[0]
     enum entry 32_BIT // com.splendo.kaluga.bluetooth.serialization/Length.32_BIT|null[0]
+    enum entry 40_BIT // com.splendo.kaluga.bluetooth.serialization/Length.40_BIT|null[0]
+    enum entry 48_BIT // com.splendo.kaluga.bluetooth.serialization/Length.48_BIT|null[0]
     enum entry 64_BIT // com.splendo.kaluga.bluetooth.serialization/Length.64_BIT|null[0]
     enum entry 8_BIT // com.splendo.kaluga.bluetooth.serialization/Length.8_BIT|null[0]
 

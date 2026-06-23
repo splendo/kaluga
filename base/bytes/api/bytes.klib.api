@@ -36,9 +36,13 @@ abstract interface com.splendo.kaluga.base.bytes/ByteArrayBuilder { // com.splen
         abstract fun <get-byteOrder>(): com.splendo.kaluga.base.bytes/ByteOrder // com.splendo.kaluga.base.bytes/ByteArrayBuilder.byteOrder.<get-byteOrder>|<get-byteOrder>(){}[0]
 
     abstract fun add(com.splendo.kaluga.base.bytes/Int24, com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.Int24;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    abstract fun add(com.splendo.kaluga.base.bytes/Int40, com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.Int40;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    abstract fun add(com.splendo.kaluga.base.bytes/Int48, com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.Int48;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
     abstract fun add(com.splendo.kaluga.base.bytes/MedFloat16) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.MedFloat16){}[0]
     abstract fun add(com.splendo.kaluga.base.bytes/MedFloat32) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.MedFloat32){}[0]
     abstract fun add(com.splendo.kaluga.base.bytes/UInt24, com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.UInt24;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    abstract fun add(com.splendo.kaluga.base.bytes/UInt40, com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.UInt40;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    abstract fun add(com.splendo.kaluga.base.bytes/UInt48, com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(com.splendo.kaluga.base.bytes.UInt48;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
     abstract fun add(kotlin/Boolean) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(kotlin.Boolean){}[0]
     abstract fun add(kotlin/Byte) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(kotlin.Byte){}[0]
     abstract fun add(kotlin/ByteArray) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(kotlin.ByteArray){}[0]
@@ -170,6 +174,62 @@ final value class com.splendo.kaluga.base.bytes/Int24 : kotlin/Comparable<com.sp
     }
 }
 
+final value class com.splendo.kaluga.base.bytes/Int40 : kotlin/Comparable<com.splendo.kaluga.base.bytes/Int40> { // com.splendo.kaluga.base.bytes/Int40|null[0]
+    constructor <init>(kotlin/Long) // com.splendo.kaluga.base.bytes/Int40.<init>|<init>(kotlin.Long){}[0]
+
+    final val value // com.splendo.kaluga.base.bytes/Int40.value|{}value[0]
+        final fun <get-value>(): kotlin/Long // com.splendo.kaluga.base.bytes/Int40.value.<get-value>|<get-value>(){}[0]
+
+    final fun compareTo(com.splendo.kaluga.base.bytes/Int40): kotlin/Int // com.splendo.kaluga.base.bytes/Int40.compareTo|compareTo(com.splendo.kaluga.base.bytes.Int40){}[0]
+    final fun div(com.splendo.kaluga.base.bytes/Int40): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/Int40.div|div(com.splendo.kaluga.base.bytes.Int40){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/Int40.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/Int40.hashCode|hashCode(){}[0]
+    final fun minus(com.splendo.kaluga.base.bytes/Int40): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/Int40.minus|minus(com.splendo.kaluga.base.bytes.Int40){}[0]
+    final fun plus(com.splendo.kaluga.base.bytes/Int40): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/Int40.plus|plus(com.splendo.kaluga.base.bytes.Int40){}[0]
+    final fun times(com.splendo.kaluga.base.bytes/Int40): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/Int40.times|times(com.splendo.kaluga.base.bytes.Int40){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/Int40.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.bytes/Int40.Companion|null[0]
+        final const val SIZE_BITS // com.splendo.kaluga.base.bytes/Int40.Companion.SIZE_BITS|{}SIZE_BITS[0]
+            final fun <get-SIZE_BITS>(): kotlin/Int // com.splendo.kaluga.base.bytes/Int40.Companion.SIZE_BITS.<get-SIZE_BITS>|<get-SIZE_BITS>(){}[0]
+        final const val SIZE_BYTES // com.splendo.kaluga.base.bytes/Int40.Companion.SIZE_BYTES|{}SIZE_BYTES[0]
+            final fun <get-SIZE_BYTES>(): kotlin/Int // com.splendo.kaluga.base.bytes/Int40.Companion.SIZE_BYTES.<get-SIZE_BYTES>|<get-SIZE_BYTES>(){}[0]
+
+        final val MAX_VALUE // com.splendo.kaluga.base.bytes/Int40.Companion.MAX_VALUE|{}MAX_VALUE[0]
+            final fun <get-MAX_VALUE>(): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/Int40.Companion.MAX_VALUE.<get-MAX_VALUE>|<get-MAX_VALUE>(){}[0]
+        final val MIN_VALUE // com.splendo.kaluga.base.bytes/Int40.Companion.MIN_VALUE|{}MIN_VALUE[0]
+            final fun <get-MIN_VALUE>(): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/Int40.Companion.MIN_VALUE.<get-MIN_VALUE>|<get-MIN_VALUE>(){}[0]
+    }
+}
+
+final value class com.splendo.kaluga.base.bytes/Int48 : kotlin/Comparable<com.splendo.kaluga.base.bytes/Int48> { // com.splendo.kaluga.base.bytes/Int48|null[0]
+    constructor <init>(kotlin/Long) // com.splendo.kaluga.base.bytes/Int48.<init>|<init>(kotlin.Long){}[0]
+
+    final val value // com.splendo.kaluga.base.bytes/Int48.value|{}value[0]
+        final fun <get-value>(): kotlin/Long // com.splendo.kaluga.base.bytes/Int48.value.<get-value>|<get-value>(){}[0]
+
+    final fun compareTo(com.splendo.kaluga.base.bytes/Int48): kotlin/Int // com.splendo.kaluga.base.bytes/Int48.compareTo|compareTo(com.splendo.kaluga.base.bytes.Int48){}[0]
+    final fun div(com.splendo.kaluga.base.bytes/Int48): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/Int48.div|div(com.splendo.kaluga.base.bytes.Int48){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/Int48.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/Int48.hashCode|hashCode(){}[0]
+    final fun minus(com.splendo.kaluga.base.bytes/Int48): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/Int48.minus|minus(com.splendo.kaluga.base.bytes.Int48){}[0]
+    final fun plus(com.splendo.kaluga.base.bytes/Int48): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/Int48.plus|plus(com.splendo.kaluga.base.bytes.Int48){}[0]
+    final fun times(com.splendo.kaluga.base.bytes/Int48): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/Int48.times|times(com.splendo.kaluga.base.bytes.Int48){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/Int48.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.bytes/Int48.Companion|null[0]
+        final const val SIZE_BITS // com.splendo.kaluga.base.bytes/Int48.Companion.SIZE_BITS|{}SIZE_BITS[0]
+            final fun <get-SIZE_BITS>(): kotlin/Int // com.splendo.kaluga.base.bytes/Int48.Companion.SIZE_BITS.<get-SIZE_BITS>|<get-SIZE_BITS>(){}[0]
+        final const val SIZE_BYTES // com.splendo.kaluga.base.bytes/Int48.Companion.SIZE_BYTES|{}SIZE_BYTES[0]
+            final fun <get-SIZE_BYTES>(): kotlin/Int // com.splendo.kaluga.base.bytes/Int48.Companion.SIZE_BYTES.<get-SIZE_BYTES>|<get-SIZE_BYTES>(){}[0]
+
+        final val MAX_VALUE // com.splendo.kaluga.base.bytes/Int48.Companion.MAX_VALUE|{}MAX_VALUE[0]
+            final fun <get-MAX_VALUE>(): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/Int48.Companion.MAX_VALUE.<get-MAX_VALUE>|<get-MAX_VALUE>(){}[0]
+        final val MIN_VALUE // com.splendo.kaluga.base.bytes/Int48.Companion.MIN_VALUE|{}MIN_VALUE[0]
+            final fun <get-MIN_VALUE>(): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/Int48.Companion.MIN_VALUE.<get-MIN_VALUE>|<get-MIN_VALUE>(){}[0]
+    }
+}
+
 final value class com.splendo.kaluga.base.bytes/MedFloat16 : kotlin/Comparable<com.splendo.kaluga.base.bytes/MedFloat16> { // com.splendo.kaluga.base.bytes/MedFloat16|null[0]
     constructor <init>(kotlin/Double) // com.splendo.kaluga.base.bytes/MedFloat16.<init>|<init>(kotlin.Double){}[0]
 
@@ -258,6 +318,62 @@ final value class com.splendo.kaluga.base.bytes/UInt24 : kotlin/Comparable<com.s
     }
 }
 
+final value class com.splendo.kaluga.base.bytes/UInt40 : kotlin/Comparable<com.splendo.kaluga.base.bytes/UInt40> { // com.splendo.kaluga.base.bytes/UInt40|null[0]
+    constructor <init>(kotlin/ULong) // com.splendo.kaluga.base.bytes/UInt40.<init>|<init>(kotlin.ULong){}[0]
+
+    final val value // com.splendo.kaluga.base.bytes/UInt40.value|{}value[0]
+        final fun <get-value>(): kotlin/ULong // com.splendo.kaluga.base.bytes/UInt40.value.<get-value>|<get-value>(){}[0]
+
+    final fun compareTo(com.splendo.kaluga.base.bytes/UInt40): kotlin/Int // com.splendo.kaluga.base.bytes/UInt40.compareTo|compareTo(com.splendo.kaluga.base.bytes.UInt40){}[0]
+    final fun div(com.splendo.kaluga.base.bytes/UInt40): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/UInt40.div|div(com.splendo.kaluga.base.bytes.UInt40){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/UInt40.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/UInt40.hashCode|hashCode(){}[0]
+    final fun minus(com.splendo.kaluga.base.bytes/UInt40): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/UInt40.minus|minus(com.splendo.kaluga.base.bytes.UInt40){}[0]
+    final fun plus(com.splendo.kaluga.base.bytes/UInt40): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/UInt40.plus|plus(com.splendo.kaluga.base.bytes.UInt40){}[0]
+    final fun times(com.splendo.kaluga.base.bytes/UInt40): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/UInt40.times|times(com.splendo.kaluga.base.bytes.UInt40){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/UInt40.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.bytes/UInt40.Companion|null[0]
+        final const val SIZE_BITS // com.splendo.kaluga.base.bytes/UInt40.Companion.SIZE_BITS|{}SIZE_BITS[0]
+            final fun <get-SIZE_BITS>(): kotlin/Int // com.splendo.kaluga.base.bytes/UInt40.Companion.SIZE_BITS.<get-SIZE_BITS>|<get-SIZE_BITS>(){}[0]
+        final const val SIZE_BYTES // com.splendo.kaluga.base.bytes/UInt40.Companion.SIZE_BYTES|{}SIZE_BYTES[0]
+            final fun <get-SIZE_BYTES>(): kotlin/Int // com.splendo.kaluga.base.bytes/UInt40.Companion.SIZE_BYTES.<get-SIZE_BYTES>|<get-SIZE_BYTES>(){}[0]
+
+        final val MAX_VALUE // com.splendo.kaluga.base.bytes/UInt40.Companion.MAX_VALUE|{}MAX_VALUE[0]
+            final fun <get-MAX_VALUE>(): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/UInt40.Companion.MAX_VALUE.<get-MAX_VALUE>|<get-MAX_VALUE>(){}[0]
+        final val MIN_VALUE // com.splendo.kaluga.base.bytes/UInt40.Companion.MIN_VALUE|{}MIN_VALUE[0]
+            final fun <get-MIN_VALUE>(): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/UInt40.Companion.MIN_VALUE.<get-MIN_VALUE>|<get-MIN_VALUE>(){}[0]
+    }
+}
+
+final value class com.splendo.kaluga.base.bytes/UInt48 : kotlin/Comparable<com.splendo.kaluga.base.bytes/UInt48> { // com.splendo.kaluga.base.bytes/UInt48|null[0]
+    constructor <init>(kotlin/ULong) // com.splendo.kaluga.base.bytes/UInt48.<init>|<init>(kotlin.ULong){}[0]
+
+    final val value // com.splendo.kaluga.base.bytes/UInt48.value|{}value[0]
+        final fun <get-value>(): kotlin/ULong // com.splendo.kaluga.base.bytes/UInt48.value.<get-value>|<get-value>(){}[0]
+
+    final fun compareTo(com.splendo.kaluga.base.bytes/UInt48): kotlin/Int // com.splendo.kaluga.base.bytes/UInt48.compareTo|compareTo(com.splendo.kaluga.base.bytes.UInt48){}[0]
+    final fun div(com.splendo.kaluga.base.bytes/UInt48): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.div|div(com.splendo.kaluga.base.bytes.UInt48){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/UInt48.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/UInt48.hashCode|hashCode(){}[0]
+    final fun minus(com.splendo.kaluga.base.bytes/UInt48): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.minus|minus(com.splendo.kaluga.base.bytes.UInt48){}[0]
+    final fun plus(com.splendo.kaluga.base.bytes/UInt48): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.plus|plus(com.splendo.kaluga.base.bytes.UInt48){}[0]
+    final fun times(com.splendo.kaluga.base.bytes/UInt48): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.times|times(com.splendo.kaluga.base.bytes.UInt48){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/UInt48.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.bytes/UInt48.Companion|null[0]
+        final const val SIZE_BITS // com.splendo.kaluga.base.bytes/UInt48.Companion.SIZE_BITS|{}SIZE_BITS[0]
+            final fun <get-SIZE_BITS>(): kotlin/Int // com.splendo.kaluga.base.bytes/UInt48.Companion.SIZE_BITS.<get-SIZE_BITS>|<get-SIZE_BITS>(){}[0]
+        final const val SIZE_BYTES // com.splendo.kaluga.base.bytes/UInt48.Companion.SIZE_BYTES|{}SIZE_BYTES[0]
+            final fun <get-SIZE_BYTES>(): kotlin/Int // com.splendo.kaluga.base.bytes/UInt48.Companion.SIZE_BYTES.<get-SIZE_BYTES>|<get-SIZE_BYTES>(){}[0]
+
+        final val MAX_VALUE // com.splendo.kaluga.base.bytes/UInt48.Companion.MAX_VALUE|{}MAX_VALUE[0]
+            final fun <get-MAX_VALUE>(): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.Companion.MAX_VALUE.<get-MAX_VALUE>|<get-MAX_VALUE>(){}[0]
+        final val MIN_VALUE // com.splendo.kaluga.base.bytes/UInt48.Companion.MIN_VALUE|{}MIN_VALUE[0]
+            final fun <get-MIN_VALUE>(): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.Companion.MIN_VALUE.<get-MIN_VALUE>|<get-MIN_VALUE>(){}[0]
+    }
+}
+
 final object com.splendo.kaluga.base.bytes/ByteUtils { // com.splendo.kaluga.base.bytes/ByteUtils|null[0]
     final const val BYTE_STRING_LENGTH // com.splendo.kaluga.base.bytes/ByteUtils.BYTE_STRING_LENGTH|{}BYTE_STRING_LENGTH[0]
         final fun <get-BYTE_STRING_LENGTH>(): kotlin/Int // com.splendo.kaluga.base.bytes/ByteUtils.BYTE_STRING_LENGTH.<get-BYTE_STRING_LENGTH>|<get-BYTE_STRING_LENGTH>(){}[0]
@@ -286,6 +402,24 @@ final fun (com.splendo.kaluga.base.bytes/Int24).com.splendo.kaluga.base.bytes/sh
 final fun (com.splendo.kaluga.base.bytes/Int24).com.splendo.kaluga.base.bytes/shr(kotlin/Int): com.splendo.kaluga.base.bytes/Int24 // com.splendo.kaluga.base.bytes/shr|shr@com.splendo.kaluga.base.bytes.Int24(kotlin.Int){}[0]
 final fun (com.splendo.kaluga.base.bytes/Int24).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@com.splendo.kaluga.base.bytes.Int24(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (com.splendo.kaluga.base.bytes/Int24).com.splendo.kaluga.base.bytes/toUInt24(): com.splendo.kaluga.base.bytes/UInt24 // com.splendo.kaluga.base.bytes/toUInt24|toUInt24@com.splendo.kaluga.base.bytes.Int24(){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/and(com.splendo.kaluga.base.bytes/Int40): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/and|and@com.splendo.kaluga.base.bytes.Int40(com.splendo.kaluga.base.bytes.Int40){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.base.bytes.Int40(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@com.splendo.kaluga.base.bytes.Int40(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/or(com.splendo.kaluga.base.bytes/Int40): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/or|or@com.splendo.kaluga.base.bytes.Int40(com.splendo.kaluga.base.bytes.Int40){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/setBit|setBit@com.splendo.kaluga.base.bytes.Int40(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/shl(kotlin/Int): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/shl|shl@com.splendo.kaluga.base.bytes.Int40(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/shr(kotlin/Int): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/shr|shr@com.splendo.kaluga.base.bytes.Int40(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@com.splendo.kaluga.base.bytes.Int40(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int40).com.splendo.kaluga.base.bytes/toUInt40(): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/toUInt40|toUInt40@com.splendo.kaluga.base.bytes.Int40(){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/and(com.splendo.kaluga.base.bytes/Int48): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/and|and@com.splendo.kaluga.base.bytes.Int48(com.splendo.kaluga.base.bytes.Int48){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.base.bytes.Int48(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@com.splendo.kaluga.base.bytes.Int48(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/or(com.splendo.kaluga.base.bytes/Int48): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/or|or@com.splendo.kaluga.base.bytes.Int48(com.splendo.kaluga.base.bytes.Int48){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/setBit|setBit@com.splendo.kaluga.base.bytes.Int48(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/shl(kotlin/Int): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/shl|shl@com.splendo.kaluga.base.bytes.Int48(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/shr(kotlin/Int): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/shr|shr@com.splendo.kaluga.base.bytes.Int48(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@com.splendo.kaluga.base.bytes.Int48(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/Int48).com.splendo.kaluga.base.bytes/toUInt48(): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/toUInt48|toUInt48@com.splendo.kaluga.base.bytes.Int48(){}[0]
 final fun (com.splendo.kaluga.base.bytes/MedFloat16).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.base.bytes.MedFloat16(kotlin.ByteArray;kotlin.Int){}[0]
 final fun (com.splendo.kaluga.base.bytes/MedFloat16).com.splendo.kaluga.base.bytes/toByteArray(): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@com.splendo.kaluga.base.bytes.MedFloat16(){}[0]
 final fun (com.splendo.kaluga.base.bytes/MedFloat32).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.base.bytes.MedFloat32(kotlin.ByteArray;kotlin.Int){}[0]
@@ -299,6 +433,24 @@ final fun (com.splendo.kaluga.base.bytes/UInt24).com.splendo.kaluga.base.bytes/s
 final fun (com.splendo.kaluga.base.bytes/UInt24).com.splendo.kaluga.base.bytes/shr(kotlin/Int): com.splendo.kaluga.base.bytes/UInt24 // com.splendo.kaluga.base.bytes/shr|shr@com.splendo.kaluga.base.bytes.UInt24(kotlin.Int){}[0]
 final fun (com.splendo.kaluga.base.bytes/UInt24).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@com.splendo.kaluga.base.bytes.UInt24(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (com.splendo.kaluga.base.bytes/UInt24).com.splendo.kaluga.base.bytes/toInt24(): com.splendo.kaluga.base.bytes/Int24 // com.splendo.kaluga.base.bytes/toInt24|toInt24@com.splendo.kaluga.base.bytes.UInt24(){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/and(com.splendo.kaluga.base.bytes/UInt40): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/and|and@com.splendo.kaluga.base.bytes.UInt40(com.splendo.kaluga.base.bytes.UInt40){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.base.bytes.UInt40(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@com.splendo.kaluga.base.bytes.UInt40(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/or(com.splendo.kaluga.base.bytes/UInt40): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/or|or@com.splendo.kaluga.base.bytes.UInt40(com.splendo.kaluga.base.bytes.UInt40){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/setBit|setBit@com.splendo.kaluga.base.bytes.UInt40(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/shl(kotlin/Int): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/shl|shl@com.splendo.kaluga.base.bytes.UInt40(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/shr(kotlin/Int): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/shr|shr@com.splendo.kaluga.base.bytes.UInt40(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@com.splendo.kaluga.base.bytes.UInt40(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt40).com.splendo.kaluga.base.bytes/toInt40(): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/toInt40|toInt40@com.splendo.kaluga.base.bytes.UInt40(){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/and(com.splendo.kaluga.base.bytes/UInt48): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/and|and@com.splendo.kaluga.base.bytes.UInt48(com.splendo.kaluga.base.bytes.UInt48){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.base.bytes.UInt48(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@com.splendo.kaluga.base.bytes.UInt48(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/or(com.splendo.kaluga.base.bytes/UInt48): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/or|or@com.splendo.kaluga.base.bytes.UInt48(com.splendo.kaluga.base.bytes.UInt48){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/setBit|setBit@com.splendo.kaluga.base.bytes.UInt48(kotlin.Number){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/shl(kotlin/Int): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/shl|shl@com.splendo.kaluga.base.bytes.UInt48(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/shr(kotlin/Int): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/shr|shr@com.splendo.kaluga.base.bytes.UInt48(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@com.splendo.kaluga.base.bytes.UInt48(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.base.bytes/UInt48).com.splendo.kaluga.base.bytes/toInt48(): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/toInt48|toInt48@com.splendo.kaluga.base.bytes.UInt48(){}[0]
 final fun (kotlin.sequences/Sequence<kotlin/Byte>).com.splendo.kaluga.base.bytes/decodeString(com.splendo.kaluga.base.bytes/StringEncodingSettings): kotlin/String // com.splendo.kaluga.base.bytes/decodeString|decodeString@kotlin.sequences.Sequence<kotlin.Byte>(com.splendo.kaluga.base.bytes.StringEncodingSettings){}[0]
 final fun (kotlin/Byte).com.splendo.kaluga.base.bytes/decodeAsciiChar(): kotlin/Char // com.splendo.kaluga.base.bytes/decodeAsciiChar|decodeAsciiChar@kotlin.Byte(){}[0]
 final fun (kotlin/Byte).com.splendo.kaluga.base.bytes/decodeUTF8Char(): kotlin/Char // com.splendo.kaluga.base.bytes/decodeUTF8Char|decodeUTF8Char@kotlin.Byte(){}[0]
@@ -311,6 +463,8 @@ final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeDouble(kotlin/I
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeFloat(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/Float // com.splendo.kaluga.base.bytes/decodeFloat|decodeFloat@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeInt(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.base.bytes/decodeInt|decodeInt@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeInt24(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): com.splendo.kaluga.base.bytes/Int24 // com.splendo.kaluga.base.bytes/decodeInt24|decodeInt24@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeInt40(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/decodeInt40|decodeInt40@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeInt48(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/decodeInt48|decodeInt48@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeLong(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/Long // com.splendo.kaluga.base.bytes/decodeLong|decodeLong@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeMedFloat16(kotlin/Int): com.splendo.kaluga.base.bytes/MedFloat16 // com.splendo.kaluga.base.bytes/decodeMedFloat16|decodeMedFloat16@kotlin.ByteArray(kotlin.Int){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeMedFloat32(kotlin/Int): com.splendo.kaluga.base.bytes/MedFloat32 // com.splendo.kaluga.base.bytes/decodeMedFloat32|decodeMedFloat32@kotlin.ByteArray(kotlin.Int){}[0]
@@ -319,6 +473,8 @@ final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeString(com.sple
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUByte(kotlin/Int): kotlin/UByte // com.splendo.kaluga.base.bytes/decodeUByte|decodeUByte@kotlin.ByteArray(kotlin.Int){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUInt(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/UInt // com.splendo.kaluga.base.bytes/decodeUInt|decodeUInt@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUInt24(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): com.splendo.kaluga.base.bytes/UInt24 // com.splendo.kaluga.base.bytes/decodeUInt24|decodeUInt24@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUInt40(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/decodeUInt40|decodeUInt40@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUInt48(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/decodeUInt48|decodeUInt48@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeULong(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ULong // com.splendo.kaluga.base.bytes/decodeULong|decodeULong@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUShort(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/UShort // com.splendo.kaluga.base.bytes/decodeUShort|decodeUShort@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUTF16Char(kotlin/Int, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/Char // com.splendo.kaluga.base.bytes/decodeUTF16Char|decodeUTF16Char@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
@@ -344,6 +500,8 @@ final fun (kotlin/Long).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): k
 final fun (kotlin/Long).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): kotlin/Long // com.splendo.kaluga.base.bytes/setBit|setBit@kotlin.Long(kotlin.Number){}[0]
 final fun (kotlin/Long).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@kotlin.Long(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/Number).com.splendo.kaluga.base.bytes/toInt24(): com.splendo.kaluga.base.bytes/Int24 // com.splendo.kaluga.base.bytes/toInt24|toInt24@kotlin.Number(){}[0]
+final fun (kotlin/Number).com.splendo.kaluga.base.bytes/toInt40(): com.splendo.kaluga.base.bytes/Int40 // com.splendo.kaluga.base.bytes/toInt40|toInt40@kotlin.Number(){}[0]
+final fun (kotlin/Number).com.splendo.kaluga.base.bytes/toInt48(): com.splendo.kaluga.base.bytes/Int48 // com.splendo.kaluga.base.bytes/toInt48|toInt48@kotlin.Number(){}[0]
 final fun (kotlin/Short).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@kotlin.Short(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/Short).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@kotlin.Short(kotlin.Number){}[0]
 final fun (kotlin/Short).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): kotlin/Short // com.splendo.kaluga.base.bytes/setBit|setBit@kotlin.Short(kotlin.Number){}[0]
@@ -376,6 +534,8 @@ final fun (kotlin/ULong).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/
 final fun (kotlin/ULong).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@kotlin.ULong(kotlin.Number){}[0]
 final fun (kotlin/ULong).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): kotlin/ULong // com.splendo.kaluga.base.bytes/setBit|setBit@kotlin.ULong(kotlin.Number){}[0]
 final fun (kotlin/ULong).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@kotlin.ULong(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (kotlin/ULong).com.splendo.kaluga.base.bytes/toUInt40(): com.splendo.kaluga.base.bytes/UInt40 // com.splendo.kaluga.base.bytes/toUInt40|toUInt40@kotlin.ULong(){}[0]
+final fun (kotlin/ULong).com.splendo.kaluga.base.bytes/toUInt48(): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/toUInt48|toUInt48@kotlin.ULong(){}[0]
 final fun (kotlin/UShort).com.splendo.kaluga.base.bytes/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoByteArray|copyIntoByteArray@kotlin.UShort(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/UShort).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@kotlin.UShort(kotlin.Number){}[0]
 final fun (kotlin/UShort).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): kotlin/UShort // com.splendo.kaluga.base.bytes/setBit|setBit@kotlin.UShort(kotlin.Number){}[0]
