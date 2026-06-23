@@ -27,6 +27,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.SourceTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
@@ -61,6 +62,17 @@ class BluetoothPlugin : Plugin<Project> {
             sourceSets.commonMain {
                 kotlin.srcDir(generatedKspDir)
             }
+        }
+
+        // The KSP-generated sources are registered as a commonMain source directory, so kotlinter's tasks read from the
+        // KSP output directory. That directory is a task output, so Gradle requires an explicit dependency (it rejects the
+        // otherwise-implicit one). We also exclude those files from the kotlinter source: they are produced output (already
+        // formatted by KotlinPoet), not hand-written code, so they should be neither linted nor reformatted.
+        val generatedRoot = layout.buildDirectory.dir("generated").get().asFile.absolutePath
+        val kspTasks = tasks.withType<KspAATask>()
+        tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
+            dependsOn(kspTasks)
+            (this as? SourceTask)?.exclude { it.file.absolutePath.startsWith(generatedRoot) }
         }
 
         afterEvaluate {

@@ -53,10 +53,8 @@ class GeneratedContractStructureTest {
     }
 
     private object LocalCharacteristicDelegate : LocalSharedCharacteristic.Delegate {
-        override suspend fun LocalSharedCharacteristic.onReadLevel(identifier: Identifier): SharedCharacteristicReadResponse =
-            SharedCharacteristicReadResponse.Success(0)
-        override suspend fun LocalSharedCharacteristic.onWriteTarget(target: Int, identifier: Identifier): GattResponse.WriteResponse =
-            GattResponse.WriteSuccess.Acknowledged
+        override suspend fun LocalSharedCharacteristic.onReadLevel(identifier: Identifier): SharedCharacteristicReadResponse = SharedCharacteristicReadResponse.Success(0)
+        override suspend fun LocalSharedCharacteristic.onWriteTarget(target: Int, identifier: Identifier): GattResponse.WriteResponse = GattResponse.WriteSuccess.Acknowledged
         override suspend fun LocalSharedCharacteristic.onFailedToWriteTarget(exception: Exception, identifier: Identifier): GattResponse.WriteResponse =
             GattResponse.WriteSuccess.Acknowledged
         override fun LocalSharedCharacteristic.onSubscribeToState(identifier: Identifier) {}
