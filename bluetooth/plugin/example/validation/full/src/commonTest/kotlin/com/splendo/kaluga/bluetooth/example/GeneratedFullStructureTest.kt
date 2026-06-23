@@ -52,8 +52,7 @@ class GeneratedFullStructureTest : BaseTest() {
     private class TestCharacteristicDelegate(val status: String, descriptorName: String) : LocalTestCharacteristic.Delegate {
         var lastWrittenShouldUpdate: Boolean? = null
         override val testDescriptorDelegate = TestDescriptorDelegate(descriptorName)
-        override suspend fun LocalTestCharacteristic.onReadStatus(identifier: Identifier): TestCharacteristicReadResponse =
-            TestCharacteristicReadResponse.Success(status)
+        override suspend fun LocalTestCharacteristic.onReadStatus(identifier: Identifier): TestCharacteristicReadResponse = TestCharacteristicReadResponse.Success(status)
         override suspend fun LocalTestCharacteristic.onWriteShouldUpdate(shouldUpdate: Boolean, identifier: Identifier): GattResponse.WriteResponse {
             lastWrittenShouldUpdate = shouldUpdate
             return GattResponse.WriteSuccess.Acknowledged
@@ -130,8 +129,7 @@ class GeneratedFullStructureTest : BaseTest() {
 
     private class EncryptedFixtureDelegate(val secret: String) : LocalEncryptedFixture.Delegate {
         var lastWrittenSecret: String? = null
-        override suspend fun LocalEncryptedFixture.onReadSecret(identifier: Identifier): EncryptedFixtureReadResponse =
-            EncryptedFixtureReadResponse.Success(secret)
+        override suspend fun LocalEncryptedFixture.onReadSecret(identifier: Identifier): EncryptedFixtureReadResponse = EncryptedFixtureReadResponse.Success(secret)
         override suspend fun LocalEncryptedFixture.onWriteSecretWrite(secretWrite: String, identifier: Identifier): GattResponse.WriteResponse {
             lastWrittenSecret = secretWrite
             return GattResponse.WriteSuccess.Acknowledged
@@ -142,8 +140,7 @@ class GeneratedFullStructureTest : BaseTest() {
 
     private class ByteArrayFixtureDelegate(val raw: ByteArray) : LocalByteArrayFixture.Delegate {
         var lastWrittenRaw: ByteArray? = null
-        override suspend fun LocalByteArrayFixture.onReadRawRead(identifier: Identifier, offset: Int): GattResponse.ReadResponse =
-            GattResponse.ReadSuccess(raw)
+        override suspend fun LocalByteArrayFixture.onReadRawRead(identifier: Identifier, offset: Int): GattResponse.ReadResponse = GattResponse.ReadSuccess(raw)
         override suspend fun LocalByteArrayFixture.onWriteRawWrite(rawWrite: ByteArray, offset: Int, identifier: Identifier): GattResponse.WriteResponse {
             lastWrittenRaw = rawWrite
             return GattResponse.WriteSuccess.Acknowledged

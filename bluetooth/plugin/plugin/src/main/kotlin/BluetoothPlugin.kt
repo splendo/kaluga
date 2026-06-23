@@ -27,6 +27,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.SourceTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
@@ -62,6 +63,15 @@ class BluetoothPlugin : Plugin<Project> {
                 kotlin.srcDir(generatedKspDir)
                 kotlin.srcDir(defaultGeneratedBluetoothDir)
             }
+        }
+
+        // Generated sources under build/generated are registered as source directories for compilation, but they are
+        // produced output (already formatted by KotlinPoet), not hand-written code, so kotlinter should neither lint nor
+        // reformat them. Excluding them also drops the generated dir from the lint/format tasks' inputs, which removes the
+        // implicit task dependency (on KSP / the XML generator) that Gradle would otherwise reject.
+        val generatedRoot = layout.buildDirectory.dir("generated").get().asFile.absolutePath
+        tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
+            (this as? SourceTask)?.exclude { it.file.absolutePath.startsWith(generatedRoot) }
         }
 
         afterEvaluate {
