@@ -104,8 +104,7 @@ class LocalServiceTestBuilderTest : BaseTest() {
         assertTrue(captured.subscribableCharacteristics.contains(notifiableUuid))
     }
 
-    private fun findCharacteristic(service: LocalService, uuid: UUID): LocalCharacteristic =
-        service.characteristics.first { it.uuid == uuid }
+    private fun findCharacteristic(service: LocalService, uuid: UUID): LocalCharacteristic = service.characteristics.first { it.uuid == uuid }
 
     private fun findDescriptor(service: LocalService, uuid: UUID): LocalDescriptor =
         service.characteristics.firstNotNullOf { characteristic -> characteristic.descriptors.find { it.uuid == uuid } }
