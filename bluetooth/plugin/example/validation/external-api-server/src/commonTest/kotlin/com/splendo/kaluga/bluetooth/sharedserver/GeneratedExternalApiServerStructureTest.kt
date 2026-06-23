@@ -46,8 +46,7 @@ class GeneratedExternalApiServerStructureTest : BaseTest() {
         var written: Int? = null
         var subscribed = false
 
-        override suspend fun LocalSharedCharacteristic.onReadLevel(identifier: Identifier): SharedCharacteristicReadResponse =
-            SharedCharacteristicReadResponse.Success(42)
+        override suspend fun LocalSharedCharacteristic.onReadLevel(identifier: Identifier): SharedCharacteristicReadResponse = SharedCharacteristicReadResponse.Success(42)
 
         override suspend fun LocalSharedCharacteristic.onWriteTarget(target: Int, identifier: Identifier): GattResponse.WriteResponse {
             written = target

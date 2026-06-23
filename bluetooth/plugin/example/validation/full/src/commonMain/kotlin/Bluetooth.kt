@@ -57,14 +57,17 @@ interface TestCharacteristic {
     interface TestDescriptor {
         @Readable
         val name: String
+
         @Writable
         val age: Int
     }
 
     @Readable
     val status: String
+
     @Writable
     val shouldUpdate: Boolean
+
     @Notifiable
     val state: Short
 
