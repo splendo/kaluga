@@ -84,8 +84,6 @@ internal data class BluetoothBinaryDescriptor(
          * Encoding as a simple number. The [Length] best matching the value will be picked
          * @property supportedLengths the [Length] values that are supported. The smallest fitting length will be picked.
          * @property signed if the value can be negative
-         */
-        /**
          * @property inFlagsBits when non-null, the value is packed directly into the flag region across this many bits
          * (least-significant bit first), analogous to an enum's ordinal, rather than encoded as body bytes. Used for
          * sub-byte numeric subfields of a bit field; [supportedLengths] is then unused.

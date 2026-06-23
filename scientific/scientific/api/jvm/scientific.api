@@ -1419,7 +1419,7 @@ public final class com/splendo/kaluga/scientific/unit/Ampere : com/splendo/kalug
 public final class com/splendo/kaluga/scientific/unit/AmpereHour : com/splendo/kaluga/scientific/unit/ElectricCharge {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/AmpereHour;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$ElectricCharge;
 	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -1427,7 +1427,7 @@ public final class com/splendo/kaluga/scientific/unit/AmpereHour : com/splendo/k
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public fun hashCode ()I
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1670,7 +1670,7 @@ public final class com/splendo/kaluga/scientific/unit/BarMultiple$Companion {
 public final class com/splendo/kaluga/scientific/unit/Barn : com/splendo/kaluga/scientific/unit/MetricArea {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Barn;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Area;
 	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -1678,7 +1678,7 @@ public final class com/splendo/kaluga/scientific/unit/Barn : com/splendo/kaluga/
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public fun hashCode ()I
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -14418,7 +14418,7 @@ public final class com/splendo/kaluga/scientific/unit/OunceSquareInch : com/sple
 public final class com/splendo/kaluga/scientific/unit/Parsec : com/splendo/kaluga/scientific/unit/MetricLength {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Parsec;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Length;
 	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -14426,7 +14426,7 @@ public final class com/splendo/kaluga/scientific/unit/Parsec : com/splendo/kalug
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public fun hashCode ()I
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
 	public fun toString ()Ljava/lang/String;
 }
 

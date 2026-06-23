@@ -202,10 +202,7 @@ class BluetoothFormatTest {
         // A sub-byte numeric subfield of a bit field: @FlagIndex + @FlagWidth and no @Size packs the value straight into
         // the flag region, least-significant bit first (like an enum ordinal), rather than as body bytes.
         @Serializable
-        data class Packed(
-            @FlagIndex(0) @FlagWidth(bits = 4) val nibble: Int,
-            @FlagIndex(4) @FlagWidth(bits = 12) val wide: Int,
-        )
+        data class Packed(@FlagIndex(0) @FlagWidth(bits = 4) val nibble: Int, @FlagIndex(4) @FlagWidth(bits = 12) val wide: Int)
         // nibble = 5 -> bits 0..3 = 0b0101; wide = 0x123 -> bits 4..15. Two flag bytes: byte0 = 0x35, byte1 = 0x12.
         validateEncoding(Packed(nibble = 5, wide = 0x123), byteArrayOf(0x35, 0x12))
 

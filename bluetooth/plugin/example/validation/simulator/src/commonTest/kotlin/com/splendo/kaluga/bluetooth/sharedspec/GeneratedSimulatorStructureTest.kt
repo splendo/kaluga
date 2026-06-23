@@ -32,8 +32,7 @@ class GeneratedSimulatorStructureTest : BaseTest() {
 
     private class CharacteristicDelegate(val level: Int) : LocalSharedCharacteristic.Delegate {
         var lastWrittenTarget: Int? = null
-        override suspend fun LocalSharedCharacteristic.onReadLevel(identifier: Identifier): SharedCharacteristicReadResponse =
-            SharedCharacteristicReadResponse.Success(level)
+        override suspend fun LocalSharedCharacteristic.onReadLevel(identifier: Identifier): SharedCharacteristicReadResponse = SharedCharacteristicReadResponse.Success(level)
         override suspend fun LocalSharedCharacteristic.onWriteTarget(target: Int, identifier: Identifier): GattResponse.WriteResponse {
             lastWrittenTarget = target
             return GattResponse.WriteSuccess.Acknowledged
