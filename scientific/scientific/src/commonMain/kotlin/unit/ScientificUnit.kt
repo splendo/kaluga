@@ -227,6 +227,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     LuminousExposureUnits +
     LuminousFluxUnits +
     LuminousIntensityUnits +
+    MagneticFieldStrengthUnits +
     MagneticFluxUnits +
     MagneticInductionUnits +
     MassFlowRateUnits +
@@ -236,6 +237,8 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     MolarMassUnits +
     MolarVolumeUnits +
     MomentumUnits +
+    PermeabilityUnits +
+    PermittivityUnits +
     PowerUnits +
     PressureUnits +
     RadioactivityUnits +
@@ -301,6 +304,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForLuminousExposure()
     setupForLuminousFlux()
     setupForLuminousIntensity()
+    setupForMagneticFieldStrength()
     setupForMagneticFlux()
     setupForMagneticInduction()
     setupForMassFlowRate()
@@ -310,6 +314,8 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForMolarMass()
     setupForMolarVolume()
     setupForMomentum()
+    setupForPermeability()
+    setupForPermittivity()
     setupForPower()
     setupForPressure()
     setupForRadioactivity()
@@ -372,6 +378,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerLuminousExposureClasses()
     registerLuminousFluxClasses()
     registerLuminousIntensityClasses()
+    registerMagneticFieldStrengthClasses()
     registerMagneticFluxClasses()
     registerMagneticInductionClasses()
     registerMassFlowRateClasses()
@@ -381,6 +388,8 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerMolarMassClasses()
     registerMolarVolumeClasses()
     registerMomentumClasses()
+    registerPermeabilityClasses()
+    registerPermittivityClasses()
     registerPowerClasses()
     registerPressureClasses()
     registerRadioactivityClasses()

@@ -282,10 +282,28 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object MagneticFlux : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the magnetizing force, the electric current per unit length
+     */
+    @Serializable
+    data object MagneticFieldStrength : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the production of an electromotive force across an electrical conductor in a changing magnetic field
      */
     @Serializable
     data object MagneticInduction : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the magnetic inductance per unit length
+     */
+    @Serializable
+    data object Permeability : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the electric capacitance per unit length
+     */
+    @Serializable
+    data object Permittivity : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the amount of substance per unit of mass
@@ -497,6 +515,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.LuminousFlux::class, PhysicalQuantity.LuminousFlux.serializer())
     subclass(PhysicalQuantity.LuminousIntensity::class, PhysicalQuantity.LuminousIntensity.serializer())
     subclass(PhysicalQuantity.MassFlowRate::class, PhysicalQuantity.MassFlowRate.serializer())
+    subclass(PhysicalQuantity.MagneticFieldStrength::class, PhysicalQuantity.MagneticFieldStrength.serializer())
     subclass(PhysicalQuantity.MagneticFlux::class, PhysicalQuantity.MagneticFlux.serializer())
     subclass(PhysicalQuantity.MagneticInduction::class, PhysicalQuantity.MagneticInduction.serializer())
     subclass(PhysicalQuantity.Molality::class, PhysicalQuantity.Molality.serializer())
@@ -505,6 +524,8 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.MolarMass::class, PhysicalQuantity.MolarMass.serializer())
     subclass(PhysicalQuantity.MolarVolume::class, PhysicalQuantity.MolarVolume.serializer())
     subclass(PhysicalQuantity.Momentum::class, PhysicalQuantity.Momentum.serializer())
+    subclass(PhysicalQuantity.Permeability::class, PhysicalQuantity.Permeability.serializer())
+    subclass(PhysicalQuantity.Permittivity::class, PhysicalQuantity.Permittivity.serializer())
     subclass(PhysicalQuantity.Power::class, PhysicalQuantity.Power.serializer())
     subclass(PhysicalQuantity.Pressure::class, PhysicalQuantity.Pressure.serializer())
     subclass(PhysicalQuantity.Radioactivity::class, PhysicalQuantity.Radioactivity.serializer())

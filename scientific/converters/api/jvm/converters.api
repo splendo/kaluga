@@ -739,6 +739,11 @@ public final class com/splendo/kaluga/scientific/converter/electricCapacitance/C
 	public static final fun capacitanceFromConductanceAndFrequencyDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCapacitance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricCapacitance/ConvertFromPermittivityAndLengthKt {
+	public static final fun capacitanceFromPermittivityAndLength (Lcom/splendo/kaluga/scientific/unit/ElectricCapacitance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun capacitanceFromPermittivityAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCapacitance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricCapacitance/ConvertFromTimeAndElectricResistanceKt {
 	public static final fun capacitanceFromTimeAndResistance (Lcom/splendo/kaluga/scientific/unit/ElectricCapacitance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun capacitanceFromTimeAndResistanceDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCapacitance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -752,6 +757,12 @@ public final class com/splendo/kaluga/scientific/converter/electricCapacitance/C
 public final class com/splendo/kaluga/scientific/converter/electricCapacitance/ConvertToElectricConductanceKt {
 	public static final fun abfaradTimesFrequency (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun capacitanceTimesFrequency (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/electricCapacitance/ConvertToPermittivityKt {
+	public static final fun electricCapacitanceDivImperialLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricCapacitanceDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricCapacitanceDivMetricLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/electricCapacitance/ConvertToTimeKt {
@@ -920,6 +931,11 @@ public final class com/splendo/kaluga/scientific/converter/electricCurrent/Conve
 	public static final fun currentFromEnergyAndFluxDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCurrent;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricCurrent/ConvertFromMagneticFieldStrengthAndLengthKt {
+	public static final fun currentFromMagneticFieldStrengthAndLength (Lcom/splendo/kaluga/scientific/unit/ElectricCurrent;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun currentFromMagneticFieldStrengthAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCurrent;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricCurrent/ConvertFromMagneticFluxAndElectricInductanceKt {
 	public static final fun currentFromFluxAndInductance (Lcom/splendo/kaluga/scientific/unit/ElectricCurrent;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun currentFromFluxAndInductanceDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCurrent;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -965,6 +981,12 @@ public final class com/splendo/kaluga/scientific/converter/electricCurrent/Conve
 	public static final fun currentTimesFlux (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricCurrent/ConvertToMagneticFieldStrengthKt {
+	public static final fun electricCurrentDivImperialLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricCurrentDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricCurrentDivMetricLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricCurrent/ConvertToMagneticFluxKt {
 	public static final fun abampereTimesAbhenry (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun biotTimesAbhenry (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -996,6 +1018,11 @@ public final class com/splendo/kaluga/scientific/converter/electricCurrentDensit
 	public static final fun electricCurrentDensityFromElectricCurrentAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCurrentDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricCurrentDensity/ConvertFromMagneticFieldStrengthAndLengthKt {
+	public static final fun electricCurrentDensityFromMagneticFieldStrengthAndLength (Lcom/splendo/kaluga/scientific/unit/ElectricCurrentDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun electricCurrentDensityFromMagneticFieldStrengthAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCurrentDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricCurrentDensity/ConvertFromSurfaceChargeDensityAndFrequencyKt {
 	public static final fun electricCurrentDensityFromSurfaceChargeDensityAndFrequency (Lcom/splendo/kaluga/scientific/unit/ElectricCurrentDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun electricCurrentDensityFromSurfaceChargeDensityAndFrequencyDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCurrentDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -1019,6 +1046,11 @@ public final class com/splendo/kaluga/scientific/converter/electricCurrentDensit
 	public static final fun electricCurrentDensityDivSurfaceChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricCurrentDensity/ConvertToMagneticFieldStrengthKt {
+	public static final fun electricCurrentDensityTimesImperialLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricCurrentDensityTimesLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricCurrentDensity/ConvertToSpeedKt {
 	public static final fun electricCurrentDensityDivElectricChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialElectricCurrentDensityDivElectricChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -1038,6 +1070,11 @@ public final class com/splendo/kaluga/scientific/converter/electricFieldStrength
 	public static final fun electricFieldStrengthFromForceAndElectricChargeDefault (Lcom/splendo/kaluga/scientific/unit/ElectricFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricFieldStrength/ConvertFromSurfaceChargeDensityAndPermittivityKt {
+	public static final fun electricFieldStrengthFromSurfaceChargeDensityAndPermittivity (Lcom/splendo/kaluga/scientific/unit/ElectricFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun electricFieldStrengthFromSurfaceChargeDensityAndPermittivityDefault (Lcom/splendo/kaluga/scientific/unit/ElectricFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricFieldStrength/ConvertFromVoltageAndLengthKt {
 	public static final fun electricFieldStrengthFromVoltageAndLength (Lcom/splendo/kaluga/scientific/unit/ElectricFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun electricFieldStrengthFromVoltageAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/ElectricFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -1046,6 +1083,11 @@ public final class com/splendo/kaluga/scientific/converter/electricFieldStrength
 public final class com/splendo/kaluga/scientific/converter/electricFieldStrength/ConvertToForceKt {
 	public static final fun electricFieldStrengthTimesElectricCharge (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialElectricFieldStrengthTimesElectricCharge (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/electricFieldStrength/ConvertToSurfaceChargeDensityKt {
+	public static final fun electricFieldStrengthTimesPermittivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun imperialElectricFieldStrengthTimesPermittivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/electricFieldStrength/ConvertToVoltageKt {
@@ -1067,6 +1109,11 @@ public final class com/splendo/kaluga/scientific/converter/electricInductance/Co
 	public static final fun inductanceFromFluxAndCurrentDefault (Lcom/splendo/kaluga/scientific/unit/ElectricInductance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricInductance/ConvertFromPermeabilityAndLengthKt {
+	public static final fun inductanceFromPermeabilityAndLength (Lcom/splendo/kaluga/scientific/unit/ElectricInductance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun inductanceFromPermeabilityAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/ElectricInductance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricInductance/ConvertToElectricResistanceKt {
 	public static final fun abhenryDivTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun abhenryTimesFrequency (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -1078,6 +1125,12 @@ public final class com/splendo/kaluga/scientific/converter/electricInductance/Co
 	public static final fun abhenryTimesAbampere (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun abhenryTimesBiot (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun inductanceTimesCurrent (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/electricInductance/ConvertToPermeabilityKt {
+	public static final fun electricInductanceDivImperialLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricInductanceDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricInductanceDivMetricLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/electricInductance/ConvertToTimeKt {
@@ -1932,6 +1985,11 @@ public final class com/splendo/kaluga/scientific/converter/length/ConvertFromLin
 	public static final fun lengthFromLinearMassDensityAndDensityDefault (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/length/ConvertFromMagneticFieldStrengthAndElectricCurrentDensityKt {
+	public static final fun lengthFromMagneticFieldStrengthAndElectricCurrentDensity (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun lengthFromMagneticFieldStrengthAndElectricCurrentDensityDefault (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/length/ConvertFromSpeedAndTimeKt {
 	public static final fun distanceFromSpeedAndTime (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun distanceFromSpeedAndTimeDefault (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -1988,6 +2046,18 @@ public final class com/splendo/kaluga/scientific/converter/length/ConvertToAreaK
 	public static final fun yardTimesYard (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/length/ConvertToElectricCapacitanceKt {
+	public static final fun lengthTimesPermittivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/length/ConvertToElectricCurrentKt {
+	public static final fun lengthTimesMagneticFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/length/ConvertToElectricInductanceKt {
+	public static final fun lengthTimesPermeability (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/length/ConvertToEnergyKt {
 	public static final fun centimeterTimesDyne (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun centimeterTimesDyneMultiple (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -2016,6 +2086,11 @@ public final class com/splendo/kaluga/scientific/converter/length/ConvertToLinea
 	public static final fun imperialLengthTimesUSCustomaryAreaDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun lengthTimesAreaDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricLengthTimesMetricAreaDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/length/ConvertToMagneticFieldStrengthKt {
+	public static final fun imperialLengthTimesElectricCurrentDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun lengthTimesElectricCurrentDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/length/ConvertToSpecificVolumeKt {
@@ -2303,6 +2378,54 @@ public final class com/splendo/kaluga/scientific/converter/luminousIntensity/Con
 	public static final fun luminousIntensityTimesSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertFromElectricCurrentAndLengthKt {
+	public static final fun magneticFieldStrengthFromElectricCurrentAndLength (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun magneticFieldStrengthFromElectricCurrentAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertFromElectricCurrentDensityAndLengthKt {
+	public static final fun magneticFieldStrengthFromElectricCurrentDensityAndLength (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun magneticFieldStrengthFromElectricCurrentDensityAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertFromMagneticInductionAndPermeabilityKt {
+	public static final fun magneticFieldStrengthFromMagneticInductionAndPermeability (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun magneticFieldStrengthFromMagneticInductionAndPermeabilityDefault (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertFromSurfaceChargeDensityAndSpeedKt {
+	public static final fun magneticFieldStrengthFromSurfaceChargeDensityAndSpeed (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun magneticFieldStrengthFromSurfaceChargeDensityAndSpeedDefault (Lcom/splendo/kaluga/scientific/unit/MagneticFieldStrength;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertToElectricCurrentDensityKt {
+	public static final fun imperialMagneticFieldStrengthDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun magneticFieldStrengthDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertToElectricCurrentKt {
+	public static final fun magneticFieldStrengthTimesLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertToLengthKt {
+	public static final fun imperialMagneticFieldStrengthDivElectricCurrentDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun magneticFieldStrengthDivElectricCurrentDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertToMagneticInductionKt {
+	public static final fun magneticFieldStrengthTimesPermeability (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertToSpeedKt {
+	public static final fun imperialMagneticFieldStrengthDivSurfaceChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun magneticFieldStrengthDivSurfaceChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticFieldStrength/ConvertToSurfaceChargeDensityKt {
+	public static final fun imperialMagneticFieldStrengthDivSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun magneticFieldStrengthDivSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/magneticFlux/ConvertFromElectricInductanceAndCurrentKt {
 	public static final fun fluxFromInductanceAndCurrent (Lcom/splendo/kaluga/scientific/unit/MagneticFlux;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun fluxFromInductanceAndCurrentDefault (Lcom/splendo/kaluga/scientific/unit/MagneticFlux;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -2379,9 +2502,24 @@ public final class com/splendo/kaluga/scientific/converter/magneticInduction/Con
 	public static final fun inductionFromFluxAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/MagneticInduction;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/magneticInduction/ConvertFromPermeabilityAndMagneticFieldStrengthKt {
+	public static final fun inductionFromPermeabilityAndMagneticFieldStrength (Lcom/splendo/kaluga/scientific/unit/MagneticInduction;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun inductionFromPermeabilityAndMagneticFieldStrengthDefault (Lcom/splendo/kaluga/scientific/unit/MagneticInduction;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticInduction/ConvertToMagneticFieldStrengthKt {
+	public static final fun magneticInductionDivImperialPermeability (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun magneticInductionDivPermeability (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/magneticInduction/ConvertToMagneticFluxKt {
 	public static final fun gaussTimesSquareCentimeter (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun inductionTimesArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/magneticInduction/ConvertToPermeabilityKt {
+	public static final fun magneticInductionDivImperialMagneticFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun magneticInductionDivMagneticFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/massFlowRate/ConvertFromDensityAndVolumetricFlowKt {
@@ -2877,6 +3015,43 @@ public final class com/splendo/kaluga/scientific/converter/momentum/ConvertToWei
 	public static final fun momentumDivSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun ukImperialMomentumDivImperialSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun usCustomaryMomentumDivImperialSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permeability/ConvertFromElectricInductanceAndLengthKt {
+	public static final fun permeabilityFromElectricInductanceAndLength (Lcom/splendo/kaluga/scientific/unit/Permeability;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun permeabilityFromElectricInductanceAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/Permeability;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permeability/ConvertFromMagneticInductionAndMagneticFieldStrengthKt {
+	public static final fun permeabilityFromMagneticInductionAndMagneticFieldStrength (Lcom/splendo/kaluga/scientific/unit/Permeability;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun permeabilityFromMagneticInductionAndMagneticFieldStrengthDefault (Lcom/splendo/kaluga/scientific/unit/Permeability;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permeability/ConvertToElectricInductanceKt {
+	public static final fun permeabilityTimesLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permeability/ConvertToMagneticInductionKt {
+	public static final fun permeabilityTimesMagneticFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permittivity/ConvertFromElectricCapacitanceAndLengthKt {
+	public static final fun permittivityFromElectricCapacitanceAndLength (Lcom/splendo/kaluga/scientific/unit/Permittivity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun permittivityFromElectricCapacitanceAndLengthDefault (Lcom/splendo/kaluga/scientific/unit/Permittivity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permittivity/ConvertFromSurfaceChargeDensityAndElectricFieldStrengthKt {
+	public static final fun permittivityFromSurfaceChargeDensityAndElectricFieldStrength (Lcom/splendo/kaluga/scientific/unit/Permittivity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun permittivityFromSurfaceChargeDensityAndElectricFieldStrengthDefault (Lcom/splendo/kaluga/scientific/unit/Permittivity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permittivity/ConvertToElectricCapacitanceKt {
+	public static final fun permittivityTimesLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/permittivity/ConvertToSurfaceChargeDensityKt {
+	public static final fun permittivityTimesElectricFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun permittivityTimesImperialElectricFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/power/ConvertFromEnergyAndTimeKt {
@@ -3433,6 +3608,11 @@ public final class com/splendo/kaluga/scientific/converter/speed/ConvertFromLeng
 	public static final fun speedFromDistanceAndTimeDefault (Lcom/splendo/kaluga/scientific/unit/Speed;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/speed/ConvertFromMagneticFieldStrengthAndSurfaceChargeDensityKt {
+	public static final fun speedFromMagneticFieldStrengthAndSurfaceChargeDensity (Lcom/splendo/kaluga/scientific/unit/Speed;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun speedFromMagneticFieldStrengthAndSurfaceChargeDensityDefault (Lcom/splendo/kaluga/scientific/unit/Speed;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/speed/ConvertFromMomentumAndWeightKt {
 	public static final fun speedFromMomentumAndMass (Lcom/splendo/kaluga/scientific/unit/Speed;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun speedFromMomentumAndMassDefault (Lcom/splendo/kaluga/scientific/unit/Speed;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -3458,6 +3638,11 @@ public final class com/splendo/kaluga/scientific/converter/speed/ConvertToLength
 	public static final fun imperialSpeedTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricSpeedTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun speedTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/speed/ConvertToMagneticFieldStrengthKt {
+	public static final fun imperialSpeedTimesSurfaceChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun speedTimesSurfaceChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/speed/ConvertToMomentumKt {
@@ -3501,6 +3686,16 @@ public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/
 	public static final fun surfaceChargeDensityFromElectricCurrentDensityAndTimeDefault (Lcom/splendo/kaluga/scientific/unit/SurfaceChargeDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertFromMagneticFieldStrengthAndSpeedKt {
+	public static final fun surfaceChargeDensityFromMagneticFieldStrengthAndSpeed (Lcom/splendo/kaluga/scientific/unit/SurfaceChargeDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun surfaceChargeDensityFromMagneticFieldStrengthAndSpeedDefault (Lcom/splendo/kaluga/scientific/unit/SurfaceChargeDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertFromPermittivityAndElectricFieldStrengthKt {
+	public static final fun surfaceChargeDensityFromPermittivityAndElectricFieldStrength (Lcom/splendo/kaluga/scientific/unit/SurfaceChargeDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun surfaceChargeDensityFromPermittivityAndElectricFieldStrengthDefault (Lcom/splendo/kaluga/scientific/unit/SurfaceChargeDensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertToElectricChargeDensityKt {
 	public static final fun imperialSurfaceChargeDensityDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun surfaceChargeDensityDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -3519,9 +3714,24 @@ public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/
 	public static final fun surfaceChargeDensityTimesFrequency (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertToElectricFieldStrengthKt {
+	public static final fun imperialSurfaceChargeDensityDivPermittivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun surfaceChargeDensityDivPermittivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertToLengthKt {
 	public static final fun imperialSurfaceChargeDensityDivElectricChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun surfaceChargeDensityDivElectricChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertToMagneticFieldStrengthKt {
+	public static final fun surfaceChargeDensityTimesImperialSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun surfaceChargeDensityTimesSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertToPermittivityKt {
+	public static final fun imperialSurfaceChargeDensityDivElectricFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun surfaceChargeDensityDivElectricFieldStrength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/surfaceChargeDensity/ConvertToTimeKt {
