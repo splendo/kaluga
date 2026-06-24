@@ -204,8 +204,11 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     DynamicViscosityUnits +
     ElectricCapacitanceUnits +
     ElectricChargeUnits +
+    ElectricChargeDensityUnits +
     ElectricConductanceUnits +
     ElectricCurrentUnits +
+    ElectricCurrentDensityUnits +
+    ElectricFieldStrengthUnits +
     ElectricInductanceUnits +
     ElectricResistanceUnits +
     EnergyUnits +
@@ -241,6 +244,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     SpecificHeatCapacityUnits +
     SpecificVolumeUnits +
     SpeedUnits +
+    SurfaceChargeDensityUnits +
     SurfaceTensionUnits +
     TemperatureUnits +
     ThermalResistanceUnits +
@@ -275,8 +279,11 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForDynamicViscosity()
     setupForElectricCapacitance()
     setupForElectricCharge()
+    setupForElectricChargeDensity()
     setupForElectricConductance()
     setupForElectricCurrent()
+    setupForElectricCurrentDensity()
+    setupForElectricFieldStrength()
     setupForElectricInductance()
     setupForElectricResistance()
     setupForEnergy()
@@ -311,6 +318,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForSpecificHeatCapacity()
     setupForSpecificVolume()
     setupForSpeed()
+    setupForSurfaceChargeDensity()
     setupForSurfaceTension()
     setupForTemperature()
     setupForThermalResistance()
@@ -341,8 +349,11 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerDynamicViscosityClasses()
     registerElectricCapacitanceClasses()
     registerElectricChargeClasses()
+    registerElectricChargeDensityClasses()
     registerElectricConductanceClasses()
     registerElectricCurrentClasses()
+    registerElectricCurrentDensityClasses()
+    registerElectricFieldStrengthClasses()
     registerElectricInductanceClasses()
     registerElectricResistanceClasses()
     registerEnergyClasses()
@@ -378,6 +389,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerSpecificHeatCapacityClasses()
     registerSpecificVolumeClasses()
     registerSpeedClasses()
+    registerSurfaceChargeDensityClasses()
     registerSurfaceTensionClasses()
     registerTemperatureClasses()
     registerThermalResistanceClasses()

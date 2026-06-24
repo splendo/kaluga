@@ -132,6 +132,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object ElectricCharge : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the electric charge per unit volume
+     */
+    @Serializable
+    data object ElectricChargeDensity : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing how easily current flows through a material
      */
     @Serializable
@@ -142,6 +148,18 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     data object ElectricCurrent : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the electric current per unit area
+     */
+    @Serializable
+    data object ElectricCurrentDensity : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the force per unit electric charge
+     */
+    @Serializable
+    data object ElectricFieldStrength : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the magnetic flux generated per unit current through a circuit
@@ -354,6 +372,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object Speed : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the electric charge per unit area
+     */
+    @Serializable
+    data object SurfaceChargeDensity : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing energy change per unit change in surface area
      */
     @Serializable
@@ -449,8 +473,11 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.DynamicViscosity::class, PhysicalQuantity.DynamicViscosity.serializer())
     subclass(PhysicalQuantity.ElectricCapacitance::class, PhysicalQuantity.ElectricCapacitance.serializer())
     subclass(PhysicalQuantity.ElectricCharge::class, PhysicalQuantity.ElectricCharge.serializer())
+    subclass(PhysicalQuantity.ElectricChargeDensity::class, PhysicalQuantity.ElectricChargeDensity.serializer())
     subclass(PhysicalQuantity.ElectricConductance::class, PhysicalQuantity.ElectricConductance.serializer())
     subclass(PhysicalQuantity.ElectricCurrent::class, PhysicalQuantity.ElectricCurrent.serializer())
+    subclass(PhysicalQuantity.ElectricCurrentDensity::class, PhysicalQuantity.ElectricCurrentDensity.serializer())
+    subclass(PhysicalQuantity.ElectricFieldStrength::class, PhysicalQuantity.ElectricFieldStrength.serializer())
     subclass(PhysicalQuantity.ElectricInductance::class, PhysicalQuantity.ElectricInductance.serializer())
     subclass(PhysicalQuantity.ElectricResistance::class, PhysicalQuantity.ElectricResistance.serializer())
     subclass(PhysicalQuantity.Energy::class, PhysicalQuantity.Energy.serializer())
@@ -486,6 +513,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.SpecificHeatCapacity::class, PhysicalQuantity.SpecificHeatCapacity.serializer())
     subclass(PhysicalQuantity.SpecificVolume::class, PhysicalQuantity.SpecificVolume.serializer())
     subclass(PhysicalQuantity.Speed::class, PhysicalQuantity.Speed.serializer())
+    subclass(PhysicalQuantity.SurfaceChargeDensity::class, PhysicalQuantity.SurfaceChargeDensity.serializer())
     subclass(PhysicalQuantity.SurfaceTension::class, PhysicalQuantity.SurfaceTension.serializer())
     subclass(PhysicalQuantity.Temperature::class, PhysicalQuantity.Temperature.serializer())
     subclass(PhysicalQuantity.ThermalResistance::class, PhysicalQuantity.ThermalResistance.serializer())
