@@ -17,6 +17,7 @@ kaluga {
             test {
                 // Provides the iOS test entry point (mainBackground) + kotlin.test; resolved from the kaluga root.
                 implementation("com.splendo.kaluga.base:test:${BluetoothPluginVersion.kalugaVersion}")
+                implementation("com.splendo.kaluga.bluetooth:test-client:${BluetoothPluginVersion.kalugaVersion}")
             }
         }
     }

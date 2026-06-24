@@ -17,39 +17,80 @@
 
 package com.splendo.kaluga.bluetooth.sharedspec
 
+import com.splendo.kaluga.base.test.BaseTest
+import com.splendo.kaluga.base.test.testRunBlocking
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.GattResponse
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bluetooth.test.ConnectedMockClient
+import com.splendo.kaluga.bluetooth.test.characteristic
+import com.splendo.kaluga.bluetooth.test.connectedMockClient
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
+import kotlin.test.assertIs
+import kotlin.time.Duration.Companion.seconds
 
-// Implementing every generated client interface proves the plugin emitted the CLIENT API (device -> service ->
-// characteristic, with its read/write/notify members) with the names and types we expect; a missing or renamed member
-// fails to compile, which compiling the generated sources alone would not catch.
-class GeneratedClientStructureTest {
+// Real round-trip against the kaluga mock Bluetooth stack: a device exposing the generated service (b100) /
+// characteristic (b101) is connected and discovered via the reusable connectedMockClient helper, the generated typed
+// client is obtained through the SharedDeviceClient.bluetooth() factory, and read/write actions are driven end-to-end
+// through a MockDeviceConnectionManager. This proves the generated CLIENT API actually talks to the bluetooth stack,
+// not merely that it compiles.
+class GeneratedClientStructureTest : BaseTest() {
 
-    private object RemoteCharacteristic : RemoteSharedCharacteristic {
-        override val state: Flow<Short> = flowOf(0.toShort())
-        override suspend fun readLevel(): SharedCharacteristicReadResponse = SharedCharacteristicReadResponse.Success(0)
-        override suspend fun writeTarget(target: Int): GattResponse.WriteResponse = GattResponse.WriteSuccess.Acknowledged
-    }
-
-    private object RemoteService : RemoteSharedService {
-        override val sharedCharacteristic = RemoteCharacteristic
-    }
-
-    private object Client : SharedDeviceClient {
-        override val sharedService = RemoteService
+    private suspend fun connect(scope: kotlinx.coroutines.CoroutineScope): ConnectedMockClient = scope.connectedMockClient {
+        uuid = RemoteSharedService.UUID
+        characteristics {
+            characteristic {
+                uuid = RemoteSharedCharacteristic.UUID
+                properties += setOf(CharacteristicProperty.Read, CharacteristicProperty.Write, CharacteristicProperty.Notify)
+            }
+        }
     }
 
     @Test
-    fun clientApiExists() {
-        assertNotNull(Client.sharedService.sharedCharacteristic)
-        assertNotNull(RemoteSharedService.UUID)
-        assertNotNull(RemoteSharedCharacteristic.UUID)
+    fun readLevelRoundTrip() = testRunBlocking {
+        withTimeout(5.seconds) {
+            val mock = connect(this)
+            try {
+                // The read value the mock device returns for b101: BluetoothFormat-encoded Int 42.
+                mock.characteristicWrapper(RemoteSharedService.UUID, RemoteSharedCharacteristic.UUID)
+                    .updateValue(BluetoothFormat.encodeToByteArray(BluetoothFormat.serializer<Int>(), 42))
 
-        val response: SharedCharacteristicReadResponse = SharedCharacteristicReadResponse.Success(5)
-        assertEquals(5, (response as SharedCharacteristicReadResponse.Success).response)
+                val client = SharedDeviceClient.bluetooth(mock.client, mock.identifier)
+
+                val read = async { client.sharedService.sharedCharacteristic.readLevel() }
+                mock.pump()
+                val success = assertIs<SharedCharacteristicReadResponse.Success>(read.await())
+                assertEquals(42, success.response)
+            } finally {
+                mock.close()
+            }
+        }
+    }
+
+    @Test
+    fun writeTargetRoundTrip() = testRunBlocking {
+        withTimeout(5.seconds) {
+            val mock = connect(this)
+            try {
+                val client = SharedDeviceClient.bluetooth(mock.client, mock.identifier)
+
+                val write = async { client.sharedService.sharedCharacteristic.writeTarget(7) }
+                mock.pump()
+                assertIs<GattResponse.WriteSuccess>(write.await())
+                // The mock recorded the written bytes on the characteristic wrapper.
+                assertEquals(
+                    7,
+                    BluetoothFormat.decodeFromByteArray(
+                        BluetoothFormat.serializer<Int>(),
+                        mock.characteristicWrapper(RemoteSharedService.UUID, RemoteSharedCharacteristic.UUID).value!!,
+                    ),
+                )
+            } finally {
+                mock.close()
+            }
+        }
     }
 }

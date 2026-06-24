@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
-class MockBluetoothService(
+class MockBluetoothClient(
     val discoveredDevicesFlow: MutableStateFlow<List<ConnectableDevice>> = MutableStateFlow(emptyList()),
     val filteredDevicesFlow: MutableStateFlow<Map<Filter, List<ConnectableDevice>>> = MutableStateFlow(emptyMap()),
     val pairedDevicesFlow: MutableStateFlow<Map<Set<UUID>, List<ConnectableDevice>>> = MutableStateFlow(emptyMap()),
