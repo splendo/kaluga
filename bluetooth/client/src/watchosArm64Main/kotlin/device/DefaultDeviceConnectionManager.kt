@@ -85,6 +85,7 @@ internal actual class DefaultDeviceConnectionManager(
     private val discoveringServices = mutableListOf<CBUUID>()
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
     private val discoveringIncludedServices = mutableListOf<CBUUID>()
+
     // Services whose contents discovery has already been started, so a service included by several parents (or a cycle)
     // is only discovered once.
     private val discoveredServiceUuids = mutableSetOf<CBUUID>()
