@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.massFlowRate.div
 import com.splendo.kaluga.scientific.converter.massFlux.times
 import com.splendo.kaluga.scientific.invoke
@@ -36,5 +37,6 @@ class MassFluxUnitTest {
     @Test
     fun massFlowRateFromMassFluxAndAreaTest() {
         assertEqualScientificValue(4(Kilogram per Second), 2(Kilogram per Second per SquareMeter) * 2(SquareMeter))
+        assertEqualScientificValue(4(Kilogram per Second), 2(SquareMeter) * 2(Kilogram per Second per SquareMeter))
     }
 }

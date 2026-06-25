@@ -18,12 +18,16 @@
 package com.splendo.kaluga.scientific.converter
 
 import com.splendo.kaluga.scientific.converter.electricResistance.times
+import com.splendo.kaluga.scientific.converter.electricalConductivity.resistivity
 import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.resistivity.div
+import com.splendo.kaluga.scientific.converter.resistivity.electricalConductivity
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Ohm
+import com.splendo.kaluga.scientific.unit.Siemens
+import com.splendo.kaluga.scientific.unit.per
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
 
@@ -44,5 +48,15 @@ class ResistivityUnitTest {
     @Test
     fun lengthFromResistivityAndElectricResistanceTest() {
         assertEqualScientificValue(2(Meter), 4(Ohm x Meter) / 2(Ohm))
+    }
+
+    @Test
+    fun electricalConductivityFromResistivityTest() {
+        assertEqualScientificValue(0.5(Siemens per Meter), 2(Ohm x Meter).electricalConductivity())
+    }
+
+    @Test
+    fun resistivityFromElectricalConductivityTest() {
+        assertEqualScientificValue(0.5(Ohm x Meter), 2(Siemens per Meter).resistivity())
     }
 }

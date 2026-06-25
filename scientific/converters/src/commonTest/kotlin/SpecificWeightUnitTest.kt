@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.converter
 
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.specificWeight.times
+import com.splendo.kaluga.scientific.converter.volume.times
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.CubicMeter
 import com.splendo.kaluga.scientific.unit.Newton
@@ -35,5 +36,11 @@ class SpecificWeightUnitTest {
     @Test
     fun forceFromSpecificWeightAndVolumeTest() {
         assertEqualScientificValue(4(Newton), 2(Newton per CubicMeter) * 2(CubicMeter))
+        assertEqualScientificValue(4(Newton), 2(CubicMeter) * 2(Newton per CubicMeter))
+    }
+
+    @Test
+    fun volumeFromForceAndSpecificWeightTest() {
+        assertEqualScientificValue(2(CubicMeter), 4(Newton) / 2(Newton per CubicMeter))
     }
 }
