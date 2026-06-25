@@ -54,6 +54,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     }
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the absorbed ionizing radiation dose per unit time
+     */
+    @Serializable
+    data object AbsorbedDoseRate : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the rate of change of velocity per unit time
      */
     @Serializable
@@ -106,6 +112,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     data object CatalysticActivity : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the catalytic activity per unit volume
+     */
+    @Serializable
+    data object CatalyticConcentration : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the mass per unit of volume
@@ -178,6 +190,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     data object Energy : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the energy stored per unit volume
+     */
+    @Serializable
+    data object EnergyDensity : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the electric charge produced per unit mass by ionizing radiation
@@ -334,6 +352,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     data object MolarEnergy : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the heat capacity of a system per unit amount of substance
+     */
+    @Serializable
+    data object MolarEntropy : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the ratio between the mass and the amount of substance
@@ -510,6 +534,7 @@ internal fun SerializersModuleBuilder.setupPhysicalQuantity() {
 }
 
 internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWithDimension>.registerDefinedPhysicalQuantityWithDimensionClasses() {
+    subclass(PhysicalQuantity.AbsorbedDoseRate::class, PhysicalQuantity.AbsorbedDoseRate.serializer())
     subclass(PhysicalQuantity.Acceleration::class, PhysicalQuantity.Acceleration.serializer())
     subclass(PhysicalQuantity.Action::class, PhysicalQuantity.Action.serializer())
     subclass(PhysicalQuantity.AmountOfSubstance::class, PhysicalQuantity.AmountOfSubstance.serializer())
@@ -519,6 +544,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.Area::class, PhysicalQuantity.Area.serializer())
     subclass(PhysicalQuantity.AreaDensity::class, PhysicalQuantity.AreaDensity.serializer())
     subclass(PhysicalQuantity.CatalysticActivity::class, PhysicalQuantity.CatalysticActivity.serializer())
+    subclass(PhysicalQuantity.CatalyticConcentration::class, PhysicalQuantity.CatalyticConcentration.serializer())
     subclass(PhysicalQuantity.DynamicViscosity::class, PhysicalQuantity.DynamicViscosity.serializer())
     subclass(PhysicalQuantity.ElectricCapacitance::class, PhysicalQuantity.ElectricCapacitance.serializer())
     subclass(PhysicalQuantity.ElectricCharge::class, PhysicalQuantity.ElectricCharge.serializer())
@@ -530,6 +556,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.ElectricInductance::class, PhysicalQuantity.ElectricInductance.serializer())
     subclass(PhysicalQuantity.ElectricResistance::class, PhysicalQuantity.ElectricResistance.serializer())
     subclass(PhysicalQuantity.Energy::class, PhysicalQuantity.Energy.serializer())
+    subclass(PhysicalQuantity.EnergyDensity::class, PhysicalQuantity.EnergyDensity.serializer())
     subclass(PhysicalQuantity.Exposure::class, PhysicalQuantity.Exposure.serializer())
     subclass(PhysicalQuantity.Force::class, PhysicalQuantity.Force.serializer())
     subclass(PhysicalQuantity.Frequency::class, PhysicalQuantity.Frequency.serializer())
@@ -554,6 +581,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.Molality::class, PhysicalQuantity.Molality.serializer())
     subclass(PhysicalQuantity.Molarity::class, PhysicalQuantity.Molarity.serializer())
     subclass(PhysicalQuantity.MolarEnergy::class, PhysicalQuantity.MolarEnergy.serializer())
+    subclass(PhysicalQuantity.MolarEntropy::class, PhysicalQuantity.MolarEntropy.serializer())
     subclass(PhysicalQuantity.MolarMass::class, PhysicalQuantity.MolarMass.serializer())
     subclass(PhysicalQuantity.MolarVolume::class, PhysicalQuantity.MolarVolume.serializer())
     subclass(PhysicalQuantity.Momentum::class, PhysicalQuantity.Momentum.serializer())

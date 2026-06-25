@@ -191,7 +191,8 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(value: Decima
 /**
  * The set of all [DefinedScientificUnit] supported by this library
  */
-val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
+val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
+    AccelerationUnits +
     ActionUnits +
     AmountOfSubstanceUnits +
     AngleUnits +
@@ -200,6 +201,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     AreaDensityUnits +
     AreaUnits +
     CatalysticActivityUnits +
+    CatalyticConcentrationUnits +
     DensityUnits +
     DynamicViscosityUnits +
     ElectricCapacitanceUnits +
@@ -212,6 +214,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     ElectricInductanceUnits +
     ElectricResistanceUnits +
     EnergyUnits +
+    EnergyDensityUnits +
     ExposureUnits +
     ForceUnits +
     FrequencyUnits +
@@ -235,6 +238,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     MassFlowRateUnits +
     MolalityUnits +
     MolarEnergyUnits +
+    MolarEntropyUnits +
     MolarityUnits +
     MolarMassUnits +
     MolarVolumeUnits +
@@ -283,6 +287,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForAreaDensity()
     setupForArea()
     setupForCatalysticActivity()
+    setupForCatalyticConcentration()
     setupForDensity()
     setupForDynamicViscosity()
     setupForElectricCapacitance()
@@ -295,6 +300,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForElectricInductance()
     setupForElectricResistance()
     setupForEnergy()
+    setupForEnergyDensity()
     setupForExposure()
     setupForForce()
     setupForFrequency()
@@ -318,6 +324,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForMolality()
     setupForMolarity()
     setupForMolarEnergy()
+    setupForMolarEntropy()
     setupForMolarMass()
     setupForMolarVolume()
     setupForMomentum()
@@ -353,6 +360,7 @@ internal fun PolymorphicModuleBuilder<AbstractScientificUnit<*>>.registerUnitCla
 }
 
 internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedUnitClasses() {
+    subclass(AbsorbedDoseRate::class, AbsorbedDoseRate.serializer())
     registerActionClasses()
     registerAmountOfSubstanceClasses()
     registerAngleClasses()
@@ -361,6 +369,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerAreaDensityClasses()
     registerAreaClasses()
     registerCatalysticActivityClasses()
+    registerCatalyticConcentrationClasses()
     registerDensityClasses()
     registerDynamicViscosityClasses()
     registerElectricCapacitanceClasses()
@@ -373,6 +382,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerElectricInductanceClasses()
     registerElectricResistanceClasses()
     registerEnergyClasses()
+    registerEnergyDensityClasses()
     registerExposureClasses()
     registerForceClasses()
     registerFrequencyClasses()
@@ -397,6 +407,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerMolalityClasses()
     registerMolarityClasses()
     registerMolarEnergyClasses()
+    registerMolarEntropyClasses()
     registerMolarMassClasses()
     registerMolarVolumeClasses()
     registerMomentumClasses()
