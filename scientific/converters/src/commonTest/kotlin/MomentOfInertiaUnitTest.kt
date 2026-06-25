@@ -17,12 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.converter.angularAcceleration.times
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.momentOfInertia.div
+import com.splendo.kaluga.scientific.converter.momentOfInertia.times
 import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.Radian
+import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.per
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
 
@@ -42,5 +49,11 @@ class MomentOfInertiaUnitTest {
     @Test
     fun areaFromMomentOfInertiaAndWeightTest() {
         assertEqualScientificValue(2(SquareMeter), 4(Kilogram x SquareMeter) / 2(Kilogram))
+    }
+
+    @Test
+    fun torqueFromMomentOfInertiaAndAngularAccelerationTest() {
+        assertEqualScientificValue(4(Newton x Meter), 2(Kilogram x SquareMeter) * 2(Radian per Second per Second))
+        assertEqualScientificValue(4(Newton x Meter), 2(Radian per Second per Second) * 2(Kilogram x SquareMeter))
     }
 }

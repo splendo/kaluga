@@ -17,12 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.converter.acceleration.times
+import com.splendo.kaluga.scientific.converter.density.times
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.specificWeight.times
 import com.splendo.kaluga.scientific.converter.volume.times
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
 
@@ -42,5 +47,11 @@ class SpecificWeightUnitTest {
     @Test
     fun volumeFromForceAndSpecificWeightTest() {
         assertEqualScientificValue(2(CubicMeter), 4(Newton) / 2(Newton per CubicMeter))
+    }
+
+    @Test
+    fun specificWeightFromDensityAndAccelerationTest() {
+        assertEqualScientificValue(4(Newton per CubicMeter), 2(Kilogram per CubicMeter) * 2(Meter per Second per Second))
+        assertEqualScientificValue(4(Newton per CubicMeter), 2(Meter per Second per Second) * 2(Kilogram per CubicMeter))
     }
 }

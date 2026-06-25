@@ -55,6 +55,10 @@ public final class com/splendo/kaluga/scientific/converter/acceleration/ConvertT
 	public static final fun speedDivTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/acceleration/ConvertToSpecificWeightKt {
+	public static final fun accelerationTimesDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/acceleration/ConvertToSpeedKt {
 	public static final fun imperialAccelerationTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricAccelerationTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -201,6 +205,10 @@ public final class com/splendo/kaluga/scientific/converter/angularAcceleration/C
 
 public final class com/splendo/kaluga/scientific/converter/angularAcceleration/ConvertToAngularVelocityKt {
 	public static final fun angularAccelerationTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/angularAcceleration/ConvertToTorqueKt {
+	public static final fun angularAccelerationTimesMomentOfInertia (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/angularVelocity/ConvertFromAngleAndTimeKt {
@@ -727,6 +735,11 @@ public final class com/splendo/kaluga/scientific/converter/density/ConvertToSpec
 	public static final fun metricDensitySpecificVolume (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun ukImperialDensitySpecificVolume (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun usCustomaryDensitySpecificVolume (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/density/ConvertToSpecificWeightKt {
+	public static final fun densityTimesAcceleration (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun imperialDensityTimesAcceleration (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/density/ConvertToWeightKt {
@@ -3442,6 +3455,11 @@ public final class com/splendo/kaluga/scientific/converter/momentOfInertia/Conve
 	public static final fun usCustomaryMomentOfInertiaDivUSCustomaryMass (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/momentOfInertia/ConvertToTorqueKt {
+	public static final fun imperialMomentOfInertiaTimesAngularAcceleration (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun momentOfInertiaTimesAngularAcceleration (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/momentOfInertia/ConvertToWeightKt {
 	public static final fun imperialMomentOfInertiaDivImperialArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricMomentOfInertiaDivMetricArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -4243,6 +4261,11 @@ public final class com/splendo/kaluga/scientific/converter/specificVolume/Conver
 	public static final fun usCustomarySpecificVolumeTimesUSCustomaryWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/specificWeight/ConvertFromDensityAndAccelerationKt {
+	public static final fun specificWeightFromDensityAndAcceleration (Lcom/splendo/kaluga/scientific/unit/SpecificWeight;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun specificWeightFromDensityAndAccelerationDefault (Lcom/splendo/kaluga/scientific/unit/SpecificWeight;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/specificWeight/ConvertFromForceAndVolumeKt {
 	public static final fun specificWeightFromForceAndVolume (Lcom/splendo/kaluga/scientific/unit/SpecificWeight;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun specificWeightFromForceAndVolumeDefault (Lcom/splendo/kaluga/scientific/unit/SpecificWeight;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -4900,6 +4923,11 @@ public final class com/splendo/kaluga/scientific/converter/time/ConvertToWeightK
 	public static final fun timeTimesMetricMassFlowRate (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun timeTimesUSCustomaryMassFlowRate (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun timeUKImperialMassFlowRate (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/torque/ConvertFromMomentOfInertiaAndAngularAccelerationKt {
+	public static final fun torqueFromMomentOfInertiaAndAngularAcceleration (Lcom/splendo/kaluga/scientific/unit/Torque;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun torqueFromMomentOfInertiaAndAngularAccelerationDefault (Lcom/splendo/kaluga/scientific/unit/Torque;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/torque/ConvertToEnergyKt {
