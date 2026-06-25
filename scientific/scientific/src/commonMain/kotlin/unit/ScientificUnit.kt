@@ -218,6 +218,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     IlluminanceUnits +
     IonizingRadiationAbsorbedDoseUnits +
     IonizingRadiationEquivalentDoseUnits +
+    IrradianceUnits +
     JoltUnits +
     KinematicViscosityUnits +
     LengthUnits +
@@ -241,6 +242,8 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     PermittivityUnits +
     PowerUnits +
     PressureUnits +
+    RadianceUnits +
+    RadiantIntensityUnits +
     RadioactivityUnits +
     SolidAngleUnits +
     SpecificEnergyUnits +
@@ -296,6 +299,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForIlluminance()
     setupForIonizingRadiationAbsorbedDose()
     setupForIonizingRadiationEquivalentDose()
+    setupForIrradiance()
     setupForJolt()
     setupForKinematicViscosity()
     setupForLength()
@@ -318,6 +322,8 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForPermittivity()
     setupForPower()
     setupForPressure()
+    setupForRadiance()
+    setupForRadiantIntensity()
     setupForRadioactivity()
     setupForSolidAngle()
     setupForSpecificEnergy()
@@ -369,6 +375,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerIlluminanceClasses()
     registerIonizingRadiationAbsorbedDoseClasses()
     registerIonizingRadiationEquivalentDoseClasses()
+    registerIrradianceClasses()
     registerJoltClasses()
     registerKinematicViscosityClasses()
     registerLengthClasses()
@@ -392,6 +399,8 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerPermittivityClasses()
     registerPowerClasses()
     registerPressureClasses()
+    registerRadianceClasses()
+    registerRadiantIntensityClasses()
     registerRadioactivityClasses()
     registerSolidAngleClasses()
     registerSpecificEnergyClasses()

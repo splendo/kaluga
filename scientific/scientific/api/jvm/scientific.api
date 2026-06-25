@@ -509,6 +509,14 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiat
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Irradiance : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Irradiance;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/scientific/PhysicalQuantity$Jolt : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Jolt;
 	public fun equals (Ljava/lang/Object;)Z
@@ -697,6 +705,22 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Power : com/sp
 
 public final class com/splendo/kaluga/scientific/PhysicalQuantity$Pressure : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Pressure;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Radiance : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Radiance;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$RadiantIntensity : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$RadiantIntensity;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
@@ -7500,6 +7524,39 @@ public final class com/splendo/kaluga/scientific/unit/ImperialIlluminance$Compan
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/scientific/unit/ImperialIrradiance : com/splendo/kaluga/scientific/unit/Irradiance, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ImperialPower;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ImperialArea;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance;Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/ImperialArea;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/ImperialArea;
+	public fun getPower ()Lcom/splendo/kaluga/scientific/unit/ImperialPower;
+	public synthetic fun getPower ()Lcom/splendo/kaluga/scientific/unit/Power;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/ImperialIrradiance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialIrradiance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/splendo/kaluga/scientific/unit/ImperialJolt : com/splendo/kaluga/scientific/unit/Jolt, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialJolt$Companion;
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ImperialAcceleration;Lcom/splendo/kaluga/scientific/unit/Time;)V
@@ -8145,6 +8202,71 @@ public final class com/splendo/kaluga/scientific/unit/ImperialQuart : com/splend
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/scientific/unit/ImperialRadiance : com/splendo/kaluga/scientific/unit/Radiance, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialRadiance$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ImperialArea;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiance;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/ImperialRadiance;Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/ImperialArea;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiance;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/ImperialArea;
+	public fun getRadiantIntensity ()Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;
+	public synthetic fun getRadiantIntensity ()Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/ImperialRadiance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialRadiance$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiance;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialRadiance;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialRadiance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialRadiantIntensity : com/splendo/kaluga/scientific/unit/RadiantIntensity, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ImperialPower;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/SolidAngle;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/SolidAngle;
+	public fun getPower ()Lcom/splendo/kaluga/scientific/unit/ImperialPower;
+	public synthetic fun getPower ()Lcom/splendo/kaluga/scientific/unit/Power;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/ImperialRadiantIntensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialRadiantIntensity$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public abstract interface class com/splendo/kaluga/scientific/unit/ImperialScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInImperial, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
 }
 
@@ -8582,6 +8704,33 @@ public final class com/splendo/kaluga/scientific/unit/IonizingRadiationEquivalen
 
 public final class com/splendo/kaluga/scientific/unit/IonizingRadiationEquivalentDoseUnitKt {
 	public static final fun getIonizingRadiationEquivalentDoseUnits ()Ljava/util/Set;
+}
+
+public abstract class com/splendo/kaluga/scientific/unit/Irradiance : com/splendo/kaluga/scientific/unit/DefinedScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/Irradiance$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Irradiance;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public abstract fun getPer ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public abstract fun getPower ()Lcom/splendo/kaluga/scientific/unit/Power;
+	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Irradiance;
+	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
+	public fun getSymbol ()Ljava/lang/String;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/Irradiance;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/Irradiance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/IrradianceUnitKt {
+	public static final fun getImperialIrradianceUnits ()Ljava/util/Set;
+	public static final fun getIrradianceUnits ()Ljava/util/Set;
+	public static final fun getMetricIrradianceUnits ()Ljava/util/Set;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)Lcom/splendo/kaluga/scientific/unit/ImperialIrradiance;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;Lcom/splendo/kaluga/scientific/unit/MetricArea;)Lcom/splendo/kaluga/scientific/unit/MetricIrradiance;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/MetricArea;)Lcom/splendo/kaluga/scientific/unit/MetricIrradiance;
 }
 
 public abstract class com/splendo/kaluga/scientific/unit/Jolt : com/splendo/kaluga/scientific/unit/DefinedScientificUnit {
@@ -10889,6 +11038,40 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialPower$Com
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity : com/splendo/kaluga/scientific/unit/RadiantIntensity, com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/SolidAngle;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getImperial ()Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;
+	public final fun getMetric ()Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/SolidAngle;
+	public fun getPower ()Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;
+	public synthetic fun getPower ()Lcom/splendo/kaluga/scientific/unit/Power;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$MetricAndImperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public abstract interface class com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInMetricAndImperial, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
 }
 
@@ -11333,6 +11516,39 @@ public abstract class com/splendo/kaluga/scientific/unit/MetricIlluminance : com
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricIlluminance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricIrradiance : com/splendo/kaluga/scientific/unit/Irradiance, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricIrradiance$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/MetricArea;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/MetricPower;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/MetricArea;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/MetricArea;)Lcom/splendo/kaluga/scientific/unit/MetricIrradiance;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricIrradiance;Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/MetricArea;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricIrradiance;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/MetricArea;
+	public fun getPower ()Lcom/splendo/kaluga/scientific/unit/MetricPower;
+	public synthetic fun getPower ()Lcom/splendo/kaluga/scientific/unit/Power;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/MetricIrradiance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricIrradiance$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricIrradiance;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricIrradiance;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricIrradiance$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -11942,6 +12158,71 @@ public abstract class com/splendo/kaluga/scientific/unit/MetricPressure : com/sp
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricPressure$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricRadiance : com/splendo/kaluga/scientific/unit/Radiance, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricRadiance$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/MetricArea;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/MetricArea;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/MetricArea;)Lcom/splendo/kaluga/scientific/unit/MetricRadiance;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricRadiance;Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/MetricArea;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricRadiance;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/MetricArea;
+	public fun getRadiantIntensity ()Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;
+	public synthetic fun getRadiantIntensity ()Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/MetricRadiance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricRadiance$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricRadiance;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricRadiance;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricRadiance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricRadiantIntensity : com/splendo/kaluga/scientific/unit/RadiantIntensity, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/MetricPower;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/SolidAngle;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/SolidAngle;
+	public fun getPower ()Lcom/splendo/kaluga/scientific/unit/MetricPower;
+	public synthetic fun getPower ()Lcom/splendo/kaluga/scientific/unit/Power;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/MetricRadiantIntensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricRadiantIntensity$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -15315,6 +15596,60 @@ public abstract class com/splendo/kaluga/scientific/unit/RadianMultiple : com/sp
 
 public final class com/splendo/kaluga/scientific/unit/RadianMultiple$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/splendo/kaluga/scientific/unit/Radiance : com/splendo/kaluga/scientific/unit/DefinedScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/Radiance$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Radiance;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public abstract fun getPer ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Radiance;
+	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
+	public abstract fun getRadiantIntensity ()Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;
+	public fun getSymbol ()Ljava/lang/String;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/Radiance;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/Radiance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/RadianceUnitKt {
+	public static final fun getImperialRadianceUnits ()Ljava/util/Set;
+	public static final fun getMetricRadianceUnits ()Ljava/util/Set;
+	public static final fun getRadianceUnits ()Ljava/util/Set;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiance;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/ImperialArea;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiance;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/MetricArea;)Lcom/splendo/kaluga/scientific/unit/MetricRadiance;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;Lcom/splendo/kaluga/scientific/unit/MetricArea;)Lcom/splendo/kaluga/scientific/unit/MetricRadiance;
+}
+
+public abstract class com/splendo/kaluga/scientific/unit/RadiantIntensity : com/splendo/kaluga/scientific/unit/DefinedScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/RadiantIntensity$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$RadiantIntensity;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public abstract fun getPer ()Lcom/splendo/kaluga/scientific/unit/SolidAngle;
+	public abstract fun getPower ()Lcom/splendo/kaluga/scientific/unit/Power;
+	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$RadiantIntensity;
+	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
+	public fun getSymbol ()Ljava/lang/String;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/RadiantIntensity$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/RadiantIntensityUnitKt {
+	public static final fun getImperialRadiantIntensityUnits ()Ljava/util/Set;
+	public static final fun getMetricAndImperialRadiantIntensityUnits ()Ljava/util/Set;
+	public static final fun getMetricRadiantIntensityUnits ()Ljava/util/Set;
+	public static final fun getRadiantIntensityUnits ()Ljava/util/Set;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)Lcom/splendo/kaluga/scientific/unit/ImperialRadiantIntensity;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialRadiantIntensity;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricPower;Lcom/splendo/kaluga/scientific/unit/SolidAngle;)Lcom/splendo/kaluga/scientific/unit/MetricRadiantIntensity;
 }
 
 public abstract class com/splendo/kaluga/scientific/unit/Radioactivity : com/splendo/kaluga/scientific/unit/DefinedScientificUnit, com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit {

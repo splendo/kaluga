@@ -380,6 +380,14 @@ public final class com/splendo/kaluga/scientific/converter/area/ConvertToMomentu
 	public static final fun metricAreaTimesMetricDynamicViscosity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/area/ConvertToPowerKt {
+	public static final fun areaTimesIrradiance (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/area/ConvertToRadiantIntensityKt {
+	public static final fun areaTimesRadiance (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/area/ConvertToSpecificVolumeKt {
 	public static final fun areaDivLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialAreaDivImperialLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -1891,6 +1899,27 @@ public final class com/splendo/kaluga/scientific/converter/ionizingRadiationEqui
 	public static final fun specificEnergyFromRoentgewnEquivalentMan (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/irradiance/ConvertFromPowerAndAreaKt {
+	public static final fun irradianceFromPowerAndArea (Lcom/splendo/kaluga/scientific/unit/Irradiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun irradianceFromPowerAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/Irradiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/irradiance/ConvertFromRadianceAndSolidAngleKt {
+	public static final fun irradianceFromRadianceAndSolidAngle (Lcom/splendo/kaluga/scientific/unit/Irradiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun irradianceFromRadianceAndSolidAngleDefault (Lcom/splendo/kaluga/scientific/unit/Irradiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/irradiance/ConvertToPowerKt {
+	public static final fun imperialIrradianceTimesArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun irradianceTimesArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricIrradianceTimesArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/irradiance/ConvertToRadianceKt {
+	public static final fun imperialIrradianceDivSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricIrradianceDivSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/jolt/ConvertFromAccelerationAndTimeKt {
 	public static final fun joltFromAccelerationAndTime (Lcom/splendo/kaluga/scientific/unit/Jolt;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun joltFromAccelerationAndTimeDefault (Lcom/splendo/kaluga/scientific/unit/Jolt;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -3064,6 +3093,11 @@ public final class com/splendo/kaluga/scientific/converter/power/ConvertFromForc
 	public static final fun powerFromForceAndSpeedDefault (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/power/ConvertFromIrradianceAndAreaKt {
+	public static final fun powerFromIrradianceAndArea (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun powerFromIrradianceAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/power/ConvertFromMassFlowRateAndSpecificEnergyKt {
 	public static final fun powerFromMassFlowRateAndSpecificEnergy (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun powerFromMassFlowRateAndSpecificEnergyDefault (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -3072,6 +3106,11 @@ public final class com/splendo/kaluga/scientific/converter/power/ConvertFromMass
 public final class com/splendo/kaluga/scientific/converter/power/ConvertFromPressureAndVolumetricFlowKt {
 	public static final fun powerFromEnergyAndTime (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun powerFromEnergyAndTimeDefault (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/power/ConvertFromRadiantIntensityAndSolidAngleKt {
+	public static final fun powerFromRadiantIntensityAndSolidAngle (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun powerFromRadiantIntensityAndSolidAngleDefault (Lcom/splendo/kaluga/scientific/unit/Power;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/power/ConvertFromTemperatureAndThermalResistanceKt {
@@ -3118,6 +3157,13 @@ public final class com/splendo/kaluga/scientific/converter/power/ConvertToForceK
 	public static final fun powerDivSpeed (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/power/ConvertToIrradianceKt {
+	public static final fun imperialPowerDivImperialArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricAndImperialPowerDivImperialArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricAndImperialPowerDivMetricArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricPowerDivMetricArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/power/ConvertToMassFlowRateKt {
 	public static final fun imperialCombinedPowerDivImperialSpecificEnergy (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialCombinedPowerDivUKImperialSpecificEnergy (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -3143,6 +3189,13 @@ public final class com/splendo/kaluga/scientific/converter/power/ConvertToPressu
 	public static final fun imperialPowerDivUSCustomaryVolumetricFlow (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricCombinedPowerDivMetricVolumetricFlow (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun powerDivVolumetricFlow (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/power/ConvertToRadiantIntensityKt {
+	public static final fun imperialPowerDivSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricAndImperialPowerDivSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricPowerDivSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun powerDivSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/power/ConvertToSpecificEnergyKt {
@@ -3305,6 +3358,51 @@ public final class com/splendo/kaluga/scientific/converter/pressure/ConvertToPow
 	public static final fun usTonSquareInchTimesUSCustomaryVolumetricFlow (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/radiance/ConvertFromIrradianceAndSolidAngleKt {
+	public static final fun radianceFromIrradianceAndSolidAngle (Lcom/splendo/kaluga/scientific/unit/Radiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun radianceFromIrradianceAndSolidAngleDefault (Lcom/splendo/kaluga/scientific/unit/Radiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/radiance/ConvertFromRadiantIntensityAndAreaKt {
+	public static final fun radianceFromRadiantIntensityAndArea (Lcom/splendo/kaluga/scientific/unit/Radiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun radianceFromRadiantIntensityAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/Radiance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/radiance/ConvertToIrradianceKt {
+	public static final fun imperialRadianceTimesSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricRadianceTimesSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/radiance/ConvertToRadiantIntensityKt {
+	public static final fun imperialRadianceTimesArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricRadianceTimesArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun radianceTimesArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/radiantIntensity/ConvertFromPowerAndSolidAngleKt {
+	public static final fun radiantIntensityFromPowerAndSolidAngle (Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun radiantIntensityFromPowerAndSolidAngleDefault (Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/radiantIntensity/ConvertFromRadianceAndAreaKt {
+	public static final fun radiantIntensityFromRadianceAndArea (Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun radiantIntensityFromRadianceAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/RadiantIntensity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/radiantIntensity/ConvertToPowerKt {
+	public static final fun imperialRadiantIntensityTimesSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricAndImperialRadiantIntensityTimesSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricRadiantIntensityTimesSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun radiantIntensityTimesSolidAngle (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/radiantIntensity/ConvertToRadianceKt {
+	public static final fun imperialRadiantIntensityDivImperialArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricAndImperialRadiantIntensityDivImperialArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricAndImperialRadiantIntensityDivMetricArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricRadiantIntensityDivMetricArea (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/radioactivity/ConvertFromAmountOfSubstanceAndTimeKt {
 	public static final fun radioactivityFromSubstanceAndHalfLife (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun radioactivityFromSubstanceAndHalfLifeDefault (Lcom/splendo/kaluga/scientific/unit/Radioactivity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -3339,8 +3437,17 @@ public final class com/splendo/kaluga/scientific/converter/solidAngle/ConvertToI
 	public static final fun solidAngleTimesStilb (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/solidAngle/ConvertToIrradianceKt {
+	public static final fun solidAngleTimesImperialRadiance (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun solidAngleTimesMetricRadiance (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/solidAngle/ConvertToLuminousFluxKt {
 	public static final fun solidAngleTimesLuminousIntensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/solidAngle/ConvertToPowerKt {
+	public static final fun solidAngleTimesRadiantIntensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/specificEnergy/ConvertFromEnergyAndWeightKt {
