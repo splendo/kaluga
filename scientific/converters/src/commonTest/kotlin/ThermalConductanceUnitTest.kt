@@ -20,6 +20,7 @@ package com.splendo.kaluga.scientific.converter
 import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.thermalConductance.times
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Fahrenheit
 import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.Watt
 import com.splendo.kaluga.scientific.unit.per
@@ -35,5 +36,11 @@ class ThermalConductanceUnitTest {
     @Test
     fun powerFromThermalConductanceAndTemperatureTest() {
         assertEqualScientificValue(4(Watt), 2(Watt per Kelvin) * 2(Kelvin))
+    }
+
+    @Test
+    fun temperatureFromPowerAndThermalConductanceTest() {
+        assertEqualScientificValue(2(Kelvin), 4(Watt) / 2(Watt per Kelvin))
+        assertEqualScientificValue(2(Fahrenheit), 4(Watt) / 2(Watt per Fahrenheit))
     }
 }
