@@ -17,16 +17,21 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.converter.electricCurrentDensity.times
 import com.splendo.kaluga.scientific.converter.electricResistance.times
 import com.splendo.kaluga.scientific.converter.electricalConductivity.resistivity
 import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.resistivity.div
 import com.splendo.kaluga.scientific.converter.resistivity.electricalConductivity
+import com.splendo.kaluga.scientific.converter.resistivity.times
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Ohm
 import com.splendo.kaluga.scientific.unit.Siemens
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Volt
 import com.splendo.kaluga.scientific.unit.per
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
@@ -58,5 +63,11 @@ class ResistivityUnitTest {
     @Test
     fun resistivityFromElectricalConductivityTest() {
         assertEqualScientificValue(0.5(Ohm x Meter), 2(Siemens per Meter).resistivity())
+    }
+
+    @Test
+    fun electricFieldStrengthFromResistivityAndElectricCurrentDensityTest() {
+        assertEqualScientificValue(4(Volt per Meter), 2(Ohm x Meter) * 2(Ampere per SquareMeter))
+        assertEqualScientificValue(4(Volt per Meter), 2(Ampere per SquareMeter) * 2(Ohm x Meter))
     }
 }

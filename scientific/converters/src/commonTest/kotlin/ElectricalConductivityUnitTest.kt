@@ -18,12 +18,16 @@
 package com.splendo.kaluga.scientific.converter
 
 import com.splendo.kaluga.scientific.converter.electricConductance.div
+import com.splendo.kaluga.scientific.converter.electricFieldStrength.times
 import com.splendo.kaluga.scientific.converter.electricalConductivity.times
 import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Siemens
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Volt
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
 
@@ -44,5 +48,11 @@ class ElectricalConductivityUnitTest {
     @Test
     fun lengthFromElectricConductanceAndElectricalConductivityTest() {
         assertEqualScientificValue(2(Meter), 4(Siemens) / 2(Siemens per Meter))
+    }
+
+    @Test
+    fun electricCurrentDensityFromElectricalConductivityAndElectricFieldStrengthTest() {
+        assertEqualScientificValue(4(Ampere per SquareMeter), 2(Siemens per Meter) * 2(Volt per Meter))
+        assertEqualScientificValue(4(Ampere per SquareMeter), 2(Volt per Meter) * 2(Siemens per Meter))
     }
 }
