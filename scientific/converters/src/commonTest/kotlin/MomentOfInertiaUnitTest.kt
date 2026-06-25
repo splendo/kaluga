@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.scientific.converter
 
-import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.momentOfInertia.div
 import com.splendo.kaluga.scientific.converter.weight.times
@@ -31,17 +30,17 @@ class MomentOfInertiaUnitTest {
 
     @Test
     fun momentOfInertiaFromWeightAndAreaTest() {
-        assertEqualScientificValue(4(Kilogram x SquareMeter), (2(Kilogram) * 2(SquareMeter)).convert(Kilogram x SquareMeter))
-        assertEqualScientificValue(4(Kilogram x SquareMeter), (2(SquareMeter) * 2(Kilogram)).convert(Kilogram x SquareMeter))
+        assertEqualScientificValue(4(Kilogram x SquareMeter), 2(Kilogram) * 2(SquareMeter))
+        assertEqualScientificValue(4(Kilogram x SquareMeter), 2(SquareMeter) * 2(Kilogram))
     }
 
     @Test
     fun weightFromMomentOfInertiaAndAreaTest() {
-        assertEqualScientificValue(2(Kilogram), (4(Kilogram x SquareMeter) / 2(SquareMeter)).convert(Kilogram))
+        assertEqualScientificValue(2(Kilogram), 4(Kilogram x SquareMeter) / 2(SquareMeter))
     }
 
     @Test
     fun areaFromMomentOfInertiaAndWeightTest() {
-        assertEqualScientificValue(2(SquareMeter), (4(Kilogram x SquareMeter) / 2(Kilogram)).convert(SquareMeter))
+        assertEqualScientificValue(2(SquareMeter), 4(Kilogram x SquareMeter) / 2(Kilogram))
     }
 }

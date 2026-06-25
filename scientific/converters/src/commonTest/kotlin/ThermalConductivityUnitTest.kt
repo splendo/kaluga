@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter
 
-import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.thermalConductance.div
 import com.splendo.kaluga.scientific.converter.thermalConductivity.times
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.metric
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
 
@@ -31,11 +31,11 @@ class ThermalConductivityUnitTest {
 
     @Test
     fun thermalConductivityFromThermalConductanceAndLengthTest() {
-        assertEqualScientificValue(1(Watt per Kelvin per Meter), (2(Watt per Kelvin) / 2(Meter)).convert(Watt per Kelvin per Meter))
+        assertEqualScientificValue(1(Watt per Kelvin per Meter), 2(Watt per Kelvin) / 2(Meter))
     }
 
     @Test
     fun thermalConductanceFromThermalConductivityAndLengthTest() {
-        assertEqualScientificValue(4(Watt per Kelvin), (2(Watt per Kelvin per Meter) * 2(Meter)).convert(Watt per Kelvin))
+        assertEqualScientificValue(4(Watt.metric per Kelvin), 2(Watt per Kelvin per Meter) * 2(Meter))
     }
 }

@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter
 
-import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.thermalInsulance.div
 import com.splendo.kaluga.scientific.converter.thermalResistance.times
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.metric
 import com.splendo.kaluga.scientific.unit.per
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
@@ -32,11 +32,11 @@ class ThermalInsulanceUnitTest {
 
     @Test
     fun thermalInsulanceFromThermalResistanceAndAreaTest() {
-        assertEqualScientificValue(4((Kelvin per Watt) x SquareMeter), (2(Kelvin per Watt) * 2(SquareMeter)).convert((Kelvin per Watt) x SquareMeter))
+        assertEqualScientificValue(4((Kelvin per Watt) x SquareMeter), 2(Kelvin per Watt) * 2(SquareMeter))
     }
 
     @Test
     fun thermalResistanceFromThermalInsulanceAndAreaTest() {
-        assertEqualScientificValue(2(Kelvin per Watt), (4((Kelvin per Watt) x SquareMeter) / 2(SquareMeter)).convert(Kelvin per Watt))
+        assertEqualScientificValue(2(Kelvin per Watt.metric), 4((Kelvin per Watt) x SquareMeter) / 2(SquareMeter))
     }
 }
