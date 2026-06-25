@@ -186,6 +186,18 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object ElectricResistance : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the electric conductance per unit length
+     */
+    @Serializable
+    data object ElectricalConductivity : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the electric charge separation of a dipole multiplied by distance
+     */
+    @Serializable
+    data object ElectricDipoleMoment : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing energy
      */
     @Serializable
@@ -318,6 +330,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object MassFlowRate : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the magnetic strength and orientation of a current loop, the electric current multiplied by area
+     */
+    @Serializable
+    data object MagneticDipoleMoment : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the measure of magnetism, taking account of the strength and the extent of a magnetic field
      */
     @Serializable
@@ -424,6 +442,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     data object Reluctance : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the electrical resistance of a material per unit length
+     */
+    @Serializable
+    data object Resistivity : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the rate of change of jolt per unit time
@@ -579,6 +603,8 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.ElectricFieldStrength::class, PhysicalQuantity.ElectricFieldStrength.serializer())
     subclass(PhysicalQuantity.ElectricInductance::class, PhysicalQuantity.ElectricInductance.serializer())
     subclass(PhysicalQuantity.ElectricResistance::class, PhysicalQuantity.ElectricResistance.serializer())
+    subclass(PhysicalQuantity.ElectricalConductivity::class, PhysicalQuantity.ElectricalConductivity.serializer())
+    subclass(PhysicalQuantity.ElectricDipoleMoment::class, PhysicalQuantity.ElectricDipoleMoment.serializer())
     subclass(PhysicalQuantity.Energy::class, PhysicalQuantity.Energy.serializer())
     subclass(PhysicalQuantity.EnergyDensity::class, PhysicalQuantity.EnergyDensity.serializer())
     subclass(PhysicalQuantity.Exposure::class, PhysicalQuantity.Exposure.serializer())
@@ -601,6 +627,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.LuminousFlux::class, PhysicalQuantity.LuminousFlux.serializer())
     subclass(PhysicalQuantity.LuminousIntensity::class, PhysicalQuantity.LuminousIntensity.serializer())
     subclass(PhysicalQuantity.MassFlowRate::class, PhysicalQuantity.MassFlowRate.serializer())
+    subclass(PhysicalQuantity.MagneticDipoleMoment::class, PhysicalQuantity.MagneticDipoleMoment.serializer())
     subclass(PhysicalQuantity.MagneticFieldStrength::class, PhysicalQuantity.MagneticFieldStrength.serializer())
     subclass(PhysicalQuantity.MagneticFlux::class, PhysicalQuantity.MagneticFlux.serializer())
     subclass(PhysicalQuantity.MagneticInduction::class, PhysicalQuantity.MagneticInduction.serializer())
@@ -619,6 +646,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.RadiantIntensity::class, PhysicalQuantity.RadiantIntensity.serializer())
     subclass(PhysicalQuantity.Radioactivity::class, PhysicalQuantity.Radioactivity.serializer())
     subclass(PhysicalQuantity.Reluctance::class, PhysicalQuantity.Reluctance.serializer())
+    subclass(PhysicalQuantity.Resistivity::class, PhysicalQuantity.Resistivity.serializer())
     subclass(PhysicalQuantity.Snap::class, PhysicalQuantity.Snap.serializer())
     subclass(PhysicalQuantity.SolidAngle::class, PhysicalQuantity.SolidAngle.serializer())
     subclass(PhysicalQuantity.SpecificEnergy::class, PhysicalQuantity.SpecificEnergy.serializer())

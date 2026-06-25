@@ -213,6 +213,8 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     ElectricFieldStrengthUnits +
     ElectricInductanceUnits +
     ElectricResistanceUnits +
+    ElectricalConductivityUnits +
+    ElectricDipoleMomentUnits +
     EnergyUnits +
     EnergyDensityUnits +
     ExposureUnits +
@@ -234,6 +236,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     LuminousExposureUnits +
     LuminousFluxUnits +
     LuminousIntensityUnits +
+    MagneticDipoleMomentUnits +
     MagneticFieldStrengthUnits +
     MagneticFluxUnits +
     MagneticInductionUnits +
@@ -253,6 +256,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     RadiantIntensityUnits +
     RadioactivityUnits +
     ReluctanceUnits +
+    ResistivityUnits +
     SnapUnits +
     SolidAngleUnits +
     SpecificEnergyUnits +
@@ -303,6 +307,8 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForElectricFieldStrength()
     setupForElectricInductance()
     setupForElectricResistance()
+    setupForElectricalConductivity()
+    setupForElectricDipoleMoment()
     setupForEnergy()
     setupForEnergyDensity()
     setupForExposure()
@@ -322,6 +328,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForLuminousExposure()
     setupForLuminousFlux()
     setupForLuminousIntensity()
+    setupForMagneticDipoleMoment()
     setupForMagneticFieldStrength()
     setupForMagneticFlux()
     setupForMagneticInduction()
@@ -340,6 +347,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForRadiance()
     setupForRadiantIntensity()
     setupForRadioactivity()
+    setupForResistivity()
     setupForSnap()
     setupForSolidAngle()
     setupForSpecificEnergy()
@@ -387,6 +395,8 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerElectricFieldStrengthClasses()
     registerElectricInductanceClasses()
     registerElectricResistanceClasses()
+    registerElectricalConductivityClasses()
+    registerElectricDipoleMomentClasses()
     registerEnergyClasses()
     registerEnergyDensityClasses()
     registerExposureClasses()
@@ -408,6 +418,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerLuminousExposureClasses()
     registerLuminousFluxClasses()
     registerLuminousIntensityClasses()
+    registerMagneticDipoleMomentClasses()
     registerMagneticFieldStrengthClasses()
     registerMagneticFluxClasses()
     registerMagneticInductionClasses()
@@ -427,6 +438,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerRadiantIntensityClasses()
     registerRadioactivityClasses()
     subclass(Reluctance::class, Reluctance.serializer())
+    registerResistivityClasses()
     registerSnapClasses()
     registerSolidAngleClasses()
     registerSpecificEnergyClasses()
