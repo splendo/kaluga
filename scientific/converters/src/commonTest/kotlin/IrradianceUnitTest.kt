@@ -17,29 +17,34 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.irradiance.times
 import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.Horsepower
+import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.imperial
+import com.splendo.kaluga.scientific.unit.metric
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class IrradianceUnitTest {
 
     @Test
     fun irradianceFromPowerAndAreaTest() {
         assertEqualScientificValue(2(Watt per SquareMeter), 4(Watt) / 2(SquareMeter))
-        assertEquals((Watt per SquareFoot), (4(Watt) / 2(SquareFoot)).unit)
+        assertEqualScientificValue(2(Watt per SquareFoot), 4(Watt) / 2(SquareFoot), round = 27)
+        assertEqualScientificValue(2(Watt per SquareMeter), 4(Watt) / 2(SquareMeter).convert(SquareFoot as Area), round = 27)
     }
 
     @Test
     fun powerFromIrradianceAndAreaTest() {
-        assertEqualScientificValue(4(Horsepower), 2(Horsepower per SquareFoot) * 2(SquareFoot), round = 28)
-        assertEqualScientificValue(4(Horsepower), 2(SquareFoot) * 2(Horsepower per SquareFoot), round = 28)
+        assertEqualScientificValue(4(Watt.metric), 2(Watt per SquareMeter) * 2(SquareMeter))
+        assertEqualScientificValue(4(Watt.metric), 2(SquareMeter) * 2(Watt per SquareMeter))
+        assertEqualScientificValue(4(Watt.imperial), 2(Watt per SquareFoot) * 2(SquareFoot), round = 27)
+        assertEqualScientificValue(4(Watt.imperial), 2(SquareFoot) * 2(Watt per SquareFoot), round = 27)
     }
 }

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.electricChargeDensity.times
 import com.splendo.kaluga.scientific.converter.electricCurrent.div
@@ -29,6 +30,7 @@ import com.splendo.kaluga.scientific.converter.surfaceChargeDensity.times
 import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.CubicFoot
 import com.splendo.kaluga.scientific.unit.CubicMeter
@@ -36,11 +38,13 @@ import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.Hertz
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Speed
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ElectricCurrentDensityUnitTest {
 
@@ -48,50 +52,79 @@ class ElectricCurrentDensityUnitTest {
     fun electricCurrentDensityFromElectricCurrentAndAreaTest() {
         assertEqualScientificValue(1(Ampere per SquareMeter), 2(Ampere) / 2(SquareMeter))
         assertEqualScientificValue(1(Ampere per SquareFoot), 2(Ampere) / 2(SquareFoot), round = 27)
+        assertEqualScientificValue(1(Ampere per SquareMeter), 2(Ampere) / 2(SquareMeter).convert(SquareFoot as Area), round = 27)
     }
 
     @Test
     fun electricCurrentFromElectricCurrentDensityAndAreaTest() {
         assertEqualScientificValue(4(Ampere), 2(Ampere per SquareMeter) * 2(SquareMeter))
         assertEqualScientificValue(4(Ampere), 2(SquareMeter) * 2(Ampere per SquareMeter))
+        assertEqualScientificValue(4(Ampere), 2(Ampere per SquareFoot) * 2(SquareFoot), round = 27)
+        assertEqualScientificValue(4(Ampere), 2(SquareFoot) * 2(Ampere per SquareFoot), round = 27)
     }
 
     @Test
     fun surfaceChargeDensityFromElectricCurrentDensityAndTimeTest() {
         assertEqualScientificValue(4(Coulomb per SquareMeter), 2(Ampere per SquareMeter) * 2(Second))
         assertEqualScientificValue(4(Coulomb per SquareMeter), 2(Second) * 2(Ampere per SquareMeter))
+        assertEqualScientificValue(4(Coulomb per SquareFoot), 2(Ampere per SquareFoot) * 2(Second), round = 27)
+        assertEqualScientificValue(4(Coulomb per SquareFoot), 2(Second) * 2(Ampere per SquareFoot), round = 27)
+    }
+
+    @Test
+    fun electricCurrentDensityFromSurfaceChargeDensityAndTimeTest() {
         assertEqualScientificValue(2(Ampere per SquareMeter), 4(Coulomb per SquareMeter) / 2(Second))
+        assertEqualScientificValue(2(Ampere per SquareFoot), 4(Coulomb per SquareFoot) / 2(Second), round = 27)
+    }
+
+    @Test
+    fun timeFromSurfaceChargeDensityAndElectricCurrentDensityTest() {
+        assertEqualScientificValue(2(Second), 4(Coulomb per SquareMeter) / 2(Ampere per SquareMeter))
+        assertEqualScientificValue(2(Second), 4(Coulomb per SquareFoot) / 2(Ampere per SquareFoot), round = 27)
     }
 
     @Test
     fun electricCurrentDensityFromSurfaceChargeDensityAndFrequencyTest() {
         assertEqualScientificValue(4(Ampere per SquareMeter), 2(Coulomb per SquareMeter) * 2(Hertz))
         assertEqualScientificValue(4(Ampere per SquareMeter), 2(Hertz) * 2(Coulomb per SquareMeter))
-        assertEqualScientificValue(2(Coulomb per SquareMeter), 4(Ampere per SquareMeter) / 2(Hertz))
-        assertEqualScientificValue(2(Hertz), 4(Ampere per SquareMeter) / 2(Coulomb per SquareMeter))
+        assertEqualScientificValue(4(Ampere per SquareFoot), 2(Coulomb per SquareFoot) * 2(Hertz), round = 27)
+        assertEqualScientificValue(4(Ampere per SquareFoot), 2(Hertz) * 2(Coulomb per SquareFoot), round = 27)
     }
 
     @Test
-    fun imperialElectricCurrentDensityCrossConvertersPreserveSystem() {
-        assertEqualScientificValue(4(Coulomb per SquareFoot), 2(Ampere per SquareFoot) * 2(Second))
-        assertEqualScientificValue(2(Ampere per SquareFoot), 4(Coulomb per SquareFoot) / 2(Second))
-        assertEqualScientificValue(4(Ampere per SquareFoot), 2(Coulomb per SquareFoot) * 2(Hertz))
-        assertEqualScientificValue(2(Coulomb per SquareFoot), 4(Ampere per SquareFoot) / 2(Hertz))
+    fun surfaceChargeDensityFromElectricCurrentDensityAndFrequencyTest() {
+        assertEqualScientificValue(2(Coulomb per SquareMeter), 4(Ampere per SquareMeter) / 2(Hertz))
+        assertEqualScientificValue(2(Coulomb per SquareFoot), 4(Ampere per SquareFoot) / 2(Hertz), round = 27)
+    }
+
+    @Test
+    fun frequencyFromElectricCurrentDensityAndSurfaceChargeDensityTest() {
+        assertEqualScientificValue(2(Hertz), 4(Ampere per SquareMeter) / 2(Coulomb per SquareMeter))
+        assertEqualScientificValue(2(Hertz), 4(Ampere per SquareFoot) / 2(Coulomb per SquareFoot), round = 27)
     }
 
     @Test
     fun electricCurrentDensityFromElectricChargeDensityAndSpeedTest() {
         assertEqualScientificValue(4(Ampere per SquareMeter), 2(Coulomb per CubicMeter) * 2(Meter per Second))
         assertEqualScientificValue(4(Ampere per SquareMeter), 2(Meter per Second) * 2(Coulomb per CubicMeter))
-        assertEqualScientificValue(2(Coulomb per CubicMeter), 4(Ampere per SquareMeter) / 2(Meter per Second))
-        assertEqualScientificValue(2(Meter per Second), 4(Ampere per SquareMeter) / 2(Coulomb per CubicMeter))
+        assertEqualScientificValue(4(Ampere per SquareFoot), 2(Coulomb per CubicFoot) * 2(Foot per Second), round = 27)
+        assertEqualScientificValue(4(Ampere per SquareFoot), 2(Foot per Second) * 2(Coulomb per CubicFoot), round = 27)
+        assertEqualScientificValue(4(Ampere per SquareFoot), 2(Coulomb per CubicFoot.ukImperial) * 2(Foot per Second), round = 27)
+        assertEqualScientificValue(4(Ampere per SquareFoot), 2(Coulomb per CubicFoot.usCustomary) * 2(Foot per Second), round = 27)
+        assertEqualScientificValue(4(Ampere per SquareMeter), 2(Coulomb per CubicMeter) * 2(Meter per Second).convert((Foot per Second) as Speed), round = 27)
     }
 
     @Test
-    fun electricCurrentDensityRel7PreservesImperialSystem() {
-        assertEquals((Ampere per SquareFoot), (2(Coulomb per CubicMeter) * 2(Foot per Second)).unit)
-        assertEquals((Ampere per SquareFoot), (2(Foot per Second) * 2(Coulomb per CubicMeter)).unit)
-        assertEquals((Coulomb per CubicFoot), (2(Ampere per SquareFoot) / 2(Meter per Second)).unit)
-        assertEquals((Foot per Second), (2(Ampere per SquareFoot) / 2(Coulomb per CubicMeter)).unit)
+    fun electricChargeDensityFromElectricCurrentDensityAndSpeedTest() {
+        assertEqualScientificValue(2(Coulomb per CubicMeter), 4(Ampere per SquareMeter) / 2(Meter per Second))
+        assertEqualScientificValue(2(Coulomb per CubicFoot), 4(Ampere per SquareFoot) / 2(Foot per Second), round = 27)
+    }
+
+    @Test
+    fun speedFromElectricCurrentDensityAndElectricChargeDensityTest() {
+        assertEqualScientificValue(2(Meter per Second), 4(Ampere per SquareMeter) / 2(Coulomb per CubicMeter))
+        assertEqualScientificValue(2(Foot per Second), 4(Ampere per SquareFoot) / 2(Coulomb per CubicFoot), round = 27)
+        assertEqualScientificValue(2(Foot per Second), 4(Ampere per SquareFoot) / 2(Coulomb per CubicFoot.ukImperial), round = 27)
+        assertEqualScientificValue(2(Foot per Second), 4(Ampere per SquareFoot) / 2(Coulomb per CubicFoot.usCustomary), round = 27)
     }
 }

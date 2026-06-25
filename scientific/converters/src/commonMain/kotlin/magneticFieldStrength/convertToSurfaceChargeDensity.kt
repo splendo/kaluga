@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.surfaceChargeDensity.surfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.ImperialMagneticFieldStrength
+import com.splendo.kaluga.scientific.unit.ImperialSpeed
 import com.splendo.kaluga.scientific.unit.MagneticFieldStrength
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
@@ -29,12 +30,12 @@ import com.splendo.kaluga.scientific.unit.Speed
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialMagneticFieldStrengthDivSpeed")
-infix operator fun <SpeedUnit : Speed> ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
+@JvmName("imperialMagneticFieldStrengthDivImperialSpeed")
+infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
     speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
 ) = (Coulomb per SquareFoot).surfaceChargeDensity(this, speed)
 
 @JvmName("magneticFieldStrengthDivSpeed")
-infix operator fun <MagneticFieldStrengthUnit, SpeedUnit> ScientificValue<PhysicalQuantity.MagneticFieldStrength, MagneticFieldStrengthUnit>.div(
+infix operator fun <MagneticFieldStrengthUnit : MagneticFieldStrength, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.MagneticFieldStrength, MagneticFieldStrengthUnit>.div(
     speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) where MagneticFieldStrengthUnit : MagneticFieldStrength, SpeedUnit : Speed = (Coulomb per SquareMeter).surfaceChargeDensity(this, speed)
+) = (Coulomb per SquareMeter).surfaceChargeDensity(this, speed)

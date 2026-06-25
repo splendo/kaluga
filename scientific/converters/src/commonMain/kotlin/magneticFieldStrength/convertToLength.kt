@@ -22,14 +22,15 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.length.length
 import com.splendo.kaluga.scientific.unit.ElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.ImperialElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.ImperialMagneticFieldStrength
 import com.splendo.kaluga.scientific.unit.MagneticFieldStrength
 import com.splendo.kaluga.scientific.unit.Meter
 import kotlin.jvm.JvmName
 
-@JvmName("imperialMagneticFieldStrengthDivElectricCurrentDensity")
-infix operator fun <ElectricCurrentDensityUnit : ElectricCurrentDensity> ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
-    electricCurrentDensity: ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ElectricCurrentDensityUnit>,
+@JvmName("imperialMagneticFieldStrengthDivImperialElectricCurrentDensity")
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
+    electricCurrentDensity: ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>,
 ) = Foot.length(this, electricCurrentDensity)
 
 @JvmName("magneticFieldStrengthDivElectricCurrentDensity")

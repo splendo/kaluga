@@ -797,6 +797,11 @@ public final class com/splendo/kaluga/scientific/converter/electricCharge/Conver
 	public static final fun chargeFromEnergyAndVoltageDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/electricCharge/ConvertFromExposureAndWeightKt {
+	public static final fun chargeFromExposureAndWeight (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun chargeFromExposureAndWeightDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/electricCharge/ConvertFromForceAndElectricFieldStrengthKt {
 	public static final fun chargeFromForceAndElectricFieldStrength (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun chargeFromForceAndElectricFieldStrengthDefault (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -833,6 +838,14 @@ public final class com/splendo/kaluga/scientific/converter/electricCharge/Conver
 public final class com/splendo/kaluga/scientific/converter/electricCharge/ConvertToEnergyKt {
 	public static final fun abcoulombTimesAbvolt (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun chargeTimesVoltage (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/electricCharge/ConvertToExposureKt {
+	public static final fun electricChargeDivImperialWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricChargeDivMetricWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricChargeDivUKImperialWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricChargeDivUSCustomaryWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun electricChargeDivWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/electricCharge/ConvertToForceKt {
@@ -1467,6 +1480,10 @@ public final class com/splendo/kaluga/scientific/converter/energy/ConvertToTimeK
 	public static final fun wattHourMultipleDivWattMultiple (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/energy/ConvertToTorqueKt {
+	public static final fun asTorque (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/energy/ConvertToVoltageKt {
 	public static final fun energyDivCharge (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun ergDivAbcoulomb (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -1510,6 +1527,15 @@ public final class com/splendo/kaluga/scientific/converter/energy/ConvertToWeigh
 	public static final fun metricAndImperialEnergyDivUKImperialSpecificEnergy (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricAndImperialEnergyDivUSCustomarySpecificEnergy (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricEnergyDivMetricSpecificEnergy (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/exposure/ConvertFromElectricChargeAndWeightKt {
+	public static final fun exposureFromElectricChargeAndWeight (Lcom/splendo/kaluga/scientific/unit/Exposure;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun exposureFromElectricChargeAndWeightDefault (Lcom/splendo/kaluga/scientific/unit/Exposure;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/exposure/ConvertToElectricChargeKt {
+	public static final fun exposureTimesWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/force/ConvertFromElectricFieldStrengthAndElectricChargeKt {
@@ -4231,6 +4257,10 @@ public final class com/splendo/kaluga/scientific/converter/time/ConvertToWeightK
 	public static final fun timeTimesMetricMassFlowRate (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun timeTimesUSCustomaryMassFlowRate (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun timeUKImperialMassFlowRate (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/torque/ConvertToEnergyKt {
+	public static final fun asEnergy (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/ScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/undefined/DividedByDefinedUnitKt {
@@ -19584,6 +19614,10 @@ public final class com/splendo/kaluga/scientific/converter/weight/ConvertToDensi
 	public static final fun usCustomaryWeightDivImperialVolume (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun usCustomaryWeightDivUSCustomaryVolume (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun weightDivVolume (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/weight/ConvertToElectricChargeKt {
+	public static final fun weightTimesExposure (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/weight/ConvertToEnergyKt {

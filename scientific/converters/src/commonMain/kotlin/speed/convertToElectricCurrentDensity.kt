@@ -22,19 +22,32 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrentDensity.electricCurrentDensity
 import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.ElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.ImperialElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Speed
+import com.splendo.kaluga.scientific.unit.UKImperialElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialSpeedTimesElectricChargeDensity")
-infix operator fun <SpeedUnit, ElectricChargeDensityUnit> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
-    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>,
-) where SpeedUnit : ImperialSpeed, ElectricChargeDensityUnit : ElectricChargeDensity = (Ampere per SquareFoot).electricCurrentDensity(electricChargeDensity, this)
+@JvmName("imperialSpeedTimesImperialElectricChargeDensity")
+infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>,
+) = (Ampere per SquareFoot).electricCurrentDensity(electricChargeDensity, this)
+
+@JvmName("imperialSpeedTimesUKImperialElectricChargeDensity")
+infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>,
+) = (Ampere per SquareFoot).electricCurrentDensity(electricChargeDensity, this)
+
+@JvmName("imperialSpeedTimesUSCustomaryElectricChargeDensity")
+infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>,
+) = (Ampere per SquareFoot).electricCurrentDensity(electricChargeDensity, this)
 
 @JvmName("speedTimesElectricChargeDensity")
-infix operator fun <SpeedUnit, ElectricChargeDensityUnit> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+infix operator fun <SpeedUnit : Speed, ElectricChargeDensityUnit : ElectricChargeDensity> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
     electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>,
-) where SpeedUnit : Speed, ElectricChargeDensityUnit : ElectricChargeDensity = (Ampere per SquareMeter).electricCurrentDensity(electricChargeDensity, this)
+) = (Ampere per SquareMeter).electricCurrentDensity(electricChargeDensity, this)

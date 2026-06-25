@@ -21,6 +21,7 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrentDensity.electricCurrentDensity
 import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.ImperialLength
 import com.splendo.kaluga.scientific.unit.ImperialMagneticFieldStrength
 import com.splendo.kaluga.scientific.unit.Length
 import com.splendo.kaluga.scientific.unit.MagneticFieldStrength
@@ -29,12 +30,12 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialMagneticFieldStrengthDivLength")
-infix operator fun <LengthUnit : Length> ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
+@JvmName("imperialMagneticFieldStrengthDivImperialLength")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (Ampere per SquareFoot).electricCurrentDensity(this, length)
 
 @JvmName("magneticFieldStrengthDivLength")
-infix operator fun <MagneticFieldStrengthUnit, LengthUnit> ScientificValue<PhysicalQuantity.MagneticFieldStrength, MagneticFieldStrengthUnit>.div(
+infix operator fun <MagneticFieldStrengthUnit : MagneticFieldStrength, LengthUnit : Length> ScientificValue<PhysicalQuantity.MagneticFieldStrength, MagneticFieldStrengthUnit>.div(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) where MagneticFieldStrengthUnit : MagneticFieldStrength, LengthUnit : Length = (Ampere per SquareMeter).electricCurrentDensity(this, length)
+) = (Ampere per SquareMeter).electricCurrentDensity(this, length)

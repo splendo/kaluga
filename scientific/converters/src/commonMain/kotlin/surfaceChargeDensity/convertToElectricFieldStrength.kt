@@ -21,6 +21,7 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricFieldStrength.electricFieldStrength
 import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.ImperialPermittivity
 import com.splendo.kaluga.scientific.unit.ImperialSurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Permittivity
@@ -29,9 +30,9 @@ import com.splendo.kaluga.scientific.unit.Volt
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialSurfaceChargeDensityDivPermittivity")
-infix operator fun <PermittivityUnit : Permittivity> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
-    permittivity: ScientificValue<PhysicalQuantity.Permittivity, PermittivityUnit>,
+@JvmName("imperialSurfaceChargeDensityDivImperialPermittivity")
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
+    permittivity: ScientificValue<PhysicalQuantity.Permittivity, ImperialPermittivity>,
 ) = (Volt per Foot).electricFieldStrength(this, permittivity)
 
 @JvmName("surfaceChargeDensityDivPermittivity")

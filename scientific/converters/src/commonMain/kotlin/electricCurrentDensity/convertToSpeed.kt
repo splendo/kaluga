@@ -23,15 +23,28 @@ import com.splendo.kaluga.scientific.converter.speed.speed
 import com.splendo.kaluga.scientific.unit.ElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.ElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.ImperialElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.ImperialElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.UKImperialElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialElectricCurrentDensityDivElectricChargeDensity")
-infix operator fun <ElectricChargeDensityUnit : ElectricChargeDensity> ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
-    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>,
+@JvmName("imperialElectricCurrentDensityDivImperialElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>,
+) = (Foot per Second).speed(this, electricChargeDensity)
+
+@JvmName("imperialElectricCurrentDensityDivUKImperialElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>,
+) = (Foot per Second).speed(this, electricChargeDensity)
+
+@JvmName("imperialElectricCurrentDensityDivUSCustomaryElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>,
 ) = (Foot per Second).speed(this, electricChargeDensity)
 
 @JvmName("electricCurrentDensityDivElectricChargeDensity")

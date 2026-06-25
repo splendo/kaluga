@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.electricInductance.div
+import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.magneticFieldStrength.times
 import com.splendo.kaluga.scientific.converter.magneticInduction.div
 import com.splendo.kaluga.scientific.converter.permeability.times
@@ -25,6 +27,7 @@ import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.Henry
+import com.splendo.kaluga.scientific.unit.Length
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Tesla
 import com.splendo.kaluga.scientific.unit.per
@@ -36,13 +39,34 @@ class PermeabilityUnitTest {
     fun permeabilityFromElectricInductanceAndLengthTest() {
         assertEqualScientificValue(1(Henry per Meter), 2(Henry) / 2(Meter))
         assertEqualScientificValue(1(Henry per Foot), 2(Henry) / 2(Foot), round = 27)
+        assertEqualScientificValue(1(Henry per Meter), 2(Henry) / 2(Meter).convert(Foot as Length), round = 27)
+    }
+
+    @Test
+    fun electricInductanceFromPermeabilityAndLengthTest() {
+        assertEqualScientificValue(4(Henry), 2(Henry per Meter) * 2(Meter))
+        assertEqualScientificValue(4(Henry), 2(Meter) * 2(Henry per Meter))
+        assertEqualScientificValue(4(Henry), 2(Henry per Foot) * 2(Foot), round = 27)
+        assertEqualScientificValue(4(Henry), 2(Foot) * 2(Henry per Foot), round = 27)
     }
 
     @Test
     fun magneticInductionFromPermeabilityAndMagneticFieldStrengthTest() {
         assertEqualScientificValue(4(Tesla), 2(Henry per Meter) * 2(Ampere per Meter))
         assertEqualScientificValue(4(Tesla), 2(Ampere per Meter) * 2(Henry per Meter))
+        assertEqualScientificValue(4(Tesla), 2(Henry per Meter).convert(Henry per Foot) * 2(Ampere per Meter).convert(Ampere per Foot), round = 27)
+        assertEqualScientificValue(4(Tesla), 2(Ampere per Meter).convert(Ampere per Foot) * 2(Henry per Meter).convert(Henry per Foot), round = 27)
+    }
+
+    @Test
+    fun permeabilityFromMagneticInductionAndMagneticFieldStrengthTest() {
         assertEqualScientificValue(2(Henry per Meter), 4(Tesla) / 2(Ampere per Meter))
+        assertEqualScientificValue(2(Henry per Meter).convert(Henry per Foot), 4(Tesla) / 2(Ampere per Meter).convert(Ampere per Foot), round = 27)
+    }
+
+    @Test
+    fun magneticFieldStrengthFromMagneticInductionAndPermeabilityTest() {
         assertEqualScientificValue(2(Ampere per Meter), 4(Tesla) / 2(Henry per Meter))
+        assertEqualScientificValue(2(Ampere per Meter).convert(Ampere per Foot), 4(Tesla) / 2(Henry per Meter).convert(Henry per Foot), round = 27)
     }
 }

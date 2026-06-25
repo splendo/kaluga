@@ -212,6 +212,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     ElectricInductanceUnits +
     ElectricResistanceUnits +
     EnergyUnits +
+    ExposureUnits +
     ForceUnits +
     FrequencyUnits +
     HeatCapacityUnits +
@@ -255,6 +256,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     TemperatureUnits +
     ThermalResistanceUnits +
     TimeUnits +
+    TorqueUnits +
     VoltageUnits +
     VolumetricFlowUnits +
     VolumetricFluxUnits +
@@ -293,6 +295,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForElectricInductance()
     setupForElectricResistance()
     setupForEnergy()
+    setupForExposure()
     setupForForce()
     setupForFrequency()
     setupForHeatCapacity()
@@ -335,6 +338,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForTemperature()
     setupForThermalResistance()
     setupForTime()
+    setupForTorque()
     setupForVoltage()
     setupForVolume()
     setupForVolumetricFlow()
@@ -369,6 +373,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerElectricInductanceClasses()
     registerElectricResistanceClasses()
     registerEnergyClasses()
+    registerExposureClasses()
     registerForceClasses()
     registerFrequencyClasses()
     registerHeatCapacityClasses()
@@ -412,6 +417,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerTemperatureClasses()
     registerThermalResistanceClasses()
     registerTimeClasses()
+    registerTorqueClasses()
     registerVoltageClasses()
     registerVolumetricFlowClasses()
     registerVolumetricFluxClasses()

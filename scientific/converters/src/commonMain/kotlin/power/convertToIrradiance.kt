@@ -20,11 +20,15 @@ package com.splendo.kaluga.scientific.converter.power
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.irradiance.irradiance
+import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.ImperialArea
 import com.splendo.kaluga.scientific.unit.ImperialPower
 import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
 import com.splendo.kaluga.scientific.unit.MetricArea
 import com.splendo.kaluga.scientific.unit.MetricPower
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Watt
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
@@ -47,3 +51,7 @@ infix operator fun <PowerUnit : MetricPower, AreaUnit : MetricArea> ScientificVa
 infix operator fun <PowerUnit : ImperialPower, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (unit per area.unit).irradiance(this, area)
+
+@JvmName("powerDivArea")
+infix operator fun <PowerUnit : Power, AreaUnit : Area> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    (Watt per SquareMeter).irradiance(this, area)

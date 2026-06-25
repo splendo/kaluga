@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.speed.speed
 import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.ImperialMagneticFieldStrength
+import com.splendo.kaluga.scientific.unit.ImperialSurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.MagneticFieldStrength
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Second
@@ -29,9 +30,9 @@ import com.splendo.kaluga.scientific.unit.SurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialMagneticFieldStrengthDivSurfaceChargeDensity")
-infix operator fun <SurfaceChargeDensityUnit : SurfaceChargeDensity> ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
-    surfaceChargeDensity: ScientificValue<PhysicalQuantity.SurfaceChargeDensity, SurfaceChargeDensityUnit>,
+@JvmName("imperialMagneticFieldStrengthDivImperialSurfaceChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFieldStrength, ImperialMagneticFieldStrength>.div(
+    surfaceChargeDensity: ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>,
 ) = (Foot per Second).speed(this, surfaceChargeDensity)
 
 @JvmName("magneticFieldStrengthDivSurfaceChargeDensity")

@@ -20,11 +20,16 @@ package com.splendo.kaluga.scientific.converter.radiantIntensity
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.radiance.radiance
+import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.ImperialArea
 import com.splendo.kaluga.scientific.unit.ImperialRadiantIntensity
 import com.splendo.kaluga.scientific.unit.MetricAndImperialRadiantIntensity
 import com.splendo.kaluga.scientific.unit.MetricArea
 import com.splendo.kaluga.scientific.unit.MetricRadiantIntensity
+import com.splendo.kaluga.scientific.unit.RadiantIntensity
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Steradian
+import com.splendo.kaluga.scientific.unit.Watt
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
@@ -46,3 +51,8 @@ infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Radi
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.RadiantIntensity, ImperialRadiantIntensity>.div(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (unit per area.unit).radiance(this, area)
+
+@JvmName("radiantIntensityDivArea")
+infix operator fun <RadiantIntensityUnit : RadiantIntensity, AreaUnit : Area> ScientificValue<PhysicalQuantity.RadiantIntensity, RadiantIntensityUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
+) = ((Watt per Steradian) per SquareMeter).radiance(this, area)

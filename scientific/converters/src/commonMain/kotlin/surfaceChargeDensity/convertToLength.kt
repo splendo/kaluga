@@ -22,14 +22,27 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.length.length
 import com.splendo.kaluga.scientific.unit.ElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.ImperialElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.ImperialSurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.SurfaceChargeDensity
+import com.splendo.kaluga.scientific.unit.UKImperialElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryElectricChargeDensity
 import kotlin.jvm.JvmName
 
-@JvmName("imperialSurfaceChargeDensityDivElectricChargeDensity")
-infix operator fun <ElectricChargeDensityUnit : ElectricChargeDensity> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
-    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>,
+@JvmName("imperialSurfaceChargeDensityDivImperialElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>,
+) = Foot.length(this, electricChargeDensity)
+
+@JvmName("imperialSurfaceChargeDensityDivUKImperialElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>,
+) = Foot.length(this, electricChargeDensity)
+
+@JvmName("imperialSurfaceChargeDensityDivUSCustomaryElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>,
 ) = Foot.length(this, electricChargeDensity)
 
 @JvmName("surfaceChargeDensityDivElectricChargeDensity")

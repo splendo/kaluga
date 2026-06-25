@@ -23,18 +23,19 @@ import com.splendo.kaluga.scientific.converter.electricChargeDensity.electricCha
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.CubicFoot
 import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.ImperialLength
 import com.splendo.kaluga.scientific.unit.ImperialSurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.Length
 import com.splendo.kaluga.scientific.unit.SurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialSurfaceChargeDensityDivLength")
-infix operator fun <LengthUnit : Length> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
+@JvmName("imperialSurfaceChargeDensityDivImperialLength")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.div(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (Coulomb per CubicFoot).electricChargeDensity(this, length)
 
 @JvmName("surfaceChargeDensityDivLength")
-infix operator fun <SurfaceChargeDensityUnit, LengthUnit> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, SurfaceChargeDensityUnit>.div(
+infix operator fun <SurfaceChargeDensityUnit : SurfaceChargeDensity, LengthUnit : Length> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, SurfaceChargeDensityUnit>.div(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) where SurfaceChargeDensityUnit : SurfaceChargeDensity, LengthUnit : Length = (Coulomb per CubicMeter).electricChargeDensity(this, length)
+) = (Coulomb per CubicMeter).electricChargeDensity(this, length)

@@ -23,16 +23,17 @@ import com.splendo.kaluga.scientific.converter.magneticFieldStrength.magneticFie
 import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.ElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.ImperialElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.ImperialLength
 import com.splendo.kaluga.scientific.unit.Length
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("electricCurrentDensityTimesImperialLength")
-infix operator fun <ElectricCurrentDensityUnit, LengthUnit> ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ElectricCurrentDensityUnit>.times(
+@JvmName("imperialElectricCurrentDensityTimesImperialLength")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.times(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) where ElectricCurrentDensityUnit : ElectricCurrentDensity, LengthUnit : ImperialLength = (Ampere per Foot).magneticFieldStrength(this, length)
+) = (Ampere per Foot).magneticFieldStrength(this, length)
 
 @JvmName("electricCurrentDensityTimesLength")
 infix operator fun <ElectricCurrentDensityUnit, LengthUnit> ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ElectricCurrentDensityUnit>.times(

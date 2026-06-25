@@ -23,18 +23,19 @@ import com.splendo.kaluga.scientific.converter.magneticFieldStrength.magneticFie
 import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.ElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.ImperialElectricCurrentDensity
 import com.splendo.kaluga.scientific.unit.ImperialLength
 import com.splendo.kaluga.scientific.unit.Length
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialLengthTimesElectricCurrentDensity")
-infix operator fun <LengthUnit, ElectricCurrentDensityUnit> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    electricCurrentDensity: ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ElectricCurrentDensityUnit>,
-) where LengthUnit : ImperialLength, ElectricCurrentDensityUnit : ElectricCurrentDensity = (Ampere per Foot).magneticFieldStrength(electricCurrentDensity, this)
+@JvmName("imperialLengthTimesImperialElectricCurrentDensity")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
+    electricCurrentDensity: ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>,
+) = (Ampere per Foot).magneticFieldStrength(electricCurrentDensity, this)
 
 @JvmName("lengthTimesElectricCurrentDensity")
-infix operator fun <LengthUnit, ElectricCurrentDensityUnit> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
+infix operator fun <LengthUnit : Length, ElectricCurrentDensityUnit : ElectricCurrentDensity> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
     electricCurrentDensity: ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ElectricCurrentDensityUnit>,
-) where LengthUnit : Length, ElectricCurrentDensityUnit : ElectricCurrentDensity = (Ampere per Meter).magneticFieldStrength(electricCurrentDensity, this)
+) = (Ampere per Meter).magneticFieldStrength(electricCurrentDensity, this)

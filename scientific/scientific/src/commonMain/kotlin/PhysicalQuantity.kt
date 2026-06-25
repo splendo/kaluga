@@ -180,6 +180,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object Energy : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the electric charge produced per unit mass by ionizing radiation
+     */
+    @Serializable
+    data object Exposure : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the transfer of momentum per unit time
      */
     @Serializable
@@ -438,6 +444,13 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object Time : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the rotational equivalent of force; the product of force and lever-arm distance.
+     * Shares its dimension with [Energy] but is a distinct quantity; convert between the two with `asEnergy()`/`asTorque()`.
+     */
+    @Serializable
+    data object Torque : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the energy required to move a unit charge through an electric field from a reference point
      */
     @Serializable
@@ -517,6 +530,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.ElectricInductance::class, PhysicalQuantity.ElectricInductance.serializer())
     subclass(PhysicalQuantity.ElectricResistance::class, PhysicalQuantity.ElectricResistance.serializer())
     subclass(PhysicalQuantity.Energy::class, PhysicalQuantity.Energy.serializer())
+    subclass(PhysicalQuantity.Exposure::class, PhysicalQuantity.Exposure.serializer())
     subclass(PhysicalQuantity.Force::class, PhysicalQuantity.Force.serializer())
     subclass(PhysicalQuantity.Frequency::class, PhysicalQuantity.Frequency.serializer())
     subclass(PhysicalQuantity.HeatCapacity::class, PhysicalQuantity.HeatCapacity.serializer())
@@ -560,6 +574,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.Temperature::class, PhysicalQuantity.Temperature.serializer())
     subclass(PhysicalQuantity.ThermalResistance::class, PhysicalQuantity.ThermalResistance.serializer())
     subclass(PhysicalQuantity.Time::class, PhysicalQuantity.Time.serializer())
+    subclass(PhysicalQuantity.Torque::class, PhysicalQuantity.Torque.serializer())
     subclass(PhysicalQuantity.Voltage::class, PhysicalQuantity.Voltage.serializer())
     subclass(PhysicalQuantity.Volume::class, PhysicalQuantity.Volume.serializer())
     subclass(PhysicalQuantity.VolumetricFlow::class, PhysicalQuantity.VolumetricFlow.serializer())

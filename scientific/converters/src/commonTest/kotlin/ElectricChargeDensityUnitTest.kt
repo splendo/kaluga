@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.electricCharge.div
 import com.splendo.kaluga.scientific.converter.electricChargeDensity.times
 import com.splendo.kaluga.scientific.converter.volume.times
@@ -24,6 +25,7 @@ import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.CubicFoot
 import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Volume
 import com.splendo.kaluga.scientific.unit.per
 import com.splendo.kaluga.scientific.unit.ukImperial
 import com.splendo.kaluga.scientific.unit.usCustomary
@@ -37,11 +39,18 @@ class ElectricChargeDensityUnitTest {
         assertEqualScientificValue(1(Coulomb per CubicFoot), 2(Coulomb) / 2(CubicFoot), round = 27)
         assertEqualScientificValue(1(Coulomb per CubicFoot.ukImperial), 2(Coulomb) / 2(CubicFoot.ukImperial), round = 27)
         assertEqualScientificValue(1(Coulomb per CubicFoot.usCustomary), 2(Coulomb) / 2(CubicFoot.usCustomary), round = 27)
+        assertEqualScientificValue(1(Coulomb per CubicMeter), 2(Coulomb) / 2(CubicMeter).convert(CubicFoot as Volume), round = 27)
     }
 
     @Test
     fun electricChargeFromElectricChargeDensityAndVolumeTest() {
         assertEqualScientificValue(4(Coulomb), 2(Coulomb per CubicMeter) * 2(CubicMeter))
         assertEqualScientificValue(4(Coulomb), 2(CubicMeter) * 2(Coulomb per CubicMeter))
+        assertEqualScientificValue(4(Coulomb), 2(Coulomb per CubicFoot) * 2(CubicFoot), round = 27)
+        assertEqualScientificValue(4(Coulomb), 2(CubicFoot) * 2(Coulomb per CubicFoot), round = 27)
+        assertEqualScientificValue(4(Coulomb), 2(Coulomb per CubicFoot.ukImperial) * 2(CubicFoot.ukImperial), round = 27)
+        assertEqualScientificValue(4(Coulomb), 2(CubicFoot.ukImperial) * 2(Coulomb per CubicFoot.ukImperial), round = 27)
+        assertEqualScientificValue(4(Coulomb), 2(Coulomb per CubicFoot.usCustomary) * 2(CubicFoot.usCustomary), round = 27)
+        assertEqualScientificValue(4(Coulomb), 2(CubicFoot.usCustomary) * 2(Coulomb per CubicFoot.usCustomary), round = 27)
     }
 }

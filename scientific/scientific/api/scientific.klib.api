@@ -956,6 +956,43 @@ final class com.splendo.kaluga.scientific.unit/ImperialElectricFieldStrength : c
     }
 }
 
+final class com.splendo.kaluga.scientific.unit/ImperialExposure : com.splendo.kaluga.scientific.unit/Exposure, com.splendo.kaluga.scientific.unit/ImperialScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Exposure> { // com.splendo.kaluga.scientific.unit/ImperialExposure|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/ElectricCharge, com.splendo.kaluga.scientific.unit/ImperialWeight) // com.splendo.kaluga.scientific.unit/ImperialExposure.<init>|<init>(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.ImperialWeight){}[0]
+
+    final val charge // com.splendo.kaluga.scientific.unit/ImperialExposure.charge|{}charge[0]
+        final fun <get-charge>(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/ImperialExposure.charge.<get-charge>|<get-charge>(){}[0]
+    final val per // com.splendo.kaluga.scientific.unit/ImperialExposure.per|{}per[0]
+        final fun <get-per>(): com.splendo.kaluga.scientific.unit/ImperialWeight // com.splendo.kaluga.scientific.unit/ImperialExposure.per.<get-per>|<get-per>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/ImperialExposure.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.Imperial // com.splendo.kaluga.scientific.unit/ImperialExposure.system.<get-system>|<get-system>(){}[0]
+    final val ukImperial // com.splendo.kaluga.scientific.unit/ImperialExposure.ukImperial|{}ukImperial[0]
+        final fun <get-ukImperial>(): com.splendo.kaluga.scientific.unit/UKImperialExposure // com.splendo.kaluga.scientific.unit/ImperialExposure.ukImperial.<get-ukImperial>|<get-ukImperial>(){}[0]
+    final val usCustomary // com.splendo.kaluga.scientific.unit/ImperialExposure.usCustomary|{}usCustomary[0]
+        final fun <get-usCustomary>(): com.splendo.kaluga.scientific.unit/USCustomaryExposure // com.splendo.kaluga.scientific.unit/ImperialExposure.usCustomary.<get-usCustomary>|<get-usCustomary>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/ImperialExposure.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/ImperialWeight // com.splendo.kaluga.scientific.unit/ImperialExposure.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/ElectricCharge = ..., com.splendo.kaluga.scientific.unit/ImperialWeight = ...): com.splendo.kaluga.scientific.unit/ImperialExposure // com.splendo.kaluga.scientific.unit/ImperialExposure.copy|copy(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.ImperialWeight){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/ImperialExposure.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/ImperialExposure.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/ImperialExposure.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/ImperialExposure> { // com.splendo.kaluga.scientific.unit/ImperialExposure.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/ImperialExposure.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/ImperialExposure.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/ImperialExposure.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/ImperialExposure // com.splendo.kaluga.scientific.unit/ImperialExposure.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/ImperialExposure) // com.splendo.kaluga.scientific.unit/ImperialExposure.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.ImperialExposure){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/ImperialExposure.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/ImperialExposure.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/ImperialExposure> // com.splendo.kaluga.scientific.unit/ImperialExposure.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class com.splendo.kaluga.scientific.unit/ImperialIrradiance : com.splendo.kaluga.scientific.unit/ImperialScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Irradiance>, com.splendo.kaluga.scientific.unit/Irradiance { // com.splendo.kaluga.scientific.unit/ImperialIrradiance|null[0]
     constructor <init>(com.splendo.kaluga.scientific.unit/ImperialPower, com.splendo.kaluga.scientific.unit/ImperialArea) // com.splendo.kaluga.scientific.unit/ImperialIrradiance.<init>|<init>(com.splendo.kaluga.scientific.unit.ImperialPower;com.splendo.kaluga.scientific.unit.ImperialArea){}[0]
 
@@ -1830,6 +1867,43 @@ final class com.splendo.kaluga.scientific.unit/ImperialSurfaceTension : com.sple
     }
 }
 
+final class com.splendo.kaluga.scientific.unit/ImperialTorque : com.splendo.kaluga.scientific.unit/ImperialScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Torque>, com.splendo.kaluga.scientific.unit/Torque { // com.splendo.kaluga.scientific.unit/ImperialTorque|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/ImperialForce, com.splendo.kaluga.scientific.unit/ImperialLength) // com.splendo.kaluga.scientific.unit/ImperialTorque.<init>|<init>(com.splendo.kaluga.scientific.unit.ImperialForce;com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
+
+    final val force // com.splendo.kaluga.scientific.unit/ImperialTorque.force|{}force[0]
+        final fun <get-force>(): com.splendo.kaluga.scientific.unit/ImperialForce // com.splendo.kaluga.scientific.unit/ImperialTorque.force.<get-force>|<get-force>(){}[0]
+    final val length // com.splendo.kaluga.scientific.unit/ImperialTorque.length|{}length[0]
+        final fun <get-length>(): com.splendo.kaluga.scientific.unit/ImperialLength // com.splendo.kaluga.scientific.unit/ImperialTorque.length.<get-length>|<get-length>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/ImperialTorque.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.Imperial // com.splendo.kaluga.scientific.unit/ImperialTorque.system.<get-system>|<get-system>(){}[0]
+    final val ukImperial // com.splendo.kaluga.scientific.unit/ImperialTorque.ukImperial|{}ukImperial[0]
+        final fun <get-ukImperial>(): com.splendo.kaluga.scientific.unit/UKImperialTorque // com.splendo.kaluga.scientific.unit/ImperialTorque.ukImperial.<get-ukImperial>|<get-ukImperial>(){}[0]
+    final val usCustomary // com.splendo.kaluga.scientific.unit/ImperialTorque.usCustomary|{}usCustomary[0]
+        final fun <get-usCustomary>(): com.splendo.kaluga.scientific.unit/USCustomaryTorque // com.splendo.kaluga.scientific.unit/ImperialTorque.usCustomary.<get-usCustomary>|<get-usCustomary>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/ImperialForce // com.splendo.kaluga.scientific.unit/ImperialTorque.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/ImperialLength // com.splendo.kaluga.scientific.unit/ImperialTorque.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/ImperialForce = ..., com.splendo.kaluga.scientific.unit/ImperialLength = ...): com.splendo.kaluga.scientific.unit/ImperialTorque // com.splendo.kaluga.scientific.unit/ImperialTorque.copy|copy(com.splendo.kaluga.scientific.unit.ImperialForce;com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/ImperialTorque.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/ImperialTorque.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/ImperialTorque.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/ImperialTorque> { // com.splendo.kaluga.scientific.unit/ImperialTorque.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/ImperialTorque.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/ImperialTorque.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/ImperialTorque.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/ImperialTorque // com.splendo.kaluga.scientific.unit/ImperialTorque.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/ImperialTorque) // com.splendo.kaluga.scientific.unit/ImperialTorque.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.ImperialTorque){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/ImperialTorque.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/ImperialTorque.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/ImperialTorque> // com.splendo.kaluga.scientific.unit/ImperialTorque.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class com.splendo.kaluga.scientific.unit/ImperialVolumetricFlow : com.splendo.kaluga.scientific.unit/ImperialScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.VolumetricFlow>, com.splendo.kaluga.scientific.unit/VolumetricFlow { // com.splendo.kaluga.scientific.unit/ImperialVolumetricFlow|null[0]
     constructor <init>(com.splendo.kaluga.scientific.unit/ImperialVolume, com.splendo.kaluga.scientific.unit/Time) // com.splendo.kaluga.scientific.unit/ImperialVolumetricFlow.<init>|<init>(com.splendo.kaluga.scientific.unit.ImperialVolume;com.splendo.kaluga.scientific.unit.Time){}[0]
 
@@ -2496,6 +2570,39 @@ final class com.splendo.kaluga.scientific.unit/MetricElectricFieldStrength : com
         final val $childSerializers // com.splendo.kaluga.scientific.unit/MetricElectricFieldStrength.Companion.$childSerializers|{}$childSerializers[0]
 
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/MetricElectricFieldStrength> // com.splendo.kaluga.scientific.unit/MetricElectricFieldStrength.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.scientific.unit/MetricExposure : com.splendo.kaluga.scientific.unit/Exposure, com.splendo.kaluga.scientific.unit/MetricScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Exposure> { // com.splendo.kaluga.scientific.unit/MetricExposure|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/ElectricCharge, com.splendo.kaluga.scientific.unit/MetricWeight) // com.splendo.kaluga.scientific.unit/MetricExposure.<init>|<init>(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.MetricWeight){}[0]
+
+    final val charge // com.splendo.kaluga.scientific.unit/MetricExposure.charge|{}charge[0]
+        final fun <get-charge>(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/MetricExposure.charge.<get-charge>|<get-charge>(){}[0]
+    final val per // com.splendo.kaluga.scientific.unit/MetricExposure.per|{}per[0]
+        final fun <get-per>(): com.splendo.kaluga.scientific.unit/MetricWeight // com.splendo.kaluga.scientific.unit/MetricExposure.per.<get-per>|<get-per>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/MetricExposure.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.Metric // com.splendo.kaluga.scientific.unit/MetricExposure.system.<get-system>|<get-system>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/MetricExposure.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/MetricWeight // com.splendo.kaluga.scientific.unit/MetricExposure.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/ElectricCharge = ..., com.splendo.kaluga.scientific.unit/MetricWeight = ...): com.splendo.kaluga.scientific.unit/MetricExposure // com.splendo.kaluga.scientific.unit/MetricExposure.copy|copy(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.MetricWeight){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/MetricExposure.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/MetricExposure.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/MetricExposure.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/MetricExposure> { // com.splendo.kaluga.scientific.unit/MetricExposure.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/MetricExposure.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/MetricExposure.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/MetricExposure.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/MetricExposure // com.splendo.kaluga.scientific.unit/MetricExposure.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/MetricExposure) // com.splendo.kaluga.scientific.unit/MetricExposure.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.MetricExposure){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/MetricExposure.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/MetricExposure.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/MetricExposure> // com.splendo.kaluga.scientific.unit/MetricExposure.Companion.serializer|serializer(){}[0]
     }
 }
 
@@ -3432,6 +3539,39 @@ final class com.splendo.kaluga.scientific.unit/MetricThermalResistance : com.spl
     }
 }
 
+final class com.splendo.kaluga.scientific.unit/MetricTorque : com.splendo.kaluga.scientific.unit/MetricScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Torque>, com.splendo.kaluga.scientific.unit/Torque { // com.splendo.kaluga.scientific.unit/MetricTorque|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/MetricForce, com.splendo.kaluga.scientific.unit/MetricLength) // com.splendo.kaluga.scientific.unit/MetricTorque.<init>|<init>(com.splendo.kaluga.scientific.unit.MetricForce;com.splendo.kaluga.scientific.unit.MetricLength){}[0]
+
+    final val force // com.splendo.kaluga.scientific.unit/MetricTorque.force|{}force[0]
+        final fun <get-force>(): com.splendo.kaluga.scientific.unit/MetricForce // com.splendo.kaluga.scientific.unit/MetricTorque.force.<get-force>|<get-force>(){}[0]
+    final val length // com.splendo.kaluga.scientific.unit/MetricTorque.length|{}length[0]
+        final fun <get-length>(): com.splendo.kaluga.scientific.unit/MetricLength // com.splendo.kaluga.scientific.unit/MetricTorque.length.<get-length>|<get-length>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/MetricTorque.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.Metric // com.splendo.kaluga.scientific.unit/MetricTorque.system.<get-system>|<get-system>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/MetricForce // com.splendo.kaluga.scientific.unit/MetricTorque.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/MetricLength // com.splendo.kaluga.scientific.unit/MetricTorque.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/MetricForce = ..., com.splendo.kaluga.scientific.unit/MetricLength = ...): com.splendo.kaluga.scientific.unit/MetricTorque // com.splendo.kaluga.scientific.unit/MetricTorque.copy|copy(com.splendo.kaluga.scientific.unit.MetricForce;com.splendo.kaluga.scientific.unit.MetricLength){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/MetricTorque.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/MetricTorque.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/MetricTorque.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/MetricTorque> { // com.splendo.kaluga.scientific.unit/MetricTorque.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/MetricTorque.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/MetricTorque.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/MetricTorque.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/MetricTorque // com.splendo.kaluga.scientific.unit/MetricTorque.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/MetricTorque) // com.splendo.kaluga.scientific.unit/MetricTorque.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.MetricTorque){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/MetricTorque.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/MetricTorque.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/MetricTorque> // com.splendo.kaluga.scientific.unit/MetricTorque.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class com.splendo.kaluga.scientific.unit/MetricVolumetricFlow : com.splendo.kaluga.scientific.unit/MetricScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.VolumetricFlow>, com.splendo.kaluga.scientific.unit/VolumetricFlow { // com.splendo.kaluga.scientific.unit/MetricVolumetricFlow|null[0]
     constructor <init>(com.splendo.kaluga.scientific.unit/MetricVolume, com.splendo.kaluga.scientific.unit/Time) // com.splendo.kaluga.scientific.unit/MetricVolumetricFlow.<init>|<init>(com.splendo.kaluga.scientific.unit.MetricVolume;com.splendo.kaluga.scientific.unit.Time){}[0]
 
@@ -3660,6 +3800,39 @@ final class com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensity :
         final val $childSerializers // com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensity.Companion.$childSerializers|{}$childSerializers[0]
 
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensity> // com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensity.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.scientific.unit/UKImperialExposure : com.splendo.kaluga.scientific.unit/Exposure, com.splendo.kaluga.scientific.unit/UKImperialScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Exposure> { // com.splendo.kaluga.scientific.unit/UKImperialExposure|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/ElectricCharge, com.splendo.kaluga.scientific.unit/UKImperialWeight) // com.splendo.kaluga.scientific.unit/UKImperialExposure.<init>|<init>(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.UKImperialWeight){}[0]
+
+    final val charge // com.splendo.kaluga.scientific.unit/UKImperialExposure.charge|{}charge[0]
+        final fun <get-charge>(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/UKImperialExposure.charge.<get-charge>|<get-charge>(){}[0]
+    final val per // com.splendo.kaluga.scientific.unit/UKImperialExposure.per|{}per[0]
+        final fun <get-per>(): com.splendo.kaluga.scientific.unit/UKImperialWeight // com.splendo.kaluga.scientific.unit/UKImperialExposure.per.<get-per>|<get-per>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/UKImperialExposure.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.UKImperial // com.splendo.kaluga.scientific.unit/UKImperialExposure.system.<get-system>|<get-system>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/UKImperialExposure.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/UKImperialWeight // com.splendo.kaluga.scientific.unit/UKImperialExposure.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/ElectricCharge = ..., com.splendo.kaluga.scientific.unit/UKImperialWeight = ...): com.splendo.kaluga.scientific.unit/UKImperialExposure // com.splendo.kaluga.scientific.unit/UKImperialExposure.copy|copy(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.UKImperialWeight){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/UKImperialExposure.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/UKImperialExposure.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/UKImperialExposure.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/UKImperialExposure> { // com.splendo.kaluga.scientific.unit/UKImperialExposure.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/UKImperialExposure.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/UKImperialExposure.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/UKImperialExposure.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/UKImperialExposure // com.splendo.kaluga.scientific.unit/UKImperialExposure.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/UKImperialExposure) // com.splendo.kaluga.scientific.unit/UKImperialExposure.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.UKImperialExposure){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/UKImperialExposure.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/UKImperialExposure.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/UKImperialExposure> // com.splendo.kaluga.scientific.unit/UKImperialExposure.Companion.serializer|serializer(){}[0]
     }
 }
 
@@ -4220,6 +4393,39 @@ final class com.splendo.kaluga.scientific.unit/UKImperialThermalResistance : com
     }
 }
 
+final class com.splendo.kaluga.scientific.unit/UKImperialTorque : com.splendo.kaluga.scientific.unit/Torque, com.splendo.kaluga.scientific.unit/UKImperialScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Torque> { // com.splendo.kaluga.scientific.unit/UKImperialTorque|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/UKImperialForce, com.splendo.kaluga.scientific.unit/ImperialLength) // com.splendo.kaluga.scientific.unit/UKImperialTorque.<init>|<init>(com.splendo.kaluga.scientific.unit.UKImperialForce;com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
+
+    final val force // com.splendo.kaluga.scientific.unit/UKImperialTorque.force|{}force[0]
+        final fun <get-force>(): com.splendo.kaluga.scientific.unit/UKImperialForce // com.splendo.kaluga.scientific.unit/UKImperialTorque.force.<get-force>|<get-force>(){}[0]
+    final val length // com.splendo.kaluga.scientific.unit/UKImperialTorque.length|{}length[0]
+        final fun <get-length>(): com.splendo.kaluga.scientific.unit/ImperialLength // com.splendo.kaluga.scientific.unit/UKImperialTorque.length.<get-length>|<get-length>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/UKImperialTorque.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.UKImperial // com.splendo.kaluga.scientific.unit/UKImperialTorque.system.<get-system>|<get-system>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/UKImperialForce // com.splendo.kaluga.scientific.unit/UKImperialTorque.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/ImperialLength // com.splendo.kaluga.scientific.unit/UKImperialTorque.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/UKImperialForce = ..., com.splendo.kaluga.scientific.unit/ImperialLength = ...): com.splendo.kaluga.scientific.unit/UKImperialTorque // com.splendo.kaluga.scientific.unit/UKImperialTorque.copy|copy(com.splendo.kaluga.scientific.unit.UKImperialForce;com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/UKImperialTorque.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/UKImperialTorque.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/UKImperialTorque.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/UKImperialTorque> { // com.splendo.kaluga.scientific.unit/UKImperialTorque.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/UKImperialTorque.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/UKImperialTorque.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/UKImperialTorque.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/UKImperialTorque // com.splendo.kaluga.scientific.unit/UKImperialTorque.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/UKImperialTorque) // com.splendo.kaluga.scientific.unit/UKImperialTorque.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.UKImperialTorque){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/UKImperialTorque.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/UKImperialTorque.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/UKImperialTorque> // com.splendo.kaluga.scientific.unit/UKImperialTorque.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class com.splendo.kaluga.scientific.unit/UKImperialVolumetricFlow : com.splendo.kaluga.scientific.unit/UKImperialScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.VolumetricFlow>, com.splendo.kaluga.scientific.unit/VolumetricFlow { // com.splendo.kaluga.scientific.unit/UKImperialVolumetricFlow|null[0]
     constructor <init>(com.splendo.kaluga.scientific.unit/UKImperialVolume, com.splendo.kaluga.scientific.unit/Time) // com.splendo.kaluga.scientific.unit/UKImperialVolumetricFlow.<init>|<init>(com.splendo.kaluga.scientific.unit.UKImperialVolume;com.splendo.kaluga.scientific.unit.Time){}[0]
 
@@ -4448,6 +4654,39 @@ final class com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensity 
         final val $childSerializers // com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensity.Companion.$childSerializers|{}$childSerializers[0]
 
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensity> // com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensity.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.scientific.unit/USCustomaryExposure : com.splendo.kaluga.scientific.unit/Exposure, com.splendo.kaluga.scientific.unit/USCustomaryScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Exposure> { // com.splendo.kaluga.scientific.unit/USCustomaryExposure|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/ElectricCharge, com.splendo.kaluga.scientific.unit/USCustomaryWeight) // com.splendo.kaluga.scientific.unit/USCustomaryExposure.<init>|<init>(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.USCustomaryWeight){}[0]
+
+    final val charge // com.splendo.kaluga.scientific.unit/USCustomaryExposure.charge|{}charge[0]
+        final fun <get-charge>(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/USCustomaryExposure.charge.<get-charge>|<get-charge>(){}[0]
+    final val per // com.splendo.kaluga.scientific.unit/USCustomaryExposure.per|{}per[0]
+        final fun <get-per>(): com.splendo.kaluga.scientific.unit/USCustomaryWeight // com.splendo.kaluga.scientific.unit/USCustomaryExposure.per.<get-per>|<get-per>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/USCustomaryExposure.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.USCustomary // com.splendo.kaluga.scientific.unit/USCustomaryExposure.system.<get-system>|<get-system>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/USCustomaryExposure.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/USCustomaryWeight // com.splendo.kaluga.scientific.unit/USCustomaryExposure.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/ElectricCharge = ..., com.splendo.kaluga.scientific.unit/USCustomaryWeight = ...): com.splendo.kaluga.scientific.unit/USCustomaryExposure // com.splendo.kaluga.scientific.unit/USCustomaryExposure.copy|copy(com.splendo.kaluga.scientific.unit.ElectricCharge;com.splendo.kaluga.scientific.unit.USCustomaryWeight){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/USCustomaryExposure.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/USCustomaryExposure.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/USCustomaryExposure.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/USCustomaryExposure> { // com.splendo.kaluga.scientific.unit/USCustomaryExposure.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/USCustomaryExposure.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/USCustomaryExposure.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/USCustomaryExposure.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/USCustomaryExposure // com.splendo.kaluga.scientific.unit/USCustomaryExposure.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/USCustomaryExposure) // com.splendo.kaluga.scientific.unit/USCustomaryExposure.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.USCustomaryExposure){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/USCustomaryExposure.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/USCustomaryExposure.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/USCustomaryExposure> // com.splendo.kaluga.scientific.unit/USCustomaryExposure.Companion.serializer|serializer(){}[0]
     }
 }
 
@@ -5005,6 +5244,39 @@ final class com.splendo.kaluga.scientific.unit/USCustomaryThermalResistance : co
         final val $childSerializers // com.splendo.kaluga.scientific.unit/USCustomaryThermalResistance.Companion.$childSerializers|{}$childSerializers[0]
 
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/USCustomaryThermalResistance> // com.splendo.kaluga.scientific.unit/USCustomaryThermalResistance.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.scientific.unit/USCustomaryTorque : com.splendo.kaluga.scientific.unit/Torque, com.splendo.kaluga.scientific.unit/USCustomaryScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Torque> { // com.splendo.kaluga.scientific.unit/USCustomaryTorque|null[0]
+    constructor <init>(com.splendo.kaluga.scientific.unit/USCustomaryForce, com.splendo.kaluga.scientific.unit/ImperialLength) // com.splendo.kaluga.scientific.unit/USCustomaryTorque.<init>|<init>(com.splendo.kaluga.scientific.unit.USCustomaryForce;com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
+
+    final val force // com.splendo.kaluga.scientific.unit/USCustomaryTorque.force|{}force[0]
+        final fun <get-force>(): com.splendo.kaluga.scientific.unit/USCustomaryForce // com.splendo.kaluga.scientific.unit/USCustomaryTorque.force.<get-force>|<get-force>(){}[0]
+    final val length // com.splendo.kaluga.scientific.unit/USCustomaryTorque.length|{}length[0]
+        final fun <get-length>(): com.splendo.kaluga.scientific.unit/ImperialLength // com.splendo.kaluga.scientific.unit/USCustomaryTorque.length.<get-length>|<get-length>(){}[0]
+    final val system // com.splendo.kaluga.scientific.unit/USCustomaryTorque.system|{}system[0]
+        final fun <get-system>(): com.splendo.kaluga.scientific.unit/MeasurementSystem.USCustomary // com.splendo.kaluga.scientific.unit/USCustomaryTorque.system.<get-system>|<get-system>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.scientific.unit/USCustomaryForce // com.splendo.kaluga.scientific.unit/USCustomaryTorque.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.scientific.unit/ImperialLength // com.splendo.kaluga.scientific.unit/USCustomaryTorque.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.scientific.unit/USCustomaryForce = ..., com.splendo.kaluga.scientific.unit/ImperialLength = ...): com.splendo.kaluga.scientific.unit/USCustomaryTorque // com.splendo.kaluga.scientific.unit/USCustomaryTorque.copy|copy(com.splendo.kaluga.scientific.unit.USCustomaryForce;com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific.unit/USCustomaryTorque.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific.unit/USCustomaryTorque.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.scientific.unit/USCustomaryTorque.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.splendo.kaluga.scientific.unit/USCustomaryTorque> { // com.splendo.kaluga.scientific.unit/USCustomaryTorque.$serializer|null[0]
+        final val descriptor // com.splendo.kaluga.scientific.unit/USCustomaryTorque.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.splendo.kaluga.scientific.unit/USCustomaryTorque.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.splendo.kaluga.scientific.unit/USCustomaryTorque.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): com.splendo.kaluga.scientific.unit/USCustomaryTorque // com.splendo.kaluga.scientific.unit/USCustomaryTorque.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, com.splendo.kaluga.scientific.unit/USCustomaryTorque) // com.splendo.kaluga.scientific.unit/USCustomaryTorque.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.splendo.kaluga.scientific.unit.USCustomaryTorque){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.scientific.unit/USCustomaryTorque.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/USCustomaryTorque.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/USCustomaryTorque> // com.splendo.kaluga.scientific.unit/USCustomaryTorque.Companion.serializer|serializer(){}[0]
     }
 }
 
@@ -7063,6 +7335,27 @@ sealed class com.splendo.kaluga.scientific.unit/ErgMultiple : com.splendo.kaluga
     }
 }
 
+sealed class com.splendo.kaluga.scientific.unit/Exposure : com.splendo.kaluga.scientific.unit/DefinedScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Exposure> { // com.splendo.kaluga.scientific.unit/Exposure|null[0]
+    abstract val charge // com.splendo.kaluga.scientific.unit/Exposure.charge|{}charge[0]
+        abstract fun <get-charge>(): com.splendo.kaluga.scientific.unit/ElectricCharge // com.splendo.kaluga.scientific.unit/Exposure.charge.<get-charge>|<get-charge>(){}[0]
+    abstract val per // com.splendo.kaluga.scientific.unit/Exposure.per|{}per[0]
+        abstract fun <get-per>(): com.splendo.kaluga.scientific.unit/Weight // com.splendo.kaluga.scientific.unit/Exposure.per.<get-per>|<get-per>(){}[0]
+    open val quantity // com.splendo.kaluga.scientific.unit/Exposure.quantity|{}quantity[0]
+        open fun <get-quantity>(): com.splendo.kaluga.scientific/PhysicalQuantity.Exposure // com.splendo.kaluga.scientific.unit/Exposure.quantity.<get-quantity>|<get-quantity>(){}[0]
+    open val symbol // com.splendo.kaluga.scientific.unit/Exposure.symbol|{}symbol[0]
+        open fun <get-symbol>(): kotlin/String // com.splendo.kaluga.scientific.unit/Exposure.symbol.<get-symbol>|<get-symbol>(){}[0]
+
+    open fun fromSIUnit(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.scientific.unit/Exposure.fromSIUnit|fromSIUnit(com.splendo.kaluga.base.decimal.Decimal){}[0]
+    open fun toSIUnit(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.scientific.unit/Exposure.toSIUnit|toSIUnit(com.splendo.kaluga.base.decimal.Decimal){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/Exposure.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/Exposure.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/Exposure> // com.splendo.kaluga.scientific.unit/Exposure.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific.unit/Exposure.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
 sealed class com.splendo.kaluga.scientific.unit/FaradMultiple : com.splendo.kaluga.scientific.unit/ElectricCapacitance, com.splendo.kaluga.scientific.unit/MetricMultipleUnit<com.splendo.kaluga.scientific.unit/MeasurementSystem.MetricAndImperial, com.splendo.kaluga.scientific/PhysicalQuantity.ElectricCapacitance, com.splendo.kaluga.scientific.unit/Farad> { // com.splendo.kaluga.scientific.unit/FaradMultiple|null[0]
     final object Companion : kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/FaradMultiple.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/FaradMultiple> // com.splendo.kaluga.scientific.unit/FaradMultiple.Companion.serializer|serializer(){}[0]
@@ -8236,6 +8529,27 @@ sealed class com.splendo.kaluga.scientific.unit/Time : com.splendo.kaluga.scient
     }
 }
 
+sealed class com.splendo.kaluga.scientific.unit/Torque : com.splendo.kaluga.scientific.unit/DefinedScientificUnit<com.splendo.kaluga.scientific/PhysicalQuantity.Torque> { // com.splendo.kaluga.scientific.unit/Torque|null[0]
+    abstract val force // com.splendo.kaluga.scientific.unit/Torque.force|{}force[0]
+        abstract fun <get-force>(): com.splendo.kaluga.scientific.unit/Force // com.splendo.kaluga.scientific.unit/Torque.force.<get-force>|<get-force>(){}[0]
+    abstract val length // com.splendo.kaluga.scientific.unit/Torque.length|{}length[0]
+        abstract fun <get-length>(): com.splendo.kaluga.scientific.unit/Length // com.splendo.kaluga.scientific.unit/Torque.length.<get-length>|<get-length>(){}[0]
+    open val quantity // com.splendo.kaluga.scientific.unit/Torque.quantity|{}quantity[0]
+        open fun <get-quantity>(): com.splendo.kaluga.scientific/PhysicalQuantity.Torque // com.splendo.kaluga.scientific.unit/Torque.quantity.<get-quantity>|<get-quantity>(){}[0]
+    open val symbol // com.splendo.kaluga.scientific.unit/Torque.symbol|{}symbol[0]
+        open fun <get-symbol>(): kotlin/String // com.splendo.kaluga.scientific.unit/Torque.symbol.<get-symbol>|<get-symbol>(){}[0]
+
+    open fun fromSIUnit(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.scientific.unit/Torque.fromSIUnit|fromSIUnit(com.splendo.kaluga.base.decimal.Decimal){}[0]
+    open fun toSIUnit(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.scientific.unit/Torque.toSIUnit|toSIUnit(com.splendo.kaluga.base.decimal.Decimal){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/Torque.Companion|null[0]
+        final val $childSerializers // com.splendo.kaluga.scientific.unit/Torque.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/Torque> // com.splendo.kaluga.scientific.unit/Torque.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific.unit/Torque.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
 sealed class com.splendo.kaluga.scientific.unit/TorrMultiple : com.splendo.kaluga.scientific.unit/MetricMultipleUnit<com.splendo.kaluga.scientific.unit/MeasurementSystem.Metric, com.splendo.kaluga.scientific/PhysicalQuantity.Pressure, com.splendo.kaluga.scientific.unit/Torr>, com.splendo.kaluga.scientific.unit/MetricPressure { // com.splendo.kaluga.scientific.unit/TorrMultiple|null[0]
     final object Companion : kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific.unit/TorrMultiple.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific.unit/TorrMultiple> // com.splendo.kaluga.scientific.unit/TorrMultiple.Companion.serializer|serializer(){}[0]
@@ -8723,6 +9037,14 @@ sealed class com.splendo.kaluga.scientific/PhysicalQuantity : com.splendo.kaluga
         final fun toString(): kotlin/String // com.splendo.kaluga.scientific/PhysicalQuantity.Energy.toString|toString(){}[0]
     }
 
+    final object Exposure : com.splendo.kaluga.scientific/PhysicalQuantity.DefinedPhysicalQuantityWithDimension, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific/PhysicalQuantity.Exposure|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific/PhysicalQuantity.Exposure.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific/PhysicalQuantity.Exposure.hashCode|hashCode(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific/PhysicalQuantity.Exposure> // com.splendo.kaluga.scientific/PhysicalQuantity.Exposure.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific/PhysicalQuantity.Exposure.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.scientific/PhysicalQuantity.Exposure.toString|toString(){}[0]
+    }
+
     final object Force : com.splendo.kaluga.scientific/PhysicalQuantity.DefinedPhysicalQuantityWithDimension, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific/PhysicalQuantity.Force|null[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific/PhysicalQuantity.Force.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific/PhysicalQuantity.Force.hashCode|hashCode(){}[0]
@@ -9065,6 +9387,14 @@ sealed class com.splendo.kaluga.scientific/PhysicalQuantity : com.splendo.kaluga
         final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific/PhysicalQuantity.Time> // com.splendo.kaluga.scientific/PhysicalQuantity.Time.serializer|serializer(){}[0]
         final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific/PhysicalQuantity.Time.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.scientific/PhysicalQuantity.Time.toString|toString(){}[0]
+    }
+
+    final object Torque : com.splendo.kaluga.scientific/PhysicalQuantity.DefinedPhysicalQuantityWithDimension, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific/PhysicalQuantity.Torque|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.scientific/PhysicalQuantity.Torque.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.scientific/PhysicalQuantity.Torque.hashCode|hashCode(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<com.splendo.kaluga.scientific/PhysicalQuantity.Torque> // com.splendo.kaluga.scientific/PhysicalQuantity.Torque.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.splendo.kaluga.scientific/PhysicalQuantity.Torque.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.scientific/PhysicalQuantity.Torque.toString|toString(){}[0]
     }
 
     final object Voltage : com.splendo.kaluga.scientific/PhysicalQuantity.DefinedPhysicalQuantityWithDimension, kotlinx.serialization.internal/SerializerFactory { // com.splendo.kaluga.scientific/PhysicalQuantity.Voltage|null[0]
@@ -20363,6 +20693,8 @@ final val com.splendo.kaluga.scientific.unit/ElectricResistanceUnits // com.sple
     final fun <get-ElectricResistanceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ElectricResistance> // com.splendo.kaluga.scientific.unit/ElectricResistanceUnits.<get-ElectricResistanceUnits>|<get-ElectricResistanceUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/EnergyUnits // com.splendo.kaluga.scientific.unit/EnergyUnits|{}EnergyUnits[0]
     final fun <get-EnergyUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/Energy> // com.splendo.kaluga.scientific.unit/EnergyUnits.<get-EnergyUnits>|<get-EnergyUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/ExposureUnits // com.splendo.kaluga.scientific.unit/ExposureUnits|{}ExposureUnits[0]
+    final fun <get-ExposureUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/Exposure> // com.splendo.kaluga.scientific.unit/ExposureUnits.<get-ExposureUnits>|<get-ExposureUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/ForceUnits // com.splendo.kaluga.scientific.unit/ForceUnits|{}ForceUnits[0]
     final fun <get-ForceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/Force> // com.splendo.kaluga.scientific.unit/ForceUnits.<get-ForceUnits>|<get-ForceUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/FrequencyUnits // com.splendo.kaluga.scientific.unit/FrequencyUnits|{}FrequencyUnits[0]
@@ -20391,6 +20723,8 @@ final val com.splendo.kaluga.scientific.unit/ImperialElectricFieldStrengthUnits 
     final fun <get-ImperialElectricFieldStrengthUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialElectricFieldStrength> // com.splendo.kaluga.scientific.unit/ImperialElectricFieldStrengthUnits.<get-ImperialElectricFieldStrengthUnits>|<get-ImperialElectricFieldStrengthUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/ImperialEnergyUnits // com.splendo.kaluga.scientific.unit/ImperialEnergyUnits|{}ImperialEnergyUnits[0]
     final fun <get-ImperialEnergyUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialEnergy> // com.splendo.kaluga.scientific.unit/ImperialEnergyUnits.<get-ImperialEnergyUnits>|<get-ImperialEnergyUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/ImperialExposureUnits // com.splendo.kaluga.scientific.unit/ImperialExposureUnits|{}ImperialExposureUnits[0]
+    final fun <get-ImperialExposureUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialExposure> // com.splendo.kaluga.scientific.unit/ImperialExposureUnits.<get-ImperialExposureUnits>|<get-ImperialExposureUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/ImperialForceUnits // com.splendo.kaluga.scientific.unit/ImperialForceUnits|{}ImperialForceUnits[0]
     final fun <get-ImperialForceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialForce> // com.splendo.kaluga.scientific.unit/ImperialForceUnits.<get-ImperialForceUnits>|<get-ImperialForceUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/ImperialIlluminanceUnits // com.splendo.kaluga.scientific.unit/ImperialIlluminanceUnits|{}ImperialIlluminanceUnits[0]
@@ -20451,6 +20785,8 @@ final val com.splendo.kaluga.scientific.unit/ImperialSurfaceChargeDensityUnits /
     final fun <get-ImperialSurfaceChargeDensityUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialSurfaceChargeDensity> // com.splendo.kaluga.scientific.unit/ImperialSurfaceChargeDensityUnits.<get-ImperialSurfaceChargeDensityUnits>|<get-ImperialSurfaceChargeDensityUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/ImperialSurfaceTensionUnits // com.splendo.kaluga.scientific.unit/ImperialSurfaceTensionUnits|{}ImperialSurfaceTensionUnits[0]
     final fun <get-ImperialSurfaceTensionUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialSurfaceTension> // com.splendo.kaluga.scientific.unit/ImperialSurfaceTensionUnits.<get-ImperialSurfaceTensionUnits>|<get-ImperialSurfaceTensionUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/ImperialTorqueUnits // com.splendo.kaluga.scientific.unit/ImperialTorqueUnits|{}ImperialTorqueUnits[0]
+    final fun <get-ImperialTorqueUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialTorque> // com.splendo.kaluga.scientific.unit/ImperialTorqueUnits.<get-ImperialTorqueUnits>|<get-ImperialTorqueUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/ImperialVolumeUnits // com.splendo.kaluga.scientific.unit/ImperialVolumeUnits|{}ImperialVolumeUnits[0]
     final fun <get-ImperialVolumeUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ImperialVolume> // com.splendo.kaluga.scientific.unit/ImperialVolumeUnits.<get-ImperialVolumeUnits>|<get-ImperialVolumeUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/ImperialVolumetricFlowUnits // com.splendo.kaluga.scientific.unit/ImperialVolumetricFlowUnits|{}ImperialVolumetricFlowUnits[0]
@@ -20531,6 +20867,8 @@ final val com.splendo.kaluga.scientific.unit/MetricElectricFieldStrengthUnits //
     final fun <get-MetricElectricFieldStrengthUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricElectricFieldStrength> // com.splendo.kaluga.scientific.unit/MetricElectricFieldStrengthUnits.<get-MetricElectricFieldStrengthUnits>|<get-MetricElectricFieldStrengthUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/MetricEnergyUnits // com.splendo.kaluga.scientific.unit/MetricEnergyUnits|{}MetricEnergyUnits[0]
     final fun <get-MetricEnergyUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricEnergy> // com.splendo.kaluga.scientific.unit/MetricEnergyUnits.<get-MetricEnergyUnits>|<get-MetricEnergyUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/MetricExposureUnits // com.splendo.kaluga.scientific.unit/MetricExposureUnits|{}MetricExposureUnits[0]
+    final fun <get-MetricExposureUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricExposure> // com.splendo.kaluga.scientific.unit/MetricExposureUnits.<get-MetricExposureUnits>|<get-MetricExposureUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/MetricForceUnits // com.splendo.kaluga.scientific.unit/MetricForceUnits|{}MetricForceUnits[0]
     final fun <get-MetricForceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricForce> // com.splendo.kaluga.scientific.unit/MetricForceUnits.<get-MetricForceUnits>|<get-MetricForceUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/MetricHeatCapacityUnits // com.splendo.kaluga.scientific.unit/MetricHeatCapacityUnits|{}MetricHeatCapacityUnits[0]
@@ -20597,6 +20935,8 @@ final val com.splendo.kaluga.scientific.unit/MetricSurfaceTensionUnits // com.sp
     final fun <get-MetricSurfaceTensionUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricSurfaceTension> // com.splendo.kaluga.scientific.unit/MetricSurfaceTensionUnits.<get-MetricSurfaceTensionUnits>|<get-MetricSurfaceTensionUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/MetricThermalResistanceUnits // com.splendo.kaluga.scientific.unit/MetricThermalResistanceUnits|{}MetricThermalResistanceUnits[0]
     final fun <get-MetricThermalResistanceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricThermalResistance> // com.splendo.kaluga.scientific.unit/MetricThermalResistanceUnits.<get-MetricThermalResistanceUnits>|<get-MetricThermalResistanceUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/MetricTorqueUnits // com.splendo.kaluga.scientific.unit/MetricTorqueUnits|{}MetricTorqueUnits[0]
+    final fun <get-MetricTorqueUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricTorque> // com.splendo.kaluga.scientific.unit/MetricTorqueUnits.<get-MetricTorqueUnits>|<get-MetricTorqueUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/MetricVolumeUnits // com.splendo.kaluga.scientific.unit/MetricVolumeUnits|{}MetricVolumeUnits[0]
     final fun <get-MetricVolumeUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/MetricVolume> // com.splendo.kaluga.scientific.unit/MetricVolumeUnits.<get-MetricVolumeUnits>|<get-MetricVolumeUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/MetricVolumetricFlowUnits // com.splendo.kaluga.scientific.unit/MetricVolumetricFlowUnits|{}MetricVolumetricFlowUnits[0]
@@ -20659,6 +20999,8 @@ final val com.splendo.kaluga.scientific.unit/ThermalResistanceUnits // com.splen
     final fun <get-ThermalResistanceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/ThermalResistance> // com.splendo.kaluga.scientific.unit/ThermalResistanceUnits.<get-ThermalResistanceUnits>|<get-ThermalResistanceUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/TimeUnits // com.splendo.kaluga.scientific.unit/TimeUnits|{}TimeUnits[0]
     final fun <get-TimeUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/Time> // com.splendo.kaluga.scientific.unit/TimeUnits.<get-TimeUnits>|<get-TimeUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/TorqueUnits // com.splendo.kaluga.scientific.unit/TorqueUnits|{}TorqueUnits[0]
+    final fun <get-TorqueUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/Torque> // com.splendo.kaluga.scientific.unit/TorqueUnits.<get-TorqueUnits>|<get-TorqueUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialAreaDensityUnits // com.splendo.kaluga.scientific.unit/UKImperialAreaDensityUnits|{}UKImperialAreaDensityUnits[0]
     final fun <get-UKImperialAreaDensityUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialAreaDensity> // com.splendo.kaluga.scientific.unit/UKImperialAreaDensityUnits.<get-UKImperialAreaDensityUnits>|<get-UKImperialAreaDensityUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialDensityUnits // com.splendo.kaluga.scientific.unit/UKImperialDensityUnits|{}UKImperialDensityUnits[0]
@@ -20667,6 +21009,8 @@ final val com.splendo.kaluga.scientific.unit/UKImperialDynamicViscosityUnits // 
     final fun <get-UKImperialDynamicViscosityUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialDynamicViscosity> // com.splendo.kaluga.scientific.unit/UKImperialDynamicViscosityUnits.<get-UKImperialDynamicViscosityUnits>|<get-UKImperialDynamicViscosityUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensityUnits // com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensityUnits|{}UKImperialElectricChargeDensityUnits[0]
     final fun <get-UKImperialElectricChargeDensityUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensity> // com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensityUnits.<get-UKImperialElectricChargeDensityUnits>|<get-UKImperialElectricChargeDensityUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/UKImperialExposureUnits // com.splendo.kaluga.scientific.unit/UKImperialExposureUnits|{}UKImperialExposureUnits[0]
+    final fun <get-UKImperialExposureUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialExposure> // com.splendo.kaluga.scientific.unit/UKImperialExposureUnits.<get-UKImperialExposureUnits>|<get-UKImperialExposureUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialForceUnits // com.splendo.kaluga.scientific.unit/UKImperialForceUnits|{}UKImperialForceUnits[0]
     final fun <get-UKImperialForceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialForce> // com.splendo.kaluga.scientific.unit/UKImperialForceUnits.<get-UKImperialForceUnits>|<get-UKImperialForceUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialHeatCapacityUnits // com.splendo.kaluga.scientific.unit/UKImperialHeatCapacityUnits|{}UKImperialHeatCapacityUnits[0]
@@ -20697,6 +21041,8 @@ final val com.splendo.kaluga.scientific.unit/UKImperialSurfaceTensionUnits // co
     final fun <get-UKImperialSurfaceTensionUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialSurfaceTension> // com.splendo.kaluga.scientific.unit/UKImperialSurfaceTensionUnits.<get-UKImperialSurfaceTensionUnits>|<get-UKImperialSurfaceTensionUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialThermalResistanceUnits // com.splendo.kaluga.scientific.unit/UKImperialThermalResistanceUnits|{}UKImperialThermalResistanceUnits[0]
     final fun <get-UKImperialThermalResistanceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialThermalResistance> // com.splendo.kaluga.scientific.unit/UKImperialThermalResistanceUnits.<get-UKImperialThermalResistanceUnits>|<get-UKImperialThermalResistanceUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/UKImperialTorqueUnits // com.splendo.kaluga.scientific.unit/UKImperialTorqueUnits|{}UKImperialTorqueUnits[0]
+    final fun <get-UKImperialTorqueUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialTorque> // com.splendo.kaluga.scientific.unit/UKImperialTorqueUnits.<get-UKImperialTorqueUnits>|<get-UKImperialTorqueUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialVolumeUnits // com.splendo.kaluga.scientific.unit/UKImperialVolumeUnits|{}UKImperialVolumeUnits[0]
     final fun <get-UKImperialVolumeUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/UKImperialVolume> // com.splendo.kaluga.scientific.unit/UKImperialVolumeUnits.<get-UKImperialVolumeUnits>|<get-UKImperialVolumeUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/UKImperialVolumetricFlowUnits // com.splendo.kaluga.scientific.unit/UKImperialVolumetricFlowUnits|{}UKImperialVolumetricFlowUnits[0]
@@ -20715,6 +21061,8 @@ final val com.splendo.kaluga.scientific.unit/USCustomaryDynamicViscosityUnits //
     final fun <get-USCustomaryDynamicViscosityUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryDynamicViscosity> // com.splendo.kaluga.scientific.unit/USCustomaryDynamicViscosityUnits.<get-USCustomaryDynamicViscosityUnits>|<get-USCustomaryDynamicViscosityUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensityUnits // com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensityUnits|{}USCustomaryElectricChargeDensityUnits[0]
     final fun <get-USCustomaryElectricChargeDensityUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensity> // com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensityUnits.<get-USCustomaryElectricChargeDensityUnits>|<get-USCustomaryElectricChargeDensityUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/USCustomaryExposureUnits // com.splendo.kaluga.scientific.unit/USCustomaryExposureUnits|{}USCustomaryExposureUnits[0]
+    final fun <get-USCustomaryExposureUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryExposure> // com.splendo.kaluga.scientific.unit/USCustomaryExposureUnits.<get-USCustomaryExposureUnits>|<get-USCustomaryExposureUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/USCustomaryForceUnits // com.splendo.kaluga.scientific.unit/USCustomaryForceUnits|{}USCustomaryForceUnits[0]
     final fun <get-USCustomaryForceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryForce> // com.splendo.kaluga.scientific.unit/USCustomaryForceUnits.<get-USCustomaryForceUnits>|<get-USCustomaryForceUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/USCustomaryHeatCapacityUnits // com.splendo.kaluga.scientific.unit/USCustomaryHeatCapacityUnits|{}USCustomaryHeatCapacityUnits[0]
@@ -20747,6 +21095,8 @@ final val com.splendo.kaluga.scientific.unit/USCustomaryTemperatureUnits // com.
     final fun <get-USCustomaryTemperatureUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryTemperature> // com.splendo.kaluga.scientific.unit/USCustomaryTemperatureUnits.<get-USCustomaryTemperatureUnits>|<get-USCustomaryTemperatureUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/USCustomaryThermalResistanceUnits // com.splendo.kaluga.scientific.unit/USCustomaryThermalResistanceUnits|{}USCustomaryThermalResistanceUnits[0]
     final fun <get-USCustomaryThermalResistanceUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryThermalResistance> // com.splendo.kaluga.scientific.unit/USCustomaryThermalResistanceUnits.<get-USCustomaryThermalResistanceUnits>|<get-USCustomaryThermalResistanceUnits>(){}[0]
+final val com.splendo.kaluga.scientific.unit/USCustomaryTorqueUnits // com.splendo.kaluga.scientific.unit/USCustomaryTorqueUnits|{}USCustomaryTorqueUnits[0]
+    final fun <get-USCustomaryTorqueUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryTorque> // com.splendo.kaluga.scientific.unit/USCustomaryTorqueUnits.<get-USCustomaryTorqueUnits>|<get-USCustomaryTorqueUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/USCustomaryVolumeUnits // com.splendo.kaluga.scientific.unit/USCustomaryVolumeUnits|{}USCustomaryVolumeUnits[0]
     final fun <get-USCustomaryVolumeUnits>(): kotlin.collections/Set<com.splendo.kaluga.scientific.unit/USCustomaryVolume> // com.splendo.kaluga.scientific.unit/USCustomaryVolumeUnits.<get-USCustomaryVolumeUnits>|<get-USCustomaryVolumeUnits>(){}[0]
 final val com.splendo.kaluga.scientific.unit/USCustomaryVolumetricFlowUnits // com.splendo.kaluga.scientific.unit/USCustomaryVolumetricFlowUnits|{}USCustomaryVolumetricFlowUnits[0]
@@ -20818,10 +21168,14 @@ final fun (com.splendo.kaluga.scientific.unit/ElectricCapacitance).com.splendo.k
 final fun (com.splendo.kaluga.scientific.unit/ElectricCapacitance).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/MetricLength): com.splendo.kaluga.scientific.unit/MetricPermittivity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCapacitance(com.splendo.kaluga.scientific.unit.MetricLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialArea): com.splendo.kaluga.scientific.unit/ImperialSurfaceChargeDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.ImperialArea){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialVolume): com.splendo.kaluga.scientific.unit/ImperialElectricChargeDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.ImperialVolume){}[0]
+final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialWeight): com.splendo.kaluga.scientific.unit/ImperialExposure // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.ImperialWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/MetricArea): com.splendo.kaluga.scientific.unit/MetricSurfaceChargeDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.MetricArea){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/MetricVolume): com.splendo.kaluga.scientific.unit/MetricElectricChargeDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.MetricVolume){}[0]
+final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/MetricWeight): com.splendo.kaluga.scientific.unit/MetricExposure // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.MetricWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/UKImperialVolume): com.splendo.kaluga.scientific.unit/UKImperialElectricChargeDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.UKImperialVolume){}[0]
+final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/UKImperialWeight): com.splendo.kaluga.scientific.unit/UKImperialExposure // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.UKImperialWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/USCustomaryVolume): com.splendo.kaluga.scientific.unit/USCustomaryElectricChargeDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.USCustomaryVolume){}[0]
+final fun (com.splendo.kaluga.scientific.unit/ElectricCharge).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/USCustomaryWeight): com.splendo.kaluga.scientific.unit/USCustomaryExposure // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCharge(com.splendo.kaluga.scientific.unit.USCustomaryWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCurrent).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialArea): com.splendo.kaluga.scientific.unit/ImperialElectricCurrentDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCurrent(com.splendo.kaluga.scientific.unit.ImperialArea){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCurrent).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialLength): com.splendo.kaluga.scientific.unit/ImperialMagneticFieldStrength // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCurrent(com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ElectricCurrent).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/MetricArea): com.splendo.kaluga.scientific.unit/MetricElectricCurrentDensity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ElectricCurrent(com.splendo.kaluga.scientific.unit.MetricArea){}[0]
@@ -20839,6 +21193,7 @@ final fun (com.splendo.kaluga.scientific.unit/ImperialEnergy).com.splendo.kaluga
 final fun (com.splendo.kaluga.scientific.unit/ImperialEnergy).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/ImperialAction // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.ImperialEnergy(com.splendo.kaluga.scientific.unit.Time){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ImperialForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialLength): com.splendo.kaluga.scientific.unit/ImperialSurfaceTension // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ImperialForce(com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ImperialForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/ImperialYank // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ImperialForce(com.splendo.kaluga.scientific.unit.Time){}[0]
+final fun (com.splendo.kaluga.scientific.unit/ImperialForce).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/ImperialLength): com.splendo.kaluga.scientific.unit/ImperialTorque // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.ImperialForce(com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ImperialIlluminance).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/ImperialLuminousExposure // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.ImperialIlluminance(com.splendo.kaluga.scientific.unit.Time){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ImperialLength).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/ImperialSpeed // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ImperialLength(com.splendo.kaluga.scientific.unit.Time){}[0]
 final fun (com.splendo.kaluga.scientific.unit/ImperialNamedEnergyUnit).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/ImperialCombinedPower // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.ImperialNamedEnergyUnit(com.splendo.kaluga.scientific.unit.Time){}[0]
@@ -20893,6 +21248,7 @@ final fun (com.splendo.kaluga.scientific.unit/MetricEnergy).com.splendo.kaluga.s
 final fun (com.splendo.kaluga.scientific.unit/MetricEnergy).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/MetricAction // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.MetricEnergy(com.splendo.kaluga.scientific.unit.Time){}[0]
 final fun (com.splendo.kaluga.scientific.unit/MetricForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/MetricLength): com.splendo.kaluga.scientific.unit/MetricSurfaceTension // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.MetricForce(com.splendo.kaluga.scientific.unit.MetricLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/MetricForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/MetricYank // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.MetricForce(com.splendo.kaluga.scientific.unit.Time){}[0]
+final fun (com.splendo.kaluga.scientific.unit/MetricForce).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/MetricLength): com.splendo.kaluga.scientific.unit/MetricTorque // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.MetricForce(com.splendo.kaluga.scientific.unit.MetricLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/MetricHeatCapacity).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/MetricWeight): com.splendo.kaluga.scientific.unit/MetricSpecificHeatCapacity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.MetricHeatCapacity(com.splendo.kaluga.scientific.unit.MetricWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/MetricIlluminance).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/MetricLuminousExposure // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.MetricIlluminance(com.splendo.kaluga.scientific.unit.Time){}[0]
 final fun (com.splendo.kaluga.scientific.unit/MetricLength).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/MetricSpeed // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.MetricLength(com.splendo.kaluga.scientific.unit.Time){}[0]
@@ -20918,6 +21274,7 @@ final fun (com.splendo.kaluga.scientific.unit/Temperature).com.splendo.kaluga.sc
 final fun (com.splendo.kaluga.scientific.unit/Temperature).com.splendo.kaluga.scientific.unit/convertDelta(kotlin/Number, com.splendo.kaluga.scientific.unit/Temperature, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): kotlin/Double // com.splendo.kaluga.scientific.unit/convertDelta|convertDelta@com.splendo.kaluga.scientific.unit.Temperature(kotlin.Number;com.splendo.kaluga.scientific.unit.Temperature;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
 final fun (com.splendo.kaluga.scientific.unit/UKImperialForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialLength): com.splendo.kaluga.scientific.unit/UKImperialSurfaceTension // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.UKImperialForce(com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/UKImperialForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/UKImperialYank // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.UKImperialForce(com.splendo.kaluga.scientific.unit.Time){}[0]
+final fun (com.splendo.kaluga.scientific.unit/UKImperialForce).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/ImperialLength): com.splendo.kaluga.scientific.unit/UKImperialTorque // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.UKImperialForce(com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/UKImperialHeatCapacity).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialWeight): com.splendo.kaluga.scientific.unit/UKImperialSpecificHeatCapacity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.UKImperialHeatCapacity(com.splendo.kaluga.scientific.unit.ImperialWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/UKImperialHeatCapacity).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/UKImperialWeight): com.splendo.kaluga.scientific.unit/UKImperialSpecificHeatCapacity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.UKImperialHeatCapacity(com.splendo.kaluga.scientific.unit.UKImperialWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/UKImperialPressure).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/UKImperialDynamicViscosity // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.UKImperialPressure(com.splendo.kaluga.scientific.unit.Time){}[0]
@@ -20936,6 +21293,7 @@ final fun (com.splendo.kaluga.scientific.unit/UKImperialWeight).com.splendo.kalu
 final fun (com.splendo.kaluga.scientific.unit/UKImperialWeight).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/ImperialSpeed): com.splendo.kaluga.scientific.unit/UKImperialMomentum // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.UKImperialWeight(com.splendo.kaluga.scientific.unit.ImperialSpeed){}[0]
 final fun (com.splendo.kaluga.scientific.unit/USCustomaryForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialLength): com.splendo.kaluga.scientific.unit/USCustomarySurfaceTension // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.USCustomaryForce(com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/USCustomaryForce).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/USCustomaryYank // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.USCustomaryForce(com.splendo.kaluga.scientific.unit.Time){}[0]
+final fun (com.splendo.kaluga.scientific.unit/USCustomaryForce).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/ImperialLength): com.splendo.kaluga.scientific.unit/USCustomaryTorque // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.USCustomaryForce(com.splendo.kaluga.scientific.unit.ImperialLength){}[0]
 final fun (com.splendo.kaluga.scientific.unit/USCustomaryHeatCapacity).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/ImperialWeight): com.splendo.kaluga.scientific.unit/USCustomarySpecificHeatCapacity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.USCustomaryHeatCapacity(com.splendo.kaluga.scientific.unit.ImperialWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/USCustomaryHeatCapacity).com.splendo.kaluga.scientific.unit/per(com.splendo.kaluga.scientific.unit/USCustomaryWeight): com.splendo.kaluga.scientific.unit/USCustomarySpecificHeatCapacity // com.splendo.kaluga.scientific.unit/per|per@com.splendo.kaluga.scientific.unit.USCustomaryHeatCapacity(com.splendo.kaluga.scientific.unit.USCustomaryWeight){}[0]
 final fun (com.splendo.kaluga.scientific.unit/USCustomaryPressure).com.splendo.kaluga.scientific.unit/x(com.splendo.kaluga.scientific.unit/Time): com.splendo.kaluga.scientific.unit/USCustomaryDynamicViscosity // com.splendo.kaluga.scientific.unit/x|x@com.splendo.kaluga.scientific.unit.USCustomaryPressure(com.splendo.kaluga.scientific.unit.Time){}[0]

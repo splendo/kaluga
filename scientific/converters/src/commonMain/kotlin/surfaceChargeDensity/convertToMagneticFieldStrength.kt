@@ -23,18 +23,19 @@ import com.splendo.kaluga.scientific.converter.magneticFieldStrength.magneticFie
 import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
+import com.splendo.kaluga.scientific.unit.ImperialSurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Speed
 import com.splendo.kaluga.scientific.unit.SurfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("surfaceChargeDensityTimesImperialSpeed")
-infix operator fun <SurfaceChargeDensityUnit, SpeedUnit> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, SurfaceChargeDensityUnit>.times(
+@JvmName("imperialSurfaceChargeDensityTimesImperialSpeed")
+infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>.times(
     speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) where SurfaceChargeDensityUnit : SurfaceChargeDensity, SpeedUnit : ImperialSpeed = (Ampere per Foot).magneticFieldStrength(this, speed)
+) = (Ampere per Foot).magneticFieldStrength(this, speed)
 
 @JvmName("surfaceChargeDensityTimesSpeed")
-infix operator fun <SurfaceChargeDensityUnit, SpeedUnit> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, SurfaceChargeDensityUnit>.times(
+infix operator fun <SurfaceChargeDensityUnit : SurfaceChargeDensity, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.SurfaceChargeDensity, SurfaceChargeDensityUnit>.times(
     speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) where SurfaceChargeDensityUnit : SurfaceChargeDensity, SpeedUnit : Speed = (Ampere per Meter).magneticFieldStrength(this, speed)
+) = (Ampere per Meter).magneticFieldStrength(this, speed)

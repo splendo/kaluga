@@ -23,15 +23,16 @@ import com.splendo.kaluga.scientific.converter.surfaceChargeDensity.surfaceCharg
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.ElectricFieldStrength
 import com.splendo.kaluga.scientific.unit.ImperialElectricFieldStrength
+import com.splendo.kaluga.scientific.unit.ImperialPermittivity
 import com.splendo.kaluga.scientific.unit.Permittivity
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("imperialElectricFieldStrengthTimesPermittivity")
-infix operator fun <PermittivityUnit : Permittivity> ScientificValue<PhysicalQuantity.ElectricFieldStrength, ImperialElectricFieldStrength>.times(
-    permittivity: ScientificValue<PhysicalQuantity.Permittivity, PermittivityUnit>,
+@JvmName("imperialElectricFieldStrengthTimesImperialPermittivity")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricFieldStrength, ImperialElectricFieldStrength>.times(
+    permittivity: ScientificValue<PhysicalQuantity.Permittivity, ImperialPermittivity>,
 ) = (Coulomb per SquareFoot).surfaceChargeDensity(permittivity, this)
 
 @JvmName("electricFieldStrengthTimesPermittivity")

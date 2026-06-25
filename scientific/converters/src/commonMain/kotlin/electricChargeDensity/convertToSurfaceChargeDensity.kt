@@ -22,17 +22,30 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.surfaceChargeDensity.surfaceChargeDensity
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.ElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.ImperialElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.ImperialLength
 import com.splendo.kaluga.scientific.unit.Length
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.UKImperialElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryElectricChargeDensity
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("electricChargeDensityTimesImperialLength")
-infix operator fun <ElectricChargeDensityUnit, LengthUnit> ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>.times(
+@JvmName("imperialElectricChargeDensityTimesImperialLength")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>.times(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) where ElectricChargeDensityUnit : ElectricChargeDensity, LengthUnit : ImperialLength = (Coulomb per SquareFoot).surfaceChargeDensity(this, length)
+) = (Coulomb per SquareFoot).surfaceChargeDensity(this, length)
+
+@JvmName("ukImperialElectricChargeDensityTimesImperialLength")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+) = (Coulomb per SquareFoot).surfaceChargeDensity(this, length)
+
+@JvmName("usCustomaryElectricChargeDensityTimesImperialLength")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+) = (Coulomb per SquareFoot).surfaceChargeDensity(this, length)
 
 @JvmName("electricChargeDensityTimesLength")
 infix operator fun <ElectricChargeDensityUnit, LengthUnit> ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>.times(

@@ -32,7 +32,6 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Volt
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class PermittivityUnitTest {
 
@@ -46,14 +45,27 @@ class PermittivityUnitTest {
     fun electricCapacitanceFromPermittivityAndLengthTest() {
         assertEqualScientificValue(4(Farad), 2(Farad per Meter) * 2(Meter))
         assertEqualScientificValue(4(Farad), 2(Meter) * 2(Farad per Meter))
+        assertEqualScientificValue(4(Farad), 2(Farad per Foot) * 2(Foot), round = 27)
+        assertEqualScientificValue(4(Farad), 2(Foot) * 2(Farad per Foot), round = 27)
     }
 
     @Test
     fun surfaceChargeDensityFromPermittivityAndElectricFieldStrengthTest() {
         assertEqualScientificValue(4(Coulomb per SquareMeter), 2(Farad per Meter) * 2(Volt per Meter))
         assertEqualScientificValue(4(Coulomb per SquareMeter), 2(Volt per Meter) * 2(Farad per Meter))
+        assertEqualScientificValue(4(Coulomb per SquareFoot), 2(Farad per Foot) * 2(Volt per Foot), round = 27)
+        assertEqualScientificValue(4(Coulomb per SquareFoot), 2(Volt per Foot) * 2(Farad per Foot), round = 27)
+    }
+
+    @Test
+    fun permittivityFromSurfaceChargeDensityAndElectricFieldStrengthTest() {
         assertEqualScientificValue(2(Farad per Meter), 4(Coulomb per SquareMeter) / 2(Volt per Meter))
+        assertEqualScientificValue(2(Farad per Foot), 4(Coulomb per SquareFoot) / 2(Volt per Foot), round = 27)
+    }
+
+    @Test
+    fun electricFieldStrengthFromSurfaceChargeDensityAndPermittivityTest() {
         assertEqualScientificValue(2(Volt per Meter), 4(Coulomb per SquareMeter) / 2(Farad per Meter))
-        assertEquals((Coulomb per SquareFoot), (2(Farad per Meter) * 2(Volt per Foot)).unit)
+        assertEqualScientificValue(2(Volt per Foot), 4(Coulomb per SquareFoot) / 2(Farad per Foot), round = 27)
     }
 }

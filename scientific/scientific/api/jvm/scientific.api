@@ -461,6 +461,14 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Energy : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Exposure : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Exposure;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/scientific/PhysicalQuantity$Force : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Force;
 	public fun equals (Ljava/lang/Object;)Z
@@ -809,6 +817,14 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$ThermalResista
 
 public final class com/splendo/kaluga/scientific/PhysicalQuantity$Time : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Time;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Torque : com/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Torque;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
@@ -5300,6 +5316,35 @@ public final class com/splendo/kaluga/scientific/unit/ErgMultiple$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public abstract class com/splendo/kaluga/scientific/unit/Exposure : com/splendo/kaluga/scientific/unit/DefinedScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/Exposure$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Exposure;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public abstract fun getCharge ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public abstract fun getPer ()Lcom/splendo/kaluga/scientific/unit/Weight;
+	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Exposure;
+	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
+	public fun getSymbol ()Ljava/lang/String;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/Exposure;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/Exposure$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ExposureUnitKt {
+	public static final fun getExposureUnits ()Ljava/util/Set;
+	public static final fun getImperialExposureUnits ()Ljava/util/Set;
+	public static final fun getMetricExposureUnits ()Ljava/util/Set;
+	public static final fun getUKImperialExposureUnits ()Ljava/util/Set;
+	public static final fun getUSCustomaryExposureUnits ()Ljava/util/Set;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/ImperialWeight;)Lcom/splendo/kaluga/scientific/unit/ImperialExposure;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/MetricWeight;)Lcom/splendo/kaluga/scientific/unit/MetricExposure;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/UKImperialWeight;)Lcom/splendo/kaluga/scientific/unit/UKImperialExposure;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/USCustomaryWeight;)Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure;
+}
+
 public final class com/splendo/kaluga/scientific/unit/Fahrenheit : com/splendo/kaluga/scientific/unit/USCustomaryTemperature {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Fahrenheit;
 	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
@@ -7467,6 +7512,40 @@ public final class com/splendo/kaluga/scientific/unit/ImperialEnergy$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/scientific/unit/ImperialExposure : com/splendo/kaluga/scientific/unit/Exposure, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialExposure$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/ImperialWeight;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ImperialWeight;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/ImperialWeight;)Lcom/splendo/kaluga/scientific/unit/ImperialExposure;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/ImperialExposure;Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/ImperialWeight;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/ImperialExposure;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCharge ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/ImperialWeight;
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Weight;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public final fun getUkImperial ()Lcom/splendo/kaluga/scientific/unit/UKImperialExposure;
+	public final fun getUsCustomary ()Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/ImperialExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialExposure$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialExposure;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialExposure;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialExposure$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/splendo/kaluga/scientific/unit/ImperialFluidDram : com/splendo/kaluga/scientific/unit/UKImperialVolume {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialFluidDram;
 	public fun equals (Ljava/lang/Object;)Z
@@ -8486,6 +8565,41 @@ public final class com/splendo/kaluga/scientific/unit/ImperialTonSquareInch : co
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialTorque : com/splendo/kaluga/scientific/unit/Torque, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialTorque$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ImperialForce;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ImperialLength;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)Lcom/splendo/kaluga/scientific/unit/ImperialTorque;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/ImperialTorque;Lcom/splendo/kaluga/scientific/unit/ImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/ImperialTorque;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getForce ()Lcom/splendo/kaluga/scientific/unit/Force;
+	public fun getForce ()Lcom/splendo/kaluga/scientific/unit/ImperialForce;
+	public fun getLength ()Lcom/splendo/kaluga/scientific/unit/ImperialLength;
+	public synthetic fun getLength ()Lcom/splendo/kaluga/scientific/unit/Length;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public final fun getUkImperial ()Lcom/splendo/kaluga/scientific/unit/UKImperialTorque;
+	public final fun getUsCustomary ()Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/ImperialTorque$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialTorque$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialTorque;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialTorque;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialTorque$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract class com/splendo/kaluga/scientific/unit/ImperialVolume : com/splendo/kaluga/scientific/unit/Volume, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
@@ -11451,6 +11565,38 @@ public final class com/splendo/kaluga/scientific/unit/MetricEnergy$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/scientific/unit/MetricExposure : com/splendo/kaluga/scientific/unit/Exposure, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricExposure$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/MetricWeight;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/MetricWeight;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/MetricWeight;)Lcom/splendo/kaluga/scientific/unit/MetricExposure;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricExposure;Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/MetricWeight;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricExposure;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCharge ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/MetricWeight;
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Weight;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/MetricExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricExposure$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricExposure;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricExposure;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricExposure$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public abstract class com/splendo/kaluga/scientific/unit/MetricForce : com/splendo/kaluga/scientific/unit/Force, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricForce$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
@@ -12460,6 +12606,39 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricThermalRes
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricThermalResistance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricTorque : com/splendo/kaluga/scientific/unit/Torque, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricTorque$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricForce;Lcom/splendo/kaluga/scientific/unit/MetricLength;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/MetricForce;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/MetricLength;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricForce;Lcom/splendo/kaluga/scientific/unit/MetricLength;)Lcom/splendo/kaluga/scientific/unit/MetricTorque;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricTorque;Lcom/splendo/kaluga/scientific/unit/MetricForce;Lcom/splendo/kaluga/scientific/unit/MetricLength;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricTorque;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getForce ()Lcom/splendo/kaluga/scientific/unit/Force;
+	public fun getForce ()Lcom/splendo/kaluga/scientific/unit/MetricForce;
+	public synthetic fun getLength ()Lcom/splendo/kaluga/scientific/unit/Length;
+	public fun getLength ()Lcom/splendo/kaluga/scientific/unit/MetricLength;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/MetricTorque$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricTorque$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricTorque;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricTorque;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricTorque$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -16510,6 +16689,35 @@ public final class com/splendo/kaluga/scientific/unit/TonneForce : com/splendo/k
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract class com/splendo/kaluga/scientific/unit/Torque : com/splendo/kaluga/scientific/unit/DefinedScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/Torque$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Torque;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun fromSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public abstract fun getForce ()Lcom/splendo/kaluga/scientific/unit/Force;
+	public abstract fun getLength ()Lcom/splendo/kaluga/scientific/unit/Length;
+	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Torque;
+	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
+	public fun getSymbol ()Ljava/lang/String;
+	public fun toSIUnit (Lcom/splendo/kaluga/base/decimal/Decimal;)Lcom/splendo/kaluga/base/decimal/Decimal;
+	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/Torque;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/Torque$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/TorqueUnitKt {
+	public static final fun getImperialTorqueUnits ()Ljava/util/Set;
+	public static final fun getMetricTorqueUnits ()Ljava/util/Set;
+	public static final fun getTorqueUnits ()Ljava/util/Set;
+	public static final fun getUKImperialTorqueUnits ()Ljava/util/Set;
+	public static final fun getUSCustomaryTorqueUnits ()Ljava/util/Set;
+	public static final fun x (Lcom/splendo/kaluga/scientific/unit/ImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)Lcom/splendo/kaluga/scientific/unit/ImperialTorque;
+	public static final fun x (Lcom/splendo/kaluga/scientific/unit/MetricForce;Lcom/splendo/kaluga/scientific/unit/MetricLength;)Lcom/splendo/kaluga/scientific/unit/MetricTorque;
+	public static final fun x (Lcom/splendo/kaluga/scientific/unit/UKImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)Lcom/splendo/kaluga/scientific/unit/UKImperialTorque;
+	public static final fun x (Lcom/splendo/kaluga/scientific/unit/USCustomaryForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque;
+}
+
 public final class com/splendo/kaluga/scientific/unit/Torr : com/splendo/kaluga/scientific/unit/MetricPressure, com/splendo/kaluga/scientific/unit/MetricBaseUnit {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Torr;
 	public fun equals (Ljava/lang/Object;)Z
@@ -16687,6 +16895,38 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialElectr
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialElectricChargeDensity$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/UKImperialExposure : com/splendo/kaluga/scientific/unit/Exposure, com/splendo/kaluga/scientific/unit/UKImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/UKImperialExposure$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/UKImperialWeight;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/UKImperialWeight;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/UKImperialWeight;)Lcom/splendo/kaluga/scientific/unit/UKImperialExposure;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/UKImperialExposure;Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/UKImperialWeight;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/UKImperialExposure;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCharge ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/UKImperialWeight;
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Weight;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$UKImperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialExposure$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialExposure;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialExposure;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/UKImperialExposure$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -17270,6 +17510,39 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialThermalResistanc
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/scientific/unit/UKImperialTorque : com/splendo/kaluga/scientific/unit/Torque, com/splendo/kaluga/scientific/unit/UKImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/UKImperialTorque$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/UKImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/UKImperialForce;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ImperialLength;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/UKImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)Lcom/splendo/kaluga/scientific/unit/UKImperialTorque;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/UKImperialTorque;Lcom/splendo/kaluga/scientific/unit/UKImperialForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/UKImperialTorque;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getForce ()Lcom/splendo/kaluga/scientific/unit/Force;
+	public fun getForce ()Lcom/splendo/kaluga/scientific/unit/UKImperialForce;
+	public fun getLength ()Lcom/splendo/kaluga/scientific/unit/ImperialLength;
+	public synthetic fun getLength ()Lcom/splendo/kaluga/scientific/unit/Length;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$UKImperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialTorque$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialTorque$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialTorque;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialTorque;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/UKImperialTorque$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public abstract class com/splendo/kaluga/scientific/unit/UKImperialVolume : com/splendo/kaluga/scientific/unit/Volume, com/splendo/kaluga/scientific/unit/UKImperialScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/UKImperialVolume$Companion;
 	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Volume;Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$UKImperial;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
@@ -17522,6 +17795,38 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryElect
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryElectricChargeDensity$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/USCustomaryExposure : com/splendo/kaluga/scientific/unit/Exposure, com/splendo/kaluga/scientific/unit/USCustomaryScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/USCustomaryWeight;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/USCustomaryWeight;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/USCustomaryWeight;)Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure;Lcom/splendo/kaluga/scientific/unit/ElectricCharge;Lcom/splendo/kaluga/scientific/unit/USCustomaryWeight;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCharge ()Lcom/splendo/kaluga/scientific/unit/ElectricCharge;
+	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/USCustomaryWeight;
+	public synthetic fun getPer ()Lcom/splendo/kaluga/scientific/unit/Weight;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$USCustomary;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryExposure;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/USCustomaryExposure$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -18116,6 +18421,39 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryTherm
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryThermalResistance$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/USCustomaryTorque : com/splendo/kaluga/scientific/unit/Torque, com/splendo/kaluga/scientific/unit/USCustomaryScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque$Companion;
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/USCustomaryForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/USCustomaryForce;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ImperialLength;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/USCustomaryForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;)Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque;Lcom/splendo/kaluga/scientific/unit/USCustomaryForce;Lcom/splendo/kaluga/scientific/unit/ImperialLength;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getForce ()Lcom/splendo/kaluga/scientific/unit/Force;
+	public fun getForce ()Lcom/splendo/kaluga/scientific/unit/USCustomaryForce;
+	public fun getLength ()Lcom/splendo/kaluga/scientific/unit/ImperialLength;
+	public synthetic fun getLength ()Lcom/splendo/kaluga/scientific/unit/Length;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$USCustomary;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryTorque$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryTorque;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/USCustomaryTorque$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
