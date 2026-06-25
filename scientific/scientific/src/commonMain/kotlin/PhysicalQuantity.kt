@@ -240,10 +240,22 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object IonizingRadiationEquivalentDose : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the equivalent ionizing radiation dose per unit time
+     */
+    @Serializable
+    data object EquivalentDoseRate : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the radiant flux received by a surface per unit area
      */
     @Serializable
     data object Irradiance : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing electric charge per unit of length
+     */
+    @Serializable
+    data object LinearChargeDensity : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing mass per unit of length
@@ -408,6 +420,18 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object Radioactivity : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the opposition a magnetic circuit presents to magnetic flux
+     */
+    @Serializable
+    data object Reluctance : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the rate of change of jolt per unit time
+     */
+    @Serializable
+    data object Snap : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the ratio of area on a sphere to its radius squared
      */
     @Serializable
@@ -564,7 +588,9 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.Illuminance::class, PhysicalQuantity.Illuminance.serializer())
     subclass(PhysicalQuantity.IonizingRadiationAbsorbedDose::class, PhysicalQuantity.IonizingRadiationAbsorbedDose.serializer())
     subclass(PhysicalQuantity.IonizingRadiationEquivalentDose::class, PhysicalQuantity.IonizingRadiationEquivalentDose.serializer())
+    subclass(PhysicalQuantity.EquivalentDoseRate::class, PhysicalQuantity.EquivalentDoseRate.serializer())
     subclass(PhysicalQuantity.Irradiance::class, PhysicalQuantity.Irradiance.serializer())
+    subclass(PhysicalQuantity.LinearChargeDensity::class, PhysicalQuantity.LinearChargeDensity.serializer())
     subclass(PhysicalQuantity.LinearMassDensity::class, PhysicalQuantity.LinearMassDensity.serializer())
     subclass(PhysicalQuantity.Jolt::class, PhysicalQuantity.Jolt.serializer())
     subclass(PhysicalQuantity.KinematicViscosity::class, PhysicalQuantity.KinematicViscosity.serializer())
@@ -592,6 +618,8 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.Radiance::class, PhysicalQuantity.Radiance.serializer())
     subclass(PhysicalQuantity.RadiantIntensity::class, PhysicalQuantity.RadiantIntensity.serializer())
     subclass(PhysicalQuantity.Radioactivity::class, PhysicalQuantity.Radioactivity.serializer())
+    subclass(PhysicalQuantity.Reluctance::class, PhysicalQuantity.Reluctance.serializer())
+    subclass(PhysicalQuantity.Snap::class, PhysicalQuantity.Snap.serializer())
     subclass(PhysicalQuantity.SolidAngle::class, PhysicalQuantity.SolidAngle.serializer())
     subclass(PhysicalQuantity.SpecificEnergy::class, PhysicalQuantity.SpecificEnergy.serializer())
     subclass(PhysicalQuantity.SpecificHeatCapacity::class, PhysicalQuantity.SpecificHeatCapacity.serializer())

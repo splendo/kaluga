@@ -222,10 +222,12 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     IlluminanceUnits +
     IonizingRadiationAbsorbedDoseUnits +
     IonizingRadiationEquivalentDoseUnits +
+    EquivalentDoseRateUnits +
     IrradianceUnits +
     JoltUnits +
     KinematicViscosityUnits +
     LengthUnits +
+    LinearChargeDensityUnits +
     LinearMassDensityUnits +
     LuminanceUnits +
     LuminousEnergyUnits +
@@ -250,6 +252,8 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     RadianceUnits +
     RadiantIntensityUnits +
     RadioactivityUnits +
+    ReluctanceUnits +
+    SnapUnits +
     SolidAngleUnits +
     SpecificEnergyUnits +
     SpecificHeatCapacityUnits +
@@ -312,6 +316,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForJolt()
     setupForKinematicViscosity()
     setupForLength()
+    setupForLinearChargeDensity()
     setupForLinearMassDensity()
     setupForLuminance()
     setupForLuminousExposure()
@@ -335,6 +340,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForRadiance()
     setupForRadiantIntensity()
     setupForRadioactivity()
+    setupForSnap()
     setupForSolidAngle()
     setupForSpecificEnergy()
     setupForSpecificHeatCapacity()
@@ -390,10 +396,12 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerIlluminanceClasses()
     registerIonizingRadiationAbsorbedDoseClasses()
     registerIonizingRadiationEquivalentDoseClasses()
+    subclass(EquivalentDoseRate::class, EquivalentDoseRate.serializer())
     registerIrradianceClasses()
     registerJoltClasses()
     registerKinematicViscosityClasses()
     registerLengthClasses()
+    registerLinearChargeDensityClasses()
     registerLinearMassDensityClasses()
     registerLuminanceClasses()
     subclass(LuminousEnergy::class, LuminousEnergy.serializer())
@@ -418,6 +426,8 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerRadianceClasses()
     registerRadiantIntensityClasses()
     registerRadioactivityClasses()
+    subclass(Reluctance::class, Reluctance.serializer())
+    registerSnapClasses()
     registerSolidAngleClasses()
     registerSpecificEnergyClasses()
     registerSpecificHeatCapacityClasses()
