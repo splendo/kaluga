@@ -330,6 +330,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object MassFlowRate : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the mass flow rate through a surface per unit area
+     */
+    @Serializable
+    data object MassFlux : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the magnetic strength and orientation of a current loop, the electric current multiplied by area
      */
     @Serializable
@@ -400,6 +406,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     data object MolarVolume : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing an object's resistance to angular acceleration, the mass multiplied by the square of distance
+     */
+    @Serializable
+    data object MomentOfInertia : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the product of an object's mass and velocity
@@ -478,6 +490,12 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     data object SpecificVolume : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the weight of a material per unit volume
+     */
+    @Serializable
+    data object SpecificWeight : DefinedPhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the moved distance per unit time
@@ -645,6 +663,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.LuminousFlux::class, PhysicalQuantity.LuminousFlux.serializer())
     subclass(PhysicalQuantity.LuminousIntensity::class, PhysicalQuantity.LuminousIntensity.serializer())
     subclass(PhysicalQuantity.MassFlowRate::class, PhysicalQuantity.MassFlowRate.serializer())
+    subclass(PhysicalQuantity.MassFlux::class, PhysicalQuantity.MassFlux.serializer())
     subclass(PhysicalQuantity.MagneticDipoleMoment::class, PhysicalQuantity.MagneticDipoleMoment.serializer())
     subclass(PhysicalQuantity.MagneticFieldStrength::class, PhysicalQuantity.MagneticFieldStrength.serializer())
     subclass(PhysicalQuantity.MagneticFlux::class, PhysicalQuantity.MagneticFlux.serializer())
@@ -655,6 +674,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.MolarEntropy::class, PhysicalQuantity.MolarEntropy.serializer())
     subclass(PhysicalQuantity.MolarMass::class, PhysicalQuantity.MolarMass.serializer())
     subclass(PhysicalQuantity.MolarVolume::class, PhysicalQuantity.MolarVolume.serializer())
+    subclass(PhysicalQuantity.MomentOfInertia::class, PhysicalQuantity.MomentOfInertia.serializer())
     subclass(PhysicalQuantity.Momentum::class, PhysicalQuantity.Momentum.serializer())
     subclass(PhysicalQuantity.Permeability::class, PhysicalQuantity.Permeability.serializer())
     subclass(PhysicalQuantity.Permittivity::class, PhysicalQuantity.Permittivity.serializer())
@@ -670,6 +690,7 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.SpecificEnergy::class, PhysicalQuantity.SpecificEnergy.serializer())
     subclass(PhysicalQuantity.SpecificHeatCapacity::class, PhysicalQuantity.SpecificHeatCapacity.serializer())
     subclass(PhysicalQuantity.SpecificVolume::class, PhysicalQuantity.SpecificVolume.serializer())
+    subclass(PhysicalQuantity.SpecificWeight::class, PhysicalQuantity.SpecificWeight.serializer())
     subclass(PhysicalQuantity.Speed::class, PhysicalQuantity.Speed.serializer())
     subclass(PhysicalQuantity.SurfaceChargeDensity::class, PhysicalQuantity.SurfaceChargeDensity.serializer())
     subclass(PhysicalQuantity.SurfaceTension::class, PhysicalQuantity.SurfaceTension.serializer())

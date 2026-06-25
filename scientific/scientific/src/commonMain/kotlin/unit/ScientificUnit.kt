@@ -241,12 +241,14 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     MagneticFluxUnits +
     MagneticInductionUnits +
     MassFlowRateUnits +
+    MassFluxUnits +
     MolalityUnits +
     MolarEnergyUnits +
     MolarEntropyUnits +
     MolarityUnits +
     MolarMassUnits +
     MolarVolumeUnits +
+    MomentOfInertiaUnits +
     MomentumUnits +
     PermeabilityUnits +
     PermittivityUnits +
@@ -262,6 +264,7 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     SpecificEnergyUnits +
     SpecificHeatCapacityUnits +
     SpecificVolumeUnits +
+    SpecificWeightUnits +
     SpeedUnits +
     SurfaceChargeDensityUnits +
     SurfaceTensionUnits +
@@ -336,12 +339,14 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForMagneticFlux()
     setupForMagneticInduction()
     setupForMassFlowRate()
+    setupForMassFlux()
     setupForMolality()
     setupForMolarity()
     setupForMolarEnergy()
     setupForMolarEntropy()
     setupForMolarMass()
     setupForMolarVolume()
+    setupForMomentOfInertia()
     setupForMomentum()
     setupForPermeability()
     setupForPermittivity()
@@ -356,6 +361,7 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForSpecificEnergy()
     setupForSpecificHeatCapacity()
     setupForSpecificVolume()
+    setupForSpecificWeight()
     setupForSpeed()
     setupForSurfaceChargeDensity()
     setupForSurfaceTension()
@@ -429,12 +435,14 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerMagneticFluxClasses()
     registerMagneticInductionClasses()
     registerMassFlowRateClasses()
+    registerMassFluxClasses()
     registerMolalityClasses()
     registerMolarityClasses()
     registerMolarEnergyClasses()
     registerMolarEntropyClasses()
     registerMolarMassClasses()
     registerMolarVolumeClasses()
+    registerMomentOfInertiaClasses()
     registerMomentumClasses()
     registerPermeabilityClasses()
     registerPermittivityClasses()
@@ -450,6 +458,7 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerSpecificEnergyClasses()
     registerSpecificHeatCapacityClasses()
     registerSpecificVolumeClasses()
+    registerSpecificWeightClasses()
     registerSpeedClasses()
     registerSurfaceChargeDensityClasses()
     registerSurfaceTensionClasses()
