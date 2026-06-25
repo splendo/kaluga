@@ -55,6 +55,44 @@ class GattUnitsTest {
     }
 
     @Test
+    fun mapsNewlyAddedDimensions() {
+        assertEquals(
+            ScientificUnit("ElectricCurrentDensity", "MetricElectricCurrentDensity", "Ampere per SquareMeter"),
+            bluetoothScientificUnits["org.bluetooth.unit.electric_current_density.ampere_per_square_metre"],
+        )
+        assertEquals(
+            ScientificUnit("ElectricFieldStrength", "MetricElectricFieldStrength", "Volt per Meter"),
+            bluetoothScientificUnits["org.bluetooth.unit.electric_field_strength.volt_per_metre"],
+        )
+        assertEquals(
+            ScientificUnit("Permittivity", "MetricPermittivity", "Farad per Meter"),
+            bluetoothScientificUnits["org.bluetooth.unit.permittivity.farad_per_metre"],
+        )
+        assertEquals(
+            ScientificUnit("Radiance", "MetricRadiance", "Watt per Steradian per SquareMeter"),
+            bluetoothScientificUnits["org.bluetooth.unit.radiance.watt_per_square_metre_steradian"],
+        )
+        assertEquals(
+            ScientificUnit("Torque", "MetricTorque", "Newton x Meter"),
+            bluetoothScientificUnits["org.bluetooth.unit.moment_of_force.newton_metre"],
+        )
+        assertEquals(
+            ScientificUnit("AbsorbedDoseRate", "AbsorbedDoseRate", "Gray per Second"),
+            bluetoothScientificUnits["org.bluetooth.unit.absorbed_dose_rate.gray_per_second"],
+        )
+        // electric_flux_density and surface_charge_density share the C/m² dimension -> the same canonical quantity
+        assertEquals(
+            bluetoothScientificUnits["org.bluetooth.unit.surface_charge_density.coulomb_per_square_metre"],
+            bluetoothScientificUnits["org.bluetooth.unit.electric_flux_density.coulomb_per_square_metre"],
+        )
+        // heat_flux_density and irradiance likewise share W/m²
+        assertEquals(
+            bluetoothScientificUnits["org.bluetooth.unit.irradiance.watt_per_square_metre"],
+            bluetoothScientificUnits["org.bluetooth.unit.heat_flux_density.watt_per_square_metre"],
+        )
+    }
+
+    @Test
     fun leavesUnsupportedUnitsUnmapped() {
         // no Kaluga equivalent -> absent, so the generator falls back to a plain numeric value
         assertNull(bluetoothScientificUnits["org.bluetooth.unit.time.day"])
