@@ -17,7 +17,37 @@
 
 package com.splendo.kaluga.example.feature.scientific.model
 
+import com.splendo.kaluga.scientific.unit.AbsorbedDoseRate
 import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.CatalyticConcentration
+import com.splendo.kaluga.scientific.unit.ElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.ElectricCurrentDensity
+import com.splendo.kaluga.scientific.unit.ElectricDipoleMoment
+import com.splendo.kaluga.scientific.unit.ElectricFieldStrength
+import com.splendo.kaluga.scientific.unit.ElectricalConductivity
+import com.splendo.kaluga.scientific.unit.EnergyDensity
+import com.splendo.kaluga.scientific.unit.EquivalentDoseRate
+import com.splendo.kaluga.scientific.unit.Exposure
+import com.splendo.kaluga.scientific.unit.Irradiance
+import com.splendo.kaluga.scientific.unit.LinearChargeDensity
+import com.splendo.kaluga.scientific.unit.MagneticDipoleMoment
+import com.splendo.kaluga.scientific.unit.MagneticFieldStrength
+import com.splendo.kaluga.scientific.unit.MassFlux
+import com.splendo.kaluga.scientific.unit.MolarEntropy
+import com.splendo.kaluga.scientific.unit.MomentOfInertia
+import com.splendo.kaluga.scientific.unit.Permeability
+import com.splendo.kaluga.scientific.unit.Permittivity
+import com.splendo.kaluga.scientific.unit.Radiance
+import com.splendo.kaluga.scientific.unit.RadiantIntensity
+import com.splendo.kaluga.scientific.unit.Reluctance
+import com.splendo.kaluga.scientific.unit.Resistivity
+import com.splendo.kaluga.scientific.unit.Snap
+import com.splendo.kaluga.scientific.unit.SpecificWeight
+import com.splendo.kaluga.scientific.unit.SurfaceChargeDensity
+import com.splendo.kaluga.scientific.unit.ThermalConductance
+import com.splendo.kaluga.scientific.unit.ThermalConductivity
+import com.splendo.kaluga.scientific.unit.ThermalInsulance
+import com.splendo.kaluga.scientific.unit.Torque
 import com.splendo.kaluga.scientific.unit.CombinedImperialAcceleration
 import com.splendo.kaluga.scientific.unit.CombinedMetricAcceleration
 import com.splendo.kaluga.scientific.unit.ImperialMetricAndImperialAccelerationWrapper
@@ -156,6 +186,66 @@ val ScientificUnit<*>.name: String get() = when (this) {
     is VolumetricFlux -> "${volumetricFlow.name}-${per.name}"
 
     is Yank -> "${force.name} per ${per.name}"
+
+    is AbsorbedDoseRate -> "${absorbedDose.name} per ${per.name}"
+
+    is EquivalentDoseRate -> "${equivalentDose.name} per ${per.name}"
+
+    is CatalyticConcentration -> "${catalysticActivity.name} per ${per.name}"
+
+    is ElectricChargeDensity -> "${charge.name} per ${per.name}"
+
+    is ElectricCurrentDensity -> "${current.name} per ${per.name}"
+
+    is ElectricFieldStrength -> "${voltage.name} per ${per.name}"
+
+    is ElectricalConductivity -> "${conductance.name} per ${per.name}"
+
+    is EnergyDensity -> "${energy.name} per ${per.name}"
+
+    is Exposure -> "${charge.name} per ${per.name}"
+
+    is Irradiance -> "${power.name} per ${per.name}"
+
+    is LinearChargeDensity -> "${charge.name} per ${per.name}"
+
+    is MagneticFieldStrength -> "${current.name} per ${per.name}"
+
+    is MassFlux -> "${massFlowRate.name} per ${per.name}"
+
+    is MolarEntropy -> "${heatCapacity.name} per ${perAmountOfSubstance.name}"
+
+    is Permeability -> "${inductance.name} per ${per.name}"
+
+    is Permittivity -> "${capacitance.name} per ${per.name}"
+
+    is Radiance -> "${radiantIntensity.name} per ${per.name}"
+
+    is RadiantIntensity -> "${power.name} per ${per.name}"
+
+    is Reluctance -> "${current.name} per ${per.name}"
+
+    is Snap -> "${jolt.name} per ${per.name}"
+
+    is SpecificWeight -> "${force.name} per ${per.name}"
+
+    is SurfaceChargeDensity -> "${charge.name} per ${per.name}"
+
+    is ThermalConductance -> "${power.name} per ${per.name}"
+
+    is ThermalConductivity -> "${thermalConductance.name} per ${per.name}"
+
+    is ElectricDipoleMoment -> "${charge.name}-${length.name}"
+
+    is MagneticDipoleMoment -> "${current.name}-${area.name}"
+
+    is MomentOfInertia -> "${weight.name}-${area.name}"
+
+    is Resistivity -> "${resistance.name}-${length.name}"
+
+    is ThermalInsulance -> "${thermalResistance.name}-${area.name}"
+
+    is Torque -> "${force.name}-${length.name}"
 
     else -> this::class.simpleName ?: ""
 }
