@@ -504,6 +504,24 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     data object Temperature : DefinedPhysicalQuantityWithDimension()
 
     /**
+     * A [PhysicalQuantityWithDimension] representing the heat flow rate through a body per unit temperature difference
+     */
+    @Serializable
+    data object ThermalConductance : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing a material's ability to conduct heat per unit length per unit temperature difference
+     */
+    @Serializable
+    data object ThermalConductivity : DefinedPhysicalQuantityWithDimension()
+
+    /**
+     * A [PhysicalQuantityWithDimension] representing the thermal resistance of unit area of a material
+     */
+    @Serializable
+    data object ThermalInsulance : DefinedPhysicalQuantityWithDimension()
+
+    /**
      * A [PhysicalQuantityWithDimension] representing the ease with which an object resists conduction of heat
      */
     @Serializable
@@ -656,6 +674,9 @@ internal fun PolymorphicModuleBuilder<PhysicalQuantity.DefinedPhysicalQuantityWi
     subclass(PhysicalQuantity.SurfaceChargeDensity::class, PhysicalQuantity.SurfaceChargeDensity.serializer())
     subclass(PhysicalQuantity.SurfaceTension::class, PhysicalQuantity.SurfaceTension.serializer())
     subclass(PhysicalQuantity.Temperature::class, PhysicalQuantity.Temperature.serializer())
+    subclass(PhysicalQuantity.ThermalConductance::class, PhysicalQuantity.ThermalConductance.serializer())
+    subclass(PhysicalQuantity.ThermalConductivity::class, PhysicalQuantity.ThermalConductivity.serializer())
+    subclass(PhysicalQuantity.ThermalInsulance::class, PhysicalQuantity.ThermalInsulance.serializer())
     subclass(PhysicalQuantity.ThermalResistance::class, PhysicalQuantity.ThermalResistance.serializer())
     subclass(PhysicalQuantity.Time::class, PhysicalQuantity.Time.serializer())
     subclass(PhysicalQuantity.Torque::class, PhysicalQuantity.Torque.serializer())

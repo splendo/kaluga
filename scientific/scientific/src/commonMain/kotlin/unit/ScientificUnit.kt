@@ -266,6 +266,9 @@ val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
     SurfaceChargeDensityUnits +
     SurfaceTensionUnits +
     TemperatureUnits +
+    ThermalConductanceUnits +
+    ThermalConductivityUnits +
+    ThermalInsulanceUnits +
     ThermalResistanceUnits +
     TimeUnits +
     TorqueUnits +
@@ -357,6 +360,9 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForSurfaceChargeDensity()
     setupForSurfaceTension()
     setupForTemperature()
+    setupForThermalConductance()
+    setupForThermalConductivity()
+    setupForThermalInsulance()
     setupForThermalResistance()
     setupForTime()
     setupForTorque()
@@ -448,6 +454,9 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerSurfaceChargeDensityClasses()
     registerSurfaceTensionClasses()
     registerTemperatureClasses()
+    registerThermalConductanceClasses()
+    registerThermalConductivityClasses()
+    registerThermalInsulanceClasses()
     registerThermalResistanceClasses()
     registerTimeClasses()
     registerTorqueClasses()
