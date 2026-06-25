@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.thermalConductance.div
 import com.splendo.kaluga.scientific.converter.thermalConductivity.times
 import com.splendo.kaluga.scientific.invoke
@@ -37,5 +38,11 @@ class ThermalConductivityUnitTest {
     @Test
     fun thermalConductanceFromThermalConductivityAndLengthTest() {
         assertEqualScientificValue(4(Watt.metric per Kelvin), 2(Watt per Kelvin per Meter) * 2(Meter))
+        assertEqualScientificValue(4(Watt.metric per Kelvin), 2(Meter) * 2(Watt per Kelvin per Meter))
+    }
+
+    @Test
+    fun lengthFromThermalConductanceAndThermalConductivityTest() {
+        assertEqualScientificValue(2(Meter), 4(Watt per Kelvin) / 2(Watt per Kelvin per Meter))
     }
 }

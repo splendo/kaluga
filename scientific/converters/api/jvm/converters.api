@@ -303,6 +303,11 @@ public final class com/splendo/kaluga/scientific/converter/area/ConvertFromMomen
 	public static final fun areaFromMomentumAndDynamicViscosityDefault (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/area/ConvertFromThermalInsulanceAndThermalResistanceKt {
+	public static final fun areaFromThermalInsulanceAndThermalResistance (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun areaFromThermalInsulanceAndThermalResistanceDefault (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/area/ConvertFromVolumeAndLengthKt {
 	public static final fun areaFromVolumeAndHeight (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun areaFromVolumeAndHeightDefault (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -455,6 +460,10 @@ public final class com/splendo/kaluga/scientific/converter/area/ConvertToSpecifi
 	public static final fun imperialAreaDivUKImperialLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialAreaDivUSCustomaryLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricAreaDivMetricLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/area/ConvertToThermalInsulanceKt {
+	public static final fun areaTimesThermalResistance (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/area/ConvertToTimeKt {
@@ -2397,6 +2406,11 @@ public final class com/splendo/kaluga/scientific/converter/length/ConvertFromSur
 	public static final fun lengthFromSurfaceChargeDensityAndElectricChargeDensityDefault (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/length/ConvertFromThermalConductanceAndThermalConductivityKt {
+	public static final fun lengthFromThermalConductanceAndThermalConductivity (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun lengthFromThermalConductanceAndThermalConductivityDefault (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/length/ConvertFromVolumeAndAreaKt {
 	public static final fun heightFromVolumeAndArea (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun heightFromVolumeAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/Length;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -2525,6 +2539,10 @@ public final class com/splendo/kaluga/scientific/converter/length/ConvertToSurfa
 	public static final fun imperialLengthTimesUKImperialElectricChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialLengthTimesUSCustomaryElectricChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun lengthTimesElectricChargeDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/length/ConvertToThermalConductanceKt {
+	public static final fun lengthTimesThermalConductivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/length/ConvertToTimeKt {
@@ -4534,6 +4552,10 @@ public final class com/splendo/kaluga/scientific/converter/thermalConductance/Co
 	public static final fun thermalConductanceFromInvertedThermalResistanceDefault (Lcom/splendo/kaluga/scientific/unit/ThermalConductance;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/thermalConductance/ConvertToLengthKt {
+	public static final fun thermalConductanceDivThermalConductivity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/thermalConductance/ConvertToPowerKt {
 	public static final fun thermalConductanceTimesTemperature (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
@@ -4563,6 +4585,10 @@ public final class com/splendo/kaluga/scientific/converter/thermalConductivity/C
 public final class com/splendo/kaluga/scientific/converter/thermalInsulance/ConvertFromThermalResistanceAndAreaKt {
 	public static final fun thermalInsulanceFromThermalResistanceAndArea (Lcom/splendo/kaluga/scientific/unit/ThermalInsulance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun thermalInsulanceFromThermalResistanceAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/ThermalInsulance;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/thermalInsulance/ConvertToAreaKt {
+	public static final fun thermalInsulanceDivThermalResistance (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/thermalInsulance/ConvertToThermalResistanceKt {
