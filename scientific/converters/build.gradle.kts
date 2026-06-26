@@ -81,9 +81,8 @@ tasks.register("generateConversionDiagrams") {
             appendLine("## Conversion diagrams")
             appendLine()
             appendLine(
-                "For each `PhysicalQuantity`, the diagram shows which quantities it converts to by multiplying (`×`) or " +
-                    "dividing (`÷`) by another quantity (shown on the edge), plus reinterpret/reciprocal bridges (dotted). " +
-                    "Generated from the `convertTo*` sources by `./gradlew :scientific:converters:generateConversionDiagrams`.",
+                "For each `PhysicalQuantity`, a diagram shows which quantities it converts to by multiplying (`×`) or " +
+                    "dividing (`÷`) by another quantity (shown on the edge), plus reinterpret/reciprocal bridges (dotted).",
             )
             appendLine()
             sections.forEach {
