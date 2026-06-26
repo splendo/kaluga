@@ -28,8 +28,8 @@ class ElectricFieldStrengthUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Volt per Meter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot),
-            Volt per Foot,
+            Volt.convert(Decimal.ONE, Decivolt) / Meter.convert(Decimal.ONE, Foot),
+            Decivolt per Foot,
             round = 30,
         )
     }

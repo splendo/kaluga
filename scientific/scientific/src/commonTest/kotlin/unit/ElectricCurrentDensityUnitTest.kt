@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.base.decimal.div
-import com.splendo.kaluga.base.decimal.pow
 import kotlin.test.Test
 
 class ElectricCurrentDensityUnitTest {
@@ -29,8 +28,8 @@ class ElectricCurrentDensityUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Ampere per SquareMeter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot).pow(2),
-            Ampere per SquareFoot,
+            Ampere.convert(Decimal.ONE, Deciampere) / SquareMeter.convert(Decimal.ONE, SquareFoot),
+            Deciampere per SquareFoot,
             round = 30,
         )
     }

@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class ResistivityUnitTest {
 
     @Test
     fun resistivityConversionTest() {
-        assertScientificConversion("1.0", (Ohm x Meter), "3.280839895", Ohm x Foot, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Ohm x Meter),
+            Ohm.convert(Decimal.ONE, Deciohm) * Meter.convert(Decimal.ONE, Foot),
+            Deciohm x Foot,
+            round = 9,
+        )
     }
 }

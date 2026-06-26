@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.base.decimal.div
-import com.splendo.kaluga.base.decimal.pow
 import kotlin.test.Test
 
 class CatalyticConcentrationUnitTest {
@@ -29,8 +28,8 @@ class CatalyticConcentrationUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Katal per CubicMeter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot).pow(3),
-            Katal per CubicFoot,
+            Katal.convert(Decimal.ONE, Decikatal) / CubicMeter.convert(Decimal.ONE, CubicFoot),
+            Decikatal per CubicFoot,
             round = 30,
         )
     }

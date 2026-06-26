@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
 import kotlin.test.Test
 
 class SpecificWeightUnitTest {
 
     @Test
     fun specificWeightConversionTest() {
-        assertScientificConversion("1.0", (Newton per CubicMeter), "0.001", Newton per Liter, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Newton per CubicMeter),
+            Newton.convert(Decimal.ONE, PoundForce) / CubicMeter.convert(Decimal.ONE, CubicFoot),
+            PoundForce per CubicFoot,
+            round = 9,
+        )
     }
 }

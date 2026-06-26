@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.base.decimal.div
-import com.splendo.kaluga.base.decimal.pow
 import kotlin.test.Test
 
 class SurfaceChargeDensityUnitTest {
@@ -29,8 +28,8 @@ class SurfaceChargeDensityUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Coulomb per SquareMeter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot).pow(2),
-            Coulomb per SquareFoot,
+            Coulomb.convert(Decimal.ONE, Decicoulomb) / SquareMeter.convert(Decimal.ONE, SquareFoot),
+            Decicoulomb per SquareFoot,
             round = 30,
         )
     }

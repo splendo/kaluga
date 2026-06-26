@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class ElectricDipoleMomentUnitTest {
 
     @Test
     fun electricDipoleMomentConversionTest() {
-        assertScientificConversion("1.0", (Coulomb x Meter), "3.280839895", Coulomb x Foot, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Coulomb x Meter),
+            Coulomb.convert(Decimal.ONE, Decicoulomb) * Meter.convert(Decimal.ONE, Foot),
+            Decicoulomb x Foot,
+            round = 9,
+        )
     }
 }

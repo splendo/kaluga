@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
 import kotlin.test.Test
 
 class ThermalConductivityUnitTest {
 
     @Test
     fun thermalConductivityConversionTest() {
-        assertScientificConversion("1.0", (Kilowatt per Kelvin per Meter), "1000", Watt per Kelvin per Meter)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Kilowatt per Kelvin per Meter),
+            Kilowatt.convert(Decimal.ONE, Watt) / Meter.convert(Decimal.ONE, Foot),
+            Watt per Kelvin per Foot,
+            round = 9,
+        )
     }
 }

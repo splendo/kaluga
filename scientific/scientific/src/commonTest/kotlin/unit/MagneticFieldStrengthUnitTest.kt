@@ -28,8 +28,8 @@ class MagneticFieldStrengthUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Ampere per Meter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot),
-            Ampere per Foot,
+            Ampere.convert(Decimal.ONE, Deciampere) / Meter.convert(Decimal.ONE, Foot),
+            Deciampere per Foot,
             round = 30,
         )
     }

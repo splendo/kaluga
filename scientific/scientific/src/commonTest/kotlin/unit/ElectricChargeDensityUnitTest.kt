@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.base.decimal.div
-import com.splendo.kaluga.base.decimal.pow
 import kotlin.test.Test
 
 class ElectricChargeDensityUnitTest {
@@ -29,8 +28,8 @@ class ElectricChargeDensityUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Coulomb per CubicMeter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot).pow(3),
-            Coulomb per CubicFoot,
+            Coulomb.convert(Decimal.ONE, Decicoulomb) / CubicMeter.convert(Decimal.ONE, CubicFoot),
+            Decicoulomb per CubicFoot,
             round = 30,
         )
     }

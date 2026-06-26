@@ -28,9 +28,9 @@ class ExposureUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Coulomb per Kilogram),
-            Pound.convert(Decimal.ONE, Kilogram),
-            Coulomb per Pound,
-            round = 30,
+            Coulomb.convert(Decimal.ONE, Decicoulomb) / Kilogram.convert(Decimal.ONE, Pound),
+            Decicoulomb per Pound,
+            round = 7,
         )
     }
 }

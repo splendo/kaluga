@@ -28,8 +28,8 @@ class PermeabilityUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Henry per Meter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot),
-            Henry per Foot,
+            Henry.convert(Decimal.ONE, Decihenry) / Meter.convert(Decimal.ONE, Foot),
+            Decihenry per Foot,
             round = 30,
         )
     }

@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
 import kotlin.test.Test
 
 class ElectricalConductivityUnitTest {
 
     @Test
     fun electricalConductivityConversionTest() {
-        assertScientificConversion("1.0", (Siemens per Meter), "0.3048", Siemens per Foot, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Siemens per Meter),
+            Siemens.convert(Decimal.ONE, Decisiemens) / Meter.convert(Decimal.ONE, Foot),
+            Decisiemens per Foot,
+            round = 9,
+        )
     }
 }

@@ -28,8 +28,8 @@ class PermittivityUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             (Farad per Meter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot),
-            Farad per Foot,
+            Farad.convert(Decimal.ONE, Decifarad) / Meter.convert(Decimal.ONE, Foot),
+            Decifarad per Foot,
             round = 30,
         )
     }

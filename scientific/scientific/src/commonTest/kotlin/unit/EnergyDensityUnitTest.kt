@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
 import kotlin.test.Test
 
 class EnergyDensityUnitTest {
 
     @Test
     fun energyDensityConversionTest() {
-        assertScientificConversion("1.0", (WattHour per CubicFoot), "35.314666721", WattHour per CubicMeter, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            (WattHour per CubicFoot),
+            WattHour.convert(Decimal.ONE, Joule) / CubicFoot.convert(Decimal.ONE, CubicMeter),
+            Joule per CubicMeter,
+            round = 9,
+        )
     }
 }

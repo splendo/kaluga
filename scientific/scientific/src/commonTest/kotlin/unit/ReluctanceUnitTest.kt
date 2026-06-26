@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
 import kotlin.test.Test
 
 class ReluctanceUnitTest {
 
     @Test
     fun reluctanceConversionTest() {
-        assertScientificConversion("1.0", (Ampere per Weber), "0.00000001", Ampere per Maxwell, round = 8)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Ampere per Weber),
+            Ampere.convert(Decimal.ONE, Deciampere) / Weber.convert(Decimal.ONE, Maxwell),
+            Deciampere per Maxwell,
+            round = 8,
+        )
     }
 }

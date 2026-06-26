@@ -23,6 +23,6 @@ class AbsorbedDoseRateUnitTest {
 
     @Test
     fun absorbedDoseRateConversionTest() {
-        assertScientificConversion("1.0", (Gray per Second), "3600", Gray per Hour)
+        assertScientificConversion("1.0", (Gray per Second), "36000", Decigray per Hour)
     }
 }

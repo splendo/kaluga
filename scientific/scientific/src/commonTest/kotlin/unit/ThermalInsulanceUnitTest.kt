@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class ThermalInsulanceUnitTest {
 
     @Test
     fun thermalInsulanceConversionTest() {
-        assertScientificConversion("1.0", ((Kelvin per Watt) x SquareMeter), "10.763910417", (Kelvin per Watt) x SquareFoot, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            ((Kelvin per Watt) x SquareMeter),
+            (Kelvin per Watt).convert(Decimal.ONE, Kelvin per Deciwatt) * SquareMeter.convert(Decimal.ONE, SquareFoot),
+            (Kelvin per Deciwatt) x SquareFoot,
+            round = 9,
+        )
     }
 }

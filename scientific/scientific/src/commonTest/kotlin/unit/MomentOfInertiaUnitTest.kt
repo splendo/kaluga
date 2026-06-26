@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class MomentOfInertiaUnitTest {
 
     @Test
     fun momentOfInertiaConversionTest() {
-        assertScientificConversion("1.0", (Kilogram x SquareMeter), "1000", Gram x SquareMeter)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Kilogram x SquareMeter),
+            Kilogram.convert(Decimal.ONE, Pound) * SquareMeter.convert(Decimal.ONE, SquareFoot),
+            Pound x SquareFoot,
+            round = 28,
+        )
     }
 }

@@ -17,12 +17,21 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class MassFluxUnitTest {
 
     @Test
     fun massFluxConversionTest() {
-        assertScientificConversion("1.0", (Kilogram per Second per SquareMeter), "1000", Gram per Second per SquareMeter)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Kilogram per Second per SquareMeter),
+            Kilogram.convert(Decimal.ONE, Pound) / (Second.convert(Decimal.ONE, Hour) * SquareMeter.convert(Decimal.ONE, SquareFoot)),
+            Pound per Hour per SquareFoot,
+            round = 26,
+        )
     }
 }

@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
 import kotlin.test.Test
 
 class LinearChargeDensityUnitTest {
 
     @Test
     fun linearChargeDensityConversionTest() {
-        assertScientificConversion("1.0", (Coulomb per Meter), "0.3048", Coulomb per Foot, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Coulomb per Meter),
+            Coulomb.convert(Decimal.ONE, Decicoulomb) / Meter.convert(Decimal.ONE, Foot),
+            Decicoulomb per Foot,
+            round = 9,
+        )
     }
 }

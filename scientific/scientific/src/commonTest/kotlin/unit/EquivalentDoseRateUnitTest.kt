@@ -23,6 +23,6 @@ class EquivalentDoseRateUnitTest {
 
     @Test
     fun equivalentDoseRateConversionTest() {
-        assertScientificConversion("1.0", (Sievert per Second), "3600", Sievert per Hour)
+        assertScientificConversion("1.0", (Sievert per Second), "36000", Decisievert per Hour)
     }
 }

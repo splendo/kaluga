@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class TorqueUnitTest {
@@ -24,10 +26,11 @@ class TorqueUnitTest {
     @Test
     fun torqueConversionTest() {
         assertScientificConversion(
-            "1.0",
+            Decimal.ONE,
             (Newton x Meter),
-            "100",
-            (Newton x Centimeter),
+            Newton.convert(Decimal.ONE, PoundForce) * Meter.convert(Decimal.ONE, Foot),
+            PoundForce x Foot,
+            round = 30,
         )
     }
 }

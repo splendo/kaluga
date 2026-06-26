@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.decimal.Decimal
 import com.splendo.kaluga.base.decimal.div
-import com.splendo.kaluga.base.decimal.pow
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class RadianceUnitTest {
@@ -29,8 +29,8 @@ class RadianceUnitTest {
         assertScientificConversion(
             Decimal.ONE,
             ((Watt per Steradian) per SquareMeter),
-            Decimal.ONE / Meter.convert(Decimal.ONE, Foot).pow(2),
-            (Watt per Steradian) per SquareFoot,
+            Watt.convert(Decimal.ONE, Deciwatt) / (Steradian.convert(Decimal.ONE, Centisteradian) * SquareMeter.convert(Decimal.ONE, SquareFoot)),
+            (Deciwatt per Centisteradian) per SquareFoot,
             round = 30,
         )
     }

@@ -17,12 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.times
 import kotlin.test.Test
 
 class MagneticDipoleMomentUnitTest {
 
     @Test
     fun magneticDipoleMomentConversionTest() {
-        assertScientificConversion("1.0", (Ampere x SquareMeter), "10.763910417", Ampere x SquareFoot, round = 9)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Ampere x SquareMeter),
+            Ampere.convert(Decimal.ONE, Deciampere) * SquareMeter.convert(Decimal.ONE, SquareFoot),
+            Deciampere x SquareFoot,
+            round = 27,
+        )
     }
 }
