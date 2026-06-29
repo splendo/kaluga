@@ -19,8 +19,11 @@ package com.splendo.kaluga.example.resources.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -29,9 +32,9 @@ import androidx.compose.ui.Modifier
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
+import com.splendo.kaluga.example.feature.resources.LabelViewModel
 import com.splendo.kaluga.resources.compose.Composable
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LabelsLayout() {
@@ -44,6 +47,7 @@ fun LabelsLayout() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(Constants.Padding.default)
+                .padding(WindowInsets.systemBars.asPaddingValues())
                 .verticalScroll(rememberScrollState()),
         ) {
             labels.forEach {

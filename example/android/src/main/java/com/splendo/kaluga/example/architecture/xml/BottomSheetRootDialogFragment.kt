@@ -26,16 +26,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelBottomSheetDialogFragment
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.FragmentBottomSheetBinding
 import com.splendo.kaluga.example.databinding.FragmentBottomSheetRootBinding
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
+import com.splendo.kaluga.example.feature.architecture.BottomSheetNavigation
+import com.splendo.kaluga.example.feature.architecture.BottomSheetSubPageNavigation
+import com.splendo.kaluga.example.feature.architecture.BottomSheetViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

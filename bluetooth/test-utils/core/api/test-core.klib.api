@@ -1,0 +1,21 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bluetooth:test-core>
+final class com.splendo.kaluga.bluetooth.test/MockBluetoothMonitor : com.splendo.kaluga.bluetooth/BluetoothMonitor, com.splendo.kaluga.service.test/MockServiceMonitor { // com.splendo.kaluga.bluetooth.test/MockBluetoothMonitor|null[0]
+    constructor <init>(kotlinx.coroutines.flow/StateFlow<kotlin/Boolean>) // com.splendo.kaluga.bluetooth.test/MockBluetoothMonitor.<init>|<init>(kotlinx.coroutines.flow.StateFlow<kotlin.Boolean>){}[0]
+
+    final val isEnabled // com.splendo.kaluga.bluetooth.test/MockBluetoothMonitor.isEnabled|{}isEnabled[0]
+        final fun <get-isEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.bluetooth.test/MockBluetoothMonitor.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+}
+
+// Targets: [apple]
+final fun com.splendo.kaluga.bluetooth.test/randomUUID(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth.test/randomUUID|randomUUID(){}[0]
+
+// Targets: [js, wasmJs]
+final fun com.splendo.kaluga.bluetooth.test/randomUUID(): com.splendo.kaluga.bluetooth/UUID // com.splendo.kaluga.bluetooth.test/randomUUID|randomUUID(){}[0]

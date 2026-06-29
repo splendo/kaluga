@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.plugin.extensions
 
+import com.splendo.kaluga.plugin.extensions.BaseKalugaExtension.Companion.BASE_GROUP
 import com.splendo.kaluga.plugin.helpers.jvmTarget
 import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
@@ -124,8 +125,8 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
             when {
                 project.plugins.hasPlugin(KotlinMultiplatformPluginWrapper::class.java) -> configure(
                     KotlinMultiplatform(
-                        // scientific docs take an enormous amount of RAM so we skip them
-                        javadocJar = if (project.name.startsWith("scientific")) {
+                        // scientific converters docs take an enormous amount of RAM so we skip them
+                        javadocJar = if (project.name.startsWith("converters")) {
                             JavadocJar.Empty()
                         } else {
                             JavadocJar.Dokka("dokkaGeneratePublicationHtml")
@@ -149,7 +150,12 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 }
             }
             publishToMavenCentral()
-            signAllPublications()
+            // Only sign when a signing key is configured (CI / release builds). Without this guard
+            // `publishToMavenLocal` fails locally with "no configured signatory" because the version
+            // is a non-SNAPSHOT (`-alpha`) release that the publish plugin signs by default.
+            if (project.providers.gradleProperty("signingInMemoryKey").getOrNull() != null) {
+                signAllPublications()
+            }
         }
     }
 
@@ -161,7 +167,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     @OptIn(ExperimentalStdlibApi::class)
     @JvmName("handleProjectEvaluated")
     fun afterProjectEvaluated(project: Project) {
-        project.group = BASE_GROUP
+        project.group = project.mavenGroup()
 
         project.tasks.withType(Test::class.java) {
             testLogging {
@@ -175,6 +181,21 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         }
 
         project.afterProjectEvaluated()
+    }
+
+    /**
+     * The Maven groupId for this project, following the Gradle project nesting: [BASE_GROUP] plus
+     * every path segment *above* the project itself (the artifactId is the project's own name).
+     *
+     * - `:base` → `com.splendo.kaluga` (flat module)
+     * - `:architecture:compose` → `com.splendo.kaluga.architecture` (artifactId `compose`)
+     * - `:bluetooth:test-client` → `com.splendo.kaluga.bluetooth` (artifactId `test-client`)
+     *
+     * Group container projects (e.g. `:architecture`) have no build script and are never published.
+     */
+    private fun Project.mavenGroup(): String {
+        val parentSegments = path.split(":").filter { it.isNotEmpty() }.dropLast(1)
+        return (listOf(BASE_GROUP) + parentSegments).joinToString(".")
     }
 
     /**

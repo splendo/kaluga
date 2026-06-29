@@ -1,0 +1,34 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.service:service>
+abstract interface com.splendo.kaluga.service/ServiceMonitor { // com.splendo.kaluga.service/ServiceMonitor|null[0]
+    abstract val isEnabled // com.splendo.kaluga.service/ServiceMonitor.isEnabled|{}isEnabled[0]
+        abstract fun <get-isEnabled>(): kotlinx.coroutines.flow/Flow<kotlin/Boolean> // com.splendo.kaluga.service/ServiceMonitor.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+    abstract val isServiceEnabled // com.splendo.kaluga.service/ServiceMonitor.isServiceEnabled|{}isServiceEnabled[0]
+        abstract fun <get-isServiceEnabled>(): kotlin/Boolean // com.splendo.kaluga.service/ServiceMonitor.isServiceEnabled.<get-isServiceEnabled>|<get-isServiceEnabled>(){}[0]
+
+    abstract fun startMonitoring() // com.splendo.kaluga.service/ServiceMonitor.startMonitoring|startMonitoring(){}[0]
+    abstract fun stopMonitoring() // com.splendo.kaluga.service/ServiceMonitor.stopMonitoring|stopMonitoring(){}[0]
+}
+
+abstract class com.splendo.kaluga.service/DefaultServiceMonitor : com.splendo.kaluga.service/ServiceMonitor { // com.splendo.kaluga.service/DefaultServiceMonitor|null[0]
+    constructor <init>(com.splendo.kaluga.logging/Logger = ...) // com.splendo.kaluga.service/DefaultServiceMonitor.<init>|<init>(com.splendo.kaluga.logging.Logger){}[0]
+
+    final val logger // com.splendo.kaluga.service/DefaultServiceMonitor.logger|{}logger[0]
+        final fun <get-logger>(): com.splendo.kaluga.logging/Logger // com.splendo.kaluga.service/DefaultServiceMonitor.logger.<get-logger>|<get-logger>(){}[0]
+    open val isEnabled // com.splendo.kaluga.service/DefaultServiceMonitor.isEnabled|{}isEnabled[0]
+        open fun <get-isEnabled>(): kotlinx.coroutines.flow/Flow<kotlin/Boolean> // com.splendo.kaluga.service/DefaultServiceMonitor.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+    open val logTag // com.splendo.kaluga.service/DefaultServiceMonitor.logTag|{}logTag[0]
+        open fun <get-logTag>(): kotlin/String // com.splendo.kaluga.service/DefaultServiceMonitor.logTag.<get-logTag>|<get-logTag>(){}[0]
+
+    abstract fun monitoringDidStart() // com.splendo.kaluga.service/DefaultServiceMonitor.monitoringDidStart|monitoringDidStart(){}[0]
+    abstract fun monitoringDidStop() // com.splendo.kaluga.service/DefaultServiceMonitor.monitoringDidStop|monitoringDidStop(){}[0]
+    final fun startMonitoring() // com.splendo.kaluga.service/DefaultServiceMonitor.startMonitoring|startMonitoring(){}[0]
+    final fun stopMonitoring() // com.splendo.kaluga.service/DefaultServiceMonitor.stopMonitoring|stopMonitoring(){}[0]
+    final fun updateState() // com.splendo.kaluga.service/DefaultServiceMonitor.updateState|updateState(){}[0]
+}

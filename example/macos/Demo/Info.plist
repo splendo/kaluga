@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>The Kaluga example needs Bluetooth to demonstrate scanning.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>The Kaluga example needs Bluetooth to demonstrate scanning.</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>The Kaluga example needs Calendar access to demonstrate the calendar permission.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>The Kaluga example needs Camera access to demonstrate the camera permission.</string>
+    <key>NSContactsUsageDescription</key>
+    <string>The Kaluga example needs Contacts access to demonstrate the contacts permission.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>The Kaluga example needs location to demonstrate the location feature.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>The Kaluga example needs location to demonstrate the location feature.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>The Kaluga example needs location to demonstrate the location feature.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>The Kaluga example needs location to demonstrate the location feature.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>The Kaluga example needs Microphone access to demonstrate the microphone permission.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>The Kaluga example needs Photo Library access to demonstrate the storage permission.</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.splendo.kaluga.example</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>kalugaexample</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

@@ -21,7 +21,7 @@ Scanning for nearby devices with Bluetooth LE:
 
 ```kotlin
 // will auto request permissions and try to enable bluetooth
-BluetoothBuilder().create().devices().collect {
+BluetoothClientBuilder().createClient().devices().collect {
     i("discovered device: $it") // log found device
 }
 ```
@@ -48,7 +48,7 @@ builder.subscribe(activity) // this needs be done in the Android source-set to b
 builder.unsubscribe(activity) // when the Activity is stopped
 ```
 
-However Kaluga's [architecture module](architecture/) offers a cross-platform [`LifecycleViewModel`](architecture/src/commonMain/kotlin/viewmodel/LifecycleViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
+However Kaluga's [architecture module](architecture/) offers a cross-platform [`LifecycleViewModel`](architecture/architecture/src/commonMain/kotlin/viewmodel/LifecycleViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
 
 ```kotlin
 // this can just be in the commonMain source
@@ -66,8 +66,6 @@ Kaluga contains [an example project](example/) that is used to test the develope
 
 ## Using Kaluga
 
-> **_NOTE:_** Older versions of Kotlin may cause a Thread Deadlock when running some modules on iOS. For this reason, it is recommended to target Kotlin `2.2.21` or higher
-
 For starting a new project based on Kaluga see the [kaluga-starter repo](https://github.com/splendo/kaluga-starter), which shows how to do this step by step.
 
 Kaluga is available on Maven Central. For example the Kaluga Alerts can be imported like this:
@@ -77,7 +75,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.splendo.kaluga:alerts:$kalugaVersion")
+    implementation("com.splendo.kaluga.alerts:alerts:$kalugaVersion")
 }
 ```
 
@@ -88,7 +86,7 @@ repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 dependencies {
-    implementation("com.splendo.kaluga:alerts:$kalugaDevelopVersion-SNAPSHOT")
+    implementation("com.splendo.kaluga.alerts:alerts:$kalugaDevelopVersion-SNAPSHOT")
 }
 ```
 
@@ -96,53 +94,71 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 
 ### Available Modules
 
-| Module                                                      | Usage                                                                              | Artifact Name                                  |
-|-------------------------------------------------------------|------------------------------------------------------------------------------------|------------------------------------------------|
-| [alerts](alerts/)                                           | Used for Showing Alert Dialogs                                                     | com.splendo.kaluga:alerts                      |
-| [architecture](architecture/)                               | MVVM architecture                                                                  | com.splendo.kaluga:architecture                |
-| [architecture-compose](architecture-compose/)               | Compose extensions for architecture                                                | com.splendo.kaluga:architecture-compose        |
-| [base](base/)                                               | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga:base                        |
-| [beacons](beacons/)                                         | Tracking the availability of Beacons using the Eddystone protocol                  | com.splendo.kaluga:beacons                     |
-| [bluetooth](bluetooth/)                                     | Scanning for and communicating with BLE devices                                    | com.splendo.kaluga:bluetooth                   |
-| [date-time](date-time/)                                     | Contains multiplatform classes to work with date and time                          | com.splendo.kaluga:date-time                   |
-| [date-timepicker](date-time-picker/)                        | Used for showing a Date or Time Picker                                             | com.splendo.kaluga:date-time-picker            |
-| [hud](hud/)                                                 | Used for showing a Loading indicator HUD                                           | com.splendo.kaluga:hud                         |
-| [keyboard](keyboard/)                                       | Used for showing and hiding the keyboard                                           | com.splendo.kaluga:keyboard                    |
-| [keyboard-compose](keyboard-compose/)                       | Compose extensions for keyboard                                                    | com.splendo.kaluga:keyboard-compose            |
-| [links](links/)                                             | Used for decoding url into an object                                               | com.splendo.kaluga:links                       |
-| [location](location/)                                       | Provides the User' geolocation                                                     | com.splendo.kaluga:location                    |
-| [logging](logging/)                                         | Shared console logging                                                             | com.splendo.kaluga:logging                     |
-| [media](media/)                                             | Playing audio/video                                                                | com.splendo.kaluga:media                       |
-| [base-permissions](base-permissions/)                       | Managing permissions, used in conjunction with modules below                       | com.splendo.kaluga:base-permissions            |
-| [bluetooth-permissions](bluetooth-permissions/)             | Managing bluetooth permissions                                                     | com.splendo.kaluga:bluetooth-permissions       |
-| [calendar-permissions](calendar-permissions/)               | Managing calendar permissions                                                      | com.splendo.kaluga:calendar-permissions        |
-| [camera-permissions](camera-permissions/)                   | Managing camera permissions                                                        | com.splendo.kaluga:camera-permissions          |
-| [contacts-permissions](contacts-permissions/)               | Managing contacts permissions                                                      | com.splendo.kaluga:contacts-permissions        |
-| [location-permissions](location-permissions/)               | Managing location permissions                                                      | com.splendo.kaluga:location-permissions        |
-| [microphone-permissions](microphone-permissions/)           | Managing microphone permissions                                                    | com.splendo.kaluga:microphone-permissions      |
-| [notifications-permissions](notifications-permissions/)     | Managing notifications permissions                                                 | com.splendo.kaluga:notifications-permissions   |
-| [storage-permissions](storage-permissions/)                 | Managing storage permissions                                                       | com.splendo.kaluga:storage-permissions         |
-| [resources](resources/)                                     | Provides shared Strings, Images, Colors and Fonts                                  | com.splendo.kaluga:resources                   |
-| [resources-compose](resources-compose/)                     | Compose extensions for resources                                                   | com.splendo.kaluga:resources-compose           |
-| [resources-databinding](resources-databinding/)             | Data Binding extensions for resources                                              | com.splendo.kaluga:resources-databinding       |
-| [review](review/)                                           | Used for requesting the user to review the app                                     | com.splendo.kaluga:review                      |
-| [scientific](scientific/)                                   | Scientific units and conversions                                                   | com.splendo.kaluga:scientific                  |
-| [service](service/)                                         | Used for adding services to Kaluga                                                 | com.splendo.kaluga:service                     |
-| [system](system/)                                           | System APIs such as network, audio, battery                                        | com.splendo.kaluga:system                      |
-| [test-utils](test-utils/)                                   | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils                  |
-| [test-utils-base](test-utils-base/)                         | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils-base             |
-| [test-utils-alerts](test-utils-alerts/)                     | Enables easier testing of Alerts module                                            | com.splendo.kaluga:test-utils-alerts           |
-| [test-utils-architecture](test-utils-architecture/)         | Enables easier testing of Architecture module                                      | com.splendo.kaluga:test-utils-architecture     |
-| [test-utils-bluetooth](test-utils-bluetooth/)               | Enables easier testing of Bluetooth module                                         | com.splendo.kaluga:test-utils-bluetooth        |
-| [test-utils-date-time-picker](test-utils-date-time-picker/) | Enables easier testing of Date Time Picker module                                  | com.splendo.kaluga:test-utils-date-time-picker |
-| [test-utils-hud](test-utils-hud/)                           | Enables easier testing of HUD module                                               | com.splendo.kaluga:test-utils-hud              |
-| [test-utils-keyboard](test-utils-keyboard/)                 | Enables easier testing of Keyboard module                                          | com.splendo.kaluga:test-utils-keyboard         |
-| [test-utils-koin](test-utils-koin/)                         | Enables easier testing with Koin                                                   | com.splendo:kaluga.test-utils-koin             |
-| [test-utils-location](test-utils-location/)                 | Enables easier testing of Location module                                          | com.splendo.kaluga:test-utils-location         |
-| [test-utils-permissions](test-utils-permissions/)           | Enables easier testing of Permissions modules                                      | com.splendo.kaluga:test-utils-permissions      |
-| [test-utils-resources](test-utils-resources/)               | Enables easier testing of Resources module                                         | com.splendo.kaluga:test-utils-resources        |
-| [test-utils-service](test-utils-service/)                   | Enables easier testing of Service module                                           | com.splendo.kaluga:test-utils-service          |
-| [test-utils-system](test-utils-system/)                     | Enables easier testing of System module                                            | com.splendo.kaluga:test-utils-system           |
+Modules are organized into feature groups; each group directory has its own `README` with more detail. The table below lists every published module, its artifact coordinate, and the platforms it supports.
+
+| Module | Usage | Artifact | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| [alerts/alerts](alerts/alerts/) | Showing alert dialogs | `com.splendo.kaluga.alerts:alerts` | ✅ | ✅ |  |  |  |  |  |  |
+| [alerts/test-utils](alerts/test-utils/) | Test helpers for the alerts module | `com.splendo.kaluga.alerts:test` | ✅ | ✅ |  |  |  |  |  |  |
+| [architecture/architecture](architecture/architecture/) | MVVM architecture | `com.splendo.kaluga.architecture:architecture` | ✅ | ✅ |  |  |  |  |  |  |
+| [architecture/compose](architecture/compose/) | Compose extensions for architecture | `com.splendo.kaluga.architecture:compose` | ✅ |  |  |  |  |  |  |  |
+| [architecture/test-utils](architecture/test-utils/) | Test helpers for the architecture module | `com.splendo.kaluga.architecture:test` | ✅ | ✅ |  |  |  |  |  |  |
+| [architecture/test-koin](architecture/test-koin/) | Koin-based test helpers | `com.splendo.kaluga.architecture:test-koin` | ✅ | ✅ |  |  |  |  |  |  |
+| [base/core](base/core/) | Threading, flowables and concurrent collections | `com.splendo.kaluga.base:core` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/state](base/state/) | State machines (`KalugaState`, `StateRepo`) | `com.splendo.kaluga.base:state` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/decimal](base/decimal/) | High-precision decimal arithmetic | `com.splendo.kaluga.base:decimal` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/bytes](base/bytes/) | ByteArray utilities, hex conversion and numeric byte encoding | `com.splendo.kaluga.base:bytes` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/crc](base/crc/) | Cyclic Redundancy Check (CRC) calculation | `com.splendo.kaluga.base:crc` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/i18n](base/i18n/) | Locales, unit systems and locale-aware String casing | `com.splendo.kaluga.base:i18n` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/formatting](base/formatting/) | Formatting and parsing of numbers and strings | `com.splendo.kaluga.base:formatting` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [base/test-utils](base/test-utils/) | Test helpers built on top of base | `com.splendo.kaluga.base:test` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bluetooth/core](bluetooth/core/) | Shared Bluetooth attributes and the BluetoothFormat (de)serialization framework | `com.splendo.kaluga.bluetooth:core` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bluetooth/client](bluetooth/client/) | Scanning for and connecting to BLE devices as a Client | `com.splendo.kaluga.bluetooth:client` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bluetooth/server](bluetooth/server/) | Advertising and exposing GATT attributes as a Server | `com.splendo.kaluga.bluetooth:server` | ✅ | ✅ |  |  |  | ✅ |  |  |
+| [bluetooth/beacons](bluetooth/beacons/) | Tracking the availability of Beacons using the Eddystone protocol | `com.splendo.kaluga.bluetooth:beacons` | ✅ | ✅ |  |  |  | ✅ | ✅ | ✅ |
+| [bluetooth/test-utils/core](bluetooth/test-utils/core/) | Test helpers for the Bluetooth core module | `com.splendo.kaluga.bluetooth:test-core` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bluetooth/test-utils/client](bluetooth/test-utils/client/) | Test helpers for the Bluetooth client module | `com.splendo.kaluga.bluetooth:test-client` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bluetooth/test-utils/server](bluetooth/test-utils/server/) | Test helpers for the Bluetooth server module | `com.splendo.kaluga.bluetooth:test-server` | ✅ | ✅ |  |  |  | ✅ |  |  |
+| [date-time/date-time](date-time/date-time/) | Dates, time zones and date formatting | `com.splendo.kaluga.date-time:date-time` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [date-time/timer](date-time/timer/) | A RecurringTimer providing ticks at regular intervals | `com.splendo.kaluga.date-time:timer` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [date-time-picker/date-time-picker](date-time-picker/date-time-picker/) | Showing a Date or Time Picker | `com.splendo.kaluga.date-time-picker:date-time-picker` | ✅ | ✅ |  |  |  |  |  |  |
+| [date-time-picker/test-utils](date-time-picker/test-utils/) | Test helpers for the Date Time Picker module | `com.splendo.kaluga.date-time-picker:test` | ✅ | ✅ |  |  |  |  |  |  |
+| [hud/hud](hud/hud/) | Showing a loading-indicator HUD | `com.splendo.kaluga.hud:hud` | ✅ | ✅ |  |  |  |  |  |  |
+| [hud/test-utils](hud/test-utils/) | Test helpers for the HUD module | `com.splendo.kaluga.hud:test` | ✅ | ✅ |  |  |  |  |  |  |
+| [keyboard/keyboard](keyboard/keyboard/) | Showing and hiding the keyboard | `com.splendo.kaluga.keyboard:keyboard` | ✅ | ✅ |  |  |  |  |  |  |
+| [keyboard/compose](keyboard/compose/) | Compose extensions for keyboard | `com.splendo.kaluga.keyboard:compose` | ✅ |  |  |  |  |  |  |  |
+| [keyboard/test-utils](keyboard/test-utils/) | Test helpers for the keyboard module | `com.splendo.kaluga.keyboard:test` | ✅ | ✅ |  |  |  |  |  |  |
+| [lifecycle/lifecycle](lifecycle/lifecycle/) | Platform-host lifecycle bindings for service builders | `com.splendo.kaluga.lifecycle:lifecycle` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [lifecycle/compose](lifecycle/compose/) | Compose extensions for lifecycle | `com.splendo.kaluga.lifecycle:compose` | ✅ | ✅ |  |  | ✅ | ✅ |  |  |
+| [lifecycle/test-utils](lifecycle/test-utils/) | Test helpers for the lifecycle module | `com.splendo.kaluga.lifecycle:test` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [links](links/) | Decoding a url into an object | `com.splendo.kaluga:links` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [location/location](location/location/) | Provides the user's geolocation | `com.splendo.kaluga.location:location` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [location/test-utils](location/test-utils/) | Test helpers for the location module | `com.splendo.kaluga.location:test` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [logging](logging/) | Shared console logging | `com.splendo.kaluga:logging` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [media/media](media/media/) | Playing audio/video | `com.splendo.kaluga.media:media` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ |  |
+| [media/compose](media/compose/) | Compose extensions for media | `com.splendo.kaluga.media:compose` | ✅ | ✅ |  |  | ✅ | ✅ |  |  |
+| [media/test-utils](media/test-utils/) | Test helpers for the media module | `com.splendo.kaluga.media:test` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ |  |
+| [permissions/core](permissions/core/) | The permissions framework, used in conjunction with the per-type modules | `com.splendo.kaluga.permissions:core` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [permissions/bluetooth](permissions/bluetooth/) | Managing Bluetooth permissions | `com.splendo.kaluga.permissions:bluetooth` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [permissions/calendar](permissions/calendar/) | Managing calendar permissions | `com.splendo.kaluga.permissions:calendar` | ✅ | ✅ |  |  |  | ✅ |  | ✅ |
+| [permissions/camera](permissions/camera/) | Managing camera permissions | `com.splendo.kaluga.permissions:camera` | ✅ | ✅ |  | ✅ | ✅ | ✅ |  |  |
+| [permissions/contacts](permissions/contacts/) | Managing contacts permissions | `com.splendo.kaluga.permissions:contacts` | ✅ | ✅ |  |  |  | ✅ |  | ✅ |
+| [permissions/location](permissions/location/) | Managing location permissions | `com.splendo.kaluga.permissions:location` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [permissions/microphone](permissions/microphone/) | Managing microphone permissions | `com.splendo.kaluga.permissions:microphone` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [permissions/notifications](permissions/notifications/) | Managing notifications permissions | `com.splendo.kaluga.permissions:notifications` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [permissions/storage](permissions/storage/) | Managing storage permissions | `com.splendo.kaluga.permissions:storage` | ✅ | ✅ |  |  |  | ✅ | ✅ |  |
+| [permissions/test-utils](permissions/test-utils/) | Test helpers for the Permissions modules | `com.splendo.kaluga.permissions:test` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [resources/resources](resources/resources/) | Shared Strings, Images, Colors and Fonts | `com.splendo.kaluga.resources:resources` | ✅ | ✅ |  |  |  |  |  |  |
+| [resources/compose](resources/compose/) | Compose extensions for resources | `com.splendo.kaluga.resources:compose` | ✅ |  |  |  |  |  |  |  |
+| [resources/databinding](resources/databinding/) | Data Binding extensions for resources | `com.splendo.kaluga.resources:databinding` | ✅ |  |  |  |  |  |  |  |
+| [resources/test-utils](resources/test-utils/) | Test helpers for the resources module | `com.splendo.kaluga.resources:test` | ✅ | ✅ |  |  |  |  |  |  |
+| [review](review/) | Requesting the user to review the app | `com.splendo.kaluga:review` | ✅ | ✅ |  |  |  | ✅ |  |  |
+| [scientific/scientific](scientific/scientific/) | Scientific units and conversions | `com.splendo.kaluga.scientific:scientific` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [scientific/converters](scientific/converters/) | Converters between scientific units | `com.splendo.kaluga.scientific:converters` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [service/service](service/service/) | Adding services to Kaluga | `com.splendo.kaluga.service:service` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [service/test-utils](service/test-utils/) | Test helpers for the service module | `com.splendo.kaluga.service:test` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [system/system](system/system/) | System APIs such as network, audio, battery | `com.splendo.kaluga.system:system` | ✅ | ✅ |  | ✅ | ✅ | ✅ |  |  |
+| [system/test-utils](system/test-utils/) | Test helpers for the system module | `com.splendo.kaluga.system:test` | ✅ | ✅ |  | ✅ | ✅ | ✅ |  |  |
 
 ### Friends of kaluga
 

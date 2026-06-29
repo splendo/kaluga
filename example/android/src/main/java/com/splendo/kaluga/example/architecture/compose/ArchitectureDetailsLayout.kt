@@ -18,7 +18,11 @@
 package com.splendo.kaluga.example.architecture.compose
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,12 +32,12 @@ import com.splendo.kaluga.architecture.compose.navigation.BottomSheetNavigatorSt
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.example.feature.architecture.ArchitectureDetailsNavigationAction
+import com.splendo.kaluga.example.feature.architecture.ArchitectureDetailsViewModel
+import com.splendo.kaluga.example.feature.architecture.InputDetails
 import com.splendo.kaluga.resources.compose.Composable
 import kotlinx.coroutines.flow.StateFlow
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
@@ -52,7 +56,8 @@ fun ArchitectureDetailsLayout(inputDetails: InputDetails, bottomSheetNavigatorSt
         val nameText by name.state()
         val numberText by number.state()
         HardwareBackButtonNavigation(onBackButtonClickHandler = { onBackPressed() })
-        Column(Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxWidth()
+            .padding(WindowInsets.systemBars.asPaddingValues())) {
             Text(nameText)
             Text(numberText)
             inverseButton.Composable(modifier = Modifier.fillMaxWidth())

@@ -51,14 +51,22 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
 
     open class Apple : TargetDependencyContainer()
     open class IOS : TargetDependencyContainer()
+    open class MacOS : TargetDependencyContainer()
+    open class TvOS : TargetDependencyContainer()
+    open class WatchOS : TargetDependencyContainer()
     open class JS : TargetDependencyContainer()
+    open class WasmJS : TargetDependencyContainer()
     open class JVM : TargetDependencyContainer()
 
     internal val common = objects.newInstance(Common::class.java)
     internal val android = objects.newInstance(Android::class.java)
     internal val apple = objects.newInstance(Apple::class.java)
     internal val ios = objects.newInstance(IOS::class.java)
+    internal val macos = objects.newInstance(MacOS::class.java)
+    internal val tvos = objects.newInstance(TvOS::class.java)
+    internal val watchos = objects.newInstance(WatchOS::class.java)
     internal val js = objects.newInstance(JS::class.java)
+    internal val wasmJs = objects.newInstance(WasmJS::class.java)
     internal val jvm = objects.newInstance(JVM::class.java)
     fun common(action: Action<Common>) {
         action.execute(common)
@@ -76,8 +84,24 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
         action.execute(ios)
     }
 
+    fun macos(action: Action<MacOS>) {
+        action.execute(macos)
+    }
+
+    fun tvos(action: Action<TvOS>) {
+        action.execute(tvos)
+    }
+
+    fun watchos(action: Action<WatchOS>) {
+        action.execute(watchos)
+    }
+
     fun js(action: Action<JS>) {
         action.execute(js)
+    }
+
+    fun wasmJs(action: Action<WasmJS>) {
+        action.execute(wasmJs)
     }
 
     fun jvm(action: Action<JVM>) {
