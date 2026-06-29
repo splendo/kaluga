@@ -77,7 +77,7 @@ jobs:
         run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
 
       - name: Make cache of workspace
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         id: store-build
         with:
           path: |
