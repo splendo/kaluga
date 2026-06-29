@@ -238,9 +238,10 @@ object GattXmlParser {
             .mapNotNull { bitByCondition[it] }
             .distinctBy { it.index }
 
-    // The bit width declared in a format token, taken from its first digit run so both trailing-digit forms (`uint16`)
-    // and leading-digit forms (`16bit`) resolve; tokens with no digits (e.g. `SFLOAT`) have no declared width.
-    private fun formatWidth(format: String): Int = Regex("\\d+").find(format)?.value?.toIntOrNull() ?: 0
+    // The fixed wire bit width of a `<Format>` token, looked up from the closed SIG format set ([GattFormat]); used to
+    // lay out multi-`Field` flag regions and rank flag-selected width alternatives. Variable-length and unrecognised
+    // formats have no fixed width here and yield 0 (so a digit inside e.g. `utf8s` is never mistaken for a width).
+    private fun formatWidth(format: String): Int = GattFormat.of(format)?.bits ?: 0
 
     private fun parseService(root: Element): GattService {
         require(root.tagName == "Service") { "Expected a <Service> root, but was <${root.tagName}>" }
