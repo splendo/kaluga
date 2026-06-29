@@ -424,48 +424,37 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     private class Mapping(val type: TypeName, val annotations: List<AnnotationSpec>)
 
     private fun GattField.toMapping(): Mapping {
+        val gattFormat = GattFormat.of(format) ?: error("Unsupported GATT format '$format' for field '$name'")
         val annotations = mutableListOf<AnnotationSpec>()
-        val type: TypeName = when {
-            format == "boolean" -> BOOLEAN
+        val type: TypeName = when (gattFormat.kind) {
+            GattFormat.Kind.BOOLEAN -> BOOLEAN
 
-            format == "utf8s" -> STRING
+            // UTF-8 is the @Encoded default.
+            GattFormat.Kind.UTF8 -> STRING
 
-            // UTF-8 is the @Encoded default
+            // UTF-16 carries its encoding explicitly.
+            GattFormat.Kind.UTF16 -> STRING.also { annotations += encoded("UTF_16") }
 
-            format == "utf16s" -> STRING.also { annotations += encoded("UTF_16") }
-
-            format == "SFLOAT" -> DOUBLE.also {
-                annotations += size(16)
+            // The IEEE-11073 medical floats decode to a Double of their wire width via @Size + @MedFloat.
+            GattFormat.Kind.MEDICAL_FLOAT -> DOUBLE.also {
+                annotations += size(gattFormat.bits)
                 annotations += MED_FLOAT
             }
 
-            format == "FLOAT" -> DOUBLE.also {
-                annotations += size(32)
-                annotations += MED_FLOAT
-            }
+            // Native IEEE-754 floats: width is intrinsic to the Kotlin type, so no @Size.
+            GattFormat.Kind.IEEE_FLOAT -> if (gattFormat.bits == Float.SIZE_BITS) FLOAT else DOUBLE
 
-            format == "float32" -> FLOAT
-
-            format == "float64" -> DOUBLE
-
-            // A bare bit-width token (e.g. `8bit`, `16bit`) is an unsigned integer of that width.
-            Regex("\\d+bit").matches(format) -> {
-                val bits = integerWidth(format)
-                annotations += size(bits)
-                annotations += UNSIGNED
-                integerType(bits, signed = false)
-            }
-
-            format.startsWith("uint") || format.startsWith("sint") -> {
-                val signed = format.startsWith("sint")
+            GattFormat.Kind.UNSIGNED_INTEGER, GattFormat.Kind.SIGNED_INTEGER -> {
+                val signed = gattFormat.kind == GattFormat.Kind.SIGNED_INTEGER
                 // A flags bit may select between widths (e.g. uint8/uint16); emit a @Size for each, picking the widest type.
-                val widths = (listOf(format) + alternateFormats).map { integerWidth(it) }
+                val widths = (listOf(gattFormat) + alternateFormats.map { GattFormat.of(it) ?: error("Unsupported GATT format '$it' for field '$name'") })
+                    .map { it.requireSupportedWidth(name) }
                 widths.sorted().forEach { annotations += size(it) }
                 if (!signed) annotations += UNSIGNED
                 integerType(widths.max(), signed)
             }
 
-            else -> error("Unsupported GATT format '$format' for field '$name'")
+            GattFormat.Kind.STRUCTURED -> error("Unsupported GATT format '$format' for field '$name'")
         }
         val scaled = multiplier != 1 || decimalExponent != 0 || binaryExponent != 0
         if (scaled) annotations += scalar()
@@ -473,14 +462,12 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         return Mapping(if (scaled) DOUBLE else type, annotations)
     }
 
-    // The wire width (bits) of an integer or bare bit-width format token, validated against the @Size widths the
-    // serializer's Length supports. A width with no Length (e.g. sub-byte 2/4-bit, the non-aligned 12-bit, or 128-bit
-    // which has no Kotlin primitive) is rejected loudly rather than emitting a non-compiling @Size or overflowing.
-    private fun GattField.integerWidth(format: String): Int {
-        val bits = Regex("\\d+").find(format)?.value?.toIntOrNull()
-            ?: error("Unsupported integer format '$format' for field '$name'")
+    // An integer format's wire width, validated against the @Size widths the serializer's Length supports. A width with
+    // no Length (e.g. sub-byte 2/4-bit, the non-aligned 12-bit, or 128-bit which has no Kotlin primitive) is rejected
+    // loudly rather than emitting a non-compiling @Size or overflowing.
+    private fun GattFormat.requireSupportedWidth(fieldName: String): Int {
         require(bits in SUPPORTED_INTEGER_WIDTHS) {
-            "Unsupported integer width '$format' for field '$name'; supported widths (bits): ${SUPPORTED_INTEGER_WIDTHS.sorted()}"
+            "Unsupported integer width '$token' for field '$fieldName'; supported widths (bits): ${SUPPORTED_INTEGER_WIDTHS.sorted()}"
         }
         return bits
     }
