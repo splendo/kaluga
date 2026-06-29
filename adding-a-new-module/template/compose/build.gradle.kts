@@ -3,15 +3,15 @@ plugins {
 }
 
 kaluga {
-    moduleName = "%BASEMODULE%"
+    moduleName = "%PACKAGE%"
     dependencies {
         common {
             main {
-                implementation(project(":base"))
-                implementation(project("%BASEMODULE%"))
+                implementation(project(":base:core"))
+                api(project(":%BASEMODULE%:%BASEMODULE%"))
             }
             test {
-                implementation(project(":test-utils-base"))
+                implementation(project(":base:test"))
             }
         }
     }

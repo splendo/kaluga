@@ -11,7 +11,7 @@ output:
      targets: [Demo]
      group: Generated/KalugaSwiftUI
 args:
-  sharedFrameworkName: KalugaExampleShared
+  sharedFrameworkName: KalugaExample
   includeResources: true
   includeAlerts: true
   includeHud: true

@@ -1,0 +1,187 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.permissions:test>
+final class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo : com.splendo.kaluga.permissions.base/BasePermissionStateRepo<#A> { // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo|null[0]
+    constructor <init>(#A, kotlin/Function0<com.splendo.kaluga.permissions.test/MockPermissionState.Uninitialized<#A>>, kotlin/Boolean = ..., kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.<init>|<init>(1:0;kotlin.Function0<com.splendo.kaluga.permissions.test.MockPermissionState.Uninitialized<1:0>>;kotlin.Boolean;kotlin.coroutines.CoroutineContext){}[0]
+
+    final val didDeinitializeMock // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.didDeinitializeMock|{}didDeinitializeMock[0]
+        final fun <get-didDeinitializeMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Values<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, kotlin/Unit> // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.didDeinitializeMock.<get-didDeinitializeMock>|<get-didDeinitializeMock>(){}[0]
+    final val didInitializeMock // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.didInitializeMock|{}didInitializeMock[0]
+        final fun <get-didInitializeMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Values<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters<com.splendo.kaluga.permissions.test/MockPermissionState<#A>>, kotlin/Unit> // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.didInitializeMock.<get-didInitializeMock>|<get-didInitializeMock>(){}[0]
+    final val permission // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.permission|{}permission[0]
+        final fun <get-permission>(): #A // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.permission.<get-permission>|<get-permission>(){}[0]
+
+    final fun didDeinitialize(com.splendo.kaluga.permissions.test/MockPermissionState<#A>) // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.didDeinitialize|didDeinitialize(com.splendo.kaluga.permissions.test.MockPermissionState<1:0>){}[0]
+    final fun didInitialize(com.splendo.kaluga.permissions.test/MockPermissionState<#A>) // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.didInitialize|didInitialize(com.splendo.kaluga.permissions.test.MockPermissionState<1:0>){}[0]
+    final suspend fun currentMockState(): com.splendo.kaluga.permissions.test/MockPermissionState<#A> // com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo.currentMockState|currentMockState(){}[0]
+}
+
+final class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.permissions.test/MockBasePermissionsBuilder : com.splendo.kaluga.permissions.base/BasePermissionsBuilder<#A> { // com.splendo.kaluga.permissions.test/MockBasePermissionsBuilder|null[0]
+    constructor <init>() // com.splendo.kaluga.permissions.test/MockBasePermissionsBuilder.<init>|<init>(){}[0]
+}
+
+final class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.permissions.test/MockPermissionManager : com.splendo.kaluga.permissions.base/BasePermissionManager<#A> { // com.splendo.kaluga.permissions.test/MockPermissionManager|null[0]
+    constructor <init>(#A, kotlin.time/Duration = ..., com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlin/Boolean = ..., kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.permissions.test/MockPermissionManager.<init>|<init>(1:0;kotlin.time.Duration;com.splendo.kaluga.permissions.test.MockPermissionState.ActiveState;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlin.Boolean;kotlinx.coroutines.CoroutineScope){}[0]
+
+    final val monitoringDidStartMock // com.splendo.kaluga.permissions.test/MockPermissionManager.monitoringDidStartMock|{}monitoringDidStartMock[0]
+        final fun <get-monitoringDidStartMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Unit> // com.splendo.kaluga.permissions.test/MockPermissionManager.monitoringDidStartMock.<get-monitoringDidStartMock>|<get-monitoringDidStartMock>(){}[0]
+    final val monitoringDidStopMock // com.splendo.kaluga.permissions.test/MockPermissionManager.monitoringDidStopMock|{}monitoringDidStopMock[0]
+        final fun <get-monitoringDidStopMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.base.test.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.base.test.mock.parameters/VoidParameters.Values, com.splendo.kaluga.base.test.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.permissions.test/MockPermissionManager.monitoringDidStopMock.<get-monitoringDidStopMock>|<get-monitoringDidStopMock>(){}[0]
+    final val monitoringInterval // com.splendo.kaluga.permissions.test/MockPermissionManager.monitoringInterval|{}monitoringInterval[0]
+        final fun <get-monitoringInterval>(): kotlin.time/Duration // com.splendo.kaluga.permissions.test/MockPermissionManager.monitoringInterval.<get-monitoringInterval>|<get-monitoringInterval>(){}[0]
+    final val requestPermissionDidStartMock // com.splendo.kaluga.permissions.test/MockPermissionManager.requestPermissionDidStartMock|{}requestPermissionDidStartMock[0]
+        final fun <get-requestPermissionDidStartMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.base.test.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.base.test.mock.parameters/VoidParameters.Values, com.splendo.kaluga.base.test.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.permissions.test/MockPermissionManager.requestPermissionDidStartMock.<get-requestPermissionDidStartMock>|<get-requestPermissionDidStartMock>(){}[0]
+
+    final fun grantPermission() // com.splendo.kaluga.permissions.test/MockPermissionManager.grantPermission|grantPermission(){}[0]
+    final fun revokePermission(kotlin/Boolean) // com.splendo.kaluga.permissions.test/MockPermissionManager.revokePermission|revokePermission(kotlin.Boolean){}[0]
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> Builder { // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder|null[0]
+        constructor <init>(#A1, kotlin.time/Duration = ..., com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState = ..., kotlin/Boolean = ...) // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.<init>|<init>(1:0;kotlin.time.Duration;com.splendo.kaluga.permissions.test.MockPermissionState.ActiveState;kotlin.Boolean){}[0]
+
+        final val createMock // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.createMock|{}createMock[0]
+            final fun <get-createMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/PairParameters.Matchers<com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.base.test.mock.parameters/PairParameters.MatchersOrCaptor<com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.base.test.mock.parameters/PairParameters.Values<com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.base.test.mock.parameters/PairParameters<com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.permissions.test/MockPermissionManager<#A1>> // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.createMock.<get-createMock>|<get-createMock>(){}[0]
+        final val createdManagers // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.createdManagers|{}createdManagers[0]
+            final fun <get-createdManagers>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.permissions.test/MockPermissionManager<#A1>> // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.createdManagers.<get-createdManagers>|<get-createdManagers>(){}[0]
+        final val initialState // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.initialState|{}initialState[0]
+            final fun <get-initialState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.initialState.<get-initialState>|<get-initialState>(){}[0]
+        final val monitoringInterval // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.monitoringInterval|{}monitoringInterval[0]
+            final fun <get-monitoringInterval>(): kotlin.time/Duration // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.monitoringInterval.<get-monitoringInterval>|<get-monitoringInterval>(){}[0]
+        final val permission // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.permission|{}permission[0]
+            final fun <get-permission>(): #A1 // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.permission.<get-permission>|<get-permission>(){}[0]
+
+        final fun create(com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.permissions.test/MockPermissionManager<#A1> // com.splendo.kaluga.permissions.test/MockPermissionManager.Builder.create|create(com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+final class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.permissions.test/MockPermissionStateRepo : com.splendo.kaluga.permissions.base/PermissionStateRepo<#A> { // com.splendo.kaluga.permissions.test/MockPermissionStateRepo|null[0]
+    constructor <init>(kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ..., com.splendo.kaluga.permissions.test/MockPermissionManager.Builder<#A>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.permissions.test/MockPermissionStateRepo.<init>|<init>(kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;com.splendo.kaluga.permissions.test.MockPermissionManager.Builder<1:0>;kotlin.coroutines.CoroutineContext){}[0]
+
+    final val builder // com.splendo.kaluga.permissions.test/MockPermissionStateRepo.builder|{}builder[0]
+        final fun <get-builder>(): com.splendo.kaluga.permissions.test/MockPermissionManager.Builder<#A> // com.splendo.kaluga.permissions.test/MockPermissionStateRepo.builder.<get-builder>|<get-builder>(){}[0]
+    final val permissionManager // com.splendo.kaluga.permissions.test/MockPermissionStateRepo.permissionManager|{}permissionManager[0]
+        final fun <get-permissionManager>(): com.splendo.kaluga.permissions.test/MockPermissionManager<#A> // com.splendo.kaluga.permissions.test/MockPermissionStateRepo.permissionManager.<get-permissionManager>|<get-permissionManager>(){}[0]
+}
+
+final class com.splendo.kaluga.permissions.test/MockPermissionsBuilder : com.splendo.kaluga.permissions.base/PermissionsBuilder { // com.splendo.kaluga.permissions.test/MockPermissionsBuilder|null[0]
+    constructor <init>(com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState = ..., kotlin/Boolean = ...) // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.<init>|<init>(com.splendo.kaluga.permissions.test.MockPermissionState.ActiveState;kotlin.Boolean){}[0]
+
+    final val initialActiveState // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.initialActiveState|{}initialActiveState[0]
+        final fun <get-initialActiveState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.initialActiveState.<get-initialActiveState>|<get-initialActiveState>(){}[0]
+    final val registries // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.registries|{}registries[0]
+        final fun <get-registries>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock<*>> // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.registries.<get-registries>|<get-registries>(){}[0]
+    final val setupMocks // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.setupMocks|{}setupMocks[0]
+        final fun <get-setupMocks>(): kotlin/Boolean // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.setupMocks.<get-setupMocks>|<get-setupMocks>(){}[0]
+
+    final inline fun <#A1: reified com.splendo.kaluga.permissions.base/Permission> registerPermissionBuilder() // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.registerPermissionBuilder|registerPermissionBuilder(){0§<com.splendo.kaluga.permissions.base.Permission>}[0]
+    final inline fun <#A1: reified com.splendo.kaluga.permissions.base/Permission> registry(): com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock<#A1> // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.registry|registry(){0§<com.splendo.kaluga.permissions.base.Permission>}[0]
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> RegistryMock { // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock|null[0]
+        constructor <init>(kotlin.reflect/KClass<#A1>) // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.<init>|<init>(kotlin.reflect.KClass<1:0>){}[0]
+
+        final val buildRepos // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.buildRepos|{}buildRepos[0]
+            final fun <get-buildRepos>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.permissions.test/MockBasePermissionStateRepo<#A1>> // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.buildRepos.<get-buildRepos>|<get-buildRepos>(){}[0]
+        final val mock // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.mock|{}mock[0]
+            final fun <get-mock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/PairParameters.Matchers<#A1, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.base.test.mock.parameters/PairParameters.MatchersOrCaptor<#A1, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.base.test.mock.parameters/PairParameters.Values<#A1, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.base.test.mock.parameters/PairParameters<#A1, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.permissions.base/BasePermissionStateRepo<#A1>> // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.mock.<get-mock>|<get-mock>(){}[0]
+        final val permissionClass // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.permissionClass|{}permissionClass[0]
+            final fun <get-permissionClass>(): kotlin.reflect/KClass<#A1> // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.permissionClass.<get-permissionClass>|<get-permissionClass>(){}[0]
+
+        final inline fun <#A2: reified com.splendo.kaluga.permissions.base/Permission> castOrNull(): com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock<#A2>? // com.splendo.kaluga.permissions.test/MockPermissionsBuilder.RegistryMock.castOrNull|castOrNull(){0§<com.splendo.kaluga.permissions.base.Permission>}[0]
+    }
+}
+
+sealed class <#A: com.splendo.kaluga.permissions.base/Permission> com.splendo.kaluga.permissions.test/MockPermissionState { // com.splendo.kaluga.permissions.test/MockPermissionState|null[0]
+    abstract val activeState // com.splendo.kaluga.permissions.test/MockPermissionState.activeState|{}activeState[0]
+        abstract fun <get-activeState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.activeState.<get-activeState>|<get-activeState>(){}[0]
+    final val allow // com.splendo.kaluga.permissions.test/MockPermissionState.allow|{}allow[0]
+        final fun <get-allow>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Allowed<#A>> // com.splendo.kaluga.permissions.test/MockPermissionState.allow.<get-allow>|<get-allow>(){}[0]
+    final val deinitialize // com.splendo.kaluga.permissions.test/MockPermissionState.deinitialize|{}deinitialize[0]
+        final fun <get-deinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Deinitialized<#A>> // com.splendo.kaluga.permissions.test/MockPermissionState.deinitialize.<get-deinitialize>|<get-deinitialize>(){}[0]
+    final val lock // com.splendo.kaluga.permissions.test/MockPermissionState.lock|{}lock[0]
+        final fun <get-lock>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Denied.Locked<#A>> // com.splendo.kaluga.permissions.test/MockPermissionState.lock.<get-lock>|<get-lock>(){}[0]
+    final val reinitialize // com.splendo.kaluga.permissions.test/MockPermissionState.reinitialize|{}reinitialize[0]
+        final fun <get-reinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Initializing<#A>> // com.splendo.kaluga.permissions.test/MockPermissionState.reinitialize.<get-reinitialize>|<get-reinitialize>(){}[0]
+    final val requestMock // com.splendo.kaluga.permissions.test/MockPermissionState.requestMock|{}requestMock[0]
+        final fun <get-requestMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.base.test.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.base.test.mock.parameters/VoidParameters.Values, com.splendo.kaluga.base.test.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.permissions.test/MockPermissionState.requestMock.<get-requestMock>|<get-requestMock>(){}[0]
+    final val unlock // com.splendo.kaluga.permissions.test/MockPermissionState.unlock|{}unlock[0]
+        final fun <get-unlock>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Denied.Requestable<#A>> // com.splendo.kaluga.permissions.test/MockPermissionState.unlock.<get-unlock>|<get-unlock>(){}[0]
+
+    final fun deny(kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Denied<#A>> // com.splendo.kaluga.permissions.test/MockPermissionState.deny|deny(kotlin.Boolean){}[0]
+    final fun initialize(kotlin/Boolean, kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.permissions.base/PermissionState.Initialized<#A>> // com.splendo.kaluga.permissions.test/MockPermissionState.initialize|initialize(kotlin.Boolean;kotlin.Boolean){}[0]
+    final fun request() // com.splendo.kaluga.permissions.test/MockPermissionState.request|request(){}[0]
+
+    final enum class ActiveState : kotlin/Enum<com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState> { // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState|null[0]
+        enum entry ALLOWED // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState.ALLOWED|null[0]
+        enum entry LOCKED // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState.LOCKED|null[0]
+        enum entry REQUESTABLE // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState.REQUESTABLE|null[0]
+
+        final val entries // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState> // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState> // com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState.values|values#static(){}[0]
+    }
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> Allowed : com.splendo.kaluga.permissions.base/PermissionState.Allowed<#A1>, com.splendo.kaluga.permissions.test/MockPermissionState<#A1> { // com.splendo.kaluga.permissions.test/MockPermissionState.Allowed|null[0]
+        constructor <init>() // com.splendo.kaluga.permissions.test/MockPermissionState.Allowed.<init>|<init>(){}[0]
+
+        final val activeState // com.splendo.kaluga.permissions.test/MockPermissionState.Allowed.activeState|{}activeState[0]
+            final fun <get-activeState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.Allowed.activeState.<get-activeState>|<get-activeState>(){}[0]
+    }
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> Deinitialized : com.splendo.kaluga.permissions.base/PermissionState.Deinitialized<#A1>, com.splendo.kaluga.permissions.test/MockPermissionState<#A1> { // com.splendo.kaluga.permissions.test/MockPermissionState.Deinitialized|null[0]
+        constructor <init>(com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState) // com.splendo.kaluga.permissions.test/MockPermissionState.Deinitialized.<init>|<init>(com.splendo.kaluga.permissions.test.MockPermissionState.ActiveState){}[0]
+
+        final val activeState // com.splendo.kaluga.permissions.test/MockPermissionState.Deinitialized.activeState|{}activeState[0]
+            final fun <get-activeState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.Deinitialized.activeState.<get-activeState>|<get-activeState>(){}[0]
+    }
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> Initializing : com.splendo.kaluga.permissions.base/PermissionState.Initializing<#A1>, com.splendo.kaluga.permissions.test/MockPermissionState<#A1> { // com.splendo.kaluga.permissions.test/MockPermissionState.Initializing|null[0]
+        constructor <init>(com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState) // com.splendo.kaluga.permissions.test/MockPermissionState.Initializing.<init>|<init>(com.splendo.kaluga.permissions.test.MockPermissionState.ActiveState){}[0]
+
+        final val activeState // com.splendo.kaluga.permissions.test/MockPermissionState.Initializing.activeState|{}activeState[0]
+            final fun <get-activeState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.Initializing.activeState.<get-activeState>|<get-activeState>(){}[0]
+    }
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> Locked : com.splendo.kaluga.permissions.base/PermissionState.Denied.Locked<#A1>, com.splendo.kaluga.permissions.test/MockPermissionState<#A1> { // com.splendo.kaluga.permissions.test/MockPermissionState.Locked|null[0]
+        constructor <init>() // com.splendo.kaluga.permissions.test/MockPermissionState.Locked.<init>|<init>(){}[0]
+
+        final val activeState // com.splendo.kaluga.permissions.test/MockPermissionState.Locked.activeState|{}activeState[0]
+            final fun <get-activeState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.Locked.activeState.<get-activeState>|<get-activeState>(){}[0]
+    }
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> Requestable : com.splendo.kaluga.permissions.base/PermissionState.Denied.Requestable<#A1>, com.splendo.kaluga.permissions.test/MockPermissionState<#A1> { // com.splendo.kaluga.permissions.test/MockPermissionState.Requestable|null[0]
+        constructor <init>() // com.splendo.kaluga.permissions.test/MockPermissionState.Requestable.<init>|<init>(){}[0]
+
+        final val activeState // com.splendo.kaluga.permissions.test/MockPermissionState.Requestable.activeState|{}activeState[0]
+            final fun <get-activeState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.Requestable.activeState.<get-activeState>|<get-activeState>(){}[0]
+    }
+
+    final class <#A1: com.splendo.kaluga.permissions.base/Permission> Uninitialized : com.splendo.kaluga.permissions.base/PermissionState.Uninitialized<#A1>, com.splendo.kaluga.permissions.test/MockPermissionState<#A1> { // com.splendo.kaluga.permissions.test/MockPermissionState.Uninitialized|null[0]
+        constructor <init>(com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState) // com.splendo.kaluga.permissions.test/MockPermissionState.Uninitialized.<init>|<init>(com.splendo.kaluga.permissions.test.MockPermissionState.ActiveState){}[0]
+
+        final val activeState // com.splendo.kaluga.permissions.test/MockPermissionState.Uninitialized.activeState|{}activeState[0]
+            final fun <get-activeState>(): com.splendo.kaluga.permissions.test/MockPermissionState.ActiveState // com.splendo.kaluga.permissions.test/MockPermissionState.Uninitialized.activeState.<get-activeState>|<get-activeState>(){}[0]
+    }
+}
+
+final object com.splendo.kaluga.permissions.test/DummyPermission : com.splendo.kaluga.permissions.base/Permission { // com.splendo.kaluga.permissions.test/DummyPermission|null[0]
+    final val name // com.splendo.kaluga.permissions.test/DummyPermission.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.permissions.test/DummyPermission.name.<get-name>|<get-name>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.permissions.test/DummyPermission.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.permissions.test/DummyPermission.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.permissions.test/DummyPermission.toString|toString(){}[0]
+}
+
+final val com.splendo.kaluga.permissions.test/mockPermissionContext // com.splendo.kaluga.permissions.test/mockPermissionContext|{}mockPermissionContext[0]
+    // Targets: [apple]
+    final fun <get-mockPermissionContext>(): platform.Foundation/NSBundle // com.splendo.kaluga.permissions.test/mockPermissionContext.<get-mockPermissionContext>|<get-mockPermissionContext>(){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun <get-mockPermissionContext>(): com.splendo.kaluga.permissions.base/PermissionContext // com.splendo.kaluga.permissions.test/mockPermissionContext.<get-mockPermissionContext>|<get-mockPermissionContext>(){}[0]

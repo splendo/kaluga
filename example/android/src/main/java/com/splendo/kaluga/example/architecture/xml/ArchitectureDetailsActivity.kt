@@ -20,15 +20,14 @@ package com.splendo.kaluga.example.architecture.xml
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureDetailsBinding
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.example.feature.architecture.ArchitectureDetailsNavigationAction
+import com.splendo.kaluga.example.feature.architecture.ArchitectureDetailsViewModel
+import com.splendo.kaluga.example.feature.architecture.InputDetails
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

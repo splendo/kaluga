@@ -1,0 +1,89 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.hud:hud>
+final enum class com.splendo.kaluga.hud/HUDStyle : kotlin/Enum<com.splendo.kaluga.hud/HUDStyle> { // com.splendo.kaluga.hud/HUDStyle|null[0]
+    enum entry CUSTOM // com.splendo.kaluga.hud/HUDStyle.CUSTOM|null[0]
+    enum entry SYSTEM // com.splendo.kaluga.hud/HUDStyle.SYSTEM|null[0]
+
+    final val entries // com.splendo.kaluga.hud/HUDStyle.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.hud/HUDStyle> // com.splendo.kaluga.hud/HUDStyle.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.hud/HUDStyle // com.splendo.kaluga.hud/HUDStyle.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.hud/HUDStyle> // com.splendo.kaluga.hud/HUDStyle.values|values#static(){}[0]
+}
+
+abstract class com.splendo.kaluga.hud/BaseHUD : kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.hud/BaseHUD|null[0]
+    constructor <init>(kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.hud/BaseHUD.<init>|<init>(kotlinx.coroutines.CoroutineScope){}[0]
+
+    abstract val hudConfig // com.splendo.kaluga.hud/BaseHUD.hudConfig|{}hudConfig[0]
+        abstract fun <get-hudConfig>(): com.splendo.kaluga.hud/HudConfig // com.splendo.kaluga.hud/BaseHUD.hudConfig.<get-hudConfig>|<get-hudConfig>(){}[0]
+    abstract val isVisible // com.splendo.kaluga.hud/BaseHUD.isVisible|{}isVisible[0]
+        abstract fun <get-isVisible>(): kotlin/Boolean // com.splendo.kaluga.hud/BaseHUD.isVisible.<get-isVisible>|<get-isVisible>(){}[0]
+    open val coroutineContext // com.splendo.kaluga.hud/BaseHUD.coroutineContext|{}coroutineContext[0]
+        open fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.hud/BaseHUD.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+
+    abstract suspend fun dismiss(kotlin/Boolean = ...) // com.splendo.kaluga.hud/BaseHUD.dismiss|dismiss(kotlin.Boolean){}[0]
+    abstract suspend fun present(kotlin/Boolean = ...): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud/BaseHUD.present|present(kotlin.Boolean){}[0]
+
+    abstract class Builder : com.splendo.kaluga.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.hud/BaseHUD.Builder|null[0]
+        constructor <init>() // com.splendo.kaluga.hud/BaseHUD.Builder.<init>|<init>(){}[0]
+
+        abstract fun create(com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud/BaseHUD.Builder.create|create(com.splendo.kaluga.hud.HudConfig;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+final class com.splendo.kaluga.hud/HUD : com.splendo.kaluga.hud/BaseHUD { // com.splendo.kaluga.hud/HUD|null[0]
+    final val hudConfig // com.splendo.kaluga.hud/HUD.hudConfig|{}hudConfig[0]
+        final fun <get-hudConfig>(): com.splendo.kaluga.hud/HudConfig // com.splendo.kaluga.hud/HUD.hudConfig.<get-hudConfig>|<get-hudConfig>(){}[0]
+    final val isVisible // com.splendo.kaluga.hud/HUD.isVisible|{}isVisible[0]
+        final fun <get-isVisible>(): kotlin/Boolean // com.splendo.kaluga.hud/HUD.isVisible.<get-isVisible>|<get-isVisible>(){}[0]
+
+    final suspend fun dismiss(kotlin/Boolean) // com.splendo.kaluga.hud/HUD.dismiss|dismiss(kotlin.Boolean){}[0]
+    final suspend fun present(kotlin/Boolean): com.splendo.kaluga.hud/HUD // com.splendo.kaluga.hud/HUD.present|present(kotlin.Boolean){}[0]
+
+    final class Builder : com.splendo.kaluga.hud/BaseHUD.Builder { // com.splendo.kaluga.hud/HUD.Builder|null[0]
+        constructor <init>(platform.UIKit/UIViewController) // com.splendo.kaluga.hud/HUD.Builder.<init>|<init>(platform.UIKit.UIViewController){}[0]
+        constructor <init>(platform.UIKit/UIViewController, kotlin/Function1<platform.UIKit/UIViewController, platform.UIKit/UIViewController>) // com.splendo.kaluga.hud/HUD.Builder.<init>|<init>(platform.UIKit.UIViewController;kotlin.Function1<platform.UIKit.UIViewController,platform.UIKit.UIViewController>){}[0]
+
+        final fun create(com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.hud/HUD // com.splendo.kaluga.hud/HUD.Builder.create|create(com.splendo.kaluga.hud.HudConfig;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+final class com.splendo.kaluga.hud/HudConfig { // com.splendo.kaluga.hud/HudConfig|null[0]
+    constructor <init>(com.splendo.kaluga.hud/HUDStyle = ..., kotlin/String? = ...) // com.splendo.kaluga.hud/HudConfig.<init>|<init>(com.splendo.kaluga.hud.HUDStyle;kotlin.String?){}[0]
+
+    final val style // com.splendo.kaluga.hud/HudConfig.style|{}style[0]
+        final fun <get-style>(): com.splendo.kaluga.hud/HUDStyle // com.splendo.kaluga.hud/HudConfig.style.<get-style>|<get-style>(){}[0]
+    final val title // com.splendo.kaluga.hud/HudConfig.title|{}title[0]
+        final fun <get-title>(): kotlin/String? // com.splendo.kaluga.hud/HudConfig.title.<get-title>|<get-title>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.hud/HUDStyle // com.splendo.kaluga.hud/HudConfig.component1|component1(){}[0]
+    final fun component2(): kotlin/String? // com.splendo.kaluga.hud/HudConfig.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.hud/HUDStyle = ..., kotlin/String? = ...): com.splendo.kaluga.hud/HudConfig // com.splendo.kaluga.hud/HudConfig.copy|copy(com.splendo.kaluga.hud.HUDStyle;kotlin.String?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.hud/HudConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.hud/HudConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.hud/HudConfig.toString|toString(){}[0]
+
+    final class Builder { // com.splendo.kaluga.hud/HudConfig.Builder|null[0]
+        constructor <init>() // com.splendo.kaluga.hud/HudConfig.Builder.<init>|<init>(){}[0]
+
+        final fun build(): com.splendo.kaluga.hud/HudConfig // com.splendo.kaluga.hud/HudConfig.Builder.build|build(){}[0]
+        final fun setStyle(com.splendo.kaluga.hud/HUDStyle): com.splendo.kaluga.hud/HudConfig.Builder // com.splendo.kaluga.hud/HudConfig.Builder.setStyle|setStyle(com.splendo.kaluga.hud.HUDStyle){}[0]
+        final fun setTitle(kotlin/String?): com.splendo.kaluga.hud/HudConfig.Builder // com.splendo.kaluga.hud/HudConfig.Builder.setTitle|setTitle(kotlin.String?){}[0]
+    }
+}
+
+final val com.splendo.kaluga.hud/style // com.splendo.kaluga.hud/style|@com.splendo.kaluga.hud.BaseHUD{}style[0]
+    final fun (com.splendo.kaluga.hud/BaseHUD).<get-style>(): com.splendo.kaluga.hud/HUDStyle // com.splendo.kaluga.hud/style.<get-style>|<get-style>@com.splendo.kaluga.hud.BaseHUD(){}[0]
+final val com.splendo.kaluga.hud/title // com.splendo.kaluga.hud/title|@com.splendo.kaluga.hud.BaseHUD{}title[0]
+    final fun (com.splendo.kaluga.hud/BaseHUD).<get-title>(): kotlin/String? // com.splendo.kaluga.hud/title.<get-title>|<get-title>@com.splendo.kaluga.hud.BaseHUD(){}[0]
+
+final fun (com.splendo.kaluga.hud/BaseHUD).com.splendo.kaluga.hud/dismissAfter(kotlin.time/Duration, kotlin/Boolean = ...): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud/dismissAfter|dismissAfter@com.splendo.kaluga.hud.BaseHUD(kotlin.time.Duration;kotlin.Boolean){}[0]
+final fun (com.splendo.kaluga.hud/BaseHUD).com.splendo.kaluga.hud/dismissAfter(kotlin/Long, kotlin/Boolean = ...): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud/dismissAfter|dismissAfter@com.splendo.kaluga.hud.BaseHUD(kotlin.Long;kotlin.Boolean){}[0]
+final fun (com.splendo.kaluga.hud/BaseHUD.Builder).com.splendo.kaluga.hud/build(kotlinx.coroutines/CoroutineScope, kotlin/Function1<com.splendo.kaluga.hud/HudConfig.Builder, kotlin/Unit> = ...): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud/build|build@com.splendo.kaluga.hud.BaseHUD.Builder(kotlinx.coroutines.CoroutineScope;kotlin.Function1<com.splendo.kaluga.hud.HudConfig.Builder,kotlin.Unit>){}[0]
+final suspend fun <#A: kotlin/Any?> (com.splendo.kaluga.hud/BaseHUD).com.splendo.kaluga.hud/presentDuring(kotlin/Boolean = ..., kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.hud/BaseHUD, #A>): #A // com.splendo.kaluga.hud/presentDuring|presentDuring@com.splendo.kaluga.hud.BaseHUD(kotlin.Boolean;kotlin.coroutines.SuspendFunction1<com.splendo.kaluga.hud.BaseHUD,0:0>){0§<kotlin.Any?>}[0]
