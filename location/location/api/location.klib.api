@@ -1,0 +1,394 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: tvos => [tvosArm64, tvosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.location:location>
+abstract interface com.splendo.kaluga.location/BaseLocationStateRepoBuilder { // com.splendo.kaluga.location/BaseLocationStateRepoBuilder|null[0]
+    abstract fun create(com.splendo.kaluga.permissions.location/LocationPermission, kotlin/Function2<com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.base/Permissions, com.splendo.kaluga.location/BaseLocationManager.Settings> = ..., kotlin.coroutines/CoroutineContext = ...): com.splendo.kaluga.location/LocationStateRepo // com.splendo.kaluga.location/BaseLocationStateRepoBuilder.create|create(com.splendo.kaluga.permissions.location.LocationPermission;kotlin.Function2<com.splendo.kaluga.permissions.location.LocationPermission,com.splendo.kaluga.permissions.base.Permissions,com.splendo.kaluga.location.BaseLocationManager.Settings>;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+abstract interface com.splendo.kaluga.location/LocationManager { // com.splendo.kaluga.location/LocationManager|null[0]
+    abstract val events // com.splendo.kaluga.location/LocationManager.events|{}events[0]
+        abstract fun <get-events>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/LocationManager.Event> // com.splendo.kaluga.location/LocationManager.events.<get-events>|<get-events>(){}[0]
+    abstract val locationPermission // com.splendo.kaluga.location/LocationManager.locationPermission|{}locationPermission[0]
+        abstract fun <get-locationPermission>(): com.splendo.kaluga.permissions.location/LocationPermission // com.splendo.kaluga.location/LocationManager.locationPermission.<get-locationPermission>|<get-locationPermission>(){}[0]
+    abstract val locations // com.splendo.kaluga.location/LocationManager.locations|{}locations[0]
+        abstract fun <get-locations>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/Location.KnownLocation> // com.splendo.kaluga.location/LocationManager.locations.<get-locations>|<get-locations>(){}[0]
+
+    abstract fun isLocationEnabled(): kotlin/Boolean // com.splendo.kaluga.location/LocationManager.isLocationEnabled|isLocationEnabled(){}[0]
+    abstract suspend fun requestEnableLocation() // com.splendo.kaluga.location/LocationManager.requestEnableLocation|requestEnableLocation(){}[0]
+    abstract suspend fun startMonitoringLocation() // com.splendo.kaluga.location/LocationManager.startMonitoringLocation|startMonitoringLocation(){}[0]
+    abstract suspend fun startMonitoringLocationEnabled() // com.splendo.kaluga.location/LocationManager.startMonitoringLocationEnabled|startMonitoringLocationEnabled(){}[0]
+    abstract suspend fun startMonitoringPermissions() // com.splendo.kaluga.location/LocationManager.startMonitoringPermissions|startMonitoringPermissions(){}[0]
+    abstract suspend fun stopMonitoringLocation() // com.splendo.kaluga.location/LocationManager.stopMonitoringLocation|stopMonitoringLocation(){}[0]
+    abstract suspend fun stopMonitoringLocationEnabled() // com.splendo.kaluga.location/LocationManager.stopMonitoringLocationEnabled|stopMonitoringLocationEnabled(){}[0]
+    abstract suspend fun stopMonitoringPermissions() // com.splendo.kaluga.location/LocationManager.stopMonitoringPermissions|stopMonitoringPermissions(){}[0]
+
+    sealed class Event { // com.splendo.kaluga.location/LocationManager.Event|null[0]
+        final class PermissionChanged : com.splendo.kaluga.location/LocationManager.Event { // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged|null[0]
+            constructor <init>(kotlin/Boolean) // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.<init>|<init>(kotlin.Boolean){}[0]
+
+            final val hasPermission // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.hasPermission|{}hasPermission[0]
+                final fun <get-hasPermission>(): kotlin/Boolean // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.hasPermission.<get-hasPermission>|<get-hasPermission>(){}[0]
+
+            final fun component1(): kotlin/Boolean // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.component1|component1(){}[0]
+            final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.location/LocationManager.Event.PermissionChanged // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.copy|copy(kotlin.Boolean){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.location/LocationManager.Event.PermissionChanged.toString|toString(){}[0]
+        }
+
+        final object LocationDisabled : com.splendo.kaluga.location/LocationManager.Event { // com.splendo.kaluga.location/LocationManager.Event.LocationDisabled|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/LocationManager.Event.LocationDisabled.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/LocationManager.Event.LocationDisabled.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.location/LocationManager.Event.LocationDisabled.toString|toString(){}[0]
+        }
+
+        final object LocationEnabled : com.splendo.kaluga.location/LocationManager.Event { // com.splendo.kaluga.location/LocationManager.Event.LocationEnabled|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/LocationManager.Event.LocationEnabled.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/LocationManager.Event.LocationEnabled.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.location/LocationManager.Event.LocationEnabled.toString|toString(){}[0]
+        }
+    }
+}
+
+abstract interface com.splendo.kaluga.location/LocationMonitor : com.splendo.kaluga.service/ServiceMonitor { // com.splendo.kaluga.location/LocationMonitor|null[0]
+    final class Builder { // com.splendo.kaluga.location/LocationMonitor.Builder|null[0]
+        final fun create(): com.splendo.kaluga.location/LocationMonitor // com.splendo.kaluga.location/LocationMonitor.Builder.create|create(){}[0]
+
+        // Targets: [apple]
+        constructor <init>(platform.CoreLocation/CLLocationManager = ...) // com.splendo.kaluga.location/LocationMonitor.Builder.<init>|<init>(platform.CoreLocation.CLLocationManager){}[0]
+
+        // Targets: [apple]
+        final val locationManager // com.splendo.kaluga.location/LocationMonitor.Builder.locationManager|{}locationManager[0]
+            final fun <get-locationManager>(): platform.CoreLocation/CLLocationManager // com.splendo.kaluga.location/LocationMonitor.Builder.locationManager.<get-locationManager>|<get-locationManager>(){}[0]
+
+        // Targets: [js, wasmJs]
+        constructor <init>() // com.splendo.kaluga.location/LocationMonitor.Builder.<init>|<init>(){}[0]
+    }
+}
+
+sealed interface com.splendo.kaluga.location/LocationState : com.splendo.kaluga.base.state/KalugaState { // com.splendo.kaluga.location/LocationState|null[0]
+    abstract val location // com.splendo.kaluga.location/LocationState.location|{}location[0]
+        abstract fun <get-location>(): com.splendo.kaluga.location/Location // com.splendo.kaluga.location/LocationState.location.<get-location>|<get-location>(){}[0]
+
+    abstract interface Deinitialized : com.splendo.kaluga.location/LocationState.Inactive { // com.splendo.kaluga.location/LocationState.Deinitialized|null[0]
+        abstract val reinitialize // com.splendo.kaluga.location/LocationState.Deinitialized.reinitialize|{}reinitialize[0]
+            abstract fun <get-reinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Initializing> // com.splendo.kaluga.location/LocationState.Deinitialized.reinitialize.<get-reinitialize>|<get-reinitialize>(){}[0]
+    }
+
+    abstract interface Enabled : com.splendo.kaluga.location/LocationState.Permitted { // com.splendo.kaluga.location/LocationState.Enabled|null[0]
+        abstract val disable // com.splendo.kaluga.location/LocationState.Enabled.disable|{}disable[0]
+            abstract fun <get-disable>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Disabled.NoGPS> // com.splendo.kaluga.location/LocationState.Enabled.disable.<get-disable>|<get-disable>(){}[0]
+
+        abstract fun updateWithLocation(com.splendo.kaluga.location/Location.KnownLocation): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Enabled> // com.splendo.kaluga.location/LocationState.Enabled.updateWithLocation|updateWithLocation(com.splendo.kaluga.location.Location.KnownLocation){}[0]
+    }
+
+    abstract interface Initializing : com.splendo.kaluga.base.flow/SpecialFlowValue.NotImportant, com.splendo.kaluga.location/LocationState.Active { // com.splendo.kaluga.location/LocationState.Initializing|null[0]
+        abstract fun initialize(kotlin/Boolean, kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Initialized> // com.splendo.kaluga.location/LocationState.Initializing.initialize|initialize(kotlin.Boolean;kotlin.Boolean){}[0]
+    }
+
+    abstract interface NotInitialized : com.splendo.kaluga.location/LocationState.Inactive // com.splendo.kaluga.location/LocationState.NotInitialized|null[0]
+
+    sealed interface Active : com.splendo.kaluga.location/LocationState { // com.splendo.kaluga.location/LocationState.Active|null[0]
+        abstract val deinitialized // com.splendo.kaluga.location/LocationState.Active.deinitialized|{}deinitialized[0]
+            abstract fun <get-deinitialized>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Deinitialized> // com.splendo.kaluga.location/LocationState.Active.deinitialized.<get-deinitialized>|<get-deinitialized>(){}[0]
+    }
+
+    sealed interface Disabled : com.splendo.kaluga.location/LocationState.Initialized { // com.splendo.kaluga.location/LocationState.Disabled|null[0]
+        abstract interface NoGPS : com.splendo.kaluga.location/LocationState.Disabled, com.splendo.kaluga.location/LocationState.Permitted { // com.splendo.kaluga.location/LocationState.Disabled.NoGPS|null[0]
+            abstract val enable // com.splendo.kaluga.location/LocationState.Disabled.NoGPS.enable|{}enable[0]
+                abstract fun <get-enable>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Enabled> // com.splendo.kaluga.location/LocationState.Disabled.NoGPS.enable.<get-enable>|<get-enable>(){}[0]
+        }
+
+        abstract interface NotPermitted : com.splendo.kaluga.location/LocationState.Disabled { // com.splendo.kaluga.location/LocationState.Disabled.NotPermitted|null[0]
+            abstract fun permit(kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Permitted> // com.splendo.kaluga.location/LocationState.Disabled.NotPermitted.permit|permit(kotlin.Boolean){}[0]
+        }
+    }
+
+    sealed interface Inactive : com.splendo.kaluga.base.flow/SpecialFlowValue.NotImportant, com.splendo.kaluga.location/LocationState // com.splendo.kaluga.location/LocationState.Inactive|null[0]
+
+    sealed interface Initialized : com.splendo.kaluga.location/LocationState.Active // com.splendo.kaluga.location/LocationState.Initialized|null[0]
+
+    sealed interface Permitted : com.splendo.kaluga.location/LocationState.Initialized { // com.splendo.kaluga.location/LocationState.Permitted|null[0]
+        abstract val revokePermission // com.splendo.kaluga.location/LocationState.Permitted.revokePermission|{}revokePermission[0]
+            abstract fun <get-revokePermission>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Disabled.NotPermitted> // com.splendo.kaluga.location/LocationState.Permitted.revokePermission.<get-revokePermission>|<get-revokePermission>(){}[0]
+    }
+}
+
+abstract class com.splendo.kaluga.location/BaseLocationManager : com.splendo.kaluga.location/LocationManager, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.location/BaseLocationManager|null[0]
+    constructor <init>(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.location/BaseLocationManager.<init>|<init>(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+
+    abstract val locationMonitor // com.splendo.kaluga.location/BaseLocationManager.locationMonitor|{}locationMonitor[0]
+        abstract fun <get-locationMonitor>(): com.splendo.kaluga.location/LocationMonitor // com.splendo.kaluga.location/BaseLocationManager.locationMonitor.<get-locationMonitor>|<get-locationMonitor>(){}[0]
+    final val sharedLocations // com.splendo.kaluga.location/BaseLocationManager.sharedLocations|{}sharedLocations[0]
+        final fun <get-sharedLocations>(): kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.location/Location.KnownLocation> // com.splendo.kaluga.location/BaseLocationManager.sharedLocations.<get-sharedLocations>|<get-sharedLocations>(){}[0]
+    open val coroutineContext // com.splendo.kaluga.location/BaseLocationManager.coroutineContext|{}coroutineContext[0]
+        open fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.location/BaseLocationManager.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    open val events // com.splendo.kaluga.location/BaseLocationManager.events|{}events[0]
+        open fun <get-events>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/LocationManager.Event> // com.splendo.kaluga.location/BaseLocationManager.events.<get-events>|<get-events>(){}[0]
+    open val locationPermission // com.splendo.kaluga.location/BaseLocationManager.locationPermission|{}locationPermission[0]
+        open fun <get-locationPermission>(): com.splendo.kaluga.permissions.location/LocationPermission // com.splendo.kaluga.location/BaseLocationManager.locationPermission.<get-locationPermission>|<get-locationPermission>(){}[0]
+    open val locations // com.splendo.kaluga.location/BaseLocationManager.locations|{}locations[0]
+        open fun <get-locations>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/Location.KnownLocation> // com.splendo.kaluga.location/BaseLocationManager.locations.<get-locations>|<get-locations>(){}[0]
+
+    open fun handleLocationChanged(com.splendo.kaluga.location/Location.KnownLocation) // com.splendo.kaluga.location/BaseLocationManager.handleLocationChanged|handleLocationChanged(com.splendo.kaluga.location.Location.KnownLocation){}[0]
+    open fun handleLocationChanged(kotlin.collections/List<com.splendo.kaluga.location/Location.KnownLocation>) // com.splendo.kaluga.location/BaseLocationManager.handleLocationChanged|handleLocationChanged(kotlin.collections.List<com.splendo.kaluga.location.Location.KnownLocation>){}[0]
+    open fun isLocationEnabled(): kotlin/Boolean // com.splendo.kaluga.location/BaseLocationManager.isLocationEnabled|isLocationEnabled(){}[0]
+    open suspend fun startMonitoringLocationEnabled() // com.splendo.kaluga.location/BaseLocationManager.startMonitoringLocationEnabled|startMonitoringLocationEnabled(){}[0]
+    open suspend fun startMonitoringPermissions() // com.splendo.kaluga.location/BaseLocationManager.startMonitoringPermissions|startMonitoringPermissions(){}[0]
+    open suspend fun stopMonitoringLocationEnabled() // com.splendo.kaluga.location/BaseLocationManager.stopMonitoringLocationEnabled|stopMonitoringLocationEnabled(){}[0]
+    open suspend fun stopMonitoringPermissions() // com.splendo.kaluga.location/BaseLocationManager.stopMonitoringPermissions|stopMonitoringPermissions(){}[0]
+
+    abstract interface Builder { // com.splendo.kaluga.location/BaseLocationManager.Builder|null[0]
+        abstract fun create(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.location/BaseLocationManager // com.splendo.kaluga.location/BaseLocationManager.Builder.create|create(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+
+    final class Settings { // com.splendo.kaluga.location/BaseLocationManager.Settings|null[0]
+        constructor <init>(com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.base/Permissions, kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int = ..., kotlin/Float = ..., com.splendo.kaluga.logging/Logger = ...) // com.splendo.kaluga.location/BaseLocationManager.Settings.<init>|<init>(com.splendo.kaluga.permissions.location.LocationPermission;com.splendo.kaluga.permissions.base.Permissions;kotlin.Boolean;kotlin.Boolean;kotlin.Int;kotlin.Float;com.splendo.kaluga.logging.Logger){}[0]
+
+        final val autoEnableLocations // com.splendo.kaluga.location/BaseLocationManager.Settings.autoEnableLocations|{}autoEnableLocations[0]
+            final fun <get-autoEnableLocations>(): kotlin/Boolean // com.splendo.kaluga.location/BaseLocationManager.Settings.autoEnableLocations.<get-autoEnableLocations>|<get-autoEnableLocations>(){}[0]
+        final val autoRequestPermission // com.splendo.kaluga.location/BaseLocationManager.Settings.autoRequestPermission|{}autoRequestPermission[0]
+            final fun <get-autoRequestPermission>(): kotlin/Boolean // com.splendo.kaluga.location/BaseLocationManager.Settings.autoRequestPermission.<get-autoRequestPermission>|<get-autoRequestPermission>(){}[0]
+        final val locationBufferCapacity // com.splendo.kaluga.location/BaseLocationManager.Settings.locationBufferCapacity|{}locationBufferCapacity[0]
+            final fun <get-locationBufferCapacity>(): kotlin/Int // com.splendo.kaluga.location/BaseLocationManager.Settings.locationBufferCapacity.<get-locationBufferCapacity>|<get-locationBufferCapacity>(){}[0]
+        final val locationPermission // com.splendo.kaluga.location/BaseLocationManager.Settings.locationPermission|{}locationPermission[0]
+            final fun <get-locationPermission>(): com.splendo.kaluga.permissions.location/LocationPermission // com.splendo.kaluga.location/BaseLocationManager.Settings.locationPermission.<get-locationPermission>|<get-locationPermission>(){}[0]
+        final val logger // com.splendo.kaluga.location/BaseLocationManager.Settings.logger|{}logger[0]
+            final fun <get-logger>(): com.splendo.kaluga.logging/Logger // com.splendo.kaluga.location/BaseLocationManager.Settings.logger.<get-logger>|<get-logger>(){}[0]
+        final val minUpdateDistanceMeters // com.splendo.kaluga.location/BaseLocationManager.Settings.minUpdateDistanceMeters|{}minUpdateDistanceMeters[0]
+            final fun <get-minUpdateDistanceMeters>(): kotlin/Float // com.splendo.kaluga.location/BaseLocationManager.Settings.minUpdateDistanceMeters.<get-minUpdateDistanceMeters>|<get-minUpdateDistanceMeters>(){}[0]
+        final val permissions // com.splendo.kaluga.location/BaseLocationManager.Settings.permissions|{}permissions[0]
+            final fun <get-permissions>(): com.splendo.kaluga.permissions.base/Permissions // com.splendo.kaluga.location/BaseLocationManager.Settings.permissions.<get-permissions>|<get-permissions>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.permissions.location/LocationPermission // com.splendo.kaluga.location/BaseLocationManager.Settings.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.permissions.base/Permissions // com.splendo.kaluga.location/BaseLocationManager.Settings.component2|component2(){}[0]
+        final fun component3(): kotlin/Boolean // com.splendo.kaluga.location/BaseLocationManager.Settings.component3|component3(){}[0]
+        final fun component4(): kotlin/Boolean // com.splendo.kaluga.location/BaseLocationManager.Settings.component4|component4(){}[0]
+        final fun component5(): kotlin/Int // com.splendo.kaluga.location/BaseLocationManager.Settings.component5|component5(){}[0]
+        final fun component6(): kotlin/Float // com.splendo.kaluga.location/BaseLocationManager.Settings.component6|component6(){}[0]
+        final fun component7(): com.splendo.kaluga.logging/Logger // com.splendo.kaluga.location/BaseLocationManager.Settings.component7|component7(){}[0]
+        final fun copy(com.splendo.kaluga.permissions.location/LocationPermission = ..., com.splendo.kaluga.permissions.base/Permissions = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int = ..., kotlin/Float = ..., com.splendo.kaluga.logging/Logger = ...): com.splendo.kaluga.location/BaseLocationManager.Settings // com.splendo.kaluga.location/BaseLocationManager.Settings.copy|copy(com.splendo.kaluga.permissions.location.LocationPermission;com.splendo.kaluga.permissions.base.Permissions;kotlin.Boolean;kotlin.Boolean;kotlin.Int;kotlin.Float;com.splendo.kaluga.logging.Logger){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/BaseLocationManager.Settings.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/BaseLocationManager.Settings.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.location/BaseLocationManager.Settings.toString|toString(){}[0]
+    }
+
+    final object Companion // com.splendo.kaluga.location/BaseLocationManager.Companion|null[0]
+}
+
+abstract class com.splendo.kaluga.location/BaseLocationStateRepo : com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.location/LocationState> { // com.splendo.kaluga.location/BaseLocationStateRepo|null[0]
+    constructor <init>(kotlin/Function0<com.splendo.kaluga.location/LocationState.NotInitialized>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.location/LocationState>, com.splendo.kaluga.location/LocationState.Inactive, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Initializing>>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.location/LocationState>, com.splendo.kaluga.location/LocationState.Active, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationState.Deinitialized>>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.location/BaseLocationStateRepo.<init>|<init>(kotlin.Function0<com.splendo.kaluga.location.LocationState.NotInitialized>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.location.LocationState>,com.splendo.kaluga.location.LocationState.Inactive,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.location.LocationState.Initializing>>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.location.LocationState>,com.splendo.kaluga.location.LocationState.Active,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.location.LocationState.Deinitialized>>;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+final class com.splendo.kaluga.location/DMSCoordinate { // com.splendo.kaluga.location/DMSCoordinate|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int, kotlin/Double, com.splendo.kaluga.location/DMSCoordinate.WindDirection) // com.splendo.kaluga.location/DMSCoordinate.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Double;com.splendo.kaluga.location.DMSCoordinate.WindDirection){}[0]
+
+    final val decimalDegrees // com.splendo.kaluga.location/DMSCoordinate.decimalDegrees|{}decimalDegrees[0]
+        final fun <get-decimalDegrees>(): kotlin/Double // com.splendo.kaluga.location/DMSCoordinate.decimalDegrees.<get-decimalDegrees>|<get-decimalDegrees>(){}[0]
+    final val degrees // com.splendo.kaluga.location/DMSCoordinate.degrees|{}degrees[0]
+        final fun <get-degrees>(): kotlin/Int // com.splendo.kaluga.location/DMSCoordinate.degrees.<get-degrees>|<get-degrees>(){}[0]
+    final val minutes // com.splendo.kaluga.location/DMSCoordinate.minutes|{}minutes[0]
+        final fun <get-minutes>(): kotlin/Int // com.splendo.kaluga.location/DMSCoordinate.minutes.<get-minutes>|<get-minutes>(){}[0]
+    final val seconds // com.splendo.kaluga.location/DMSCoordinate.seconds|{}seconds[0]
+        final fun <get-seconds>(): kotlin/Double // com.splendo.kaluga.location/DMSCoordinate.seconds.<get-seconds>|<get-seconds>(){}[0]
+    final val windDirection // com.splendo.kaluga.location/DMSCoordinate.windDirection|{}windDirection[0]
+        final fun <get-windDirection>(): com.splendo.kaluga.location/DMSCoordinate.WindDirection // com.splendo.kaluga.location/DMSCoordinate.windDirection.<get-windDirection>|<get-windDirection>(){}[0]
+
+    final fun component1(): kotlin/Int // com.splendo.kaluga.location/DMSCoordinate.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // com.splendo.kaluga.location/DMSCoordinate.component2|component2(){}[0]
+    final fun component3(): kotlin/Double // com.splendo.kaluga.location/DMSCoordinate.component3|component3(){}[0]
+    final fun component4(): com.splendo.kaluga.location/DMSCoordinate.WindDirection // com.splendo.kaluga.location/DMSCoordinate.component4|component4(){}[0]
+    final fun copy(kotlin/Int = ..., kotlin/Int = ..., kotlin/Double = ..., com.splendo.kaluga.location/DMSCoordinate.WindDirection = ...): com.splendo.kaluga.location/DMSCoordinate // com.splendo.kaluga.location/DMSCoordinate.copy|copy(kotlin.Int;kotlin.Int;kotlin.Double;com.splendo.kaluga.location.DMSCoordinate.WindDirection){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/DMSCoordinate.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/DMSCoordinate.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.location/DMSCoordinate.toString|toString(){}[0]
+
+    final enum class WindDirection : kotlin/Enum<com.splendo.kaluga.location/DMSCoordinate.WindDirection> { // com.splendo.kaluga.location/DMSCoordinate.WindDirection|null[0]
+        enum entry East // com.splendo.kaluga.location/DMSCoordinate.WindDirection.East|null[0]
+        enum entry North // com.splendo.kaluga.location/DMSCoordinate.WindDirection.North|null[0]
+        enum entry South // com.splendo.kaluga.location/DMSCoordinate.WindDirection.South|null[0]
+        enum entry West // com.splendo.kaluga.location/DMSCoordinate.WindDirection.West|null[0]
+
+        final val entries // com.splendo.kaluga.location/DMSCoordinate.WindDirection.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.location/DMSCoordinate.WindDirection> // com.splendo.kaluga.location/DMSCoordinate.WindDirection.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): com.splendo.kaluga.location/DMSCoordinate.WindDirection // com.splendo.kaluga.location/DMSCoordinate.WindDirection.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.splendo.kaluga.location/DMSCoordinate.WindDirection> // com.splendo.kaluga.location/DMSCoordinate.WindDirection.values|values#static(){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.location/DMSCoordinate.Companion|null[0]
+        final fun fromLatitude(kotlin/Double): com.splendo.kaluga.location/DMSCoordinate // com.splendo.kaluga.location/DMSCoordinate.Companion.fromLatitude|fromLatitude(kotlin.Double){}[0]
+        final fun fromLongitude(kotlin/Double): com.splendo.kaluga.location/DMSCoordinate // com.splendo.kaluga.location/DMSCoordinate.Companion.fromLongitude|fromLongitude(kotlin.Double){}[0]
+    }
+}
+
+final class com.splendo.kaluga.location/DefaultLocationManager : com.splendo.kaluga.location/BaseLocationManager { // com.splendo.kaluga.location/DefaultLocationManager|null[0]
+    final suspend fun requestEnableLocation() // com.splendo.kaluga.location/DefaultLocationManager.requestEnableLocation|requestEnableLocation(){}[0]
+    final suspend fun startMonitoringLocation() // com.splendo.kaluga.location/DefaultLocationManager.startMonitoringLocation|startMonitoringLocation(){}[0]
+    final suspend fun stopMonitoringLocation() // com.splendo.kaluga.location/DefaultLocationManager.stopMonitoringLocation|stopMonitoringLocation(){}[0]
+
+    final class Builder : com.splendo.kaluga.location/BaseLocationManager.Builder { // com.splendo.kaluga.location/DefaultLocationManager.Builder|null[0]
+        final fun create(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.location/BaseLocationManager // com.splendo.kaluga.location/DefaultLocationManager.Builder.create|create(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+
+        // Targets: [apple]
+        constructor <init>(com.splendo.kaluga.location/AppleLocationSettings = ...) // com.splendo.kaluga.location/DefaultLocationManager.Builder.<init>|<init>(com.splendo.kaluga.location.AppleLocationSettings){}[0]
+
+        // Targets: [js, wasmJs]
+        constructor <init>() // com.splendo.kaluga.location/DefaultLocationManager.Builder.<init>|<init>(){}[0]
+    }
+
+    // Targets: [apple]
+    constructor <init>(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.location/AppleLocationSettings = ...) // com.splendo.kaluga.location/DefaultLocationManager.<init>|<init>(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope;com.splendo.kaluga.location.AppleLocationSettings){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>(com.splendo.kaluga.location/BaseLocationManager.Settings, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.location/DefaultLocationManager.<init>|<init>(com.splendo.kaluga.location.BaseLocationManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+}
+
+final class com.splendo.kaluga.location/DefaultLocationMonitor : com.splendo.kaluga.location/LocationMonitor, com.splendo.kaluga.service/DefaultServiceMonitor { // com.splendo.kaluga.location/DefaultLocationMonitor|null[0]
+    final val isServiceEnabled // com.splendo.kaluga.location/DefaultLocationMonitor.isServiceEnabled|{}isServiceEnabled[0]
+        final fun <get-isServiceEnabled>(): kotlin/Boolean // com.splendo.kaluga.location/DefaultLocationMonitor.isServiceEnabled.<get-isServiceEnabled>|<get-isServiceEnabled>(){}[0]
+
+    // Targets: [apple]
+    constructor <init>(platform.CoreLocation/CLLocationManager) // com.splendo.kaluga.location/DefaultLocationMonitor.<init>|<init>(platform.CoreLocation.CLLocationManager){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>() // com.splendo.kaluga.location/DefaultLocationMonitor.<init>|<init>(){}[0]
+}
+
+final class com.splendo.kaluga.location/LocationStateRepo : com.splendo.kaluga.location/LocationStateImplRepo { // com.splendo.kaluga.location/LocationStateRepo|null[0]
+    constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.location/BaseLocationManager.Settings>, com.splendo.kaluga.location/BaseLocationManager.Builder, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.location/LocationStateRepo.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.location.BaseLocationManager.Settings>;com.splendo.kaluga.location.BaseLocationManager.Builder;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+final class com.splendo.kaluga.location/LocationStateRepoBuilder : com.splendo.kaluga.location/BaseLocationStateRepoBuilder { // com.splendo.kaluga.location/LocationStateRepoBuilder|null[0]
+    constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions>) // com.splendo.kaluga.location/LocationStateRepoBuilder.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>){}[0]
+
+    final fun create(com.splendo.kaluga.permissions.location/LocationPermission, kotlin/Function2<com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.base/Permissions, com.splendo.kaluga.location/BaseLocationManager.Settings>, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.location/LocationStateRepo // com.splendo.kaluga.location/LocationStateRepoBuilder.create|create(com.splendo.kaluga.permissions.location.LocationPermission;kotlin.Function2<com.splendo.kaluga.permissions.location.LocationPermission,com.splendo.kaluga.permissions.base.Permissions,com.splendo.kaluga.location.BaseLocationManager.Settings>;kotlin.coroutines.CoroutineContext){}[0]
+
+    // Targets: [apple]
+    constructor <init>(platform.Foundation/NSBundle = ...) // com.splendo.kaluga.location/LocationStateRepoBuilder.<init>|<init>(platform.Foundation.NSBundle){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>() // com.splendo.kaluga.location/LocationStateRepoBuilder.<init>|<init>(){}[0]
+}
+
+open class com.splendo.kaluga.location/LocationStateImplRepo : com.splendo.kaluga.location/BaseLocationStateRepo { // com.splendo.kaluga.location/LocationStateImplRepo|null[0]
+    constructor <init>(kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.location/LocationManager>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.location/LocationStateImplRepo.<init>|<init>(kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.location.LocationManager>;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+sealed class com.splendo.kaluga.location/Location { // com.splendo.kaluga.location/Location|null[0]
+    final class KnownLocation : com.splendo.kaluga.location/Location { // com.splendo.kaluga.location/Location.KnownLocation|null[0]
+        constructor <init>(kotlin/Double, kotlin/Double, kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., com.splendo.kaluga.datetime/KalugaDate) // com.splendo.kaluga.location/Location.KnownLocation.<init>|<init>(kotlin.Double;kotlin.Double;kotlin.Double?;kotlin.Double?;kotlin.Double?;kotlin.Double?;kotlin.Double?;com.splendo.kaluga.datetime.KalugaDate){}[0]
+
+        final val altitude // com.splendo.kaluga.location/Location.KnownLocation.altitude|{}altitude[0]
+            final fun <get-altitude>(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.altitude.<get-altitude>|<get-altitude>(){}[0]
+        final val course // com.splendo.kaluga.location/Location.KnownLocation.course|{}course[0]
+            final fun <get-course>(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.course.<get-course>|<get-course>(){}[0]
+        final val horizontalAccuracy // com.splendo.kaluga.location/Location.KnownLocation.horizontalAccuracy|{}horizontalAccuracy[0]
+            final fun <get-horizontalAccuracy>(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.horizontalAccuracy.<get-horizontalAccuracy>|<get-horizontalAccuracy>(){}[0]
+        final val latitude // com.splendo.kaluga.location/Location.KnownLocation.latitude|{}latitude[0]
+            final fun <get-latitude>(): kotlin/Double // com.splendo.kaluga.location/Location.KnownLocation.latitude.<get-latitude>|<get-latitude>(){}[0]
+        final val latitudeDMS // com.splendo.kaluga.location/Location.KnownLocation.latitudeDMS|{}latitudeDMS[0]
+            final fun <get-latitudeDMS>(): com.splendo.kaluga.location/DMSCoordinate // com.splendo.kaluga.location/Location.KnownLocation.latitudeDMS.<get-latitudeDMS>|<get-latitudeDMS>(){}[0]
+        final val longitude // com.splendo.kaluga.location/Location.KnownLocation.longitude|{}longitude[0]
+            final fun <get-longitude>(): kotlin/Double // com.splendo.kaluga.location/Location.KnownLocation.longitude.<get-longitude>|<get-longitude>(){}[0]
+        final val longitudeDMS // com.splendo.kaluga.location/Location.KnownLocation.longitudeDMS|{}longitudeDMS[0]
+            final fun <get-longitudeDMS>(): com.splendo.kaluga.location/DMSCoordinate // com.splendo.kaluga.location/Location.KnownLocation.longitudeDMS.<get-longitudeDMS>|<get-longitudeDMS>(){}[0]
+        final val speed // com.splendo.kaluga.location/Location.KnownLocation.speed|{}speed[0]
+            final fun <get-speed>(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.speed.<get-speed>|<get-speed>(){}[0]
+        final val time // com.splendo.kaluga.location/Location.KnownLocation.time|{}time[0]
+            final fun <get-time>(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.location/Location.KnownLocation.time.<get-time>|<get-time>(){}[0]
+        final val verticalAccuracy // com.splendo.kaluga.location/Location.KnownLocation.verticalAccuracy|{}verticalAccuracy[0]
+            final fun <get-verticalAccuracy>(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.verticalAccuracy.<get-verticalAccuracy>|<get-verticalAccuracy>(){}[0]
+
+        final fun component1(): kotlin/Double // com.splendo.kaluga.location/Location.KnownLocation.component1|component1(){}[0]
+        final fun component2(): kotlin/Double // com.splendo.kaluga.location/Location.KnownLocation.component2|component2(){}[0]
+        final fun component3(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.component3|component3(){}[0]
+        final fun component4(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.component4|component4(){}[0]
+        final fun component5(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.component5|component5(){}[0]
+        final fun component6(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.component6|component6(){}[0]
+        final fun component7(): kotlin/Double? // com.splendo.kaluga.location/Location.KnownLocation.component7|component7(){}[0]
+        final fun component8(): com.splendo.kaluga.datetime/KalugaDate // com.splendo.kaluga.location/Location.KnownLocation.component8|component8(){}[0]
+        final fun copy(kotlin/Double = ..., kotlin/Double = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., com.splendo.kaluga.datetime/KalugaDate = ...): com.splendo.kaluga.location/Location.KnownLocation // com.splendo.kaluga.location/Location.KnownLocation.copy|copy(kotlin.Double;kotlin.Double;kotlin.Double?;kotlin.Double?;kotlin.Double?;kotlin.Double?;kotlin.Double?;com.splendo.kaluga.datetime.KalugaDate){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/Location.KnownLocation.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/Location.KnownLocation.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.location/Location.KnownLocation.toString|toString(){}[0]
+    }
+
+    sealed class UnknownLocation : com.splendo.kaluga.location/Location { // com.splendo.kaluga.location/Location.UnknownLocation|null[0]
+        open val reason // com.splendo.kaluga.location/Location.UnknownLocation.reason|{}reason[0]
+            open fun <get-reason>(): com.splendo.kaluga.location/Location.UnknownLocation.Reason // com.splendo.kaluga.location/Location.UnknownLocation.reason.<get-reason>|<get-reason>(){}[0]
+
+        final enum class Reason : kotlin/Enum<com.splendo.kaluga.location/Location.UnknownLocation.Reason> { // com.splendo.kaluga.location/Location.UnknownLocation.Reason|null[0]
+            enum entry NOT_CLEAR // com.splendo.kaluga.location/Location.UnknownLocation.Reason.NOT_CLEAR|null[0]
+            enum entry NO_GPS // com.splendo.kaluga.location/Location.UnknownLocation.Reason.NO_GPS|null[0]
+            enum entry PERMISSION_DENIED // com.splendo.kaluga.location/Location.UnknownLocation.Reason.PERMISSION_DENIED|null[0]
+
+            final val entries // com.splendo.kaluga.location/Location.UnknownLocation.Reason.entries|#static{}entries[0]
+                final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.location/Location.UnknownLocation.Reason> // com.splendo.kaluga.location/Location.UnknownLocation.Reason.entries.<get-entries>|<get-entries>#static(){}[0]
+
+            final fun valueOf(kotlin/String): com.splendo.kaluga.location/Location.UnknownLocation.Reason // com.splendo.kaluga.location/Location.UnknownLocation.Reason.valueOf|valueOf#static(kotlin.String){}[0]
+            final fun values(): kotlin/Array<com.splendo.kaluga.location/Location.UnknownLocation.Reason> // com.splendo.kaluga.location/Location.UnknownLocation.Reason.values|values#static(){}[0]
+        }
+
+        final class WithLastLocation : com.splendo.kaluga.location/Location.UnknownLocation { // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation|null[0]
+            constructor <init>(com.splendo.kaluga.location/Location.KnownLocation, com.splendo.kaluga.location/Location.UnknownLocation.Reason) // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.<init>|<init>(com.splendo.kaluga.location.Location.KnownLocation;com.splendo.kaluga.location.Location.UnknownLocation.Reason){}[0]
+
+            final val lastKnownLocation // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.lastKnownLocation|{}lastKnownLocation[0]
+                final fun <get-lastKnownLocation>(): com.splendo.kaluga.location/Location.KnownLocation // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.lastKnownLocation.<get-lastKnownLocation>|<get-lastKnownLocation>(){}[0]
+            final val reason // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.reason|{}reason[0]
+                final fun <get-reason>(): com.splendo.kaluga.location/Location.UnknownLocation.Reason // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.reason.<get-reason>|<get-reason>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.location/Location.KnownLocation // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.component1|component1(){}[0]
+            final fun component2(): com.splendo.kaluga.location/Location.UnknownLocation.Reason // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.component2|component2(){}[0]
+            final fun copy(com.splendo.kaluga.location/Location.KnownLocation = ..., com.splendo.kaluga.location/Location.UnknownLocation.Reason = ...): com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.copy|copy(com.splendo.kaluga.location.Location.KnownLocation;com.splendo.kaluga.location.Location.UnknownLocation.Reason){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.location/Location.UnknownLocation.WithLastLocation.toString|toString(){}[0]
+        }
+
+        final class WithoutLastLocation : com.splendo.kaluga.location/Location.UnknownLocation { // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation|null[0]
+            constructor <init>(com.splendo.kaluga.location/Location.UnknownLocation.Reason) // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.<init>|<init>(com.splendo.kaluga.location.Location.UnknownLocation.Reason){}[0]
+
+            final val reason // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.reason|{}reason[0]
+                final fun <get-reason>(): com.splendo.kaluga.location/Location.UnknownLocation.Reason // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.reason.<get-reason>|<get-reason>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.location/Location.UnknownLocation.Reason // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.component1|component1(){}[0]
+            final fun copy(com.splendo.kaluga.location/Location.UnknownLocation.Reason = ...): com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.copy|copy(com.splendo.kaluga.location.Location.UnknownLocation.Reason){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.location/Location.UnknownLocation.WithoutLastLocation.toString|toString(){}[0]
+        }
+    }
+}
+
+final val com.splendo.kaluga.location/known // com.splendo.kaluga.location/known|@com.splendo.kaluga.location.Location{}known[0]
+    final fun (com.splendo.kaluga.location/Location).<get-known>(): com.splendo.kaluga.location/Location.KnownLocation? // com.splendo.kaluga.location/known.<get-known>|<get-known>@com.splendo.kaluga.location.Location(){}[0]
+final val com.splendo.kaluga.location/orUnknown // com.splendo.kaluga.location/orUnknown|@com.splendo.kaluga.location.Location.KnownLocation?{}orUnknown[0]
+    final fun (com.splendo.kaluga.location/Location.KnownLocation?).<get-orUnknown>(): com.splendo.kaluga.location/Location // com.splendo.kaluga.location/orUnknown.<get-orUnknown>|<get-orUnknown>@com.splendo.kaluga.location.Location.KnownLocation?(){}[0]
+
+final fun (com.splendo.kaluga.location/Location).com.splendo.kaluga.location/unknownLocationOf(com.splendo.kaluga.location/Location.UnknownLocation.Reason): com.splendo.kaluga.location/Location.UnknownLocation // com.splendo.kaluga.location/unknownLocationOf|unknownLocationOf@com.splendo.kaluga.location.Location(com.splendo.kaluga.location.Location.UnknownLocation.Reason){}[0]
+final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/Location>).com.splendo.kaluga.location/known(kotlin.time/Duration = ...): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/Location.KnownLocation?> // com.splendo.kaluga.location/known|known@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.location.Location>(kotlin.time.Duration){}[0]
+final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/LocationState>).com.splendo.kaluga.location/location(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.location/Location> // com.splendo.kaluga.location/location|location@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.location.LocationState>(){}[0]
+
+// Targets: [apple]
+final class com.splendo.kaluga.location/AppleLocationSettings { // com.splendo.kaluga.location/AppleLocationSettings|null[0]
+    constructor <init>() // com.splendo.kaluga.location/AppleLocationSettings.<init>|<init>(){}[0]
+
+    // Targets: [tvos]
+    constructor <init>(kotlin.time/Duration) // com.splendo.kaluga.location/AppleLocationSettings.<init>|<init>(kotlin.time.Duration){}[0]
+
+    // Targets: [tvos]
+    final var pollInterval // com.splendo.kaluga.location/AppleLocationSettings.pollInterval|{}pollInterval[0]
+        final fun <get-pollInterval>(): kotlin.time/Duration // com.splendo.kaluga.location/AppleLocationSettings.pollInterval.<get-pollInterval>|<get-pollInterval>(){}[0]
+}
+
+// Targets: [apple]
+final val com.splendo.kaluga.location/knownLocation // com.splendo.kaluga.location/knownLocation|@platform.CoreLocation.CLLocation{}knownLocation[0]
+    final fun (platform.CoreLocation/CLLocation).<get-knownLocation>(): com.splendo.kaluga.location/Location.KnownLocation // com.splendo.kaluga.location/knownLocation.<get-knownLocation>|<get-knownLocation>@platform.CoreLocation.CLLocation(){}[0]

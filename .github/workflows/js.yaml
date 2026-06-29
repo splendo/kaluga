@@ -1,0 +1,78 @@
+name: JS and Wasm tests and example
+on: pull_request
+
+jobs:
+  build:
+    uses: ./.github/workflows/setup_linux.yaml
+    with:
+      gradleTask: compileKotlinJs compileKotlinWasmJs
+
+  test:
+    name: ${{ matrix.target.name }} · ${{ matrix.module.name }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJSON(needs.build.outputs.projects) }}
+        target:
+          - name: JS
+            test: jsNodeTest
+            support: supportJS
+          - name: Wasm
+            test: wasmJsNodeTest
+            support: supportWasmJS
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_linux/
+
+      - name: run ${{ matrix.target.name }} tests for ${{ matrix.module.name }}
+        if: ${{ matrix.module[matrix.target.support] }}
+        run: ./gradlew -p ${{ matrix.module.dir }} ${{ matrix.target.test }}
+
+      - name: Upload ${{ matrix.target.name }} test artifact
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: ${{ matrix.module.name }} ${{ matrix.target.name }} Test Report HTML
+          path: ${{ format('{0}/**/build/reports/tests/{1}', matrix.module.dir, matrix.target.test) }}
+
+  example-web:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_linux/
+
+      - name: build web example
+        working-directory: example
+        run: ./gradlew :web:wasmJsBrowserDevelopmentExecutableDistribution
+
+      - name: Upload web example artifact
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: web example build reports
+          path: "example/**/build/reports"
+
+  # The per-run workspace cache is only useful within this run; delete it so it doesn't
+  # pile up against the repo's 10GB cache quota.
+  cleanup-caches:
+    needs: [build, test, example-web]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: delete per-run caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache delete "build-linux-${{ github.workflow }}-${{ github.sha }}-" --repo ${{ github.repository }} || true

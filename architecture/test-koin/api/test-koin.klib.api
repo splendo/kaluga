@@ -1,0 +1,81 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.architecture:test-koin>
+abstract class <#A: com.splendo.kaluga.koin.test/KoinUIThreadTest.KoinTestContext, #B: kotlin/Any?, #C: kotlinx.coroutines.flow/Flow<#B>> com.splendo.kaluga.koin.test/KoinFlowTest : com.splendo.kaluga.koin.test/BaseKoinFlowTest<kotlin/Unit, #A, #B, #C> { // com.splendo.kaluga.koin.test/KoinFlowTest|null[0]
+    constructor <init>() // com.splendo.kaluga.koin.test/KoinFlowTest.<init>|<init>(){}[0]
+
+    abstract val createTestContext // com.splendo.kaluga.koin.test/KoinFlowTest.createTestContext|{}createTestContext[0]
+        abstract fun <get-createTestContext>(): kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, #A> // com.splendo.kaluga.koin.test/KoinFlowTest.createTestContext.<get-createTestContext>|<get-createTestContext>(){}[0]
+    open val createTestContextWithConfiguration // com.splendo.kaluga.koin.test/KoinFlowTest.createTestContextWithConfiguration|{}createTestContextWithConfiguration[0]
+        open fun <get-createTestContextWithConfiguration>(): kotlin.coroutines/SuspendFunction2<kotlin/Unit, kotlinx.coroutines/CoroutineScope, #A> // com.splendo.kaluga.koin.test/KoinFlowTest.createTestContextWithConfiguration.<get-createTestContextWithConfiguration>|<get-createTestContextWithConfiguration>(){}[0]
+
+    final fun testWithFlow(kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.koin.test/KoinFlowTest<#A, #B, #C>, #C, kotlin/Unit>) // com.splendo.kaluga.koin.test/KoinFlowTest.testWithFlow|testWithFlow(kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.koin.test.KoinFlowTest<1:0,1:1,1:2>,1:2,kotlin.Unit>){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.koin.test/KoinUIThreadTest.KoinTestContext> com.splendo.kaluga.koin.test/KoinUIThreadTest : com.splendo.kaluga.koin.test/BaseKoinUIThreadTest<kotlin/Unit, #A> { // com.splendo.kaluga.koin.test/KoinUIThreadTest|null[0]
+    constructor <init>() // com.splendo.kaluga.koin.test/KoinUIThreadTest.<init>|<init>(){}[0]
+
+    abstract val createTestContext // com.splendo.kaluga.koin.test/KoinUIThreadTest.createTestContext|{}createTestContext[0]
+        abstract fun <get-createTestContext>(): kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, #A> // com.splendo.kaluga.koin.test/KoinUIThreadTest.createTestContext.<get-createTestContext>|<get-createTestContext>(){}[0]
+    open val createTestContextWithConfiguration // com.splendo.kaluga.koin.test/KoinUIThreadTest.createTestContextWithConfiguration|{}createTestContextWithConfiguration[0]
+        open fun <get-createTestContextWithConfiguration>(): kotlin.coroutines/SuspendFunction2<kotlin/Unit, kotlinx.coroutines/CoroutineScope, #A> // com.splendo.kaluga.koin.test/KoinUIThreadTest.createTestContextWithConfiguration.<get-createTestContextWithConfiguration>|<get-createTestContextWithConfiguration>(){}[0]
+
+    final fun testOnUIThread(kotlin/Boolean = ..., kotlin.coroutines/SuspendFunction1<#A, kotlin/Unit>) // com.splendo.kaluga.koin.test/KoinUIThreadTest.testOnUIThread|testOnUIThread(kotlin.Boolean;kotlin.coroutines.SuspendFunction1<1:0,kotlin.Unit>){}[0]
+
+    open class KoinTestContext : com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext { // com.splendo.kaluga.koin.test/KoinUIThreadTest.KoinTestContext|null[0]
+        constructor <init>(kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/KoinUIThreadTest.KoinTestContext.<init>|<init>(kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>, kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/KoinUIThreadTest.KoinTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>;kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>? = ..., kotlin.collections/List<org.koin.core.module/Module>) // com.splendo.kaluga.koin.test/KoinUIThreadTest.KoinTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>?;kotlin.collections.List<org.koin.core.module.Module>){}[0]
+    }
+}
+
+abstract class <#A: com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest.KoinViewModelTestContext<#B>, #B: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest : com.splendo.kaluga.koin.test/KoinUIThreadTest<#A> { // com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest|null[0]
+    constructor <init>() // com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest.<init>|<init>(){}[0]
+
+    abstract class <#A1: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> KoinViewModelTestContext : com.splendo.kaluga.architecture.test/UIThreadViewModelTest.ViewModelTestContext<#A1>, com.splendo.kaluga.koin.test/KoinUIThreadTest.KoinTestContext { // com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest.KoinViewModelTestContext|null[0]
+        constructor <init>(kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest.KoinViewModelTestContext.<init>|<init>(kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>, kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest.KoinViewModelTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>;kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>? = ..., kotlin.collections/List<org.koin.core.module/Module>) // com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest.KoinViewModelTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>?;kotlin.collections.List<org.koin.core.module.Module>){}[0]
+
+        open fun dispose() // com.splendo.kaluga.koin.test/KoinUIThreadViewModelTest.KoinViewModelTestContext.dispose|dispose(){}[0]
+    }
+}
+
+abstract class <#A: kotlin/Any?, #B: com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext, #C: kotlin/Any?, #D: kotlinx.coroutines.flow/Flow<#C>> com.splendo.kaluga.koin.test/BaseKoinFlowTest : com.splendo.kaluga.base.test/BaseFlowTest<#A, #B, #C, #D> { // com.splendo.kaluga.koin.test/BaseKoinFlowTest|null[0]
+    constructor <init>() // com.splendo.kaluga.koin.test/BaseKoinFlowTest.<init>|<init>(){}[0]
+
+    open val onFailedToCreateTestContextWithConfiguration // com.splendo.kaluga.koin.test/BaseKoinFlowTest.onFailedToCreateTestContextWithConfiguration|{}onFailedToCreateTestContextWithConfiguration[0]
+        open fun <get-onFailedToCreateTestContextWithConfiguration>(): kotlin/Function1<#A, kotlin/Unit> // com.splendo.kaluga.koin.test/BaseKoinFlowTest.onFailedToCreateTestContextWithConfiguration.<get-onFailedToCreateTestContextWithConfiguration>|<get-onFailedToCreateTestContextWithConfiguration>(){}[0]
+}
+
+abstract class <#A: kotlin/Any?, #B: com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext> com.splendo.kaluga.koin.test/BaseKoinUIThreadTest : com.splendo.kaluga.base.test/BaseUIThreadTest<#A, #B> { // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest|null[0]
+    constructor <init>() // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.<init>|<init>(){}[0]
+
+    open val onFailedToCreateTestContextWithConfiguration // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.onFailedToCreateTestContextWithConfiguration|{}onFailedToCreateTestContextWithConfiguration[0]
+        open fun <get-onFailedToCreateTestContextWithConfiguration>(): kotlin/Function1<#A, kotlin/Unit> // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.onFailedToCreateTestContextWithConfiguration.<get-onFailedToCreateTestContextWithConfiguration>|<get-onFailedToCreateTestContextWithConfiguration>(){}[0]
+
+    open class KoinTestContext : com.splendo.kaluga.base.test/BaseUIThreadTest.TestContext, org.koin.core.component/KoinComponent { // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext|null[0]
+        constructor <init>(kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext.<init>|<init>(kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>, kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>;kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>? = ..., kotlin.collections/List<org.koin.core.module/Module>) // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>?;kotlin.collections.List<org.koin.core.module.Module>){}[0]
+
+        open fun dispose() // com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext.dispose|dispose(){}[0]
+    }
+}
+
+abstract class <#A: kotlin/Any?, #B: com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<#C>, #C: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest : com.splendo.kaluga.koin.test/BaseKoinUIThreadTest<#A, #B> { // com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest|null[0]
+    constructor <init>() // com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest.<init>|<init>(){}[0]
+
+    abstract class <#A1: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> KoinViewModelTestContext : com.splendo.kaluga.architecture.test/BaseUIThreadViewModelTest.ViewModelTestContext<#A1>, com.splendo.kaluga.koin.test/BaseKoinUIThreadTest.KoinTestContext { // com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest.KoinViewModelTestContext|null[0]
+        constructor <init>(kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest.KoinViewModelTestContext.<init>|<init>(kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>, kotlin/Array<out org.koin.core.module/Module>...) // com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest.KoinViewModelTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>;kotlin.Array<out|org.koin.core.module.Module>...){}[0]
+        constructor <init>(kotlin/Function1<org.koin.core/KoinApplication, kotlin/Unit>? = ..., kotlin.collections/List<org.koin.core.module/Module>) // com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest.KoinViewModelTestContext.<init>|<init>(kotlin.Function1<org.koin.core.KoinApplication,kotlin.Unit>?;kotlin.collections.List<org.koin.core.module.Module>){}[0]
+
+        open fun dispose() // com.splendo.kaluga.koin.test/BaseKoinUIThreadViewModelTest.KoinViewModelTestContext.dispose|dispose(){}[0]
+    }
+}

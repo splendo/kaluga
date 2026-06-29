@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Required for BLE scanning below API 31. On API 31+ location is optional: an app that scans for
+         location must declare ACCESS_FINE_LOCATION itself (and must not set neverForLocation on BLUETOOTH_SCAN). -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+
+</manifest>

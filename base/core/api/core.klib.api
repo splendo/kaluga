@@ -1,0 +1,240 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Alias: ios => [iosArm64, iosSimulatorArm64]
+// Alias: tvos => [tvosArm64, tvosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.base:core>
+final enum class com.splendo.kaluga.base.flow/SharedFlowCollectionEvent : kotlin/Enum<com.splendo.kaluga.base.flow/SharedFlowCollectionEvent> { // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent|null[0]
+    enum entry FirstCollection // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent.FirstCollection|null[0]
+    enum entry LaterCollections // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent.LaterCollections|null[0]
+    enum entry NoMoreCollections // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent.NoMoreCollections|null[0]
+
+    final val entries // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.base.flow/SharedFlowCollectionEvent> // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.base.flow/SharedFlowCollectionEvent // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.base.flow/SharedFlowCollectionEvent> // com.splendo.kaluga.base.flow/SharedFlowCollectionEvent.values|values#static(){}[0]
+}
+
+abstract interface <#A: kotlin/Any> com.splendo.kaluga.base.utils/BufferedAsListChannel : kotlinx.coroutines.channels/ReceiveChannel<kotlin.collections/List<#A>>, kotlinx.coroutines.channels/SendChannel<#A> // com.splendo.kaluga.base.utils/BufferedAsListChannel|null[0]
+
+abstract interface com.splendo.kaluga.base.utils/Serializable // com.splendo.kaluga.base.utils/Serializable|null[0]
+
+sealed interface com.splendo.kaluga.base.flow/SpecialFlowValue { // com.splendo.kaluga.base.flow/SpecialFlowValue|null[0]
+    abstract interface Last : com.splendo.kaluga.base.flow/SpecialFlowValue // com.splendo.kaluga.base.flow/SpecialFlowValue.Last|null[0]
+
+    abstract interface NotImportant : com.splendo.kaluga.base.flow/SpecialFlowValue // com.splendo.kaluga.base.flow/SpecialFlowValue.NotImportant|null[0]
+}
+
+final class <#A: kotlin/Any?, #B: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMutableMap : kotlin.collections/MutableMap<#A, #B> { // com.splendo.kaluga.base.collections/ConcurrentMutableMap|null[0]
+    final val entries // com.splendo.kaluga.base.collections/ConcurrentMutableMap.entries|{}entries[0]
+        final fun <get-entries>(): kotlin.collections/MutableSet<kotlin.collections/MutableMap.MutableEntry<#A, #B>> // com.splendo.kaluga.base.collections/ConcurrentMutableMap.entries.<get-entries>|<get-entries>(){}[0]
+    final val keys // com.splendo.kaluga.base.collections/ConcurrentMutableMap.keys|{}keys[0]
+        final fun <get-keys>(): kotlin.collections/MutableSet<#A> // com.splendo.kaluga.base.collections/ConcurrentMutableMap.keys.<get-keys>|<get-keys>(){}[0]
+    final val size // com.splendo.kaluga.base.collections/ConcurrentMutableMap.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableMap.size.<get-size>|<get-size>(){}[0]
+    final val values // com.splendo.kaluga.base.collections/ConcurrentMutableMap.values|{}values[0]
+        final fun <get-values>(): kotlin.collections/MutableCollection<#B> // com.splendo.kaluga.base.collections/ConcurrentMutableMap.values.<get-values>|<get-values>(){}[0]
+
+    final fun <#A1: kotlin/Any?> synchronized(kotlin/Function1<kotlin.collections/MutableMap<#A, #B>, #A1>): #A1 // com.splendo.kaluga.base.collections/ConcurrentMutableMap.synchronized|synchronized(kotlin.Function1<kotlin.collections.MutableMap<1:0,1:1>,0:0>){0§<kotlin.Any?>}[0]
+    final fun clear() // com.splendo.kaluga.base.collections/ConcurrentMutableMap.clear|clear(){}[0]
+    final fun containsKey(#A): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableMap.containsKey|containsKey(1:0){}[0]
+    final fun containsValue(#B): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableMap.containsValue|containsValue(1:1){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableMap.equals|equals(kotlin.Any?){}[0]
+    final fun get(#A): #B? // com.splendo.kaluga.base.collections/ConcurrentMutableMap.get|get(1:0){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableMap.hashCode|hashCode(){}[0]
+    final fun isEmpty(): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableMap.isEmpty|isEmpty(){}[0]
+    final fun put(#A, #B): #B? // com.splendo.kaluga.base.collections/ConcurrentMutableMap.put|put(1:0;1:1){}[0]
+    final fun putAll(kotlin.collections/Map<out #A, #B>) // com.splendo.kaluga.base.collections/ConcurrentMutableMap.putAll|putAll(kotlin.collections.Map<out|1:0,1:1>){}[0]
+    final fun remove(#A): #B? // com.splendo.kaluga.base.collections/ConcurrentMutableMap.remove|remove(1:0){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.collections/ConcurrentMutableMap.toString|toString(){}[0]
+}
+
+final class <#A: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMutableIterator : kotlin.collections/MutableIterator<#A> { // com.splendo.kaluga.base.collections/ConcurrentMutableIterator|null[0]
+    final fun <#A1: kotlin/Any?> synchronized(kotlin/Function1<kotlin.collections/MutableIterator<#A>, #A1>): #A1 // com.splendo.kaluga.base.collections/ConcurrentMutableIterator.synchronized|synchronized(kotlin.Function1<kotlin.collections.MutableIterator<1:0>,0:0>){0§<kotlin.Any?>}[0]
+    final fun hasNext(): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableIterator.hasNext|hasNext(){}[0]
+    final fun next(): #A // com.splendo.kaluga.base.collections/ConcurrentMutableIterator.next|next(){}[0]
+    final fun remove() // com.splendo.kaluga.base.collections/ConcurrentMutableIterator.remove|remove(){}[0]
+}
+
+final class <#A: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMutableList : kotlin.collections/MutableList<#A> { // com.splendo.kaluga.base.collections/ConcurrentMutableList|null[0]
+    final val size // com.splendo.kaluga.base.collections/ConcurrentMutableList.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableList.size.<get-size>|<get-size>(){}[0]
+
+    final fun <#A1: kotlin/Any?> synchronized(kotlin/Function1<kotlin.collections/MutableList<#A>, #A1>): #A1 // com.splendo.kaluga.base.collections/ConcurrentMutableList.synchronized|synchronized(kotlin.Function1<kotlin.collections.MutableList<1:0>,0:0>){0§<kotlin.Any?>}[0]
+    final fun add(#A): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.add|add(1:0){}[0]
+    final fun add(kotlin/Int, #A) // com.splendo.kaluga.base.collections/ConcurrentMutableList.add|add(kotlin.Int;1:0){}[0]
+    final fun addAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.addAll|addAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun addAll(kotlin/Int, kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.addAll|addAll(kotlin.Int;kotlin.collections.Collection<1:0>){}[0]
+    final fun clear() // com.splendo.kaluga.base.collections/ConcurrentMutableList.clear|clear(){}[0]
+    final fun contains(#A): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.contains|contains(1:0){}[0]
+    final fun containsAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.containsAll|containsAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.equals|equals(kotlin.Any?){}[0]
+    final fun get(kotlin/Int): #A // com.splendo.kaluga.base.collections/ConcurrentMutableList.get|get(kotlin.Int){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableList.hashCode|hashCode(){}[0]
+    final fun indexOf(#A): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableList.indexOf|indexOf(1:0){}[0]
+    final fun isEmpty(): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.isEmpty|isEmpty(){}[0]
+    final fun iterator(): com.splendo.kaluga.base.collections/ConcurrentMutableIterator<#A> // com.splendo.kaluga.base.collections/ConcurrentMutableList.iterator|iterator(){}[0]
+    final fun lastIndexOf(#A): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableList.lastIndexOf|lastIndexOf(1:0){}[0]
+    final fun listIterator(): com.splendo.kaluga.base.collections/ConcurrentMutableListIterator<#A> // com.splendo.kaluga.base.collections/ConcurrentMutableList.listIterator|listIterator(){}[0]
+    final fun listIterator(kotlin/Int): com.splendo.kaluga.base.collections/ConcurrentMutableListIterator<#A> // com.splendo.kaluga.base.collections/ConcurrentMutableList.listIterator|listIterator(kotlin.Int){}[0]
+    final fun remove(#A): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.remove|remove(1:0){}[0]
+    final fun removeAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.removeAll|removeAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun removeAt(kotlin/Int): #A // com.splendo.kaluga.base.collections/ConcurrentMutableList.removeAt|removeAt(kotlin.Int){}[0]
+    final fun retainAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableList.retainAll|retainAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun set(kotlin/Int, #A): #A // com.splendo.kaluga.base.collections/ConcurrentMutableList.set|set(kotlin.Int;1:0){}[0]
+    final fun subList(kotlin/Int, kotlin/Int): com.splendo.kaluga.base.collections/ConcurrentMutableList<#A> // com.splendo.kaluga.base.collections/ConcurrentMutableList.subList|subList(kotlin.Int;kotlin.Int){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.collections/ConcurrentMutableList.toString|toString(){}[0]
+}
+
+final class <#A: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMutableListIterator : kotlin.collections/MutableIterator<#A>, kotlin.collections/MutableListIterator<#A> { // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator|null[0]
+    final fun <#A1: kotlin/Any?> synchronized(kotlin/Function1<kotlin.collections/MutableListIterator<#A>, #A1>): #A1 // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.synchronized|synchronized(kotlin.Function1<kotlin.collections.MutableListIterator<1:0>,0:0>){0§<kotlin.Any?>}[0]
+    final fun add(#A) // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.add|add(1:0){}[0]
+    final fun hasNext(): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.hasNext|hasNext(){}[0]
+    final fun hasPrevious(): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.hasPrevious|hasPrevious(){}[0]
+    final fun next(): #A // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.next|next(){}[0]
+    final fun nextIndex(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.nextIndex|nextIndex(){}[0]
+    final fun previous(): #A // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.previous|previous(){}[0]
+    final fun previousIndex(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.previousIndex|previousIndex(){}[0]
+    final fun remove() // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.remove|remove(){}[0]
+    final fun set(#A) // com.splendo.kaluga.base.collections/ConcurrentMutableListIterator.set|set(1:0){}[0]
+}
+
+final class <#A: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMutableSet : kotlin.collections/MutableSet<#A> { // com.splendo.kaluga.base.collections/ConcurrentMutableSet|null[0]
+    final val size // com.splendo.kaluga.base.collections/ConcurrentMutableSet.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableSet.size.<get-size>|<get-size>(){}[0]
+
+    final fun <#A1: kotlin/Any?> synchronized(kotlin/Function1<kotlin.collections/MutableSet<#A>, #A1>): #A1 // com.splendo.kaluga.base.collections/ConcurrentMutableSet.synchronized|synchronized(kotlin.Function1<kotlin.collections.MutableSet<1:0>,0:0>){0§<kotlin.Any?>}[0]
+    final fun add(#A): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.add|add(1:0){}[0]
+    final fun addAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.addAll|addAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun clear() // com.splendo.kaluga.base.collections/ConcurrentMutableSet.clear|clear(){}[0]
+    final fun contains(#A): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.contains|contains(1:0){}[0]
+    final fun containsAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.containsAll|containsAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableSet.hashCode|hashCode(){}[0]
+    final fun isEmpty(): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.isEmpty|isEmpty(){}[0]
+    final fun iterator(): com.splendo.kaluga.base.collections/ConcurrentMutableIterator<#A> // com.splendo.kaluga.base.collections/ConcurrentMutableSet.iterator|iterator(){}[0]
+    final fun remove(#A): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.remove|remove(1:0){}[0]
+    final fun removeAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.removeAll|removeAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun retainAll(kotlin.collections/Collection<#A>): kotlin/Boolean // com.splendo.kaluga.base.collections/ConcurrentMutableSet.retainAll|retainAll(kotlin.collections.Collection<1:0>){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.collections/ConcurrentMutableSet.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.base/KalugaThread { // com.splendo.kaluga.base/KalugaThread|null[0]
+    final val isMainThread // com.splendo.kaluga.base/KalugaThread.isMainThread|{}isMainThread[0]
+        final fun <get-isMainThread>(): kotlin/Boolean // com.splendo.kaluga.base/KalugaThread.isMainThread.<get-isMainThread>|<get-isMainThread>(){}[0]
+
+    final var name // com.splendo.kaluga.base/KalugaThread.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.base/KalugaThread.name.<get-name>|<get-name>(){}[0]
+        final fun <set-name>(kotlin/String) // com.splendo.kaluga.base/KalugaThread.name.<set-name>|<set-name>(kotlin.String){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base/KalugaThread.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base/KalugaThread.hashCode|hashCode(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base/KalugaThread.Companion|null[0]
+        final val currentThread // com.splendo.kaluga.base/KalugaThread.Companion.currentThread|{}currentThread[0]
+            final fun <get-currentThread>(): com.splendo.kaluga.base/KalugaThread // com.splendo.kaluga.base/KalugaThread.Companion.currentThread.<get-currentThread>|<get-currentThread>(){}[0]
+    }
+
+    // Targets: [apple]
+    constructor <init>(platform.Foundation/NSThread) // com.splendo.kaluga.base/KalugaThread.<init>|<init>(platform.Foundation.NSThread){}[0]
+
+    // Targets: [apple]
+    final val thread // com.splendo.kaluga.base/KalugaThread.thread|{}thread[0]
+        final fun <get-thread>(): platform.Foundation/NSThread // com.splendo.kaluga.base/KalugaThread.thread.<get-thread>|<get-thread>(){}[0]
+
+    // Targets: [apple]
+    final fun component1(): platform.Foundation/NSThread // com.splendo.kaluga.base/KalugaThread.component1|component1(){}[0]
+
+    // Targets: [apple]
+    final fun copy(platform.Foundation/NSThread = ...): com.splendo.kaluga.base/KalugaThread // com.splendo.kaluga.base/KalugaThread.copy|copy(platform.Foundation.NSThread){}[0]
+
+    // Targets: [apple]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base/KalugaThread.toString|toString(){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>() // com.splendo.kaluga.base/KalugaThread.<init>|<init>(){}[0]
+}
+
+final val com.splendo.kaluga.base/isOnMainThread // com.splendo.kaluga.base/isOnMainThread|{}isOnMainThread[0]
+    final fun <get-isOnMainThread>(): kotlin/Boolean // com.splendo.kaluga.base/isOnMainThread.<get-isOnMainThread>|<get-isOnMainThread>(){}[0]
+
+final fun (kotlinx.coroutines/CompletableDeferred<kotlin/Unit>).com.splendo.kaluga.base.utils/complete() // com.splendo.kaluga.base.utils/complete|complete@kotlinx.coroutines.CompletableDeferred<kotlin.Unit>(){}[0]
+final fun <#A: kotlin/Any> com.splendo.kaluga.base.utils/BufferedAsListChannel(kotlin.coroutines/CoroutineContext): com.splendo.kaluga.base.utils/BufferedAsListChannel<#A> // com.splendo.kaluga.base.utils/BufferedAsListChannel|BufferedAsListChannel(kotlin.coroutines.CoroutineContext){0§<kotlin.Any>}[0]
+final fun <#A: kotlin/Any> com.splendo.kaluga.base.utils/BufferedAsListChannel(kotlin.coroutines/CoroutineContext, kotlinx.coroutines/CloseableCoroutineDispatcher, kotlin/Boolean): com.splendo.kaluga.base.utils/BufferedAsListChannel<#A> // com.splendo.kaluga.base.utils/BufferedAsListChannel|BufferedAsListChannel(kotlin.coroutines.CoroutineContext;kotlinx.coroutines.CloseableCoroutineDispatcher;kotlin.Boolean){0§<kotlin.Any>}[0]
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> com.splendo.kaluga.base.collections/concurrentMutableMapOf(): com.splendo.kaluga.base.collections/ConcurrentMutableMap<#A, #B> // com.splendo.kaluga.base.collections/concurrentMutableMapOf|concurrentMutableMapOf(){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> com.splendo.kaluga.base.collections/concurrentMutableMapOf(kotlin/Array<out kotlin/Pair<#A, #B>>...): com.splendo.kaluga.base.collections/ConcurrentMutableMap<#A, #B> // com.splendo.kaluga.base.collections/concurrentMutableMapOf|concurrentMutableMapOf(kotlin.Array<out|kotlin.Pair<0:0,0:1>>...){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlin.collections/Iterable<#A>).com.splendo.kaluga.base.utils/containsAny(kotlin.collections/Iterable<#A>): kotlin/Boolean // com.splendo.kaluga.base.utils/containsAny|containsAny@kotlin.collections.Iterable<0:0>(kotlin.collections.Iterable<0:0>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.base.flow/takeUntilLast(kotlin/Boolean = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.flow/takeUntilLast|takeUntilLast@kotlinx.coroutines.flow.Flow<0:0>(kotlin.Boolean){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines/Deferred<#A>).com.splendo.kaluga.base.utils/getCompletedOrNull(): #A? // com.splendo.kaluga.base.utils/getCompletedOrNull|getCompletedOrNull@kotlinx.coroutines.Deferred<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.splendo.kaluga.base.collections/concurrentMutableListOf(): com.splendo.kaluga.base.collections/ConcurrentMutableList<#A> // com.splendo.kaluga.base.collections/concurrentMutableListOf|concurrentMutableListOf(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.splendo.kaluga.base.collections/concurrentMutableListOf(kotlin/Array<out #A>...): com.splendo.kaluga.base.collections/ConcurrentMutableList<#A> // com.splendo.kaluga.base.collections/concurrentMutableListOf|concurrentMutableListOf(kotlin.Array<out|0:0>...){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.splendo.kaluga.base.collections/concurrentMutableSetOf(): com.splendo.kaluga.base.collections/ConcurrentMutableSet<#A> // com.splendo.kaluga.base.collections/concurrentMutableSetOf|concurrentMutableSetOf(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.splendo.kaluga.base.collections/concurrentMutableSetOf(kotlin/Array<out #A>...): com.splendo.kaluga.base.collections/ConcurrentMutableSet<#A> // com.splendo.kaluga.base.collections/concurrentMutableSetOf|concurrentMutableSetOf(kotlin.Array<out|0:0>...){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.splendo.kaluga.base/runBlocking(kotlin.coroutines/CoroutineContext = ..., kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, #A>): #A // com.splendo.kaluga.base/runBlocking|runBlocking(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,0:0>){0§<kotlin.Any?>}[0]
+final fun com.splendo.kaluga.base.utils/EmptyCompletableDeferred(kotlinx.coroutines/Job? = ...): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.base.utils/EmptyCompletableDeferred|EmptyCompletableDeferred(kotlinx.coroutines.Job?){}[0]
+final fun com.splendo.kaluga.base/runOnMain(kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.base/runOnMain|runOnMain(kotlin.Function0<kotlin.Unit>){}[0]
+final fun com.splendo.kaluga.base/singleThreadDispatcher(kotlin/String): kotlinx.coroutines/CloseableCoroutineDispatcher // com.splendo.kaluga.base/singleThreadDispatcher|singleThreadDispatcher(kotlin.String){}[0]
+final fun com.splendo.kaluga.base/threadPoolDispatcher(kotlin/UInt, kotlin/String): kotlinx.coroutines/CloseableCoroutineDispatcher // com.splendo.kaluga.base/threadPoolDispatcher|threadPoolDispatcher(kotlin.UInt;kotlin.String){}[0]
+final inline fun <#A: kotlin/Any?> (#A).com.splendo.kaluga.base.utils/applyIf(kotlin/Boolean, kotlin/Function1<#A, kotlin/Unit>): #A // com.splendo.kaluga.base.utils/applyIf|applyIf@0:0(kotlin.Boolean;kotlin.Function1<0:0,kotlin.Unit>){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.base.flow/filterOnlyImportant(): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.flow/filterOnlyImportant|filterOnlyImportant@kotlinx.coroutines.flow.Flow<0:0>(){0§<kotlin.Any?>}[0]
+final inline fun <#A: reified kotlin/Any, #B: reified kotlin/Any> (kotlin.collections/Map<*, *>).com.splendo.kaluga.base.utils/typedMap(): kotlin.collections/Map<#A, #B> // com.splendo.kaluga.base.utils/typedMap|typedMap@kotlin.collections.Map<*,*>(){0§<kotlin.Any>;1§<kotlin.Any>}[0]
+final inline fun <#A: reified kotlin/Any> (kotlin.collections/List<*>).com.splendo.kaluga.base.utils/typedList(): kotlin.collections/List<#A> // com.splendo.kaluga.base.utils/typedList|typedList@kotlin.collections.List<*>(){0§<kotlin.Any>}[0]
+final inline fun <#A: reified kotlin/Any?> (kotlin.sequences/Sequence<*>).com.splendo.kaluga.base.utils/firstInstance(): #A? // com.splendo.kaluga.base.utils/firstInstance|firstInstance@kotlin.sequences.Sequence<*>(){0§<kotlin.Any?>}[0]
+final inline fun <#A: reified kotlin/Enum<#A>> (kotlin/Enum.Companion).com.splendo.kaluga.base.utils/byOrdinalOrDefault(kotlin/Int, #A): #A // com.splendo.kaluga.base.utils/byOrdinalOrDefault|byOrdinalOrDefault@kotlin.Enum.Companion(kotlin.Int;0:0){0§<kotlin.Enum<0:0>>}[0]
+final suspend fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/MutableSharedFlow<#A>).com.splendo.kaluga.base.flow/onCollectionEvent(kotlin.coroutines/SuspendFunction2<kotlinx.coroutines.flow/MutableSharedFlow<#A>, com.splendo.kaluga.base.flow/SharedFlowCollectionEvent, kotlin/Unit>) // com.splendo.kaluga.base.flow/onCollectionEvent|onCollectionEvent@kotlinx.coroutines.flow.MutableSharedFlow<0:0>(kotlin.coroutines.SuspendFunction2<kotlinx.coroutines.flow.MutableSharedFlow<0:0>,com.splendo.kaluga.base.flow.SharedFlowCollectionEvent,kotlin.Unit>){0§<kotlin.Any?>}[0]
+final suspend inline fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.base.flow/collectImportant(kotlinx.coroutines.flow/FlowCollector<#A>) // com.splendo.kaluga.base.flow/collectImportant|collectImportant@kotlinx.coroutines.flow.Flow<0:0>(kotlinx.coroutines.flow.FlowCollector<0:0>){0§<kotlin.Any?>}[0]
+final suspend inline fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.base.flow/collectImportantUntilLast(kotlin/Boolean = ..., kotlinx.coroutines.flow/FlowCollector<#A>) // com.splendo.kaluga.base.flow/collectImportantUntilLast|collectImportantUntilLast@kotlinx.coroutines.flow.Flow<0:0>(kotlin.Boolean;kotlinx.coroutines.flow.FlowCollector<0:0>){0§<kotlin.Any?>}[0]
+final suspend inline fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).com.splendo.kaluga.base.flow/collectUntilLast(kotlin/Boolean = ..., kotlinx.coroutines.flow/FlowCollector<#A>) // com.splendo.kaluga.base.flow/collectUntilLast|collectUntilLast@kotlinx.coroutines.flow.Flow<0:0>(kotlin.Boolean;kotlinx.coroutines.flow.FlowCollector<0:0>){0§<kotlin.Any?>}[0]
+final suspend inline fun <#A: reified kotlin/Any?> (kotlinx.coroutines.flow/Flow<*>).com.splendo.kaluga.base.utils/firstInstance(): #A? // com.splendo.kaluga.base.utils/firstInstance|firstInstance@kotlinx.coroutines.flow.Flow<*>(){0§<kotlin.Any?>}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.base.utils/nsRange // com.splendo.kaluga.base.utils/nsRange|@kotlin.ranges.IntRange{}nsRange[0]
+    final fun (kotlin.ranges/IntRange).<get-nsRange>(): kotlinx.cinterop/CValue<platform.Foundation/_NSRange> // com.splendo.kaluga.base.utils/nsRange.<get-nsRange>|<get-nsRange>@kotlin.ranges.IntRange(){}[0]
+
+// Targets: [apple]
+final val com.splendo.kaluga.base.utils/range // com.splendo.kaluga.base.utils/range|@kotlinx.cinterop.CValue<platform.Foundation._NSRange>{}range[0]
+    final fun (kotlinx.cinterop/CValue<platform.Foundation/_NSRange>).<get-range>(): kotlin.ranges/IntRange // com.splendo.kaluga.base.utils/range.<get-range>|<get-range>@kotlinx.cinterop.CValue<platform.Foundation._NSRange>(){}[0]
+
+// Targets: [apple]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.utils/toNSData(): platform.Foundation/NSData // com.splendo.kaluga.base.utils/toNSData|toNSData@kotlin.ByteArray(){}[0]
+
+// Targets: [apple]
+final fun (platform.Foundation/NSData).com.splendo.kaluga.base.utils/toByteArray(): kotlin/ByteArray // com.splendo.kaluga.base.utils/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
+
+// Targets: [ios, macosArm64, tvos, watchosSimulatorArm64]
+final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/ULong = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.ULong){0§<kotlin.Any?>}[0]
+
+// Targets: [ios]
+final class com.splendo.kaluga.base/IOSVersion : kotlin/Comparable<com.splendo.kaluga.base/IOSVersion> { // com.splendo.kaluga.base/IOSVersion|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.base/IOSVersion.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+
+    final val major // com.splendo.kaluga.base/IOSVersion.major|{}major[0]
+        final fun <get-major>(): kotlin/Int // com.splendo.kaluga.base/IOSVersion.major.<get-major>|<get-major>(){}[0]
+    final val minor // com.splendo.kaluga.base/IOSVersion.minor|{}minor[0]
+        final fun <get-minor>(): kotlin/Int // com.splendo.kaluga.base/IOSVersion.minor.<get-minor>|<get-minor>(){}[0]
+    final val patch // com.splendo.kaluga.base/IOSVersion.patch|{}patch[0]
+        final fun <get-patch>(): kotlin/Int // com.splendo.kaluga.base/IOSVersion.patch.<get-patch>|<get-patch>(){}[0]
+
+    final fun compareTo(com.splendo.kaluga.base/IOSVersion): kotlin/Int // com.splendo.kaluga.base/IOSVersion.compareTo|compareTo(com.splendo.kaluga.base.IOSVersion){}[0]
+    final fun component1(): kotlin/Int // com.splendo.kaluga.base/IOSVersion.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // com.splendo.kaluga.base/IOSVersion.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // com.splendo.kaluga.base/IOSVersion.component3|component3(){}[0]
+    final fun copy(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...): com.splendo.kaluga.base/IOSVersion // com.splendo.kaluga.base/IOSVersion.copy|copy(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base/IOSVersion.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base/IOSVersion.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base/IOSVersion.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base/IOSVersion.Companion|null[0]
+        final val systemVersion // com.splendo.kaluga.base/IOSVersion.Companion.systemVersion|{}systemVersion[0]
+            final fun <get-systemVersion>(): com.splendo.kaluga.base/IOSVersion // com.splendo.kaluga.base/IOSVersion.Companion.systemVersion.<get-systemVersion>|<get-systemVersion>(){}[0]
+    }
+}
+
+// Targets: [watchosArm64]
+final fun <#A: kotlin/Any?> (platform.darwin/NSObject).com.splendo.kaluga.base.kvo/observeKeyValueAsFlow(kotlin/String, kotlin/UInt = ...): kotlinx.coroutines.flow/Flow<#A> // com.splendo.kaluga.base.kvo/observeKeyValueAsFlow|observeKeyValueAsFlow@platform.darwin.NSObject(kotlin.String;kotlin.UInt){0§<kotlin.Any?>}[0]

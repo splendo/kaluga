@@ -1,0 +1,52 @@
+# XcodeGen spec for the macOS demo. Run `xcodegen generate` from this directory to (re)generate
+# `Demo.xcodeproj`. The actual framework binary is built and embedded by the
+# `:shared:embedAndSignAppleFrameworkForXcode` Gradle task that's wired in as a pre-build script
+# below — the same approach the iOS app already uses.
+
+name: Demo
+options:
+  bundleIdPrefix: com.splendo.kaluga
+  deploymentTarget:
+    macOS: "11.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "11.0"
+
+targets:
+  Demo:
+    type: application
+    platform: macOS
+    sources:
+      - path: Demo
+    preBuildScripts:
+      - name: "Build & embed Kotlin framework"
+        # `embedAndSignAppleFrameworkForXcode` reads CONFIGURATION / SDK_NAME / ARCHS from the
+        # Xcode environment and produces the correct framework variant under
+        # `shared/build/xcode-frameworks/$CONFIGURATION/$SDK_NAME/`, then embeds & signs it into
+        # the app bundle. Mirrors the build phase in `ios/Demo.xcodeproj`.
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode
+        basedOnDependencyAnalysis: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.splendo.kaluga.example.macos
+        INFOPLIST_FILE: Demo/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Demo/Demo.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        FRAMEWORK_SEARCH_PATHS:
+          - $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        LD_RUNPATH_SEARCH_PATHS:
+          - $(inherited)
+          - "@executable_path/../Frameworks"
+    dependencies:
+      # `embed: false` — the gradle task handles embed + sign itself, so we only need the link
+      # entry here. The path is a stable reference used for Xcode indexing; the actual binary
+      # comes from FRAMEWORK_SEARCH_PATHS at compile time and the script phase at build time.
+      - framework: ../shared/build/xcode-frameworks/Debug/macosx/KalugaExample.framework
+        embed: false

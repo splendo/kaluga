@@ -8,6 +8,10 @@ kaluga {
 
     supportJVM = true
     supportJS = true
+    supportWasmJS = true
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
 
     dependencies {
         android {
@@ -20,7 +24,7 @@ kaluga {
                 implementation(libs.napier)
             }
             test {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":base:test", ""))
             }
         }
         js {
