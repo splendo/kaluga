@@ -233,6 +233,57 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
+    fun generatesMedicalFloatForSFloatAndFloat() {
+        // SFLOAT/FLOAT are the IEEE-11073 16-/32-bit medical floats: a Double carrying @Size + @MedFloat.
+        val value = generator.generateValueClass(
+            GattCharacteristic("Medical", "2B03", listOf(GattField("Small", "SFLOAT"), GattField("Large", "FLOAT"))),
+        ).singleType()
+        val small = checkNotNull(value.property("small"))
+        assertEquals("Double", small.type.simpleName)
+        assertTrue("MedFloat" in small.annotationNames)
+        assertTrue(checkNotNull(small.annotation("Size")).argument.endsWith("Length.`16_BIT`"))
+        val large = checkNotNull(value.property("large"))
+        assertEquals("Double", large.type.simpleName)
+        assertTrue("MedFloat" in large.annotationNames)
+        assertTrue(checkNotNull(large.annotation("Size")).argument.endsWith("Length.`32_BIT`"))
+    }
+
+    @Test
+    fun generatesIeeeFloatTypesWithoutSize() {
+        // float32/float64 are native IEEE-754 floats: width is intrinsic to the type, so no @Size/@MedFloat.
+        val value = generator.generateValueClass(
+            GattCharacteristic("Ieee", "2B04", listOf(GattField("Single", "float32"), GattField("Wide", "float64"))),
+        ).singleType()
+        val single = checkNotNull(value.property("single"))
+        assertEquals("Float", single.type.simpleName)
+        assertNull(single.annotation("Size"))
+        assertFalse("MedFloat" in single.annotationNames)
+        assertEquals("Double", checkNotNull(value.property("wide")).type.simpleName)
+    }
+
+    @Test
+    fun generatesStringWithEncodingForUtf16() {
+        // utf8s maps to String with the default (UTF-8) encoding; utf16s adds @Encoded(UTF_16).
+        val value = generator.generateValueClass(
+            GattCharacteristic("Text", "2B05", listOf(GattField("Name", "utf8s"), GattField("Wide", "utf16s"))),
+        ).singleType()
+        val name = checkNotNull(value.property("name"))
+        assertEquals("String", name.type.simpleName)
+        assertNull(name.annotation("Encoded"))
+        val wide = checkNotNull(value.property("wide"))
+        assertEquals("String", wide.type.simpleName)
+        assertTrue(checkNotNull(wide.annotation("Encoded")).argument.endsWith("Encoding.UTF_16"))
+    }
+
+    @Test
+    fun generatesBooleanField() {
+        val value = generator.generateValueClass(
+            GattCharacteristic("Switch", "2B06", listOf(GattField("Enabled", "boolean"))),
+        ).singleType()
+        assertEquals("Boolean", checkNotNull(value.property("enabled")).type.simpleName)
+    }
+
+    @Test
     fun generatesReferenceFieldTypedAsReferencedValue() {
         val reading = GattCharacteristic("Reading", "2BE0", listOf(GattField("Reading", "uint16")))
         val pair = GattCharacteristic(
