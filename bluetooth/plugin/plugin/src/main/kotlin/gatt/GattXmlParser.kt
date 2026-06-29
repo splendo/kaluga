@@ -263,7 +263,10 @@ object GattXmlParser {
     }
 
     private fun document(input: InputStream): Element = DocumentBuilderFactory.newInstance()
-        .apply { isNamespaceAware = false }
+        .apply {
+            setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+            isNamespaceAware = false
+        }
         .newDocumentBuilder()
         .parse(input)
         .documentElement
