@@ -1,0 +1,150 @@
+/*
+ Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.permissions.bluetooth
+
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
+
+/**
+ * [Permission] to access the Bluetooth sensor
+ * @property type the [Type] of the permission
+ */
+data class BluetoothPermission(val type: Type) : Permission() {
+
+    /**
+     * The type of a [BluetoothPermission]
+     */
+    sealed class Type {
+
+        /**
+         * A [BluetoothPermission] that allows client side communication with the Bluetooth sensor, such as scanning, reading, writing etc.
+         * @property useForLocation if `true` Bluetooth will scan for location.
+         *
+         * Android manifest requirements (the library declares `BLUETOOTH_SCAN`/`BLUETOOTH_CONNECT`, and
+         * `ACCESS_FINE_LOCATION` with `maxSdkVersion="30"` for pre-31 scanning):
+         * - With [useForLocation] `true`, the consuming app must additionally declare `ACCESS_FINE_LOCATION`
+         *   (without a `maxSdkVersion`), as deriving location is the app's responsibility.
+         * - With [useForLocation] `false` on API 31+, declare `BLUETOOTH_SCAN` with
+         *   `android:usesPermissionFlags="neverForLocation"` to decouple scanning from the location permission.
+         */
+        data class Client(val useForLocation: Boolean = false) : Type() {
+            override val name: String = "BluetoothClient" + if (useForLocation) "ForLocation" else ""
+        }
+
+        /**
+         * A [BluetoothPermission] that allows the server side communication with the Bluetooth sensor.
+         */
+
+        data object Server : Type() {
+            override val name: String = "BluetoothServer"
+        }
+
+        abstract val name: String
+    }
+
+    override val name: String = type.name
+}
+
+/**
+ * Registers a [BaseBluetoothPermissionManagerBuilder] and [PermissionStateRepo] for [BluetoothPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param bluetoothPermissionManagerBuilderBuilder method for creating a [BaseBluetoothPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseBluetoothPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseBluetoothPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
+fun PermissionsBuilder.registerBluetoothPermission(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+) = registerBluetoothPermission(bluetoothPermissionManagerBuilderBuilder) { permission, baseBluetoothPermissionManagerBuilder, coroutineContext ->
+    BluetoothPermissionStateRepo(
+        permission,
+        baseBluetoothPermissionManagerBuilder,
+        monitoringInterval,
+        settings,
+        coroutineContext,
+    )
+}
+
+/**
+ * Registers a [BaseBluetoothPermissionManagerBuilder] and [PermissionStateRepo] for [BluetoothPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param bluetoothPermissionManagerBuilderBuilder method for creating a [BaseBluetoothPermissionManagerBuilder] from a [PermissionContext]
+ * @param stateRepoBuilder method for creating a [PermissionStateRepo] for [BluetoothPermission] given a [BaseBluetoothPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseBluetoothPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseBluetoothPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
+fun PermissionsBuilder.registerBluetoothPermission(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    stateRepoBuilder: (BluetoothPermission, BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>,
+) = bluetoothPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<BluetoothPermission> { bluetoothPermission, coroutineContext ->
+        stateRepoBuilder(bluetoothPermission, it, coroutineContext)
+    }
+}
+
+/**
+ * Gets the [BaseBluetoothPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseBluetoothPermissionManagerBuilder] and [PermissionStateRepo] for [BluetoothPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param bluetoothPermissionManagerBuilderBuilder method for creating a [BaseBluetoothPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseBluetoothPermissionManagerBuilder] registered
+ */
+fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+) = registerBluetoothPermissionIfNotRegistered(bluetoothPermissionManagerBuilderBuilder) { permission, baseBluetoothPermissionManagerBuilder, coroutineContext ->
+    BluetoothPermissionStateRepo(
+        permission,
+        baseBluetoothPermissionManagerBuilder,
+        monitoringInterval,
+        settings,
+        coroutineContext,
+    )
+}
+
+/**
+ * Gets the [BaseBluetoothPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseBluetoothPermissionManagerBuilder] and [PermissionStateRepo] for [BluetoothPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param bluetoothPermissionManagerBuilderBuilder method for creating a [BaseBluetoothPermissionManagerBuilder] from a [PermissionContext]
+ * @param stateRepoBuilder method for creating a [PermissionStateRepo] for [BluetoothPermission] given a [BaseBluetoothPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseBluetoothPermissionManagerBuilder] registered
+ */
+fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    stateRepoBuilder: (
+        permission: BluetoothPermission,
+        baseBluetoothPermissionManagerBuilder: BaseBluetoothPermissionManagerBuilder,
+        CoroutineContext,
+    ) -> PermissionStateRepo<BluetoothPermission>,
+) = bluetoothPermissionManagerBuilderBuilder(context).also {
+    registerOrGet(it)
+    registerOrGetPermissionStateRepoBuilder<BluetoothPermission> { permission, coroutineContext ->
+        stateRepoBuilder(permission, it, coroutineContext)
+    }
+}

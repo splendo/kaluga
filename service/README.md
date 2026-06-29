@@ -1,17 +1,10 @@
 # Service
-Basic utilities for adding new services to Kaluga. Services are platform features that can be enabled/disabled by the user or OS.
 
-## Installing
-This library is available on Maven Central. You can import Kaluga Storage Permissions as follows:
+Building blocks for adding user/OS-toggleable services to Kaluga.
 
- ```kotlin
- repositories {
-     // ...
-     mavenCentral()
- }
- // ...
- dependencies {
-     // ...
-     implementation("com.splendo.kaluga:service:$kalugaVersion")
- }
- ```
+This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:
+
+| Module | Usage | Artifact | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| [service](service/) | Adding services to Kaluga | `com.splendo.kaluga.service:service` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [test-utils](test-utils/) | Test helpers for the Service module | `com.splendo.kaluga.service:test` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |

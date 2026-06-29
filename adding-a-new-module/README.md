@@ -2,17 +2,31 @@
 This **project** includes all common dependencies and settings for kaluga module.
 
 # Steps for adding a new module
-1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module> -P package_name=<your-package> -P create-test-utils -P create-compose -P create-databinding -P include-jvm -P include-js` from the root directory.
+1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module> -P package_name=<your-package> -P create-test-utils -P create-compose -P create-databinding -P include-jvm -P include-js -P include-wasm-js -P include-macos -P include-tvos -P include-watchos` from the root directory.
+   * Modules are scaffolded as an AndroidX-style nested feature group `<your-module>/`. The main module is created at `<your-module>/<your-module>` (published as `com.splendo.kaluga.<your-module>:<your-module>`) with package `com.splendo.kaluga.<your-package>`.
    * `package_name` can be omitted if the module and package names are the same. Package name will be prefixed with `com.splendo.kaluga`.
-   * Only pass `create-test-utils` if you want to also create a `test-utils-<your-module>` with package `com.splendo.kaluga.test.<your-package>`.
-      * Use `./gradlew createNewTestModule -P module_name=<your-module> -P package_name=<your-package>` to create a `test-utils-<your-module>` for an existing module.
-   * Only pass `create-compose` if you want to also create a `<your-module>-compose` with package `com.splendo.kaluga.<your-package>.compose`.
-      * Use `./gradlew createNewComposeModule -P module_name=<your-module> -P package_name=<your-package>` to create a `<your-module>-compose` for an existing module.
-   * Only pass `create-databinding` if you want to also create a `<your-module>-databinding` with package `com.splendo.kaluga.<your-package>.databinding`.
-      * Use `./gradlew createNewDataBindingModule -P module_name=<your-module> -P package_name=<your-package>` to create a `<your-module>-databinding` for an existing module.
-   * Only pass `include-jvm` if your module should target (non-Android) JVM
-   * Only pass `include-js` if your module should target Javascript
-1. Include your module to kaluga project edit `kaluga/settings.gradle.kts` by adding: `include(":<your-module>")`.
+   * Only pass `create-test-utils` if you want to also create `<your-module>/test-utils` (published as `com.splendo.kaluga.<your-module>:test`) with package `com.splendo.kaluga.<your-package>.test`.
+      * Use `./gradlew createNewTestModule -P module_name=<your-module> -P package_name=<your-package>` to create the test-utils module for an existing module.
+   * Only pass `create-compose` if you want to also create `<your-module>/compose` (published as `com.splendo.kaluga.<your-module>:compose`) with package `com.splendo.kaluga.<your-package>.compose`.
+      * Use `./gradlew createNewComposeModule -P module_name=<your-module> -P package_name=<your-package>` to create the compose module for an existing module.
+   * Only pass `create-databinding` if you want to also create `<your-module>/databinding` (published as `com.splendo.kaluga.<your-module>:databinding`) with package `com.splendo.kaluga.<your-package>.databinding`.
+      * Use `./gradlew createNewDataBindingModule -P module_name=<your-module> -P package_name=<your-package>` to create the databinding module for an existing module.
+   * Android and iOS are always targeted. Pass any of the following to opt into extra targets (a matching `support…` flag is added to the module's `build.gradle.kts`, and placeholder source sets are created):
+      * `include-jvm` — (non-Android) JVM (`jvmMain`)
+      * `include-js` — Kotlin/JS (`jsMain`)
+      * `include-wasm-js` — Kotlin/Wasm-JS (`wasmJsMain`)
+      * `include-macos` — macOS (`macosMain`)
+      * `include-tvos` — tvOS (`tvosMain`)
+      * `include-watchos` — watchOS (`watchosMain`)
+      * Enabling any Apple target beyond iOS (macOS / tvOS / watchOS) also creates an `appleMain` source set for code shared across all Apple targets; iOS-only code stays in `iosMain`.
+1. Include your module(s) in the kaluga project by editing `kaluga/settings.gradle.kts`. The task prints the exact lines to add when it finishes, for example:
+   ```kotlin
+   include(":<your-module>:<your-module>")
+   include(":<your-module>:compose")      // only if created
+   include(":<your-module>:databinding")  // only if created
+   include(":<your-module>:test")         // only if created
+   project(":<your-module>:test").projectDir = file("<your-module>/test-utils")
+   ```
 1. Add Unit tests
     * [Common Unit Tests](#commonTests)
     * [iOS Unit Tests](#iosTests)
@@ -36,7 +50,7 @@ To run all common tests:
 1. Run > Edit Configurations. The Run/Debug Configurations dialog appears.
 1. Press "+" button and select "Gradle".
 1. In the right part of dialog enter name.
-1. Fill in the Gradle project field (kaluga:<your-module>).
+1. Fill in the Gradle project field (kaluga:<your-module>:<your-module>).
 1. In a field "Tasks" enter cleanAllTests allTests.
 1. Press "Ok" or "Apply". Now you can choose and run configuration.
 
@@ -51,7 +65,7 @@ To run all common tests:
 1. Run > Edit Configurations. The Run/Debug Configurations dialog appears.
 1. Press "+" button and select "Gradle".
 1. In the right part of dialog enter name.
-1. Fill in the Gradle project field (kaluga:<your module>).
+1. Fill in the Gradle project field (kaluga:<your-module>:<your-module>).
 1. In a field "Tasks" enter cleanIosx64Test iosx64Test.
 1. Press "Ok" or "Apply". Now you can choose and run configuration.
 

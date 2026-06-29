@@ -1,4 +1,9 @@
 # Review
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  | ✅ |  |  |
+
 This Library for Kaluga contains methods for requesting the user to review the app.
 Both Android and iOS will limit the amount of times this dialog is actually shown.
 As such, this library will only guarantee that an attempt will be made to show the request review dialog.
@@ -37,7 +42,7 @@ In addition, Android allows you to pass a ReviewManager.Type.
 For production apps this should refer to `Live`, though a `Fake` type may be passed for testing purposes.
 Note that Fake will still not show a Review dialog on apps not installed though the Playstore.
 
-On Android the builder is an `ActivityLifecycleSubscribable` (see Architecture) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the review manager.
+On Android the builder is an `ActivityLifecycleSubscribable` (see [lifecycle](../lifecycle/lifecycle/)) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the review manager.
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 
 ```kotlin

@@ -1,0 +1,111 @@
+/*
+ Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bluetooth.device
+
+import com.splendo.kaluga.datetime.DefaultKalugaDate
+import com.splendo.kaluga.datetime.KalugaDate
+import com.splendo.kaluga.bluetooth.RSSI
+import kotlin.math.pow
+
+/**
+ * Accessor to the platform level Bluetooth device
+ */
+expect interface DeviceWrapper {
+    /**
+     * Name of the Bluetooth device
+     */
+    val name: String?
+
+    /**
+     * [Identifier] of the Bluetooth device
+     */
+    val identifier: Identifier
+}
+
+/**
+ * Properties of a Bluetooth Device
+ */
+interface DeviceInfo {
+
+    /**
+     * Name of the Bluetooth device
+     */
+    val name: String?
+
+    /**
+     * [Identifier] of the Bluetooth device
+     */
+    val identifier: Identifier
+
+    /**
+     * [RSSI] value of the Bluetooth device, or `null` if it is not known (e.g. a paired device that has not been scanned).
+     */
+    val rssi: RSSI?
+
+    /**
+     * Current [BaseAdvertisementData] of the Bluetooth device
+     */
+    val advertisementData: BaseAdvertisementData
+
+    /**
+     * The [KalugaDate] at which the device last advertised an update
+     */
+    val updatedAt: KalugaDate
+
+    /**
+     * Calculates the distance to the device in meters
+     * @param environmentalFactor the constant to account for environmental interference. Should usually range between 2.0 and 4.0
+     * @return the distance to the device in meters
+     */
+    fun distance(environmentalFactor: Double = 2.0): Double {
+        val txPowerLevel = advertisementData.txPowerLevel
+        val rssi = rssi
+        if (txPowerLevel == null || rssi == null || environmentalFactor.isNaN()) return Double.NaN
+        val difference = txPowerLevel.toDouble() - rssi.toDouble()
+        val factor = 10.0 * environmentalFactor
+        return 10.0.pow(difference / factor)
+    }
+}
+
+/**
+ * An implementation of [DeviceInfo]
+ * @param deviceName the name reported by the [DeviceWrapper], used as a fallback when the [advertisementData] does not contain a name
+ */
+data class DeviceInfoImpl(val deviceName: String?, override val identifier: Identifier, override val rssi: RSSI?, override val advertisementData: BaseAdvertisementData) :
+    DeviceInfo {
+
+    /**
+     * Constructor
+     * @param wrapper the [DeviceWrapper] to the device
+     * @param rssi the current RSSI value, or `null` if not known
+     * @param advertisementData the [BaseAdvertisementData] last received
+     */
+    constructor(
+        wrapper: DeviceWrapper,
+        rssi: RSSI?,
+        advertisementData: BaseAdvertisementData,
+    ) : this(
+        deviceName = wrapper.name,
+        identifier = wrapper.identifier,
+        rssi = rssi,
+        advertisementData = advertisementData,
+    )
+
+    override val name: String? get() = advertisementData.name ?: deviceName
+    override val updatedAt = DefaultKalugaDate.now()
+}

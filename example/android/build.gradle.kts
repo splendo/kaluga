@@ -1,9 +1,8 @@
 plugins {
     id("com.android.application")
-    id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
     alias(libs.plugins.kotlin.serialization)
-    kotlin("kapt")
+    id("com.android.legacy-kapt")
 }
 
 group = "com.splendo.kaluga"
@@ -12,7 +11,6 @@ version = libs.versions.kaluga.get()
 android {
     namespace = "com.splendo.kaluga.example"
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
-    buildToolsVersion = libs.versions.androidBuildTools.get()
     defaultConfig {
         applicationId = "com.splendo.kaluga.example"
         minSdk = libs.versions.androidMinSdk.get().toInt()
@@ -51,8 +49,8 @@ android {
             listOf(
                 "META-INF/kotlinx-coroutines-core.kotlin_module",
                 "META-INF/shared_debug.kotlin_module",
-                "META-INF/kotlinx-serialization-runtime.kotlin_module"
-            )
+                "META-INF/kotlinx-serialization-runtime.kotlin_module",
+            ),
         )
     }
 
@@ -64,29 +62,30 @@ android {
 }
 
 kotlin {
-    sourceSets.all {
-        languageSettings {
-            optIn("kotlin.ExperimentalStdlibApi")
-            optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-            optIn("androidx.compose.ui.ExperimentalComposeUiApi")
-        }
+    jvmToolchain(libs.versions.java.get().toInt())
+    compilerOptions {
+        optIn.addAll(
+            "kotlin.ExperimentalStdlibApi",
+            "androidx.compose.material3.ExperimentalMaterial3Api",
+            "androidx.compose.ui.ExperimentalComposeUiApi",
+        )
     }
 }
 
 dependencies {
-    implementation("com.splendo.kaluga:architecture-compose:${project.rootProject.version}")
-    implementation("com.splendo.kaluga:keyboard-compose:${project.rootProject.version}")
-    implementation("com.splendo.kaluga:resources-compose:${project.rootProject.version}")
-    implementation("com.splendo.kaluga:resources-databinding:${project.rootProject.version}")
+    implementation("com.splendo.kaluga.architecture:compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga.keyboard:compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga.resources:compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga.resources:databinding:${project.rootProject.version}")
     implementation(project(":shared"))
 
-    implementation(libs.androidx.compose.ui)
+    implementation(libs.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.material3)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.compose.navigation)
 
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.fragment.ktx)
