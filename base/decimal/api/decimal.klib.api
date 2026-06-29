@@ -1,0 +1,201 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.base:decimal>
+final class com.splendo.kaluga.base.decimal/FiniteDecimal : kotlin/Comparable<com.splendo.kaluga.base.decimal/FiniteDecimal> { // com.splendo.kaluga.base.decimal/FiniteDecimal|null[0]
+    final fun compareTo(com.splendo.kaluga.base.decimal/FiniteDecimal): kotlin/Int // com.splendo.kaluga.base.decimal/FiniteDecimal.compareTo|compareTo(com.splendo.kaluga.base.decimal.FiniteDecimal){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/FiniteDecimal.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/FiniteDecimal.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/FiniteDecimal.toString|toString(){}[0]
+
+    // Targets: [apple]
+    constructor <init>(platform.Foundation/NSDecimalNumber) // com.splendo.kaluga.base.decimal/FiniteDecimal.<init>|<init>(platform.Foundation.NSDecimalNumber){}[0]
+
+    // Targets: [apple]
+    final val nsDecimal // com.splendo.kaluga.base.decimal/FiniteDecimal.nsDecimal|{}nsDecimal[0]
+        final fun <get-nsDecimal>(): platform.Foundation/NSDecimalNumber // com.splendo.kaluga.base.decimal/FiniteDecimal.nsDecimal.<get-nsDecimal>|<get-nsDecimal>(){}[0]
+
+    // Targets: [apple]
+    final fun component1(): platform.Foundation/NSDecimalNumber // com.splendo.kaluga.base.decimal/FiniteDecimal.component1|component1(){}[0]
+
+    // Targets: [apple]
+    final fun copy(platform.Foundation/NSDecimalNumber = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/FiniteDecimal.copy|copy(platform.Foundation.NSDecimalNumber){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>(com.splendo.kaluga.base.decimal/BigDecimal) // com.splendo.kaluga.base.decimal/FiniteDecimal.<init>|<init>(com.splendo.kaluga.base.decimal.BigDecimal){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun copy(com.splendo.kaluga.base.decimal/BigDecimal = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/FiniteDecimal.copy|copy(com.splendo.kaluga.base.decimal.BigDecimal){}[0]
+}
+
+sealed class com.splendo.kaluga.base.decimal/Decimal : kotlin/Comparable<com.splendo.kaluga.base.decimal/Decimal> { // com.splendo.kaluga.base.decimal/Decimal|null[0]
+    open fun compareTo(com.splendo.kaluga.base.decimal/Decimal): kotlin/Int // com.splendo.kaluga.base.decimal/Decimal.compareTo|compareTo(com.splendo.kaluga.base.decimal.Decimal){}[0]
+
+    final class Finite : com.splendo.kaluga.base.decimal/Decimal { // com.splendo.kaluga.base.decimal/Decimal.Finite|null[0]
+        constructor <init>(com.splendo.kaluga.base.decimal/FiniteDecimal) // com.splendo.kaluga.base.decimal/Decimal.Finite.<init>|<init>(com.splendo.kaluga.base.decimal.FiniteDecimal){}[0]
+
+        final fun copy(com.splendo.kaluga.base.decimal/FiniteDecimal = ...): com.splendo.kaluga.base.decimal/Decimal.Finite // com.splendo.kaluga.base.decimal/Decimal.Finite.copy|copy(com.splendo.kaluga.base.decimal.FiniteDecimal){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/Decimal.Finite.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/Decimal.Finite.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/Decimal.Finite.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.base.decimal/Decimal.Companion|null[0]
+        final val HUNDRED // com.splendo.kaluga.base.decimal/Decimal.Companion.HUNDRED|{}HUNDRED[0]
+            final fun <get-HUNDRED>(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/Decimal.Companion.HUNDRED.<get-HUNDRED>|<get-HUNDRED>(){}[0]
+        final val ONE // com.splendo.kaluga.base.decimal/Decimal.Companion.ONE|{}ONE[0]
+            final fun <get-ONE>(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/Decimal.Companion.ONE.<get-ONE>|<get-ONE>(){}[0]
+        final val PI // com.splendo.kaluga.base.decimal/Decimal.Companion.PI|{}PI[0]
+            final fun <get-PI>(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/Decimal.Companion.PI.<get-PI>|<get-PI>(){}[0]
+        final val TEN // com.splendo.kaluga.base.decimal/Decimal.Companion.TEN|{}TEN[0]
+            final fun <get-TEN>(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/Decimal.Companion.TEN.<get-TEN>|<get-TEN>(){}[0]
+        final val THOUSAND // com.splendo.kaluga.base.decimal/Decimal.Companion.THOUSAND|{}THOUSAND[0]
+            final fun <get-THOUSAND>(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/Decimal.Companion.THOUSAND.<get-THOUSAND>|<get-THOUSAND>(){}[0]
+        final val ZERO // com.splendo.kaluga.base.decimal/Decimal.Companion.ZERO|{}ZERO[0]
+            final fun <get-ZERO>(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/Decimal.Companion.ZERO.<get-ZERO>|<get-ZERO>(){}[0]
+    }
+
+    final object NaN : com.splendo.kaluga.base.decimal/Decimal { // com.splendo.kaluga.base.decimal/Decimal.NaN|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/Decimal.NaN.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/Decimal.NaN.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/Decimal.NaN.toString|toString(){}[0]
+    }
+
+    final object NegativeInfinity : com.splendo.kaluga.base.decimal/Decimal { // com.splendo.kaluga.base.decimal/Decimal.NegativeInfinity|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/Decimal.NegativeInfinity.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/Decimal.NegativeInfinity.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/Decimal.NegativeInfinity.toString|toString(){}[0]
+    }
+
+    final object PositiveInfinity : com.splendo.kaluga.base.decimal/Decimal { // com.splendo.kaluga.base.decimal/Decimal.PositiveInfinity|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/Decimal.PositiveInfinity.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/Decimal.PositiveInfinity.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/Decimal.PositiveInfinity.toString|toString(){}[0]
+    }
+}
+
+sealed class com.splendo.kaluga.base.decimal/RoundingMode { // com.splendo.kaluga.base.decimal/RoundingMode|null[0]
+    final object RoundDown : com.splendo.kaluga.base.decimal/RoundingMode { // com.splendo.kaluga.base.decimal/RoundingMode.RoundDown|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/RoundingMode.RoundDown.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/RoundingMode.RoundDown.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/RoundingMode.RoundDown.toString|toString(){}[0]
+    }
+
+    final object RoundHalfEven : com.splendo.kaluga.base.decimal/RoundingMode { // com.splendo.kaluga.base.decimal/RoundingMode.RoundHalfEven|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/RoundingMode.RoundHalfEven.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/RoundingMode.RoundHalfEven.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/RoundingMode.RoundHalfEven.toString|toString(){}[0]
+    }
+
+    final object RoundUp : com.splendo.kaluga.base.decimal/RoundingMode { // com.splendo.kaluga.base.decimal/RoundingMode.RoundUp|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/RoundingMode.RoundUp.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/RoundingMode.RoundUp.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/RoundingMode.RoundUp.toString|toString(){}[0]
+    }
+}
+
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/div(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/div|div@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/div(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/div|div@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/div(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/div|div@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/minus(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/minus|minus@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/minus(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/minus|minus@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/minus(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/minus|minus@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/plus(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/plus|plus@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/plus(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/plus|plus@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/plus(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/plus|plus@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/pow(kotlin/Int): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/pow|pow@com.splendo.kaluga.base.decimal.Decimal(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/pow(kotlin/Int, kotlin/Int): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/pow|pow@com.splendo.kaluga.base.decimal.Decimal(kotlin.Int;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/pow(kotlin/Int, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/pow|pow@com.splendo.kaluga.base.decimal.Decimal(kotlin.Int;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/round(kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/round|round@com.splendo.kaluga.base.decimal.Decimal(kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/times(com.splendo.kaluga.base.decimal/Decimal): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/times|times@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/times(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/times|times@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/times(com.splendo.kaluga.base.decimal/Decimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/times|times@com.splendo.kaluga.base.decimal.Decimal(com.splendo.kaluga.base.decimal.Decimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/toDouble(): kotlin/Double // com.splendo.kaluga.base.decimal/toDouble|toDouble@com.splendo.kaluga.base.decimal.Decimal(){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/toInt(): kotlin/Int // com.splendo.kaluga.base.decimal/toInt|toInt@com.splendo.kaluga.base.decimal.Decimal(){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/toLong(): kotlin/Long // com.splendo.kaluga.base.decimal/toLong|toLong@com.splendo.kaluga.base.decimal.Decimal(){}[0]
+final fun (com.splendo.kaluga.base.decimal/Decimal).com.splendo.kaluga.base.decimal/toString(): kotlin/String // com.splendo.kaluga.base.decimal/toString|toString@com.splendo.kaluga.base.decimal.Decimal(){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/div(com.splendo.kaluga.base.decimal/FiniteDecimal): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/div|div@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/div(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/div|div@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/div(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/div|div@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/minus(com.splendo.kaluga.base.decimal/FiniteDecimal): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/minus|minus@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/minus(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/minus|minus@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/minus(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/minus|minus@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/plus(com.splendo.kaluga.base.decimal/FiniteDecimal): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/plus|plus@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/plus(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/plus|plus@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/plus(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/plus|plus@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/pow(kotlin/Int): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/pow|pow@com.splendo.kaluga.base.decimal.FiniteDecimal(kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/pow(kotlin/Int, kotlin/Int): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/pow|pow@com.splendo.kaluga.base.decimal.FiniteDecimal(kotlin.Int;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/pow(kotlin/Int, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/pow|pow@com.splendo.kaluga.base.decimal.FiniteDecimal(kotlin.Int;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/round(kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/round|round@com.splendo.kaluga.base.decimal.FiniteDecimal(kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/stringValue(): kotlin/String // com.splendo.kaluga.base.decimal/stringValue|stringValue@com.splendo.kaluga.base.decimal.FiniteDecimal(){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/times(com.splendo.kaluga.base.decimal/FiniteDecimal): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/times|times@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/times(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/times|times@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/times(com.splendo.kaluga.base.decimal/FiniteDecimal, kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/FiniteDecimal // com.splendo.kaluga.base.decimal/times|times@com.splendo.kaluga.base.decimal.FiniteDecimal(com.splendo.kaluga.base.decimal.FiniteDecimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/toDouble(): kotlin/Double // com.splendo.kaluga.base.decimal/toDouble|toDouble@com.splendo.kaluga.base.decimal.FiniteDecimal(){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/toInt(): kotlin/Int // com.splendo.kaluga.base.decimal/toInt|toInt@com.splendo.kaluga.base.decimal.FiniteDecimal(){}[0]
+final fun (com.splendo.kaluga.base.decimal/FiniteDecimal).com.splendo.kaluga.base.decimal/toLong(): kotlin/Long // com.splendo.kaluga.base.decimal/toLong|toLong@com.splendo.kaluga.base.decimal.FiniteDecimal(){}[0]
+final fun (kotlin.collections/Collection<com.splendo.kaluga.base.decimal/Decimal>).com.splendo.kaluga.base.decimal/toDoubleArray(): kotlin/DoubleArray // com.splendo.kaluga.base.decimal/toDoubleArray|toDoubleArray@kotlin.collections.Collection<com.splendo.kaluga.base.decimal.Decimal>(){}[0]
+final fun (kotlin.collections/Collection<com.splendo.kaluga.base.decimal/Decimal>).com.splendo.kaluga.base.decimal/toIntArray(): kotlin/IntArray // com.splendo.kaluga.base.decimal/toIntArray|toIntArray@kotlin.collections.Collection<com.splendo.kaluga.base.decimal.Decimal>(){}[0]
+final fun (kotlin.collections/Collection<com.splendo.kaluga.base.decimal/Decimal>).com.splendo.kaluga.base.decimal/toLongArray(): kotlin/LongArray // com.splendo.kaluga.base.decimal/toLongArray|toLongArray@kotlin.collections.Collection<com.splendo.kaluga.base.decimal.Decimal>(){}[0]
+final fun (kotlin.collections/Collection<com.splendo.kaluga.base.decimal/Decimal>).com.splendo.kaluga.base.decimal/toStringList(): kotlin.collections/List<kotlin/String> // com.splendo.kaluga.base.decimal/toStringList|toStringList@kotlin.collections.Collection<com.splendo.kaluga.base.decimal.Decimal>(){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.decimal/toDecimalList(): kotlin.collections/List<com.splendo.kaluga.base.decimal/Decimal> // com.splendo.kaluga.base.decimal/toDecimalList|toDecimalList@kotlin.ByteArray(){}[0]
+final fun (kotlin/DoubleArray).com.splendo.kaluga.base.decimal/toDecimalList(): kotlin.collections/List<com.splendo.kaluga.base.decimal/Decimal> // com.splendo.kaluga.base.decimal/toDecimalList|toDecimalList@kotlin.DoubleArray(){}[0]
+final fun (kotlin/FloatArray).com.splendo.kaluga.base.decimal/toDecimalList(): kotlin.collections/List<com.splendo.kaluga.base.decimal/Decimal> // com.splendo.kaluga.base.decimal/toDecimalList|toDecimalList@kotlin.FloatArray(){}[0]
+final fun (kotlin/IntArray).com.splendo.kaluga.base.decimal/toDecimalList(): kotlin.collections/List<com.splendo.kaluga.base.decimal/Decimal> // com.splendo.kaluga.base.decimal/toDecimalList|toDecimalList@kotlin.IntArray(){}[0]
+final fun (kotlin/LongArray).com.splendo.kaluga.base.decimal/toDecimalList(): kotlin.collections/List<com.splendo.kaluga.base.decimal/Decimal> // com.splendo.kaluga.base.decimal/toDecimalList|toDecimalList@kotlin.LongArray(){}[0]
+final fun (kotlin/Number).com.splendo.kaluga.base.decimal/toDecimal(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/toDecimal|toDecimal@kotlin.Number(){}[0]
+final fun (kotlin/Number).com.splendo.kaluga.base.decimal/toFiniteDecimal(): com.splendo.kaluga.base.decimal/FiniteDecimal? // com.splendo.kaluga.base.decimal/toFiniteDecimal|toFiniteDecimal@kotlin.Number(){}[0]
+final fun (kotlin/ShortArray).com.splendo.kaluga.base.decimal/toDecimalList(): kotlin.collections/List<com.splendo.kaluga.base.decimal/Decimal> // com.splendo.kaluga.base.decimal/toDecimalList|toDecimalList@kotlin.ShortArray(){}[0]
+final fun (kotlin/String).com.splendo.kaluga.base.decimal/toDecimal(): com.splendo.kaluga.base.decimal/Decimal // com.splendo.kaluga.base.decimal/toDecimal|toDecimal@kotlin.String(){}[0]
+final fun (kotlin/String).com.splendo.kaluga.base.decimal/toFiniteDecimal(): com.splendo.kaluga.base.decimal/FiniteDecimal? // com.splendo.kaluga.base.decimal/toFiniteDecimal|toFiniteDecimal@kotlin.String(){}[0]
+final fun <#A: kotlin/Number> (kotlin.collections/Collection<#A>).com.splendo.kaluga.base.decimal/toDecimalList(): kotlin.collections/List<com.splendo.kaluga.base.decimal/Decimal> // com.splendo.kaluga.base.decimal/toDecimalList|toDecimalList@kotlin.collections.Collection<0:0>(){0§<kotlin.Number>}[0]
+
+// Targets: [js, wasmJs]
+open annotation class com.splendo.kaluga.base.decimal/ExperimentalJsDecimal : kotlin/Annotation { // com.splendo.kaluga.base.decimal/ExperimentalJsDecimal|null[0]
+    constructor <init>() // com.splendo.kaluga.base.decimal/ExperimentalJsDecimal.<init>|<init>(){}[0]
+}
+
+// Targets: [js, wasmJs]
+final class com.splendo.kaluga.base.decimal/BigDecimal { // com.splendo.kaluga.base.decimal/BigDecimal|null[0]
+    final val isNegative // com.splendo.kaluga.base.decimal/BigDecimal.isNegative|{}isNegative[0]
+        final fun <get-isNegative>(): kotlin/Boolean // com.splendo.kaluga.base.decimal/BigDecimal.isNegative.<get-isNegative>|<get-isNegative>(){}[0]
+    final val isZero // com.splendo.kaluga.base.decimal/BigDecimal.isZero|{}isZero[0]
+        final fun <get-isZero>(): kotlin/Boolean // com.splendo.kaluga.base.decimal/BigDecimal.isZero.<get-isZero>|<get-isZero>(){}[0]
+    final val scale // com.splendo.kaluga.base.decimal/BigDecimal.scale|{}scale[0]
+        final fun <get-scale>(): kotlin/Int // com.splendo.kaluga.base.decimal/BigDecimal.scale.<get-scale>|<get-scale>(){}[0]
+
+    final fun add(com.splendo.kaluga.base.decimal/BigDecimal): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.add|add(com.splendo.kaluga.base.decimal.BigDecimal){}[0]
+    final fun compareTo(com.splendo.kaluga.base.decimal/BigDecimal): kotlin/Int // com.splendo.kaluga.base.decimal/BigDecimal.compareTo|compareTo(com.splendo.kaluga.base.decimal.BigDecimal){}[0]
+    final fun divide(com.splendo.kaluga.base.decimal/BigDecimal, kotlin/Int = ..., com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.divide|divide(com.splendo.kaluga.base.decimal.BigDecimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.decimal/BigDecimal.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.decimal/BigDecimal.hashCode|hashCode(){}[0]
+    final fun multiply(com.splendo.kaluga.base.decimal/BigDecimal, kotlin/Int = ..., com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.multiply|multiply(com.splendo.kaluga.base.decimal.BigDecimal;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+    final fun pow(kotlin/Int, kotlin/Int = ..., com.splendo.kaluga.base.decimal/RoundingMode = ...): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.pow|pow(kotlin.Int;kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+    final fun round(kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.round|round(kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+    final fun setScale(kotlin/Int, com.splendo.kaluga.base.decimal/RoundingMode): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.setScale|setScale(kotlin.Int;com.splendo.kaluga.base.decimal.RoundingMode){}[0]
+    final fun stringValue(): kotlin/String // com.splendo.kaluga.base.decimal/BigDecimal.stringValue|stringValue(){}[0]
+    final fun stripTrailingZeros(): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.stripTrailingZeros|stripTrailingZeros(){}[0]
+    final fun subtract(com.splendo.kaluga.base.decimal/BigDecimal): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.subtract|subtract(com.splendo.kaluga.base.decimal.BigDecimal){}[0]
+    final fun toDouble(): kotlin/Double // com.splendo.kaluga.base.decimal/BigDecimal.toDouble|toDouble(){}[0]
+    final fun toInt(): kotlin/Int // com.splendo.kaluga.base.decimal/BigDecimal.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // com.splendo.kaluga.base.decimal/BigDecimal.toLong|toLong(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.base.decimal/BigDecimal.toString|toString(){}[0]
+    final fun unaryMinus(): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.unaryMinus|unaryMinus(){}[0]
+
+    final object Companion { // com.splendo.kaluga.base.decimal/BigDecimal.Companion|null[0]
+        final val ONE // com.splendo.kaluga.base.decimal/BigDecimal.Companion.ONE|{}ONE[0]
+            final fun <get-ONE>(): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.Companion.ONE.<get-ONE>|<get-ONE>(){}[0]
+        final val ZERO // com.splendo.kaluga.base.decimal/BigDecimal.Companion.ZERO|{}ZERO[0]
+            final fun <get-ZERO>(): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.Companion.ZERO.<get-ZERO>|<get-ZERO>(){}[0]
+
+        final fun fromDouble(kotlin/Double): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.Companion.fromDouble|fromDouble(kotlin.Double){}[0]
+        final fun fromInt(kotlin/Int): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.Companion.fromInt|fromInt(kotlin.Int){}[0]
+        final fun fromLong(kotlin/Long): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.Companion.fromLong|fromLong(kotlin.Long){}[0]
+        final fun fromString(kotlin/String): com.splendo.kaluga.base.decimal/BigDecimal // com.splendo.kaluga.base.decimal/BigDecimal.Companion.fromString|fromString(kotlin.String){}[0]
+    }
+}

@@ -32,12 +32,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
-import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
+import com.splendo.kaluga.location.BaseLocationManager
+import com.splendo.kaluga.location.Location
+import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.location.location
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.permissions.location.LocationPermission
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
 
@@ -50,22 +54,29 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
     }
 
     private val notificationService by lazy { applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
-
-    private val viewModel = LocationViewModel(locationPermission)
-    private val notificationsViewModel = NotificationPermissionViewModel()
+    private val repoBuilder: LocationStateRepoBuilder by inject()
 
     override fun onCreate() {
         super.onCreate()
 
+        val locationRepo = repoBuilder.create(
+            locationPermission,
+            { permission, permissions ->
+                BaseLocationManager.Settings(
+                    permission,
+                    permissions,
+                    logger = RestrictedLogger(RestrictedLogLevel.None),
+                )
+            },
+            lifecycleScope.coroutineContext,
+        )
+
         lifecycleScope.launch {
-            combine(
-                viewModel.location.stateFlow,
-                notificationsViewModel.hasPermission.stateFlow,
-            ) { message, hasNotificationsPermission ->
-                if (hasNotificationsPermission) message else null
-            }.flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
+            locationRepo.location()
+                .map(::format)
+                .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
                 .collect { message ->
-                    if (message != null && ActivityCompat.checkSelfPermission(
+                    if (ActivityCompat.checkSelfPermission(
                             this@LocationBackgroundService,
                             Manifest.permission.POST_NOTIFICATIONS,
                         ) == PackageManager.PERMISSION_GRANTED
@@ -76,31 +87,16 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
                 }
         }
 
-        lifecycleScope.launch {
-            notificationsViewModel.hasPermission.stateFlow
-                .filterNot { it }
-                .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
-                .collect {
-                    notificationsViewModel.requestPermission()
-                }
-        }
-
         startForeground(NOTIFICATION_ID, getNotification(""))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        viewModel.didResume()
-        notificationsViewModel.didResume()
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.didPause()
-        viewModel.onCleared()
-        notificationsViewModel.didPause()
-        notificationsViewModel.onCleared()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
         } else {
@@ -111,22 +107,19 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
     }
 
     private fun createChannelIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationService.getNotificationChannel(
-                CHANNEL_ID,
-            ) == null
-        ) {
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance)
-            channel.setSound(null, null)
-            channel.enableVibration(false)
-            channel.setShowBadge(false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationService.getNotificationChannel(CHANNEL_ID) == null) {
+            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT).apply {
+                setSound(null, null)
+                enableVibration(false)
+                setShowBadge(false)
+            }
             notificationService.createNotificationChannel(channel)
         }
     }
 
     private fun getNotification(message: String): Notification {
         createChannelIfNeeded()
-        val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(applicationContext.getString(R.string.location_background))
             .setContentText(message)
@@ -134,9 +127,13 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
             .setSound(null)
             .setVibrate(null)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-        val notification = builder.build()
-
+            .build()
         notification.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
         return notification
     }
+}
+
+private fun format(location: Location): String = when (location) {
+    is Location.KnownLocation -> "${location.latitudeDMS} ${location.longitudeDMS}"
+    is Location.UnknownLocation -> "Unknown Location. Reason: ${location.reason.name}"
 }

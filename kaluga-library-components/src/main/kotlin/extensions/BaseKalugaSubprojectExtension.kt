@@ -19,8 +19,11 @@ package com.splendo.kaluga.plugin.extensions
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.file.Directory
 import org.gradle.api.model.ObjectFactory
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
+import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, protected val namespacePostfix: String?, objects: ObjectFactory) :
@@ -67,10 +70,12 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
 
     protected abstract fun Project.setupSubproject()
 
-    @OptIn(ExperimentalAbiValidation::class)
     override fun Project.afterProjectEvaluated() {
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")
+        }
+        tasks.withType<Test>().configureEach {
+            failOnNoDiscoveredTests.set(false)
         }
     }
 
@@ -79,8 +84,9 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
     protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
 
     @OptIn(ExperimentalAbiValidation::class)
-    protected fun AbiValidationVariantSpec.abiExtension() {
-        filters.excluded {
+    protected fun AbiValidationExtension.configureKalugaAbi(apiDirectory: Directory) {
+        referenceDumpDir.set(apiDirectory)
+        filters.exclude {
             byNames.set(
                 setOf(
                     "com.splendo.kaluga.$moduleName.BuildConfig",

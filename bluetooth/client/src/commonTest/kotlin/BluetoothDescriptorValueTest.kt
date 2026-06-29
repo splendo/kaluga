@@ -1,0 +1,67 @@
+/*
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bluetooth
+
+import com.splendo.kaluga.base.test.mock.matcher.AnyOrNullCaptor
+import com.splendo.kaluga.base.test.mock.verifyWithin
+import com.splendo.kaluga.bluetooth.device.DeviceAction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlin.test.Test
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+
+class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, RemoteDescriptor?>() {
+
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithDescriptor, CoroutineScope) -> DescriptorContext = { configuration, scope ->
+        DescriptorContext(configuration, scope)
+    }
+
+    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<RemoteDescriptor?> = {
+        bluetoothClient.scannedDevices()[device.identifier].services().getOrNull(
+            serviceUuid,
+        ).characteristics().getOrNull(characteristicUuid).descriptors().getOrNull(descriptorUuid)
+    }
+
+    @Test
+    fun testGetDescriptorValue() = testWithFlowAndTestContext(
+        Configuration.DeviceWithDescriptor(),
+    ) {
+        val newValue = "Test".encodeToByteArray()
+        mainAction {
+            bluetoothClient.startScanning()
+            scanDevice()
+        }
+        test {
+            assertNull(it)
+        }
+        mainAction {
+            connectDevice()
+            discoverService()
+        }
+        test { descriptor ->
+            assertNotNull(descriptor)
+            descriptor.startWrite(newValue)
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
+            connectionManager.performActionMock.verifyWithin(value = captor)
+            assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
+            connectionManager.handleCurrentAction()
+        }
+    }
+}

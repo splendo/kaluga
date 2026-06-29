@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.review
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.lifecycle.LifecycleSubscribable
 
 /**
  * Manager for requesting the system to show a Review Dialog.

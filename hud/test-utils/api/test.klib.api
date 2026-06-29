@@ -1,0 +1,36 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.hud:test>
+final class com.splendo.kaluga.hud.test/MockHUD : com.splendo.kaluga.hud/BaseHUD { // com.splendo.kaluga.hud.test/MockHUD|null[0]
+    constructor <init>(com.splendo.kaluga.hud/HudConfig, kotlin/Boolean = ..., kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.hud.test/MockHUD.<init>|<init>(com.splendo.kaluga.hud.HudConfig;kotlin.Boolean;kotlinx.coroutines.CoroutineScope){}[0]
+
+    final val dismissMock // com.splendo.kaluga.hud.test/MockHUD.dismissMock|{}dismissMock[0]
+        final fun <get-dismissMock>(): com.splendo.kaluga.base.test.mock/SuspendMethodMock<com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Matchers<kotlin/Boolean>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin/Boolean>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Values<kotlin/Boolean>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters<kotlin/Boolean>, kotlin/Unit> // com.splendo.kaluga.hud.test/MockHUD.dismissMock.<get-dismissMock>|<get-dismissMock>(){}[0]
+    final val hudConfig // com.splendo.kaluga.hud.test/MockHUD.hudConfig|{}hudConfig[0]
+        final fun <get-hudConfig>(): com.splendo.kaluga.hud/HudConfig // com.splendo.kaluga.hud.test/MockHUD.hudConfig.<get-hudConfig>|<get-hudConfig>(){}[0]
+    final val presentMock // com.splendo.kaluga.hud.test/MockHUD.presentMock|{}presentMock[0]
+        final fun <get-presentMock>(): com.splendo.kaluga.base.test.mock/SuspendMethodMock<com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Matchers<kotlin/Boolean>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin/Boolean>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters.Values<kotlin/Boolean>, com.splendo.kaluga.base.test.mock.parameters/SingleParameters<kotlin/Boolean>, com.splendo.kaluga.hud/BaseHUD> // com.splendo.kaluga.hud.test/MockHUD.presentMock.<get-presentMock>|<get-presentMock>(){}[0]
+
+    final var isVisible // com.splendo.kaluga.hud.test/MockHUD.isVisible|{}isVisible[0]
+        final fun <get-isVisible>(): kotlin/Boolean // com.splendo.kaluga.hud.test/MockHUD.isVisible.<get-isVisible>|<get-isVisible>(){}[0]
+        final fun <set-isVisible>(kotlin/Boolean) // com.splendo.kaluga.hud.test/MockHUD.isVisible.<set-isVisible>|<set-isVisible>(kotlin.Boolean){}[0]
+
+    final suspend fun dismiss(kotlin/Boolean) // com.splendo.kaluga.hud.test/MockHUD.dismiss|dismiss(kotlin.Boolean){}[0]
+    final suspend fun present(kotlin/Boolean): com.splendo.kaluga.hud/BaseHUD // com.splendo.kaluga.hud.test/MockHUD.present|present(kotlin.Boolean){}[0]
+
+    final class Builder : com.splendo.kaluga.hud/BaseHUD.Builder { // com.splendo.kaluga.hud.test/MockHUD.Builder|null[0]
+        constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.hud.test/MockHUD.Builder.<init>|<init>(kotlin.Boolean){}[0]
+
+        final val builtHUDs // com.splendo.kaluga.hud.test/MockHUD.Builder.builtHUDs|{}builtHUDs[0]
+            final fun <get-builtHUDs>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.hud.test/MockHUD> // com.splendo.kaluga.hud.test/MockHUD.Builder.builtHUDs.<get-builtHUDs>|<get-builtHUDs>(){}[0]
+        final val createMock // com.splendo.kaluga.hud.test/MockHUD.Builder.createMock|{}createMock[0]
+            final fun <get-createMock>(): com.splendo.kaluga.base.test.mock/MethodMock<com.splendo.kaluga.base.test.mock.parameters/PairParameters.Matchers<com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.base.test.mock.parameters/PairParameters.MatchersOrCaptor<com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.base.test.mock.parameters/PairParameters.Values<com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.base.test.mock.parameters/PairParameters<com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.hud.test/MockHUD> // com.splendo.kaluga.hud.test/MockHUD.Builder.createMock.<get-createMock>|<get-createMock>(){}[0]
+
+        final fun create(com.splendo.kaluga.hud/HudConfig, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.hud.test/MockHUD // com.splendo.kaluga.hud.test/MockHUD.Builder.create|create(com.splendo.kaluga.hud.HudConfig;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}

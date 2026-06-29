@@ -22,14 +22,19 @@ plugins {
 
 kaluga {
     moduleName = "links"
+    supportMacOS = true
+    supportTvOS = true
+    supportWatchOS = true
+    supportJS = true
+    supportWasmJS = true
     dependencies {
         common {
             main {
-                implementation(project(":base", ""))
+                implementation(project(":base:core", ""))
                 api(libs.kotlinx.serialization.core)
             }
             test {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":base:test", ""))
             }
         }
     }

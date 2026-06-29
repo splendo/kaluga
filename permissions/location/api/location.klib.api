@@ -1,0 +1,86 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64, tvosArm64, tvosSimulatorArm64, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.permissions:location>
+abstract interface com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder : com.splendo.kaluga.permissions.base/BasePermissionsBuilder<com.splendo.kaluga.permissions.location/LocationPermission> { // com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder|null[0]
+    abstract fun create(com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ..., kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.permissions.base/PermissionManager<com.splendo.kaluga.permissions.location/LocationPermission> // com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder.create|create(com.splendo.kaluga.permissions.location.LocationPermission;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+}
+
+final class com.splendo.kaluga.permissions.location/DefaultLocationPermissionManager : com.splendo.kaluga.permissions.base/BasePermissionManager<com.splendo.kaluga.permissions.location/LocationPermission> { // com.splendo.kaluga.permissions.location/DefaultLocationPermissionManager|null[0]
+    // Targets: [apple]
+    constructor <init>(platform.Foundation/NSBundle, com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.permissions.location/DefaultLocationPermissionManager.<init>|<init>(platform.Foundation.NSBundle;com.splendo.kaluga.permissions.location.LocationPermission;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>(com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope) // com.splendo.kaluga.permissions.location/DefaultLocationPermissionManager.<init>|<init>(com.splendo.kaluga.permissions.location.LocationPermission;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+}
+
+final class com.splendo.kaluga.permissions.location/LocationPermission : com.splendo.kaluga.permissions.base/Permission { // com.splendo.kaluga.permissions.location/LocationPermission|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ...) // com.splendo.kaluga.permissions.location/LocationPermission.<init>|<init>(kotlin.Boolean;kotlin.Boolean){}[0]
+
+    final val background // com.splendo.kaluga.permissions.location/LocationPermission.background|{}background[0]
+        final fun <get-background>(): kotlin/Boolean // com.splendo.kaluga.permissions.location/LocationPermission.background.<get-background>|<get-background>(){}[0]
+    final val name // com.splendo.kaluga.permissions.location/LocationPermission.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.permissions.location/LocationPermission.name.<get-name>|<get-name>(){}[0]
+    final val precise // com.splendo.kaluga.permissions.location/LocationPermission.precise|{}precise[0]
+        final fun <get-precise>(): kotlin/Boolean // com.splendo.kaluga.permissions.location/LocationPermission.precise.<get-precise>|<get-precise>(){}[0]
+
+    final fun component1(): kotlin/Boolean // com.splendo.kaluga.permissions.location/LocationPermission.component1|component1(){}[0]
+    final fun component2(): kotlin/Boolean // com.splendo.kaluga.permissions.location/LocationPermission.component2|component2(){}[0]
+    final fun copy(kotlin/Boolean = ..., kotlin/Boolean = ...): com.splendo.kaluga.permissions.location/LocationPermission // com.splendo.kaluga.permissions.location/LocationPermission.copy|copy(kotlin.Boolean;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.permissions.location/LocationPermission.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.permissions.location/LocationPermission.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.permissions.location/LocationPermission.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.permissions.location/LocationPermissionManagerBuilder : com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder { // com.splendo.kaluga.permissions.location/LocationPermissionManagerBuilder|null[0]
+    final fun create(com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.base/BasePermissionManager.Settings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.permissions.base/PermissionManager<com.splendo.kaluga.permissions.location/LocationPermission> // com.splendo.kaluga.permissions.location/LocationPermissionManagerBuilder.create|create(com.splendo.kaluga.permissions.location.LocationPermission;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlinx.coroutines.CoroutineScope){}[0]
+
+    // Targets: [apple]
+    constructor <init>(platform.Foundation/NSBundle = ...) // com.splendo.kaluga.permissions.location/LocationPermissionManagerBuilder.<init>|<init>(platform.Foundation.NSBundle){}[0]
+
+    // Targets: [js, wasmJs]
+    constructor <init>(com.splendo.kaluga.permissions.base/PermissionContext = ...) // com.splendo.kaluga.permissions.location/LocationPermissionManagerBuilder.<init>|<init>(com.splendo.kaluga.permissions.base.PermissionContext){}[0]
+}
+
+final class com.splendo.kaluga.permissions.location/LocationPermissionStateRepo : com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.location/LocationPermission> { // com.splendo.kaluga.permissions.location/LocationPermissionStateRepo|null[0]
+    constructor <init>(com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder, kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ..., kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.permissions.location/LocationPermissionStateRepo.<init>|<init>(com.splendo.kaluga.permissions.location.LocationPermission;com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+// Targets: [apple]
+final class com.splendo.kaluga.permissions.location/MainCLLocationManagerAccessor { // com.splendo.kaluga.permissions.location/MainCLLocationManagerAccessor|null[0]
+    constructor <init>(kotlin/Function1<platform.CoreLocation/CLLocationManager, kotlin/Unit>) // com.splendo.kaluga.permissions.location/MainCLLocationManagerAccessor.<init>|<init>(kotlin.Function1<platform.CoreLocation.CLLocationManager,kotlin.Unit>){}[0]
+
+    final suspend fun <#A1: kotlin/Any?> updateLocationManager(kotlin.coroutines/SuspendFunction1<platform.CoreLocation/CLLocationManager, #A1>): #A1 // com.splendo.kaluga.permissions.location/MainCLLocationManagerAccessor.updateLocationManager|updateLocationManager(kotlin.coroutines.SuspendFunction1<platform.CoreLocation.CLLocationManager,0:0>){0§<kotlin.Any?>}[0]
+}
+
+// Targets: [apple]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermission(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermission|registerLocationPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [apple]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermission(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin/Function3<com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.location/LocationPermission>>): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermission|registerLocationPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.Function3<com.splendo.kaluga.permissions.location.LocationPermission,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.location.LocationPermission>>){}[0]
+
+// Targets: [apple]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered|registerLocationPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [apple]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered(kotlin/Function1<platform.Foundation/NSBundle, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin/Function3<com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.location/LocationPermission>>): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered|registerLocationPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<platform.Foundation.NSBundle,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.Function3<com.splendo.kaluga.permissions.location.LocationPermission,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.location.LocationPermission>>){}[0]
+
+// Targets: [apple]
+final fun (platform.CoreLocation/CLLocationManager).com.splendo.kaluga.permissions.location/authorizationStatus(com.splendo.kaluga.permissions.location/LocationPermission): com.splendo.kaluga.permissions.base/ApplePermissionsHelper.AuthorizationStatus // com.splendo.kaluga.permissions.location/authorizationStatus|authorizationStatus@platform.CoreLocation.CLLocationManager(com.splendo.kaluga.permissions.location.LocationPermission){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermission(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermission|registerLocationPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermission(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin/Function3<com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.location/LocationPermission>>): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermission|registerLocationPermission@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.Function3<com.splendo.kaluga.permissions.location.LocationPermission,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.location.LocationPermission>>){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered|registerLocationPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+
+// Targets: [js, wasmJs]
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered(kotlin/Function1<com.splendo.kaluga.permissions.base/PermissionContext, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder> = ..., kotlin/Function3<com.splendo.kaluga.permissions.location/LocationPermission, com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/PermissionStateRepo<com.splendo.kaluga.permissions.location/LocationPermission>>): com.splendo.kaluga.permissions.location/BaseLocationPermissionManagerBuilder // com.splendo.kaluga.permissions.location/registerLocationPermissionIfNotRegistered|registerLocationPermissionIfNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.Function1<com.splendo.kaluga.permissions.base.PermissionContext,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder>;kotlin.Function3<com.splendo.kaluga.permissions.location.LocationPermission,com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.PermissionStateRepo<com.splendo.kaluga.permissions.location.LocationPermission>>){}[0]
