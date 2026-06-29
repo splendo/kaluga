@@ -111,11 +111,7 @@ data class GattField(
 /**
  * A parsed GATT service definition: the characteristics it contains and how each may be accessed.
  */
-data class GattService(
-    val name: String,
-    val uuid: String,
-    val characteristics: List<GattServiceCharacteristic>,
-)
+data class GattService(val name: String, val uuid: String, val characteristics: List<GattServiceCharacteristic>)
 
 /**
  * A characteristic as referenced by a [GattService], together with the access [properties] the service grants it and any

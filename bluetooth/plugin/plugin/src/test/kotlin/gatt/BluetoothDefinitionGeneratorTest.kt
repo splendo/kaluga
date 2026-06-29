@@ -36,8 +36,7 @@ class BluetoothDefinitionGeneratorTest {
     private fun service(resource: String = "/gatt/environmental_sensing_service.xml") =
         GattXmlParser.parseService(checkNotNull(javaClass.getResourceAsStream(resource)) { "missing $resource" })
 
-    private fun descriptor(resource: String) =
-        GattXmlParser.parseDescriptor(checkNotNull(javaClass.getResourceAsStream(resource)) { "missing $resource" })
+    private fun descriptor(resource: String) = GattXmlParser.parseDescriptor(checkNotNull(javaClass.getResourceAsStream(resource)) { "missing $resource" })
 
     private val generator = BluetoothDefinitionGenerator("com.example.generated")
 

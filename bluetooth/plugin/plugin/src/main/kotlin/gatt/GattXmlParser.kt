@@ -232,11 +232,10 @@ object GattXmlParser {
 
     // The flag bits a field's <Requirement>s resolve to, supporting several <Requirement> elements and a single one
     // listing multiple conditions (e.g. "C1 and C2" or "C1,C2"). `Mandatory` and unknown tokens contribute nothing.
-    private fun Element.conditionBits(bitByCondition: Map<String, Bit>): List<Bit> =
-        directChildren("Requirement")
-            .flatMap { it.textContent.trim().split(Regex("[,\\s]+")) }
-            .mapNotNull { bitByCondition[it] }
-            .distinctBy { it.index }
+    private fun Element.conditionBits(bitByCondition: Map<String, Bit>): List<Bit> = directChildren("Requirement")
+        .flatMap { it.textContent.trim().split(Regex("[,\\s]+")) }
+        .mapNotNull { bitByCondition[it] }
+        .distinctBy { it.index }
 
     // The fixed wire bit width of a `<Format>` token, looked up from the closed SIG format set ([GattFormat]); used to
     // lay out multi-`Field` flag regions and rank flag-selected width alternatives. Variable-length and unrecognised

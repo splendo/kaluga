@@ -106,24 +106,21 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
                 // The Client Characteristic Configuration descriptor (CCCD, 0x2902) enables notify/indicate and is
                 // managed by Kaluga's notification layer, so it is deliberately never surfaced as a @BluetoothDescriptor.
                 descriptorRef.type == CCCD_TYPE || definition?.let { isCCCDUuid(it.uuid) } == true -> null
+
                 definition == null -> {
                     System.err.println("Warning: descriptor '${descriptorRef.type}' has no definition file; skipping (no UUID/value to generate).")
                     null
                 }
+
                 else -> GattDescriptor(definition.name, definition.uuid, descriptorRef.properties, definition.fields, definition.flagFields)
             }
         }
 
     // The CCCD identified by its standard type or 0x2902 UUID (16-bit shorthand or the full 128-bit base form).
-    private fun isCCCDUuid(uuid: String): Boolean =
-        uuid.equals(CCCD_UUID, ignoreCase = true) || uuid.equals("0000$CCCD_UUID-0000-1000-8000-00805f9b34fb", ignoreCase = true)
+    private fun isCCCDUuid(uuid: String): Boolean = uuid.equals(CCCD_UUID, ignoreCase = true) || uuid.equals("0000$CCCD_UUID-0000-1000-8000-00805f9b34fb", ignoreCase = true)
 
     /** The `@BluetoothCharacteristic` interface for [characteristic] plus its `@Serializable` value class. */
-    fun characteristicFile(
-        characteristic: GattCharacteristic,
-        access: Set<GattProperty>,
-        characteristicsByUuid: Map<String, GattCharacteristic> = emptyMap(),
-    ): FileSpec {
+    fun characteristicFile(characteristic: GattCharacteristic, access: Set<GattProperty>, characteristicsByUuid: Map<String, GattCharacteristic> = emptyMap()): FileSpec {
         val interfaceName = characteristic.name.toPascalCase()
         val valueType = ClassName(packageName, interfaceName + VALUE_SUFFIX)
         val value = PropertySpec.builder("value", valueType)
@@ -171,10 +168,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     }
 
     /** The `@BluetoothService` interface for [service], referencing each of its characteristic interfaces. */
-    fun serviceFile(
-        service: GattService,
-        characteristics: Map<String, GattCharacteristic>,
-    ): FileSpec {
+    fun serviceFile(service: GattService, characteristics: Map<String, GattCharacteristic>): FileSpec {
         val serviceName = service.name.toPascalCase()
         val builder = TypeSpec.interfaceBuilder(serviceName)
             .addAnnotation(annotation("BluetoothService", service.uuid))
@@ -325,8 +319,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     // @Size chosen by a flag bit) and repeated fields are both wrapped: the serializer merges the value class' @Size with
     // the property's @FlagIndex across the inline boundary, and a repeated field becomes a list of value-class elements
     // that each carry their own format. Presence/nullability is handled by the containing property.
-    private fun GattField.scientificUnit(): ScientificUnit? =
-        if (useScientificUnits) unit?.let { bluetoothScientificUnits[it] } else null
+    private fun GattField.scientificUnit(): ScientificUnit? = if (useScientificUnits) unit?.let { bluetoothScientificUnits[it] } else null
 
     // A @Serializable value class that is a ScientificValue<Quantity, Unit> and carries the wire format on its value.
     private fun scientificValueClass(name: String, mapping: Mapping, scientificUnit: ScientificUnit): TypeSpec {
@@ -491,8 +484,14 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         var magnitude = abs(multiplier)
         var decimalFromMultiplier = 0
         var binaryFromMultiplier = 0
-        while (magnitude > 1 && magnitude % 10 == 0) { magnitude /= 10; decimalFromMultiplier++ }
-        while (magnitude > 1 && magnitude % 2 == 0) { magnitude /= 2; binaryFromMultiplier++ }
+        while (magnitude > 1 && magnitude % 10 == 0) {
+            magnitude /= 10
+            decimalFromMultiplier++
+        }
+        while (magnitude > 1 && magnitude % 2 == 0) {
+            magnitude /= 2
+            binaryFromMultiplier++
+        }
         require(magnitude == 1) { "Unsupported GATT multiplier '$multiplier' for field '$name': magnitude is not a product of powers of 10 and 2" }
         val scalarMultiplier = if (multiplier < 0) -1 else 1
         val scalarDecimalExponent = -(decimalExponent + decimalFromMultiplier)
@@ -533,9 +532,11 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         const val SCIENTIFIC = "com.splendo.kaluga.scientific"
         const val SCIENTIFIC_UNIT = "com.splendo.kaluga.scientific.unit"
         const val VALUE_SUFFIX = "Value"
+
         // The Client Characteristic Configuration descriptor; not generated as it is managed by the notify/indicate layer.
         const val CCCD_TYPE = "org.bluetooth.descriptor.gatt.client_characteristic_configuration"
         const val CCCD_UUID = "2902"
+
         // The integer wire widths the serializer's `Length` enum can encode via @Size (byte-aligned, up to 64-bit).
         val SUPPORTED_INTEGER_WIDTHS = setOf(8, 16, 24, 32, 40, 48, 64)
         val JVM_INLINE = AnnotationSpec.builder(ClassName("kotlin.jvm", "JvmInline")).build()
