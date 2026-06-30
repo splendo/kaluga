@@ -232,15 +232,15 @@ object GattXmlParser {
 
     // The flag bits a field's <Requirement>s resolve to, supporting several <Requirement> elements and a single one
     // listing multiple conditions (e.g. "C1 and C2" or "C1,C2"). `Mandatory` and unknown tokens contribute nothing.
-    private fun Element.conditionBits(bitByCondition: Map<String, Bit>): List<Bit> =
-        directChildren("Requirement")
-            .flatMap { it.textContent.trim().split(Regex("[,\\s]+")) }
-            .mapNotNull { bitByCondition[it] }
-            .distinctBy { it.index }
+    private fun Element.conditionBits(bitByCondition: Map<String, Bit>): List<Bit> = directChildren("Requirement")
+        .flatMap { it.textContent.trim().split(Regex("[,\\s]+")) }
+        .mapNotNull { bitByCondition[it] }
+        .distinctBy { it.index }
 
-    // The bit width declared in a format token, taken from its first digit run so both trailing-digit forms (`uint16`)
-    // and leading-digit forms (`16bit`) resolve; tokens with no digits (e.g. `SFLOAT`) have no declared width.
-    private fun formatWidth(format: String): Int = Regex("\\d+").find(format)?.value?.toIntOrNull() ?: 0
+    // The fixed wire bit width of a `<Format>` token, looked up from the closed SIG format set ([GattFormat]); used to
+    // lay out multi-`Field` flag regions and rank flag-selected width alternatives. Variable-length and unrecognised
+    // formats have no fixed width here and yield 0 (so a digit inside e.g. `utf8s` is never mistaken for a width).
+    private fun formatWidth(format: String): Int = GattFormat.of(format)?.bits ?: 0
 
     private fun parseService(root: Element): GattService {
         require(root.tagName == "Service") { "Expected a <Service> root, but was <${root.tagName}>" }
@@ -263,7 +263,10 @@ object GattXmlParser {
     }
 
     private fun document(input: InputStream): Element = DocumentBuilderFactory.newInstance()
-        .apply { isNamespaceAware = false }
+        .apply {
+            setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+            isNamespaceAware = false
+        }
         .newDocumentBuilder()
         .parse(input)
         .documentElement
