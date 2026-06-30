@@ -337,6 +337,24 @@ class BluetoothDefinitionGeneratorTest {
     }
 
     @Test
+    fun rejectsUnresolvableEnumCaseNameClash() {
+        // "Status" (key 5) decapitates to slug STATUS, clashes with key 0's STATUS, and disambiguates to STATUS_5 —
+        // which collides with key 2's "Status 5". Rather than emit a duplicate enum constant, generation fails.
+        val characteristic = GattCharacteristic(
+            name = "Clashing",
+            uuid = "2B07",
+            fields = listOf(
+                GattField(
+                    name = "Sensor",
+                    format = "8bit",
+                    enumCases = listOf(GattFlagCase(0, "Status"), GattFlagCase(2, "Status 5"), GattFlagCase(5, "Status")),
+                ),
+            ),
+        )
+        assertFailsWith<IllegalArgumentException> { generator.generateValueClass(characteristic) }
+    }
+
+    @Test
     fun resolvesServiceCharacteristicsReferencedByType() {
         // The real SIG service references its characteristics by `type` (no uuid on the references).
         val types = generator.generate(

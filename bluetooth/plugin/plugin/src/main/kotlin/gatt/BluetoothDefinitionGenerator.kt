@@ -391,7 +391,12 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
             ?.split("_")?.filter { it.isNotEmpty() }?.take(4)?.joinToString("_")
             ?.takeIf { it.isNotEmpty() && it.first().isLetter() }
             ?: "VALUE_$key"
-        return if (used.add(slug)) slug else "${slug}_$key".also { used.add(it) }
+        val name = if (slug in used) "${slug}_$key" else slug
+        require(name !in used) {
+            "Cannot derive a unique enum constant for case key=$key${description?.let { " (\"$it\")" }.orEmpty()}: '$name' is already taken."
+        }
+        used.add(name)
+        return name
     }
 
     private fun flagIndex(index: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagIndex")).addMember("%L", index).build()
