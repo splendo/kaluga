@@ -34,6 +34,7 @@ rootProject.name = "Kaluga Bluetooth Plugin"
 
 // Codegen validation fixtures, one per plugin capability (see validation/spec for the shared definitions).
 include(":validation:full")
+include(":validation:xml")
 include(":validation:contract")
 include(":validation:client")
 include(":validation:server")

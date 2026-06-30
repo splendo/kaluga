@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.plugin
 import com.google.devtools.ksp.gradle.KspAATask
 import com.google.devtools.ksp.gradle.KspExtension
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
+import com.splendo.kaluga.bluetooth.plugin.gatt.GattGeneration
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -57,10 +58,12 @@ class BluetoothPlugin : Plugin<Project> {
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
         val generatedKspDir = layout.buildDirectory.dir("generated/ksp/metadata/commonMain/kotlin")
+        val defaultGeneratedBluetoothDir = layout.buildDirectory.dir(GENERATED_DIR)
 
         extensions.configure<KotlinMultiplatformExtension> {
             sourceSets.commonMain {
                 kotlin.srcDir(generatedKspDir)
+                kotlin.srcDir(defaultGeneratedBluetoothDir)
             }
         }
 
@@ -76,6 +79,10 @@ class BluetoothPlugin : Plugin<Project> {
         }
 
         afterEvaluate {
+            val xmlGeneration = bluetoothExtension.xmlGeneration
+            val generatedSourceDir = xmlGeneration?.let {
+                it.outputDirectory?.let(::file) ?: defaultGeneratedBluetoothDir.get().asFile
+            }
             extensions.configure<KotlinMultiplatformExtension> {
                 project.dependencies.add(
                     "kspCommonMainMetadata",
@@ -93,6 +100,7 @@ class BluetoothPlugin : Plugin<Project> {
                 val bluetoothTargets = bluetoothExtension.target.get()
                 val generatesImplementation = bluetoothExtension.implementFor.get().isNotEmpty()
                 sourceSets.commonMain {
+                    generatedSourceDir?.let { kotlin.srcDir(it) }
                     bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
                     dependencies {
                         implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
@@ -102,6 +110,9 @@ class BluetoothPlugin : Plugin<Project> {
                         }
                         if (generatesImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:server:$kalugaVersion")
+                        }
+                        if (bluetoothExtension.useScientificUnits) {
+                            implementation("com.splendo.kaluga.scientific:scientific:$kalugaVersion")
                         }
                     }
                 }
@@ -120,8 +131,29 @@ class BluetoothPlugin : Plugin<Project> {
                     this@run.forceSingleTargetCommonProcessing(sourceSets, targets.first { it.name != "metadata" })
                 }
             }
+            if (xmlGeneration != null) {
+                val outputDir = checkNotNull(generatedSourceDir)
+                val packageName = xmlGeneration.packageName ?: bluetoothExtension.generatedPackage ?: DEFAULT_GENERATED_PACKAGE
+                val sources = xmlGeneration.sourceDirectories.map { file(it) }
+                val generate = tasks.register("generateBluetoothDefinitions") {
+                    inputs.files(sources)
+                    outputs.dir(outputDir)
+                    doLast {
+                        GattGeneration.generateTo(outputDir, sources, xmlGeneration.deviceName, packageName, bluetoothExtension.useScientificUnits)
+                    }
+                }
+                // The generated definitions must exist before KSP processes them and before anything is compiled.
+                tasks.matching { it.name.startsWith("ksp") || it.name.startsWith("compile") }.configureEach {
+                    dependsOn(generate)
+                }
+            }
             bluetoothExtension.afterEvaluate()
         }
+    }
+
+    private companion object {
+        const val GENERATED_DIR = "generated/bluetooth/commonMain/kotlin"
+        const val DEFAULT_GENERATED_PACKAGE = "com.splendo.kaluga.bluetooth.generated"
     }
 }
 

@@ -21,13 +21,18 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.times
 import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.Biot
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesAbampere")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) = current * this
+
+@JvmName("hourTimesAmpere")
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Ampere>) = current * this
 
 @JvmName("timeTimesBiot")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) = current * this

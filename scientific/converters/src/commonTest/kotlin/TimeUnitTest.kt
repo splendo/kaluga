@@ -42,6 +42,8 @@ import com.splendo.kaluga.scientific.converter.magneticFlux.div
 import com.splendo.kaluga.scientific.converter.speed.div
 import com.splendo.kaluga.scientific.converter.weight.div
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.AmpereHour
 import com.splendo.kaluga.scientific.unit.Barye
 import com.splendo.kaluga.scientific.unit.BeatsPerMinute
 import com.splendo.kaluga.scientific.unit.BritishThermalUnit
@@ -116,6 +118,7 @@ class TimeUnitTest {
     @Test
     fun timeFromChargeAndCurrentTest() {
         assertEqualScientificValue(1(Second), 20(Decicoulomb) / "0.2".toDecimal()(Decaampere))
+        assertEqualScientificValue(2(Hour), 4(AmpereHour) / 2(Ampere))
     }
 
     @Test

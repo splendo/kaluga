@@ -47,15 +47,30 @@ internal data class BluetoothBinaryDescriptor(
     val polymorphicMap: Map<String, ByteArrayHolder>,
     val structureSettings: StructureSettings,
     val children: List<BluetoothBinaryDescriptor>,
+    // The flag bits (owned by other properties) whose conjunction determines this property's presence; empty for a
+    // property that owns its presence bit at [bitIndex] (or is not nullable).
+    val presenceFlagIndices: List<Int> = emptyList(),
 ) {
 
     /**
-     * Number of bits used by this flag based on its children.
+     * Number of bits used by this flag based on its children, including any bits a child derives its presence from.
      */
     val flagBitSize = if (children.isNotEmpty()) {
-        children.maxOf { if (it.bitIndex >= 0) it.bitIndex + it.bitWidth else 0 }
+        children.maxOf {
+            maxOf(
+                if (it.bitIndex >= 0) it.bitIndex + it.bitWidth else 0,
+                it.presenceFlagIndices.maxOrNull()?.plus(1) ?: 0,
+            )
+        }
     } else {
         0
+    }
+
+    /** Whether this property is present given the decoded [flags]: derived from [presenceFlagIndices], else its own bit. */
+    fun isPresent(flags: BooleanArray): Boolean = when {
+        presenceFlagIndices.isNotEmpty() -> presenceFlagIndices.all { flags.getOrElse(it) { false } }
+        isNullable -> flags[bitIndex]
+        else -> true
     }
 
     /**
@@ -69,10 +84,14 @@ internal data class BluetoothBinaryDescriptor(
          * Encoding as a simple number. The [Length] best matching the value will be picked
          * @property supportedLengths the [Length] values that are supported. The smallest fitting length will be picked.
          * @property signed if the value can be negative
+         * @property inFlagsBits when non-null, the value is packed directly into the flag region across this many bits
+         * (least-significant bit first), analogous to an enum's ordinal, rather than encoded as body bytes. Used for
+         * sub-byte numeric subfields of a bit field; [supportedLengths] is then unused.
          */
-        data class Natural(override val supportedLengths: Set<Length>, val signed: Boolean) : NumericSettings() {
+        data class Natural(override val supportedLengths: Set<Length>, val signed: Boolean, val inFlagsBits: Int? = null) : NumericSettings() {
             init {
-                require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
+                require(inFlagsBits != null || supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
+                if (inFlagsBits != null) require(inFlagsBits in 1..Long.SIZE_BITS) { "A flag-packed numeric must occupy 1..${Long.SIZE_BITS} bits, was $inFlagsBits" }
             }
         }
 
@@ -215,6 +234,10 @@ internal object BluetoothBinaryDescriptorRegistry {
             "com.splendo.kaluga.base.bytes.MedFloat32" -> annotations + MedFloat() + Size(Length.`32_BIT`)
             "com.splendo.kaluga.base.bytes.Int24" -> annotations + Size(Length.`24_BIT`)
             "com.splendo.kaluga.base.bytes.UInt24" -> annotations + Unsigned() + Size(Length.`24_BIT`)
+            "com.splendo.kaluga.base.bytes.Int40" -> annotations + Size(Length.`40_BIT`)
+            "com.splendo.kaluga.base.bytes.UInt40" -> annotations + Unsigned() + Size(Length.`40_BIT`)
+            "com.splendo.kaluga.base.bytes.Int48" -> annotations + Size(Length.`48_BIT`)
+            "com.splendo.kaluga.base.bytes.UInt48" -> annotations + Unsigned() + Size(Length.`48_BIT`)
             "kotlin.UByte" -> annotations + Unsigned()
             "kotlin.UShort" -> annotations + Unsigned()
             "kotlin.UInt" -> annotations + Unsigned()
@@ -236,9 +259,12 @@ internal object BluetoothBinaryDescriptorRegistry {
         val annotations = descriptor.annotations + fieldAnnotations
         val desiredFlagBitWidth = DesiredFlagBitWidth(0)
 
+        // A property whose presence is derived from other flag bits owns no bit of its own.
+        val presenceFlagIndices = annotations.filterIsInstance<PresentWhenAllSet>().firstOrNull()?.indices?.toList().orEmpty()
+
         // Nullable elements will have a flag bit. This is always the first bit of the flags for this object
         val isNullable = isNullable || (descriptor.kind in setOf(StructureKind.LIST, StructureKind.MAP) && annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
-        if (isNullable) {
+        if (isNullable && presenceFlagIndices.isEmpty()) {
             desiredFlagBitWidth.raise(1)
         }
         val customIndex = annotations.filterIsInstance<FlagIndex>().firstOrNull()?.index
@@ -251,8 +277,18 @@ internal object BluetoothBinaryDescriptorRegistry {
         if (descriptor.kind is PrimitiveKind.BOOLEAN && customIndex != null) {
             desiredFlagBitWidth.raise(1)
         }
+        // An enum with an explicit FlagIndex is packed into the flags as its ordinal, across enough bits for all its cases.
+        if (descriptor.kind is SerialKind.ENUM && customIndex != null) {
+            desiredFlagBitWidth.raise(flagWidthForCases(descriptor.elementsCount))
+        }
         val supportedLengths = lengths(annotations, descriptor)
-        val numericSettings = numericSettings(supportedLengths, descriptor, desiredFlagBitWidth, annotations)
+        // A sub-byte numeric subfield of a bit field: an integer carrying @FlagIndex + @FlagWidth but no @Size has its
+        // value packed straight into the flag region (like an enum ordinal), rather than as body bytes.
+        val numericInFlagsBits = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits?.takeIf {
+            customIndex != null && !isNullable && annotations.filterIsInstance<Size>().isEmpty() &&
+                descriptor.kind in setOf(PrimitiveKind.BYTE, PrimitiveKind.SHORT, PrimitiveKind.INT, PrimitiveKind.LONG)
+        }
+        val numericSettings = numericSettings(supportedLengths, descriptor, desiredFlagBitWidth, annotations, numericInFlagsBits)
         val stringSettings = stringSettings(descriptor, annotations, supportedLengths)
         val collectionSettings = collectionSettings(descriptor, annotations, desiredFlagBitWidth, supportedLengths)
         val enumMap = enumMap(descriptor, byteOrder)
@@ -288,6 +324,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                 StructureKind.LIST -> listDescriptorChildren(descriptor, annotations, byteOrder, serializersModule)
                 else -> descriptorChildren(descriptor, byteOrder, serializersModule, bitIndex)
             },
+            presenceFlagIndices,
         )
     }
 
@@ -457,9 +494,12 @@ internal object BluetoothBinaryDescriptorRegistry {
     // Number of flag bits needed to store which of [size] options was chosen, i.e. ceil(log2(size)).
     // Computed with integer arithmetic to avoid floating-point rounding at the boundaries:
     // the highest representable index is size - 1, and 32 - countLeadingZeroBits() is its bit width.
-    private fun Set<Length>.sizingWidth() = when {
-        size <= 1 -> 0
-        else -> 32 - (size - 1).countLeadingZeroBits()
+    private fun Set<Length>.sizingWidth() = flagWidthForCases(size)
+
+    // Number of flag bits needed to store one of [cases] options, i.e. ceil(log2(cases)).
+    private fun flagWidthForCases(cases: Int) = when {
+        cases <= 1 -> 0
+        else -> 32 - (cases - 1).countLeadingZeroBits()
     }
 
     private fun numericSettings(
@@ -467,6 +507,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         descriptor: SerialDescriptor,
         desiredFlagBitWidth: DesiredFlagBitWidth,
         annotations: List<Annotation>,
+        inFlagsBits: Int?,
     ): BluetoothBinaryDescriptor.NumericSettings? = when (descriptor.kind) {
         PrimitiveKind.INT,
         PrimitiveKind.BYTE,
@@ -486,7 +527,11 @@ internal object BluetoothBinaryDescriptorRegistry {
                 BluetoothBinaryDescriptor.NumericSettings.Decimal(supportedLengths)
             } else {
                 val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
-                BluetoothBinaryDescriptor.NumericSettings.Natural(supportedLengths, isSigned)
+                if (inFlagsBits != null) {
+                    BluetoothBinaryDescriptor.NumericSettings.Natural(emptySet(), isSigned, inFlagsBits = inFlagsBits)
+                } else {
+                    BluetoothBinaryDescriptor.NumericSettings.Natural(supportedLengths, isSigned)
+                }
             }
         }
 

@@ -22,10 +22,14 @@ import com.splendo.kaluga.base.bytes.bytesOf
 import com.splendo.kaluga.base.bytes.decodeHex
 import com.splendo.kaluga.base.bytes.decodeInt
 import com.splendo.kaluga.base.bytes.decodeInt24
+import com.splendo.kaluga.base.bytes.decodeInt40
+import com.splendo.kaluga.base.bytes.decodeInt48
 import com.splendo.kaluga.base.bytes.decodeLong
 import com.splendo.kaluga.base.bytes.decodeShort
 import com.splendo.kaluga.base.bytes.decodeUInt
 import com.splendo.kaluga.base.bytes.decodeUInt24
+import com.splendo.kaluga.base.bytes.decodeUInt40
+import com.splendo.kaluga.base.bytes.decodeUInt48
 import com.splendo.kaluga.base.bytes.decodeULong
 import com.splendo.kaluga.base.bytes.decodeUShort
 import com.splendo.kaluga.base.bytes.isBitSet
@@ -34,6 +38,10 @@ import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.base.bytes.toInt24
 import com.splendo.kaluga.base.bytes.toUInt24
+import com.splendo.kaluga.base.bytes.toUInt40
+import com.splendo.kaluga.base.bytes.toUInt48
+import com.splendo.kaluga.base.bytes.toInt40
+import com.splendo.kaluga.base.bytes.toInt48
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -406,6 +414,118 @@ class ByteUtilsTest {
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt24(0, order) },
             byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte()),
+        )
+    }
+
+    @Test
+    fun encodeDecodeInt40AsByte() {
+        assertEncodeDecode(
+            42.toInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt40(0, order) },
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00),
+        )
+        assertEncodeDecode(
+            0x123456789AL.toInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt40(0, order) },
+            byteArrayOf(0x9A.toByte(), 0x78, 0x56, 0x34, 0x12),
+        )
+        assertEncodeDecode(
+            0x7FFFFFFFFFL.toInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt40(0, order) },
+            byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0x7F),
+        )
+        assertEncodeDecode(
+            (-42).toInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt40(0, order) },
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
+        )
+        assertEncodeDecode(
+            (-0x8000000000L).toInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt40(0, order) },
+            byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x80.toByte()),
+        )
+    }
+
+    @Test
+    fun encodeDecodeUInt40AsByte() {
+        assertEncodeDecode(
+            42UL.toUInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeUInt40(0, order) },
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00),
+        )
+        assertEncodeDecode(
+            0xAABBCCDDEEUL.toUInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeUInt40(0, order) },
+            byteArrayOf(0xEE.toByte(), 0xDD.toByte(), 0xCC.toByte(), 0xBB.toByte(), 0xAA.toByte()),
+        )
+        assertEncodeDecode(
+            0xFFFFFFFFFFUL.toUInt40(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeUInt40(0, order) },
+            byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
+        )
+    }
+
+    @Test
+    fun encodeDecodeInt48AsByte() {
+        assertEncodeDecode(
+            42.toInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt48(0, order) },
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00, 0x00),
+        )
+        assertEncodeDecode(
+            0x123456789ABCL.toInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt48(0, order) },
+            byteArrayOf(0xBC.toByte(), 0x9A.toByte(), 0x78, 0x56, 0x34, 0x12),
+        )
+        assertEncodeDecode(
+            0x7FFFFFFFFFFFL.toInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt48(0, order) },
+            byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0x7F),
+        )
+        assertEncodeDecode(
+            (-42).toInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt48(0, order) },
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
+        )
+        assertEncodeDecode(
+            (-0x800000000000L).toInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeInt48(0, order) },
+            byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x80.toByte()),
+        )
+    }
+
+    @Test
+    fun encodeDecodeUInt48AsByte() {
+        assertEncodeDecode(
+            42UL.toUInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeUInt48(0, order) },
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00, 0x00),
+        )
+        assertEncodeDecode(
+            0xAABBCCDDEEFFUL.toUInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeUInt48(0, order) },
+            byteArrayOf(0xFF.toByte(), 0xEE.toByte(), 0xDD.toByte(), 0xCC.toByte(), 0xBB.toByte(), 0xAA.toByte()),
+        )
+        assertEncodeDecode(
+            0xFFFFFFFFFFFFUL.toUInt48(),
+            { value, order -> value.toByteArray(order) },
+            { value, order -> value.decodeUInt48(0, order) },
+            byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
     }
 
