@@ -37,7 +37,7 @@ class MolarEntropyUnitTest {
     fun molarEntropyFromHeatCapacityAndAmountOfSubstanceTest() {
         assertEqualScientificValue(1(Joule per Kelvin per Mole), 2(Joule per Kelvin) / 2(Mole))
         assertEqualScientificValue(1(WattHour per Celsius per Mole), 2(WattHour per Celsius) / 2(Mole))
-        assertEqualScientificValue(1(BritishThermalUnit per Fahrenheit per Mole), 2(BritishThermalUnit per Fahrenheit) / 2(Mole))
+        assertEqualScientificValue(1(BritishThermalUnit per Fahrenheit per Mole), 2(BritishThermalUnit per Fahrenheit) / 2(Mole), 30)
     }
 
     @Test
@@ -46,14 +46,14 @@ class MolarEntropyUnitTest {
         assertEqualScientificValue(4(Joule per Kelvin), 2(Mole) * 2(Joule per Kelvin per Mole))
         assertEqualScientificValue(4(WattHour per Celsius), 2(WattHour per Celsius per Mole) * 2(Mole))
         assertEqualScientificValue(4(WattHour per Celsius), 2(Mole) * 2(WattHour per Celsius per Mole))
-        assertEqualScientificValue(4(BritishThermalUnit per Fahrenheit), 2(BritishThermalUnit per Fahrenheit per Mole) * 2(Mole))
-        assertEqualScientificValue(4(BritishThermalUnit per Fahrenheit), 2(Mole) * 2(BritishThermalUnit per Fahrenheit per Mole))
+        assertEqualScientificValue(4(BritishThermalUnit per Fahrenheit), 2(BritishThermalUnit per Fahrenheit per Mole) * 2(Mole), 30)
+        assertEqualScientificValue(4(BritishThermalUnit per Fahrenheit), 2(Mole) * 2(BritishThermalUnit per Fahrenheit per Mole), 30)
     }
 
     @Test
     fun amountOfSubstanceFromHeatCapacityAndMolarEntropyTest() {
         assertEqualScientificValue(2(Mole), 4(Joule per Kelvin) / 2(Joule per Kelvin per Mole))
         assertEqualScientificValue(2(Mole), 4(WattHour per Celsius) / 2(WattHour per Celsius per Mole))
-        assertEqualScientificValue(2(Mole), 4(BritishThermalUnit per Fahrenheit) / 2(BritishThermalUnit per Fahrenheit per Mole))
+        assertEqualScientificValue(2(Mole), 4(BritishThermalUnit per Fahrenheit) / 2(BritishThermalUnit per Fahrenheit per Mole), 30)
     }
 }

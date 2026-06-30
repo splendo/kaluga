@@ -31,7 +31,7 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("imperialSpeedTimesImperialSurfaceChargeDensity")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+infix operator fun ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
     surfaceChargeDensity: ScientificValue<PhysicalQuantity.SurfaceChargeDensity, ImperialSurfaceChargeDensity>,
 ) = (Ampere per Foot).magneticFieldStrength(surfaceChargeDensity, this)
 

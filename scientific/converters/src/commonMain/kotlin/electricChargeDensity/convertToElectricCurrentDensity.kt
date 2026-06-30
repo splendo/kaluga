@@ -33,19 +33,16 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("imperialElectricChargeDensityTimesImperialSpeed")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>.times(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) = (Ampere per SquareFoot).electricCurrentDensity(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>.times(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
+    (Ampere per SquareFoot).electricCurrentDensity(this, speed)
 
 @JvmName("ukImperialElectricChargeDensityTimesImperialSpeed")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>.times(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) = (Ampere per SquareFoot).electricCurrentDensity(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>.times(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
+    (Ampere per SquareFoot).electricCurrentDensity(this, speed)
 
 @JvmName("usCustomaryElectricChargeDensityTimesImperialSpeed")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>.times(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) = (Ampere per SquareFoot).electricCurrentDensity(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>.times(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
+    (Ampere per SquareFoot).electricCurrentDensity(this, speed)
 
 @JvmName("electricChargeDensityTimesSpeed")
 infix operator fun <ElectricChargeDensityUnit : ElectricChargeDensity, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>.times(

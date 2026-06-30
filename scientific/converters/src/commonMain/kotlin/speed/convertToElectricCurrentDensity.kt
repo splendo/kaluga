@@ -33,17 +33,17 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("imperialSpeedTimesImperialElectricChargeDensity")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+infix operator fun ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
     electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>,
 ) = (Ampere per SquareFoot).electricCurrentDensity(electricChargeDensity, this)
 
 @JvmName("imperialSpeedTimesUKImperialElectricChargeDensity")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+infix operator fun ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
     electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>,
 ) = (Ampere per SquareFoot).electricCurrentDensity(electricChargeDensity, this)
 
 @JvmName("imperialSpeedTimesUSCustomaryElectricChargeDensity")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+infix operator fun ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
     electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>,
 ) = (Ampere per SquareFoot).electricCurrentDensity(electricChargeDensity, this)
 

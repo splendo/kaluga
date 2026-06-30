@@ -31,9 +31,8 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("imperialElectricCurrentDensityDivImperialSpeed")
-infix operator fun <SpeedUnit : ImperialSpeed> ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) = (Coulomb per CubicFoot).electricChargeDensity(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
+    (Coulomb per CubicFoot).electricChargeDensity(this, speed)
 
 @JvmName("electricCurrentDensityDivSpeed")
 infix operator fun <ElectricCurrentDensityUnit, SpeedUnit> ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ElectricCurrentDensityUnit>.div(
