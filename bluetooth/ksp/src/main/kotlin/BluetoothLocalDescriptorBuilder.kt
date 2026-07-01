@@ -375,6 +375,8 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(GenerationType.Side.SERVER, nested)
+
     private fun generateSimulatorGenerateRemoteMethod(remote: ClassName, properties: Sequence<KSPropertyDeclaration>): FunSpec = FunSpec.builder(GENERATE_REMOTE)
         .addParameter(IDENTIFIER, References.Bluetooth.Device.identifier)
         .returns(remote)

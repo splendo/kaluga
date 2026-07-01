@@ -31,6 +31,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_DISCOVERED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.GENERATE_CLIENT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
 import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
+import com.splendo.kaluga.bluetooth.ksp.helpers.MOCK
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
@@ -58,8 +59,16 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
     override fun factoryFor(generationType: GenerationType): FunSpec? = when (generationType) {
         GenerationType.CLIENT_BLUETOOTH -> generateBluetoothFactory()
         GenerationType.CLIENT_SIMULATOR -> if (options.generateServer) generateSimulatorFactory() else null
+        GenerationType.CLIENT_MOCK -> generateMockFactory()
         else -> null
     }
+
+    private fun generateMockFactory(): FunSpec = FunSpec.builder(MOCK).apply {
+        val returnType = nameFor(declaration, GenerationType.CLIENT_MOCK)
+        receiver(companionReceiver(GenerationType.CLIENT_API))
+        returns(returnType)
+            .addStatement("$RETURN %T()", returnType)
+    }.build()
 
     private fun generateBluetoothFactory(): FunSpec = FunSpec.builder(
         BLUETOOTH,
@@ -156,6 +165,8 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(GenerationType.Side.CLIENT, nested)
+
     private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, type: GenerationType.Type): TypeSpec.Builder = apply {
         addProperties(
             declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
@@ -178,7 +189,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
             .addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
                 when (type) {
-                    GenerationType.Type.API -> {}
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(

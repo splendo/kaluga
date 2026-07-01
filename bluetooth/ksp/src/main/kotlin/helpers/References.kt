@@ -38,6 +38,31 @@ object References {
 
             val complete = memberName("complete")
         }
+
+        object Test : ClassNameProvider {
+            override val packageName: String = "${Base.packageName}.test.mock"
+
+            object Parameters : ClassNameProvider {
+                override val packageName: String = "${Test.packageName}.parameters"
+                val mock = memberName("mock")
+            }
+
+            val call = memberName("call")
+
+            /** The `[Suspend]{Void,Single,Pair,...}ParametersMock` type alias for a method of [parameterCount] parameters. */
+            fun methodMock(parameterCount: Int, suspended: Boolean): ClassName {
+                val arity = when (parameterCount) {
+                    0 -> "Void"
+                    1 -> "Single"
+                    2 -> "Pair"
+                    3 -> "Triple"
+                    4 -> "Quadruple"
+                    5 -> "Quintuple"
+                    else -> error("No mock type for $parameterCount parameters")
+                }
+                return className("${if (suspended) "Suspend" else ""}${arity}ParametersMock")
+            }
+        }
     }
     object Bluetooth : ClassNameProvider {
         object Device : ClassNameProvider {
@@ -145,6 +170,7 @@ object References {
                 val collect = memberName("collect")
                 val update = memberName("update")
                 val onCompletion = memberName("onCompletion")
+                val emptyFlow = memberName("emptyFlow")
             }
 
             object Selects : ClassNameProvider {

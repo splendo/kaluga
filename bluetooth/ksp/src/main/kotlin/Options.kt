@@ -25,6 +25,7 @@ data class Options(
     val generateApi: Boolean,
     val generateBluetoothImplementation: Boolean,
     val generateSimulatorImplementation: Boolean,
+    val generateMockImplementation: Boolean,
     val generatedPackage: String?,
     val apiPackage: String?,
 ) {
@@ -34,6 +35,7 @@ data class Options(
         environment.options["generateApi"] != "false",
         environment.options["implementFor"].orEmpty().split(",").contains("BLUETOOTH"),
         environment.options["implementFor"].orEmpty().split(",").contains("SIMULATOR"),
+        environment.options["implementFor"].orEmpty().split(",").contains("MOCK"),
         environment.options["generatedPackage"]?.takeIf { it.isNotBlank() },
         environment.options["apiPackage"]?.takeIf { it.isNotBlank() },
     )

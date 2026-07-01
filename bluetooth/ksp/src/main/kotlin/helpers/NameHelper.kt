@@ -39,6 +39,7 @@ internal object NameHelper {
             GenerationType.Type.API -> GenerationType.CLIENT_API
             GenerationType.Type.BLUETOOTH -> GenerationType.CLIENT_BLUETOOTH
             GenerationType.Type.SIMULATOR -> GenerationType.CLIENT_SIMULATOR
+            GenerationType.Type.MOCK -> GenerationType.CLIENT_MOCK
         },
         options,
     )
@@ -48,6 +49,7 @@ internal object NameHelper {
             GenerationType.Type.API -> GenerationType.SERVER_API
             GenerationType.Type.BLUETOOTH -> GenerationType.SERVER_BLUETOOTH
             GenerationType.Type.SIMULATOR -> GenerationType.SERVER_SIMULATOR
+            GenerationType.Type.MOCK -> GenerationType.SERVER_MOCK
         },
         options,
     )
@@ -66,7 +68,7 @@ internal object NameHelper {
         val default = declaration.packageName.asString()
         return when (generationType.type) {
             GenerationType.Type.API -> options.apiPackage(default)
-            GenerationType.Type.BLUETOOTH, GenerationType.Type.SIMULATOR -> options.generatedPackage(default)
+            GenerationType.Type.BLUETOOTH, GenerationType.Type.SIMULATOR, GenerationType.Type.MOCK -> options.generatedPackage(default)
         }
     }
 
@@ -102,5 +104,6 @@ internal object NameHelper {
             GenerationType.Type.API -> ""
             GenerationType.Type.BLUETOOTH -> "Bluetooth"
             GenerationType.Type.SIMULATOR -> "Simulated"
+            GenerationType.Type.MOCK -> "Mock"
         }
 }

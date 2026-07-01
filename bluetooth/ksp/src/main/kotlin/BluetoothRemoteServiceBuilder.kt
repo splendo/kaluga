@@ -226,6 +226,8 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(GenerationType.Side.CLIENT, nested)
+
     private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, type: GenerationType.Type): TypeSpec.Builder = apply {
         addProperties(
             declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
@@ -264,7 +266,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
             )
             .apply {
                 when (type) {
-                    GenerationType.Type.API -> {}
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(

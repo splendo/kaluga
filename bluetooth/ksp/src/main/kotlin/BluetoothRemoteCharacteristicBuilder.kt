@@ -247,6 +247,8 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             .build()
     }
 
+    override fun generateMock(nested: List<TypeSpec>): TypeSpec = buildMock(GenerationType.Side.CLIENT, nested)
+
     private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, type: GenerationType.Type): TypeSpec.Builder = apply {
         var hasNotifiableProperty = false
         var hasReadMethod = false
@@ -314,7 +316,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             resultType.responseClassName,
         ).apply {
             when (type) {
-                GenerationType.Type.API -> {}
+                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                 GenerationType.Type.BLUETOOTH -> {
                     resultType.generateBluetoothResult(this, CHARACTERISTIC)
@@ -352,7 +354,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
         References.Bluetooth.writeResponse,
     ).apply {
         when (type) {
-            GenerationType.Type.API -> {}
+            GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
             GenerationType.Type.BLUETOOTH -> {
                 val valueArgument = if (propertyDeclaration.isByteArray) {
@@ -384,7 +386,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
     )
         .apply {
             when (type) {
-                GenerationType.Type.API -> {}
+                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                 GenerationType.Type.BLUETOOTH -> {
                     getter(
@@ -420,7 +422,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
         )
             .apply {
                 when (type) {
-                    GenerationType.Type.API -> {}
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(

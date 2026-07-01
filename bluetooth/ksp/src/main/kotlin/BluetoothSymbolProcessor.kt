@@ -50,7 +50,10 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
             logger.warn("\t$key = $value")
         }
         val apiDiffersFromOutput = (options.apiPackage ?: options.generatedPackage) != options.generatedPackage
-        if (options.generateApi && (options.generateBluetoothImplementation || options.generateSimulatorImplementation) && apiDiffersFromOutput) {
+        if (options.generateApi &&
+            (options.generateBluetoothImplementation || options.generateSimulatorImplementation || options.generateMockImplementation) &&
+            apiDiffersFromOutput
+        ) {
             logger.error(
                 "apiPackage must equal generatedPackage when a module generates both the API and an implementation; use apiOnly() or useExternalApi() to split them across modules.",
             )
@@ -170,6 +173,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
                     GenerationType.CLIENT_API.takeIf { options.generateApi },
                     GenerationType.CLIENT_BLUETOOTH.takeIf { options.generateBluetoothImplementation },
                     GenerationType.CLIENT_SIMULATOR.takeIf { options.generateSimulatorImplementation },
+                    GenerationType.CLIENT_MOCK.takeIf { options.generateMockImplementation },
                 ).takeIf { options.generateClient }
             }
 
@@ -178,6 +182,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
                     GenerationType.SERVER_API.takeIf { options.generateApi },
                     GenerationType.SERVER_BLUETOOTH.takeIf { options.generateBluetoothImplementation },
                     GenerationType.SERVER_SIMULATOR.takeIf { options.generateSimulatorImplementation },
+                    GenerationType.SERVER_MOCK.takeIf { options.generateMockImplementation },
                 ).takeIf { options.generateServer }
             }
         }
