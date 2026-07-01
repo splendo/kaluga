@@ -57,6 +57,7 @@ import kotlin.reflect.KClass
  * @param spec The [NavigationBundleSpec] to use for mapping route arguments to a [NavigationBundle]
  * @param content Creates the content by providing the [NavigationBundle] generated from the route arguments
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <SpecType : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
     spec: NavigationBundleSpec<SpecType>,
     noinline content: @Composable (NavigationBundle<SpecType>) -> Unit,
@@ -68,6 +69,7 @@ inline fun <SpecType : NavigationBundleSpecRow<*>, reified Action : NavigationAc
  * @param spec The [NavigationBundleSpec] to use for mapping route arguments to a [NavigationBundle]
  * @param content Creates the content by providing the [NavigationBundle] generated from the route arguments
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
     actionClass: KClass<Action>,
     spec: NavigationBundleSpec<SpecType>,
@@ -93,99 +95,123 @@ fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>>
  * @param type The [NavigationBundleSpecType] to use for extracting the [Value] from the route arguments
  * @param content Creates the content by providing the [Value] generated from the route arguments
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     type: NavigationBundleSpecType<Value>,
     noinline content: @Composable (Value) -> Unit,
 ) = composable(Action::class, type, content)
 
 @JvmName("singleValueUnitComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Unit>> NavGraphBuilder.composable(noinline content: @Composable () -> Unit) =
     composable(Action::class, NavigationBundleSpecType.UnitType) { content() }
 
 @JvmName("singleValueBooleanComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Boolean>> NavGraphBuilder.composable(noinline content: @Composable (Boolean) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.BooleanType, content)
 
 @JvmName("singleValueBooleanArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<BooleanArray>> NavGraphBuilder.composable(noinline content: @Composable (BooleanArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.BooleanArrayType, content)
 
 @JvmName("singleValueByteComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Byte>> NavGraphBuilder.composable(noinline content: @Composable (Byte) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.ByteType, content)
 
 @JvmName("singleValueByteArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<ByteArray>> NavGraphBuilder.composable(noinline content: @Composable (ByteArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.ByteArrayType, content)
 
 @JvmName("singleValueCharComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Char>> NavGraphBuilder.composable(noinline content: @Composable (Char) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.CharType, content)
 
 @JvmName("singleValueCharArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<CharArray>> NavGraphBuilder.composable(noinline content: @Composable (CharArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.CharArrayType, content)
 
 @JvmName("singleValueCharSequenceComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<CharSequence>> NavGraphBuilder.composable(noinline content: @Composable (CharSequence) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.CharSequenceType, content)
 
 @JvmName("singleValueDoubleComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Double>> NavGraphBuilder.composable(noinline content: @Composable (Double) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.DoubleType, content)
 
 @JvmName("singleValueDoubleArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<DoubleArray>> NavGraphBuilder.composable(noinline content: @Composable (DoubleArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.DoubleArrayType, content)
 
 @JvmName("singleValueFloatComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Float>> NavGraphBuilder.composable(noinline content: @Composable (Float) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.FloatType, content)
 
 @JvmName("singleValueFloatArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<FloatArray>> NavGraphBuilder.composable(noinline content: @Composable (FloatArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.FloatArrayType, content)
 
 @JvmName("singleValueIntComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Int>> NavGraphBuilder.composable(noinline content: @Composable (Int) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.IntegerType, content)
 
 @JvmName("singleValueIntArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<IntArray>> NavGraphBuilder.composable(noinline content: @Composable (IntArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.IntegerArrayType, content)
 
 @JvmName("singleValueLongComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Long>> NavGraphBuilder.composable(noinline content: @Composable (Long) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.LongType, content)
 
 @JvmName("singleValueLongArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<LongArray>> NavGraphBuilder.composable(noinline content: @Composable (LongArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.LongArrayType, content)
 
 @JvmName("singleValueShortComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<Short>> NavGraphBuilder.composable(noinline content: @Composable (Short) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.ShortType, content)
 
 @JvmName("singleValueShortArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<ShortArray>> NavGraphBuilder.composable(noinline content: @Composable (ShortArray) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.ShortArrayType, content)
 
 @JvmName("singleValueStringComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<String>> NavGraphBuilder.composable(noinline content: @Composable (String) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.StringType, content)
 
 @JvmName("singleValueStringArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<List<String>>> NavGraphBuilder.composable(noinline content: @Composable (List<String>) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.StringArrayType, content)
 
 @JvmName("singleValueDateComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<KalugaDate>> NavGraphBuilder.composable(noinline content: @Composable (KalugaDate) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.DateType, content)
 
 @JvmName("singleValueDateArrayComposable")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Action : SingleValueNavigationAction<List<KalugaDate>>> NavGraphBuilder.composable(noinline content: @Composable (List<KalugaDate>) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.DateArrayType, content)
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(serializer: KSerializer<Value>, noinline content: @Composable (Value) -> Unit) =
     composable(Action::class, NavigationBundleSpecType.SerializedType(serializer), content)
 
@@ -195,6 +221,7 @@ inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraph
  * @param type The [NavigationBundleSpecType] to use for extracting the [Value] from the route arguments
  * @param content Creates the content by providing the [Value] generated from the route arguments
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <Value, Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     actionClass: KClass<Action>,
     type: NavigationBundleSpecType<Value>,

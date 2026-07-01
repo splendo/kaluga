@@ -22,8 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.context.stopKoin
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 typealias KoinFlowTestBlock<TC, T, F> = suspend KoinFlowTest<TC, T, F>.(F) -> Unit
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseKoinFlowTest<Unit, TC, T, F>() {
     abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
     override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC get() {
@@ -37,6 +39,8 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
         block(this@KoinFlowTest, it)
     }
 }
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseKoinFlowTest<C, TC : BaseKoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<C, TC, T, F>() {
     override val onFailedToCreateTestContextWithConfiguration: (configuration: C) -> Unit = { stopKoin() }
 }

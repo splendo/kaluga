@@ -20,6 +20,7 @@ package com.splendo.kaluga.resources
 /**
  * Loads a [String] based on a provided identifier.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface StringLoader {
     /**
      * Attempts to load the string resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
@@ -43,6 +44,7 @@ interface StringLoader {
 /**
  * Default implementation of a [StringLoader].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class DefaultStringLoader() : StringLoader {
     override fun loadString(identifier: String, defaultValue: String): String
     override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String
@@ -51,6 +53,7 @@ expect class DefaultStringLoader() : StringLoader {
 /**
  * Loads a [KalugaColor] based on a provided identifier.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface KalugaColorLoader {
     /**
      * Attempts to load the [KalugaColor] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
@@ -64,6 +67,7 @@ interface KalugaColorLoader {
 /**
  * Default implementation of a [KalugaColorLoader].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class DefaultColorLoader() : KalugaColorLoader {
     override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor?
 }
@@ -71,6 +75,7 @@ expect class DefaultColorLoader() : KalugaColorLoader {
 /**
  * Loads a [KalugaImage] based on a provided identifier.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface ImageLoader {
     /**
      * Attempts to load the [KalugaImage] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
@@ -84,6 +89,7 @@ interface ImageLoader {
 /**
  * Default implementation of an [ImageLoader].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class DefaultImageLoader() : ImageLoader {
     override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage?
 }
@@ -91,6 +97,7 @@ expect class DefaultImageLoader() : ImageLoader {
 /**
  * Loads a [KalugaFont] based on a provided identifier.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface FontLoader {
     /**
      * Attempts to load the [KalugaFont] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
@@ -104,6 +111,7 @@ interface FontLoader {
 /**
  * Default implementation of a [FontLoader].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class DefaultFontLoader() : FontLoader {
     override fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont?
 }
@@ -114,6 +122,7 @@ expect class DefaultFontLoader() : FontLoader {
  * @param defaultValue The [String] to return if no match was found for the identifier. Defaults to `this`.
  * @return The [String] associated with the identifier represented by this String, or [defaultValue] if no such [String] could be found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.localized(stringLoader: StringLoader = DefaultStringLoader(), defaultValue: String = this) = stringLoader.loadString(this, defaultValue)
 
 /**
@@ -124,6 +133,7 @@ fun String.localized(stringLoader: StringLoader = DefaultStringLoader(), default
  * @param defaultValue The [String] to return if no match was found for the identifier. Defaults to `this`.
  * @return The [String] associated with the identifier represented by this String, or [defaultValue] if no such [String] could be found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.quantity(quantity: Int, stringLoader: StringLoader = DefaultStringLoader(), defaultValue: String = this): String =
     stringLoader.loadQuantityString(this, quantity, defaultValue)
 
@@ -133,6 +143,7 @@ fun String.quantity(quantity: Int, stringLoader: StringLoader = DefaultStringLoa
  * @param defaultValue The [KalugaColor] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [KalugaColor] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaColor] could be found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.asColor(colorLoader: KalugaColorLoader = DefaultColorLoader(), defaultValue: KalugaColor? = null): KalugaColor? = colorLoader.loadColor(this, defaultValue)
 
 /**
@@ -141,6 +152,7 @@ fun String.asColor(colorLoader: KalugaColorLoader = DefaultColorLoader(), defaul
  * @param defaultValue The [KalugaImage] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [KalugaImage] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaImage] could be found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.asImage(imageLoader: ImageLoader = DefaultImageLoader(), defaultValue: KalugaImage? = null): KalugaImage? = imageLoader.loadImage(this, defaultValue)
 
 /**
@@ -149,4 +161,5 @@ fun String.asImage(imageLoader: ImageLoader = DefaultImageLoader(), defaultValue
  * @param defaultValue The [KalugaFont] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [KalugaFont] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaFont] could be found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.asFont(fontLoader: FontLoader = DefaultFontLoader(), defaultValue: KalugaFont? = null): KalugaFont? = fontLoader.loadFont(this, defaultValue)

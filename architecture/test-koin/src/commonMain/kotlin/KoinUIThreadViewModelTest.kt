@@ -23,6 +23,7 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.KoinViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
     KoinUIThreadTest<Context>() {
 
@@ -42,6 +43,7 @@ abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.Koi
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
     BaseKoinUIThreadTest<Configuration, Context>() {
 

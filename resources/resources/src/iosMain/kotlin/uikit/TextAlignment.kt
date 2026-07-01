@@ -35,6 +35,7 @@ import platform.UIKit.UIUserInterfaceLayoutDirection
 /**
  * Gets the [NSTextAlignment] of a [KalugaTextAlignment]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaTextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
     KalugaTextAlignment.LEFT -> NSTextAlignmentLeft
 
@@ -54,6 +55,7 @@ val KalugaTextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
 /**
  * Gets the [UIControlContentHorizontalAlignment] of a [KalugaTextAlignment]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaTextAlignment.contentHorizontalAlignment: UIControlContentHorizontalAlignment get() = when (this) {
     KalugaTextAlignment.LEFT -> UIControlContentHorizontalAlignmentLeft
     KalugaTextAlignment.RIGHT -> UIControlContentHorizontalAlignmentRight

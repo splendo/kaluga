@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
  * Gets the [ComponentActivity] of a [Context] if it exists.
  * This does a recursive lookup if [Context] is a [ContextWrapper]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val Context.activity: ComponentActivity? get() = when (this) {
     is ComponentActivity -> this
 
@@ -39,4 +40,5 @@ val Context.activity: ComponentActivity? get() = when (this) {
  * Gets the [AppCompatActivity] of a [Context] if it exists.
  * This does a recursive lookup if [Context] is a [ContextWrapper]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val Context.appCompatActivity: AppCompatActivity? get() = activity as? AppCompatActivity

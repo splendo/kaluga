@@ -25,26 +25,31 @@ import android.os.Build
 /**
  * Class describing a font
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual typealias KalugaFont = Typeface
 
 /**
  * The default system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultFont: KalugaFont get() = Typeface.DEFAULT
 
 /**
  * The default bold system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultBoldFont: KalugaFont get() = Typeface.DEFAULT_BOLD
 
 /**
  * The default italic system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultItalicFont: KalugaFont get() = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
 
 /**
  * The default monospace system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultMonospaceFont: KalugaFont get() = Typeface.MONOSPACE
 
 /**
@@ -54,6 +59,7 @@ actual val defaultMonospaceFont: KalugaFont get() = Typeface.MONOSPACE
  * @param traits the set of [FontTrait] to apply
  * @return a [KalugaFont] representing the system font with the given specifications
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun createDefaultFont(weight: Int, style: FontStyle, traits: Set<FontTrait>): KalugaFont {
     val typeface = when (style) {
         FontStyle.DEFAULT -> Typeface.DEFAULT

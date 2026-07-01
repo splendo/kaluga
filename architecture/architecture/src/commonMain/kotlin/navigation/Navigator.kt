@@ -24,6 +24,7 @@ import com.splendo.kaluga.lifecycle.LifecycleSubscribable
  * @param B the type of [NavigationBundleSpecRow] associated with this action.
  * @property bundle The [NavigationBundle] containing rows of [B] used to configure navigation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: NavigationBundle<B>?)
 
 /**
@@ -32,6 +33,7 @@ open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: Navigati
  * @property value The value passed by the action
  * @property type The [NavigationBundleSpecType] associated with [T].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class SingleValueNavigationAction<T>(val value: T, val type: NavigationBundleSpecType<T>) :
     NavigationAction<SingleValueNavigationSpec.Row<T>>(
         SingleValueNavigationSpec(type).toBundle {
@@ -43,12 +45,14 @@ open class SingleValueNavigationAction<T>(val value: T, val type: NavigationBund
  * Exception thrown by a [Navigator]
  * @param message The message of this exception.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class NavigationException(message: String?) : RuntimeException(message)
 
 /**
  * Class that can trigger a given [NavigationAction]
  * @param Action the type of [NavigationAction] this navigator should respond to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
     /**
      * Triggers a given [NavigationAction]
@@ -64,6 +68,7 @@ expect interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable
  * @param action The [Action] to trigger.
  * @return `true` if the navigation succeeded, false otherwise
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <Action : NavigationAction<*>> Navigator<Action>.navigateWithSuccess(action: Action): Boolean = try {
     navigate(action)
     true
@@ -77,6 +82,7 @@ fun <Action : NavigationAction<*>> Navigator<Action>.navigateWithSuccess(action:
  * @param action The [Action] to trigger.
  * @param onFailure Closure for handling case when navigation failed.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <Action : NavigationAction<*>> Navigator<Action>.navigateOrElse(action: Action, onFailure: () -> Unit) {
     if (!navigateWithSuccess(action)) {
         onFailure()

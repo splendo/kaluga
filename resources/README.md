@@ -1,6 +1,6 @@
 # Resources
 
-> **⚠️ Deprecated:** This feature has been deprecated. We recommend using Compose Multiplatform instead.
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
 
 Shared access to localized Strings, Colors, Images and Fonts, with styling and platform UI binding.
 

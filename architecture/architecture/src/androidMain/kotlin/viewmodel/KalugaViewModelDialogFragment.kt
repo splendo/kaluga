@@ -25,6 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 /**
  * Convenience [DialogFragment] that is bound to a [LifecycleViewModel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class KalugaViewModelDialogFragment<ViewModel : BaseLifecycleViewModel> : DialogFragment() {
 
     abstract val viewModel: ViewModel
@@ -38,6 +39,7 @@ abstract class KalugaViewModelDialogFragment<ViewModel : BaseLifecycleViewModel>
 /**
  * Convenience [BottomSheetDialogFragment] that is bound to a [LifecycleViewModel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class KalugaViewModelBottomSheetDialogFragment<ViewModel : BaseLifecycleViewModel> : BottomSheetDialogFragment() {
 
     abstract val viewModel: ViewModel

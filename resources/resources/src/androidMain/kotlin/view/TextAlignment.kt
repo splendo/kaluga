@@ -29,6 +29,7 @@ import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
  * @param context the [Context] used to determine the reading direction
  * @return the [Layout.Alignment] associated with this [KalugaTextAlignment]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment = when (this) {
     KalugaTextAlignment.LEFT -> if (context.isLayoutLeftToRight()) {
         Layout.Alignment.ALIGN_NORMAL
@@ -53,6 +54,7 @@ fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment = when (th
  * Gets the text alignment of a [Layout.Alignment]
  * Can be either [View.TEXT_ALIGNMENT_TEXT_START], [View.TEXT_ALIGNMENT_TEXT_END], or [View.TEXT_ALIGNMENT_CENTER]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val Layout.Alignment.viewAlignment: Int get() = when (this) {
     Layout.Alignment.ALIGN_NORMAL -> View.TEXT_ALIGNMENT_TEXT_START
     Layout.Alignment.ALIGN_OPPOSITE -> View.TEXT_ALIGNMENT_TEXT_END
@@ -63,6 +65,7 @@ val Layout.Alignment.viewAlignment: Int get() = when (this) {
  * Gets the gravity of a [Layout.Alignment]
  * Can be either [Gravity.START], [Gravity.END], or [Gravity.CENTER_HORIZONTAL]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val Layout.Alignment.gravity: Int get() = when (this) {
     Layout.Alignment.ALIGN_NORMAL -> Gravity.START
     Layout.Alignment.ALIGN_OPPOSITE -> Gravity.END

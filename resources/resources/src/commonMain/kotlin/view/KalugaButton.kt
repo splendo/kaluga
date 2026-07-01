@@ -23,6 +23,7 @@ import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 /**
  * A button a [KalugaButtonStyle] applied
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class KalugaButton {
 
     /**

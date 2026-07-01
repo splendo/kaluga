@@ -29,12 +29,14 @@ import kotlinx.serialization.KSerializer
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseBoolean(): Boolean = intent.parseBoolean()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Boolean] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Boolean] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseBooleanOrNull(): Boolean? = intent.parseBooleanOrNull()
 
 /**
@@ -44,12 +46,14 @@ fun Activity.parseBooleanOrNull(): Boolean? = intent.parseBooleanOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseBooleanArray(): BooleanArray = intent.parseBooleanArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [BooleanArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [BooleanArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseBooleanArrayOrNull(): BooleanArray? = intent.parseBooleanArrayOrNull()
 
 /**
@@ -59,12 +63,14 @@ fun Activity.parseBooleanArrayOrNull(): BooleanArray? = intent.parseBooleanArray
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseByte(): Byte = intent.parseByte()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Byte] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Byte] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseByteOrNull(): Byte? = intent.parseByteOrNull()
 
 /**
@@ -74,12 +80,14 @@ fun Activity.parseByteOrNull(): Byte? = intent.parseByteOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseByteArray(): ByteArray = intent.parseByteArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [ByteArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ByteArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseByteArrayOrNull(): ByteArray? = intent.parseByteArrayOrNull()
 
 /**
@@ -89,12 +97,14 @@ fun Activity.parseByteArrayOrNull(): ByteArray? = intent.parseByteArrayOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseChar(): Char = intent.parseChar()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Char] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Char] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseCharOrNull(): Char? = intent.parseCharOrNull()
 
 /**
@@ -104,18 +114,21 @@ fun Activity.parseCharOrNull(): Char? = intent.parseCharOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseCharArray(): CharArray = intent.parseCharArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [CharArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseCharArrayOrNull(): CharArray? = intent.parseCharArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [CharSequence] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharSequenceType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharSequence] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseCharSequenceOrNull(): CharSequence? = intent.parseCharSequenceOrNull()
 
 /**
@@ -125,12 +138,14 @@ fun Activity.parseCharSequenceOrNull(): CharSequence? = intent.parseCharSequence
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDate(): KalugaDate = intent.parseDate()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [KalugaDate] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDateOrNull(): KalugaDate? = intent.parseDateOrNull()
 
 /**
@@ -140,12 +155,14 @@ fun Activity.parseDateOrNull(): KalugaDate? = intent.parseDateOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDateArray(): List<KalugaDate> = intent.parseDateArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [List] of [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [KalugaDate] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDateArrayOrNull(): List<KalugaDate>? = intent.parseDateArrayOrNull()
 
 /**
@@ -155,12 +172,14 @@ fun Activity.parseDateArrayOrNull(): List<KalugaDate>? = intent.parseDateArrayOr
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDouble(): Double = intent.parseDouble()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Double] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Double] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDoubleOrNull(): Double? = intent.parseDoubleOrNull()
 
 /**
@@ -170,12 +189,14 @@ fun Activity.parseDoubleOrNull(): Double? = intent.parseDoubleOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDoubleArray(): DoubleArray = intent.parseDoubleArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [DoubleArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [DoubleArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseDoubleArrayOrNull(): DoubleArray? = intent.parseDoubleArrayOrNull()
 
 /**
@@ -185,12 +206,14 @@ fun Activity.parseDoubleArrayOrNull(): DoubleArray? = intent.parseDoubleArrayOrN
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseFloat(): Float = intent.parseFloat()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Float] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Float] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseFloatOrNull(): Float? = intent.parseFloatOrNull()
 
 /**
@@ -200,12 +223,14 @@ fun Activity.parseFloatOrNull(): Float? = intent.parseFloatOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseFloatArray(): FloatArray = intent.parseFloatArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [FloatArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [FloatArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseFloatArrayOrNull(): FloatArray? = intent.parseFloatArrayOrNull()
 
 /**
@@ -215,12 +240,14 @@ fun Activity.parseFloatArrayOrNull(): FloatArray? = intent.parseFloatArrayOrNull
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseInt(): Int = intent.parseInt()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Int] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Int] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseIntOrNull(): Int? = intent.parseIntOrNull()
 
 /**
@@ -230,12 +257,14 @@ fun Activity.parseIntOrNull(): Int? = intent.parseIntOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseIntArray(): IntArray = intent.parseIntArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [IntArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [IntArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseIntArrayOrNull(): IntArray? = intent.parseIntArrayOrNull()
 
 /**
@@ -245,12 +274,14 @@ fun Activity.parseIntArrayOrNull(): IntArray? = intent.parseIntArrayOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseLong(): Long = intent.parseLong()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Long] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Long] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseLongOrNull(): Long? = intent.parseLongOrNull()
 
 /**
@@ -260,12 +291,14 @@ fun Activity.parseLongOrNull(): Long? = intent.parseLongOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseLongArray(): LongArray = intent.parseLongArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [LongArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [LongArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseLongArrayOrNull(): LongArray? = intent.parseLongArrayOrNull()
 
 /**
@@ -275,12 +308,14 @@ fun Activity.parseLongArrayOrNull(): LongArray? = intent.parseLongArrayOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseShort(): Short = intent.parseShort()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Short] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Short] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseShortOrNull(): Short? = intent.parseShortOrNull()
 
 /**
@@ -290,12 +325,14 @@ fun Activity.parseShortOrNull(): Short? = intent.parseShortOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseShortArray(): ShortArray = intent.parseShortArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [ShortArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ShortArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseShortArrayOrNull(): ShortArray? = intent.parseShortArrayOrNull()
 
 /**
@@ -305,12 +342,14 @@ fun Activity.parseShortArrayOrNull(): ShortArray? = intent.parseShortArrayOrNull
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseString(): String = intent.parseString()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [String] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseStringOrNull(): String? = intent.parseStringOrNull()
 
 /**
@@ -320,12 +359,14 @@ fun Activity.parseStringOrNull(): String? = intent.parseStringOrNull()
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseStringList(): List<String> = intent.parseStringList()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [List] of [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [String] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Activity.parseStringListOrNull(): List<String>? = intent.parseStringListOrNull()
 
 /**
@@ -336,6 +377,7 @@ fun Activity.parseStringListOrNull(): List<String>? = intent.parseStringListOrNu
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.SerializedType] with [serializer].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Activity.parseTypeOf(serializer: KSerializer<T>): T = intent.parseTypeOf(serializer)
 
 /**
@@ -343,6 +385,7 @@ fun <T> Activity.parseTypeOf(serializer: KSerializer<T>): T = intent.parseTypeOf
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T : Any> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = intent.parseTypeOfOrNull(serializer)
 
 /**
@@ -351,4 +394,5 @@ fun <T : Any> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = inten
  * @return The [T] stored in the bundle or null if no such value was found.
  */
 @JvmName("parseNullableTypeOfOrNull")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = intent.parseTypeOfOrNull(serializer)

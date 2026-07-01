@@ -25,11 +25,13 @@ import androidx.core.graphics.drawable.DrawableCompat
  * Class describing an image.
  * @property drawable the [Drawable] representing the image
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual data class KalugaImage(val drawable: Drawable)
 
 /**
  * Gets a [Drawable] of a [TintedImage] or `null` if the [TintedImage] cannot be made into a [Drawable]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val TintedImage.drawable: Drawable? get() = image.drawable.constantState?.newDrawable()?.mutate()?.let {
     DrawableCompat.wrap(it).apply {
         DrawableCompat.setTint(this, tint.currentColor)

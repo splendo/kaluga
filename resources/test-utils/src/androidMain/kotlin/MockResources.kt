@@ -23,6 +23,11 @@ import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.KalugaImage
 import org.mockito.Mockito
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun mockColor(): KalugaColor = KalugaColor.RGBColor(0)
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun mockImage(): KalugaImage = KalugaImage(ColorDrawable(0))
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun mockFont(): KalugaFont = KalugaFont.DEFAULT ?: Mockito.mock(KalugaFont::class.java)

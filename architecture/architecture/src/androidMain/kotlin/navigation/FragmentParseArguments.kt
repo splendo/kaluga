@@ -28,6 +28,7 @@ import kotlinx.serialization.KSerializer
  * @return The [T] value extracted from the [Bundle]
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Fragment.parseExtra(convert: Bundle.() -> T): T = arguments!!.convert()
 
 /**
@@ -35,6 +36,7 @@ fun <T> Fragment.parseExtra(convert: Bundle.() -> T): T = arguments!!.convert()
  * @param convert The method for converting [Bundle] into [T]
  * @return The [T] value extracted from the [Bundle] or `null` if [android.content.Intent.getExtras] is `null`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Fragment.parseExtraOrNull(convert: Bundle.() -> T?): T? = arguments?.convert()
 
 /**
@@ -44,12 +46,14 @@ fun <T> Fragment.parseExtraOrNull(convert: Bundle.() -> T?): T? = arguments?.con
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseBoolean(): Boolean = parseExtra { asBoolean() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Boolean] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Boolean] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseBooleanOrNull(): Boolean? = parseExtra { asBooleanOrNull() }
 
 /**
@@ -59,12 +63,14 @@ fun Fragment.parseBooleanOrNull(): Boolean? = parseExtra { asBooleanOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseBooleanArray(): BooleanArray = parseExtra { asBooleanArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [BooleanArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [BooleanArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseBooleanArrayOrNull(): BooleanArray? = parseExtra { asBooleanArrayOrNull() }
 
 /**
@@ -74,12 +80,14 @@ fun Fragment.parseBooleanArrayOrNull(): BooleanArray? = parseExtra { asBooleanAr
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseByte(): Byte = parseExtra { asByte() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Byte] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Byte] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseByteOrNull(): Byte? = parseExtra { asByteOrNull() }
 
 /**
@@ -89,12 +97,14 @@ fun Fragment.parseByteOrNull(): Byte? = parseExtra { asByteOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseByteArray(): ByteArray = parseExtra { asByteArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [ByteArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ByteArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseByteArrayOrNull(): ByteArray? = parseExtra { asByteArrayOrNull() }
 
 /**
@@ -104,12 +114,14 @@ fun Fragment.parseByteArrayOrNull(): ByteArray? = parseExtra { asByteArrayOrNull
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseChar(): Char = parseExtra { asChar() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Char] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Char] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseCharOrNull(): Char? = parseExtra { asCharOrNull() }
 
 /**
@@ -119,18 +131,21 @@ fun Fragment.parseCharOrNull(): Char? = parseExtra { asCharOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseCharArray(): CharArray = parseExtra { asCharArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [CharArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseCharArrayOrNull(): CharArray? = parseExtra { asCharArrayOrNull() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [CharSequence] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharSequenceType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharSequence] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseCharSequenceOrNull(): CharSequence? = parseExtra { asCharSequenceOrNull() }
 
 /**
@@ -140,12 +155,14 @@ fun Fragment.parseCharSequenceOrNull(): CharSequence? = parseExtra { asCharSeque
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDate(): KalugaDate = parseExtra { asDate() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [KalugaDate] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDateOrNull(): KalugaDate? = parseExtra { asDateOrNull() }
 
 /**
@@ -155,12 +172,14 @@ fun Fragment.parseDateOrNull(): KalugaDate? = parseExtra { asDateOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDateArray(): List<KalugaDate> = parseExtra { asDateArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [List] of [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [KalugaDate] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDateArrayOrNull(): List<KalugaDate>? = parseExtra { asDateArrayOrNull() }
 
 /**
@@ -170,12 +189,14 @@ fun Fragment.parseDateArrayOrNull(): List<KalugaDate>? = parseExtra { asDateArra
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDouble(): Double = parseExtra { asDouble() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Double] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Double] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDoubleOrNull(): Double? = parseExtra { asDoubleOrNull() }
 
 /**
@@ -185,12 +206,14 @@ fun Fragment.parseDoubleOrNull(): Double? = parseExtra { asDoubleOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDoubleArray(): DoubleArray = parseExtra { asDoubleArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [DoubleArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [DoubleArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseDoubleArrayOrNull(): DoubleArray? = parseExtra { asDoubleArrayOrNull() }
 
 /**
@@ -200,12 +223,14 @@ fun Fragment.parseDoubleArrayOrNull(): DoubleArray? = parseExtra { asDoubleArray
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseFloat(): Float = parseExtra { asFloat() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Float] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Float] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseFloatOrNull(): Float? = parseExtra { asFloatOrNull() }
 
 /**
@@ -215,12 +240,14 @@ fun Fragment.parseFloatOrNull(): Float? = parseExtra { asFloatOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseFloatArray(): FloatArray = parseExtra { asFloatArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [FloatArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [FloatArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseFloatArrayOrNull(): FloatArray? = parseExtra { asFloatArrayOrNull() }
 
 /**
@@ -230,12 +257,14 @@ fun Fragment.parseFloatArrayOrNull(): FloatArray? = parseExtra { asFloatArrayOrN
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseInt(): Int = parseExtra { asInt() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Int] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Int] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseIntOrNull(): Int? = parseExtra { asIntOrNull() }
 
 /**
@@ -245,12 +274,14 @@ fun Fragment.parseIntOrNull(): Int? = parseExtra { asIntOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseIntArray(): IntArray = parseExtra { asIntArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [IntArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [IntArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseIntArrayOrNull(): IntArray? = parseExtra { asIntArrayOrNull() }
 
 /**
@@ -260,12 +291,14 @@ fun Fragment.parseIntArrayOrNull(): IntArray? = parseExtra { asIntArrayOrNull() 
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseLong(): Long = parseExtra { asLong() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Long] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Long] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseLongOrNull(): Long? = parseExtra { asLongOrNull() }
 
 /**
@@ -275,12 +308,14 @@ fun Fragment.parseLongOrNull(): Long? = parseExtra { asLongOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseLongArray(): LongArray = parseExtra { asLongArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [LongArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [LongArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseLongArrayOrNull(): LongArray? = parseExtra { asLongArrayOrNull() }
 
 /**
@@ -290,12 +325,14 @@ fun Fragment.parseLongArrayOrNull(): LongArray? = parseExtra { asLongArrayOrNull
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseShort(): Short = parseExtra { asShort() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [Short] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Short] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseShortOrNull(): Short? = parseExtra { asShortOrNull() }
 
 /**
@@ -305,12 +342,14 @@ fun Fragment.parseShortOrNull(): Short? = parseExtra { asShortOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseShortArray(): ShortArray = parseExtra { asShortArray() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [ShortArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ShortArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseShortArrayOrNull(): ShortArray? = parseExtra { asShortArrayOrNull() }
 
 /**
@@ -320,12 +359,14 @@ fun Fragment.parseShortArrayOrNull(): ShortArray? = parseExtra { asShortArrayOrN
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseString(): String = parseExtra { asString() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [String] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseStringOrNull(): String? = parseExtra { asStringOrNull() }
 
 /**
@@ -335,12 +376,14 @@ fun Fragment.parseStringOrNull(): String? = parseExtra { asStringOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseStringList(): List<String> = parseExtra { asStringList() }
 
 /**
  * Parses the [Bundle] of [androidx.fragment.app.Fragment.getArguments] into [List] of [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [String] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Fragment.parseStringListOrNull(): List<String>? = parseExtra { asStringListOrNull() }
 
 /**
@@ -351,6 +394,7 @@ fun Fragment.parseStringListOrNull(): List<String>? = parseExtra { asStringListO
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.SerializedType] with [serializer].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Fragment.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
     toTypedProperty(
         NavigationBundleSpecType.SerializedType(serializer),
@@ -362,6 +406,7 @@ fun <T> Fragment.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T : Any> Fragment.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
         NavigationBundleSpecType.SerializedType(serializer),
@@ -374,6 +419,7 @@ fun <T : Any> Fragment.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parse
  * @return The [T] stored in the bundle or null if no such value was found.
  */
 @JvmName("parseNullableTypeOfOrNull")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Fragment.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
         NavigationBundleSpecType.SerializedType(serializer),

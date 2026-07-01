@@ -27,6 +27,7 @@ import kotlin.properties.ReadWriteProperty
  * Interface indicating an observable has a state of [T]
  * @param T the type of the state.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect interface WithState<T> {
 
     /**
@@ -49,6 +50,7 @@ expect interface WithState<T> {
 /**
  * A [WithState] where [stateFlow] is mutable
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface WithMutableState<T> : WithState<T> {
 
     /**
@@ -73,6 +75,7 @@ interface WithMutableState<T> : WithState<T> {
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface MutableDefaultInitialized<R : T?, T> :
     DefaultInitialized<R, T?>,
     WithMutableState<R>
@@ -82,6 +85,7 @@ interface MutableDefaultInitialized<R : T?, T> :
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface DefaultInitialized<R : T?, T> : Initialized<R, T?> {
     /**
      * The default [Value] of [R]. Can be used in case [Nothing] is [Initial.initialValue]
@@ -93,6 +97,7 @@ interface DefaultInitialized<R : T?, T> : Initialized<R, T?> {
  * An [Uninitialized] that implements [WithMutableState]
  * @param T the type of value to expect.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface MutableUninitialized<T> :
     Uninitialized<T>,
     WithMutableState<T?>
@@ -101,6 +106,7 @@ interface MutableUninitialized<T> :
  * An [Initial] that has [Nothing] as its [initialValue]
  * @param T the type of value to expect.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface Uninitialized<T> :
     Initial<T, T>,
     WithState<T?> {
@@ -112,6 +118,7 @@ interface Uninitialized<T> :
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface MutableInitialized<R : T, T> :
     Initialized<R, T>,
     WithMutableState<R>
@@ -121,6 +128,7 @@ interface MutableInitialized<R : T, T> :
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface Initialized<R : T, T> :
     Initial<R, T>,
     WithState<R> {
@@ -138,6 +146,7 @@ interface Initialized<R : T, T> :
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface Initial<R : T, T> {
     /**
      * The initial [ObservableOptional] value of [T].
@@ -159,6 +168,7 @@ interface Initial<R : T, T> {
  * A [Postable] that can be set in a suspended manner.
  * @param T the type of value that can be posted.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface SuspendableSetter<T> : Postable<T> {
     /**
      * Updates the value of this [Postable] in a suspended manner.
@@ -171,6 +181,7 @@ interface SuspendableSetter<T> : Postable<T> {
  * A Postable can handle values being posted to it.
  * @param T the type of value that can be posted.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface Postable<T> {
     /**
      * Updates the value of this [Postable]

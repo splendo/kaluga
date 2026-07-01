@@ -42,6 +42,7 @@ import com.splendo.kaluga.resources.view.bindLabel
  * Gets a [Text] that looks like the specification of a [KalugaLabel]
  * @param modifier the [Modifier] to be applied to this layout node
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun KalugaLabel.Composable(modifier: Modifier = Modifier) {
     when (this) {

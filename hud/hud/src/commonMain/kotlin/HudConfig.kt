@@ -18,6 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class HudConfig(
     /** Style of the HUD */
     val style: HUDStyle = HUDStyle.SYSTEM,

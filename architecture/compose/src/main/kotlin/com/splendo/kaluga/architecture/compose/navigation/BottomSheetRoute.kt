@@ -22,11 +22,13 @@ import androidx.compose.material3.BottomSheetScaffold
 /**
  * The specification for navigating from a [BottomSheetScaffold]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class BottomSheetComposableNavSpec
 
 /**
  * A [BottomSheetComposableNavSpec] for navigating using a [Route]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class BottomSheetRoute : BottomSheetComposableNavSpec() {
 
     /**
@@ -46,19 +48,23 @@ sealed class BottomSheetRoute : BottomSheetComposableNavSpec() {
  * A [BottomSheetComposableNavSpec] that executes a [ComposableNavSpec.LaunchedNavigation] when navigating.
  * @property launchedNavigation the [ComposableNavSpec.LaunchedNavigation] to launch when navigating.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class BottomSheetLaunchedNavigation(val launchedNavigation: ComposableNavSpec.LaunchedNavigation) : BottomSheetComposableNavSpec()
 
 /**
  * Converts a [Route] to a [BottomSheetRoute.SheetContent] route
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val Route.bottomSheetSheetContent get() = BottomSheetRoute.SheetContent(this)
 
 /**
  * Converts a [Route] to a [BottomSheetRoute.Content] route
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val Route.bottomSheetContent get() = BottomSheetRoute.Content(this)
 
 /**
  * Converts a [ComposableNavSpec.LaunchedNavigation] to a [BottomSheetLaunchedNavigation]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val ComposableNavSpec.LaunchedNavigation.bottomSheetComposable get() = BottomSheetLaunchedNavigation(this)

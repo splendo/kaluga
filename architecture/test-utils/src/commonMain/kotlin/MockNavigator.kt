@@ -24,11 +24,13 @@ import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockNavigationException(action: NavigationAction<*>) : NavigationException("Mock exception for $action")
 
 /**
  * Mock implementation of [Navigator]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class MockNavigator<A : NavigationAction<*>>(handleAction: (A) -> Unit = { }) : Navigator<A> {
 
     companion object {

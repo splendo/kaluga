@@ -41,6 +41,7 @@ import com.splendo.kaluga.resources.view.bindLabel
 import com.splendo.kaluga.resources.view.gravity
 import kotlin.math.max
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object Binding {
 
     /**

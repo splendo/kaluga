@@ -21,4 +21,5 @@ package com.splendo.kaluga.architecture.observable
  * A [Disposable] that has a [DisposeHandler]
  * @param onDispose Function to call when disposing the object.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose)

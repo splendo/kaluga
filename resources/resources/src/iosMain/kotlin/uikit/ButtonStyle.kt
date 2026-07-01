@@ -72,6 +72,7 @@ internal class UIControlClosure(private val action: () -> Unit) : NSObject() {
  * Makes a [UIButton] look and behave according to a [KalugaButton]
  * @param button the [KalugaButton] that specifies the look and behaviour of the [UIButton]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UIButton.bindButton(button: KalugaButton) {
     applyStyle(button.style)
     when (button) {
@@ -89,6 +90,7 @@ fun UIButton.bindButton(button: KalugaButton) {
  * Makes a [UIButton] look as specified by a [KalugaButtonStyle]
  * @param buttonStyle the [KalugaButtonStyle] that specifies the look of the [UIButton]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle<*>) {
     if (buttonStyle is KalugaButtonStyle.WithText) {
         applyTextStyle(buttonStyle)
@@ -149,6 +151,7 @@ fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle<*>) {
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UIButton.applyTextStyle(buttonStyle: KalugaButtonStyle.WithText<*>) {
     setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble()))
     setContentHorizontalAlignment(buttonStyle.textAlignment.contentHorizontalAlignment)
@@ -158,6 +161,7 @@ fun UIButton.applyTextStyle(buttonStyle: KalugaButtonStyle.WithText<*>) {
     setTitleColor(buttonStyle.disabledStyle.textColor.uiColor, UIControlStateDisabled)
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UIButton.applyImageStyle(buttonStyle: KalugaButtonStyle.WithImage<*>) {
     setImage(buttonStyle.defaultStyle.image.image(buttonStyle.imageSize), UIControlStateNormal)
     setImage(buttonStyle.pressedStyle.image.image(buttonStyle.imageSize), UIControlStateHighlighted)

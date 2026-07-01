@@ -30,6 +30,7 @@ import com.splendo.kaluga.resources.tinted
  * @see [KalugaButtonStyle.pressedStyle]
  * @see [KalugaButtonStyle.disabledStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed interface ButtonStateStyle {
 
     companion object {
@@ -174,6 +175,7 @@ sealed interface ButtonStateStyle {
 /**
  * DSL for creating a [ButtonStateStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed interface ButtonStateStyleDSL {
 
     private companion object {

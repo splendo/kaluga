@@ -30,6 +30,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * A [LifecycleSubscribable] that binds to a [Composable] View using [com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable].
  * This subscribable provides a [modifier] that modifies a [Composable] view builder to wrap it with functionality associated with the [ComposableLifecycleSubscribable].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface ComposableLifecycleSubscribable : LifecycleSubscribable {
 
     /**

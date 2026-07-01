@@ -31,6 +31,7 @@ import com.splendo.kaluga.lifecycle.test.lifecycleManagerObserver
  * which can automatically track which Activity is active for it.
  *
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun AppCompatActivity.alertPresenterBuilder(): AlertPresenter.Builder = getOrPutAndRemoveOnDestroyFromCache {
     AlertPresenter.Builder(lifecycleManagerObserver())
 }

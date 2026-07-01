@@ -27,6 +27,7 @@ import kotlinx.serialization.KSerializer
  * @return The [R] value stored in the bundle
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R = toNavigationBundle(SingleValueNavigationSpec(type)).get(type)
 
 /**
@@ -34,6 +35,7 @@ fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R = toNavigat
  * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType] either directly or wrapped in [NavigationBundleSpecType.OptionalType]
  * @return The [R] value stored in the bundle.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : Any> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = try {
     toTypedProperty(type)
 } catch (e: BundleConversionError) {
@@ -52,6 +54,7 @@ fun <R : Any> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R
  * @return The [R] value stored in the bundle.
  */
 @JvmName("toNullableTypedPropertyOrNull")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = try {
     toTypedProperty(type)
 } catch (e: BundleConversionError) {
@@ -64,12 +67,14 @@ fun <R> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = tr
  * @return The [Boolean] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asBoolean(): Boolean = toTypedProperty(NavigationBundleSpecType.BooleanType)
 
 /**
  * Converts a [Bundle] to a [Boolean] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Boolean] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asBooleanOrNull(): Boolean? = toTypedPropertyOrNull(NavigationBundleSpecType.BooleanType)
 
 /**
@@ -78,12 +83,14 @@ fun Bundle.asBooleanOrNull(): Boolean? = toTypedPropertyOrNull(NavigationBundleS
  * @return The [BooleanArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asBooleanArray(): BooleanArray = toTypedProperty(NavigationBundleSpecType.BooleanArrayType)
 
 /**
  * Converts a [Bundle] to a [BooleanArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [BooleanArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asBooleanArrayOrNull(): BooleanArray? = toTypedPropertyOrNull(NavigationBundleSpecType.BooleanArrayType)
 
 /**
@@ -92,12 +99,14 @@ fun Bundle.asBooleanArrayOrNull(): BooleanArray? = toTypedPropertyOrNull(Navigat
  * @return The [Byte] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asByte(): Byte = toTypedProperty(NavigationBundleSpecType.ByteType)
 
 /**
  * Converts a [Bundle] to a [Byte] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Byte] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asByteOrNull(): Byte? = toTypedPropertyOrNull(NavigationBundleSpecType.ByteType)
 
 /**
@@ -106,12 +115,14 @@ fun Bundle.asByteOrNull(): Byte? = toTypedPropertyOrNull(NavigationBundleSpecTyp
  * @return The [ByteArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asByteArray(): ByteArray = toTypedProperty(NavigationBundleSpecType.ByteArrayType)
 
 /**
  * Converts a [Bundle] to a [ByteArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ByteArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asByteArrayOrNull(): ByteArray? = toTypedPropertyOrNull(NavigationBundleSpecType.ByteArrayType)
 
 /**
@@ -120,12 +131,14 @@ fun Bundle.asByteArrayOrNull(): ByteArray? = toTypedPropertyOrNull(NavigationBun
  * @return The [Char] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asChar(): Char = toTypedProperty(NavigationBundleSpecType.CharType)
 
 /**
  * Converts a [Bundle] to a [Char] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Char] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asCharOrNull(): Char? = toTypedPropertyOrNull(NavigationBundleSpecType.CharType)
 
 /**
@@ -134,12 +147,14 @@ fun Bundle.asCharOrNull(): Char? = toTypedPropertyOrNull(NavigationBundleSpecTyp
  * @return The [CharArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asCharArray(): CharArray = toTypedProperty(NavigationBundleSpecType.CharArrayType)
 
 /**
  * Converts a [Bundle] to a [CharArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asCharArrayOrNull(): CharArray? = toTypedPropertyOrNull(NavigationBundleSpecType.CharArrayType)
 
 /**
@@ -148,12 +163,14 @@ fun Bundle.asCharArrayOrNull(): CharArray? = toTypedPropertyOrNull(NavigationBun
  * @return The [CharSequence] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharSequenceType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asCharSequence(): CharSequence = toTypedProperty(NavigationBundleSpecType.CharSequenceType)
 
 /**
  * Converts a [Bundle] to a [CharSequence] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharSequenceType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharSequence] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asCharSequenceOrNull(): CharSequence? = toTypedPropertyOrNull(NavigationBundleSpecType.CharSequenceType)
 
 /**
@@ -162,12 +179,14 @@ fun Bundle.asCharSequenceOrNull(): CharSequence? = toTypedPropertyOrNull(Navigat
  * @return The [KalugaDate] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDate(): KalugaDate = toTypedProperty(NavigationBundleSpecType.DateType)
 
 /**
  * Converts a [Bundle] to a [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [KalugaDate] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDateOrNull(): KalugaDate? = toTypedPropertyOrNull(NavigationBundleSpecType.DateType)
 
 /**
@@ -176,12 +195,14 @@ fun Bundle.asDateOrNull(): KalugaDate? = toTypedPropertyOrNull(NavigationBundleS
  * @return The [List] of [KalugaDate] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDateArray(): List<KalugaDate> = toTypedProperty(NavigationBundleSpecType.DateArrayType)
 
 /**
  * Converts a [Bundle] to a [List] of [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [KalugaDate] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDateArrayOrNull(): List<KalugaDate>? = toTypedPropertyOrNull(NavigationBundleSpecType.DateArrayType)
 
 /**
@@ -190,12 +211,14 @@ fun Bundle.asDateArrayOrNull(): List<KalugaDate>? = toTypedPropertyOrNull(Naviga
  * @return The [Double] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDouble(): Double = toTypedProperty(NavigationBundleSpecType.DoubleType)
 
 /**
  * Converts a [Bundle] to a [Double] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Double] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDoubleOrNull(): Double? = toTypedPropertyOrNull(NavigationBundleSpecType.DoubleType)
 
 /**
@@ -204,12 +227,14 @@ fun Bundle.asDoubleOrNull(): Double? = toTypedPropertyOrNull(NavigationBundleSpe
  * @return The [DoubleArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDoubleArray(): DoubleArray = toTypedProperty(NavigationBundleSpecType.DoubleArrayType)
 
 /**
  * Converts a [Bundle] to a [DoubleArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [DoubleArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asDoubleArrayOrNull(): DoubleArray? = toTypedPropertyOrNull(NavigationBundleSpecType.DoubleArrayType)
 
 /**
@@ -218,12 +243,14 @@ fun Bundle.asDoubleArrayOrNull(): DoubleArray? = toTypedPropertyOrNull(Navigatio
  * @return The [Float] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asFloat(): Float = toTypedProperty(NavigationBundleSpecType.FloatType)
 
 /**
  * Converts a [Bundle] to a [Float] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Float] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asFloatOrNull(): Float? = toTypedPropertyOrNull(NavigationBundleSpecType.FloatType)
 
 /**
@@ -232,12 +259,14 @@ fun Bundle.asFloatOrNull(): Float? = toTypedPropertyOrNull(NavigationBundleSpecT
  * @return The [FloatArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asFloatArray(): FloatArray = toTypedProperty(NavigationBundleSpecType.FloatArrayType)
 
 /**
  * Converts a [Bundle] to a [FloatArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [FloatArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asFloatArrayOrNull(): FloatArray? = toTypedPropertyOrNull(NavigationBundleSpecType.FloatArrayType)
 
 /**
@@ -246,12 +275,14 @@ fun Bundle.asFloatArrayOrNull(): FloatArray? = toTypedPropertyOrNull(NavigationB
  * @return The [Int] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asInt(): Int = toTypedProperty(NavigationBundleSpecType.IntegerType)
 
 /**
  * Converts a [Bundle] to an [Int] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Int] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asIntOrNull(): Int? = toTypedPropertyOrNull(NavigationBundleSpecType.IntegerType)
 
 /**
@@ -260,12 +291,14 @@ fun Bundle.asIntOrNull(): Int? = toTypedPropertyOrNull(NavigationBundleSpecType.
  * @return The [IntArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asIntArray(): IntArray = toTypedProperty(NavigationBundleSpecType.IntegerArrayType)
 
 /**
  * Converts a [Bundle] to an [IntArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [IntArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asIntArrayOrNull(): IntArray? = toTypedPropertyOrNull(NavigationBundleSpecType.IntegerArrayType)
 
 /**
@@ -274,12 +307,14 @@ fun Bundle.asIntArrayOrNull(): IntArray? = toTypedPropertyOrNull(NavigationBundl
  * @return The [Long] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asLong(): Long = toTypedProperty(NavigationBundleSpecType.LongType)
 
 /**
  * Converts a [Bundle] to a [Long] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Long] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asLongOrNull(): Long? = toTypedPropertyOrNull(NavigationBundleSpecType.LongType)
 
 /**
@@ -288,12 +323,14 @@ fun Bundle.asLongOrNull(): Long? = toTypedPropertyOrNull(NavigationBundleSpecTyp
  * @return The [LongArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asLongArray(): LongArray = toTypedProperty(NavigationBundleSpecType.LongArrayType)
 
 /**
  * Converts a [Bundle] to a [LongArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [LongArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asLongArrayOrNull(): LongArray? = toTypedPropertyOrNull(NavigationBundleSpecType.LongArrayType)
 
 /**
@@ -302,12 +339,14 @@ fun Bundle.asLongArrayOrNull(): LongArray? = toTypedPropertyOrNull(NavigationBun
  * @return The [Short] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asShort(): Short = toTypedProperty(NavigationBundleSpecType.ShortType)
 
 /**
  * Converts a [Bundle] to a [Short] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Short] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asShortOrNull(): Short? = toTypedPropertyOrNull(NavigationBundleSpecType.ShortType)
 
 /**
@@ -316,12 +355,14 @@ fun Bundle.asShortOrNull(): Short? = toTypedPropertyOrNull(NavigationBundleSpecT
  * @return The [ShortArray] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asShortArray(): ShortArray = toTypedProperty(NavigationBundleSpecType.ShortArrayType)
 
 /**
  * Converts a [Bundle] to a [ShortArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ShortArray] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asShortArrayOrNull(): ShortArray? = toTypedPropertyOrNull(NavigationBundleSpecType.ShortArrayType)
 
 /**
@@ -330,12 +371,14 @@ fun Bundle.asShortArrayOrNull(): ShortArray? = toTypedPropertyOrNull(NavigationB
  * @return The [String] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asString(): String = toTypedProperty(NavigationBundleSpecType.StringType)
 
 /**
  * Converts a [Bundle] to a [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [String] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asStringOrNull(): String? = toTypedPropertyOrNull(NavigationBundleSpecType.StringType)
 
 /**
@@ -344,12 +387,14 @@ fun Bundle.asStringOrNull(): String? = toTypedPropertyOrNull(NavigationBundleSpe
  * @return The [List] of [String] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringArrayType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asStringList(): List<String> = toTypedProperty(NavigationBundleSpecType.StringArrayType)
 
 /**
  * Converts a [Bundle] to a [List] of [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [String] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asStringListOrNull(): List<String>? = toTypedPropertyOrNull(NavigationBundleSpecType.StringArrayType)
 
 /**
@@ -360,6 +405,7 @@ fun Bundle.asStringListOrNull(): List<String>? = toTypedPropertyOrNull(Navigatio
  * @return The [T] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.SerializedType] with [serializer].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Bundle.asTypeOf(serializer: KSerializer<T>): T = toTypedProperty(NavigationBundleSpecType.SerializedType(serializer))
 
 /**
@@ -368,6 +414,7 @@ fun <T> Bundle.asTypeOf(serializer: KSerializer<T>): T = toTypedProperty(Navigat
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T : Any> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))
 
 /**
@@ -377,6 +424,7 @@ fun <T : Any> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPro
  * @return The [T] stored in the bundle or null if no such value was found.
  */
 @JvmName("asNullableTypeOfOrNull")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))
 
 /**
@@ -385,10 +433,12 @@ fun <T> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyO
  * @return The [String] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asUnit(): Unit = toTypedProperty(NavigationBundleSpecType.UnitType)
 
 /**
  * Converts a [Bundle] to a [Unit] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.UnitType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Unit] stored in the bundle or null if no such value was found.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Bundle.asUnitNull(): Unit? = toTypedPropertyOrNull(NavigationBundleSpecType.UnitType)

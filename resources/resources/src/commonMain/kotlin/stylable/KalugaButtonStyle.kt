@@ -32,6 +32,7 @@ import com.splendo.kaluga.resources.defaultBoldFont
  * @property pressedStyle the [StateStyle] that the button is in when pressed
  * @property disabledStyle the [StateStyle] that the button is in when disabled
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
     val padding: Padding
     val defaultStyle: StateStyle
@@ -336,6 +337,7 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
  * @property StateStyle the [ButtonStateStyle] associated with the [KalugaButtonStyle] to create
  * @property StateStyleDSL the [ButtonStateStyleDSL] for creating the [ButtonStateStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleDSL : ButtonStateStyleDSL> {
 
     /**

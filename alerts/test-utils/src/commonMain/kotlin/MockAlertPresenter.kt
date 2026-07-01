@@ -29,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param alert The [Alert] to display
  * @param setupMocks if `true` this automatically sets up mocks to handle displaying this [MockAlertPresenter]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockAlertPresenter(alert: Alert, logger: Logger, setupMocks: Boolean = true) : BaseAlertPresenter(alert, logger) {
 
     /**

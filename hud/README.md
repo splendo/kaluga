@@ -1,6 +1,6 @@
 # HUD
 
-> **⚠️ Deprecated:** This feature has been deprecated. We recommend using Compose Multiplatform instead.
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
 
 Display a loading-indicator HUD.
 

@@ -43,6 +43,7 @@ private fun <R : T, T> readOnlyPropertyObservableHelper(readOnlyProperty: ReadOn
  * @param readOnlyProperty The [ReadOnlyProperty] to track.
  * @param observation The [ObservationInitialized] to handle observation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ReadOnlyPropertyInitializedObservable<T>(
     readOnlyProperty: ReadOnlyProperty<Any?, T>,
     observation: ObservationInitialized<T> = ObservationInitialized(
@@ -71,6 +72,7 @@ class ReadOnlyPropertyInitializedObservable<T>(
  * @param readOnlyProperty The [ReadOnlyProperty] to track.
  * @param observation The [ObservationInitialized] to handle observation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ReadOnlyPropertyDefaultObservable<R : T?, T>(
     defaultValue: R,
     readOnlyProperty: ReadOnlyProperty<Any?, T>,
@@ -93,10 +95,12 @@ class ReadOnlyPropertyDefaultObservable<R : T?, T>(
 /**
  * Converts a [ReadOnlyProperty] into a [ReadOnlyPropertyInitializedObservable]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> ReadOnlyProperty<Any?, T>.toInitializedObservable() = ReadOnlyPropertyInitializedObservable(this)
 
 /**
  * Converts a [ReadOnlyProperty] into a [ReadOnlyPropertyDefaultObservable]
  * @param defaultValue The default value of [R] to observe if the [ReadOnlyProperty] has a value of `null`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T, T> ReadOnlyProperty<Any?, T?>.toDefaultObservable(defaultValue: R) = ReadOnlyPropertyDefaultObservable(defaultValue, this)

@@ -66,6 +66,7 @@ import com.splendo.kaluga.resources.view.KalugaLabel
  * This controls the size of the shadow below the button. Pass `null` here to disable elevation for this button.
  * See [ButtonDefaults.buttonElevation].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun KalugaButton.Composable(modifier: Modifier = Modifier, elevation: ButtonElevation = ButtonDefaults.buttonElevation()) {
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }

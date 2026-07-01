@@ -25,6 +25,7 @@ import kotlinx.serialization.json.Json
  * Value of a [NavigationBundleSpecRow] where [T] describes the type of the value.
  * @param T the type of the value.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class NavigationBundleValue<T> {
 
     /**
@@ -299,6 +300,7 @@ sealed class NavigationBundleValue<T> {
 /**
  * [Exception] to be thrown when [NavigationBundle.get] is called with a [NavigationBundleSpecRow] that does not match the [NavigationBundleSpec] of the bundle.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class NavigationBundleGetError : Exception()
 
 /**
@@ -307,6 +309,7 @@ class NavigationBundleGetError : Exception()
  * @property spec The [NavigationBundleSpec] describing the bundle.
  * @property values A map of the [NavigationBundleValue] for each [NavigationBundleSpecRow] in [spec].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>, val values: Map<R, NavigationBundleValue<*>>) {
 
     /**

@@ -29,11 +29,13 @@ import kotlin.math.min
  * @property alpha the alpha channel in a range between `0.0` and `1.0`
  */
 @Serializable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class HSLColor(val hue: Double, val saturation: Double, val lightness: Double, val alpha: Double = 1.0)
 
 /**
  * Gets the [HSLColor] equivalent to this [KalugaColor.RGBColor]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaColor.RGBColor.hsl: HSLColor get() {
     val max = max(red, max(green, blue))
     val min = min(red, min(green, blue))
@@ -64,6 +66,7 @@ val KalugaColor.RGBColor.hsl: HSLColor get() {
 /**
  * Gets the [KalugaColor.RGBColor] equivalent to this [HSLColor]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val HSLColor.color: KalugaColor.RGBColor get() {
     return if (saturation == 0.0) {
         colorFrom(lightness, lightness, lightness)
@@ -97,6 +100,7 @@ val HSLColor.color: KalugaColor.RGBColor get() {
  * Increases the lightness of a [KalugaColor.RGBColor] by this factor.
  * @param value the amount by which to increase the lightness. Should range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.RGBColor.lightenBy(value: Double): KalugaColor.RGBColor = hsl.let {
     return it.copy(lightness = ((1.0 - it.lightness) * value) + it.lightness).color
 }
@@ -106,6 +110,7 @@ fun KalugaColor.RGBColor.lightenBy(value: Double): KalugaColor.RGBColor = hsl.le
  * If this is a [KalugaColor.DarkLightColor] each component wll be lightened individually.
  * @param value the amount by which to increase the lightness. Should range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.lightenBy(value: Double) = when (this) {
     is KalugaColor.RGBColor -> lightenBy(value)
     is KalugaColor.DarkLightColor -> defaultColor.lightenBy(value) withDarkMode darkColor.lightenBy(value)
@@ -116,6 +121,7 @@ fun KalugaColor.lightenBy(value: Double) = when (this) {
  * Decreases the lightness of a [KalugaColor.RGBColor] by this factor.
  * @param value the amount by which to decrease the lightness. Should range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.RGBColor.darkenBy(value: Double): KalugaColor.RGBColor = hsl.let {
     return it.copy(lightness = (it.lightness - (it.lightness) * value)).color
 }
@@ -125,6 +131,7 @@ fun KalugaColor.RGBColor.darkenBy(value: Double): KalugaColor.RGBColor = hsl.let
  * If this is a [KalugaColor.DarkLightColor] each component wll be darkened individually.
  * @param value the amount by which to decrease the lightness. Should range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.darkenBy(value: Double) = when (this) {
     is KalugaColor.RGBColor -> darkenBy(value)
     is KalugaColor.DarkLightColor -> defaultColor.darkenBy(value) withDarkMode darkColor.darkenBy(value)

@@ -28,6 +28,7 @@ import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
  * @param viewModel [ViewModel] to manage
  * @param content content based on [viewModel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(viewModel: ViewModel, content: @Composable (ViewModel.() -> Unit)? = null) {
     LocalContext.current.activity?.let {
@@ -43,6 +44,7 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(viewModel: ViewMode
  * @param fragmentManager The [FragmentManager] to bind to all [ActivityLifecycleSubscribable] in [BaseLifecycleViewModel.activeLifecycleSubscribables].
  * @param content content based on [viewModel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun <ViewModel : BaseLifecycleViewModel> FragmentViewModelComposable(viewModel: ViewModel, fragmentManager: FragmentManager, content: @Composable (ViewModel.() -> Unit)? = null) =
     ViewModelComposable(LocalContext.current.activity, fragmentManager, viewModel, content)

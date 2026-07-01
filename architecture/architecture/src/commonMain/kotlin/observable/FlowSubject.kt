@@ -50,6 +50,7 @@ private class MutableFlowSubjectHelper<R : T, T, OO : ObservableOptional<R>>(
  * @param autoBind If `true` this will automatically call [bind].
  * @param observation The [ObservationInitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class StateFlowInitializedSubject<T>(
     val coroutineScope: CoroutineScope,
     val context: CoroutineContext = coroutineScope.coroutineContext,
@@ -93,6 +94,7 @@ open class StateFlowInitializedSubject<T>(
  * @param autoBind If `true` this will automatically call [bind].
  * @param observation The [ObservationDefault] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class StateFlowDefaultSubject<R : T?, T>(
     defaultValue: R,
     val coroutineScope: CoroutineScope,
@@ -134,6 +136,7 @@ open class StateFlowDefaultSubject<R : T?, T>(
  * @param autoBind If `true` this will automatically call [bind].
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class SharedFlowSubject<T>(
     coroutineScope: CoroutineScope,
     context: CoroutineContext = coroutineScope.coroutineContext,
@@ -170,6 +173,7 @@ open class SharedFlowSubject<T>(
  * @param autoBind If `true` this will automatically call [bind].
  * @param observation The [ObservationInitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class SharedFlowInitializedSubject<T>(
     initialValue: T,
     coroutineScope: CoroutineScope,
@@ -208,6 +212,7 @@ open class SharedFlowInitializedSubject<T>(
  * @param autoBind If `true` this will automatically call [bind].
  * @param observation The [ObservationInitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class SharedFlowDefaultSubject<R : T?, T>(
     defaultValue: R,
     initialValue: T? = defaultValue,
@@ -244,6 +249,7 @@ open class SharedFlowDefaultSubject<R : T?, T>(
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableSharedFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableSharedFlow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> MutableSharedFlow<T>.toUninitializedSubject(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) = SharedFlowSubject(
     coroutineScope,
     context,
@@ -255,6 +261,7 @@ fun <T> MutableSharedFlow<T>.toUninitializedSubject(coroutineScope: CoroutineSco
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableStateFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableStateFlow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> MutableStateFlow<T>.toInitializedSubject(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
     StateFlowInitializedSubject(coroutineScope, context, this)
 
@@ -264,6 +271,7 @@ fun <T> MutableStateFlow<T>.toInitializedSubject(coroutineScope: CoroutineScope,
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableSharedFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableSharedFlow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> MutableSharedFlow<T>.toInitializedSubject(initialValue: T, coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
     SharedFlowInitializedSubject(
         initialValue,
@@ -278,6 +286,7 @@ fun <T> MutableSharedFlow<T>.toInitializedSubject(initialValue: T, coroutineScop
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableStateFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableStateFlow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T, T> MutableStateFlow<T?>.toDefaultSubject(defaultValue: R, coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
     StateFlowDefaultSubject(defaultValue, coroutineScope, context, this)
 
@@ -288,6 +297,7 @@ fun <R : T, T> MutableStateFlow<T?>.toDefaultSubject(defaultValue: R, coroutineS
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableSharedFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableSharedFlow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T?, T> MutableSharedFlow<T?>.toDefaultSubject(
     defaultValue: R,
     initialValue: T? = defaultValue,

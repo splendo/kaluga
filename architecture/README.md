@@ -1,6 +1,6 @@
 # Architecture
 
-> **⚠️ Deprecated:** This feature has been deprecated. We recommend using Compose Multiplatform instead.
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
 
 A lifecycle-aware ViewModel solution with navigation and observables, enabling MVVM-based cross-platform app architecture.
 

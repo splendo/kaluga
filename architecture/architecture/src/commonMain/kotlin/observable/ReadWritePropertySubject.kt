@@ -61,6 +61,7 @@ private class ReadWritePropertyObservableHelper<R : T, T>(readWriteProperty: Rea
  * @property context The [CoroutineContext] in which to emit changes to the [ReadWriteProperty]
  * @param observation The [ObservationInitialized] to handle observation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ReadWritePropertyInitializedSubject<T>(
     readWriteProperty: ReadWriteProperty<Any?, T>,
     initialValue: Value<T> = Value(
@@ -94,6 +95,7 @@ class ReadWritePropertyInitializedSubject<T>(
  * @param context The [CoroutineContext] in which to emit changes to the [ReadWriteProperty]
  * @param observation The [ObservationInitialized] to handle observation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ReadWritePropertyDefaultSubject<R : T?, T>(
     defaultValue: R,
     readWriteProperty: ReadWriteProperty<Any?, T?>,
@@ -122,6 +124,7 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
  * @param coroutineScope The [CoroutineScope] on which to emit changes to the [ReadWriteProperty]
  * @param context The [CoroutineContext] in which to emit changes to the [ReadWriteProperty]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(coroutineScope: CoroutineScope? = null, context: CoroutineContext? = coroutineScope?.coroutineContext) =
     ReadWritePropertyInitializedSubject(this, context = context, coroutineScope = coroutineScope)
 
@@ -131,6 +134,7 @@ fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(coroutineScope: Coroutin
  * @param coroutineScope The [CoroutineScope] on which to emit changes to the [ReadWriteProperty]
  * @param context The [CoroutineContext] in which to emit changes to the [ReadWriteProperty]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T, T> ReadWriteProperty<Any?, T?>.toDefaultSubject(
     defaultValue: R,
     coroutineScope: CoroutineScope? = null,

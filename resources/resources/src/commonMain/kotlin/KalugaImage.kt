@@ -20,6 +20,7 @@ package com.splendo.kaluga.resources
 /**
  * Class describing an image.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class KalugaImage
 
 /**
@@ -27,6 +28,7 @@ expect class KalugaImage
  * @property image the [KalugaImage] to tint
  * @property tint the [KalugaColor] to tint the image with
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class TintedImage(val image: KalugaImage, val tint: KalugaColor)
 
 /**
@@ -34,4 +36,5 @@ data class TintedImage(val image: KalugaImage, val tint: KalugaColor)
  * @param color The [KalugaColor] to use for tinting.
  * @return The [TintedImage]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaImage.tinted(color: KalugaColor) = TintedImage(this, color)

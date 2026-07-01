@@ -24,6 +24,7 @@ import androidx.annotation.ColorInt
 /**
  * Class describing a color
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual sealed class KalugaColor {
 
     /**
@@ -66,41 +67,49 @@ actual sealed class KalugaColor {
 /**
  * Gets the red value of the color in a range between `0.0` and `1.0`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.red: Double get() = redInt.toDouble() / 255.0
 
 /**
  * Gets the red value of the color in a range between `0` and `255`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.redInt: Int get() = android.graphics.Color.red(currentColor)
 
 /**
  * Gets the green value of the color in a range between `0.0` and `1.0`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.green: Double get() = greenInt.toDouble() / 255.0
 
 /**
  * Gets the green value of the color in a range between `0` and `255`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.greenInt: Int get() = android.graphics.Color.green(currentColor)
 
 /**
  * Gets the blue value of the color in a range between `0.0` and `1.0`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.blue: Double get() = blueInt.toDouble() / 255.0
 
 /**
  * Gets the blue value of the color in a range between `0` and `255`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.blueInt: Int get() = android.graphics.Color.blue(currentColor)
 
 /**
  * Gets the alpha value of the color in a range between `0.0` and `1.0`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.alpha: Double get() = alphaInt.toDouble() / 255.0
 
 /**
  * Gets the alpha value of the color in a range between `0` and `255`.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val KalugaColor.RGBColor.alphaInt: Int get() = android.graphics.Color.alpha(currentColor)
 
 /**
@@ -111,6 +120,7 @@ actual val KalugaColor.RGBColor.alphaInt: Int get() = android.graphics.Color.alp
  * @param alpha The alpha color value ranging between `0.0` and `1.0`. Defaults to `1.0`
  * @return The [KalugaColor.RGBColor] with the corresponding red, green, blue, and alpha values
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor.RGBColor =
     KalugaColor.RGBColor(android.graphics.Color.argb((alpha * 255.0).toInt(), (red * 255.0).toInt(), (green * 255.0).toInt(), (blue * 255.0).toInt()))
 
@@ -122,6 +132,7 @@ actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): K
  * @param alphaInt The alpha color value ranging between `0` and `255`. Defaults to `255`
  * @return The [KalugaColor.RGBColor] with the corresponding red, green, blue, and alpha values
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): KalugaColor.RGBColor =
     KalugaColor.RGBColor(android.graphics.Color.argb(alphaInt, redInt, greenInt, blueInt))
 
@@ -132,4 +143,5 @@ actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): K
  * @param darkModeColor the [KalugaColor.RGBColor] to use when [isInDarkMode]
  * @return a [KalugaColor.DarkLightColor] that supports a custom color in dark mode.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual infix fun KalugaColor.RGBColor.withDarkMode(darkModeColor: KalugaColor.RGBColor): KalugaColor.DarkLightColor = KalugaColor.DarkLightColor(this, darkModeColor)

@@ -23,6 +23,11 @@ import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.defaultFont
 import platform.UIKit.UIColor
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun mockColor(): KalugaColor = KalugaColor.RGBColor(UIColor.blackColor())
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun mockImage(): KalugaImage = KalugaImage()
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun mockFont(): KalugaFont = defaultFont

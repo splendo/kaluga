@@ -1,6 +1,6 @@
 # Alerts
 
-> **⚠️ Deprecated:** This feature has been deprecated. We recommend using Compose Multiplatform instead.
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
 
 Show native alert dialogs (AlertDialog on Android, UIAlertController on iOS) with customizable actions and styles.
 

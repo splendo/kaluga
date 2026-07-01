@@ -31,6 +31,7 @@ import kotlin.properties.ReadOnlyProperty
  * Interface indicating an observable has a state of [T]
  * @param T the type of the state.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual interface WithState<T> {
 
     /**
@@ -62,6 +63,7 @@ actual interface WithState<T> {
  * @param filter A filtering function to filter out certain values.
  * @param onNext Action to execute when a new value is observed.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> WithState<T>.observeOnLifecycle(lifecycleOwner: LifecycleOwner, filter: suspend (T) -> Boolean = { true }, onNext: (T) -> Unit) =
     observeOnLifecycle(lifecycleOwner, filter = filter, transform = { it }, onNext = onNext)
 
@@ -71,6 +73,7 @@ fun <T> WithState<T>.observeOnLifecycle(lifecycleOwner: LifecycleOwner, filter: 
  * @param filter A filtering function to filter out certain values.
  * @param onNext Action to execute when a new non-null value is observed.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> WithState<T?>.observeNotNullOnLifecycle(lifecycleOwner: LifecycleOwner, filter: suspend (T) -> Boolean = { true }, onNext: (T) -> Unit) = observeOnLifecycle(
     lifecycleOwner,
     filter = { value -> value?.let { filter(it) } ?: false },
@@ -85,6 +88,7 @@ fun <T> WithState<T?>.observeNotNullOnLifecycle(lifecycleOwner: LifecycleOwner, 
  * @param transform Transforms the next value into a different value of type [R].
  * @param onNext Action to execute when a new value is observed.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T, R> WithState<T>.observeOnLifecycle(lifecycleOwner: LifecycleOwner, filter: suspend (T) -> Boolean = { true }, transform: suspend (T) -> R, onNext: (R) -> Unit) =
     lifecycleOwner.lifecycleScope.launch {
         stateFlow.filter { filter(it) }.map { transform(it) }.collect {

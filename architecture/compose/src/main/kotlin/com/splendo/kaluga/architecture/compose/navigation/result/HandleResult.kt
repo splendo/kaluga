@@ -90,6 +90,7 @@ import kotlinx.serialization.KSerializer
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <Row : NavigationBundleSpecRow<*>> NavHostController.HandleResult(spec: NavigationBundleSpec<Row>, retain: Boolean = false, onResult: NavigationBundle<Row>.() -> Unit) =
     HandleResult(retain) { toNavigationBundle(spec).onResult() }
 
@@ -103,6 +104,7 @@ fun <Row : NavigationBundleSpecRow<*>> NavHostController.HandleResult(spec: Navi
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> NavHostController.HandleResult(type: NavigationBundleSpecType<T>, retain: Boolean = false, onResult: T.() -> Unit) =
     HandleResult(retain) { toTypedProperty(type).onResult() }
 
@@ -115,6 +117,7 @@ fun <T> NavHostController.HandleResult(type: NavigationBundleSpecType<T>, retain
  * @param onResult Method for handling the received result
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T : Any> NavHostController.HandleResultOrNull(type: NavigationBundleSpecType<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
     HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
 
@@ -128,6 +131,7 @@ fun <T : Any> NavHostController.HandleResultOrNull(type: NavigationBundleSpecTyp
  */
 @Composable
 @JvmName("HandleNullableResultOrNull")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> NavHostController.HandleResultOrNull(type: NavigationBundleSpecType<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
     HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
 
@@ -139,6 +143,7 @@ fun <T> NavHostController.HandleResultOrNull(type: NavigationBundleSpecType<T>, 
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleBooleanResult(retain: Boolean = false, onResult: Boolean.() -> Unit) = HandleResult(retain) { asBoolean().onResult() }
 
 /**
@@ -148,6 +153,7 @@ fun NavHostController.HandleBooleanResult(retain: Boolean = false, onResult: Boo
  * @param onResult Method for handling the received Boolean
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleBooleanOrNullResult(retain: Boolean = false, onResult: Boolean?.() -> Unit) = HandleResult(retain) { asBooleanOrNull().onResult() }
 
 /**
@@ -158,6 +164,7 @@ fun NavHostController.HandleBooleanOrNullResult(retain: Boolean = false, onResul
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleBooleanArrayResult(retain: Boolean = false, onResult: BooleanArray.() -> Unit) = HandleResult(retain) { asBooleanArray().onResult() }
 
 /**
@@ -167,6 +174,7 @@ fun NavHostController.HandleBooleanArrayResult(retain: Boolean = false, onResult
  * @param onResult Method for handling the received Boolean
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleBooleanArrayOrNullResult(retain: Boolean = false, onResult: BooleanArray?.() -> Unit) = HandleResult(retain) { asBooleanArrayOrNull().onResult() }
 
 /**
@@ -177,6 +185,7 @@ fun NavHostController.HandleBooleanArrayOrNullResult(retain: Boolean = false, on
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleByteResult(retain: Boolean = false, onResult: Byte.() -> Unit) = HandleResult(retain) { asByte().onResult() }
 
 /**
@@ -186,6 +195,7 @@ fun NavHostController.HandleByteResult(retain: Boolean = false, onResult: Byte.(
  * @param onResult Method for handling the received Byte
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleByteOrNullResult(retain: Boolean = false, onResult: Byte?.() -> Unit) = HandleResult(retain) { asByteOrNull().onResult() }
 
 /**
@@ -196,6 +206,7 @@ fun NavHostController.HandleByteOrNullResult(retain: Boolean = false, onResult: 
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleByteArrayResult(retain: Boolean = false, onResult: ByteArray.() -> Unit) = HandleResult(retain) { asByteArray().onResult() }
 
 /**
@@ -205,6 +216,7 @@ fun NavHostController.HandleByteArrayResult(retain: Boolean = false, onResult: B
  * @param onResult Method for handling the received [ByteArray] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleByteArrayOrNullResult(retain: Boolean = false, onResult: ByteArray?.() -> Unit) = HandleResult(retain) { asByteArrayOrNull().onResult() }
 
 /**
@@ -215,6 +227,7 @@ fun NavHostController.HandleByteArrayOrNullResult(retain: Boolean = false, onRes
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleCharResult(retain: Boolean = false, onResult: Char.() -> Unit) = HandleResult(retain) { asChar().onResult() }
 
 /**
@@ -224,6 +237,7 @@ fun NavHostController.HandleCharResult(retain: Boolean = false, onResult: Char.(
  * @param onResult Method for handling the received Char or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleCharOrNullResult(retain: Boolean = false, onResult: Char?.() -> Unit) = HandleResult(retain) { asCharOrNull().onResult() }
 
 /**
@@ -234,6 +248,7 @@ fun NavHostController.HandleCharOrNullResult(retain: Boolean = false, onResult: 
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleCharArrayResult(retain: Boolean = false, onResult: CharArray.() -> Unit) = HandleResult(retain) { asCharArray().onResult() }
 
 /**
@@ -243,6 +258,7 @@ fun NavHostController.HandleCharArrayResult(retain: Boolean = false, onResult: C
  * @param onResult Method for handling the received [CharArray] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleCharArrayOrNullResult(retain: Boolean = false, onResult: CharArray?.() -> Unit) = HandleResult(retain) { asCharArrayOrNull().onResult() }
 
 /**
@@ -253,6 +269,7 @@ fun NavHostController.HandleCharArrayOrNullResult(retain: Boolean = false, onRes
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharSequenceType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleCharSequenceResult(retain: Boolean = false, onResult: CharSequence.() -> Unit) = HandleResult(retain) { asCharSequence().onResult() }
 
 /**
@@ -262,6 +279,7 @@ fun NavHostController.HandleCharSequenceResult(retain: Boolean = false, onResult
  * @param onResult Method for handling the received [CharSequence] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleCharSequenceOrNullResult(retain: Boolean = false, onResult: CharSequence?.() -> Unit) = HandleResult(retain) { asCharSequenceOrNull().onResult() }
 
 /**
@@ -272,6 +290,7 @@ fun NavHostController.HandleCharSequenceOrNullResult(retain: Boolean = false, on
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDateResult(retain: Boolean = false, onResult: KalugaDate.() -> Unit) = HandleResult(retain) { asDate().onResult() }
 
 /**
@@ -281,6 +300,7 @@ fun NavHostController.HandleDateResult(retain: Boolean = false, onResult: Kaluga
  * @param onResult Method for handling the received [KalugaDate] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDateOrNullResult(retain: Boolean = false, onResult: KalugaDate?.() -> Unit) = HandleResult(retain) { asDateOrNull().onResult() }
 
 /**
@@ -291,6 +311,7 @@ fun NavHostController.HandleDateOrNullResult(retain: Boolean = false, onResult: 
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDateArrayResult(retain: Boolean = false, onResult: List<KalugaDate>.() -> Unit) = HandleResult(retain) { asDateArray().onResult() }
 
 /**
@@ -300,6 +321,7 @@ fun NavHostController.HandleDateArrayResult(retain: Boolean = false, onResult: L
  * @param onResult Method for handling the received list of [KalugaDate] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDateArrayOrNullResult(retain: Boolean = false, onResult: List<KalugaDate>?.() -> Unit) = HandleResult(retain) { asDateArrayOrNull().onResult() }
 
 /**
@@ -310,6 +332,7 @@ fun NavHostController.HandleDateArrayOrNullResult(retain: Boolean = false, onRes
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDoubleResult(retain: Boolean = false, onResult: Double.() -> Unit) = HandleResult(retain) { asDouble().onResult() }
 
 /**
@@ -319,6 +342,7 @@ fun NavHostController.HandleDoubleResult(retain: Boolean = false, onResult: Doub
  * @param onResult Method for handling the received Double or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDoubleOrNullResult(retain: Boolean = false, onResult: Double?.() -> Unit) = HandleResult(retain) { asDoubleOrNull().onResult() }
 
 /**
@@ -329,6 +353,7 @@ fun NavHostController.HandleDoubleOrNullResult(retain: Boolean = false, onResult
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDoubleArrayResult(retain: Boolean = false, onResult: DoubleArray.() -> Unit) = HandleResult(retain) { asDoubleArray().onResult() }
 
 /**
@@ -338,6 +363,7 @@ fun NavHostController.HandleDoubleArrayResult(retain: Boolean = false, onResult:
  * @param onResult Method for handling the received [DoubleArray] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleDoubleArrayOrNullResult(retain: Boolean = false, onResult: DoubleArray?.() -> Unit) = HandleResult(retain) { asDoubleArrayOrNull().onResult() }
 
 /**
@@ -348,6 +374,7 @@ fun NavHostController.HandleDoubleArrayOrNullResult(retain: Boolean = false, onR
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleFloatResult(retain: Boolean = false, onResult: Float.() -> Unit) = HandleResult(retain) { asFloat().onResult() }
 
 /**
@@ -357,6 +384,7 @@ fun NavHostController.HandleFloatResult(retain: Boolean = false, onResult: Float
  * @param onResult Method for handling the received Float or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleFloatOrNullResult(retain: Boolean = false, onResult: Float?.() -> Unit) = HandleResult(retain) { asFloatOrNull().onResult() }
 
 /**
@@ -367,6 +395,7 @@ fun NavHostController.HandleFloatOrNullResult(retain: Boolean = false, onResult:
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleFloatArrayResult(retain: Boolean = false, onResult: FloatArray.() -> Unit) = HandleResult(retain) { asFloatArray().onResult() }
 
 /**
@@ -376,6 +405,7 @@ fun NavHostController.HandleFloatArrayResult(retain: Boolean = false, onResult: 
  * @param onResult Method for handling the received [FloatArray] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleFloatArrayOrNullResult(retain: Boolean = false, onResult: FloatArray?.() -> Unit) = HandleResult(retain) { asFloatArrayOrNull().onResult() }
 
 /**
@@ -386,6 +416,7 @@ fun NavHostController.HandleFloatArrayOrNullResult(retain: Boolean = false, onRe
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleIntResult(retain: Boolean = false, onResult: Int.() -> Unit) = HandleResult(retain) { asInt().onResult() }
 
 /**
@@ -395,6 +426,7 @@ fun NavHostController.HandleIntResult(retain: Boolean = false, onResult: Int.() 
  * @param onResult Method for handling the received Int or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleIntOrNullResult(retain: Boolean = false, onResult: Int?.() -> Unit) = HandleResult(retain) { asIntOrNull().onResult() }
 
 /**
@@ -405,6 +437,7 @@ fun NavHostController.HandleIntOrNullResult(retain: Boolean = false, onResult: I
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleIntArrayResult(retain: Boolean = false, onResult: IntArray.() -> Unit) = HandleResult(retain) { asIntArray().onResult() }
 
 /**
@@ -414,6 +447,7 @@ fun NavHostController.HandleIntArrayResult(retain: Boolean = false, onResult: In
  * @param onResult Method for handling the received [IntArray] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleIntArrayOrNullResult(retain: Boolean = false, onResult: IntArray?.() -> Unit) = HandleResult(retain) { asIntArrayOrNull().onResult() }
 
 /**
@@ -424,6 +458,7 @@ fun NavHostController.HandleIntArrayOrNullResult(retain: Boolean = false, onResu
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleLongResult(retain: Boolean = false, onResult: Long.() -> Unit) = HandleResult(retain) { asLong().onResult() }
 
 /**
@@ -433,6 +468,7 @@ fun NavHostController.HandleLongResult(retain: Boolean = false, onResult: Long.(
  * @param onResult Method for handling the received Long or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleLongOrNullResult(retain: Boolean = false, onResult: Long?.() -> Unit) = HandleResult(retain) { asLongOrNull().onResult() }
 
 /**
@@ -443,6 +479,7 @@ fun NavHostController.HandleLongOrNullResult(retain: Boolean = false, onResult: 
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleLongArrayResult(retain: Boolean = false, onResult: LongArray.() -> Unit) = HandleResult(retain) { asLongArray().onResult() }
 
 /**
@@ -452,6 +489,7 @@ fun NavHostController.HandleLongArrayResult(retain: Boolean = false, onResult: L
  * @param onResult Method for handling the received [LongArray] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleLongArrayOrNullResult(retain: Boolean = false, onResult: LongArray?.() -> Unit) = HandleResult(retain) { asLongArrayOrNull().onResult() }
 
 /**
@@ -462,6 +500,7 @@ fun NavHostController.HandleLongArrayOrNullResult(retain: Boolean = false, onRes
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleShortResult(retain: Boolean = false, onResult: Short.() -> Unit) = HandleResult(retain) { asShort().onResult() }
 
 /**
@@ -471,6 +510,7 @@ fun NavHostController.HandleShortResult(retain: Boolean = false, onResult: Short
  * @param onResult Method for handling the received Short or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleShortOrNullResult(retain: Boolean = false, onResult: Short?.() -> Unit) = HandleResult(retain) { asShortOrNull().onResult() }
 
 /**
@@ -481,6 +521,7 @@ fun NavHostController.HandleShortOrNullResult(retain: Boolean = false, onResult:
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleShortArrayResult(retain: Boolean = false, onResult: ShortArray.() -> Unit) = HandleResult(retain) { asShortArray().onResult() }
 
 /**
@@ -490,6 +531,7 @@ fun NavHostController.HandleShortArrayResult(retain: Boolean = false, onResult: 
  * @param onResult Method for handling the received [ShortArray] or`null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleShortArrayOrNullResult(retain: Boolean = false, onResult: ShortArray?.() -> Unit) = HandleResult(retain) { asShortArrayOrNull().onResult() }
 
 /**
@@ -500,6 +542,7 @@ fun NavHostController.HandleShortArrayOrNullResult(retain: Boolean = false, onRe
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleStringResult(retain: Boolean = false, onResult: String.() -> Unit) = HandleResult(retain) { asString().onResult() }
 
 /**
@@ -509,6 +552,7 @@ fun NavHostController.HandleStringResult(retain: Boolean = false, onResult: Stri
  * @param onResult Method for handling the received String or `null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleStringOrNullResult(retain: Boolean = false, onResult: String?.() -> Unit) = HandleResult(retain) { asStringOrNull().onResult() }
 
 /**
@@ -519,6 +563,7 @@ fun NavHostController.HandleStringOrNullResult(retain: Boolean = false, onResult
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringArrayType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleStringListResult(retain: Boolean = false, onResult: List<String>.() -> Unit) = HandleResult(retain) { asStringList().onResult() }
 
 /**
@@ -528,6 +573,7 @@ fun NavHostController.HandleStringListResult(retain: Boolean = false, onResult: 
  * @param onResult Method for handling the received list of [String] or `null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleStringListOrNullResult(retain: Boolean = false, onResult: List<String>?.() -> Unit) = HandleResult(retain) { asStringListOrNull().onResult() }
 
 /**
@@ -540,6 +586,7 @@ fun NavHostController.HandleStringListOrNullResult(retain: Boolean = false, onRe
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.SerializedType] with [serializer].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> NavHostController.HandleResultOfType(serializer: KSerializer<T>, retain: Boolean = false, onResult: T.() -> Unit) = HandleResult(retain) { asTypeOf(serializer).onResult() }
 
 /**
@@ -551,6 +598,7 @@ fun <T> NavHostController.HandleResultOfType(serializer: KSerializer<T>, retain:
  * @param onResult Method for handling the received [T] or `null`
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T : Any> NavHostController.HandleResultOfTypeOrNull(serializer: KSerializer<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
     HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
 
@@ -564,6 +612,7 @@ fun <T : Any> NavHostController.HandleResultOfTypeOrNull(serializer: KSerializer
  */
 @Composable
 @JvmName("HandleResultOfNullableTypeOrNull")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> NavHostController.HandleResultOfTypeOrNull(serializer: KSerializer<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
     HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
 
@@ -575,6 +624,7 @@ fun <T> NavHostController.HandleResultOfTypeOrNull(serializer: KSerializer<T>, r
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType].
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleUnitResult(retain: Boolean = false, onResult: () -> Unit) = HandleResult(retain) {
     asUnit()
     onResult()
@@ -587,6 +637,7 @@ fun NavHostController.HandleUnitResult(retain: Boolean = false, onResult: () -> 
  * @param onResult Method for handling the result
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavHostController.HandleUnitOrNullResult(retain: Boolean = false, onResult: () -> Unit) = HandleResult(retain) {
     asUnitNull()
     onResult()

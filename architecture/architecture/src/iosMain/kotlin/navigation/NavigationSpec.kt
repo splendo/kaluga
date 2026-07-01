@@ -72,6 +72,7 @@ import platform.darwin.NSObject
 /**
  * Spec used by [Navigator] to determine how to perform Navigation
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class NavigationSpec {
 
     /**

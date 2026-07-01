@@ -34,6 +34,7 @@ import com.splendo.kaluga.resources.stylable.GradientStyle
 /**
  * Gets a [Brush] from a [GradientStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun GradientStyle.brush(): Brush = when (this) {
     is GradientStyle.Linear -> Brush.linearGradient(

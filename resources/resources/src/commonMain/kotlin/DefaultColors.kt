@@ -19,6 +19,7 @@ package com.splendo.kaluga.resources
 /**
  * All HTML supported colors https://htmlcolorcodes.com/color-names/
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object DefaultColors {
     val aliceBlue = colorFrom(240, 248, 255)
     val antiqueWhite = colorFrom(250, 235, 215)

@@ -46,12 +46,14 @@ import platform.UIKit.UIView
  * Sets a [KalugaBackgroundStyle] to a [UIView.layer]
  * @param style the [KalugaBackgroundStyle] to apply
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UIView.applyBackgroundStyle(style: KalugaBackgroundStyle) = layer.applyBackgroundStyle(style, bounds)
 
 /**
  * Sets a [KalugaBackgroundStyle] to a [CALayer]
  * @param style the [KalugaBackgroundStyle] to apply
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun CALayer.applyBackgroundStyle(style: KalugaBackgroundStyle, bounds: CValue<CGRect>) = apply {
     val maskPath = pathForShape(style.shape, bounds)
     mask = CAShapeLayer(this).apply {

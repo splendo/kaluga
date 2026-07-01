@@ -30,6 +30,7 @@ import kotlin.coroutines.CoroutineContext
  * @param flow The [Flow] to observe
  * @param observation The [ObservationUninitialized] to observe the Flow
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class FlowObservable<T>(
     val coroutineScope: CoroutineScope,
     context: CoroutineContext = coroutineScope.coroutineContext,
@@ -50,6 +51,7 @@ class FlowObservable<T>(
  * @param flow The [Flow] to observe
  * @param observation The [ObservationInitialized] to observe the Flow
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class FlowInitializedObservable<T>(
     initialValue: T,
     val coroutineScope: CoroutineScope,
@@ -73,6 +75,7 @@ class FlowInitializedObservable<T>(
  * @param flow The [Flow] to observe
  * @param observation The [ObservationUninitialized] to observe the Flow
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class DefaultFlowObservable<R : T?, T>(
     defaultValue: R,
     initialValue: T? = defaultValue,
@@ -94,6 +97,7 @@ class DefaultFlowObservable<R : T?, T>(
  * @param coroutineScope The [CoroutineScope] on which to observe the [Flow]
  * @param context The [CoroutineContext] in which to observe the [Flow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Flow<T>.toUninitializedObservable(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
     FlowObservable(coroutineScope, context, this)
 
@@ -102,6 +106,7 @@ fun <T> Flow<T>.toUninitializedObservable(coroutineScope: CoroutineScope, contex
  * @param coroutineScope The [CoroutineScope] on which to observe the [Flow]
  * @param context The [CoroutineContext] in which to observe the [Flow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> MutableStateFlow<T>.toInitializedObservable(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
     FlowInitializedObservable(this.value, coroutineScope, context, this)
 
@@ -111,6 +116,7 @@ fun <T> MutableStateFlow<T>.toInitializedObservable(coroutineScope: CoroutineSco
  * @param coroutineScope The [CoroutineScope] on which to observe the [Flow]
  * @param context The [CoroutineContext] in which to observe the [Flow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> Flow<T>.toInitializedObservable(initialValue: T, coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
     FlowInitializedObservable(initialValue, coroutineScope, context, this)
 
@@ -121,6 +127,7 @@ fun <T> Flow<T>.toInitializedObservable(initialValue: T, coroutineScope: Corouti
  * @param coroutineScope The [CoroutineScope] on which to observe the [Flow]
  * @param context The [CoroutineContext] in which to observe the [Flow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T, T> Flow<T?>.toDefaultObservable(
     defaultValue: R,
     initialValue: T? = defaultValue,

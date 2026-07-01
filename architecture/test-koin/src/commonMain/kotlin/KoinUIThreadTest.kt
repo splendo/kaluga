@@ -26,6 +26,7 @@ import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : BaseKoinUIThreadTest<Unit, TC>() {
 
     open class KoinTestContext(appDeclaration: KoinAppDeclaration? = null, koinModules: List<Module>) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules) {
@@ -48,6 +49,7 @@ abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : BaseKoi
     fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) = testOnUIThread(Unit, cancelScopeAfterTest, block)
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseKoinUIThreadTest<C, TC : BaseKoinUIThreadTest.KoinTestContext> : BaseUIThreadTest<C, TC>() {
 
     open class KoinTestContext(appDeclaration: KoinAppDeclaration? = null, koinModules: List<Module>) :

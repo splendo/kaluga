@@ -31,6 +31,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param setupMocks If `true` sets up mocks to display the hud
  * @param coroutineScope The [CoroutineScope] of the [MockHUD]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockHUD(override val hudConfig: HudConfig, setupMocks: Boolean = true, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
     /**

@@ -48,6 +48,7 @@ import platform.objc.sel_registerName
  * @param delegateBuilder Method that creates a [KalugaUIPopoverPresentationControllerDelegateProtocol].
  * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class AlertPresenter(
     alert: Alert,
     private val parent: UIViewController,

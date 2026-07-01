@@ -31,6 +31,7 @@ import platform.UIKit.willMoveToParentViewController
  * This convenience class is the result of [BaseLifecycleViewModel.addLifecycleManager].
  * Invoke [unbind] to unbind the Lifecycle from its bound [UIViewController]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
 
     internal val disposeBag: DisposeBag = DisposeBag()
@@ -49,6 +50,7 @@ class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
  * Callback invoked at the start of a lifecycle (corresponding to [UIViewController.viewDidAppear] of the bound ViewController.
  * Returns a List [Disposable] that are cleaned automatically at the end of each lifecycle.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 typealias onLifeCycleChanged = () -> List<Disposable>
 
 internal class ViewModelLifecycleManager<ViewModel : BaseLifecycleViewModel>(private val viewModel: ViewModel, private val onLifecycle: onLifeCycleChanged) :
@@ -85,6 +87,7 @@ internal class ViewModelLifecycleManager<ViewModel : BaseLifecycleViewModel>(pri
  * @param onLifecycle This callback is invoked on each start of a new lifecycle.
  * @return The [LifecycleManager] bound to the [BaseLifecycleViewModel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <ViewModel : BaseLifecycleViewModel> ViewModel.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
     val lifecycleManager = ViewModelLifecycleManager(this, onLifecycle)
     parent.addChildViewController(lifecycleManager)

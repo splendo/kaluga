@@ -23,9 +23,11 @@ import platform.UIKit.UIImageRenderingMode
 /**
  * Class describing an image.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual typealias KalugaImage = UIImage
 
 /**
  * Gets the tinted [UIImage] of a [TintedImage]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val TintedImage.uiImage: UIImage get() = image.imageWithTintColor(tint.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)

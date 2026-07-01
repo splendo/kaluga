@@ -36,26 +36,31 @@ import platform.UIKit.labelFontSize
 /**
  * Class describing a font
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual typealias KalugaFont = UIFont
 
 /**
  * The default system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultFont: KalugaFont get() = UIFont.systemFontOfSize(UIFont.labelFontSize)
 
 /**
  * The default bold system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultBoldFont: KalugaFont get() = UIFont.boldSystemFontOfSize(UIFont.labelFontSize)
 
 /**
  * The default italic system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultItalicFont: KalugaFont get() = UIFont.italicSystemFontOfSize(UIFont.labelFontSize)
 
 /**
  * The default monospace system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val defaultMonospaceFont: KalugaFont get() = UIFont.monospacedSystemFontOfSize(UIFont.labelFontSize, UIFontWeightRegular)
 
 /**
@@ -65,6 +70,7 @@ actual val defaultMonospaceFont: KalugaFont get() = UIFont.monospacedSystemFontO
  * @param traits the set of [FontTrait] to apply
  * @return a [KalugaFont] representing the system font with the given specifications
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun createDefaultFont(weight: Int, style: FontStyle, traits: Set<FontTrait>): KalugaFont {
     val calculateWeight: (Double, Double, FontWeight) -> Double = { uiFontWeight, factor, fontWeight ->
         val difference = factor * ((fontWeight.value - weight).toDouble() / 100.0)

@@ -33,6 +33,7 @@ import kotlin.reflect.KProperty
  * @param R the type of result to expect. Must be a subclass of [T].
  * @param OO the type of [ObservableOptional] to store the result in.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface BasicSubject<R : T, T, OO : ObservableOptional<R>> :
     BasicObservable<R, T, OO>,
     SuspendableSetter<T> {
@@ -49,12 +50,14 @@ interface BasicSubject<R : T, T, OO : ObservableOptional<R>> :
  * Convenience method for [BasicSubject] that calls [BasicSubject.bind] using the [CoroutineContext] of the provided [CoroutineScope]
  * @param coroutineScope The [CoroutineScope] to bind to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T, T, OO : ObservableOptional<R>> BasicSubject<R, T, OO>.bind(coroutineScope: CoroutineScope) = bind(coroutineScope, coroutineScope.coroutineContext)
 
 /**
  * A [BasicSubject] that is [Initialized]
  * @param T the type of value to expect.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface InitializedSubject<T> :
     BasicSubject<T, T, Value<T>>,
     InitializedObservable<T>,
@@ -64,6 +67,7 @@ interface InitializedSubject<T> :
  * A [BasicSubject] that is [Uninitialized]
  * @param T the type of value to expect.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface UninitializedSubject<T> :
     BasicSubject<T, T, ObservableOptional<T>>,
     UninitializedObservable<T>,
@@ -74,6 +78,7 @@ interface UninitializedSubject<T> :
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface DefaultSubject<R : T?, T> :
     BasicSubject<R, T?, Value<R>>,
     DefaultObservable<R, T>,
@@ -87,6 +92,7 @@ interface DefaultSubject<R : T?, T> :
  * @param observation The [Observation] to handle observing the value.
  * @param stateFlowToBind A function to get the [StateFlow] that will automatically call [SuspendableSetter.set] when a new value is posted after [BasicSubject.post] has been called.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(observation: Observation<R, T, OO>, private val stateFlowToBind: suspend () -> StateFlow<R?>) :
     BaseObservable<R, T, OO>(observation),
     BasicSubject<R, T, OO> {
@@ -101,6 +107,7 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(observa
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect interface PlatformSubjectObserver<R>
 
 /**
@@ -111,6 +118,7 @@ expect interface PlatformSubjectObserver<R>
  * @param observation The [Observation] to handle observing the value.
  * @param stateFlowToBind A function to get the [StateFlow] that will automatically call [SuspendableSetter.set] when a new value is posted after [BasicSubject.post] has been called.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(observation: Observation<R, T, OO>, stateFlowToBind: suspend () -> StateFlow<R?>) :
     AbstractBaseSubject<R, T, OO> {
     protected abstract val platformSubjectObserver: PlatformSubjectObserver<R>
@@ -123,6 +131,7 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(observat
  * @param observation The [ObservationInitialized] to handle value being observed
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class AbstractBaseInitializedSubject<T>(override val observation: ObservationInitialized<T>) :
     BaseSubject<T, T, Value<T>>(
         observation,
@@ -152,6 +161,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
  * @param T the type of value to expect.
  * @param observation The [ObservationInitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect abstract class BaseInitializedSubject<T>(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T> {
 
     /**
@@ -171,6 +181,7 @@ expect abstract class BaseInitializedSubject<T>(observation: ObservationInitiali
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class AbstractBaseUninitializedSubject<T>(override val observation: ObservationUninitialized<T>) :
     BaseSubject<T, T, ObservableOptional<T>>(
         observation,
@@ -186,6 +197,7 @@ abstract class AbstractBaseUninitializedSubject<T>(override val observation: Obs
  * @param T the type of value to expect.
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect abstract class BaseUninitializedSubject<T>(observation: ObservationUninitialized<T>) : AbstractBaseUninitializedSubject<T> {
     final override val platformSubjectObserver: PlatformSubjectObserver<T>
 }
@@ -197,6 +209,7 @@ expect abstract class BaseUninitializedSubject<T>(observation: ObservationUninit
  * @param observation The [ObservationDefault] to handle value being observed
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // deliberate
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class AbstractBaseDefaultSubject<R : T?, T>(override val observation: ObservationDefault<R, T?>) :
     BaseSubject<R, T?, Value<R>>(
         observation,
@@ -218,6 +231,7 @@ abstract class AbstractBaseDefaultSubject<R : T?, T>(override val observation: O
  * @param R the type of result to expect. Must be a subclass of [T]
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect abstract class BaseDefaultSubject<R : T?, T>(observation: ObservationDefault<R, T?>) : AbstractBaseDefaultSubject<R, T> {
 
     /**
@@ -239,6 +253,7 @@ expect abstract class BaseDefaultSubject<R : T?, T>(observation: ObservationDefa
  * @param observation The [ObservationInitialized] to handle observation.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class SimpleInitializedSubject<T>(override val observation: ObservationInitialized<T>) :
     BaseInitializedSubject<T>(
         observation,
@@ -276,6 +291,7 @@ class SimpleInitializedSubject<T>(override val observation: ObservationInitializ
  * @param defaultValue The default [R] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
  * @param initialValue The initial value of [T].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class SimpleDefaultSubject<R : T?, T>(defaultValue: R, initialValue: T? = defaultValue) :
     BaseDefaultSubject<R, T?>(
         Value(defaultValue),
@@ -296,4 +312,5 @@ class SimpleDefaultSubject<R : T?, T>(defaultValue: R, initialValue: T? = defaul
  * @param T the type of value to expect.
  * @param initialValue The initial value of [T].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> subjectOf(initialValue: T) = SimpleInitializedSubject(initialValue)

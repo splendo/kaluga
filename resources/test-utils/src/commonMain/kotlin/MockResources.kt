@@ -32,6 +32,7 @@ import com.splendo.kaluga.resources.StringLoader
  * Mock implementation of [StringLoader]
  * @param returnMock If `true` returns the identifier rather than the default value
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 
     /**
@@ -62,6 +63,7 @@ class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
  * Mock implementation of [StringLoader]
  * @param returnMock If `true` returns [mockColor] rather than the default value
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoader {
 
     /**
@@ -82,6 +84,7 @@ class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoad
  * Mock implementation of [StringLoader]
  * @param returnMock If `true` returns [mockImage] rather than the default value
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
 
     /**
@@ -102,6 +105,7 @@ class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
  * Mock implementation of [StringLoader]
  * @param returnMock If `true` returns [mockFont] rather than the default value
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
 
     /**
@@ -121,14 +125,17 @@ class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
 /**
  * Creates a mocked [KalugaColor]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect fun mockColor(): KalugaColor
 
 /**
  * Creates a mocked [KalugaImage]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect fun mockImage(): KalugaImage
 
 /**
  * Creates a mocked [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect fun mockFont(): KalugaFont

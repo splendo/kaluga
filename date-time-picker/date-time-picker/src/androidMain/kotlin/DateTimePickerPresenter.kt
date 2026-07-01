@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
  * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
  * @param coroutineScope The [CoroutineScope] managing changes to the alert presentation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DateTimePickerPresenter(
     dateTimePicker: DateTimePicker,
     private val themeResourceId: Int,

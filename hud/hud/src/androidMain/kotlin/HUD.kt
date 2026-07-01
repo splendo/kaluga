@@ -50,6 +50,7 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Default [BaseHUD] implementation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class HUD private constructor(
     @LayoutRes viewResId: Int,
     actual override val hudConfig: HudConfig,

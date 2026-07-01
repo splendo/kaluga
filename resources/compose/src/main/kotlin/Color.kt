@@ -25,6 +25,7 @@ import com.splendo.kaluga.resources.KalugaColor
 /**
  * Gets a [Color] from a [KalugaColor]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun KalugaColor.composable(): Color = Color(
     when (this) {

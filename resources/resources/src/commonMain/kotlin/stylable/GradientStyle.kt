@@ -24,6 +24,7 @@ import kotlin.jvm.JvmName
  * A style for applying to a Gradient color
  * @property colorPoints the list of [ColorPoint] on the gradient
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
 
     /**
@@ -177,12 +178,14 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
 /**
  * An [Error] thrown if the size of a list of [GradientStyle.ColorPoint] is too small
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object ColorPointRangeError : Error("Gradient must have at least two colours")
 
 /**
  * Converts a list of [KalugaColor] to a list of [GradientStyle.ColorPoint] spread evenly across the spectrum
  * @throws [ColorPointRangeError] if the list size is smaller than `2`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val List<KalugaColor>.colorPoints: List<GradientStyle.ColorPoint> get() {
     if (size < 2) {
         throw ColorPointRangeError

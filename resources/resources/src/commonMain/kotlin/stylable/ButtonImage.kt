@@ -23,6 +23,7 @@ import com.splendo.kaluga.resources.TintedImage
 /**
  * The Image to render for a [ButtonStateStyle.WithImage]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed interface ButtonImage {
 
     /**
@@ -46,6 +47,7 @@ sealed interface ButtonImage {
 /**
  * The size to use for a [ButtonImage]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed interface ImageSize {
 
     /**
@@ -64,6 +66,7 @@ sealed interface ImageSize {
 /**
  * The placement of a [ButtonImage] within a [com.splendo.kaluga.resources.view.KalugaButton] for a [KalugaButtonStyle.WithImageAndText]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 enum class ImageGravity {
 
     /**

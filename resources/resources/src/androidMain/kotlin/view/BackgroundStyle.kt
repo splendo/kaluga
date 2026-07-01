@@ -32,6 +32,7 @@ import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
  * @param context the [Context] of the [Drawable]
  * @return the [Drawable] to display the [KalugaBackgroundStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaBackgroundStyle.createDrawable(context: Context): Drawable = GradientDrawable().apply {
     applyShape(this@createDrawable.shape, context)
     applyFillStyle(fillStyle, context)
@@ -125,6 +126,7 @@ private fun GradientDrawable.applyStrokeStyle(strokeStyle: KalugaBackgroundStyle
  * Sets a [KalugaBackgroundStyle] to a [View.setBackground]
  * @param backgroundStyle the [KalugaBackgroundStyle] to apply
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun View.applyBackgroundStyle(backgroundStyle: KalugaBackgroundStyle) {
     background = backgroundStyle.createDrawable(context)
 }

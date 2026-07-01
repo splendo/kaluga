@@ -28,6 +28,7 @@ import com.splendo.kaluga.architecture.observable.WithState
  * Creates a [State] whose value always matches a [WithState] using [WithState.stateFlow]
  */
 @Suppress("NOTHING_TO_INLINE")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 inline fun <R> WithState<R>.state(): State<R> = this.stateFlow.collectAsState()
 
@@ -35,6 +36,7 @@ inline fun <R> WithState<R>.state(): State<R> = this.stateFlow.collectAsState()
  * Creates a [MutableState] that is synchronized with a [WithMutableState].
  */
 // @Suppress("NOTHING_TO_INLINE") // inlining currently breaks compilation
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun <R> WithMutableState<R>.mutableState(): MutableState<R> {
     val readState = state()
