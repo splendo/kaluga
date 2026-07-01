@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 
 /**
@@ -45,14 +46,14 @@ class CapturedLocalService(
  * @param uuid the [UUID] of the [LocalService]
  * @param wrapperBuilder the [LocalServiceWrapperBuilder] used to create the platform service
  * @param onNotify invoked when a characteristic notifies a device
- * @param service the [LocalService.DSL.Primary] block describing the service
+ * @param service the [LocalService.DSL] block describing the service
  * @return the [CapturedLocalService] holding the built service and all captured actions
  */
 fun buildCapturingLocalService(
     uuid: UUID,
     wrapperBuilder: LocalServiceWrapperBuilder,
     onNotify: suspend (LocalCharacteristic.Notifiable, ConnectedDevice, ByteArray) -> Boolean = { _, _, _ -> true },
-    service: LocalService.DSL.Primary.() -> Unit,
+    service: LocalService.DSL.() -> Unit,
 ): CapturedLocalService {
     val characteristicReads = mutableMapOf<UUID, suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse>()
     val characteristicWrites = mutableMapOf<UUID, suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
@@ -60,8 +61,9 @@ fun buildCapturingLocalService(
     val descriptorWrites = mutableMapOf<UUID, suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
     val subscribableCharacteristics = mutableSetOf<UUID>()
 
-    val builtService = LocalServiceDSL.Primary(
+    val builtService = LocalServiceDSL(
         uuid,
+        Service.Type.PRIMARY,
         onNotify,
         registerCharacteristicReadAction = { characteristic, onRead -> characteristicReads[characteristic.uuid] = onRead },
         registerCharacteristicWriteAction = { characteristic, onWrite -> characteristicWrites[characteristic.uuid] = onWrite },

@@ -91,10 +91,24 @@ interface ByteArrayFixture {
 @BluetoothService("f006")
 interface IncludedFixtureService {
     val includedCharacteristic: IncludedFixtureCharacteristic
+
+    // An included service may itself include further services, to any depth.
+    val deepIncludedService: DeepIncludedFixtureService
 }
 
 @BluetoothCharacteristic("f007")
 interface IncludedFixtureCharacteristic {
     @Readable
     val includedValue: String
+}
+
+@BluetoothService("f008")
+interface DeepIncludedFixtureService {
+    val deepCharacteristic: DeepIncludedFixtureCharacteristic
+}
+
+@BluetoothCharacteristic("f009")
+interface DeepIncludedFixtureCharacteristic {
+    @Readable
+    val deepValue: String
 }
