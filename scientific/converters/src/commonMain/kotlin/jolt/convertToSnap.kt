@@ -31,9 +31,8 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialJoltDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, MetricAndImperialJolt>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (unit per time.unit).snap(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, MetricAndImperialJolt>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (unit per time.unit).snap(this, time)
 
 @JvmName("metricJoltDivTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, MetricJolt>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
