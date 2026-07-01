@@ -1,5 +1,7 @@
 # Resources
 
+> **⚠️ Deprecated:** This feature has been deprecated. We recommend using Compose Multiplatform instead.
+
 Shared access to localized Strings, Colors, Images and Fonts, with styling and platform UI binding.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:

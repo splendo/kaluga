@@ -1,5 +1,7 @@
 # Alerts
 
+> **⚠️ Deprecated:** This feature has been deprecated. We recommend using Compose Multiplatform instead.
+
 Show native alert dialogs (AlertDialog on Android, UIAlertController on iOS) with customizable actions and styles.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:
