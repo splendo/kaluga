@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic type="org.example.characteristic.scientific_units" uuid="2B90" name="Scientific Units">
+  <Value>
+    <Field name="Electric Current Density">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.electric_current_density.ampere_per_square_metre</Unit>
+    </Field>
+    <Field name="Electric Field Strength">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.electric_field_strength.volt_per_metre</Unit>
+    </Field>
+    <Field name="Permittivity">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.permittivity.farad_per_metre</Unit>
+    </Field>
+    <Field name="Radiance">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.radiance.watt_per_square_metre_steradian</Unit>
+    </Field>
+    <Field name="Radiant Intensity">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.radiant_intensity.watt_per_steradian</Unit>
+    </Field>
+    <Field name="Thermal Conductivity">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.thermal_conductivity.watt_per_metre_kelvin</Unit>
+    </Field>
+    <Field name="Molar Entropy">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.molar_entropy.joule_per_mole_kelvin</Unit>
+    </Field>
+    <Field name="Moment Of Force">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.moment_of_force.newton_metre</Unit>
+    </Field>
+    <Field name="Absorbed Dose Rate">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.absorbed_dose_rate.gray_per_second</Unit>
+    </Field>
+    <Field name="Catalytic Activity Concentration">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.catalytic_activity_concentration.katal_per_cubic_metre</Unit>
+    </Field>
+    <Field name="Energy Density">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.energy_density.joule_per_cubic_metre</Unit>
+    </Field>
+    <Field name="Exposure">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.exposure.coulomb_per_kilogram</Unit>
+    </Field>
+    <Field name="Electric Charge Density">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.electric_charge_density.coulomb_per_cubic_metre</Unit>
+    </Field>
+    <Field name="Surface Charge Density">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.surface_charge_density.coulomb_per_square_metre</Unit>
+    </Field>
+    <Field name="Electric Flux Density">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.electric_flux_density.coulomb_per_square_metre</Unit>
+    </Field>
+    <Field name="Heat Flux Density">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.heat_flux_density.watt_per_square_metre</Unit>
+    </Field>
+    <Field name="Irradiance">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.irradiance.watt_per_square_metre</Unit>
+    </Field>
+    <Field name="Magnetic Field Strength">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.magnetic_field_strength.ampere_per_metre</Unit>
+    </Field>
+    <Field name="Permeability">
+      <Format>float32</Format>
+      <Unit>org.bluetooth.unit.permeability.henry_per_metre</Unit>
+    </Field>
+  </Value>
+</Characteristic>
