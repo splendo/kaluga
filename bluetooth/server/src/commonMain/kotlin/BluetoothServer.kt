@@ -62,19 +62,19 @@ interface BluetoothServerDSL {
     fun advertise(data: AdvertiseData.Builder.() -> Unit)
 
     /**
-     * Adds a [LocalService] using [LocalService.DSL.Primary]
+     * Adds a [LocalService] using [LocalService.DSL]
      * @param uuid the [UUID] of the [LocalService] to add
-     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
+     * @param service the [LocalService.DSL] to use to set up the [LocalService]
      */
-    fun service(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit)
+    fun service(uuid: UUID, service: LocalService.DSL.() -> Unit)
 
     /**
-     * Adds a [LocalService] using [LocalService.DSL.Primary]
+     * Adds a [LocalService] using [LocalService.DSL]
      * @param uuidString the string of the [UUID] of the [LocalService] to add
-     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
+     * @param service the [LocalService.DSL] to use to set up the [LocalService]
      * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
      */
-    fun service(uuidString: String, service: LocalService.DSL.Primary.() -> Unit) {
+    fun service(uuidString: String, service: LocalService.DSL.() -> Unit) {
         service(uuidFrom(uuidString), service)
     }
 }
@@ -167,7 +167,7 @@ internal sealed interface ServerState {
 
         override val status: ServerStatus get() = ServerStatus.AVAILABLE
 
-        fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL.Primary
+        fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL
     }
 
     object Closed : Unavailable {
@@ -226,10 +226,10 @@ interface BluetoothServer : AutoCloseable {
     /**
      * Attempts to add a [LocalService] at a given [UUID] and suspends until it has been added.
      * @param uuid the [UUID] of the [LocalService] to add
-     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
+     * @param service the [LocalService.DSL] to use to set up the [LocalService]
      * @return the [LocalService] added or `null` if it could not be added
      */
-    suspend fun add(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService?
+    suspend fun add(uuid: UUID, service: LocalService.DSL.() -> Unit): LocalService?
 
     /**
      * Attempts to remove a [LocalService] and suspends until it has been removed.
@@ -259,14 +259,14 @@ class DefaultBluetoothServer internal constructor(private val settings: ServerSe
     internal class DSL(private val settings: ServerSettings, private val initialState: ServerState.Initial, private val coroutineContext: CoroutineContext) : BluetoothServerDSL {
 
         private var advertisementBuilder: (AdvertiseData.Builder.() -> Unit)? = null
-        private val serviceBuilders = mutableMapOf<UUID, LocalService.DSL.Primary.() -> Unit>()
+        private val serviceBuilders = mutableMapOf<UUID, LocalService.DSL.() -> Unit>()
 
         override fun advertise(data: AdvertiseData.Builder.() -> Unit) {
             require(advertisementBuilder == null) { "Can only set advertisement data once" }
             advertisementBuilder = data
         }
 
-        override fun service(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit) {
+        override fun service(uuid: UUID, service: LocalService.DSL.() -> Unit) {
             require(!serviceBuilders.containsKey(uuid)) { "Service $uuid already added" }
             serviceBuilders[uuid] = service
         }
@@ -385,7 +385,7 @@ class DefaultBluetoothServer internal constructor(private val settings: ServerSe
         _isAdvertising.value = false
     }
 
-    override suspend fun add(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService? = performOrFailOnClose(null) {
+    override suspend fun add(uuid: UUID, service: LocalService.DSL.() -> Unit): LocalService? = performOrFailOnClose(null) {
         val response = CompletableDeferred<LocalService?>()
         val serviceBuilder: (ServerState.Available) -> LocalService = { available ->
             available.serviceBuilder(uuid, this::notify).apply(service).build()

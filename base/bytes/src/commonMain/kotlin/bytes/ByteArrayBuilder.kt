@@ -53,6 +53,20 @@ interface ByteArrayBuilder {
     fun add(int24: Int24, order: ByteOrder = byteOrder)
 
     /**
+     * Adds an [Int40] to the array, encoded using [Int40.toByteArray]
+     * @param int40 the [Int40] to add
+     * @param order the [ByteOrder] in which the Int40 will be encoded. Defaults to [byteOrder]
+     */
+    fun add(int40: Int40, order: ByteOrder = byteOrder)
+
+    /**
+     * Adds an [Int48] to the array, encoded using [Int48.toByteArray]
+     * @param int48 the [Int48] to add
+     * @param order the [ByteOrder] in which the Int48 will be encoded. Defaults to [byteOrder]
+     */
+    fun add(int48: Int48, order: ByteOrder = byteOrder)
+
+    /**
      * Adds an [Int] to the array, encoded using [Int.toByteArray]
      * @param int the [Int] to add
      * @param order the [ByteOrder] in which the Int will be encoded. Defaults to [byteOrder]
@@ -113,6 +127,20 @@ interface ByteArrayBuilder {
      * @param order the [ByteOrder] in which the UInt24 will be encoded. Defaults to [byteOrder]
      */
     fun add(uInt24: UInt24, order: ByteOrder = byteOrder)
+
+    /**
+     * Adds a [UInt40] to the array, encoded using [UInt40.toByteArray]
+     * @param uInt40 the [UInt40] to add
+     * @param order the [ByteOrder] in which the UInt40 will be encoded. Defaults to [byteOrder]
+     */
+    fun add(uInt40: UInt40, order: ByteOrder = byteOrder)
+
+    /**
+     * Adds a [UInt48] to the array, encoded using [UInt48.toByteArray]
+     * @param uInt48 the [UInt48] to add
+     * @param order the [ByteOrder] in which the UInt48 will be encoded. Defaults to [byteOrder]
+     */
+    fun add(uInt48: UInt48, order: ByteOrder = byteOrder)
 
     /**
      * Adds a [MedFloat16] to the array.
@@ -215,6 +243,22 @@ private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: By
         )
     }
 
+    override fun add(int40: Int40, order: ByteOrder) {
+        add(
+            Int40.SIZE_BYTES,
+            generateIntoMethod = { int40.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { int40.toByteArray(order) },
+        )
+    }
+
+    override fun add(int48: Int48, order: ByteOrder) {
+        add(
+            Int48.SIZE_BYTES,
+            generateIntoMethod = { int48.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { int48.toByteArray(order) },
+        )
+    }
+
     override fun add(int: Int, order: ByteOrder) {
         add(
             Int.SIZE_BYTES,
@@ -300,6 +344,22 @@ private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: By
             UInt24.SIZE_BYTES,
             generateIntoMethod = { uInt24.copyIntoByteArray(currentChunk, it, order) },
             generateMethod = { uInt24.toByteArray(order) },
+        )
+    }
+
+    override fun add(uInt40: UInt40, order: ByteOrder) {
+        add(
+            UInt40.SIZE_BYTES,
+            generateIntoMethod = { uInt40.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { uInt40.toByteArray(order) },
+        )
+    }
+
+    override fun add(uInt48: UInt48, order: ByteOrder) {
+        add(
+            UInt48.SIZE_BYTES,
+            generateIntoMethod = { uInt48.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { uInt48.toByteArray(order) },
         )
     }
 

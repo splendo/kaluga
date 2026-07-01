@@ -33,6 +33,7 @@ kaluga {
             }
             test {
                 implementation(project(":bluetooth:test-core", ""))
+                implementation(project(":scientific:scientific"))
             }
         }
     }

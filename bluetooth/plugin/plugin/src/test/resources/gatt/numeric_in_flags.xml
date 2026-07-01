@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A bit field whose bits carry raw numeric values (no enumerations): sub-byte unsigned integers packed in the flags. -->
+<Characteristic type="org.example.characteristic.packed" uuid="2B10" name="Packed">
+  <Value>
+    <Field name="Flags">
+      <Format>16bit</Format>
+      <BitField>
+        <Bit index="0" size="4" name="Counter" />
+        <Bit index="4" size="12" name="Reading" />
+      </BitField>
+    </Field>
+  </Value>
+</Characteristic>

@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.test.server.MockLocalServiceWrapperBuilder
 import kotlinx.coroutines.CompletableDeferred
@@ -83,8 +84,9 @@ internal class MockAvailable(setupMocks: Boolean = true) : ServerState.Available
     override fun close(): ServerState.Closed = ServerState.Closed
     override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean =
         executeMock.call(characteristic, device, value)
-    override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL.Primary = LocalServiceDSL.Primary(
+    override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL = LocalServiceDSL(
         uuid,
+        Service.Type.PRIMARY,
         notify,
         { _, _ -> },
         { _, _ -> },

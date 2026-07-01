@@ -59,8 +59,12 @@ class ScientificUnitTest {
     @Test
     fun testSerialization() = testRunBlocking {
         // Chunked across Dispatchers.Default — per-unit polymorphic dispatch is CPU-bound on K/N.
+        // One instance per unit type: composite quantities enumerate cartesian products of their
+        // components (e.g. Radiance = Power × SolidAngle × Area → thousands of instances), but each
+        // shares a single serializer and its components are tested standalone as Units members, so
+        // round-tripping one representative per class covers every serializer without the blow-up.
         val listSerializer = ListSerializer(UnitContainer.serializer())
-        val containers = Units.map { UnitContainer(it) }
+        val containers = Units.distinctBy { it::class }.map { UnitContainer(it) }
         val chunkSize = ((containers.size + PARALLEL_CHUNKS - 1) / PARALLEL_CHUNKS).coerceAtLeast(1)
         val chunks = containers.chunked(chunkSize)
 

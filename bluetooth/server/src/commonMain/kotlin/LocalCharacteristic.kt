@@ -560,7 +560,11 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             notifyAll(value)
         }
 
-        internal fun subscribe(device: ConnectedDevice) {
+        /**
+         * Subscribes a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] to this characteristic, as a connected central would.
+         * @param device the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that subscribed
+         */
+        fun subscribe(device: ConnectedDevice) {
             _subscribedDevices.update { it + device }
             onSubscribe(device)
         }

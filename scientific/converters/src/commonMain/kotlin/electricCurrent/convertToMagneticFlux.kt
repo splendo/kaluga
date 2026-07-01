@@ -20,12 +20,19 @@ package com.splendo.kaluga.scientific.converter.electricCurrent
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricInductance.times
+import com.splendo.kaluga.scientific.converter.magneticFlux.flux
 import com.splendo.kaluga.scientific.unit.Abampere
 import com.splendo.kaluga.scientific.unit.Abhenry
 import com.splendo.kaluga.scientific.unit.Biot
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
 import com.splendo.kaluga.scientific.unit.ElectricInductance
+import com.splendo.kaluga.scientific.unit.Reluctance
 import kotlin.jvm.JvmName
+
+@JvmName("electricCurrentDivReluctance")
+infix operator fun <CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.div(
+    reluctance: ScientificValue<PhysicalQuantity.Reluctance, Reluctance>,
+) = reluctance.unit.per.flux(this, reluctance)
 
 @JvmName("abampereTimesAbhenry")
 infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.times(inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>) = inductance * this

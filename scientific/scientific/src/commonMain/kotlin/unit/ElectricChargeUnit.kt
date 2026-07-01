@@ -42,6 +42,7 @@ val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
     Megacoulomb,
     Gigacoulomb,
     Abcoulomb,
+    AmpereHour,
 )
 
 /**
@@ -60,6 +61,16 @@ data object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricA
     override val quantity = PhysicalQuantity.ElectricCharge
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
+}
+
+@Serializable
+data object AmpereHour : ElectricCharge() {
+    // 1 ampere-hour is one ampere over an hour, i.e. an hour's worth of seconds in coulombs.
+    override val symbol: String = "Ah"
+    override val system = MeasurementSystem.MetricAndImperial
+    override val quantity = PhysicalQuantity.ElectricCharge
+    override fun fromSIUnit(value: Decimal): Decimal = Hour.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = Hour.toSIUnit(value)
 }
 
 @Serializable
@@ -116,6 +127,7 @@ internal fun SerializersModuleBuilder.setupForElectricCharge() {
 internal fun PolymorphicModuleBuilder<ElectricCharge>.registerElectricChargeClasses() {
     subclass(Coulomb::class, Coulomb.serializer())
     subclass(Abcoulomb::class, Abcoulomb.serializer())
+    subclass(AmpereHour::class, AmpereHour.serializer())
     subclass(Centicoulomb::class, Centicoulomb.serializer())
     subclass(Decacoulomb::class, Decacoulomb.serializer())
     subclass(Decicoulomb::class, Decicoulomb.serializer())

@@ -20,13 +20,19 @@ package com.splendo.kaluga.scientific.converter.magneticFlux
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
+import com.splendo.kaluga.scientific.converter.reluctance.times
 import com.splendo.kaluga.scientific.unit.Abampere
 import com.splendo.kaluga.scientific.unit.Abhenry
 import com.splendo.kaluga.scientific.unit.Ampere
 import com.splendo.kaluga.scientific.unit.ElectricInductance
 import com.splendo.kaluga.scientific.unit.MagneticFlux
 import com.splendo.kaluga.scientific.unit.Maxwell
+import com.splendo.kaluga.scientific.unit.Reluctance
 import kotlin.jvm.JvmName
+
+@JvmName("magneticFluxTimesReluctance")
+infix operator fun <FluxUnit : MagneticFlux> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.times(reluctance: ScientificValue<PhysicalQuantity.Reluctance, Reluctance>) =
+    reluctance * this
 
 @JvmName("maxwellDivAbhenry")
 infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>) =

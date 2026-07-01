@@ -30,11 +30,13 @@ import com.splendo.kaluga.scientific.unit.Abfarad
 import com.splendo.kaluga.scientific.unit.Abohm
 import com.splendo.kaluga.scientific.unit.Abvolt
 import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.AmpereHour
 import com.splendo.kaluga.scientific.unit.Biot
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.Decierg
 import com.splendo.kaluga.scientific.unit.Erg
 import com.splendo.kaluga.scientific.unit.Farad
+import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Maxwell
 import com.splendo.kaluga.scientific.unit.Ohm
@@ -63,6 +65,8 @@ class ElectricChargeUnitTest {
         assertEquals(4(Coulomb), 2(Second) * 2(Ampere))
         assertEquals(4(Abcoulomb), 2(Abampere) * 2(Second))
         assertEquals(4(Abcoulomb), 2(Second) * 2(Abampere))
+        assertEquals(4(AmpereHour), 2(Ampere) * 2(Hour))
+        assertEquals(4(AmpereHour), 2(Hour) * 2(Ampere))
     }
 
     @Test

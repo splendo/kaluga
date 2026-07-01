@@ -19,17 +19,64 @@ package com.splendo.kaluga.scientific.converter.power
 
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.converter.temperature.temperature
 import com.splendo.kaluga.scientific.converter.thermalResistance.times
 import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialThermalConductance
 import com.splendo.kaluga.scientific.unit.MetricAndUKImperialThermalResistance
 import com.splendo.kaluga.scientific.unit.MetricPower
+import com.splendo.kaluga.scientific.unit.MetricThermalConductance
 import com.splendo.kaluga.scientific.unit.MetricThermalResistance
 import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.ThermalConductance
 import com.splendo.kaluga.scientific.unit.ThermalResistance
+import com.splendo.kaluga.scientific.unit.UKImperialThermalConductance
 import com.splendo.kaluga.scientific.unit.UKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.USCustomaryThermalConductance
 import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
 import kotlin.jvm.JvmName
+
+@JvmName("powerDivMetricAndUKImperialThermalConductance")
+infix operator fun <PowerUnit : Power> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, MetricAndUKImperialThermalConductance>,
+) = thermalConductance.unit.per.temperature(this, thermalConductance)
+
+@JvmName("metricAndImperialPowerDivMetricThermalConductance")
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, MetricThermalConductance>,
+) = thermalConductance.unit.per.temperature(this, thermalConductance)
+
+@JvmName("metricPowerDivMetricThermalConductance")
+infix operator fun <PowerUnit : MetricPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, MetricThermalConductance>,
+) = thermalConductance.unit.per.temperature(this, thermalConductance)
+
+@JvmName("metricAndImperialPowerDivUKImperialThermalConductance")
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, UKImperialThermalConductance>,
+) = thermalConductance.unit.per.temperature(this, thermalConductance)
+
+@JvmName("imperialPowerDivUKImperialThermalConductance")
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, UKImperialThermalConductance>,
+) = thermalConductance.unit.per.temperature(this, thermalConductance)
+
+@JvmName("metricAndImperialPowerDivUSCustomaryThermalConductance")
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, USCustomaryThermalConductance>,
+) = thermalConductance.unit.per.temperature(this, thermalConductance)
+
+@JvmName("imperialPowerDivUSCustomaryThermalConductance")
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, USCustomaryThermalConductance>,
+) = thermalConductance.unit.per.temperature(this, thermalConductance)
+
+@JvmName("powerDivThermalConductance")
+infix operator fun <PowerUnit : Power, ThermalConductanceUnit : ThermalConductance> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
+    thermalConductance: ScientificValue<PhysicalQuantity.ThermalConductance, ThermalConductanceUnit>,
+) = Kelvin.temperature(this, thermalConductance)
 
 @JvmName("powerTimesMetricAndUKImperialThermalResistance")
 infix operator fun <PowerUnit : Power> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(

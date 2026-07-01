@@ -1142,6 +1142,12 @@ abstract class com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager :
     open suspend fun reset() // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.reset|reset(){}[0]
 
     // Targets: [apple]
+    final fun handleCharacteristicNotified(platform.CoreBluetooth/CBUUID, com.splendo.kaluga.bluetooth/GattResponse.ReadSuccess) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleCharacteristicNotified|handleCharacteristicNotified(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.GattResponse.ReadSuccess){}[0]
+
+    // Targets: [apple]
+    final fun handleCharacteristicRead(platform.CoreBluetooth/CBUUID, com.splendo.kaluga.bluetooth/GattResponse.ReadResponse) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleCharacteristicRead|handleCharacteristicRead(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.GattResponse.ReadResponse){}[0]
+
+    // Targets: [apple]
     final fun handleCharacteristicReadOrNotified(platform.CoreBluetooth/CBUUID, com.splendo.kaluga.bluetooth/GattResponse.ReadResponse) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleCharacteristicReadOrNotified|handleCharacteristicReadOrNotified(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.GattResponse.ReadResponse){}[0]
 
     // Targets: [apple]
@@ -1152,6 +1158,12 @@ abstract class com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager :
 
     // Targets: [apple]
     final fun handleDescriptorWritten(platform.CoreBluetooth/CBUUID, com.splendo.kaluga.bluetooth/GattResponse.WriteResponse) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleDescriptorWritten|handleDescriptorWritten(platform.CoreBluetooth.CBUUID;com.splendo.kaluga.bluetooth.GattResponse.WriteResponse){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun handleCharacteristicNotified(com.splendo.kaluga.bluetooth/UUID, com.splendo.kaluga.bluetooth/GattResponse.ReadSuccess) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleCharacteristicNotified|handleCharacteristicNotified(com.splendo.kaluga.bluetooth.UUID;com.splendo.kaluga.bluetooth.GattResponse.ReadSuccess){}[0]
+
+    // Targets: [js, wasmJs]
+    final fun handleCharacteristicRead(com.splendo.kaluga.bluetooth/UUID, com.splendo.kaluga.bluetooth/GattResponse.ReadResponse) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleCharacteristicRead|handleCharacteristicRead(com.splendo.kaluga.bluetooth.UUID;com.splendo.kaluga.bluetooth.GattResponse.ReadResponse){}[0]
 
     // Targets: [js, wasmJs]
     final fun handleCharacteristicReadOrNotified(com.splendo.kaluga.bluetooth/UUID, com.splendo.kaluga.bluetooth/GattResponse.ReadResponse) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleCharacteristicReadOrNotified|handleCharacteristicReadOrNotified(com.splendo.kaluga.bluetooth.UUID;com.splendo.kaluga.bluetooth.GattResponse.ReadResponse){}[0]
@@ -1855,6 +1867,7 @@ final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/Conn
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?>).com.splendo.kaluga.bluetooth/advertisement(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/BaseAdvertisementData> // com.splendo.kaluga.bluetooth/advertisement|advertisement@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.device.ConnectableDevice?>(){}[0]
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?>).com.splendo.kaluga.bluetooth/discoveredServices(): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteService>> // com.splendo.kaluga.bluetooth/discoveredServices|discoveredServices@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.device.ConnectableDevice?>(){}[0]
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?>).com.splendo.kaluga.bluetooth/distance(kotlin/Double = ..., kotlin/Int = ...): kotlinx.coroutines.flow/Flow<kotlin/Double> // com.splendo.kaluga.bluetooth/distance|distance@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.device.ConnectableDevice?>(kotlin.Double;kotlin.Int){}[0]
+final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?>).com.splendo.kaluga.bluetooth/filterDiscovering(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.DiscoveredServices?> // com.splendo.kaluga.bluetooth/filterDiscovering|filterDiscovering@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.device.ConnectableDevice?>(){}[0]
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?>).com.splendo.kaluga.bluetooth/info(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/DeviceInfo> // com.splendo.kaluga.bluetooth/info|info@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.device.ConnectableDevice?>(){}[0]
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?>).com.splendo.kaluga.bluetooth/mtu(): kotlinx.coroutines.flow/Flow<kotlin/Int?> // com.splendo.kaluga.bluetooth/mtu|mtu@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.device.ConnectableDevice?>(){}[0]
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?>).com.splendo.kaluga.bluetooth/rssi(): kotlinx.coroutines.flow/Flow<kotlin/Int?> // com.splendo.kaluga.bluetooth/rssi|rssi@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.device.ConnectableDevice?>(){}[0]

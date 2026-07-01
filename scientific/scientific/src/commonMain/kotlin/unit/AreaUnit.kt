@@ -41,6 +41,7 @@ val MetricAreaUnits: Set<MetricArea> get() = setOf(
     SquareHectometer,
     SquareKilometer,
     Hectare,
+    Barn,
 )
 
 /**
@@ -121,6 +122,16 @@ data object Hectare : MetricArea(), SystemScientificUnit<MeasurementSystem.Metri
 }
 
 @Serializable
+data object Barn : MetricArea() {
+    private val SQUARE_METER_IN_BARN = "1e-28".toDecimal()
+    override val symbol: String = "b"
+    override val system = MeasurementSystem.Metric
+    override val quantity = PhysicalQuantity.Area
+    override fun toSIUnit(value: Decimal): Decimal = value * SQUARE_METER_IN_BARN
+    override fun fromSIUnit(value: Decimal): Decimal = value / SQUARE_METER_IN_BARN
+}
+
+@Serializable
 data object SquareKilometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Kilo(Meter))
 
 @Serializable
@@ -178,6 +189,7 @@ internal fun PolymorphicModuleBuilder<Area>.registerAreaClasses() {
 
 internal fun PolymorphicModuleBuilder<MetricArea>.registerMetricAreaClasses() {
     subclass(Hectare::class, Hectare.serializer())
+    subclass(Barn::class, Barn.serializer())
     subclass(SquareCentimeter::class, SquareCentimeter.serializer())
     subclass(SquareDecameter::class, SquareDecameter.serializer())
     subclass(SquareDecimeter::class, SquareDecimeter.serializer())

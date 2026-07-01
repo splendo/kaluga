@@ -72,8 +72,10 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> {
+                // The awaited readValue() result is unambiguously the read response. readValue() also echoes
+                // through the characteristicvaluechanged handler, where the heuristic drops it (see connect()).
                 val result = webReadCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString)
-                handleCharacteristicReadOrNotified(action.characteristic.uuid, result.readResponse())
+                handleCharacteristicRead(action.characteristic.uuid, result.readResponse())
             }
 
             is DeviceAction.Read.Descriptor -> {

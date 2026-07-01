@@ -72,9 +72,9 @@ object BluetoothSpec {
         @Size(Length.`16_BIT`)
         @Unsigned
         val heartRate: Int,
-        @FlagIndex(1)
-        val contactSupported: Boolean,
         @FlagIndex(2)
+        val contactSupported: Boolean,
+        @FlagIndex(1)
         val contactDetected: Boolean = !contactSupported,
         @Unsigned
         @Size(Length.`16_BIT`)

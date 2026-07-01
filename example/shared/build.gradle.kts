@@ -42,6 +42,7 @@ val mobileKalugaModules = listOf(
  *  the web has no app-store review. Kept off `:shared`'s common source set so it stays wasmJs-capable. */
 val nonWebFeatureProjects = listOf(
     ":feature-beacons",
+    ":feature-bluetooth-generation",
     ":feature-bluetooth-server",
     ":feature-review",
 )

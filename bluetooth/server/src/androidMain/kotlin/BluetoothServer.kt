@@ -35,6 +35,7 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.DefaultBluetoothServer.Companion.TAG
 import com.splendo.kaluga.bluetooth.uuidString
@@ -275,8 +276,9 @@ internal sealed class AndroidServerState {
             return AwaitingPermissions(manager, bluetoothMonitor, permissionStateRepo, callback, context, logger)
         }
 
-        override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL.Primary = LocalServiceDSL.Primary(
+        override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL = LocalServiceDSL(
             uuid,
+            Service.Type.PRIMARY,
             notify,
             callback::registerReadAction,
             callback::registerWriteAction,

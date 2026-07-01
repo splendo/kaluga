@@ -19,6 +19,10 @@ package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.Int24
 import com.splendo.kaluga.base.bytes.UInt24
+import com.splendo.kaluga.base.bytes.Int40
+import com.splendo.kaluga.base.bytes.UInt40
+import com.splendo.kaluga.base.bytes.Int48
+import com.splendo.kaluga.base.bytes.UInt48
 
 /**
  * The length used for encoding (numeric) data.
@@ -32,6 +36,8 @@ enum class Length(val bytes: Int) {
     `16_BIT`(2),
     `24_BIT`(3),
     `32_BIT`(4),
+    `40_BIT`(5),
+    `48_BIT`(6),
     `64_BIT`(8),
     ;
 
@@ -58,6 +64,18 @@ enum class Length(val bytes: Int) {
             number.toLong() in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()
         } else {
             number.toLong().toULong() in UInt.MIN_VALUE.toULong()..UInt.MAX_VALUE.toULong()
+        }
+
+        `40_BIT` -> if (signed) {
+            number.toLong() in Int40.MIN_VALUE.value..Int40.MAX_VALUE.value
+        } else {
+            number.toLong().toULong() in UInt40.MIN_VALUE.value..UInt40.MAX_VALUE.value
+        }
+
+        `48_BIT` -> if (signed) {
+            number.toLong() in Int48.MIN_VALUE.value..Int48.MAX_VALUE.value
+        } else {
+            number.toLong().toULong() in UInt48.MIN_VALUE.value..UInt48.MAX_VALUE.value
         }
 
         `64_BIT` -> true // Always fits as it is the max we support

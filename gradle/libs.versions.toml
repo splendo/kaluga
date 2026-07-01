@@ -12,6 +12,7 @@ kotlinter = "5.5.0"
 kotlinx-kover = "0.9.8"
 dokka = "2.2.0"
 vanniktechMavenPublish = "0.36.0"
+plugin-publish = "1.3.1"
 palantir-git-version = "5.0.0"
 # CLDR release used by the :base:generateDefaultCurrencyMap codegen task (see https://github.com/unicode-org/cldr-json/releases)
 cldr = "48.2.0"
@@ -52,6 +53,8 @@ androidx-test-runner = "1.7.0"
 androidx-test-espresso = "3.7.0"
 androidx-test-junit = "1.3.0"
 androidx-test-uiautomator = "2.3.0"
+ksp="2.3.9"
+kotlinpoet="2.3.0"
 bytebuddy = "1.18.10"
 junit = "4.13.2"
 koin = "4.2.1"
@@ -77,10 +80,12 @@ kaluga-base-i18n = { module = "com.splendo.kaluga.base:i18n", version.ref = "kal
 kaluga-base-state = { module = "com.splendo.kaluga.base:state", version.ref = "kaluga" }
 kaluga-base-testutils = { module = "com.splendo.kaluga.base:test", version.ref = "kaluga" }
 kaluga-beacons = { module = "com.splendo.kaluga.bluetooth:beacons", version.ref = "kaluga" }
+kaluga-bluetooth-annotations = { module = "com.splendo.kaluga.bluetooth:annotations", version.ref = "kaluga" }
 kaluga-bluetooth-client = { module = "com.splendo.kaluga.bluetooth:client", version.ref = "kaluga" }
 kaluga-bluetooth-client-testutils = { module = "com.splendo.kaluga.bluetooth:test-client", version.ref = "kaluga" }
 kaluga-bluetooth-core = { module = "com.splendo.kaluga.bluetooth:core", version.ref = "kaluga" }
 kaluga-bluetooth-core-testutils = { module = "com.splendo.kaluga.bluetooth:test-core", version.ref = "kaluga" }
+kaluga-bluetooth-ksp = { module = "com.splendo.kaluga.bluetooth:ksp", version.ref = "kaluga" }
 kaluga-bluetooth-server = { module = "com.splendo.kaluga.bluetooth:server", version.ref = "kaluga" }
 kaluga-bluetooth-server-testutils = { module = "com.splendo.kaluga.bluetooth:test-server", version.ref = "kaluga" }
 kaluga-datetime = { module = "com.splendo.kaluga.date-time:date-time", version.ref = "kaluga" }
@@ -213,6 +218,12 @@ androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", 
 androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 
+## Code Generation
+google-devtools-ksp-gradle = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+google-devtools-ksp-symbolProcessingAPI = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
+
 ## Test
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
 androidx-test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidx-test" }
@@ -242,18 +253,24 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 android-library = { id = "com.android.library", version.ref = "androidGradle" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "androidGradle" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover"}
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay-resolver" }
+palantir-git-version = { id = "com.palantir.git-version", version.ref = "palantir-git-version" }
+
+kaluga-bluetooth = { id = "com.splendo.kaluga.bluetooth.plugin", version.ref = "kaluga" }
 
 [bundles]

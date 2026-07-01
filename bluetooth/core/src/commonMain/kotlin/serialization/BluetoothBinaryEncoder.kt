@@ -25,6 +25,10 @@ import com.splendo.kaluga.base.bytes.MedFloat16
 import com.splendo.kaluga.base.bytes.MedFloat32
 import com.splendo.kaluga.base.bytes.toInt24
 import com.splendo.kaluga.base.bytes.toUInt24
+import com.splendo.kaluga.base.bytes.toInt40
+import com.splendo.kaluga.base.bytes.toUInt40
+import com.splendo.kaluga.base.bytes.toInt48
+import com.splendo.kaluga.base.bytes.toUInt48
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.PolymorphicKind
@@ -160,9 +164,17 @@ internal class BluetoothBinaryEncoder(
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
         markNotNull()
-        binaryDescriptor.enumMap[index]?.array?.let {
-            builder.addAction(it.size) {
-                add(bytes = it)
+        val offset = if (binaryDescriptor.isNullable) 1 else 0
+        if (binaryDescriptor.bitIndex >= 0 && binaryDescriptor.bitWidth > offset) {
+            // Packed into the flags as the ordinal, least-significant bit first.
+            for (bit in 0 until binaryDescriptor.bitWidth - offset) {
+                builder.addFlag(binaryDescriptor.bitIndex + offset + bit, index.isBitSet(bit))
+            }
+        } else {
+            binaryDescriptor.enumMap[index]?.array?.let {
+                builder.addAction(it.size) {
+                    add(bytes = it)
+                }
             }
         }
     }
@@ -309,9 +321,26 @@ internal fun BinaryBuilder.encodeBooleanElement(value: Boolean, binaryDescriptor
 // sizing decision (and thus the byte layout) is identical on every platform.
 private fun Number.fitsLosslesslyIn32BitFloat(): Boolean = toDouble() == Float.fromBits(toFloat().toRawBits()).toDouble()
 
+// Whether [value] fits in [bits] bits with the given signedness, so a flag-packed numeric can't silently truncate.
+private fun fitsInBits(value: Long, bits: Int, signed: Boolean): Boolean = when {
+    bits >= Long.SIZE_BITS -> true
+    signed -> value in -(1L shl (bits - 1)) until (1L shl (bits - 1))
+    else -> value in 0L until (1L shl bits)
+}
+
 internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor: BluetoothBinaryDescriptor, settings: BluetoothBinaryDescriptor.NumericSettings) {
     when (settings) {
-        is BluetoothBinaryDescriptor.NumericSettings.Natural -> {
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> if (settings.inFlagsBits != null) {
+            // Sub-byte value packed straight into the flag region, least-significant bit first (like an enum ordinal).
+            val bits = settings.inFlagsBits
+            val raw = value.toLong()
+            require(fitsInBits(raw, bits, settings.signed)) {
+                "Value $raw does not fit in a ${if (settings.signed) "signed" else "unsigned"} $bits-bit flag field"
+            }
+            for (bit in 0 until bits) {
+                addFlag(binaryDescriptor.bitIndex + bit, (raw shr bit) and 1L == 1L)
+            }
+        } else {
             val supportedLengths = settings.supportedLengths
             // Grab desired length
             val lengthToAdd = when (supportedLengths.size) {
@@ -351,6 +380,24 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                     }
 
                     Length.`32_BIT` -> if (settings.signed) add(value.toInt(), binaryDescriptor.byteOrder) else add(value.toInt().toUInt(), binaryDescriptor.byteOrder)
+
+                    Length.`40_BIT` -> if (settings.signed) {
+                        add(
+                            value.toLong().toInt40(),
+                            binaryDescriptor.byteOrder,
+                        )
+                    } else {
+                        add(value.toLong().toULong().toUInt40(), binaryDescriptor.byteOrder)
+                    }
+
+                    Length.`48_BIT` -> if (settings.signed) {
+                        add(
+                            value.toLong().toInt48(),
+                            binaryDescriptor.byteOrder,
+                        )
+                    } else {
+                        add(value.toLong().toULong().toUInt48(), binaryDescriptor.byteOrder)
+                    }
 
                     Length.`64_BIT` -> if (settings.signed) add(value.toLong(), binaryDescriptor.byteOrder) else add(value.toLong().toULong(), binaryDescriptor.byteOrder)
                 }

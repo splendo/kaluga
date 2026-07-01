@@ -24,6 +24,8 @@ import com.splendo.kaluga.base.bytes.decodeDouble
 import com.splendo.kaluga.base.bytes.decodeFloat
 import com.splendo.kaluga.base.bytes.decodeInt
 import com.splendo.kaluga.base.bytes.decodeInt24
+import com.splendo.kaluga.base.bytes.decodeInt40
+import com.splendo.kaluga.base.bytes.decodeInt48
 import com.splendo.kaluga.base.bytes.decodeLong
 import com.splendo.kaluga.base.bytes.decodeMedFloat16
 import com.splendo.kaluga.base.bytes.decodeMedFloat32
@@ -31,6 +33,8 @@ import com.splendo.kaluga.base.bytes.decodeShort
 import com.splendo.kaluga.base.bytes.decodeString
 import com.splendo.kaluga.base.bytes.decodeUInt
 import com.splendo.kaluga.base.bytes.decodeUInt24
+import com.splendo.kaluga.base.bytes.decodeUInt40
+import com.splendo.kaluga.base.bytes.decodeUInt48
 import com.splendo.kaluga.base.bytes.decodeULong
 import com.splendo.kaluga.base.bytes.decodeUShort
 import com.splendo.kaluga.base.bytes.decodeUTF16Char
@@ -69,9 +73,17 @@ internal class BluetoothBinaryDecoder(
 
     override fun decodeDouble(): Double = binaryDescriptor.decodeDoubleElement(decoder)
 
-    // When decoding enums, we deal with (known) unsized elements being encoded. Check for the first match
-    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = binaryDescriptor.enumMap.firstNotNullOf { (key, value) ->
-        key.takeIf { decoder.peekNextIs(value.array, true) }
+    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
+        val offset = if (binaryDescriptor.isNullable) 1 else 0
+        return if (binaryDescriptor.bitIndex >= 0 && binaryDescriptor.bitWidth > offset) {
+            // Packed into the flags as the ordinal, least-significant bit first.
+            (0 until binaryDescriptor.bitWidth - offset).fold(0) { acc, bit ->
+                if (decoder.flags[binaryDescriptor.bitIndex + offset + bit]) acc or (1 shl bit) else acc
+            }
+        } else {
+            // Otherwise the enum is an (unsized) identifier in the body; check for the first match.
+            binaryDescriptor.enumMap.firstNotNullOf { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
+        }
     }
 
     override fun decodeFloat(): Float = binaryDescriptor.decodeFloatElement(decoder)
@@ -83,7 +95,7 @@ internal class BluetoothBinaryDecoder(
     override fun decodeLong(): Long = binaryDescriptor.decodeLongElement(decoder)
 
     @ExperimentalSerializationApi
-    override fun decodeNotNullMark(): Boolean = !binaryDescriptor.isNullable || decoder.flags[binaryDescriptor.bitIndex]
+    override fun decodeNotNullMark(): Boolean = binaryDescriptor.isPresent(decoder.flags)
 
     @ExperimentalSerializationApi
     override fun decodeNull(): Nothing? = null
@@ -222,7 +234,7 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
     @ExperimentalSerializationApi
     override fun <T : Any> decodeNullableSerializableElement(descriptor: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T?>, previousValue: T?): T? {
         val binaryDescriptor = binaryDescriptorAtIndex(index)
-        return if (decoderAtIndex(index).flags[binaryDescriptor.bitIndex]) {
+        return if (binaryDescriptor.isPresent(decoderAtIndex(index).flags)) {
             decodeSerializableElement(descriptor, index, deserializer, previousValue)
         } else {
             null
@@ -271,6 +283,15 @@ internal fun BluetoothBinaryDescriptor.decodeBoolean(decoder: BluetoothBinaryDes
 }
 
 internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.Natural): Long {
+    settings.inFlagsBits?.let { bits ->
+        // Value packed into the flag region, least-significant bit first (mirrors the encoder).
+        var raw = (0 until bits).fold(0L) { acc, bit -> if (decoder.flags[bitIndex + bit]) acc or (1L shl bit) else acc }
+        // Sign-extend a signed value whose top bit is set.
+        if (settings.signed && bits < Long.SIZE_BITS && (raw shr (bits - 1)) and 1L == 1L) {
+            raw = raw or (-1L shl bits)
+        }
+        return raw
+    }
     val supportedLengths = settings.supportedLengths.toList()
     val expectedLength = when (supportedLengths.size) {
         0 -> throw IllegalArgumentException("Size should be set")
@@ -293,6 +314,8 @@ internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: Blue
         Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, byteOrder).toLong() else bytes.decodeUShort(0, byteOrder).toUInt().toLong()
         Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, byteOrder).value.toLong() else bytes.decodeUInt24(0, byteOrder).value.toULong().toLong()
         Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, byteOrder).toLong() else bytes.decodeUInt(0, byteOrder).toULong().toLong()
+        Length.`40_BIT` -> if (settings.signed) bytes.decodeInt40(0, byteOrder).value else bytes.decodeUInt40(0, byteOrder).value.toLong()
+        Length.`48_BIT` -> if (settings.signed) bytes.decodeInt48(0, byteOrder).value else bytes.decodeUInt48(0, byteOrder).value.toLong()
         Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, byteOrder) else bytes.decodeULong(0, byteOrder).toLong()
     }
 }
