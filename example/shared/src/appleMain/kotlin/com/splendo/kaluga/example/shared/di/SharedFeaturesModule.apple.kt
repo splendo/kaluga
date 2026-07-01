@@ -18,11 +18,12 @@
 package com.splendo.kaluga.example.shared.di
 
 import com.splendo.kaluga.example.feature.beacons.beaconsFeatureModule
+import com.splendo.kaluga.example.feature.bluetooth.generation.bluetoothGenerationFeatureModule
 import com.splendo.kaluga.example.feature.bluetooth.server.bluetoothServerFeatureModule
 import com.splendo.kaluga.example.feature.review.reviewFeatureModule
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual val platformSharedFeaturesModule: Module = module {
-    includes(bluetoothServerFeatureModule, beaconsFeatureModule, reviewFeatureModule)
+    includes(bluetoothServerFeatureModule, bluetoothGenerationFeatureModule, beaconsFeatureModule, reviewFeatureModule)
 }

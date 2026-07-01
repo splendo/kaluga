@@ -28,6 +28,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.MissingPermissions
+import com.splendo.kaluga.bluetooth.test.createDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.test.MockPermissionState
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNull
 import kotlin.test.fail
 
 class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, ScanningState>() {
@@ -343,6 +345,28 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         test {
             scanner.didStopScanningMock.verify()
             assertIs<Disabled>(it)
+        }
+    }
+
+    // Regression: a connected device's connect/disconnect events were dropped unless the scan repo was Enabled, but the
+    // repo is briefly (re)initializing (or deinitialized) whenever nothing observes scanned devices. connectableDevice
+    // must resolve the device in those states too, so the device still receives the event.
+    @Test
+    fun testConnectableDeviceResolvedWhileNotEnabled() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
+        test {
+            assertIs<Idle>(it)
+        }
+        mainAction {
+            val devices = DefaultDevices(
+                mapOf(device.identifier to device),
+                emptyMap(),
+                ScanningState.DeviceDiscoveryMode.Scanning(deviceFilter),
+            )
+            assertEquals(device, ScanningStateImpl.Enabled.Idle(devices, scanner).connectableDevice(device.identifier))
+            assertEquals(device, ScanningStateImpl.Initializing(devices, scanner).connectableDevice(device.identifier))
+            assertEquals(device, ScanningStateImpl.Deinitialized(devices, scanner).connectableDevice(device.identifier))
+            assertNull(ScanningStateImpl.NotInitialized.connectableDevice(device.identifier))
+            assertNull(ScanningStateImpl.Enabled.Idle(devices, scanner).connectableDevice(createDeviceWrapper().identifier))
         }
     }
 }

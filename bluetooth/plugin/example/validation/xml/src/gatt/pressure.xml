@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Characteristic type="org.example.characteristic.pressure" uuid="2A6D" name="Pressure">
+  <Value>
+    <Field name="Pressure">
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.pressure.pascal</Unit>
+      <Multiplier>10</Multiplier>
+    </Field>
+  </Value>
+</Characteristic>

@@ -47,7 +47,7 @@ import kotlin.test.assertTrue
 class LocalServerAttributesTest : BaseTest() {
 
     /**
-     * Builds [LocalServiceDSL.Primary] instances with recording register actions so the tests can
+     * Builds primary [LocalServiceDSL] instances with recording register actions so the tests can
      * inspect what was registered and drive the registered read/write callbacks directly.
      */
     private class Fixture {
@@ -65,8 +65,9 @@ class LocalServerAttributesTest : BaseTest() {
             }
         }
 
-        fun primary(uuid: UUID = randomUUID()): LocalServiceDSL.Primary = LocalServiceDSL.Primary(
+        fun primary(uuid: UUID = randomUUID()): LocalServiceDSL = LocalServiceDSL(
             uuid,
+            Service.Type.PRIMARY,
             { characteristic, device, value -> notifyMock.call(characteristic, device, value) },
             { characteristic, onRead -> reads[characteristic.uuid] = onRead },
             { characteristic, onWrite -> writes[characteristic.uuid] = onWrite },
@@ -267,5 +268,33 @@ class LocalServerAttributesTest : BaseTest() {
         assertEquals(1, service.characteristics.size)
         assertEquals(1, service.includedServices.size)
         assertEquals(Service.Type.SECONDARY, service.includedServices.single().type)
+    }
+
+    @Test
+    fun testIncludedServicesNestToAnyDepth() {
+        val fixture = Fixture()
+        val primaryUuid = randomUUID()
+        val secondaryUuid = randomUUID()
+        val deepUuid = randomUUID()
+        val deepCharacteristicUuid = randomUUID()
+        val service = fixture.primary(primaryUuid).apply {
+            includedService(secondaryUuid) {
+                includedService(deepUuid) {
+                    characteristic(deepCharacteristicUuid) {
+                        readableAlwaysSuccess { _, _ -> byteArrayOf() }
+                    }
+                }
+            }
+        }.build()
+
+        assertEquals(primaryUuid, service.uuid)
+        val secondary = service.includedServices.single()
+        assertEquals(secondaryUuid, secondary.uuid)
+        assertEquals(Service.Type.SECONDARY, secondary.type)
+        // a secondary (included) service can itself include further services
+        val deep = secondary.includedServices.single()
+        assertEquals(deepUuid, deep.uuid)
+        assertEquals(Service.Type.SECONDARY, deep.type)
+        assertEquals(deepCharacteristicUuid, deep.characteristics.single().uuid)
     }
 }

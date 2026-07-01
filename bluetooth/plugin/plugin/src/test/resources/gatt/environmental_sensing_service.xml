@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Representative GATT service in the Bluetooth SIG XML schema (hand-authored fixture, not a verbatim spec file). -->
+<Service name="Environmental Sensing Sample" type="org.bluetooth.service.environmental_sensing" uuid="181A">
+    <Characteristics>
+        <Characteristic name="Environmental Sample" type="org.bluetooth.characteristic.environmental_sample" uuid="2BCE">
+            <Properties>
+                <Read>Mandatory</Read>
+                <Notify>Optional</Notify>
+                <Write>Excluded</Write>
+            </Properties>
+        </Characteristic>
+    </Characteristics>
+</Service>

@@ -29,6 +29,10 @@ gradlePlugin {
         id = "com.splendo.kaluga.plugin.android.databinding"
         implementationClass = "com.splendo.kaluga.plugin.DatabindingAndroidLibraryComponentsPlugin"
     }
+    plugins.register("com.splendo.kaluga.plugin.ksp") {
+        id = "com.splendo.kaluga.plugin.ksp"
+        implementationClass = "com.splendo.kaluga.plugin.KSPLibraryComponentsPlugin"
+    }
 }
 
 kotlin {

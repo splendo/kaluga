@@ -191,7 +191,8 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(value: Decima
 /**
  * The set of all [DefinedScientificUnit] supported by this library
  */
-val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
+val Units: Set<DefinedScientificUnit<*>> get() = AbsorbedDoseRateUnits +
+    AccelerationUnits +
     ActionUnits +
     AmountOfSubstanceUnits +
     AngleUnits +
@@ -200,51 +201,80 @@ val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     AreaDensityUnits +
     AreaUnits +
     CatalysticActivityUnits +
+    CatalyticConcentrationUnits +
     DensityUnits +
     DynamicViscosityUnits +
     ElectricCapacitanceUnits +
     ElectricChargeUnits +
+    ElectricChargeDensityUnits +
     ElectricConductanceUnits +
     ElectricCurrentUnits +
+    ElectricCurrentDensityUnits +
+    ElectricFieldStrengthUnits +
     ElectricInductanceUnits +
     ElectricResistanceUnits +
+    ElectricalConductivityUnits +
+    ElectricDipoleMomentUnits +
     EnergyUnits +
+    EnergyDensityUnits +
+    ExposureUnits +
     ForceUnits +
     FrequencyUnits +
     HeatCapacityUnits +
     IlluminanceUnits +
     IonizingRadiationAbsorbedDoseUnits +
     IonizingRadiationEquivalentDoseUnits +
+    EquivalentDoseRateUnits +
+    IrradianceUnits +
     JoltUnits +
     KinematicViscosityUnits +
     LengthUnits +
+    LinearChargeDensityUnits +
     LinearMassDensityUnits +
     LuminanceUnits +
     LuminousEnergyUnits +
     LuminousExposureUnits +
     LuminousFluxUnits +
     LuminousIntensityUnits +
+    MagneticDipoleMomentUnits +
+    MagneticFieldStrengthUnits +
     MagneticFluxUnits +
     MagneticInductionUnits +
     MassFlowRateUnits +
+    MassFluxUnits +
     MolalityUnits +
     MolarEnergyUnits +
+    MolarEntropyUnits +
     MolarityUnits +
     MolarMassUnits +
     MolarVolumeUnits +
+    MomentOfInertiaUnits +
     MomentumUnits +
+    PermeabilityUnits +
+    PermittivityUnits +
     PowerUnits +
     PressureUnits +
+    RadianceUnits +
+    RadiantIntensityUnits +
     RadioactivityUnits +
+    ReluctanceUnits +
+    ResistivityUnits +
+    SnapUnits +
     SolidAngleUnits +
     SpecificEnergyUnits +
     SpecificHeatCapacityUnits +
     SpecificVolumeUnits +
+    SpecificWeightUnits +
     SpeedUnits +
+    SurfaceChargeDensityUnits +
     SurfaceTensionUnits +
     TemperatureUnits +
+    ThermalConductanceUnits +
+    ThermalConductivityUnits +
+    ThermalInsulanceUnits +
     ThermalResistanceUnits +
     TimeUnits +
+    TorqueUnits +
     VoltageUnits +
     VolumetricFlowUnits +
     VolumetricFluxUnits +
@@ -271,50 +301,77 @@ internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
     setupForAreaDensity()
     setupForArea()
     setupForCatalysticActivity()
+    setupForCatalyticConcentration()
     setupForDensity()
     setupForDynamicViscosity()
     setupForElectricCapacitance()
     setupForElectricCharge()
+    setupForElectricChargeDensity()
     setupForElectricConductance()
     setupForElectricCurrent()
+    setupForElectricCurrentDensity()
+    setupForElectricFieldStrength()
     setupForElectricInductance()
     setupForElectricResistance()
+    setupForElectricalConductivity()
+    setupForElectricDipoleMoment()
     setupForEnergy()
+    setupForEnergyDensity()
+    setupForExposure()
     setupForForce()
     setupForFrequency()
     setupForHeatCapacity()
     setupForIlluminance()
     setupForIonizingRadiationAbsorbedDose()
     setupForIonizingRadiationEquivalentDose()
+    setupForIrradiance()
     setupForJolt()
     setupForKinematicViscosity()
     setupForLength()
+    setupForLinearChargeDensity()
     setupForLinearMassDensity()
     setupForLuminance()
     setupForLuminousExposure()
     setupForLuminousFlux()
     setupForLuminousIntensity()
+    setupForMagneticDipoleMoment()
+    setupForMagneticFieldStrength()
     setupForMagneticFlux()
     setupForMagneticInduction()
     setupForMassFlowRate()
+    setupForMassFlux()
     setupForMolality()
     setupForMolarity()
     setupForMolarEnergy()
+    setupForMolarEntropy()
     setupForMolarMass()
     setupForMolarVolume()
+    setupForMomentOfInertia()
     setupForMomentum()
+    setupForPermeability()
+    setupForPermittivity()
     setupForPower()
     setupForPressure()
+    setupForRadiance()
+    setupForRadiantIntensity()
     setupForRadioactivity()
+    setupForResistivity()
+    setupForSnap()
     setupForSolidAngle()
     setupForSpecificEnergy()
     setupForSpecificHeatCapacity()
     setupForSpecificVolume()
+    setupForSpecificWeight()
     setupForSpeed()
+    setupForSurfaceChargeDensity()
     setupForSurfaceTension()
     setupForTemperature()
+    setupForThermalConductance()
+    setupForThermalConductivity()
+    setupForThermalInsulance()
     setupForThermalResistance()
     setupForTime()
+    setupForTorque()
     setupForVoltage()
     setupForVolume()
     setupForVolumetricFlow()
@@ -329,6 +386,7 @@ internal fun PolymorphicModuleBuilder<AbstractScientificUnit<*>>.registerUnitCla
 }
 
 internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedUnitClasses() {
+    subclass(AbsorbedDoseRate::class, AbsorbedDoseRate.serializer())
     registerActionClasses()
     registerAmountOfSubstanceClasses()
     registerAngleClasses()
@@ -337,51 +395,80 @@ internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedU
     registerAreaDensityClasses()
     registerAreaClasses()
     registerCatalysticActivityClasses()
+    registerCatalyticConcentrationClasses()
     registerDensityClasses()
     registerDynamicViscosityClasses()
     registerElectricCapacitanceClasses()
     registerElectricChargeClasses()
+    registerElectricChargeDensityClasses()
     registerElectricConductanceClasses()
     registerElectricCurrentClasses()
+    registerElectricCurrentDensityClasses()
+    registerElectricFieldStrengthClasses()
     registerElectricInductanceClasses()
     registerElectricResistanceClasses()
+    registerElectricalConductivityClasses()
+    registerElectricDipoleMomentClasses()
     registerEnergyClasses()
+    registerEnergyDensityClasses()
+    registerExposureClasses()
     registerForceClasses()
     registerFrequencyClasses()
     registerHeatCapacityClasses()
     registerIlluminanceClasses()
     registerIonizingRadiationAbsorbedDoseClasses()
     registerIonizingRadiationEquivalentDoseClasses()
+    subclass(EquivalentDoseRate::class, EquivalentDoseRate.serializer())
+    registerIrradianceClasses()
     registerJoltClasses()
     registerKinematicViscosityClasses()
     registerLengthClasses()
+    registerLinearChargeDensityClasses()
     registerLinearMassDensityClasses()
     registerLuminanceClasses()
     subclass(LuminousEnergy::class, LuminousEnergy.serializer())
     registerLuminousExposureClasses()
     registerLuminousFluxClasses()
     registerLuminousIntensityClasses()
+    registerMagneticDipoleMomentClasses()
+    registerMagneticFieldStrengthClasses()
     registerMagneticFluxClasses()
     registerMagneticInductionClasses()
     registerMassFlowRateClasses()
+    registerMassFluxClasses()
     registerMolalityClasses()
     registerMolarityClasses()
     registerMolarEnergyClasses()
+    registerMolarEntropyClasses()
     registerMolarMassClasses()
     registerMolarVolumeClasses()
+    registerMomentOfInertiaClasses()
     registerMomentumClasses()
+    registerPermeabilityClasses()
+    registerPermittivityClasses()
     registerPowerClasses()
     registerPressureClasses()
+    registerRadianceClasses()
+    registerRadiantIntensityClasses()
     registerRadioactivityClasses()
+    subclass(Reluctance::class, Reluctance.serializer())
+    registerResistivityClasses()
+    registerSnapClasses()
     registerSolidAngleClasses()
     registerSpecificEnergyClasses()
     registerSpecificHeatCapacityClasses()
     registerSpecificVolumeClasses()
+    registerSpecificWeightClasses()
     registerSpeedClasses()
+    registerSurfaceChargeDensityClasses()
     registerSurfaceTensionClasses()
     registerTemperatureClasses()
+    registerThermalConductanceClasses()
+    registerThermalConductivityClasses()
+    registerThermalInsulanceClasses()
     registerThermalResistanceClasses()
     registerTimeClasses()
+    registerTorqueClasses()
     registerVoltageClasses()
     registerVolumetricFlowClasses()
     registerVolumetricFluxClasses()

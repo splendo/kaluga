@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hand-authored fixture: a field with a compound unit, to exercise compound ScientificValue generation. -->
+<Characteristic type="org.example.characteristic.ground_speed" uuid="2A00" name="Ground Speed">
+  <Value>
+    <Field name="Speed">
+      <Format>uint16</Format>
+      <Unit>org.bluetooth.unit.velocity.metres_per_second</Unit>
+      <DecimalExponent>-2</DecimalExponent>
+    </Field>
+  </Value>
+</Characteristic>

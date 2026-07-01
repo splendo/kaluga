@@ -20,10 +20,12 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.test.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.base.test.mock.verifyWithin
 import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -72,6 +74,49 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
             val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verifyWithin(value = captor, times = 2)
             assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
+        }
+    }
+
+    @Test
+    fun testReadIsNotDeliveredAsNotification() = testWithFlowAndTestContext(
+        Configuration.DeviceWithCharacteristic(),
+    ) {
+        val notified = "AA".encodeToByteArray()
+        val read = "BB".encodeToByteArray()
+        val notifiedAgain = "CC".encodeToByteArray()
+
+        mainAction {
+            bluetoothClient.startScanning()
+            scanDevice()
+        }
+        test {
+            assertEquals(null, it)
+        }
+        mainAction {
+            connectDevice()
+            discoverService()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
+            connectionManager.performActionMock.verifyWithin(value = captor)
+            assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
+            yield()
+            connectionManager.handleCurrentAction()
+            connectionManager.notify(characteristicUuid, notified)
+        }
+        test {
+            assertEquals(notified, it)
+        }
+        mainAction {
+            // A read of a notifying characteristic must not surface on the notification flow.
+            (characteristic.wrapper as MockCharacteristicWrapper).updateValue(read)
+            launch { characteristic.read() }
+            yield()
+            connectionManager.handleCurrentAction()
+            yield()
+            connectionManager.notify(characteristicUuid, notifiedAgain)
+        }
+        test {
+            // The read value was skipped: the flow advances straight from the first to the second notification.
+            assertEquals(notifiedAgain, it)
         }
     }
 }

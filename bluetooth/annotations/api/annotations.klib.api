@@ -1,0 +1,85 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bluetooth:annotations>
+open annotation class com.splendo.kaluga.bluetooth.annotations/Advertising : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/Advertising|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/Advertising.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/AdvertisingName : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/AdvertisingName|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.annotations/AdvertisingName.<init>|<init>(kotlin.String){}[0]
+
+    final val name // com.splendo.kaluga.bluetooth.annotations/AdvertisingName.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.bluetooth.annotations/AdvertisingName.name.<get-name>|<get-name>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/Bluetooth : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/Bluetooth|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/Bluetooth.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/BluetoothCharacteristic : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/BluetoothCharacteristic|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.annotations/BluetoothCharacteristic.<init>|<init>(kotlin.String){}[0]
+
+    final val uuid // com.splendo.kaluga.bluetooth.annotations/BluetoothCharacteristic.uuid|{}uuid[0]
+        final fun <get-uuid>(): kotlin/String // com.splendo.kaluga.bluetooth.annotations/BluetoothCharacteristic.uuid.<get-uuid>|<get-uuid>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/BluetoothClientName : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/BluetoothClientName|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.annotations/BluetoothClientName.<init>|<init>(kotlin.String){}[0]
+
+    final val name // com.splendo.kaluga.bluetooth.annotations/BluetoothClientName.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.bluetooth.annotations/BluetoothClientName.name.<get-name>|<get-name>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/BluetoothDescriptor : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/BluetoothDescriptor|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.annotations/BluetoothDescriptor.<init>|<init>(kotlin.String){}[0]
+
+    final val uuid // com.splendo.kaluga.bluetooth.annotations/BluetoothDescriptor.uuid|{}uuid[0]
+        final fun <get-uuid>(): kotlin/String // com.splendo.kaluga.bluetooth.annotations/BluetoothDescriptor.uuid.<get-uuid>|<get-uuid>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/BluetoothServerName : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/BluetoothServerName|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.annotations/BluetoothServerName.<init>|<init>(kotlin.String){}[0]
+
+    final val name // com.splendo.kaluga.bluetooth.annotations/BluetoothServerName.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.bluetooth.annotations/BluetoothServerName.name.<get-name>|<get-name>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/BluetoothService : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/BluetoothService|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.annotations/BluetoothService.<init>|<init>(kotlin.String){}[0]
+
+    final val uuid // com.splendo.kaluga.bluetooth.annotations/BluetoothService.uuid|{}uuid[0]
+        final fun <get-uuid>(): kotlin/String // com.splendo.kaluga.bluetooth.annotations/BluetoothService.uuid.<get-uuid>|<get-uuid>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/Encrypted : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/Encrypted|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/Encrypted.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/Indicatable : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/Indicatable|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/Indicatable.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/Notifiable : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/Notifiable|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/Notifiable.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/Readable : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/Readable|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/Readable.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/Writable : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/Writable|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/Writable.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/WritableSigned : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/WritableSigned|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/WritableSigned.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.annotations/WritableWithoutResponse : kotlin/Annotation { // com.splendo.kaluga.bluetooth.annotations/WritableWithoutResponse|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.annotations/WritableWithoutResponse.<init>|<init>(){}[0]
+}

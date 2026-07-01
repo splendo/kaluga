@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
 import com.splendo.kaluga.bluetooth.BluetoothClient
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -176,13 +177,11 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
-        if (state is ScanningState.Enabled) {
-            state.devices.allDevices[identifier]?.let { device ->
-                if (connected) {
-                    device.handleConnected()
-                } else {
-                    device.handleDisconnected()
-                }
+        state.connectableDevice(identifier)?.let {
+            if (connected) {
+                it.handleConnected()
+            } else {
+                it.handleDisconnected()
             }
         }
     }
@@ -210,3 +209,14 @@ class ScanningStateRepo(
     contextForIdentifier = contextForIdentifier,
     coroutineContext = coroutineContext,
 )
+
+/**
+ * The [ConnectableDevice] for [identifier] if this [ScanningState] still tracks it. A connected device's connect and
+ * disconnect events must be routed whenever the device is known, not only while [ScanningState.Enabled]: the repo can
+ * be (re)initializing or deinitialized (e.g. when nothing observes scanned devices) when such an event arrives.
+ */
+internal fun ScanningState.connectableDevice(identifier: Identifier): ConnectableDevice? = when (this) {
+    is ScanningState.Active -> devices.allDevices[identifier]
+    is ScanningState.Deinitialized -> previousDevices.allDevices[identifier]
+    else -> null
+}

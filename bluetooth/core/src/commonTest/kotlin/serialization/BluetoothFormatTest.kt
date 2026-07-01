@@ -28,6 +28,14 @@ import com.splendo.kaluga.base.bytes.MedFloat32
 import com.splendo.kaluga.base.bytes.UInt24
 import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.base.bytes.toInt24
+import com.splendo.kaluga.base.bytes.toInt40
+import com.splendo.kaluga.base.bytes.toInt48
+import com.splendo.kaluga.base.bytes.toUInt40
+import com.splendo.kaluga.base.bytes.toUInt48
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Joule
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -45,6 +53,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
@@ -62,6 +71,13 @@ class BluetoothFormatTest {
 
         @SerializedByteValue(value = 0x02)
         B,
+    }
+
+    @Serializable
+    enum class SensorContact {
+        NotSupported,
+        NotDetected,
+        Detected,
     }
 
     @Serializable
@@ -108,6 +124,17 @@ class BluetoothFormatTest {
     @JvmInline
     value class NumberValueContainer<T>(@Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val value: T)
 
+    // Spike: a value class that IS a Kaluga ScientificValue and also carries BluetoothFormat annotations.
+    @Serializable
+    @JvmInline
+    value class EnergyExpended(
+        @Size(Length.`16_BIT`)
+        @Unsigned
+        override val value: Int,
+    ) : ScientificValue<PhysicalQuantity.Energy, Joule> {
+        override val unit: Joule get() = Joule
+    }
+
     @Serializable
     @JvmInline
     value class RRInterval(
@@ -116,6 +143,14 @@ class BluetoothFormatTest {
         val seconds: Double,
     ) {
         constructor(duration: Duration) : this(duration.toDouble(DurationUnit.SECONDS))
+    }
+
+    @Test
+    fun encodeScientificValueClass() {
+        // round-trips through BluetoothFormat as a 16-bit unsigned little-endian value...
+        validateRoundTrip(EnergyExpended(500), EnergyExpended.serializer(), byteArrayOf(0xF4.toByte(), 0x01))
+        // ...while still being a usable ScientificValue
+        assertEquals(500(Joule).compareTo(EnergyExpended(500)), 0, EnergyExpended(500).toString())
     }
 
     @Test
@@ -136,6 +171,59 @@ class BluetoothFormatTest {
         validateEncoding(Container(false, flagValue = true, nullableValue = null, ValueContainer(true), null), byteArrayOf(0b10001))
         validateEncoding(Container(true, flagValue = false, nullableValue = false, ValueContainer(false), ValueContainer(true)), byteArrayOf(0b1001110))
         validateEncoding(Container(true, flagValue = true, nullableValue = true, ValueContainer(true), ValueContainer(true)), byteArrayOf(0b1111111))
+    }
+
+    @Test
+    fun encodeEnumInFlags() {
+        // 3 cases -> ceil(log2(3)) = 2 flag bits, ordinal stored LSB-first at index 0.
+        @Serializable
+        data class OnlyContact(@FlagIndex(0) val contact: SensorContact)
+
+        validateEncoding(OnlyContact(SensorContact.NotSupported), byteArrayOf(0b00))
+        validateEncoding(OnlyContact(SensorContact.NotDetected), byteArrayOf(0b01))
+        validateEncoding(OnlyContact(SensorContact.Detected), byteArrayOf(0b10))
+
+        // Flags byte (the enum) followed by a body field.
+        @Serializable
+        data class Reading(@FlagIndex(0) val contact: SensorContact, @Size(Length.`8_BIT`) val rate: Byte)
+        validateEncoding(Reading(SensorContact.Detected, 42), byteArrayOf(0b10, 42))
+
+        // A nullable flag-enum: the presence bit sits at the index, the ordinal in the bits above it.
+        @Serializable
+        data class OptionalContact(@FlagIndex(0) val contact: SensorContact?)
+
+        validateEncoding(OptionalContact(null), byteArrayOf(0b000))
+        validateEncoding(OptionalContact(SensorContact.NotSupported), byteArrayOf(0b001))
+        validateEncoding(OptionalContact(SensorContact.Detected), byteArrayOf(0b101))
+    }
+
+    @Test
+    fun encodeNumericInFlags() {
+        // A sub-byte numeric subfield of a bit field: @FlagIndex + @FlagWidth and no @Size packs the value straight into
+        // the flag region, least-significant bit first (like an enum ordinal), rather than as body bytes.
+        @Serializable
+        data class Packed(@FlagIndex(0) @FlagWidth(bits = 4) val nibble: Int, @FlagIndex(4) @FlagWidth(bits = 12) val wide: Int)
+        // nibble = 5 -> bits 0..3 = 0b0101; wide = 0x123 -> bits 4..15. Two flag bytes: byte0 = 0x35, byte1 = 0x12.
+        validateEncoding(Packed(nibble = 5, wide = 0x123), byteArrayOf(0x35, 0x12))
+
+        // A single unsigned 4-bit value occupies one flags byte (the high nibble stays zero).
+        @Serializable
+        data class Nibble(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        validateEncoding(Nibble(0xA), byteArrayOf(0x0A))
+
+        // A signed sub-byte value round-trips through two's-complement sign extension: -3 in 4 bits = 0b1101.
+        @Serializable
+        data class Signed(@FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        validateEncoding(Signed(-3), byteArrayOf(0x0D))
+        validateEncoding(Signed(7), byteArrayOf(0x07))
+    }
+
+    @Test
+    fun rejectsNumericTooLargeForFlagWidth() {
+        // 16 needs 5 bits; an unsigned 4-bit flag field holds 0..15, so encoding must fail rather than truncate.
+        @Serializable
+        data class TooBig(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        assertFailsWith<IllegalArgumentException> { BluetoothFormat.encodeToByteArray(TooBig.serializer(), TooBig(16)) }
     }
 
     @Test
@@ -626,6 +714,106 @@ class BluetoothFormatTest {
                 add(1234567890123456789u)
             },
         )
+    }
+
+    @Test
+    fun encode40And48Bit() {
+        @Serializable
+        data class Container(
+            @Size(Length.`40_BIT`) val `40bit`: Long,
+            @Size(Length.`48_BIT`) val `48bit`: Long,
+            @Size(Length.`40_BIT`) @Unsigned val unsigned40: ULong,
+            @Size(Length.`48_BIT`) @Unsigned val unsigned48: ULong,
+            @Size(Length.`32_BIT`) @Size(Length.`40_BIT`) @Size(Length.`48_BIT`) val variableSizing: Long,
+        )
+
+        // variableSizing 0x123456789A overflows 32 bits, so the flexible sizing picks 40-bit (index 1 of {32,40,48}).
+        validateEncoding(
+            Container(
+                `40bit` = 0x123456789A,
+                `48bit` = -42,
+                unsigned40 = 0xFFFFFFFFFFuL,
+                unsigned48 = 0xAABBCCDDEEFFuL,
+                variableSizing = 0x123456789A,
+            ),
+            buildByteArray {
+                add(true) // variableSizing length bits (0b01 -> 40-bit)
+                add(false)
+                add(0x123456789A.toInt40())
+                add((-42L).toInt48())
+                add(0xFFFFFFFFFFuL.toUInt40())
+                add(0xAABBCCDDEEFFuL.toUInt48())
+                add(0x123456789A.toInt40())
+            },
+        )
+
+        // negative values exercise sign extension; variableSizing -2 now fits 32-bit (index 0 -> 0b00).
+        validateEncoding(
+            Container(
+                `40bit` = -549755813888, // Int40.MIN_VALUE
+                `48bit` = 140737488355327, // Int48.MAX_VALUE
+                unsigned40 = 42uL,
+                unsigned48 = 0uL,
+                variableSizing = -2,
+            ),
+            buildByteArray {
+                add(false) // variableSizing length bits (0b00 -> 32-bit)
+                add(false)
+                add((-549755813888L).toInt40())
+                add(140737488355327L.toInt48())
+                add(42uL.toUInt40())
+                add(0uL.toUInt48())
+                add(int = -2)
+            },
+        )
+    }
+
+    @Test
+    fun encodePresentWhenAllSet() {
+        @Serializable
+        data class Container(
+            @Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?,
+            @Size(Length.`8_BIT`) @FlagIndex(1) val b: Byte?,
+            // Present on the wire exactly when both bit 0 and bit 1 (a's and b's presence bits) are set; owns no bit.
+            @Size(Length.`8_BIT`) @PresentWhenAllSet(0, 1) val c: Byte?,
+        )
+
+        // a, b present -> bits 0 and 1 set (0b11), so c is present too
+        validateEncoding(Container(a = 10, b = 20, c = 30), byteArrayOf(0b11, 10, 20, 30))
+        // a absent -> bit 0 clear, so c is necessarily absent (only b present)
+        validateEncoding(Container(a = null, b = 20, c = null), byteArrayOf(0b10, 20))
+        // b absent -> bit 1 clear, so c is necessarily absent (only a present)
+        validateEncoding(Container(a = 10, b = null, c = null), byteArrayOf(0b01, 10))
+        // nothing present
+        validateEncoding(Container(a = null, b = null, c = null), byteArrayOf(0b00))
+    }
+
+    @Test
+    fun encodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlags() {
+        @Serializable
+        data class Container(
+            @Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?,
+            @Size(Length.`8_BIT`) @FlagIndex(1) val b: Byte?,
+            @Size(Length.`8_BIT`) @PresentWhenAllSet(0, 1) val c: Byte?,
+        )
+
+        // `c` owns no flag bit: its presence is *derived* from bits 0 and 1, so a value whose `c` disagrees with those
+        // bits cannot round-trip. These are still valid instances; we just pin the (lossy) wire behaviour.
+
+        // c set while its gating bits are clear: c's byte is written, but on decode bits 0/1 are clear so c reads back
+        // as null — the value is silently lost (and its stray body byte is ignored).
+        val cWithoutGate = Container(a = null, b = null, c = 30)
+        val encoded = BluetoothFormat.encodeToByteArray(Container.serializer(), cWithoutGate)
+        assertTrue(encoded.contentEquals(byteArrayOf(0b00, 30)), encoded.toHexString(separator = " "))
+        assertEquals(Container(a = null, b = null, c = null), BluetoothFormat.decodeFromByteArray(Container.serializer(), encoded))
+
+        // c null while its gating bits are set: decode expects c's byte but none was written, so decoding fails outright.
+        val gateWithoutC = Container(a = 10, b = 20, c = null)
+        val truncated = BluetoothFormat.encodeToByteArray(Container.serializer(), gateWithoutC)
+        assertTrue(truncated.contentEquals(byteArrayOf(0b11, 10, 20)), truncated.toHexString(separator = " "))
+        assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> {
+            BluetoothFormat.decodeFromByteArray(Container.serializer(), truncated)
+        }
     }
 
     @Test
@@ -1697,9 +1885,9 @@ class BluetoothFormatTest {
             @Size(Length.`16_BIT`)
             @Unsigned
             val heartRate: Int,
-            @FlagIndex(1)
-            val contactSupported: Boolean,
             @FlagIndex(2)
+            val contactSupported: Boolean,
+            @FlagIndex(1)
             val contactDetected: Boolean = !contactSupported,
             @Unsigned
             @Size(Length.`16_BIT`)
@@ -1716,7 +1904,7 @@ class BluetoothFormatTest {
                 contactDetected = false,
                 rrIntervals = emptyList(),
             ),
-            byteArrayOf(0x02, 0x55),
+            byteArrayOf(0x04, 0x55),
         )
         validateEncoding(
             HeartRate(
@@ -1726,7 +1914,7 @@ class BluetoothFormatTest {
                 energyExpended = 500,
                 rrIntervals = listOf(RRInterval(1.seconds), RRInterval(0.5.seconds)),
             ),
-            byteArrayOf(0x1B, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x04, 0x00, 0x02),
+            byteArrayOf(0x1D, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x04, 0x00, 0x02),
         )
 
         validateEncoding(
@@ -1735,7 +1923,7 @@ class BluetoothFormatTest {
                 HeartRate(500, contactSupported = true, contactDetected = false, rrIntervals = listOf(RRInterval(2.seconds), RRInterval(0.25.seconds))),
             ),
             ListSerializer(HeartRate.serializer()),
-            byteArrayOf(0x02, 0x06, 0x32, 0x13, 0xF4.toByte(), 0x01, 0x00, 0x08, 0x00, 0x01),
+            byteArrayOf(0x02, 0x06, 0x32, 0x15, 0xF4.toByte(), 0x01, 0x00, 0x08, 0x00, 0x01),
         )
     }
 

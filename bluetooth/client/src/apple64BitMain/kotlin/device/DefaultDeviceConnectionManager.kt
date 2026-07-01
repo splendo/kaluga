@@ -80,6 +80,11 @@ internal actual class DefaultDeviceConnectionManager(
     private val discoveringMutex = Mutex()
     private val discoveringServices = mutableListOf<CBUUID>()
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
+    private val discoveringIncludedServices = mutableListOf<CBUUID>()
+
+    // Services whose contents discovery has already been started, so a service included by several parents (or a cycle)
+    // is only discovered once.
+    private val discoveredServiceUuids = mutableSetOf<CBUUID>()
 
     private val peripheralDelegate = object : NSObject(), KalugaBluetoothPeripheralDelegateProtocol {
 
@@ -128,6 +133,10 @@ internal actual class DefaultDeviceConnectionManager(
             didDiscoverCharacteristic(service)
         }
 
+        override fun didDiscoverIncludedServicesFor(service: CBService, peripheral: CBPeripheral, error: NSError?) {
+            didDiscoverIncludedServices(service)
+        }
+
         override fun didDiscoverServicesFor(peripheral: CBPeripheral, error: NSError?) {
             didDiscoverServices()
         }
@@ -169,6 +178,8 @@ internal actual class DefaultDeviceConnectionManager(
         discoveringMutex.withLock {
             discoveringServices.clear()
             discoveringCharacteristics.clear()
+            discoveringIncludedServices.clear()
+            discoveredServiceUuids.clear()
             peripheral.discoverServices(null)
         }
     }
@@ -263,14 +274,30 @@ internal actual class DefaultDeviceConnectionManager(
     private fun didDiscoverServices() {
         launch {
             discoveringMutex.withLock {
-                discoveringServices.addAll(
-                    peripheral.services?.typedList<CBService>()?.map {
-                        peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
-                        it.UUID
-                    } ?: emptyList(),
-                )
+                peripheral.services?.typedList<CBService>()?.forEach { discoverServiceContents(it) }
             }
 
+            checkScanComplete()
+        }
+    }
+
+    // Starts discovering a service's characteristics and its included services (which are themselves discovered the same
+    // way, so every level of the include tree is scanned). Must be called while holding [discoveringMutex].
+    private fun discoverServiceContents(service: CBService) {
+        if (!discoveredServiceUuids.add(service.UUID)) return
+        discoveringServices.add(service.UUID)
+        discoveringIncludedServices.add(service.UUID)
+        // A null filter discovers all; an empty (non-null) list is a UUID filter that need not mean "all".
+        peripheral.discoverCharacteristics(null, service)
+        peripheral.discoverIncludedServices(null, service)
+    }
+
+    private fun didDiscoverIncludedServices(forService: CBService) {
+        launch {
+            discoveringMutex.withLock {
+                discoveringIncludedServices.remove(forService.UUID)
+                forService.includedServices?.typedList<CBService>()?.forEach { discoverServiceContents(it) }
+            }
             checkScanComplete()
         }
     }
@@ -300,7 +327,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun checkScanComplete() {
-        if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
+        if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty() && discoveringIncludedServices.isEmpty()) {
             val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
             handleDiscoverCompleted(services)
         }

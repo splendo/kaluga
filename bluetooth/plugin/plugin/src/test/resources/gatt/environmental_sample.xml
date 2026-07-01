@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Representative GATT characteristic in the Bluetooth SIG XML schema (hand-authored fixture, not a verbatim spec file). -->
+<Characteristic name="Environmental Sample" type="org.bluetooth.characteristic.environmental_sample" uuid="2BCE">
+    <Value>
+        <Field name="Temperature">
+            <Format>sint16</Format>
+            <DecimalExponent>-2</DecimalExponent>
+            <Unit>org.bluetooth.unit.thermodynamic_temperature.degree_celsius</Unit>
+        </Field>
+        <Field name="Humidity">
+            <Format>uint16</Format>
+            <DecimalExponent>-2</DecimalExponent>
+            <Unit>org.bluetooth.unit.percentage</Unit>
+        </Field>
+        <Field name="Pressure">
+            <Format>uint32</Format>
+            <Multiplier>10</Multiplier>
+            <Unit>org.bluetooth.unit.pressure.pascal</Unit>
+        </Field>
+    </Value>
+</Characteristic>

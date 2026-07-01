@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Combined" is gated by a compound requirement (C1 and C2): present only when both Feature A and Feature B are. -->
+<Characteristic type="org.example.characteristic.compound_flags" uuid="2BE3" name="Compound Flags">
+  <Value>
+    <Field name="Flags">
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Feature A Present bit">
+          <Enumerations>
+            <Enumeration key="0" value="Feature A not present" />
+            <Enumeration key="1" value="Feature A present" requires="C1" />
+          </Enumerations>
+        </Bit>
+        <Bit index="1" size="1" name="Feature B Present bit">
+          <Enumerations>
+            <Enumeration key="0" value="Feature B not present" />
+            <Enumeration key="1" value="Feature B present" requires="C2" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="2" size="6" />
+      </BitField>
+    </Field>
+    <Field name="Value A">
+      <Requirement>C1</Requirement>
+      <Format>uint8</Format>
+    </Field>
+    <Field name="Value B">
+      <Requirement>C2</Requirement>
+      <Format>uint8</Format>
+    </Field>
+    <Field name="Combined">
+      <Requirement>C1</Requirement>
+      <Requirement>C2</Requirement>
+      <Format>uint8</Format>
+    </Field>
+  </Value>
+</Characteristic>

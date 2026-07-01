@@ -24,8 +24,38 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.convert
+import com.splendo.kaluga.scientific.unit.AbsorbedDoseRateUnits
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.AccelerationUnits
+import com.splendo.kaluga.scientific.unit.CatalyticConcentrationUnits
+import com.splendo.kaluga.scientific.unit.ElectricChargeDensityUnits
+import com.splendo.kaluga.scientific.unit.ElectricCurrentDensityUnits
+import com.splendo.kaluga.scientific.unit.ElectricDipoleMomentUnits
+import com.splendo.kaluga.scientific.unit.ElectricFieldStrengthUnits
+import com.splendo.kaluga.scientific.unit.ElectricalConductivityUnits
+import com.splendo.kaluga.scientific.unit.EnergyDensityUnits
+import com.splendo.kaluga.scientific.unit.EquivalentDoseRateUnits
+import com.splendo.kaluga.scientific.unit.ExposureUnits
+import com.splendo.kaluga.scientific.unit.IrradianceUnits
+import com.splendo.kaluga.scientific.unit.LinearChargeDensityUnits
+import com.splendo.kaluga.scientific.unit.MagneticDipoleMomentUnits
+import com.splendo.kaluga.scientific.unit.MagneticFieldStrengthUnits
+import com.splendo.kaluga.scientific.unit.MassFluxUnits
+import com.splendo.kaluga.scientific.unit.MolarEntropyUnits
+import com.splendo.kaluga.scientific.unit.MomentOfInertiaUnits
+import com.splendo.kaluga.scientific.unit.PermeabilityUnits
+import com.splendo.kaluga.scientific.unit.PermittivityUnits
+import com.splendo.kaluga.scientific.unit.RadianceUnits
+import com.splendo.kaluga.scientific.unit.RadiantIntensityUnits
+import com.splendo.kaluga.scientific.unit.ReluctanceUnits
+import com.splendo.kaluga.scientific.unit.ResistivityUnits
+import com.splendo.kaluga.scientific.unit.SnapUnits
+import com.splendo.kaluga.scientific.unit.SpecificWeightUnits
+import com.splendo.kaluga.scientific.unit.SurfaceChargeDensityUnits
+import com.splendo.kaluga.scientific.unit.ThermalConductanceUnits
+import com.splendo.kaluga.scientific.unit.ThermalConductivityUnits
+import com.splendo.kaluga.scientific.unit.ThermalInsulanceUnits
+import com.splendo.kaluga.scientific.unit.TorqueUnits
 import com.splendo.kaluga.scientific.unit.ActionUnits
 import com.splendo.kaluga.scientific.unit.AmountOfSubstanceUnits
 import com.splendo.kaluga.scientific.unit.AngleUnits
@@ -162,6 +192,36 @@ val allPhysicalQuantities: Set<PhysicalQuantity> = setOf(
     PhysicalQuantity.VolumetricFlux,
     PhysicalQuantity.Weight,
     PhysicalQuantity.Yank,
+    PhysicalQuantity.AbsorbedDoseRate,
+    PhysicalQuantity.CatalyticConcentration,
+    PhysicalQuantity.ElectricChargeDensity,
+    PhysicalQuantity.ElectricCurrentDensity,
+    PhysicalQuantity.ElectricDipoleMoment,
+    PhysicalQuantity.ElectricFieldStrength,
+    PhysicalQuantity.ElectricalConductivity,
+    PhysicalQuantity.EnergyDensity,
+    PhysicalQuantity.EquivalentDoseRate,
+    PhysicalQuantity.Exposure,
+    PhysicalQuantity.Irradiance,
+    PhysicalQuantity.LinearChargeDensity,
+    PhysicalQuantity.MagneticDipoleMoment,
+    PhysicalQuantity.MagneticFieldStrength,
+    PhysicalQuantity.MassFlux,
+    PhysicalQuantity.MolarEntropy,
+    PhysicalQuantity.MomentOfInertia,
+    PhysicalQuantity.Permeability,
+    PhysicalQuantity.Permittivity,
+    PhysicalQuantity.Radiance,
+    PhysicalQuantity.RadiantIntensity,
+    PhysicalQuantity.Reluctance,
+    PhysicalQuantity.Resistivity,
+    PhysicalQuantity.Snap,
+    PhysicalQuantity.SpecificWeight,
+    PhysicalQuantity.SurfaceChargeDensity,
+    PhysicalQuantity.ThermalConductance,
+    PhysicalQuantity.ThermalConductivity,
+    PhysicalQuantity.ThermalInsulance,
+    PhysicalQuantity.Torque,
 )
 
 val PhysicalQuantity.quantityDetails: QuantityDetails<*>? get() = when (this) {
@@ -226,6 +286,36 @@ val PhysicalQuantity.quantityDetails: QuantityDetails<*>? get() = when (this) {
     is PhysicalQuantity.VolumetricFlux -> QuantityDetails(this, VolumetricFluxUnits, converters)
     is PhysicalQuantity.Weight -> QuantityDetails(this, WeightUnits, converters)
     is PhysicalQuantity.Yank -> QuantityDetails(this, YankUnits, converters)
+    is PhysicalQuantity.AbsorbedDoseRate -> QuantityDetails(this, AbsorbedDoseRateUnits, converters)
+    is PhysicalQuantity.CatalyticConcentration -> QuantityDetails(this, CatalyticConcentrationUnits, converters)
+    is PhysicalQuantity.ElectricChargeDensity -> QuantityDetails(this, ElectricChargeDensityUnits, converters)
+    is PhysicalQuantity.ElectricCurrentDensity -> QuantityDetails(this, ElectricCurrentDensityUnits, converters)
+    is PhysicalQuantity.ElectricDipoleMoment -> QuantityDetails(this, ElectricDipoleMomentUnits, converters)
+    is PhysicalQuantity.ElectricFieldStrength -> QuantityDetails(this, ElectricFieldStrengthUnits, converters)
+    is PhysicalQuantity.ElectricalConductivity -> QuantityDetails(this, ElectricalConductivityUnits, converters)
+    is PhysicalQuantity.EnergyDensity -> QuantityDetails(this, EnergyDensityUnits, converters)
+    is PhysicalQuantity.EquivalentDoseRate -> QuantityDetails(this, EquivalentDoseRateUnits, converters)
+    is PhysicalQuantity.Exposure -> QuantityDetails(this, ExposureUnits, converters)
+    is PhysicalQuantity.Irradiance -> QuantityDetails(this, IrradianceUnits, converters)
+    is PhysicalQuantity.LinearChargeDensity -> QuantityDetails(this, LinearChargeDensityUnits, converters)
+    is PhysicalQuantity.MagneticDipoleMoment -> QuantityDetails(this, MagneticDipoleMomentUnits, converters)
+    is PhysicalQuantity.MagneticFieldStrength -> QuantityDetails(this, MagneticFieldStrengthUnits, converters)
+    is PhysicalQuantity.MassFlux -> QuantityDetails(this, MassFluxUnits, converters)
+    is PhysicalQuantity.MolarEntropy -> QuantityDetails(this, MolarEntropyUnits, converters)
+    is PhysicalQuantity.MomentOfInertia -> QuantityDetails(this, MomentOfInertiaUnits, converters)
+    is PhysicalQuantity.Permeability -> QuantityDetails(this, PermeabilityUnits, converters)
+    is PhysicalQuantity.Permittivity -> QuantityDetails(this, PermittivityUnits, converters)
+    is PhysicalQuantity.Radiance -> QuantityDetails(this, RadianceUnits, converters)
+    is PhysicalQuantity.RadiantIntensity -> QuantityDetails(this, RadiantIntensityUnits, converters)
+    is PhysicalQuantity.Reluctance -> QuantityDetails(this, ReluctanceUnits, converters)
+    is PhysicalQuantity.Resistivity -> QuantityDetails(this, ResistivityUnits, converters)
+    is PhysicalQuantity.Snap -> QuantityDetails(this, SnapUnits, converters)
+    is PhysicalQuantity.SpecificWeight -> QuantityDetails(this, SpecificWeightUnits, converters)
+    is PhysicalQuantity.SurfaceChargeDensity -> QuantityDetails(this, SurfaceChargeDensityUnits, converters)
+    is PhysicalQuantity.ThermalConductance -> QuantityDetails(this, ThermalConductanceUnits, converters)
+    is PhysicalQuantity.ThermalConductivity -> QuantityDetails(this, ThermalConductivityUnits, converters)
+    is PhysicalQuantity.ThermalInsulance -> QuantityDetails(this, ThermalInsulanceUnits, converters)
+    is PhysicalQuantity.Torque -> QuantityDetails(this, TorqueUnits, converters)
     is PhysicalQuantity.Undefined<*> -> error("Undefined Quantities not supported")
 }
 

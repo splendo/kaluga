@@ -22,15 +22,21 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCharge.charge
 import com.splendo.kaluga.scientific.unit.Abampere
 import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.AmpereHour
 import com.splendo.kaluga.scientific.unit.Biot
 import com.splendo.kaluga.scientific.unit.Coulomb
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     Abcoulomb.charge(this, time)
+
+@JvmName("ampereTimesHour")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Ampere>.times(time: ScientificValue<PhysicalQuantity.Time, Hour>) = AmpereHour.charge(this, time)
 
 @JvmName("biotTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =

@@ -97,12 +97,12 @@ internal actual class DefaultDeviceConnectionManager(
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info {
                 "onCharacteristicRead[DEP] value ${value.printableString} status ${status.gattStatusAsString}"
             }
-            updateCharacteristic(characteristic, value, status)
+            readCharacteristic(characteristic, value, status)
         }
 
         override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info { "onCharacteristicRead value ${value.printableString} status ${status.gattStatusAsString}" }
-            updateCharacteristic(characteristic, value, status)
+            readCharacteristic(characteristic, value, status)
         }
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
@@ -125,12 +125,12 @@ internal actual class DefaultDeviceConnectionManager(
             @Suppress("DEPRECATION")
             val value = characteristic.value
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info { "onCharacteristicChanged[DEP] value ${value.printableString}" }
-            updateCharacteristic(characteristic, value, status = GATT_SUCCESS)
+            notifyCharacteristic(characteristic, value)
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray) {
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info { "onCharacteristicChanged[DEP] value ${value.printableString}" }
-            updateCharacteristic(characteristic, value, status = GATT_SUCCESS)
+            notifyCharacteristic(characteristic, value)
         }
 
         @Suppress("OVERRIDE_DEPRECATION")
@@ -363,8 +363,12 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
-        handleCharacteristicReadOrNotified(characteristic.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else GattResponse.Error.from(status))
+    private fun readCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
+        handleCharacteristicRead(characteristic.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else GattResponse.Error.from(status))
+    }
+
+    private fun notifyCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray) {
+        handleCharacteristicNotified(characteristic.uuid, response = GattResponse.ReadSuccess(value))
     }
 
     private fun updateDescriptor(descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {

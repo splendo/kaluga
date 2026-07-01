@@ -50,6 +50,8 @@ annotation class Postfix(val value: ByteArray)
  *
  * When applied, the position of the header flag(s) to be used for storing headers will be set to [index].
  * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
+ * If applied to an enum, its ordinal is stored in the flags starting at [index], across enough bits for all its
+ * cases (i.e. `ceil(log2(caseCount))`) unless a wider [FlagWidth] is given.
  *
  * If the index was already claimed by another property a [FlagIndexException] may be thrown.
  *
@@ -59,6 +61,21 @@ annotation class Postfix(val value: ByteArray)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class FlagIndex(val index: Int)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Marks a nullable property whose presence is *derived* from the flag bits at [indices] rather than from a dedicated
+ * flag bit of its own: it is present on the wire exactly when all of those bits are set, and reserves no flag bit
+ * itself. The listed bits are owned (and reserved) by the properties or flags they belong to. Use for a field gated by
+ * a compound condition such as "present if C1 and C2".
+ *
+ * @property indices the flag bit positions that must all be set for this property to be present
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class PresentWhenAllSet(vararg val indices: Int)
 
 /**
  * Annotation added for serializing using [BluetoothFormat]
