@@ -50,7 +50,9 @@ jobs:
 
       - name: generate file with single requested project for build matrix
         if: inputs.project != ''
-        run: echo "projects=['${{ inputs.project }}']" > non_dependent_projects.properties
+        run: |
+          PROJECT='${{ inputs.project }}'
+          echo "projects=[{\"dir\":\"$PROJECT\",\"name\":\"${PROJECT//[:\/]/-}\",\"ios\":true,\"supportMacOS\":true,\"supportTvOS\":true,\"supportWatchOS\":true,\"supportJS\":true,\"supportWasmJS\":true}]" > non_dependent_projects.properties
 
       - name: show projects for Matrix
         run: cat non_dependent_projects.properties
@@ -68,13 +70,16 @@ jobs:
 
       - name: run custom Gradle task for single project
         if: inputs.project != ''
-        run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
+        run: ./gradlew -p ${{ inputs.project }} ${{ inputs.gradleTask }}
 
       - name: Make cache of workspace
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         id: store-build
         with:
           path: |
             ./*
             !/.gradle
-          key: build-linux-${{ github.sha }}-${{ inputs.project }}
+          # Scoped by workflow name: multiple workflows (emulator, js) call this reusable workflow
+          # with different gradle tasks for the same sha, so they must not share one key.
+          # The caller deletes this per-run cache in a cleanup job after its matrix completes.
+          key: build-linux-${{ github.workflow }}-${{ github.sha }}-${{ inputs.project }}

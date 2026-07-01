@@ -17,25 +17,24 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.DependencyHandlerScope
-import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 import javax.inject.Inject
 
 open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
     BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "compose", objects) {
 
-    override fun LanguageSettingsBuilder.languageSettings() {
-        optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-    }
+    override fun optInAnnotations() = listOf(
+        "androidx.compose.material3.ExperimentalMaterial3Api",
+    )
 
     override fun DependencyHandlerScope.commonDependencies() {
-        add("implementation", "androidx-compose-foundation".asDependency())
-        add("implementation", "androidx-compose-ui".asDependency())
+        add("implementation", "compose-foundation".asDependency())
+        add("implementation", "compose-ui".asDependency())
         add("implementation", "androidx-compose-ui-tooling".asDependency())
-        add("implementation", "androidx-lifecycle-viewmodel-compose".asDependency())
+        add("implementation", "compose-lifecycle-viewmodel".asDependency())
         add("implementation", "androidx-activity-compose".asDependency())
     }
     override fun LibraryExtension.configure() {

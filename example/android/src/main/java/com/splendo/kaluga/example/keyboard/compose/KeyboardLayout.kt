@@ -23,8 +23,11 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -45,11 +48,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.feature.keyboard.KeyboardViewModel
 import com.splendo.kaluga.keyboard.compose.ComposeFocusHandler
 import com.splendo.kaluga.keyboard.compose.ComposeKeyboardManager
 import com.splendo.kaluga.resources.compose.Composable
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 
@@ -89,6 +92,7 @@ fun KeyboardLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
+                    .padding(WindowInsets.systemBars.asPaddingValues())
                     .verticalScroll(rememberScrollState()),
             ) {
                 var text by remember {

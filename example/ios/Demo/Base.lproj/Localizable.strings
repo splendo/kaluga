@@ -131,7 +131,3 @@ That query will be deserialized into a object and shown in an alert.";
 "resources_color_current_mode" = "Color in current mode";
 "resources_color_dark_mode" = "Color in dark mode";
 "resources_color_light_mode" = "Color in light mode";
-
-"ios_ui_type_selector" = "Select UI Type";
-"ios_swift_ui" = "SwiftUI";
-"ios_ui_kit" = "UIKit";

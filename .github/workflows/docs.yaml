@@ -24,7 +24,7 @@ jobs:
           java-version: 21
 
       - name: Konan cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: konan-cache
         with:
           path: ~/.konan/*
@@ -52,13 +52,21 @@ jobs:
       - name: Collect module READMEs
         run: |
           mkdir -p build/readmes
-          cp README.md build/readmes/README.md
-          for dir in */; do
-            if [ -f "${dir}README.md" ]; then
-              mkdir -p "build/readmes/${dir}"
-              cp "${dir}README.md" "build/readmes/${dir}README.md"
-            fi
-          done
+          # Mirror every module README (root + nested feature groups + their submodules),
+          # preserving the repository's directory structure. Source trees, build output and
+          # non-library trees are excluded.
+          find . -name README.md \
+            -not -path '*/build/*' \
+            -not -path '*/src/*' \
+            -not -path './example/*' \
+            -not -path './gradle-test-recorder/*' \
+            -not -path './kaluga-library-components/*' \
+            -not -path './.git/*' \
+            -print0 | while IFS= read -r -d '' readme; do
+              dest="build/readmes/${readme#./}"
+              mkdir -p "$(dirname "$dest")"
+              cp "$readme" "$dest"
+            done
 
       - name: Upload READMEs artifact
         uses: actions/upload-artifact@v7
@@ -67,7 +75,6 @@ jobs:
           path: build/readmes
 
       - name: Trigger website rebuild
-        if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
         run: |

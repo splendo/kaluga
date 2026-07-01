@@ -18,7 +18,6 @@
 
 package com.splendo.kaluga.plugin
 
-import com.android.build.gradle.internal.utils.KOTLIN_KAPT_PLUGIN_ID
 import com.splendo.kaluga.plugin.extensions.DatabindingKalugaAndroidSubprojectExtension
 import org.gradle.api.plugins.PluginManager
 import kotlin.reflect.KClass
@@ -27,6 +26,8 @@ class DatabindingAndroidLibraryComponentsPlugin : BaseAndroidLibraryComponentsPl
     override val subExtensionClass: KClass<DatabindingKalugaAndroidSubprojectExtension> = DatabindingKalugaAndroidSubprojectExtension::class
 
     override fun PluginManager.addAndroidExtensionPlugins() {
-        apply(KOTLIN_KAPT_PLUGIN_ID)
+        // legacy-kapt replaces kotlin-kapt for AGP 9's built-in Kotlin.
+        // Needed for databinding to discover @BindingAdapter annotations from Kotlin code.
+        apply("com.android.legacy-kapt")
     }
 }

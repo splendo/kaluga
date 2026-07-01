@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel" />
+            type="com.splendo.kaluga.example.feature.resources.ButtonViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
