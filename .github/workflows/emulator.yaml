@@ -47,7 +47,7 @@ jobs:
             target: google_apis
     steps:
       - name: checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Enable KVM group perms
         run: |
