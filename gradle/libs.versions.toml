@@ -17,7 +17,7 @@ palantir-git-version = "4.2.0"
 #noinspection NewerVersionAvailable
 dependencycheck = "12.1.6"
 
-kotlinx-atomicfu = "0.29.0"
+kotlinx-atomicfu = "0.33.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 accompanist = "0.37.3"
