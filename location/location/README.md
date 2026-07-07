@@ -35,7 +35,7 @@ Sample code:
 
 ```kotlin
 val locationStateRepo = LocationStateRepoBuilder().create(Permissions.Location(background=false, precise=true))
-locationStateRepo.flow().location().collect { location ->
+locationStateRepo.location().collect { location ->
     // Handle location change
 }
 ```

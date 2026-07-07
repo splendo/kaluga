@@ -3,13 +3,14 @@
 
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
 
-Kaluga's main goal is to provide access to common features used in cross-platform mobile app development, separated into modules such as architecture (MVVM), location, permissions, bluetooth etc.
+Kaluga's main goal is to provide access to common features used in cross-platform application development, separated into modules such as location, permissions, bluetooth etc.
 
-To reach this goal it uses Kotlin, specifically [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) which allows running Kotlin code not just on JVM+Android, but also iOS/iPadOS, amongst others (inndeed some kaluga modules also work for Kotlin.js and/or JVM standalone).
+To reach this goal it uses Kotlin, specifically [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html), recommended in combination with [Compose Multiplatform](https://kotlinlang.org/compose-multiplatform/).
+Supported targets differ per module depending on platform features. We aim to support Android, iOS/iPadOS, macOS, watchOS, tvOS, Javascript, and Javascript WebAssembly where applicable.
 
 Where appropriate coroutines and `Flow` are used in the API. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) for a modern and efficient design.
 
-While Kaluga modules can be used individually, together they form a comprehensive approach to cross-platform development with [shared native code](https://kotlinlang.org/docs/mpp-share-on-platforms.html) and native UIs, including SwiftUI and Compose. 
+While Kaluga modules can be used individually, together they form a comprehensive approach to cross-platform development.
 
 ### Short examples
 
@@ -17,56 +18,59 @@ With Kaluga it is possible to create cross-platform functionality in a few lines
 
 Below are some examples, using a [`commonMain` source-set](https://kotlinlang.org/docs/mpp-dsl-reference.html#predefined-source-sets):
 
+Localization:
+
+```kotlin
+val locale = KalugaLocale.defaultLocale
+val casing = "istanbul".upperCased(locale) // locale-aware, e.g. "İSTANBUL" in tr
+if (locale.unitSystem == UnitSystem.IMPERIAL) i("this locale prefers imperial units")
+```
+
+DateTime:
+
+```kotlin
+val tomorrow = DefaultKalugaDate.now().apply { day += 1 }
+val formatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Medium)
+i(formatter.format(tomorrow)) // e.g. "Jul 8, 2026"
+```
+
+Observing location:
+
+```kotlin
+val locationStateRepo = LocationStateRepoBuilder().create(Permissions.Location(background=false, precise=true))
+locationStateRepo.location().collect { location ->
+    // Handle location change
+}
+```
+
 Scanning for nearby devices with Bluetooth LE:
 
 ```kotlin
 // will auto request permissions and try to enable bluetooth
-BluetoothClientBuilder().createClient().devices().collect {
-    i("discovered device: $it") // log found device
-}
-```
-
-Showing a spinner while doing some work:
-
-```kotlin
-
-suspend fun doWork(hudBuilder: HUD.Builder) {
-    hudBuilder.presentDuring { // shows spinner while code in this block is running
-        // simulate doing work
-        delay(1000)
+val client = BluetoothClientBuilder().createClient()
+client.startScanning()    
+try {
+    client.devices().collect {
+        i("discovered device: $it") // log found device
     }
-}
-    
-```
-
-in this case, since HUD is a UI component the builder needs to be configured on the platform side:
-```kotlin
-val builder = HUD.Builder() // same for iOS and Android
-// ...
-builder.subscribe(activity) // this needs be done in the Android source-set to bind the HUD to the lifecycle of the Activity
-// ...
-builder.unsubscribe(activity) // when the Activity is stopped
-```
-
-However Kaluga's [architecture module](architecture/) offers a cross-platform [`LifecycleViewModel`](architecture/architecture/src/commonMain/kotlin/viewmodel/LifecycleViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
-
-```kotlin
-// this can just be in the commonMain source
-class HudViewModel(private val hudBuilder: HUD.Builder): BaseLifecycleViewModel(hudBuilder) {
-    
-    suspend fun doWork() = 
-        hudBuilder.presentDuring {
-            delay(1000)
-        }
+} finally {
+    client.stopScanning()
 }
 ```
+
+Scientific calculations:
+
+```kotlin
+val forceInNewton = 60(Kilogram) * 4(Meter per Second per Second)
+val forceInPoundForce = forceInNewton.convert(PoundForce)
+i("${CommonScientificValueFormatter.default.format(forceInNewton)} == ${CommonScientificValueFormatter.default.format(forceInPoundForce)}")
+```
+
 ### More examples
 
-Kaluga contains [an example project](example/) that is used to test the developed modules.
+Kaluga contains [an example project](example/) that is used to test the developed modules. A Javascript version of this example can be found on https://kaluga.splendo.com/example/
 
 ## Using Kaluga
-
-For starting a new project based on Kaluga see the [kaluga-starter repo](https://github.com/splendo/kaluga-starter), which shows how to do this step by step.
 
 Kaluga is available on Maven Central. For example the Kaluga Alerts can be imported like this:
 
@@ -89,8 +93,6 @@ dependencies {
     implementation("com.splendo.kaluga.alerts:alerts:$kalugaDevelopVersion-SNAPSHOT")
 }
 ```
-
-To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery templates](https://github.com/splendo/kaluga-swiftui) to generate some Swift code to help get you started.
 
 ### Available Modules
 
