@@ -41,7 +41,6 @@ import platform.CoreBluetooth.CBCentralManagerScanOptionSolicitedServiceUUIDsKey
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBService
-import platform.CoreFoundation.CFAbsoluteTime
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
@@ -165,6 +164,7 @@ actual class DefaultScanner internal constructor(
     actual override val bluetoothEnabledMonitor: BluetoothMonitor? = _bluetoothEnabledMonitor
 
     private var centralManager: CBCentralManager? = null
+    private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
     private val centralManagerMutex = Mutex()
 
     private suspend fun getOrCreateCentralManager(): CBCentralManager = centralManager ?: centralManagerMutex.withLock {
@@ -176,6 +176,7 @@ actual class DefaultScanner internal constructor(
     private suspend fun createCentralManager(): CBCentralManager {
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+        centralManagerDelegate = delegate
         val manager = CBCentralManager(null, scanQueue)
         manager.delegate = delegate
         awaitPoweredOn.await()
