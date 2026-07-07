@@ -73,7 +73,7 @@ jobs:
           script: ./script/check_emulator.sh
 
       - name: save AVD cache for this run
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: |
             ~/.android/avd/*
@@ -111,7 +111,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: AVD cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         id: avd-cache
         with:
           path: |
