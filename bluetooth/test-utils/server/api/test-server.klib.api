@@ -97,7 +97,7 @@ final class com.splendo.kaluga.bluetooth.test.server/MockLocalCharacteristicWrap
 
     final fun addDescriptor(com.splendo.kaluga.bluetooth.server/LocalDescriptorWrapper) // com.splendo.kaluga.bluetooth.test.server/MockLocalCharacteristicWrapper.addDescriptor|addDescriptor(com.splendo.kaluga.bluetooth.server.LocalDescriptorWrapper){}[0]
     final fun addToService(platform.CoreBluetooth/CBMutableService) // com.splendo.kaluga.bluetooth.test.server/MockLocalCharacteristicWrapper.addToService|addToService(platform.CoreBluetooth.CBMutableService){}[0]
-    final fun updateValue(com.splendo.kaluga.bluetooth.server/KalugaBluetoothServerWrapper, platform.Foundation/NSData, kotlin.collections/List<platform.CoreBluetooth/CBCentral>): kotlin/Boolean // com.splendo.kaluga.bluetooth.test.server/MockLocalCharacteristicWrapper.updateValue|updateValue(com.splendo.kaluga.bluetooth.server.KalugaBluetoothServerWrapper;platform.Foundation.NSData;kotlin.collections.List<platform.CoreBluetooth.CBCentral>){}[0]
+    final fun updateValue(platform.CoreBluetooth/CBPeripheralManager, platform.Foundation/NSData, kotlin.collections/List<platform.CoreBluetooth/CBCentral>): kotlin/Boolean // com.splendo.kaluga.bluetooth.test.server/MockLocalCharacteristicWrapper.updateValue|updateValue(platform.CoreBluetooth.CBPeripheralManager;platform.Foundation.NSData;kotlin.collections.List<platform.CoreBluetooth.CBCentral>){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.test.server/MockLocalDescriptorWrapper : com.splendo.kaluga.bluetooth.server/LocalDescriptorWrapper { // com.splendo.kaluga.bluetooth.test.server/MockLocalDescriptorWrapper|null[0]
@@ -119,9 +119,9 @@ final class com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper : c
 
     final fun addCharacteristic(com.splendo.kaluga.bluetooth.server/LocalCharacteristicWrapper) // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper.addCharacteristic|addCharacteristic(com.splendo.kaluga.bluetooth.server.LocalCharacteristicWrapper){}[0]
     final fun addIncludedService(com.splendo.kaluga.bluetooth.server/LocalServiceWrapper) // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper.addIncludedService|addIncludedService(com.splendo.kaluga.bluetooth.server.LocalServiceWrapper){}[0]
-    final fun addTo(com.splendo.kaluga.bluetooth.server/KalugaBluetoothServerWrapper) // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper.addTo|addTo(com.splendo.kaluga.bluetooth.server.KalugaBluetoothServerWrapper){}[0]
+    final fun addTo(platform.CoreBluetooth/CBPeripheralManager) // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper.addTo|addTo(platform.CoreBluetooth.CBPeripheralManager){}[0]
     final fun addToParent(platform.CoreBluetooth/CBMutableService) // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper.addToParent|addToParent(platform.CoreBluetooth.CBMutableService){}[0]
-    final fun removeFrom(com.splendo.kaluga.bluetooth.server/KalugaBluetoothServerWrapper) // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper.removeFrom|removeFrom(com.splendo.kaluga.bluetooth.server.KalugaBluetoothServerWrapper){}[0]
+    final fun removeFrom(platform.CoreBluetooth/CBPeripheralManager) // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapper.removeFrom|removeFrom(platform.CoreBluetooth.CBPeripheralManager){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapperBuilder : com.splendo.kaluga.bluetooth.server/LocalServiceWrapperBuilder { // com.splendo.kaluga.bluetooth.test.server/MockLocalServiceWrapperBuilder|null[0]

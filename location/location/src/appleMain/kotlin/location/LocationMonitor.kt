@@ -72,14 +72,8 @@ internal expect fun CLLocationManager.isLocationServiceEnabled(): Boolean
 
 /**
  * Observes changes to the location service authorization state, invoking [onServiceStateChanged] when they occur.
- *
- * Linking goes through the [KalugaLocationPermissionWrapper] Swift wrapper on every platform: a Kotlin object
- * cannot be set directly as a `CLLocationManager` delegate without risking a Kotlin/Native freeze, so the
- * (strong) Swift wrapper holds the delegate and forwards callbacks.
  */
 internal class LocationServiceStateObserver(private val manager: CLLocationManager, private val onServiceStateChanged: () -> Unit) {
-
-    private val delegate = LocationManagerDelegate(onServiceStateChanged)
 
     private class LocationManagerDelegate(private val updateState: () -> Unit) :
         NSObject(),
@@ -89,6 +83,8 @@ internal class LocationServiceStateObserver(private val manager: CLLocationManag
             updateState()
         }
     }
+
+    private val delegate = LocationManagerDelegate(onServiceStateChanged)
 
     fun start() {
         manager.delegate = delegate

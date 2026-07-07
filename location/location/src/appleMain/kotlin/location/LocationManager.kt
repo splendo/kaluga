@@ -87,8 +87,7 @@ internal expect fun CLLocationManager.configureForLocation(permission: LocationP
 /**
  * Subscribes a [CLLocationManager] to location updates, emitting them to [delegate].
  *
- * Linking the [delegate] through the Swift wrapper (and unlinking it) is identical on every Apple platform
- * and lives here; subclasses only supply [onStartUpdating]/[onStopUpdating] — the platform-specific way to
+ * Linking the [delegate] is identical on every Apple platform and lives here; subclasses only supply [onStartUpdating]/[onStopUpdating] — the platform-specific way to
  * actually drive updates (continuous vs. polled).
  */
 internal abstract class LocationUpdater(private val delegate: LocationDelegate) {
