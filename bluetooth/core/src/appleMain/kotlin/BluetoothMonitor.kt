@@ -25,7 +25,6 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
-import platform.CoreBluetooth.CBManagerStatePoweredOn
 import platform.darwin.NSObject
 
 /**
@@ -69,7 +68,7 @@ class DefaultBluetoothMonitor internal constructor(private val centralManagerBui
 
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
     override val isServiceEnabled: Boolean
-        get() = initializeCentralManagerIfNotInitialized().state == CBManagerStatePoweredOn
+        get() = initializeCentralManagerIfNotInitialized().isPoweredOn()
 
     private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = lock.withLock {
         centralManager ?: centralManagerBuilder().also { this.centralManager = it }

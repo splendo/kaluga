@@ -24,7 +24,9 @@ import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.asBytes
+import com.splendo.kaluga.bluetooth.currentConnectionState
 import com.splendo.kaluga.bluetooth.dataValue
+import com.splendo.kaluga.bluetooth.gattCode
 import com.splendo.kaluga.bluetooth.mtu
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.warn
@@ -42,10 +44,6 @@ import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBPeripheralDelegateProtocol
-import platform.CoreBluetooth.CBPeripheralStateConnected
-import platform.CoreBluetooth.CBPeripheralStateConnecting
-import platform.CoreBluetooth.CBPeripheralStateDisconnected
-import platform.CoreBluetooth.CBPeripheralStateDisconnecting
 import platform.CoreBluetooth.CBService
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSError
@@ -104,7 +102,7 @@ internal actual class DefaultDeviceConnectionManager(
             val action = currentAction
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
                 launch {
-                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
+                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
                 }
             }
         }
@@ -113,7 +111,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
             handleCharacteristicReadOrNotified(
                 didUpdateValueForCharacteristic.UUID,
-                if (error == null) GattResponse.ReadSuccess(didUpdateValueForCharacteristic.value?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
+                if (error == null) GattResponse.ReadSuccess(didUpdateValueForCharacteristic.value?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.gattCode),
             )
         }
 
@@ -126,7 +124,7 @@ internal actual class DefaultDeviceConnectionManager(
                 ) {
                     GattResponse.WriteSuccess.Acknowledged
                 } else {
-                    GattResponse.Error.from(error.code.toInt())
+                    GattResponse.Error.from(error.gattCode)
                 },
             )
         }
@@ -135,13 +133,13 @@ internal actual class DefaultDeviceConnectionManager(
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
             handleDescriptorRead(
                 didUpdateValueForDescriptor.UUID,
-                if (error == null) GattResponse.ReadSuccess(didUpdateValueForDescriptor.dataValue?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
+                if (error == null) GattResponse.ReadSuccess(didUpdateValueForDescriptor.dataValue?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.gattCode),
             )
         }
 
         @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
-            handleDescriptorWritten(didWriteValueForDescriptor.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.code.toInt()))
+            handleDescriptorWritten(didWriteValueForDescriptor.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
         }
 
         @ObjCSignatureOverride
@@ -173,13 +171,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    actual override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
-        CBPeripheralStateConnected -> DeviceConnectionManager.State.CONNECTED
-        CBPeripheralStateConnecting -> DeviceConnectionManager.State.CONNECTING
-        CBPeripheralStateDisconnected -> DeviceConnectionManager.State.DISCONNECTED
-        CBPeripheralStateDisconnecting -> DeviceConnectionManager.State.DISCONNECTING
-        else -> DeviceConnectionManager.State.DISCONNECTED
-    }
+    actual override fun getCurrentState(): DeviceConnectionManager.State = peripheral.currentConnectionState()
 
     actual override fun connect() {
         peripheral.delegate = peripheralDelegate

@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.isPoweredOn
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
@@ -38,7 +39,6 @@ import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
 import platform.CoreBluetooth.CBCentralManagerScanOptionAllowDuplicatesKey
 import platform.CoreBluetooth.CBCentralManagerScanOptionSolicitedServiceUUIDsKey
-import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBService
 import platform.Foundation.NSError
@@ -126,7 +126,7 @@ actual class DefaultScanner internal constructor(
         CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            if (central.state == CBCentralManagerStatePoweredOn) {
+            if (central.isPoweredOn()) {
                 isEnabledCompleted.complete()
             }
         }
