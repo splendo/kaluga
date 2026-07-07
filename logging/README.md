@@ -1,5 +1,9 @@
 ## Logging
 
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 This module provided simplified access to logging capabilities of [Kotlin Napier Log](https://github.com/AAkira/Napier).
 
 ## Installing

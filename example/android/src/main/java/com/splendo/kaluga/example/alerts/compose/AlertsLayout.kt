@@ -23,8 +23,11 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -33,9 +36,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel
+import com.splendo.kaluga.example.feature.alerts.AlertViewModel
 import com.splendo.kaluga.resources.compose.Composable
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 class ComposeAlertsActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug
@@ -61,6 +64,7 @@ fun AlertsLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
+                    .padding(WindowInsets.systemBars.asPaddingValues())
                     .verticalScroll(rememberScrollState()),
             ) {
                 showAlertButton.Composable(modifier = Modifier.fillMaxWidth())

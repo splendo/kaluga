@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityLabelBinding
 import com.splendo.kaluga.example.databinding.ViewListTextViewBinding
-import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
+import com.splendo.kaluga.example.feature.resources.LabelViewModel
 import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
 import com.splendo.kaluga.resources.dpToPixel
 import com.splendo.kaluga.resources.view.KalugaLabel

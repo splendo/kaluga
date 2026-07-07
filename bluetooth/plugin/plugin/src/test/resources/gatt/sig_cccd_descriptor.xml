@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A descriptor's own type XML: the source of its UUID and value structure (referenced by type from a service). -->
+<Descriptor type="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902" name="Client Characteristic Configuration">
+  <Value>
+    <Field name="Configuration">
+      <Format>uint16</Format>
+    </Field>
+  </Value>
+</Descriptor>

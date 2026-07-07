@@ -84,6 +84,16 @@ abstract class BuildSwiftLibTask @Inject constructor(private val execOps: ExecOp
             KonanTarget.IOS_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}"
             KonanTarget.IOS_X64 -> "x86_64-apple-ios${deploymentTarget.get()}-simulator"
             KonanTarget.IOS_SIMULATOR_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}-simulator"
+            KonanTarget.MACOS_X64 -> "x86_64-apple-macos${deploymentTarget.get()}"
+            KonanTarget.MACOS_ARM64 -> "arm64-apple-macos${deploymentTarget.get()}"
+            KonanTarget.TVOS_ARM64 -> "arm64-apple-tvos${deploymentTarget.get()}"
+            KonanTarget.TVOS_X64 -> "x86_64-apple-tvos${deploymentTarget.get()}-simulator"
+            KonanTarget.TVOS_SIMULATOR_ARM64 -> "arm64-apple-tvos${deploymentTarget.get()}-simulator"
+            KonanTarget.WATCHOS_ARM32 -> "armv7k-apple-watchos${deploymentTarget.get()}"
+            KonanTarget.WATCHOS_ARM64 -> "arm64_32-apple-watchos${deploymentTarget.get()}"
+            KonanTarget.WATCHOS_DEVICE_ARM64 -> "arm64-apple-watchos${deploymentTarget.get()}"
+            KonanTarget.WATCHOS_X64 -> "x86_64-apple-watchos${deploymentTarget.get()}-simulator"
+            KonanTarget.WATCHOS_SIMULATOR_ARM64 -> "arm64-apple-watchos${deploymentTarget.get()}-simulator"
             else -> error("Unsupported target ${target.get()}")
         }
         logger.info("Building Swift library $libFile with headers $headerFile and target triple: $targetTriple and sdk: $sdk")
@@ -148,5 +158,12 @@ val KonanTarget.sdkName: String get() = when (this) {
     KonanTarget.IOS_ARM64 -> "iphoneos"
     KonanTarget.IOS_X64 -> "iphonesimulator"
     KonanTarget.IOS_SIMULATOR_ARM64 -> "iphonesimulator"
+    KonanTarget.MACOS_X64 -> "macosx"
+    KonanTarget.MACOS_ARM64 -> "macosx"
+    KonanTarget.TVOS_ARM64 -> "appletvos"
+    KonanTarget.TVOS_X64 -> "appletvsimulator"
+    KonanTarget.TVOS_SIMULATOR_ARM64 -> "appletvsimulator"
+    KonanTarget.WATCHOS_ARM32, KonanTarget.WATCHOS_ARM64, KonanTarget.WATCHOS_DEVICE_ARM64 -> "watchos"
+    KonanTarget.WATCHOS_X64, KonanTarget.WATCHOS_SIMULATOR_ARM64 -> "watchsimulator"
     else -> error("Unsupported target $this")
 }

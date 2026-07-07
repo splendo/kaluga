@@ -20,6 +20,7 @@ package com.splendo.kaluga.plugin
 import com.splendo.kaluga.plugin.extensions.BaseKalugaSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.ComposeKalugaAndroidSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.DatabindingKalugaAndroidSubprojectExtension
+import com.splendo.kaluga.plugin.extensions.KSPSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaMultiplatformSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaRootExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
@@ -73,13 +74,13 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
 
             subExtensionClass == ComposeKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
-                val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
+                val libraryExtension = extensions.findByType(com.android.build.api.dsl.LibraryExtension::class)!!
                 extensions.create<ComposeKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
             }
 
             subExtensionClass == DatabindingKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
-                val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
+                val libraryExtension = extensions.findByType(com.android.build.api.dsl.LibraryExtension::class)!!
                 extensions.create<DatabindingKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
             }
 
@@ -88,7 +89,10 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
                 val multiplatformExtension = extensions.findByType(KotlinMultiplatformExtension::class)!!
                 extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, project.objects)
             }
-
+            subExtensionClass == KSPSubprojectExtension::class -> {
+                pluginManager.addSubprojectExtensionPlugins(extensions)
+                extensions.create<KSPSubprojectExtension>(EXTENSION_NAME, versionCatalog, project.objects)
+            }
             else -> {
                 error("Unknown project project applied plugin: ${project.name} subExtensionClass: ${subExtensionClass.simpleName}")
             }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Invalid: a <Repeated> field has no length, so anything after it cannot be decoded. -->
+<Characteristic type="org.example.characteristic.bad" uuid="2BFF" name="Bad">
+  <Value>
+    <Field name="First">
+      <Format>uint8</Format>
+      <Repeated>true</Repeated>
+    </Field>
+    <Field name="Second">
+      <Format>uint8</Format>
+    </Field>
+  </Value>
+</Characteristic>

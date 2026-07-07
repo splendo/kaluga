@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Service type="org.example.service.thermometer" uuid="1809" name="Thermometer Service">
+  <Characteristics>
+    <Characteristic name="Internal Temperature" type="org.example.characteristic.internal_temperature" uuid="2A1C">
+      <Properties>
+        <Read>Mandatory</Read>
+        <Notify>Optional</Notify>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Pressure" type="org.example.characteristic.pressure" uuid="2A6D">
+      <Properties>
+        <Read>Mandatory</Read>
+        <Notify>Optional</Notify>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Wide Counters" type="org.example.characteristic.wide_counters" uuid="2BDE">
+      <Properties>
+        <Read>Mandatory</Read>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Reading" type="org.example.characteristic.reading" uuid="2BE0">
+      <Properties>
+        <Read>Mandatory</Read>
+        <Notify>Optional</Notify>
+      </Properties>
+      <Descriptors>
+        <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+    <Characteristic name="Reading Pair" type="org.example.characteristic.reading_pair" uuid="2BE1">
+      <Properties>
+        <Read>Mandatory</Read>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Dual Flags" type="org.example.characteristic.dual_flags" uuid="2BE2">
+      <Properties>
+        <Read>Mandatory</Read>
+      </Properties>
+    </Characteristic>
+    <Characteristic name="Compound Flags" type="org.example.characteristic.compound_flags" uuid="2BE3">
+      <Properties>
+        <Read>Mandatory</Read>
+      </Properties>
+    </Characteristic>
+  </Characteristics>
+</Service>

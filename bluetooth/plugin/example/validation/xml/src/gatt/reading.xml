@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A simple characteristic, referenced as a composite field by reading_pair.xml. It declares the CCCD on its reference
+     in thermometer_service.xml; the CCCD is managed by the notify/indicate layer and is intentionally not generated. -->
+<Characteristic type="org.example.characteristic.reading" uuid="2BE0" name="Reading">
+  <Value>
+    <Field name="Reading">
+      <Format>uint16</Format>
+    </Field>
+  </Value>
+</Characteristic>

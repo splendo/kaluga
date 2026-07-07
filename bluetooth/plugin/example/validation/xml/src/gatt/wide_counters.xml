@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Exercises the 40- and 48-bit integer widths (backed by Long via @Size(40_BIT)/@Size(48_BIT)). -->
+<Characteristic type="org.example.characteristic.wide_counters" uuid="2BDE" name="Wide Counters">
+  <Value>
+    <Field name="Packet Counter">
+      <Format>uint40</Format>
+    </Field>
+    <Field name="Signed Offset">
+      <Format>sint48</Format>
+    </Field>
+  </Value>
+</Characteristic>

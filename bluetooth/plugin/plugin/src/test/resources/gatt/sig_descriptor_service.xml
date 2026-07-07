@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SIG-shaped service: references a characteristic by type and declares a descriptor (by type) on it. -->
+<Service type="org.bluetooth.service.heart_rate" uuid="180D" name="Heart Rate">
+  <Characteristics>
+    <Characteristic name="Heart Rate Measurement" type="org.bluetooth.characteristic.heart_rate_measurement">
+      <Requirement>Mandatory</Requirement>
+      <Properties>
+        <Notify>Mandatory</Notify>
+      </Properties>
+      <Descriptors>
+        <Descriptor name="Characteristic User Description" type="org.bluetooth.descriptor.gatt.characteristic_user_description">
+          <Requirement>Optional</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+          </Properties>
+        </Descriptor>
+        <Descriptor name="Client Characteristic Configuration" type="org.bluetooth.descriptor.gatt.client_characteristic_configuration">
+          <Requirement>Mandatory</Requirement>
+          <Properties>
+            <Read>Mandatory</Read>
+            <Write>Mandatory</Write>
+          </Properties>
+        </Descriptor>
+      </Descriptors>
+    </Characteristic>
+  </Characteristics>
+</Service>

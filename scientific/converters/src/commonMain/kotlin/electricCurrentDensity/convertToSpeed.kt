@@ -1,0 +1,53 @@
+/*
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.electricCurrentDensity
+
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.converter.speed.speed
+import com.splendo.kaluga.scientific.unit.ElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.ElectricCurrentDensity
+import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.ImperialElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.ImperialElectricCurrentDensity
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.UKImperialElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryElectricChargeDensity
+import com.splendo.kaluga.scientific.unit.per
+import kotlin.jvm.JvmName
+
+@JvmName("imperialElectricCurrentDensityDivImperialElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ImperialElectricChargeDensity>,
+) = (Foot per Second).speed(this, electricChargeDensity)
+
+@JvmName("imperialElectricCurrentDensityDivUKImperialElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, UKImperialElectricChargeDensity>,
+) = (Foot per Second).speed(this, electricChargeDensity)
+
+@JvmName("imperialElectricCurrentDensityDivUSCustomaryElectricChargeDensity")
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ImperialElectricCurrentDensity>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, USCustomaryElectricChargeDensity>,
+) = (Foot per Second).speed(this, electricChargeDensity)
+
+@JvmName("electricCurrentDensityDivElectricChargeDensity")
+infix operator fun <ElectricCurrentDensityUnit, ElectricChargeDensityUnit> ScientificValue<PhysicalQuantity.ElectricCurrentDensity, ElectricCurrentDensityUnit>.div(
+    electricChargeDensity: ScientificValue<PhysicalQuantity.ElectricChargeDensity, ElectricChargeDensityUnit>,
+) where ElectricCurrentDensityUnit : ElectricCurrentDensity, ElectricChargeDensityUnit : ElectricChargeDensity = (Meter per Second).speed(this, electricChargeDensity)

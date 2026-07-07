@@ -1,0 +1,56 @@
+/*
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.electricCharge
+
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.converter.electricChargeDensity.electricChargeDensity
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.ElectricCharge
+import com.splendo.kaluga.scientific.unit.ImperialVolume
+import com.splendo.kaluga.scientific.unit.MetricVolume
+import com.splendo.kaluga.scientific.unit.UKImperialVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryVolume
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.per
+import kotlin.jvm.JvmName
+
+@JvmName("electricChargeDivMetricVolume")
+infix operator fun <ChargeUnit : ElectricCharge, VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+) = (unit per volume.unit).electricChargeDensity(this, volume)
+
+@JvmName("electricChargeDivImperialVolume")
+infix operator fun <ChargeUnit : ElectricCharge, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+) = (unit per volume.unit).electricChargeDensity(this, volume)
+
+@JvmName("electricChargeDivUKImperialVolume")
+infix operator fun <ChargeUnit : ElectricCharge, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+) = (unit per volume.unit).electricChargeDensity(this, volume)
+
+@JvmName("electricChargeDivUSCustomaryVolume")
+infix operator fun <ChargeUnit : ElectricCharge, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+) = (unit per volume.unit).electricChargeDensity(this, volume)
+
+@JvmName("electricChargeDivVolume")
+infix operator fun <ChargeUnit : ElectricCharge, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+) = (unit per CubicMeter).electricChargeDensity(this, volume)

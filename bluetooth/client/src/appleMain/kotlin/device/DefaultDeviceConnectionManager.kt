@@ -1,0 +1,336 @@
+/*
+ Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bluetooth.device
+
+import com.splendo.kaluga.base.utils.toNSData
+import com.splendo.kaluga.base.utils.typedList
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
+import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.WriteType
+import com.splendo.kaluga.bluetooth.asBytes
+import com.splendo.kaluga.bluetooth.currentConnectionState
+import com.splendo.kaluga.bluetooth.dataValue
+import com.splendo.kaluga.bluetooth.gattCode
+import com.splendo.kaluga.bluetooth.mtu
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.warn
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.getAndUpdate
+import kotlinx.cinterop.ObjCSignatureOverride
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
+import platform.CoreBluetooth.CBCentralManager
+import platform.CoreBluetooth.CBCharacteristic
+import platform.CoreBluetooth.CBDescriptor
+import platform.CoreBluetooth.CBPeripheral
+import platform.CoreBluetooth.CBPeripheralDelegateProtocol
+import platform.CoreBluetooth.CBService
+import platform.CoreBluetooth.CBUUID
+import platform.Foundation.NSError
+import platform.Foundation.NSNumber
+import platform.darwin.NSObject
+import kotlin.time.Duration.Companion.milliseconds
+
+internal actual class DefaultDeviceConnectionManager(
+    private val cbCentralManager: CBCentralManager,
+    private val peripheral: CBPeripheral,
+    deviceWrapper: DeviceWrapper,
+    settings: ConnectionSettings,
+    coroutineScope: CoroutineScope,
+) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
+
+    class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : DeviceConnectionManager.Builder {
+        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): DefaultDeviceConnectionManager =
+            DefaultDeviceConnectionManager(
+                cbCentralManager,
+                peripheral,
+                deviceWrapper,
+                settings,
+                coroutineScope,
+            )
+    }
+
+    companion object {
+        private const val TAG = "IOS Bluetooth DeviceConnectionManager"
+        private val MAX_WRITE_WITHOUT_RESPONSE_WAIT = 500.milliseconds
+    }
+
+    private val discoveringMutex = Mutex()
+    private val discoveringServices = mutableListOf<CBUUID>()
+    private val discoveringCharacteristics = mutableListOf<CBUUID>()
+    private val discoveringIncludedServices = mutableListOf<CBUUID>()
+
+    // Services whose contents discovery has already been started, so a service included by several parents (or a cycle)
+    // is only discovered once.
+    private val discoveredServiceUuids = mutableSetOf<CBUUID>()
+
+    private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
+
+        private var awaitingSendWriteWithoutResponse = CompletableDeferred<Unit>()
+
+        fun resetAwaitingSendWriteWithoutResponse() {
+            awaitingSendWriteWithoutResponse = CompletableDeferred()
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
+            didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
+            val action = currentAction
+            if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
+                launch {
+                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
+                }
+            }
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
+            handleCharacteristicReadOrNotified(
+                didUpdateValueForCharacteristic.UUID,
+                if (error == null) GattResponse.ReadSuccess(didUpdateValueForCharacteristic.value?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.gattCode),
+            )
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
+            handleCharacteristicWritten(
+                didWriteValueForCharacteristic.UUID,
+                if (error ==
+                    null
+                ) {
+                    GattResponse.WriteSuccess.Acknowledged
+                } else {
+                    GattResponse.Error.from(error.gattCode)
+                },
+            )
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
+            handleDescriptorRead(
+                didUpdateValueForDescriptor.UUID,
+                if (error == null) GattResponse.ReadSuccess(didUpdateValueForDescriptor.dataValue?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.gattCode),
+            )
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
+            handleDescriptorWritten(didWriteValueForDescriptor.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
+            didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
+        }
+
+        @ObjCSignatureOverride
+        override fun peripheral(peripheral: CBPeripheral, didDiscoverIncludedServicesForService: CBService, error: NSError?) {
+            didDiscoverIncludedServices(didDiscoverIncludedServicesForService)
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
+            didDiscoverServices()
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
+            launch {
+                handleNewRssi(didReadRSSI.intValue)
+            }
+        }
+
+        override fun peripheralIsReadyToSendWriteWithoutResponse(peripheral: CBPeripheral) {
+            awaitingSendWriteWithoutResponse.complete(Unit)
+        }
+
+        suspend fun awaitSendWriteWithoutResponse() {
+            awaitingSendWriteWithoutResponse.await()
+        }
+    }
+
+    actual override fun getCurrentState(): DeviceConnectionManager.State = peripheral.currentConnectionState()
+
+    actual override fun connect() {
+        peripheral.delegate = peripheralDelegate
+        cbCentralManager.connectPeripheral(peripheral, null)
+    }
+
+    actual override suspend fun discoverServices() {
+        discoveringMutex.withLock {
+            discoveringServices.clear()
+            discoveringCharacteristics.clear()
+            discoveringIncludedServices.clear()
+            discoveredServiceUuids.clear()
+            peripheral.discoverServices(null)
+        }
+    }
+
+    actual override fun disconnect() {
+        val state = getCurrentState()
+        cbCentralManager.cancelPeripheralConnection(peripheral)
+        peripheral.delegate = null
+        if (state != DeviceConnectionManager.State.CONNECTED) {
+            handleDisconnect()
+        }
+    }
+
+    actual override suspend fun requestReadRssi() {
+        peripheral.readRSSI()
+    }
+
+    actual override suspend fun didStartPerformingAction(action: DeviceAction<*>) {
+        currentAction = action
+        when (action) {
+            is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
+
+            is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
+
+            is DeviceAction.Write.Characteristic -> {
+                val withResponse = when (action.writeType) {
+                    WriteType.WithResponse -> true
+                    WriteType.WithoutResponse -> false
+                    null -> action.characteristic.hasProperty(CharacteristicProperty.Write)
+                }
+                if (withResponse) {
+                    // With-response completes via didWriteValueForCharacteristic.
+                    action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, true)
+                } else {
+                    // Write-without-response has no didWriteValueForCharacteristic callback, so completion is
+                    // derived from the send loop.
+                    val wasReady = peripheral.canSendWriteWithoutResponse
+                    peripheralDelegate.resetAwaitingSendWriteWithoutResponse()
+                    val response = sendWriteWithoutResponse(
+                        canSendNow = wasReady,
+                        write = { action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, false) },
+                        awaitReady = {
+                            withTimeoutOrNull(MAX_WRITE_WITHOUT_RESPONSE_WAIT) {
+                                peripheralDelegate.awaitSendWriteWithoutResponse()
+                                true
+                            } ?: false
+                        },
+                    )
+                    if (response is GattResponse.WriteSuccess.NotReady) {
+                        logger.dataLogger[action.characteristic.wrapper.service.uuid][action.characteristic.wrapper.uuid].warn {
+                            "Write without response sent best-effort: peripheral did not become ready within $MAX_WRITE_WITHOUT_RESPONSE_WAIT and the value may have been dropped"
+                        }
+                    }
+                    handleCharacteristicWritten(action.characteristic.uuid, response)
+                }
+            }
+
+            is DeviceAction.Write.Descriptor -> {
+                action.descriptor.wrapper.writeValue(action.newValue.toNSData(), peripheral)
+            }
+
+            is DeviceAction.Notification.Enable -> {
+                action.characteristic.wrapper.setNotificationValue(true, peripheral)
+            }
+
+            is DeviceAction.Notification.Disable -> {
+                action.characteristic.wrapper.setNotificationValue(false, peripheral)
+            }
+
+            is DeviceAction.RequestMtu -> {
+                // iOS negotiates the MTU automatically and exposes no request API; surface the actual ATT MTU.
+                val mtu = peripheral.mtu
+                debug(TAG) { "Reporting negotiated MTU $mtu" }
+                handleNewMtu(GattResponse.MTUSuccess(mtu))
+            }
+        }
+    }
+
+    actual override suspend fun requestStartPairing(): PairingResult {
+        // There is no iOS API to pair a peripheral; pairing happens implicitly on encrypted attribute access.
+        return PairingResult.NOT_SUPPORTED
+    }
+
+    actual override suspend fun requestStartUnpairing(): PairingResult {
+        // There is no iOS API to unpair a peripheral.
+        return PairingResult.NOT_SUPPORTED
+    }
+
+    private fun didDiscoverServices() {
+        launch {
+            discoveringMutex.withLock {
+                peripheral.services?.typedList<CBService>()?.forEach { discoverServiceContents(it) }
+            }
+
+            checkScanComplete()
+        }
+    }
+
+    // Starts discovering a service's characteristics and its included services (which are themselves discovered the same
+    // way, so every level of the include tree is scanned). Must be called while holding [discoveringMutex].
+    private fun discoverServiceContents(service: CBService) {
+        if (!discoveredServiceUuids.add(service.UUID)) return
+        discoveringServices.add(service.UUID)
+        discoveringIncludedServices.add(service.UUID)
+        // A null filter discovers all; an empty (non-null) list is a UUID filter that need not mean "all".
+        peripheral.discoverCharacteristics(null, service)
+        peripheral.discoverIncludedServices(null, service)
+    }
+
+    private fun didDiscoverIncludedServices(forService: CBService) {
+        launch {
+            discoveringMutex.withLock {
+                discoveringIncludedServices.remove(forService.UUID)
+                forService.includedServices?.typedList<CBService>()?.forEach { discoverServiceContents(it) }
+            }
+            checkScanComplete()
+        }
+    }
+
+    private fun didDiscoverCharacteristic(forService: CBService) {
+        launch {
+            discoveringMutex.withLock {
+                discoveringServices.remove(forService.UUID)
+                discoveringCharacteristics.addAll(
+                    forService.characteristics?.typedList<CBCharacteristic>()?.map {
+                        peripheral.discoverDescriptorsForCharacteristic(it)
+                        it.UUID
+                    } ?: emptyList(),
+                )
+            }
+            checkScanComplete()
+        }
+    }
+
+    private fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
+        launch {
+            discoveringMutex.withLock {
+                discoveringCharacteristics.remove(forCharacteristic.UUID)
+            }
+            checkScanComplete()
+        }
+    }
+
+    private fun checkScanComplete() {
+        if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty() && discoveringIncludedServices.isEmpty()) {
+            val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
+            handleDiscoverCompleted(services)
+        }
+    }
+}

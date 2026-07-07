@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kaluga Example (Web)</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+
+        /* Styles the Web Bluetooth "Add Device" overlay rendered by the DefaultScanner.
+           Class names follow the DefaultScanner's default cssClassPrefix ("kaluga-bluetooth"). */
+        .kaluga-bluetooth-overlay {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            min-width: 240px;
+            padding: 16px;
+            background: #ffffff;
+            color: #202124;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+            font-family: sans-serif;
+        }
+        .kaluga-bluetooth-title { margin: 0 0 12px; padding-right: 24px; font-size: 16px; }
+        .kaluga-bluetooth-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px;
+            border: none;
+            background: transparent;
+            color: #5f6368;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .kaluga-bluetooth-close:hover { color: #202124; }
+        .kaluga-bluetooth-list { list-style: none; margin: 0 0 12px; padding: 0; max-height: 240px; overflow-y: auto; }
+        .kaluga-bluetooth-list-item { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .kaluga-bluetooth-list-empty { padding: 6px 8px; color: #777; font-size: 14px; font-style: italic; }
+        .kaluga-bluetooth-button {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #1a73e8;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .kaluga-bluetooth-button:hover { background: #1765cc; }
+    </style>
+</head>
+<body>
+<script src="kalugaExampleWeb.js"></script>
+</body>
+</html>

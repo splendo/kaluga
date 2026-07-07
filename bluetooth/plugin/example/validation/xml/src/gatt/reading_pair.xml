@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Composite characteristic: each field references the Reading characteristic (2BE0), embedding its value structure. -->
+<Characteristic type="org.example.characteristic.reading_pair" uuid="2BE1" name="Reading Pair">
+  <Value>
+    <Field name="First">
+      <Reference>2BE0</Reference>
+    </Field>
+    <Field name="Second">
+      <Reference>2BE0</Reference>
+    </Field>
+  </Value>
+</Characteristic>

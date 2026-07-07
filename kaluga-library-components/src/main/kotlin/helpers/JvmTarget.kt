@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.plugin.helpers
 
+import org.gradle.api.JavaVersion
 import org.gradle.api.artifacts.VersionCatalog
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val VersionCatalog.jvmTarget: JvmTarget get() = JvmTarget.fromTarget(findVersion("java").get().displayName)
+val VersionCatalog.javaVersion: JavaVersion get() = JavaVersion.toVersion(findVersion("java").get().displayName)

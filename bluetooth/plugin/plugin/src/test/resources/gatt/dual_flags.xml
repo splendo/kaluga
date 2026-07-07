@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Two separate Flags fields (a 16-bit flags region): the second field's bits live at indices 8+, gating Value B. -->
+<Characteristic type="org.example.characteristic.dual_flags" uuid="2BE2" name="Dual Flags">
+  <Value>
+    <Field name="Flags A">
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Value A Present bit">
+          <Enumerations>
+            <Enumeration key="0" value="Value A not present" />
+            <Enumeration key="1" value="Value A present" requires="C1" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="1" size="7" />
+      </BitField>
+    </Field>
+    <Field name="Flags B">
+      <Requirement>Mandatory</Requirement>
+      <Format>8bit</Format>
+      <BitField>
+        <Bit index="0" size="1" name="Value B Present bit">
+          <Enumerations>
+            <Enumeration key="0" value="Value B not present" />
+            <Enumeration key="1" value="Value B present" requires="C2" />
+          </Enumerations>
+        </Bit>
+        <ReservedForFutureUse index="1" size="7" />
+      </BitField>
+    </Field>
+    <Field name="Value A">
+      <Requirement>C1</Requirement>
+      <Format>uint8</Format>
+    </Field>
+    <Field name="Value B">
+      <Requirement>C2</Requirement>
+      <Format>uint16</Format>
+    </Field>
+  </Value>
+</Characteristic>

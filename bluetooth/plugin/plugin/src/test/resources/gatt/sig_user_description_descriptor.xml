@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A non-CCCD descriptor type definition (Characteristic User Description, 0x2901): a regular descriptor that IS generated. -->
+<Descriptor type="org.bluetooth.descriptor.gatt.characteristic_user_description" uuid="2901" name="Characteristic User Description">
+  <Value>
+    <Field name="User Description">
+      <Format>utf8s</Format>
+    </Field>
+  </Value>
+</Descriptor>

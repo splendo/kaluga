@@ -1,0 +1,29 @@
+# Test Utils Resources
+
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
+
+| Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | ✅ |  |  |  |  |  |  |
+
+This library adds support for testing the [`resources` module](../resources) to [`test-utils`](../../base/test-utils)
+
+## Installing
+This library is available on Maven Central. You can import Kaluga Test Utils Resources as follows:
+
+```kotlin
+repositories {
+    // ...
+    mavenCentral()
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga.resources:test:$kalugaVersion")
+}
+```
+
+## Mocks
+This library contains mock classes for `StringLoader`, `FontLoader`, `KalugaColorLoader` and `ImageLoader`.
+
+Call `mockColor`, `mockFont`, or `mockImage` to generate mocks for `KalugaColor`, `KalugaFont`, or `KalugaImage` respectively.

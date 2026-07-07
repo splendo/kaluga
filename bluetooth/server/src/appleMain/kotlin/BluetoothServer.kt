@@ -1,0 +1,203 @@
+/*
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bluetooth.server
+
+import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.utils.toNSData
+import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.warn
+import com.splendo.kaluga.permissions.base.PermissionState
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.transformLatest
+import platform.CoreBluetooth.CBAdvertisementDataLocalNameKey
+import platform.CoreBluetooth.CBAdvertisementDataServiceUUIDsKey
+import platform.CoreBluetooth.CBPeripheralManager
+import platform.darwin.dispatch_queue_create
+
+internal sealed class IOSServerState {
+    class AwaitingPermissions(private val permissionStateRepo: BluetoothPermissionStateRepo, private val delegate: KalugaCBPeripheralManagerDelegate, private val logger: Logger) :
+        IOSServerState(),
+        ServerState.AwaitingPermissions {
+        override suspend fun awaitPermitted(autoRequest: Boolean): ServerState.HasPermissions =
+            permissionStateRepo.filterOnlyImportant().map { listOf(it) }.transformLatest { permissions ->
+                if (permissions.all { it is PermissionState.Allowed }) {
+                    emit(
+                        AwaitingBluetoothEnabled(permissionStateRepo, delegate, logger),
+                    )
+                } else {
+                    if (autoRequest) {
+                        permissions.filterIsInstance<PermissionState.Denied.Requestable<BluetoothPermission>>().forEach { state ->
+                            logger.info(DefaultBluetoothServer.TAG) { "Request Permission" }
+                            state.request()
+                        }
+                    }
+                }
+            }.first()
+
+        override fun close(): ServerState.Closed = ServerState.Closed
+    }
+
+    class AwaitingBluetoothEnabled(
+        private val permissionStateRepo: BluetoothPermissionStateRepo,
+        private val delegate: KalugaCBPeripheralManagerDelegate,
+        private val logger: Logger,
+    ) : IOSServerState(),
+        ServerState.AwaitingBluetoothEnabled {
+
+        private val serverQueue = dispatch_queue_create("BluetoothServer", null)
+
+        override suspend fun awaitEnabled(autoEnable: Boolean): ServerState.Available = coroutineScope {
+            val isEnabled = async { delegate.isEnabled.first { it } }
+            val peripheralManager = CBPeripheralManager(delegate, serverQueue)
+            try {
+                isEnabled.await()
+                Available(peripheralManager, permissionStateRepo, delegate, logger)
+            } catch (e: CancellationException) {
+                peripheralManager.delegate = null
+                throw e
+            }
+        }
+
+        override suspend fun awaitRevoked(): ServerState.AwaitingPermissions {
+            permissionStateRepo.filterOnlyImportant().first { state -> listOf(state).any { it !is PermissionState.Allowed } }
+            return AwaitingPermissions(permissionStateRepo, delegate, logger)
+        }
+
+        override fun close(): ServerState.Closed = ServerState.Closed
+    }
+
+    class Available(
+        private val peripheralManager: CBPeripheralManager,
+        private val permissionStateRepo: BluetoothPermissionStateRepo,
+        private val delegate: KalugaCBPeripheralManagerDelegate,
+        private val logger: Logger,
+    ) : IOSServerState(),
+        ServerState.Available {
+
+        override suspend fun addService(service: LocalService): Boolean = coroutineScope {
+            val servicesAdded = mutableListOf<LocalServiceWrapper>()
+            try {
+                // On iOS, the Included Services must be explicitly added
+                val success = listOf(*service.includedServices.toTypedArray(), service).fold(true) { success, toAdd ->
+                    if (!success) {
+                        false
+                    } else {
+                        val response =
+                            async { delegate.serviceAdded.mapNotNull { (added, success) -> success.takeIf { CBServiceIdentity(added) == toAdd.wrapper.identity } }.first() }
+                        toAdd.wrapper.addTo(peripheralManager)
+                        if (response.await()) {
+                            servicesAdded.add(toAdd.wrapper)
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                }
+                if (!success) {
+                    // When failing to add the parent service, clean up the included services as well
+                    servicesAdded.forEach { it.removeFrom(peripheralManager) }
+                }
+                success
+            } catch (e: CancellationException) {
+                servicesAdded.forEach { it.removeFrom(peripheralManager) }
+                throw e
+            }
+        }
+
+        override fun removeService(service: LocalService) {
+            delegate.removeService(service)
+            service.wrapper.removeFrom(peripheralManager)
+        }
+
+        override fun removeAllServices() {
+            delegate.removeAllServices()
+            peripheralManager.removeAllServices()
+        }
+
+        override suspend fun startAdvertising(data: AdvertiseData): Boolean = coroutineScope {
+            val success = delegate.resetAdvertising()
+            peripheralManager.startAdvertising(
+                buildMap {
+                    data.localName?.let {
+                        put(CBAdvertisementDataLocalNameKey, it)
+                    }
+                    if (data.serviceUUIDs.isNotEmpty()) {
+                        put(CBAdvertisementDataServiceUUIDsKey, data.serviceUUIDs.toList())
+                    }
+                },
+            )
+            success.await()
+        }
+
+        override fun stopAdvertising() {
+            peripheralManager.stopAdvertising()
+        }
+
+        override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean {
+            // peripheralManagerIsReadyToUpdateSubscribers is manager-wide, so a single shared deferred is correct.
+            // Retry in a loop (not recursion) until the value is queued.
+            while (true) {
+                val isAvailable = delegate.resetAvailable()
+                if (characteristic.wrapper.updateValue(peripheralManager, value.toNSData(), listOf(device.cbCentral))) {
+                    return true
+                }
+                isAvailable.await()
+            }
+        }
+
+        override suspend fun awaitDisabled(): ServerState.AwaitingBluetoothEnabled {
+            delegate.isEnabled.first { !it }
+            return AwaitingBluetoothEnabled(permissionStateRepo, delegate, logger)
+        }
+
+        override suspend fun awaitRevoked(): ServerState.AwaitingPermissions {
+            permissionStateRepo.filterOnlyImportant().first { state -> listOf(state).any { it !is PermissionState.Allowed } }
+            peripheralManager.delegate = null
+            return AwaitingPermissions(permissionStateRepo, delegate, logger)
+        }
+
+        override fun serviceBuilder(uuid: UUID, notify: Notify): LocalServiceDSL = LocalServiceDSL(
+            uuid,
+            Service.Type.PRIMARY,
+            notify,
+            delegate::registerReadAction,
+            delegate::registerWriteAction,
+            { encrypted -> delegate.registerSubscriptionActions(this) },
+            { _ ->
+                logger.warn("DescriptorDSL") { "iOS Does not support adding descriptors" }
+                null
+            },
+            DefaultLocalServiceWrapperBuilder(),
+        )
+
+        override fun close(): ServerState.Closed {
+            peripheralManager.delegate = null
+            return ServerState.Closed
+        }
+    }
+}
