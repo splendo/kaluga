@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import platform.CoreBluetooth.CBMutableService
+import platform.CoreBluetooth.CBPeripheralManager
 import platform.CoreBluetooth.CBService
 
 actual interface LocalServiceWrapper {
@@ -50,14 +51,14 @@ actual interface LocalServiceWrapper {
     fun addToParent(parent: CBMutableService)
 
     /**
-     * Adds the service to a [KalugaBluetoothServerWrapper]
+     * Adds the service to a [CBPeripheralManager]
      */
-    fun addTo(serverWrapper: KalugaBluetoothServerWrapper)
+    fun addTo(manager: CBPeripheralManager)
 
     /**
-     * Removes the service from a [KalugaBluetoothServerWrapper]
+     * Removes the service from a [CBPeripheralManager]
      */
-    fun removeFrom(serverWrapper: KalugaBluetoothServerWrapper)
+    fun removeFrom(manager: CBPeripheralManager)
 }
 
 class DefaultLocalServiceWrapper(internal val service: CBMutableService) : LocalServiceWrapper {
@@ -81,12 +82,12 @@ class DefaultLocalServiceWrapper(internal val service: CBMutableService) : Local
         parent.setIncludedServices(parent.includedServices.orEmpty() + service)
     }
 
-    override fun addTo(serverWrapper: KalugaBluetoothServerWrapper) {
-        serverWrapper.add(service)
+    override fun addTo(manager: CBPeripheralManager) {
+        manager.addService(service)
     }
 
-    override fun removeFrom(serverWrapper: KalugaBluetoothServerWrapper) {
-        serverWrapper.remove(service)
+    override fun removeFrom(manager: CBPeripheralManager) {
+        manager.removeService(service)
     }
 }
 

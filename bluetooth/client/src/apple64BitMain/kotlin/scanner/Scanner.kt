@@ -22,25 +22,26 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.client.KalugaBluetoothScanningDelegateProtocol
-import com.splendo.kaluga.bluetooth.client.KalugaBluetoothScanningWrapper
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
+import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import platform.CoreBluetooth.CBCentralManager
+import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
 import platform.CoreBluetooth.CBCentralManagerScanOptionAllowDuplicatesKey
 import platform.CoreBluetooth.CBCentralManagerScanOptionSolicitedServiceUUIDsKey
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBService
+import platform.CoreFoundation.CFAbsoluteTime
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
@@ -123,33 +124,35 @@ actual class DefaultScanner internal constructor(
 
     private class PoweredOnCBCentralManagerDelegate(private val scanner: DefaultScanner, private val isEnabledCompleted: EmptyCompletableDeferred) :
         NSObject(),
-        KalugaBluetoothScanningDelegateProtocol {
+        CBCentralManagerDelegateProtocol {
 
-        override fun didUpdateState(centralManager: CBCentralManager) {
-            if (centralManager.state == CBCentralManagerStatePoweredOn) {
+        override fun centralManagerDidUpdateState(central: CBCentralManager) {
+            if (central.state == CBCentralManagerStatePoweredOn) {
                 isEnabledCompleted.complete()
             }
         }
 
-        override fun didDiscoverPeripheral(peripheral: CBPeripheral, forCentralManager: CBCentralManager, advertisementData: Map<Any?, *>, rssi: NSNumber) {
+        override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             scanner.discoverPeripheral(
-                forCentralManager,
-                peripheral,
+                central,
+                didDiscoverPeripheral,
                 advertisementData.typedMap(),
-                rssi.intValue,
+                RSSI.intValue,
             )
         }
 
-        override fun didConnectPeripheral(peripheral: CBPeripheral, forCentralManager: CBCentralManager) {
-            scanner.handleDeviceConnected(peripheral.identifier)
+        override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
+            scanner.handleDeviceConnected(didConnectPeripheral.identifier)
         }
 
-        override fun didDisconnectPeripheral(peripheral: CBPeripheral, withError: NSError?, forCentralManager: CBCentralManager) {
-            scanner.handleDeviceDisconnected(peripheral.identifier, withError?.description)
+        @ObjCSignatureOverride
+        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
+            scanner.handleDeviceDisconnected(didDisconnectPeripheral.identifier, error?.description)
         }
 
-        override fun didFailToConnectPeripheral(peripheral: CBPeripheral, withError: NSError?, forCentralManager: CBCentralManager) {
-            scanner.handleDeviceDisconnected(peripheral.identifier, withError?.description ?: "Failed to connect")
+        @ObjCSignatureOverride
+        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
+            scanner.handleDeviceDisconnected(didFailToConnectPeripheral.identifier, error?.description ?: "Failed to connect")
         }
     }
 
@@ -162,7 +165,6 @@ actual class DefaultScanner internal constructor(
     actual override val bluetoothEnabledMonitor: BluetoothMonitor? = _bluetoothEnabledMonitor
 
     private var centralManager: CBCentralManager? = null
-    private var bluetoothWrapper: KalugaBluetoothScanningWrapper? = null
     private val centralManagerMutex = Mutex()
 
     private suspend fun getOrCreateCentralManager(): CBCentralManager = centralManager ?: centralManagerMutex.withLock {
@@ -175,7 +177,7 @@ actual class DefaultScanner internal constructor(
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
         val manager = CBCentralManager(null, scanQueue)
-        bluetoothWrapper = KalugaBluetoothScanningWrapper.createByLinkingWithCentralManager(manager, delegate)
+        manager.delegate = delegate
         awaitPoweredOn.await()
         return manager
     }

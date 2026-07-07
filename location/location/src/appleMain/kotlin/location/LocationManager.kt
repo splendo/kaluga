@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.CoreLocation.kCLLocationAccuracyBest
 import platform.CoreLocation.kCLLocationAccuracyReduced
 import platform.Foundation.NSBundle
@@ -92,18 +93,14 @@ internal expect fun CLLocationManager.configureForLocation(permission: LocationP
  */
 internal abstract class LocationUpdater(private val delegate: LocationDelegate) {
 
-    private var locationWrapper: KalugaLocationWrapper? = null
-
     fun startUpdating(manager: CLLocationManager) {
-        locationWrapper?.unlink()
-        locationWrapper = KalugaLocationWrapper.createByLinkingWithLocationManager(manager, delegate)
+        manager.delegate = delegate
         onStartUpdating(manager)
     }
 
     fun stopUpdating(manager: CLLocationManager) {
         onStopUpdating(manager)
-        locationWrapper?.unlink()
-        locationWrapper = null
+        manager.delegate = null
     }
 
     /**
@@ -134,9 +131,10 @@ internal expect class DefaultLocationUpdater(delegate: LocationDelegate, setting
  */
 internal class LocationDelegate(private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>) :
     NSObject(),
-    KalugaLocationDelegateProtocol {
-    override fun didUpdateLocations(locations: List<*>, manager: CLLocationManager) {
-        locations.mapNotNull { (it as? CLLocation)?.knownLocation }.forEach {
+    CLLocationManagerDelegateProtocol {
+
+    override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
+        didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }.forEach {
             onLocationsChanged.tryEmit(it) // should always work as the buffer is DROP_OLDEST
         }
     }
