@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 /**
  * When `true` the application is in Dark Mode.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val isInDarkMode: Boolean get() = when (ApplicationHolder.applicationContext.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
     Configuration.UI_MODE_NIGHT_YES -> true
     else -> false

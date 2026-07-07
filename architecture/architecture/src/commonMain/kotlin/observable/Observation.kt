@@ -39,6 +39,7 @@ import kotlin.reflect.KProperty
  * @param OO the type of [ObservableOptional] to store the result in.
  * @param initialValue The initial value this observation should contain.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initialValue: ObservableOptional<T>) : Initial<R, T> {
 
     // this is not used by iOS
@@ -207,6 +208,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initia
  * @param T the type of value to expect.
  * @param initialValue The initial [ObservableOptional.Value] this observation should contain.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class ObservationInitialized<T>(override val initialValue: ObservableOptional.Value<T>) :
     Observation<T, T, ObservableOptional.Value<T>>(initialValue),
     ReadWriteProperty<Any?, T>,
@@ -245,6 +247,7 @@ open class ObservationInitialized<T>(override val initialValue: ObservableOption
  * An [Observation] that implements [MutableUninitialized]
  * @param T the type of value to expect.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ObservationUninitialized<T> :
     Observation<T, T, ObservableOptional<T>>(ObservableOptional.Nothing()),
     MutableUninitialized<T>,
@@ -274,6 +277,7 @@ class ObservationUninitialized<T> :
  * @param defaultValue The default [ObservableOptional.Value] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
  * @param initialValue The initial [ObservableOptional.Value] this observation should contain.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class ObservationDefault<R : T?, T>(override val defaultValue: ObservableOptional.Value<R>, override val initialValue: ObservableOptional.Value<T?>) :
     Observation<R, T?, ObservableOptional.Value<R>>(initialValue),
     ReadWriteProperty<Any?, R>,
@@ -321,6 +325,7 @@ open class ObservationDefault<R : T?, T>(override val defaultValue: ObservableOp
  * @param context The [CoroutineContext] in which to observe the [Flow]
  * @param flow The [Flow] to observe.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T, T, OO : ObservableOptional<R>> observeFlow(
     observation: Observation<R, T, OO>,
     coroutineScope: CoroutineScope,

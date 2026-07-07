@@ -27,6 +27,7 @@ import kotlin.reflect.KProperty
  * @param R the type of result to expect. Must be a subclass of [T].
  * @param OO the type of [ObservableOptional] to store the result in.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface BasicObservable<R : T, T, OO : ObservableOptional<R>> :
     ReadOnlyProperty<Any?, OO>,
     Initial<R, T>
@@ -35,6 +36,7 @@ interface BasicObservable<R : T, T, OO : ObservableOptional<R>> :
  * A [BaseObservable] that is [Initialized].
  * @param T the type of value to expect.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface InitializedObservable<T> :
     BasicObservable<T, T, Value<T>>,
     Initialized<T, T>
@@ -43,6 +45,7 @@ interface InitializedObservable<T> :
  * A [BasicObservable] that is [Uninitialized].
  * @param T the type of value to expect.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface UninitializedObservable<T> :
     BasicObservable<T, T, ObservableOptional<T>>,
     Uninitialized<T>
@@ -52,6 +55,7 @@ interface UninitializedObservable<T> :
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface DefaultObservable<R : T?, T> :
     BasicObservable<R, T?, Value<R>>,
     DefaultInitialized<R, T?>
@@ -71,6 +75,7 @@ interface DefaultObservable<R : T?, T> :
  * @param OO the type of [ObservableOptional] to store the result in.
  * @param observation The [Observation] to handle observing the value.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(protected open val observation: Observation<R, T, OO>) :
     BasicObservable<R, T, OO>,
     Initial<R, T> by observation {
@@ -85,6 +90,7 @@ abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(protected op
  * @param observation The [ObservationInitialized] to handle observing the value.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseInitializedObservable<T>(observation: ObservationInitialized<T>) :
     BaseObservable<T, T, Value<T>>(observation),
     InitializedObservable<T>,
@@ -103,6 +109,7 @@ abstract class BaseInitializedObservable<T>(observation: ObservationInitialized<
  * @param observation The [ObservationUninitialized] to handle observing the value.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseUninitializedObservable<T>(override val observation: ObservationUninitialized<T>) :
     BaseObservable<T, T, ObservableOptional<T>>(
         observation,
@@ -120,6 +127,7 @@ abstract class BaseUninitializedObservable<T>(override val observation: Observat
  * @param observation The [ObservationDefault] to handle observing the value.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // we want our delegate to override
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseDefaultObservable<R : T?, T>(override val observation: ObservationDefault<R, T?>) :
     BaseObservable<R, T?, Value<R>>(observation),
     DefaultObservable<R, T?>,
@@ -143,6 +151,7 @@ abstract class BaseDefaultObservable<R : T?, T>(override val observation: Observ
  * @param T the type of value to expect.
  * @param value The fixed value of the observable
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class SimpleInitializedObservable<T>(value: T) : BaseInitializedObservable<T>(Value(value))
 
 /**
@@ -150,4 +159,5 @@ class SimpleInitializedObservable<T>(value: T) : BaseInitializedObservable<T>(Va
  * @param T the type of value to expect.
  * @param value The fixed value to observe.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> observableOf(value: T) = SimpleInitializedObservable(value)

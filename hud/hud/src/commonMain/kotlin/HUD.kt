@@ -29,6 +29,7 @@ import kotlin.time.Duration.Companion.milliseconds
 /**
  * Style of the Loading Indicator
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 enum class HUDStyle {
     /** System appearance */
     SYSTEM,
@@ -41,6 +42,7 @@ enum class HUDStyle {
  * Class showing a loading indicator HUD.
  * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     /**
@@ -87,6 +89,7 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
 /**
  * Default [BaseHUD] implementation.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class HUD : BaseHUD {
 
     /**
@@ -113,11 +116,13 @@ expect class HUD : BaseHUD {
 /**
  * The title of the HUD.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val BaseHUD.title: String? get() = hudConfig.title
 
 /**
  * The [HUDStyle] of the HUD.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val BaseHUD.style: HUDStyle get() = hudConfig.style
 
 /**
@@ -125,6 +130,7 @@ val BaseHUD.style: HUDStyle get() = hudConfig.style
  * @param duration The [Duration] to wait
  * @param animated Pass `true` to animate the transition
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseHUD.dismissAfter(duration: Duration, animated: Boolean = true): BaseHUD = apply {
     launch(Dispatchers.Main) {
         delay(duration)
@@ -137,6 +143,7 @@ fun BaseHUD.dismissAfter(duration: Duration, animated: Boolean = true): BaseHUD 
  * @param timeMillis The number of milliseconds to wait
  * @param animated Pass `true` to animate the transition
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseHUD.dismissAfter(timeMillis: Long, animated: Boolean = true): BaseHUD = dismissAfter(timeMillis.milliseconds, animated)
 
 /**
@@ -145,6 +152,7 @@ fun BaseHUD.dismissAfter(timeMillis: Long, animated: Boolean = true): BaseHUD = 
  * @param animated Pass `true` to animate the transition
  * @param block The block to execute with hud visible
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 suspend fun <T> BaseHUD.presentDuring(animated: Boolean = true, block: suspend BaseHUD.() -> T): T {
     present(animated)
     return block().also { dismiss(animated) }
@@ -156,6 +164,7 @@ suspend fun <T> BaseHUD.presentDuring(animated: Boolean = true, block: suspend B
  * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
  * @param initialize Method for initializing the [HUD.Builder]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: HudConfig.Builder.() -> Unit = { }): BaseHUD = create(
     HudConfig.Builder().apply {
         initialize()

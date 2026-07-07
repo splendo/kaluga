@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
  * Binds an [ActivityLifecycleSubscribable] to the lifecycle of the [androidx.appcompat.app.AppCompatActivity] associated with the current [LocalContext]
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun ActivityLifecycleSubscribable.bind(): ActivityLifecycleSubscribable {
     LocalContext.current.appCompatActivity?.let { activity ->
         DisposableEffect(Unit) {
@@ -37,6 +38,7 @@ fun ActivityLifecycleSubscribable.bind(): ActivityLifecycleSubscribable {
  * @param onBackButtonClickHandler The handler to execute when the back button is pressed.
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
     LocalOnBackPressedDispatcherOwner.current?.let {
         val onBackPressedDispatcher = it.onBackPressedDispatcher

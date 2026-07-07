@@ -38,6 +38,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  * This will determine the initial time/day to be selected in the picker, depending on the [type].
  * Upon completion, a copy of this date modified with the selected date or time will be provided, keeping timezone and components not selected the same.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class DateTimePicker(
     val message: String?,
     val cancelButtonTitle: String,
@@ -160,6 +161,7 @@ data class DateTimePicker(
 /**
  * Interface that defines actions that can used to present a [DateTimePicker].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface DateTimePickerActions {
     /**
      * Presents a [DateTimePicker]
@@ -191,6 +193,7 @@ interface DateTimePickerActions {
  *
  * @param dateTimePicker The [DateTimePicker] to present (and dismiss if needed)
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: DateTimePicker) : DateTimePickerActions {
 
     /**
@@ -240,6 +243,7 @@ abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: Da
 /**
  * Class for presenting a [DateTimePicker]. Implementation of [BaseDateTimePickerPresenter]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
 
     /**
@@ -269,6 +273,7 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
  * @param initialize The block to construct a [DateTimePicker] with type [DateTimePicker.Type.DateType]
  * @return The built alert interface object
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
     coroutineScope: CoroutineScope,
     earliestDate: KalugaDate? = null,
@@ -288,6 +293,7 @@ fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
  * @param initialize The block to construct a [DateTimePicker] with type [DateTimePicker.Type.TimeType]
  * @return The built alert interface object
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseDateTimePickerPresenter.Builder.buildTimePicker(coroutineScope: CoroutineScope, initialize: DateTimePicker.Builder.() -> Unit): BaseDateTimePickerPresenter = create(
     DateTimePicker.Builder(DateTimePicker.Type.TimeType).apply {
         initialize()

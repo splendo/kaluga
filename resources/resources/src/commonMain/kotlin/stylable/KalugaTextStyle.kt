@@ -27,4 +27,5 @@ import com.splendo.kaluga.resources.KalugaFont
  * @property size the size of the text in points
  * @property alignment the [KalugaTextAlignment] of the text
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class KalugaTextStyle(val font: KalugaFont, val color: KalugaColor, val size: Float, val alignment: KalugaTextAlignment = KalugaTextAlignment.START)

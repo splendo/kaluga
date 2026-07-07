@@ -27,6 +27,7 @@ import kotlin.reflect.KProperty
  * @param defaultValue The default [R] to be returned if [ObservableOptional.valueOrNull] is not [R] or `null`.
  * @return The current value [R] if it exists or [defaultValue]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified R : T, T> ObservableOptional<T>.resultValueOrDefault(defaultValue: R): R = try {
     valueOrNull?.let { it as? R } ?: defaultValue
 } catch (e: ClassCastException) {
@@ -38,6 +39,7 @@ inline fun <reified R : T, T> ObservableOptional<T>.resultValueOrDefault(default
  * @param defaultValue The default [Value] of [R] to be returned if [ObservableOptional] is not a [Value] of [R] or `null`.
  * @return An [ObservableOptional] containing the current [Value] of [R] if it exists or [defaultValue]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : T, T> ObservableOptional<T>.asResult(defaultValue: Value<R>?): ObservableOptional<R> = try {
     if (this is Value<*> && (this.value != null || defaultValue == null)) {
         @Suppress("UNCHECKED_CAST")
@@ -53,6 +55,7 @@ fun <R : T, T> ObservableOptional<T>.asResult(defaultValue: Value<R>?): Observab
  * Result type for a [BaseObservable]. Used to allow for the distinction between `null` and optional values.
  * @param T the type this [ObservableOptional] represents. Can be a nullable.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
 
     /**

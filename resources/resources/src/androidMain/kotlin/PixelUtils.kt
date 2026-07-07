@@ -25,6 +25,7 @@ import android.util.TypedValue
  * @param context the [Context] of the window to render the pixels
  * @return the number of pixels equal to this amount of `Device Independent Pixels` for this device
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Float.dpToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_DIP, context)
 
 /**
@@ -32,6 +33,7 @@ fun Float.dpToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_D
  * @param context the [Context] of the window to render the pixels
  * @return the number of pixels equal to this amount of `Scaled Pixels` for this device
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Float.spToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_SP, context)
 
 private fun Float.toPixel(unit: Int, context: Context): Float = TypedValue.applyDimension(

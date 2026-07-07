@@ -33,6 +33,7 @@ import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.TintedImage
 import com.splendo.kaluga.resources.tinted
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun KalugaImage.Composable(
     contentDescription: String?,
@@ -51,6 +52,7 @@ fun KalugaImage.Composable(
     colorFilter = colorFilter,
 )
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun TintedImage.Composable(
     contentDescription: String?,

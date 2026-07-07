@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 /**
  * Convenience [AppCompatActivity] that is bound to a [LifecycleViewModel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class KalugaViewModelActivity<ViewModel : BaseLifecycleViewModel>(@LayoutRes layout: Int = 0) : AppCompatActivity(layout) {
 
     abstract val viewModel: ViewModel

@@ -28,10 +28,12 @@ import kotlinx.coroutines.flow.StateFlow
  * @property sheetContentNavHostController The [NavHostController] managing the sheet content of the bottom sheet.
  * @property scaffoldState The [BottomSheetScaffoldState] of the bottom sheet.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class BottomSheetNavigatorState(
     val contentNavHostController: NavHostController,
     val sheetContentNavHostController: NavHostController,
     val scaffoldState: BottomSheetScaffoldState,
 )
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 typealias BottomSheetContentBuilder = NavGraphBuilder.(bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>) -> Unit

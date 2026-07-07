@@ -30,6 +30,7 @@ import com.splendo.kaluga.base.ApplicationHolder
  * @param resourcePackageOverride if provided, overrides a lookup package for resources
  * @param content a preview content
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun KalugaPreview(resourcePackageOverride: String? = null, content: @Composable () -> Unit) {
     ApplicationHolder.applicationContext = PreviewContextWrapper(

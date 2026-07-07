@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class ViewModelTest<ViewModel : LifecycleViewModel> : BaseTest() {
 
     lateinit var viewModel: ViewModel
@@ -46,6 +47,7 @@ abstract class ViewModelTest<ViewModel : LifecycleViewModel> : BaseTest() {
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class SimpleUIThreadViewModelTest<ViewModel : LifecycleViewModel> : UIThreadViewModelTest<ViewModelTestContext<ViewModel>, ViewModel>() {
 
     override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<ViewModel> =
@@ -57,6 +59,7 @@ abstract class SimpleUIThreadViewModelTest<ViewModel : LifecycleViewModel> : UIT
 /**
  * A [UIThreadTest] that takes a [UIThreadViewModelTest.ViewModelTestContext]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class UIThreadViewModelTest<Context : ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> : UIThreadTest<Context>() {
 
     /**
@@ -79,6 +82,7 @@ abstract class UIThreadViewModelTest<Context : ViewModelTestContext<ViewModel>, 
 /**
  * A [BaseUIThreadTest] that takes a [BaseUIThreadViewModelTest.ViewModelTestContext]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseUIThreadViewModelTest<Configuration, Context : BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
     BaseUIThreadTest<Configuration, Context>() {
 

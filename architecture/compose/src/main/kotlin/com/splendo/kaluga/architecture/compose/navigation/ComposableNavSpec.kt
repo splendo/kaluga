@@ -47,6 +47,7 @@ import kotlin.reflect.safeCast
 /**
  * Spec for navigating with a [ComposableNavigator]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class ComposableNavSpec {
 
     companion object {
@@ -398,6 +399,7 @@ sealed class ComposableNavSpec {
  * @param activityResultContract The [ActivityResultContract] to launch.
  * @param onResult The result received after the launched screen has completed.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, Input, Output> SingleValueNavigationAction<Input>.Launcher(
     activityResultContract: ActivityResultContract<Input, Output>,
     noinline onResult: ViewModel.(Output) -> Unit,
@@ -412,6 +414,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, Input, Output> SingleVal
  * @param flags A set of [IntentFlag] to be applied to the launched activity.
  * @param onResult The result received after the launched screen has completed.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Activity : android.app.Activity, reified ViewModel : BaseLifecycleViewModel, Output> NavigationAction<*>.Launcher(
     activityResultContract: ActivityResultContract<Intent, Output>,
     flags: Set<IntentFlag> = emptySet(),
@@ -435,6 +438,7 @@ inline fun <reified Activity : android.app.Activity, reified ViewModel : BaseLif
  * @param Activity The type of [android.app.Activity] to launch.
  * @param flags A set of [IntentFlag] to be applied to the next screen.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowActivity(flags: Set<IntentFlag> = emptySet()) = ComposableNavSpec.IntentLauncher {
     Intent(this, Activity::class.java).apply {
         bundle?.let {
@@ -448,6 +452,7 @@ inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowAct
  * Creates a [ComposableNavSpec.CloseActivity] for a given result code.
  * @param resultCode If not `null`, this will set the [NavigationAction.bundle] as the result of the activity.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun NavigationAction<*>.CloseActivity(resultCode: Int?) = ComposableNavSpec.CloseActivity(
     resultCode?.let { it to bundle },
 )

@@ -23,6 +23,7 @@ import android.os.Build
 /**
  * Intent Flags supported for Navigation
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class IntentFlag {
 
     abstract val value: Int
@@ -144,4 +145,5 @@ sealed class IntentFlag {
  * Transforms a set of [IntentFlag] to its corresponding [Int]
  * @return The int describing the set of [IntentFlag]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun Set<IntentFlag>.toFlags(): Int = this.fold(0) { acc, flag -> acc or flag.value }

@@ -28,12 +28,14 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
 /** A [CompositionLocal] containing the current activity. */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val LocalAppCompatActivity = staticCompositionLocalOf<AppCompatActivity?> { null }
 
 /**
  * An implementation of [AppCompatActivity] which creates a [ViewModel] and renders it using [ViewModelComposable].
  * Also provides a reference to this [AppCompatActivity] using [LocalAppCompatActivity].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class KalugaViewModelComposeActivity<ViewModel : BaseLifecycleViewModel> : AppCompatActivity() {
 
     @SuppressLint("MissingSuperCall") // Lint bug

@@ -36,6 +36,7 @@ import platform.darwin.sel_registerName
  * Makes a [UILabel] look like the specification of a [KalugaLabel]
  * @param label the [KalugaLabel] that specifies the look of the [UILabel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UILabel.bindLabel(label: KalugaLabel) {
     applyTextStyle(label.style)
     when (label) {
@@ -77,6 +78,7 @@ fun UILabel.bindLabel(label: KalugaLabel) {
  * @param label the [KalugaLabel] that specifies the look of the [UITextView]
  */
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UITextView.bindLabel(label: KalugaLabel) {
     when (label) {
         is KalugaLabel.Plain -> text = label.text
@@ -103,6 +105,7 @@ fun UITextView.bindLabel(label: KalugaLabel) {
  * Makes a [UILabel] look as specified by a [KalugaTextStyle]
  * @param textStyle the [KalugaTextStyle] that specifies the look of the [UILabel]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UILabel.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
@@ -114,6 +117,7 @@ fun UILabel.applyTextStyle(textStyle: KalugaTextStyle) {
  * Makes a [UITextView] look as specified by a [KalugaTextStyle]
  * @param textStyle the [KalugaTextStyle] that specifies the look of the [UITextView]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UITextView.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
@@ -124,6 +128,7 @@ fun UITextView.applyTextStyle(textStyle: KalugaTextStyle) {
  * Makes a [UITextField] look as specified by a [KalugaTextStyle]
  * @param textStyle the [KalugaTextStyle] that specifies the look of the [UITextField]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun UITextField.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor

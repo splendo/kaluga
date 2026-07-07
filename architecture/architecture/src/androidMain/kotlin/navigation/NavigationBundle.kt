@@ -25,6 +25,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * Converts a [NavigationBundle] to a [Bundle]
  * @return The converted [Bundle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <Row : NavigationBundleSpecRow<*>> NavigationBundle<Row>.toBundle(): Bundle {
     val bundle = Bundle()
 
@@ -95,6 +96,7 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
  * @param spec The [NavigationBundleSpec] used to create the [NavigationBundle]
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <Row : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<Row>): NavigationBundle<Row> = NavigationBundle(
     spec,
     spec.rows.associate { row ->
@@ -107,6 +109,7 @@ fun <Row : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: Navigatio
 /**
  * Error indicating a [Bundle] could not be converted to a [NavigationBundle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class BundleConversionError : Exception()
 
 internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>): NavigationBundleValue<*>? = when (specType) {

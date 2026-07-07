@@ -32,6 +32,7 @@ import platform.UIKit.labelFontSize
  * @param bundle the [NSBundle] from which to load the string resource
  * @param table the string table to search in. If tableName is 'null` or is an empty string, the method attempts to use the table in `Localizable.strings`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultStringLoader(private val bundle: NSBundle, private val table: String?) : StringLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
     actual override fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
@@ -46,6 +47,7 @@ actual class DefaultStringLoader(private val bundle: NSBundle, private val table
  * @param bundle the [NSBundle] from which to load the color resource
  * @param traitCollection The [UITraitCollection] that specifies the gamut to use when selecting the color.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : KalugaColorLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
     actual override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor
@@ -60,6 +62,7 @@ actual class DefaultColorLoader(private val bundle: NSBundle, private val traitC
  * Use this parameter to ensure that the system loads the correct variant of the image.
  * If you specify `null`, this method uses the traits associated with the main screen.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : ImageLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
     actual override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? = UIImage.imageNamed(identifier, bundle, traitCollection) ?: defaultValue
@@ -68,6 +71,7 @@ actual class DefaultImageLoader(private val bundle: NSBundle, private val traitC
 /**
  * Default implementation of a [FontLoader].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultFontLoader actual constructor() : FontLoader {
     actual override fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
 }

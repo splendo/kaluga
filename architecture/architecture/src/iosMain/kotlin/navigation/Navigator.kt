@@ -63,24 +63,37 @@ import kotlin.native.ref.WeakReference
  * Class that can trigger a given [NavigationAction]
  * @param Action the type of [NavigationAction] this navigator should respond to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
     actual fun navigate(action: Action)
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class DefaultNavigator<Action : NavigationAction<*>>(val onAction: (Action) -> Unit) : Navigator<Action> {
     override fun navigate(action: Action) {
         onAction(action)
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object MissingViewControllerNavigationException : NavigationException("Missing Parent ViewController")
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object MissingNavigationControllerNavigationException : NavigationException("Missing Navigation ViewController")
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object MailNotSupportedNavigationException : NavigationException("Cannot send Mail")
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object TextNotSupportedNavigationException : NavigationException("Cannot send Text")
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class ImagePickerSourceNotAvailableNavigationException(val source: UIImagePickerControllerSourceType) :
     NavigationException(
         "Source Type $source not available for ImagePicker",
     )
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class ImagePickerMediaNotAvailableNavigationException(val types: Set<NavigationSpec.ImagePicker.MediaType>) :
     NavigationException(
         "Media Types ${types.joinToString(", ")} not available for ImagePicker",
@@ -92,6 +105,7 @@ data class ImagePickerMediaNotAvailableNavigationException(val types: Set<Naviga
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action> {
 
     private class StoreKitDelegate :

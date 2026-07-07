@@ -1,4 +1,6 @@
 # Alerts  
+
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
   
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|

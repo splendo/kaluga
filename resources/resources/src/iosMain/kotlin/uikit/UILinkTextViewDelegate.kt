@@ -46,6 +46,7 @@ internal class UILinkTextViewDelegate :
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProtocol) :
     NSObject(),
     UITextViewDelegateProtocol {

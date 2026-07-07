@@ -23,6 +23,7 @@ import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 /**
  * Gets the [TextAlign] from a [KalugaTextAlignment]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaTextAlignment.composable: TextAlign
     get() = when (this) {
         KalugaTextAlignment.CENTER -> TextAlign.Center

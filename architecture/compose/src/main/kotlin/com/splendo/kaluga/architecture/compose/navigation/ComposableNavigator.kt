@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 typealias RouteContentBuilder = NavGraphBuilder.(StateFlow<NavHostController?>) -> Unit
 
 /**
@@ -25,6 +26,7 @@ typealias RouteContentBuilder = NavGraphBuilder.(StateFlow<NavHostController?>) 
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param navigationMapper A mapper that converts an [Action] handled by this navigator into a [ComposableNavSpec]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class ComposableNavigator<Action : NavigationAction<*>>(private val navigationMapper: @Composable (Action) -> ComposableNavSpec) :
     Navigator<Action>,
     ComposableLifecycleSubscribable {
@@ -77,6 +79,7 @@ sealed class ComposableNavigator<Action : NavigationAction<*>>(private val navig
  * @param rootResultHandlers A list of [NavHostResultHandler] to be added to the root view.
  * @param contentBuilder The [RouteContentBuilder] describing the navigation graph
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class RootNavHostComposableNavigator<Action : NavigationAction<*>>(
     navigationMapper: @Composable (Action) -> ComposableNavSpec,
     parentRouteController: RouteController? = null,
@@ -118,6 +121,7 @@ class RootNavHostComposableNavigator<Action : NavigationAction<*>>(
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
  * @param navigationMapper Maps [Action] to a [Route] to be navigated to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class ProvidingNavHostComposableNavigator<Action : NavigationAction<*>, Provider>(
     override val routeController: ProvidingNavHostRouteController<Provider>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
@@ -139,6 +143,7 @@ sealed class ProvidingNavHostComposableNavigator<Action : NavigationAction<*>, P
  * @param parentRouteController An optional parent [RouteController] managing the navigation of a view higher in the hierarchy.
  * @param navigationMapper Maps [Action] to a [ComposableNavSpec] to be navigated to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class NavHostComposableNavigator<Action : NavigationAction<*>>(
     navHostController: StateFlow<NavHostController?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
@@ -158,6 +163,7 @@ class NavHostComposableNavigator<Action : NavigationAction<*>>(
  * @param parentRouteController An optional parent [RouteController] managing the navigation of a view higher in the hierarchy.
  * @param navigationMapper Maps [Action] to a [ComposableNavSpec] to be navigated to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class BottomSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>(
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
@@ -176,6 +182,7 @@ class BottomSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
  * @param navigationMapper Maps [Action] to a [ComposableNavSpec] to be navigated to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class BottomSheetSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>(
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
@@ -198,6 +205,7 @@ class BottomSheetSheetContentNavHostComposableNavigator<Action : NavigationActio
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param navigationMapper Maps [Action] to a [ComposableNavSpec.LaunchedNavigation] to be navigated to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class LaunchedComposableNavigator<Action : NavigationAction<*>>(navigationMapper: @Composable (Action) -> ComposableNavSpec.LaunchedNavigation) :
     ComposableNavigator<Action>(navigationMapper) {
     override val routeController: RouteController? = null

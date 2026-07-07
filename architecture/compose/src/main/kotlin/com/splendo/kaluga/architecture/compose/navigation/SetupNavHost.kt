@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.StateFlow
  * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun SetupNavHost(
     navHostController: StateFlow<NavHostController?>,
     rootView: @Composable () -> Unit = { Spacer(modifier = Modifier.fillMaxWidth()) },
@@ -61,6 +62,7 @@ fun SetupNavHost(
  * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun SetupNavHost(
     bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
     navHostController: BottomSheetNavigatorState.() -> NavHostController,
@@ -86,6 +88,7 @@ fun SetupNavHost(
  * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
  */
 @Composable
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun SetupNavHost(navHostController: NavHostController, startDestination: String, builder: NavGraphBuilder.() -> Unit) {
     NavHost(
         navController = navHostController,

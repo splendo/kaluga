@@ -25,6 +25,7 @@ package com.splendo.kaluga.resources.stylable
  * @property top the padding at the top of the view
  * @property bottom the padding at the bottom of the view
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class Padding(val start: Float = 0.0f, val end: Float = 0.0f, val top: Float = 0.0f, val bottom: Float = 0.0f) {
 
     companion object {

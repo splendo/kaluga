@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
  * @param activity The [Activity] managing the lifecycle
  * @param fragmentManager The [FragmentManager] for this lifecycle
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class KalugaViewModelLifecycleObserver<ViewModel : BaseLifecycleViewModel> internal constructor(
     private val viewModel: ViewModel,
     private val activity: Activity?,
@@ -63,6 +64,7 @@ class KalugaViewModelLifecycleObserver<ViewModel : BaseLifecycleViewModel> inter
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class LifecycleSubscribableManager<ViewModel : BaseLifecycleViewModel>(
     private val viewModel: ViewModel,
     private val activity: Activity?,

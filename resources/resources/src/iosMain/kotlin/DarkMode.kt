@@ -25,6 +25,7 @@ import platform.UIKit.currentTraitCollection
 /**
  * When `true` the application is in Dark Mode.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val isInDarkMode: Boolean get() {
     return IOSVersion.systemVersion >= IOSVersion(12) && UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark
 }

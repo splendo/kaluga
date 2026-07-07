@@ -1,5 +1,7 @@
 # Date Time Picker
 
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
+
 Show native date and time picker dialogs.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:

@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.update
 /**
  * Simple ViewModel class that is to be bound to a View lifecycle
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect open class LifecycleViewModel internal constructor() {
     /**
      * [CoroutineScope] of the ViewModel.
@@ -48,6 +49,7 @@ expect open class LifecycleViewModel internal constructor() {
  * Default [LifecycleViewModel] implementation respecting the Lifecycle of the presenting view.
  * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscribable) : LifecycleViewModel() {
 
     private val _activeLifecycleSubscribables = MutableStateFlow(lifecycleSubscribables.toSet())
@@ -105,5 +107,6 @@ open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscr
  * @param navigator The [Navigator] handling navigation.
  * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class NavigatingViewModel<A : NavigationAction<*>>(protected val navigator: Navigator<A>, vararg lifecycleSubscribables: LifecycleSubscribable) :
     BaseLifecycleViewModel(*lifecycleSubscribables, navigator)

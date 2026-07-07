@@ -1,5 +1,7 @@
 # HUD
 
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
+
 Display a loading-indicator HUD.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:

@@ -25,6 +25,7 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 /**
  * Ensure a [LifecycleViewModel] calls its [LifecycleViewModel.onCleared] method
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual fun LifecycleViewModel.cleanUp() {
     // Android ViewModels dont support directly calling clear
     // However registering a ViewModel to a ViewModel Store and then cleaning the store does the same trick

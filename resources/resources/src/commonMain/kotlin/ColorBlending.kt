@@ -25,6 +25,7 @@ import kotlin.math.sqrt
 /**
  * Blend Modes as defined by https://helpx.adobe.com/photoshop/using/blending-modes.html
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class BlendMode {
 
     /**
@@ -329,6 +330,7 @@ private fun KalugaColor.RGBColor.blend(source: KalugaColor.RGBColor, mode: Blend
  * @return a [KalugaColor] that is the result of [BlendMode.Normal] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.normal(source: KalugaColor) = blend(source, BlendMode.Normal)
 
 /**
@@ -337,6 +339,7 @@ infix fun KalugaColor.normal(source: KalugaColor) = blend(source, BlendMode.Norm
  * @return a [KalugaColor] that is the result of [BlendMode.Multiply] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.multiply(source: KalugaColor) = blend(source, BlendMode.Multiply)
 
 /**
@@ -345,6 +348,7 @@ infix fun KalugaColor.multiply(source: KalugaColor) = blend(source, BlendMode.Mu
  * @return a [KalugaColor] that is the result of [BlendMode.Screen] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.screen(source: KalugaColor) = blend(source, BlendMode.Screen)
 
 /**
@@ -353,6 +357,7 @@ infix fun KalugaColor.screen(source: KalugaColor) = blend(source, BlendMode.Scre
  * @return a [KalugaColor] that is the result of [BlendMode.Overlay] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.overlay(source: KalugaColor) = blend(source, BlendMode.Overlay)
 
 /**
@@ -361,6 +366,7 @@ infix fun KalugaColor.overlay(source: KalugaColor) = blend(source, BlendMode.Ove
  * @return a [KalugaColor] that is the result of [BlendMode.Darken] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.darken(source: KalugaColor) = blend(source, BlendMode.Darken)
 
 /**
@@ -369,6 +375,7 @@ infix fun KalugaColor.darken(source: KalugaColor) = blend(source, BlendMode.Dark
  * @return a [KalugaColor] that is the result of [BlendMode.Lighten] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.lighten(source: KalugaColor) = blend(source, BlendMode.Lighten)
 
 /**
@@ -377,6 +384,7 @@ infix fun KalugaColor.lighten(source: KalugaColor) = blend(source, BlendMode.Lig
  * @return a [KalugaColor] that is the result of [BlendMode.HardLight] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.hardLight(source: KalugaColor) = blend(source, BlendMode.HardLight)
 
 /**
@@ -385,6 +393,7 @@ infix fun KalugaColor.hardLight(source: KalugaColor) = blend(source, BlendMode.H
  * @return a [KalugaColor] that is the result of [BlendMode.SoftLight] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.softLight(source: KalugaColor) = blend(source, BlendMode.SoftLight)
 
 /**
@@ -393,6 +402,7 @@ infix fun KalugaColor.softLight(source: KalugaColor) = blend(source, BlendMode.S
  * @return a [KalugaColor] that is the result of [BlendMode.ColorDodge] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.dodge(source: KalugaColor) = blend(source, BlendMode.ColorDodge)
 
 /**
@@ -401,6 +411,7 @@ infix fun KalugaColor.dodge(source: KalugaColor) = blend(source, BlendMode.Color
  * @return a [KalugaColor] that is the result of [BlendMode.ColorBurn] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.burn(source: KalugaColor) = blend(source, BlendMode.ColorBurn)
 
 /**
@@ -409,6 +420,7 @@ infix fun KalugaColor.burn(source: KalugaColor) = blend(source, BlendMode.ColorB
  * @return a [KalugaColor] that is the result of [BlendMode.Difference] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.difference(source: KalugaColor) = blend(source, BlendMode.Difference)
 
 /**
@@ -417,6 +429,7 @@ infix fun KalugaColor.difference(source: KalugaColor) = blend(source, BlendMode.
  * @return a [KalugaColor] that is the result of [BlendMode.Exclusion] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.exclude(source: KalugaColor) = blend(source, BlendMode.Exclusion)
 
 /**
@@ -425,6 +438,7 @@ infix fun KalugaColor.exclude(source: KalugaColor) = blend(source, BlendMode.Exc
  * @return a [KalugaColor] that is the result of [BlendMode.Hue] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.hue(source: KalugaColor) = blend(source, BlendMode.Hue)
 
 /**
@@ -433,6 +447,7 @@ infix fun KalugaColor.hue(source: KalugaColor) = blend(source, BlendMode.Hue)
  * @return a [KalugaColor] that is the result of [BlendMode.Saturation] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.saturate(source: KalugaColor) = blend(source, BlendMode.Saturation)
 
 /**
@@ -441,6 +456,7 @@ infix fun KalugaColor.saturate(source: KalugaColor) = blend(source, BlendMode.Sa
  * @return a [KalugaColor] that is the result of [BlendMode.Luminosity] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.luminate(source: KalugaColor) = blend(source, BlendMode.Luminosity)
 
 /**
@@ -449,4 +465,5 @@ infix fun KalugaColor.luminate(source: KalugaColor) = blend(source, BlendMode.Lu
  * @return a [KalugaColor] that is the result of [BlendMode.ColorBlend] being applied with this [KalugaColor] as the base color and [source] as the source color
  * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 infix fun KalugaColor.colorBlend(source: KalugaColor) = blend(source, BlendMode.ColorBlend)

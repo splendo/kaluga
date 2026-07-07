@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param navigationMapper A mapper that converts an [Action] handled by this navigator into a [BottomSheetComposableNavSpec]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class BottomSheetNavigator<Action : NavigationAction<*>>(private val navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec) :
     Navigator<Action>,
     ComposableLifecycleSubscribable {
@@ -89,6 +90,7 @@ sealed class BottomSheetNavigator<Action : NavigationAction<*>>(private val navi
  * @param contentBuilder The [BottomSheetContentBuilder] describing the navigation graph of the content.
  * @param sheetContentBuilder The [BottomSheetContentBuilder] describing the navigation graph of the sheet content.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
     navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec,
     private val initialSheetValue: SheetValue = Hidden,
@@ -153,6 +155,7 @@ class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
  * @param sheetContentResultHandlers A list of [NavHostResultHandler] to be added to the sheet content of this navigator.
  * @param navigationMapper Maps [Action] to a [BottomSheetComposableNavSpec] to be navigated to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ModalBottomSheetNavigator<Action : NavigationAction<*>>(
     bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
     contentResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),

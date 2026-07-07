@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 /**
  * Controller for navigating to a [Route]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed interface RouteController {
 
     /**
@@ -64,6 +65,7 @@ sealed interface RouteController {
  * @param provider A [StateFlow] of [Provider].
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class ProvidingNavHostRouteController<Provider>(private val provider: StateFlow<Provider?>, private val parentRouteController: RouteController? = null) : RouteController {
 
     /**
@@ -140,6 +142,7 @@ sealed class ProvidingNavHostRouteController<Provider>(private val provider: Sta
  * @param provider The flow of [NavHostController] to be managed by this Route Controller
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class NavHostRouteController(provider: StateFlow<NavHostController?>, parentRouteController: RouteController? = null) :
     ProvidingNavHostRouteController<NavHostController>(provider, parentRouteController) {
     override fun NavHostController.provide(): NavHostController = this
@@ -150,6 +153,7 @@ class NavHostRouteController(provider: StateFlow<NavHostController?>, parentRout
  * @param provider The flow of [BottomSheetNavigatorState] where the [BottomSheetNavigatorState.contentNavHostController] is to be managed by this Route Controller
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class BottomSheetContentRouteController(provider: StateFlow<BottomSheetNavigatorState?>, parentRouteController: RouteController? = null) :
     ProvidingNavHostRouteController<BottomSheetNavigatorState>(provider, parentRouteController) {
     override fun BottomSheetNavigatorState.provide(): NavHostController = contentNavHostController
@@ -160,6 +164,7 @@ class BottomSheetContentRouteController(provider: StateFlow<BottomSheetNavigator
  * @param bottomSheetNavigatorState The flow of [BottomSheetNavigatorState] where the [BottomSheetNavigatorState.sheetContentNavHostController] is to be managed by this Route Controller
  * @param coroutineScope A flow of [CoroutineScope] for managing the [BottomSheetScaffold].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class BottomSheetSheetContentRouteController(
     private val bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
     private val coroutineScope: StateFlow<CoroutineScope?>,

@@ -48,11 +48,13 @@ import platform.UIKit.NSUnderlineStyleSingle
  * @property linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
  * When `null` the Theme default will be used
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: KalugaTextStyle, actual val linkStyle: LinkStyle?)
 
 /**
  * Gets the plain string of a [StyledString]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual val StyledString.rawString: String get() = attributeString.string
 
 /**
@@ -63,6 +65,7 @@ actual val StyledString.rawString: String get() = attributeString.string
  * @param linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
  * When `null` the Theme default will be used
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class StyledStringBuilder(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?) {
 
     /**

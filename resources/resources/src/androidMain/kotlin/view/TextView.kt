@@ -27,6 +27,7 @@ import com.splendo.kaluga.resources.stylable.KalugaTextStyle
  * Makes a [TextView] look like the specification of a [KalugaLabel]
  * @param label the [KalugaLabel] that specifies the look of the [TextView]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun TextView.bindLabel(label: KalugaLabel) {
     text = when (label) {
         is KalugaLabel.Plain -> label.text
@@ -48,6 +49,7 @@ fun TextView.bindLabel(label: KalugaLabel) {
  * Makes a [TextView] look as specified by a [KalugaTextStyle]
  * @param textStyle the [KalugaTextStyle] that specifies the look of the [TextView]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun TextView.applyTextStyle(textStyle: KalugaTextStyle) {
     typeface = textStyle.font
     textSize = textStyle.size

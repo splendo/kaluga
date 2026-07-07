@@ -33,6 +33,7 @@ import com.splendo.kaluga.lifecycle.LifecycleSubscribable
  * Class that can trigger a given [NavigationAction]
  * @param Action the type of [NavigationAction] this navigator should respond to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
 
     /**
@@ -43,7 +44,10 @@ actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable
     actual fun navigate(action: Action)
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object MissingLifecycleManagerNavigationException : NavigationException("LifecycleManager not attached")
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 object MissingActivityNavigationException : NavigationException("LifecycleManager does not have an activity")
 
 /**
@@ -53,6 +57,7 @@ object MissingActivityNavigationException : NavigationException("LifecycleManage
  * @param Action The type of [NavigationAction] handled by this navigator.
  * @param navigationMapper A function mapping the [Action] to [NavigationSpec]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapper: (Action) -> NavigationSpec) :
     Navigator<Action>,
     ActivityLifecycleSubscribable by DefaultActivityLifecycleSubscribable() {

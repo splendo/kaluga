@@ -20,4 +20,5 @@ package com.splendo.kaluga.resources
 /**
  * When `true` the application is in Dark Mode.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val isInDarkMode: Boolean

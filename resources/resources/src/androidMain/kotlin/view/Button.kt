@@ -44,6 +44,7 @@ import com.splendo.kaluga.resources.stylable.Padding
  * @param button the [KalugaButton] that specifies the look and behaviour of the [android.widget.Button]
  * @param rippleStyle a [RippleStyle] that is applied when the button is pressed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun android.widget.Button.bindButton(button: KalugaButton, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
     text = if (button is KalugaButton.WithText) {
         when (button) {
@@ -63,6 +64,7 @@ fun android.widget.Button.bindButton(button: KalugaButton, rippleStyle: RippleSt
 /**
  * Style of Ripple effect to use when a [android.widget.Button] is configured with a [KalugaButtonStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class RippleStyle {
 
     /**
@@ -90,6 +92,7 @@ sealed class RippleStyle {
  * @param style the [KalugaButtonStyle] that specifies the look of the [android.widget.Button]
  * @param rippleStyle the [RippleStyle] to apply when the button is pressed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun android.widget.Button.applyButtonStyle(style: KalugaButtonStyle<*>, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
     if (style is KalugaButtonStyle.WithText<*>) {
         applyButtonStyleWithText(style)

@@ -27,6 +27,7 @@ import kotlinx.serialization.json.Json
  * @param T the type of the [NavigationBundleSpecType]
  * @property associatedType The [NavigationBundleSpecType] associated with this row
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class NavigationBundleSpecRow<T>(val associatedType: NavigationBundleSpecType<T>) {
     /**
      * Key for this row. Used for converting rows to data types.
@@ -48,6 +49,7 @@ open class NavigationBundleSpecRow<T>(val associatedType: NavigationBundleSpecTy
  * Types of data a [NavigationBundleSpecRow] can be associated with.
  * @param T the type of value this [NavigationBundleSpecType] is representing.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class NavigationBundleSpecType<T> {
 
     /**
@@ -269,6 +271,7 @@ sealed class NavigationBundleSpecType<T> {
  * @param R The [NavigationBundleSpecRow] associated with this [NavigationBundleSpec].
  * @property rows The set of [rows][R] in this [NavigationBundleSpec].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(val rows: Set<R>)
 
 /**
@@ -276,6 +279,7 @@ open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(val rows: Set<R>
  * @param T The type of value stored in this spec.
  * @param type The [NavigationBundleSpecType] used for the [NavigationBundleSpecRow]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class SingleValueNavigationSpec<T>(type: NavigationBundleSpecType<T>) : NavigationBundleSpec<SingleValueNavigationSpec.Row<T>>(setOf(Row(type))) {
     /**
      * A [NavigationBundleSpecRow] that contains only a single value.
@@ -291,5 +295,6 @@ class SingleValueNavigationSpec<T>(type: NavigationBundleSpecType<T>) : Navigati
  * @param mapper Function mapping the [NavigationBundleSpecRow] in this spec to their respective [NavigationBundleValue]
  * @return A [NavigationBundle] matching this [NavigationBundleSpec]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <R : NavigationBundleSpecRow<*>> NavigationBundleSpec<R>.toBundle(mapper: (R) -> NavigationBundleValue<*>): NavigationBundle<R> =
     NavigationBundle(this, rows.associateWith { mapper.invoke(it) })

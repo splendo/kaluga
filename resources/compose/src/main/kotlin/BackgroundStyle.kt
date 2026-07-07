@@ -40,6 +40,7 @@ import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
  * @param backgroundStyle the [KalugaBackgroundStyle] to modify with
  * @return a [Modifier] that adds a background according to the [KalugaBackgroundStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun Modifier.backgroundStyle(backgroundStyle: KalugaBackgroundStyle) = background(
     backgroundStyle.fillStyle.brush(),
@@ -49,6 +50,7 @@ fun Modifier.backgroundStyle(backgroundStyle: KalugaBackgroundStyle) = backgroun
 /**
  * Gets the [Brush] of a [KalugaBackgroundStyle.FillStyle]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun KalugaBackgroundStyle.FillStyle.brush(): Brush = when (this) {
     is KalugaBackgroundStyle.FillStyle.Solid -> SolidColor(color.composable())
@@ -58,6 +60,7 @@ fun KalugaBackgroundStyle.FillStyle.brush(): Brush = when (this) {
 /**
  * Gets the [Shape] of a [KalugaBackgroundStyle.Shape]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaBackgroundStyle.Shape.shape: Shape get() = when (this) {
     is KalugaBackgroundStyle.Shape.Rectangle -> {
         val cornerRadiusSize = CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp)
@@ -93,6 +96,7 @@ val KalugaBackgroundStyle.Shape.shape: Shape get() = when (this) {
     is KalugaBackgroundStyle.Shape.Oval -> androidx.compose.foundation.shape.CircleShape
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 @Composable
 fun KalugaBackgroundStyle.StrokeStyle.borderStroke(): BorderStroke = when (this) {
     is KalugaBackgroundStyle.StrokeStyle.None -> BorderStroke(0.0f.dp, Color.Transparent)

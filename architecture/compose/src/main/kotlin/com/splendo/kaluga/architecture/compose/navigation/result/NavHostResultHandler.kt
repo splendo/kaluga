@@ -40,6 +40,7 @@ import kotlin.reflect.safeCast
  * @param handleResult A [Composable] method for setting up a [NavHostController] to return a [Result] through a callback.
  * @param onResult Callback method called on a [ViewModel] to handle a given [Result]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, Result>(
     private val viewModelClass: KClass<ViewModel>,
     private val handleResult: @Composable NavHostController.((Result) -> Unit) -> Unit,
@@ -62,6 +63,7 @@ class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, Result>(
  * @param onResult Method for handling the received result
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, Row : NavigationBundleSpecRow<*>> NavigationBundleSpec<Row>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(NavigationBundle<Row>) -> Unit,
@@ -79,6 +81,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, Row : NavigationBundleSp
  * @param onResult Method for handling the received result
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecType<T>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T) -> Unit,
@@ -96,6 +99,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecT
  * @param onResult Method for handling the received result
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> NavigationBundleSpecType<T>.NavHostResultOrNullHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T?) -> Unit,
@@ -111,6 +115,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> NavigationBundl
  * @return the [NavHostResultHandler]
  */
 @JvmName("NavHostNullableResultOrNullHandler")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecType<T>.NavHostResultOrNullHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T?) -> Unit,
@@ -124,6 +129,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecT
  * @param onResult Method for handling the received Boolean
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Boolean) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleBooleanResult(retain, it) }, onResult)
 
@@ -135,6 +141,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultHand
  * @param onResult Method for handling the received Boolean or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Boolean?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleBooleanOrNullResult(retain, it) }, onResult)
 
@@ -146,6 +153,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultOrNu
  * @param onResult Method for handling the received [BooleanArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(BooleanArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleBooleanArrayResult(retain, it) }, onResult)
 
@@ -157,6 +165,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResul
  * @param onResult Method for handling the received [BooleanArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(BooleanArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleBooleanArrayOrNullResult(retain, it) }, onResult)
 
@@ -168,6 +177,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResul
  * @param onResult Method for handling the received [Byte]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Byte) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleByteResult(retain, it) }, onResult)
 
@@ -179,6 +189,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultHandler
  * @param onResult Method for handling the received [Byte] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Byte?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleByteOrNullResult(retain, it) }, onResult)
 
@@ -190,6 +201,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultOrNullH
  * @param onResult Method for handling the received [ByteArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(ByteArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleByteArrayResult(retain, it) }, onResult)
 
@@ -201,6 +213,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultHa
  * @param onResult Method for handling the received [ByteArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(ByteArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleByteArrayOrNullResult(retain, it) }, onResult)
 
@@ -212,6 +225,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultOr
  * @param onResult Method for handling the received [Char]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Char) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleCharResult(retain, it) }, onResult)
 
@@ -223,6 +237,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultHandler
  * @param onResult Method for handling the received [Char] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Char?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleCharOrNullResult(retain, it) }, onResult)
 
@@ -234,6 +249,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultOrNullH
  * @param onResult Method for handling the received [CharArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(CharArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleCharArrayResult(retain, it) }, onResult)
 
@@ -245,6 +261,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultHa
  * @param onResult Method for handling the received [CharArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(CharArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleCharArrayOrNullResult(retain, it) }, onResult)
 
@@ -256,6 +273,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultOr
  * @param onResult Method for handling the received [CharSequence]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(CharSequence) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleCharSequenceResult(retain, it) }, onResult)
 
@@ -267,6 +285,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResul
  * @param onResult Method for handling the received [CharSequence] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(CharSequence?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleCharSequenceOrNullResult(retain, it) }, onResult)
 
@@ -278,6 +297,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResul
  * @param onResult Method for handling the received [KalugaDate]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(KalugaDate) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDateResult(retain, it) }, onResult)
 
@@ -289,6 +309,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultHandler
  * @param onResult Method for handling the received [KalugaDate] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(KalugaDate?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDateOrNullResult(retain, it) }, onResult)
 
@@ -300,6 +321,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultOrNullH
  * @param onResult Method for handling the received list of [KalugaDate]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(List<KalugaDate>) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDateArrayResult(retain, it) }, onResult)
 
@@ -311,6 +333,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultHa
  * @param onResult Method for handling the received list of [KalugaDate] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(List<KalugaDate>?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDateArrayOrNullResult(retain, it) }, onResult)
 
@@ -322,6 +345,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultOr
  * @param onResult Method for handling the received [Double]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Double) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDoubleResult(retain, it) }, onResult)
 
@@ -333,6 +357,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultHandl
  * @param onResult Method for handling the received [Double] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Double?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDoubleOrNullResult(retain, it) }, onResult)
 
@@ -344,6 +369,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultOrNul
  * @param onResult Method for handling the received [DoubleArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(DoubleArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDoubleArrayResult(retain, it) }, onResult)
 
@@ -355,6 +381,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResult
  * @param onResult Method for handling the received [DoubleArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(DoubleArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleDoubleArrayOrNullResult(retain, it) }, onResult)
 
@@ -366,6 +393,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResult
  * @param onResult Method for handling the received [Float]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Float) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleFloatResult(retain, it) }, onResult)
 
@@ -377,6 +405,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultHandle
  * @param onResult Method for handling the received [Float] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Float?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleFloatOrNullResult(retain, it) }, onResult)
 
@@ -388,6 +417,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultOrNull
  * @param onResult Method for handling the received [FloatArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(FloatArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleFloatArrayResult(retain, it) }, onResult)
 
@@ -399,6 +429,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultH
  * @param onResult Method for handling the received [FloatArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(FloatArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleFloatArrayOrNullResult(retain, it) }, onResult)
 
@@ -410,6 +441,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultO
  * @param onResult Method for handling the received [Int]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Int) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleIntResult(retain, it) }, onResult)
 
@@ -421,6 +453,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultHandler(
  * @param onResult Method for handling the received [Int] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Int?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleIntOrNullResult(retain, it) }, onResult)
 
@@ -432,6 +465,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultOrNullHa
  * @param onResult Method for handling the received [IntArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(IntArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleIntArrayResult(retain, it) }, onResult)
 
@@ -443,6 +477,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultHan
  * @param onResult Method for handling the received [IntArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(IntArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleIntArrayOrNullResult(retain, it) }, onResult)
 
@@ -454,6 +489,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultOrN
  * @param onResult Method for handling the received [Long]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Long) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleLongResult(retain, it) }, onResult)
 
@@ -465,6 +501,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultHandler
  * @param onResult Method for handling the received [Long] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Long?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleLongOrNullResult(retain, it) }, onResult)
 
@@ -476,6 +513,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultOrNullH
  * @param onResult Method for handling the received [LongArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(LongArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleLongArrayResult(retain, it) }, onResult)
 
@@ -487,6 +525,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultHa
  * @param onResult Method for handling the received [LongArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(LongArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleLongArrayOrNullResult(retain, it) }, onResult)
 
@@ -498,6 +537,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultOr
  * @param onResult Method for handling the received [Short]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(Short) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleShortResult(retain, it) }, onResult)
 
@@ -509,6 +549,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultHandle
  * @param onResult Method for handling the received [Short] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(Short?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleShortOrNullResult(retain, it) }, onResult)
 
@@ -520,6 +561,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultOrNull
  * @param onResult Method for handling the received [ShortArray]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(ShortArray) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleShortArrayResult(retain, it) }, onResult)
 
@@ -531,6 +573,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultH
  * @param onResult Method for handling the received [ShortArray] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(ShortArray?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleShortArrayOrNullResult(retain, it) }, onResult)
 
@@ -542,6 +585,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultO
  * @param onResult Method for handling the received [String]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(String) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleStringResult(retain, it) }, onResult)
 
@@ -553,6 +597,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultHandl
  * @param onResult Method for handling the received [String] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(String?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleStringOrNullResult(retain, it) }, onResult)
 
@@ -564,6 +609,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultOrNul
  * @param onResult Method for handling the received list of [String]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultHandler(retain: Boolean = false, noinline onResult: ViewModel.(List<String>) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleStringListResult(retain, it) }, onResult)
 
@@ -575,6 +621,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultH
  * @param onResult Method for handling the received list of [String] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultOrNullHandler(retain: Boolean = false, noinline onResult: ViewModel.(List<String>?) -> Unit) =
     NavHostResultHandler(ViewModel::class, { HandleStringListOrNullResult(retain, it) }, onResult)
 
@@ -587,6 +634,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultO
  * @param onResult Method for handling the received [T]
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> KSerializer<T>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T) -> Unit,
@@ -604,6 +652,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T> KSerializer<T>.NavHos
  * @param onResult Method for handling the received [T] or `null`
  * @return the [NavHostResultHandler]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> KSerializer<T>.NavHostResultOrNullHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T?) -> Unit,
@@ -622,6 +671,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> KSerializer<T>.
  * @return the [NavHostResultHandler]
  */
 @JvmName("NavHostNullableResultOrNullHandler")
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> KSerializer<T>.NavHostResultOrNullHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T?) -> Unit,

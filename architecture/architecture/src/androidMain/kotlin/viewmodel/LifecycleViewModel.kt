@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * Simple ViewModel class that is to be bound to a View lifecycle
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual open class LifecycleViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
 
     /**
@@ -45,6 +46,7 @@ actual open class LifecycleViewModel internal actual constructor() : androidx.li
  * Binds an [AppCompatActivity] to the [LifecycleViewModel] to manage the viewmodel lifecycle.
  * @param activity The [AppCompatActivity] to bind to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(activity: AppCompatActivity) {
     activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity.supportFragmentManager))
 }
@@ -53,6 +55,7 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(activity: AppCompatActiv
  * Binds a [Fragment] to the [LifecycleViewModel] to manage the viewmodel lifecycle
  * @param fragment The [Fragment] to bind to.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(fragment: Fragment) = fragment.lifecycle.addObserver(
     KalugaViewModelLifecycleObserver(
         viewModel = this,

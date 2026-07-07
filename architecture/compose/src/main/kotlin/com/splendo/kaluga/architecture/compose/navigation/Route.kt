@@ -44,6 +44,7 @@ internal const val ROOT_VIEW = "com.splendo.kaluga.architecture.compose.navigati
 /**
  * Key to be used to indicate an argument in a route that is associated with a NavigationBundleSpecRow
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val NavigationBundleSpecRow<*>.argumentKey: String get() = key ?: javaClass.simpleName
 
 /**
@@ -53,6 +54,7 @@ val NavigationBundleSpecRow<*>.argumentKey: String get() = key ?: javaClass.simp
  * @param Action the type [NavigationAction] to create the route string for.
  * @param spec The [NavigationBundleSpec] describing the [Action]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(spec: NavigationBundleSpec<SpecRow>): String = route(Action::class, spec)
 
 /**
@@ -63,6 +65,7 @@ inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAct
  * @param actionClass The [KClass] of the [Action] to create the route for
  * @param spec The [NavigationBundleSpec] describing the associated [NavigationAction]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> route(actionClass: KClass<Action>, spec: NavigationBundleSpec<SpecRow>): String {
     val arguments = spec.rows.mapNotNull { row ->
         val key = row.argumentKey
@@ -79,6 +82,7 @@ fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> r
  * The route created by this method will will in all arguments of the action into the route.
  * @param SpecRow the type of [NavigationBundleSpecRow] associated with this action.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <SpecRow : NavigationBundleSpecRow<*>> NavigationAction<SpecRow>.route(): String {
     val arguments = bundle?.values?.mapNotNull { (row, value) ->
         value.routeArgument?.let {
@@ -188,6 +192,7 @@ private val NavigationBundleValue<*>.routeArgument: String?
 /**
  * Route for navigating within a [RouteController].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class Route : ComposableNavSpec() {
 
     companion object {
@@ -310,6 +315,7 @@ sealed class Route : ComposableNavSpec() {
  * @param SpecRow the type of [NavigationBundleSpecRow] associated with the action.
  * @param Action the type [NavigationAction] to create the [Route] for.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.next
     get() = Route.NextRoute(
         this,
@@ -321,6 +327,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  * @param Action the type [NavigationAction] to create the [Route] for.
  * @param route The string route to navigate from
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) = Route.FromRoute(this, route)
 
 /**
@@ -328,6 +335,7 @@ fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  * @param SpecRow the type of [NavigationBundleSpecRow] associated with the action.
  * @param Action the type [NavigationAction] to create the [Route] for.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.fromRoot
     get() = Route.FromRoute(
         this,
@@ -339,6 +347,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  * @param SpecRow the type of [NavigationBundleSpecRow] associated with the action.
  * @param Action the type [NavigationAction] to create the [Route] for.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo
     get() = Route.PopTo(
         this,
@@ -350,6 +359,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  * @param SpecRow the type of [NavigationBundleSpecRow] associated with the action.
  * @param Action the type [NavigationAction] to create the [Route] for.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popToIncluding
     get() = Route.PopToIncluding(
         this,
@@ -360,6 +370,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  * @param SpecRow the type of [NavigationBundleSpecRow] associated with the action.
  * @param Action the type [NavigationAction] to create the [Route] for.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace
     get() = Route.Replace(
         this,
@@ -370,6 +381,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  * @param SpecRow the type of [NavigationBundleSpecRow] associated with the action.
  * @param Action the type [NavigationAction] to create the [Route] for.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.back
     get() = Route.Back(
         bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty,

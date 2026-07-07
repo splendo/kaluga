@@ -25,11 +25,13 @@ import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlin.jvm.JvmName
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 typealias DisposeHandler = () -> Unit
 
 /**
  * Reference to an object that should be disposed in time
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface Disposable {
     /**
      * Disposes the associated object
@@ -46,6 +48,7 @@ interface Disposable {
  * Plain [Disposable] to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseSimpleDisposable(onDispose: DisposeHandler) :
     SynchronizedObject(),
     Disposable {
@@ -79,11 +82,13 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) :
  * A [Disposable] that has a [DisposeHandler]
  * @param onDispose Function to call when disposing the object.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
 
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class DisposeBag : Disposable {
 
     private val disposables: ConcurrentMutableList<Disposable> = concurrentMutableListOf()

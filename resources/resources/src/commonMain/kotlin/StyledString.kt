@@ -25,11 +25,13 @@ import com.splendo.kaluga.resources.stylable.KalugaTextStyle
  * @property color the [KalugaColor] of the text color of the link
  * @property isUnderlined if `true` the link will be underlined
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class LinkStyle(val color: KalugaColor, val isUnderlined: Boolean)
 
 /**
  * A text configured with [StringStyleAttribute]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class StyledString {
 
     /**
@@ -48,6 +50,7 @@ expect class StyledString {
 /**
  * Builder for creating a [StyledString]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class StyledStringBuilder {
 
     /**
@@ -83,6 +86,7 @@ expect class StyledStringBuilder {
 /**
  * Gets the plain string of a [StyledString]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val StyledString.rawString: String
 
 /**
@@ -92,6 +96,7 @@ expect val StyledString.rawString: String
  * @param attributes a collection of [StringStyleAttribute] to apply to the entire string
  * @return a [StyledString] styled with all [attributes]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, vararg attributes: StringStyleAttribute) =
     styled(provider, defaultTextStyle, null, *attributes)
 
@@ -103,6 +108,7 @@ fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: Kalu
  * @param attributes a collection of [StringStyleAttribute] to apply to the entire string
  * @return a [StyledString] styled with all [attributes]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, linkColor: KalugaColor, vararg attributes: StringStyleAttribute) =
     styled(provider, defaultTextStyle, LinkStyle(linkColor, true), *attributes)
 
@@ -114,6 +120,7 @@ fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: Kalu
  * @param attributes a collection of [StringStyleAttribute] to apply to the entire string
  * @return a [StyledString] styled with all [attributes]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?, vararg attributes: StringStyleAttribute) = styled(
     provider,
     defaultTextStyle,
@@ -133,6 +140,7 @@ fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: Kalu
  * @return a [StyledString] styled with all [attributes]
  * @throws [IndexOutOfBoundsException] if [attributes] returns an [IntRange] out of bounds for the String
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) =
     styled(provider, defaultTextStyle, null, *attributes)
 
@@ -145,6 +153,7 @@ fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: Kalu
  * @return a [StyledString] styled with all [attributes]
  * @throws [IndexOutOfBoundsException] if [attributes] returns an [IntRange] out of bounds for the String
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
@@ -161,6 +170,7 @@ fun String.styled(
  * @return a [StyledString] styled with all [attributes]
  * @throws [IndexOutOfBoundsException] if [attributes] returns an [IntRange] out of bounds for the String
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
@@ -183,6 +193,7 @@ fun String.styled(
  * to apply the [StringStyleAttribute] to the first occurrence of the substring,
  * or `null` if the substring does not occur in the String
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun String.attributeSubstring(substring: String, attribute: StringStyleAttribute): Pair<StringStyleAttribute, IntRange>? = indexOf(substring).let {
     if (it >= 0) {
         val range = IntRange(it, it + substring.length - 1)
@@ -195,6 +206,7 @@ fun String.attributeSubstring(substring: String, attribute: StringStyleAttribute
 /**
  * A style attribute that can be applied to a [StyledString]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 sealed class StringStyleAttribute {
 
     /**

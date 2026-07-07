@@ -25,6 +25,7 @@ import kotlinx.coroutines.cancelChildren
 /**
  * Simple ViewModel class that is to be bound to a View lifecycle
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual open class LifecycleViewModel internal actual constructor() {
 
     private val lifecycleJob = SupervisorJob()

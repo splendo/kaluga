@@ -33,6 +33,7 @@ import kotlin.jvm.JvmName
 /**
  * Class describing a color
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect sealed class KalugaColor {
 
     /**
@@ -57,6 +58,7 @@ expect sealed class KalugaColor {
  * otherwise returns the default color.
  * @return the [KalugaColor.RGBColor] associated with [forDarkMode]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.rgbColor(forDarkMode: Boolean) = if (forDarkMode) darkColor else defaultColor
 
 /**
@@ -64,6 +66,7 @@ fun KalugaColor.DarkLightColor.rgbColor(forDarkMode: Boolean) = if (forDarkMode)
  * @property color the [KalugaColor] to wrap
  */
 @Serializable(with = ColorSerializer::class)
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class SerializableColor(val color: KalugaColor)
 
 /**
@@ -71,104 +74,123 @@ data class SerializableColor(val color: KalugaColor)
  * @property color the [KalugaColor.RGBColor] to wrap
  */
 @Serializable(with = RGBColorSerializer::class)
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class SerializableRGBColor(val color: KalugaColor.RGBColor)
 
 /**
  * Gets a [SerializableColor] instance of this color
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaColor.serializable get() = SerializableColor(this)
 
 /**
  * Gets a [SerializableRGBColor] instance of this color
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaColor.RGBColor.serializable get() = SerializableRGBColor(this)
 
 /**
  * Gets the red value of the color in a range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.red: Double
 
 /**
  * Gets the red value of the color [forDarkMode] in a range between `0.0` and `1.0`
  * @param forDarkMode if `true` will return the red value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.red(forDarkMode: Boolean) = rgbColor(forDarkMode).red
 
 /**
  * Gets the red value of the color in a range between `0` and `255`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.redInt: Int
 
 /**
  * Gets the red value of the color [forDarkMode] in a range between `0` and `255`
  * @param forDarkMode if `true` will return the red value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.redInt(forDarkMode: Boolean) = rgbColor(forDarkMode).redInt
 
 /**
  * Gets the green value of the color in a range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.green: Double
 
 /**
  * Gets the green value of the color [forDarkMode] in a range between `0.0` and `1.0`
  * @param forDarkMode if `true` will return the green value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.green(forDarkMode: Boolean) = rgbColor(forDarkMode).green
 
 /**
  * Gets the green value of the color in a range between `0` and `255`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.greenInt: Int
 
 /**
  * Gets the green value of the color [forDarkMode] in a range between `0` and `255`
  * @param forDarkMode if `true` will return the green value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.greenInt(forDarkMode: Boolean) = rgbColor(forDarkMode).greenInt
 
 /**
  * Gets the blue value of the color in a range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.blue: Double
 
 /**
  * Gets the blue value of the color [forDarkMode] in a range between `0.0` and `1.0`
  * @param forDarkMode if `true` will return the blue value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.blue(forDarkMode: Boolean) = rgbColor(forDarkMode).blue
 
 /**
  * Gets the blue value of the color in a range between `0` and `255`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.blueInt: Int
 
 /**
  * Gets the blue value of the color [forDarkMode] in a range between `0` and `255`
  * @param forDarkMode if `true` will return the blue value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.blueInt(forDarkMode: Boolean) = rgbColor(forDarkMode).blueInt
 
 /**
  * Gets the alpha value of the color in a range between `0.0` and `1.0`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.alpha: Double
 
 /**
  * Gets the alpha value of the color [forDarkMode] in a range between `0.0` and `1.0`
  * @param forDarkMode if `true` will return the alpha value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.alpha(forDarkMode: Boolean) = rgbColor(forDarkMode).alpha
 
 /**
  * Gets the alpha value of the color in a range between `0` and `255`
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val KalugaColor.RGBColor.alphaInt: Int
 
 /**
  * Gets the alpha value of the color [forDarkMode] in a range between `0` and `255`
  * @param forDarkMode if `true` will return the alpha value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.alphaInt(forDarkMode: Boolean) = rgbColor(forDarkMode).alphaInt
 
 /**
@@ -179,6 +201,7 @@ fun KalugaColor.DarkLightColor.alphaInt(forDarkMode: Boolean) = rgbColor(forDark
  * @param alpha The alpha color value ranging between `0.0` and `1.0`. Defaults to `1.0`
  * @return The [KalugaColor.RGBColor] with the corresponding red, green, blue, and alpha values
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1.0): KalugaColor.RGBColor
 
 /**
@@ -189,6 +212,7 @@ expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1
  * @param alphaInt The alpha color value ranging between `0` and `255`. Defaults to `255`
  * @return The [KalugaColor.RGBColor] with the corresponding red, green, blue, and alpha values
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): KalugaColor.RGBColor
 
 /**
@@ -197,6 +221,7 @@ expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 2
  * @param hexString The [String] to parse as a [KalugaColor.RGBColor]
  * @return The [KalugaColor.RGBColor] associated with [hexString] or `null` if improperly formatted.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun colorFrom(hexString: String): KalugaColor.RGBColor? = if (hexString.startsWith('#')) {
     val hexColor = hexString.substring(1).toLong(16)
     when (hexString.length) {
@@ -228,26 +253,31 @@ fun colorFrom(hexString: String): KalugaColor.RGBColor? = if (hexString.startsWi
  * @param darkModeColor the [KalugaColor.RGBColor] to use when [isInDarkMode]
  * @return a [KalugaColor.DarkLightColor] that supports a custom color in dark mode.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect infix fun KalugaColor.RGBColor.withDarkMode(darkModeColor: KalugaColor.RGBColor): KalugaColor.DarkLightColor
 
 /**
  * The inverted [KalugaColor.RGBColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaColor.RGBColor.inverted: KalugaColor.RGBColor get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
 
 /**
  * The inverted [KalugaColor.DarkLightColor]. Each value will be inverted individually.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaColor.DarkLightColor.inverted get() = defaultColor.inverted withDarkMode darkColor.inverted
 
 /**
  * Creates a [KalugaColor.DarkLightColor] from another by using the [KalugaColor.DarkLightColor.darkColor] as the default color and vice versa.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaColor.DarkLightColor.flipped get() = darkColor withDarkMode defaultColor
 
 /**
  * The hex string representing this color.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val KalugaColor.RGBColor.hexString: String
     get() {
         return "#${alphaInt.toHex(2)}${redInt.toHex(2)}${greenInt.toHex(2)}${blueInt.toHex(2)}"
@@ -257,6 +287,7 @@ val KalugaColor.RGBColor.hexString: String
  * Gets the hex string representing the color [forDarkMode]
  * @param forDarkMode if `true` will return the hex string representation of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun KalugaColor.DarkLightColor.hexString(forDarkMode: Boolean) = rgbColor(forDarkMode).hexString
 
 private fun Int.toHex(minSize: Int): String {
@@ -268,6 +299,7 @@ private fun Int.toHex(minSize: Int): String {
 /**
  * A [KSerializer] for [SerializableColor]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class ColorSerializer : KSerializer<SerializableColor> {
     override val descriptor = buildClassSerialDescriptor("ColorString") {
         element<Boolean>("isDarkLight")
@@ -305,6 +337,7 @@ open class ColorSerializer : KSerializer<SerializableColor> {
 /**
  * A [KSerializer] for [SerializableRGBColor]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 open class RGBColorSerializer : KSerializer<SerializableRGBColor> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ColorString", PrimitiveKind.STRING)
 

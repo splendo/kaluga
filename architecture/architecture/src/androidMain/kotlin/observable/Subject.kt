@@ -34,6 +34,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * The [Observer] that observes the observable value.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 val <R : T, T, OO : ObservableOptional<R>> BasicSubject<R, T, OO>.liveDataObserver: Observer<T>
     get() = Observer<T> { this.post(it) }
 
@@ -51,6 +52,7 @@ private fun <B, R : T, T, OO : ObservableOptional<R>> B.mutableLiveData(): Mutab
  * @param coroutineScope The [CoroutineScope] on which to observe.
  * @param observer The [Observer] to observe the [LiveData]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun <T> LiveData<T>.observeOnCoroutine(coroutineScope: CoroutineScope, observer: Observer<T>) {
     // Live Data mutations should only ever be done from the main thread, so we don't (any longer) allow passing a context
     coroutineScope.launch(Dispatchers.Main.immediate) {
@@ -63,6 +65,7 @@ fun <T> LiveData<T>.observeOnCoroutine(coroutineScope: CoroutineScope, observer:
     }
 }
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual interface PlatformSubjectObserver<R> {
     fun createLiveData(): MutableLiveData<R>
 
@@ -80,6 +83,7 @@ actual interface PlatformSubjectObserver<R> {
  * @param observation The [Observation] to handle observing the value.
  * @param stateFlowToBind A function to get the [StateFlow] that will automatically call [SuspendableSetter.set] when a new value is posted after [BasicSubject.post] has been called.
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(observation: Observation<R, T, OO>, stateFlowToBind: suspend () -> StateFlow<R?>) :
     AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
@@ -117,6 +121,7 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
  * @param T the type of value to expect.
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual abstract class BaseUninitializedSubject<T> actual constructor(observation: ObservationUninitialized<T>) : AbstractBaseUninitializedSubject<T>(observation) {
 
     actual final override val platformSubjectObserver: PlatformSubjectObserver<T> = object : PlatformSubjectObserver<T> {
@@ -136,6 +141,7 @@ actual abstract class BaseUninitializedSubject<T> actual constructor(observation
  * @param T the type of value to expect.
  * @param observation The [ObservationInitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
 
     /**
@@ -158,6 +164,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
  * @param R the type of result to expect. Must be a subclass of [T]
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(observation: ObservationDefault<R, T?>) : AbstractBaseDefaultSubject<R, T>(observation) {
 
     /**

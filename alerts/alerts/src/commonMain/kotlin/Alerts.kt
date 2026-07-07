@@ -26,7 +26,10 @@ import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 typealias AlertActionHandler = () -> Unit
+
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 typealias AlertTextObserver = (String) -> Unit
 
 /**
@@ -37,6 +40,7 @@ typealias AlertTextObserver = (String) -> Unit
  * @property actions The list of action objects that the user can take in response to the alert
  * @property textInputAction The optional action object that sets the alert's input options and text change callback
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class Alert(val title: String?, val message: String?, val actions: List<Action>, val textInputAction: TextInputAction? = null, val style: Style = Style.ALERT) {
 
     /**
@@ -246,6 +250,7 @@ data class Alert(val title: String?, val message: String?, val actions: List<Act
 /**
  * Interface that defines actions that can be used for presenting an [Alert].
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 interface AlertActions {
     /**
      * Presents an [Alert]
@@ -279,6 +284,7 @@ interface AlertActions {
  * @param alert The [Alert] to present (and dismiss if needed)
  * @param logger The [Logger] to log alert actions to
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 abstract class BaseAlertPresenter(val alert: Alert, private val logger: Logger) : AlertActions {
 
     companion object {
@@ -347,6 +353,7 @@ abstract class BaseAlertPresenter(val alert: Alert, private val logger: Logger) 
 /**
  * Class for presenting an [Alert]. Implementation of [BaseAlertPresenter]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class AlertPresenter : BaseAlertPresenter {
 
     /**
@@ -376,6 +383,7 @@ expect class AlertPresenter : BaseAlertPresenter {
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseAlertPresenter.Builder.buildAlert(
     coroutineScope: CoroutineScope,
     logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
@@ -396,6 +404,7 @@ fun BaseAlertPresenter.Builder.buildAlert(
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseAlertPresenter.Builder.buildActionSheet(
     coroutineScope: CoroutineScope,
     logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
@@ -416,6 +425,7 @@ fun BaseAlertPresenter.Builder.buildActionSheet(
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun BaseAlertPresenter.Builder.buildAlertWithInput(
     coroutineScope: CoroutineScope,
     logger: Logger = RestrictedLogger(RestrictedLogLevel.None),

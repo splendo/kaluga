@@ -1,5 +1,7 @@
 # Architecture
 
+> **⚠️ Deprecated:** This feature has been deprecated. It is recommended to use Compose Multiplatform instead.
+
 A lifecycle-aware ViewModel solution with navigation and observables, enabling MVVM-based cross-platform app architecture.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:

@@ -20,31 +20,37 @@ package com.splendo.kaluga.resources
 /**
  * Class describing a font
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect class KalugaFont
 
 /**
  * The default system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val defaultFont: KalugaFont
 
 /**
  * The default bold system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val defaultBoldFont: KalugaFont
 
 /**
  * The default italic system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val defaultItalicFont: KalugaFont
 
 /**
  * The default monospace system [KalugaFont]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect val defaultMonospaceFont: KalugaFont
 
 /**
  * Style of the system font
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 enum class FontStyle {
 
     /**
@@ -66,6 +72,7 @@ enum class FontStyle {
 /**
  * Trait to add to a system font
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 enum class FontTrait {
 
     /**
@@ -78,6 +85,7 @@ enum class FontTrait {
  * Font weights as defined by [W3](https://www.w3.org/TR/css-fonts-4/#font-weight-prop)
  * @property value the value of the weight. Must be in range [1, 100]
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 enum class FontWeight(val value: Int) {
     THIN(100),
     EXTRA_LIGHT(200),
@@ -97,6 +105,7 @@ enum class FontWeight(val value: Int) {
  * @param traits the set of [FontTrait] to apply
  * @return a [KalugaFont] representing the system font with the given specifications
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 fun createDefaultFont(weight: FontWeight, style: FontStyle = FontStyle.DEFAULT, traits: Set<FontTrait> = emptySet()): KalugaFont = createDefaultFont(weight.value, style, traits)
 
 /**
@@ -106,4 +115,5 @@ fun createDefaultFont(weight: FontWeight, style: FontStyle = FontStyle.DEFAULT, 
  * @param traits the set of [FontTrait] to apply
  * @return a [KalugaFont] representing the system font with the given specifications
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 expect fun createDefaultFont(weight: Int, style: FontStyle = FontStyle.DEFAULT, traits: Set<FontTrait> = emptySet()): KalugaFont

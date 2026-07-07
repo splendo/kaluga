@@ -25,6 +25,7 @@ import com.splendo.kaluga.resources.KalugaColor
  * @property strokeStyle the [StrokeStyle] to apply to the border of the view
  * @property shape the [Shape] to apply to the view
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 data class KalugaBackgroundStyle(val fillStyle: FillStyle, val strokeStyle: StrokeStyle = StrokeStyle.None, val shape: Shape = Shape.Rectangle()) {
 
     /**

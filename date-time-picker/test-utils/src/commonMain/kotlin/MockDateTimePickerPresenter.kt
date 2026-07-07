@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
  * Mock implementation of [BaseDateTimePickerPresenter]
  * @param setupMocks If `true` configure mocks to display the date time picker
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 class MockDateTimePickerPresenter(public override val dateTimePicker: DateTimePicker, setupMocks: Boolean = true) : BaseDateTimePickerPresenter(dateTimePicker) {
 
     /**

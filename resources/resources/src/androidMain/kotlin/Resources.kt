@@ -48,6 +48,7 @@ private fun <T> Context.getResource(name: String, defType: DefType, get: Context
  * Default implementation of a [StringLoader].
  * @param context the [Context] from which to load the string resources
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     actual constructor() : this(if (ApplicationHolder.isInitialized) ApplicationHolder.applicationContext else null)
     actual override fun loadString(identifier: String, defaultValue: String): String = context?.getResource(identifier, DefType.string, Context::getString)
@@ -62,6 +63,7 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
  * Default implementation of a [KalugaColorLoader].
  * @param context the [Context] from which to load the color resources
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoader {
     actual constructor() : this(if (ApplicationHolder.isInitialized) ApplicationHolder.applicationContext else null)
     actual override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = context?.getResource(identifier, DefType.color) { id ->
@@ -84,6 +86,7 @@ actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoad
  * Default implementation of an [ImageLoader].
  * @param context the [Context] from which to load the image resources
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (ApplicationHolder.isInitialized) ApplicationHolder.applicationContext else null)
     actual override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? =
@@ -96,6 +99,7 @@ actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
  * Default implementation of a [FontLoader].
  * @param context the [Context] from which to load the font resources
  */
+@Deprecated("This feature has been deprecated. It is recommended to use Compose Multiplatform instead.")
 actual class DefaultFontLoader(private val context: Context?) : FontLoader {
     actual constructor() : this(if (ApplicationHolder.isInitialized) ApplicationHolder.applicationContext else null)
     actual override fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? =
