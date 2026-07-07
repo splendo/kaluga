@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.test.server
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.AttributeIdentity
-import com.splendo.kaluga.bluetooth.server.KalugaBluetoothServerWrapper
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Permission
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.server.LocalDescriptorWrapper
@@ -28,6 +27,7 @@ import com.splendo.kaluga.bluetooth.server.LocalServiceWrapper
 import platform.CoreBluetooth.CBCentral
 import platform.CoreBluetooth.CBMutableCharacteristic
 import platform.CoreBluetooth.CBMutableService
+import platform.CoreBluetooth.CBPeripheralManager
 import platform.Foundation.NSData
 
 private const val NO_PLATFORM = "Mock wrappers have no platform attribute and do not support server actions"
@@ -37,8 +37,8 @@ actual class MockLocalServiceWrapper actual constructor(actual override val uuid
     actual override fun addIncludedService(service: LocalServiceWrapper) {}
     actual override fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {}
     override fun addToParent(parent: CBMutableService): Unit = error(NO_PLATFORM)
-    override fun addTo(serverWrapper: KalugaBluetoothServerWrapper): Unit = error(NO_PLATFORM)
-    override fun removeFrom(serverWrapper: KalugaBluetoothServerWrapper): Unit = error(NO_PLATFORM)
+    override fun addTo(manager: CBPeripheralManager): Unit = error(NO_PLATFORM)
+    override fun removeFrom(manager: CBPeripheralManager): Unit = error(NO_PLATFORM)
 }
 
 actual class MockLocalCharacteristicWrapper actual constructor(
@@ -49,7 +49,7 @@ actual class MockLocalCharacteristicWrapper actual constructor(
     actual override fun addDescriptor(descriptor: LocalDescriptorWrapper) {}
     override val identity: AttributeIdentity = MockAttributeIdentity()
     override fun addToService(service: CBMutableService): Unit = error(NO_PLATFORM)
-    override fun updateValue(serverWrapper: KalugaBluetoothServerWrapper, value: NSData, centrals: List<CBCentral>): Boolean = error(NO_PLATFORM)
+    override fun updateValue(manager: CBPeripheralManager, value: NSData, centrals: List<CBCentral>): Boolean = error(NO_PLATFORM)
 }
 
 actual class MockLocalDescriptorWrapper actual constructor(actual override val uuid: UUID) : LocalDescriptorWrapper {

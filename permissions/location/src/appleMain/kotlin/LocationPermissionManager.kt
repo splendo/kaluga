@@ -25,7 +25,9 @@ import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.Foundation.NSBundle
 import platform.darwin.NSObject
 import kotlin.time.Duration
@@ -71,8 +73,9 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
 
     private class Delegate(private val locationPermission: LocationPermission, private val onPermissionChanged: AuthorizationStatusHandler) :
         NSObject(),
-        KalugaLocationPermissionDelegateProtocol {
-        override fun didChangeAuthorizationForLocationManager(manager: CLLocationManager) {
+        CLLocationManagerDelegateProtocol {
+
+        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
             onPermissionChanged.status(manager.authorizationStatus(locationPermission))
         }
     }
@@ -81,7 +84,6 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
     private val locationManager = MainCLLocationManagerAccessor { configureForLocationPermission(permission) }
 
     private val authorizationDelegate = Delegate(permission, permissionHandler)
-    private var locationWrapper: KalugaLocationPermissionWrapper? = null
 
     actual override fun requestPermissionDidStart() {
         val declarations = locationUsageDescriptions(permission)
@@ -106,8 +108,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
         launch {
             // Link a delegate so authorization changes are reported back immediately.
             val status = locationManager.updateLocationManager {
-                locationWrapper?.unlink()
-                locationWrapper = KalugaLocationPermissionWrapper.createByLinkingWithLocationManager(this, authorizationDelegate)
+                this.delegate = authorizationDelegate
                 authorizationStatus(permission)
             }
             permissionHandler.status(status)
@@ -117,8 +118,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
     actual override fun monitoringDidStop() {
         launch {
             locationManager.updateLocationManager {
-                locationWrapper?.unlink()
-                locationWrapper = null
+                delegate = null
             }
         }
     }
