@@ -33,8 +33,10 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginManager
 import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jmailen.gradle.kotlinter.KotlinterPlugin
@@ -65,6 +67,21 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
         pluginManager.apply(DokkaPlugin::class)
+        // Identify modules by their full project path so the aggregated docs stay hierarchical and
+        // unique (e.g. `bluetooth/client`, `base/test`) instead of the leaf name (`client`, `test`).
+        // A group's primary module (`:alerts:alerts`) collapses back to the group name (`alerts`).
+        if (rootProject != this) {
+            val segments = path.removePrefix(":").split(":")
+            val documentationPath = if (segments.size == 2 && segments[0] == segments[1]) {
+                segments[0]
+            } else {
+                segments.joinToString("/")
+            }
+            extensions.configure<DokkaExtension> {
+                moduleName.set(documentationPath)
+                modulePath.set(documentationPath)
+            }
+        }
         pluginManager.apply(com.palantir.gradle.gitversion.GitVersionPlugin::class)
 
         val kalugaExtension = when {
