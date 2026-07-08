@@ -29,6 +29,7 @@ import platform.CoreBluetooth.CBCentral
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBMutableCharacteristic
 import platform.CoreBluetooth.CBMutableService
+import platform.CoreBluetooth.CBPeripheralManager
 import platform.Foundation.NSData
 
 actual interface LocalCharacteristicWrapper {
@@ -52,9 +53,9 @@ actual interface LocalCharacteristicWrapper {
     fun addToService(service: CBMutableService)
 
     /**
-     * Updates the value of the characteristic for the given [centrals] through a [KalugaBluetoothServerWrapper]
+     * Updates the value of the characteristic for the given [centrals] through a [CBPeripheralManager]
      */
-    fun updateValue(serverWrapper: KalugaBluetoothServerWrapper, value: NSData, centrals: List<CBCentral>): Boolean
+    fun updateValue(manager: CBPeripheralManager, value: NSData, centrals: List<CBCentral>): Boolean
 }
 
 class DefaultLocalCharacteristicWrapper(internal val characteristic: CBMutableCharacteristic) : LocalCharacteristicWrapper {
@@ -87,8 +88,7 @@ class DefaultLocalCharacteristicWrapper(internal val characteristic: CBMutableCh
         service.setCharacteristics(service.characteristics.orEmpty() + characteristic)
     }
 
-    override fun updateValue(serverWrapper: KalugaBluetoothServerWrapper, value: NSData, centrals: List<CBCentral>): Boolean =
-        serverWrapper.updateValue(value, characteristic, centrals)
+    override fun updateValue(manager: CBPeripheralManager, value: NSData, centrals: List<CBCentral>): Boolean = manager.updateValue(value, characteristic, centrals)
 }
 
 value class CBCharacteristicIdentity(val characteristic: CBCharacteristic) : AttributeIdentity

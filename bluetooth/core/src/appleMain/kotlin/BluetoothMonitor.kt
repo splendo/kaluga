@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.core.KalugaBluetoothEnabledDelegateProtocol
-import com.splendo.kaluga.bluetooth.core.KalugaBluetoothWrapper
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
 import kotlinx.atomicfu.atomic
@@ -26,7 +24,7 @@ import kotlinx.atomicfu.getAndUpdate
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBManagerStatePoweredOn
+import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.darwin.NSObject
 
 /**
@@ -58,9 +56,9 @@ class DefaultBluetoothMonitor internal constructor(private val centralManagerBui
 
     internal class CentralManagerDelegate(private val updateEnabledState: () -> Unit) :
         NSObject(),
-        KalugaBluetoothEnabledDelegateProtocol {
+        CBCentralManagerDelegateProtocol {
 
-        override fun didUpdateState(centralManager: CBCentralManager) {
+        override fun centralManagerDidUpdateState(central: CBCentralManager) {
             updateEnabledState()
         }
     }
@@ -69,26 +67,19 @@ class DefaultBluetoothMonitor internal constructor(private val centralManagerBui
     private var centralManager: CBCentralManager? = null
 
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
-    private val bluetoothEnabledWrapper = atomic<KalugaBluetoothWrapper?>(null)
     override val isServiceEnabled: Boolean
-        get() = initializeCentralManagerIfNotInitialized().state == CBManagerStatePoweredOn
+        get() = initializeCentralManagerIfNotInitialized().isPoweredOn()
 
     private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = lock.withLock {
         centralManager ?: centralManagerBuilder().also { this.centralManager = it }
     }
 
     override fun monitoringDidStart() {
-        bluetoothEnabledWrapper.getAndUpdate {
-            it?.unlink()
-            KalugaBluetoothWrapper.createByLinkingWithCentralManager(initializeCentralManagerIfNotInitialized(), centralManagerDelegate)
-        }
+        initializeCentralManagerIfNotInitialized().delegate = centralManagerDelegate
         updateState()
     }
 
     override fun monitoringDidStop() {
-        bluetoothEnabledWrapper.getAndUpdate {
-            it?.unlink()
-            null
-        }
+        centralManager?.delegate = null
     }
 }

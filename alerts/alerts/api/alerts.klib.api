@@ -144,18 +144,18 @@ final class com.splendo.kaluga.alerts/Alert { // com.splendo.kaluga.alerts/Alert
 }
 
 final class com.splendo.kaluga.alerts/AlertPresenter : com.splendo.kaluga.alerts/BaseAlertPresenter { // com.splendo.kaluga.alerts/AlertPresenter|null[0]
-    constructor <init>(com.splendo.kaluga.alerts/Alert, platform.UIKit/UIViewController, com.splendo.kaluga.logging/Logger, kotlin/Function1<com.splendo.kaluga.alerts/Alert, com.splendo.kaluga.alerts/KalugaUIPopoverPresentationControllerDelegateProtocol>) // com.splendo.kaluga.alerts/AlertPresenter.<init>|<init>(com.splendo.kaluga.alerts.Alert;platform.UIKit.UIViewController;com.splendo.kaluga.logging.Logger;kotlin.Function1<com.splendo.kaluga.alerts.Alert,com.splendo.kaluga.alerts.KalugaUIPopoverPresentationControllerDelegateProtocol>){}[0]
+    constructor <init>(com.splendo.kaluga.alerts/Alert, platform.UIKit/UIViewController, com.splendo.kaluga.logging/Logger, kotlin/Function1<com.splendo.kaluga.alerts/Alert, platform.UIKit/UIPopoverPresentationControllerDelegateProtocol>) // com.splendo.kaluga.alerts/AlertPresenter.<init>|<init>(com.splendo.kaluga.alerts.Alert;platform.UIKit.UIViewController;com.splendo.kaluga.logging.Logger;kotlin.Function1<com.splendo.kaluga.alerts.Alert,platform.UIKit.UIPopoverPresentationControllerDelegateProtocol>){}[0]
 
     final fun textDidChange() // com.splendo.kaluga.alerts/AlertPresenter.textDidChange|textDidChange(){}[0]
 
     final class Builder : com.splendo.kaluga.alerts/BaseAlertPresenter.Builder { // com.splendo.kaluga.alerts/AlertPresenter.Builder|null[0]
         constructor <init>(platform.UIKit/UIViewController) // com.splendo.kaluga.alerts/AlertPresenter.Builder.<init>|<init>(platform.UIKit.UIViewController){}[0]
-        constructor <init>(platform.UIKit/UIViewController, kotlin/Function1<com.splendo.kaluga.alerts/Alert, com.splendo.kaluga.alerts/KalugaUIPopoverPresentationControllerDelegateProtocol>) // com.splendo.kaluga.alerts/AlertPresenter.Builder.<init>|<init>(platform.UIKit.UIViewController;kotlin.Function1<com.splendo.kaluga.alerts.Alert,com.splendo.kaluga.alerts.KalugaUIPopoverPresentationControllerDelegateProtocol>){}[0]
+        constructor <init>(platform.UIKit/UIViewController, kotlin/Function1<com.splendo.kaluga.alerts/Alert, platform.UIKit/UIPopoverPresentationControllerDelegateProtocol>) // com.splendo.kaluga.alerts/AlertPresenter.Builder.<init>|<init>(platform.UIKit.UIViewController;kotlin.Function1<com.splendo.kaluga.alerts.Alert,platform.UIKit.UIPopoverPresentationControllerDelegateProtocol>){}[0]
 
         final fun create(com.splendo.kaluga.alerts/Alert, com.splendo.kaluga.logging/Logger, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.alerts/AlertPresenter // com.splendo.kaluga.alerts/AlertPresenter.Builder.create|create(com.splendo.kaluga.alerts.Alert;com.splendo.kaluga.logging.Logger;kotlinx.coroutines.CoroutineScope){}[0]
     }
 
-    final class DefaultUIPopoverPresentationControllerDelegateProtocol : com.splendo.kaluga.alerts/KalugaUIPopoverPresentationControllerDelegateProtocol, platform.darwin/NSObject { // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol|null[0]
+    final class DefaultUIPopoverPresentationControllerDelegateProtocol : platform.UIKit/UIPopoverPresentationControllerDelegateProtocol, platform.darwin/NSObject { // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol|null[0]
         constructor <init>(platform.UIKit/UIView) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.<init>|<init>(sourceView:platform.UIKit.UIView){}[0]
 
         final fun prepareForPopoverPresentation(platform.UIKit/UIPopoverPresentationController) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.prepareForPopoverPresentation|objc:prepareForPopoverPresentation:[0]

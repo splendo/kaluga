@@ -19,8 +19,6 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.utils.typedList
 import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
-import platform.CoreBluetooth.CBCharacteristicWriteWithoutResponse
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
@@ -82,19 +80,14 @@ class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic,
     override val descriptors: List<RemoteDescriptorWrapper> by lazy {
         characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it, this) } ?: emptyList()
     }
-    override val properties get() = CharacteristicProperty.fromInt(characteristic.properties.toInt())
+    override val properties get() = CharacteristicProperty.fromInt(characteristic.propertyBits())
 
     override fun readValue(peripheral: CBPeripheral) {
         peripheral.readValueForCharacteristic(characteristic)
     }
 
     override fun writeValue(value: NSData, peripheral: CBPeripheral, withResponse: Boolean) {
-        val type = if (withResponse) {
-            CBCharacteristicWriteWithResponse
-        } else {
-            CBCharacteristicWriteWithoutResponse
-        }
-        peripheral.writeValue(value, characteristic, type)
+        peripheral.writeCharacteristicValue(value, characteristic, withResponse)
     }
 
     override fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral) {

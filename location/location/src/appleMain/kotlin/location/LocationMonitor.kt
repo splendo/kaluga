@@ -17,13 +17,12 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.permissions.location.KalugaLocationPermissionDelegateProtocol
-import com.splendo.kaluga.permissions.location.KalugaLocationPermissionWrapper
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
 /**
@@ -73,34 +72,25 @@ internal expect fun CLLocationManager.isLocationServiceEnabled(): Boolean
 
 /**
  * Observes changes to the location service authorization state, invoking [onServiceStateChanged] when they occur.
- *
- * Linking goes through the [KalugaLocationPermissionWrapper] Swift wrapper on every platform: a Kotlin object
- * cannot be set directly as a `CLLocationManager` delegate without risking a Kotlin/Native freeze, so the
- * (strong) Swift wrapper holds the delegate and forwards callbacks.
  */
 internal class LocationServiceStateObserver(private val manager: CLLocationManager, private val onServiceStateChanged: () -> Unit) {
 
     private class LocationManagerDelegate(private val updateState: () -> Unit) :
         NSObject(),
-        KalugaLocationPermissionDelegateProtocol {
-        override fun didChangeAuthorizationForLocationManager(manager: CLLocationManager) {
+        CLLocationManagerDelegateProtocol {
+
+        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
             updateState()
         }
     }
 
-    private val locationWrapper = atomic<KalugaLocationPermissionWrapper?>(null)
+    private val delegate = LocationManagerDelegate(onServiceStateChanged)
 
     fun start() {
-        locationWrapper.getAndUpdate {
-            it?.unlink()
-            KalugaLocationPermissionWrapper.createByLinkingWithLocationManager(manager, LocationManagerDelegate(onServiceStateChanged))
-        }
+        manager.delegate = delegate
     }
 
     fun stop() {
-        locationWrapper.getAndUpdate {
-            it?.unlink()
-            null
-        }
+        manager.delegate = null
     }
 }

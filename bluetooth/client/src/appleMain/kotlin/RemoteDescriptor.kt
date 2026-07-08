@@ -29,8 +29,6 @@ import platform.CoreBluetooth.CBUUIDServerCharacteristicConfigurationString
 import platform.Foundation.NSData
 import platform.Foundation.NSNumber
 import platform.Foundation.NSString
-import platform.Foundation.NSUTF8StringEncoding
-import platform.Foundation.dataUsingEncoding
 
 /**
  * Accessor to a [CBDescriptor]
@@ -84,7 +82,7 @@ internal val CBDescriptor.dataValue: NSData? get() {
         }
 
         CBUUIDCharacteristicUserDescriptionString -> {
-            (value as? NSString)?.dataUsingEncoding(NSUTF8StringEncoding)
+            (value as? NSString)?.dataUsingUtf8()
         }
 
         CBUUIDCharacteristicExtendedPropertiesString -> {
