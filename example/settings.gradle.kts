@@ -18,9 +18,22 @@ plugins {
 }
 
 dependencyResolutionManagement {
+    // For the androidx catalog artifact; project repositories are unaffected
+    // (default PREFER_PROJECT mode).
+    repositories {
+        google()
+        mavenCentral()
+    }
     versionCatalogs {
         create("libs") {
             from(files("../gradle/libs.versions.toml"))
+        }
+        // androidx's monthly release catalog, month pinned in the main build's toml
+        create("androidxLib") {
+            val month = file("../gradle/libs.versions.toml").readLines()
+                .first { it.startsWith("androidx-version-catalog") }
+                .substringAfter('"').substringBefore('"')
+            from("androidx.gradle:gradle-version-catalog:$month")
         }
     }
 }

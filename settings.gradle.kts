@@ -6,6 +6,7 @@
  *
  ***********************************************/
 
+
 pluginManagement {
     repositories {
         google()
@@ -18,6 +19,26 @@ pluginManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+dependencyResolutionManagement {
+    // For the catalog artifact below; project dependencies keep using the
+    // repositories the build scripts declare (default PREFER_PROJECT mode).
+    repositories {
+        google()
+        mavenCentral()
+    }
+    versionCatalogs {
+        // androidx's monthly release catalog; the month is pinned by
+        // androidx-version-catalog in libs.versions.toml (the default `libs`
+        // catalog isn't built yet at this point, so read the pin directly).
+        create("androidxLib") {
+            val month = file("gradle/libs.versions.toml").readLines()
+                .first { it.startsWith("androidx-version-catalog") }
+                .substringAfter('"').substringBefore('"')
+            from("androidx.gradle:gradle-version-catalog:$month")
+        }
+    }
 }
 
 rootProject.name = "Kaluga"
