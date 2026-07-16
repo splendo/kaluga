@@ -30,7 +30,7 @@ dependencyResolutionManagement {
             from(files("../gradle/libs.versions.toml"))
         }
         // androidx's monthly release catalog, month pinned in the main build's toml
-        create("androidxLib") {
+        create("androidxLibs") {
             val month = (libs as VersionCatalogBuilderInternal).build().getVersion("androidx-version-catalog").version
             from("androidx.gradle:gradle-version-catalog:$month")
         }

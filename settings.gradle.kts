@@ -44,7 +44,7 @@ dependencyResolutionManagement {
         // `libs` catalog can't be re-declared to read it through its builder
         // (its import from gradle/libs.versions.toml would be a second `from`),
         // so parse the file.
-        create("androidxLib") {
+        create("androidxLibs") {
             val month = Toml.parse(file("gradle/libs.versions.toml").toPath())
                 .getString("versions.androidx-version-catalog")
             from("androidx.gradle:gradle-version-catalog:$month")

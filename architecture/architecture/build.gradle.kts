@@ -9,11 +9,11 @@ kaluga {
     dependencies {
         android {
             main {
-                api(androidxLib.lifecycle.lifecycleRuntimeKtx)
-                api(androidxLib.lifecycle.lifecycleViewmodelKtx)
-                api(androidxLib.lifecycle.lifecycleLivedataKtx)
+                api(androidxLibs.lifecycle.lifecycleRuntimeKtx)
+                api(androidxLibs.lifecycle.lifecycleViewmodelKtx)
+                api(androidxLibs.lifecycle.lifecycleLivedataKtx)
                 api(libs.android.material)
-                implementation(androidxLib.browser.browser)
+                implementation(androidxLibs.browser.browser)
                 implementation(libs.kotlinx.atomicfu)
             }
         }

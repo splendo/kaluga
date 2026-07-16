@@ -31,5 +31,5 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(androidxLib.browser.browser)
+    implementation(androidxLibs.browser.browser)
 }

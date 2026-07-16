@@ -80,17 +80,17 @@ dependencies {
     implementation(project(":shared"))
 
     implementation(libs.compose.ui)
-    implementation(androidxLib.composeUi.uiTooling)
+    implementation(androidxLibs.composeUi.uiTooling)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.foundation)
     implementation(libs.compose.material3)
-    implementation(androidxLib.activity.activityCompose)
+    implementation(androidxLibs.activity.activityCompose)
     implementation(libs.compose.navigation)
 
-    implementation(androidxLib.fragment.fragment)
-    implementation(androidxLib.fragment.fragmentKtx)
-    implementation(androidxLib.constraintlayout.constraintlayout)
-    implementation(androidxLib.lifecycle.lifecycleService)
+    implementation(androidxLibs.fragment.fragment)
+    implementation(androidxLibs.fragment.fragmentKtx)
+    implementation(androidxLibs.constraintlayout.constraintlayout)
+    implementation(androidxLibs.lifecycle.lifecycleService)
 
     implementation(libs.android.play.services.location)
     implementation(libs.android.material)

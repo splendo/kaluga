@@ -17,7 +17,7 @@ kaluga {
         android {
             main {
                 api(kotlin("test-junit"))
-                api(androidxLib.archCore.coreTesting)
+                api(androidxLibs.archCore.coreTesting)
 
                 implementation(libs.mockito.core)
                 implementation(libs.bytebuddy.agent)

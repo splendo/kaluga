@@ -7,7 +7,7 @@ kaluga {
     dependencies {
         android {
             device {
-                implementation(androidxLib.activity.activityKtx)
+                implementation(androidxLibs.activity.activityKtx)
                 implementation(project(":architecture:architecture", ""))
             }
         }
