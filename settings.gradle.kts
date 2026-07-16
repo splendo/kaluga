@@ -6,6 +6,7 @@
  *
  ***********************************************/
 
+import org.tomlj.Toml
 
 pluginManagement {
     repositories {
@@ -15,6 +16,15 @@ pluginManagement {
     }
 
     includeBuild("kaluga-library-components")
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.tomlj:tomlj:1.1.1")
+    }
 }
 
 plugins {
@@ -30,12 +40,13 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         // androidx's monthly release catalog; the month is pinned by
-        // androidx-version-catalog in libs.versions.toml (the default `libs`
-        // catalog isn't built yet at this point, so read the pin directly).
+        // androidx-version-catalog in libs.versions.toml. The conventional
+        // `libs` catalog can't be re-declared to read it through its builder
+        // (its import from gradle/libs.versions.toml would be a second `from`),
+        // so parse the file.
         create("androidxLib") {
-            val month = file("gradle/libs.versions.toml").readLines()
-                .first { it.startsWith("androidx-version-catalog") }
-                .substringAfter('"').substringBefore('"')
+            val month = Toml.parse(file("gradle/libs.versions.toml").toPath())
+                .getString("versions.androidx-version-catalog")
             from("androidx.gradle:gradle-version-catalog:$month")
         }
     }
