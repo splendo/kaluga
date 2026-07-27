@@ -98,5 +98,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(platform(libs.koin.bom))
     implementation(libs.koin.compose)
 }

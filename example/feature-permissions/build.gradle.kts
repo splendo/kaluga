@@ -12,6 +12,7 @@ kaluga {
     dependencies {
         android {
             main {
+                api(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.compose.viewmodel)
                 api("com.splendo.kaluga.architecture:architecture:${project.rootProject.version}")
                 // Android demonstrates every permission type.
