@@ -62,6 +62,10 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
             )
             throw e
         }
+        // The plugin resolves dependencies by alias, so it needs the androidx catalog as well as
+        // `libs` — settings.gradle.kts exposes androidx's monthly catalog under this name.
+        val androidxVersionCatalog: VersionCatalog =
+            extensions.getByType(VersionCatalogsExtension::class.java).named("androidxLibs")
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
         pluginManager.apply(DokkaPlugin::class)
@@ -69,29 +73,29 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
 
         val kalugaExtension = when {
             rootProject == this -> {
-                extensions.create<KalugaRootExtension>(EXTENSION_NAME, versionCatalog)
+                extensions.create<KalugaRootExtension>(EXTENSION_NAME, versionCatalog, androidxVersionCatalog)
             }
 
             subExtensionClass == ComposeKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 val libraryExtension = extensions.findByType(com.android.build.api.dsl.LibraryExtension::class)!!
-                extensions.create<ComposeKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
+                extensions.create<ComposeKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, androidxVersionCatalog, libraryExtension, project.objects)
             }
 
             subExtensionClass == DatabindingKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 val libraryExtension = extensions.findByType(com.android.build.api.dsl.LibraryExtension::class)!!
-                extensions.create<DatabindingKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
+                extensions.create<DatabindingKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, androidxVersionCatalog, libraryExtension, project.objects)
             }
 
             subExtensionClass == KalugaMultiplatformSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 val multiplatformExtension = extensions.findByType(KotlinMultiplatformExtension::class)!!
-                extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, project.objects)
+                extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, androidxVersionCatalog, project.objects)
             }
             subExtensionClass == KSPSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
-                extensions.create<KSPSubprojectExtension>(EXTENSION_NAME, versionCatalog, project.objects)
+                extensions.create<KSPSubprojectExtension>(EXTENSION_NAME, versionCatalog, androidxVersionCatalog, project.objects)
             }
             else -> {
                 error("Unknown project project applied plugin: ${project.name} subExtensionClass: ${subExtensionClass.simpleName}")

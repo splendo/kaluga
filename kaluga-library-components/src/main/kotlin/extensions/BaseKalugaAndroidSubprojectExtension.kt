@@ -30,8 +30,8 @@ import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
-abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
-    BaseKalugaSubprojectExtension(versionCatalog, namespacePostfix, objects) {
+abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, androidxVersionCatalog, namespacePostfix, objects) {
 
     override var namespace: String?
         get() = libraryExtension.namespace
