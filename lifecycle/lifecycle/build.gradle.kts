@@ -13,8 +13,8 @@ kaluga {
     dependencies {
         android {
             main {
-                api(libs.androidx.lifecycle.runtime)
-                api(libs.androidx.fragment)
+                api(androidxLibs.lifecycle.lifecycleRuntimeKtx)
+                api(androidxLibs.fragment.fragment)
             }
         }
         common {

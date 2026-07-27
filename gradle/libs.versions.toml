@@ -3,15 +3,18 @@ kaluga = "2.0.0"
 java = "21"
 foojay-resolver = "1.0.0"
 
-androidGradle = "9.1.1"
-androidBuildTools = "36.1.0"
-androidCompileSdk = "36"
+androidGradle = "9.3.0"
+# androidx's monthly stable-channel catalog (androidx.gradle:gradle-version-catalog),
+# exposed to builds as `androidxLib` — see settings.gradle.kts
+androidx-version-catalog = "2026.07.00"
+androidBuildTools = "37.0.0"
+androidCompileSdk = "37"
 androidMinSdk = "24"
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 kotlinter = "5.5.0"
 kotlinx-kover = "0.9.8"
 dokka = "2.2.0"
-vanniktechMavenPublish = "0.36.0"
+vanniktechMavenPublish = "0.37.0"
 plugin-publish = "1.3.1"
 palantir-git-version = "5.0.0"
 # CLDR release used by the :base:generateDefaultCurrencyMap codegen task (see https://github.com/unicode-org/cldr-json/releases)
@@ -43,17 +46,14 @@ jetbrains-lifecycle = "2.10.0"
 # tests, constraintlayout-compose, activity-compose) for which no CMP equivalent exists.
 androidx-compose-ui = "1.11.2"
 androidx-compose-tooling = "1.11.2"
-androidx-compose-constraintlayout = "1.1.1"
-androidx-constraintlayout = "2.2.1"
 androidx-core = "1.19.0"
-androidx-fragment = "1.8.9"
 androidx-lifecycle = "2.10.0"
 androidx-test = "1.7.0"
 androidx-test-runner = "1.7.0"
 androidx-test-espresso = "3.7.0"
 androidx-test-junit = "1.3.0"
 androidx-test-uiautomator = "2.3.0"
-ksp="2.3.9"
+ksp="2.3.10"
 kotlinpoet="2.3.0"
 bytebuddy = "1.18.10"
 junit = "4.13.2"
@@ -178,7 +178,6 @@ android-play-services-location = { module = "com.google.android.gms:play-service
 # AndroidX
 
 ## Activity
-androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
 
@@ -199,24 +198,16 @@ compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-co
 compose-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "jetbrains-lifecycle" }
 
 ## AndroidX Compose — Android-only artifacts with no CMP equivalent.
-androidx-compose-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-compose-constraintlayout" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose-tooling" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose-tooling" }
 
-androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 
 ## Fragment
-androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
-androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
 
 ## Lifecycle
-androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 
 ## Code Generation
 google-devtools-ksp-gradle = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }

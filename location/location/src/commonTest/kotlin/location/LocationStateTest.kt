@@ -31,6 +31,7 @@ import com.splendo.kaluga.permissions.test.MockPermissionState
 import com.splendo.kaluga.permissions.test.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.test.TestResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -678,16 +679,14 @@ class LocationStateTest : BaseFlowTest<LocationStateTest.Configuration, Location
         initialPermissionState: MockPermissionState.ActiveState,
         locationEnabled: Boolean,
         test: suspend BaseFlowTest<Configuration, Context, LocationState, LocationStateRepo>.(LocationStateRepo) -> Unit,
-    ) {
-        testWithFlowAndTestContext(
-            Configuration(
-                locationPermission,
-                autoRequestPermission,
-                autoEnableLocations,
-                initialPermissionState,
-                locationEnabled,
-            ),
-            blockWithContext = test,
-        )
-    }
+    ): TestResult = testWithFlowAndTestContext(
+        Configuration(
+            locationPermission,
+            autoRequestPermission,
+            autoEnableLocations,
+            initialPermissionState,
+            locationEnabled,
+        ),
+        blockWithContext = test,
+    )
 }

@@ -199,6 +199,11 @@ internal sealed class AndroidServerState {
         }
 
         override suspend fun startAdvertising(data: com.splendo.kaluga.bluetooth.server.AdvertiseData): Boolean = coroutineScope {
+            // null when the adapter is off or doesn't support LE advertising
+            val advertiser = advertiser ?: run {
+                logger.warn(TAG) { "Cannot start advertising: no Bluetooth LE advertiser available" }
+                return@coroutineScope false
+            }
             val settings = AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
                 .setConnectable(true)
@@ -234,7 +239,7 @@ internal sealed class AndroidServerState {
         }
 
         override fun stopAdvertising() {
-            advertiser.stopAdvertising(advertiserCallback)
+            advertiser?.stopAdvertising(advertiserCallback)
             restoreLocalName()
         }
 
