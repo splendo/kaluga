@@ -11,6 +11,7 @@ kaluga {
     dependencies {
         android {
             main {
+                api(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.compose.viewmodel)
             }
         }

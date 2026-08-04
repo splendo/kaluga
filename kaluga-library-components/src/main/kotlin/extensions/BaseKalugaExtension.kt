@@ -42,7 +42,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 /**
  * An extension to a [Project] that allows for easily reusing logic in Splendo Health
  */
-sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, objects: ObjectFactory) {
+sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, protected val androidxVersionCatalog: VersionCatalog, objects: ObjectFactory) {
 
     companion object {
         const val BASE_GROUP = "com.splendo.kaluga"
