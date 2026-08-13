@@ -76,9 +76,18 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         is NumberFormatStyle.Pattern -> DecimalFormat("${style.positivePattern};${style.negativePattern}", DecimalFormatSymbols(locale.locale))
     } as DecimalFormat
 
+    // DecimalFormat is not thread-safe: format and parse share its internal digit buffer, so racing
+    // them on one instance corrupts results. Parsing therefore gets its own instance, making
+    // format/parse cross-contamination impossible while each path pays only a single (typically
+    // uncontended) monitor. The instances double as the locks, so they must stay private and never
+    // escape this class. Configuration writes go through [update] to both instances so the
+    // format/parse round-trip stays consistent.
+    private val parser = format.clone() as DecimalFormat
+
     // When the Scientific style sets a decimal-notation threshold, values within the threshold are
     // rendered with this plain decimal formatter instead; its mutable state is synced from `format`
-    // at format time so symbol/grouping overrides apply to both notations.
+    // at format time so symbol/grouping overrides apply to both notations. It is only ever touched
+    // while holding the `format` monitor.
     private val decimalThresholdStyle: NumberFormatStyle.Scientific? =
         (style as? NumberFormatStyle.Scientific)?.takeIf { it.maxExponentForDecimalNotation != null }
     private val decimalFallback: DecimalFormat? = decimalThresholdStyle?.decimalNotation?.let { decimal ->
@@ -90,7 +99,9 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
     }
 
-    private val symbols: DecimalFormatSymbols get() = format.decimalFormatSymbols
+    // DecimalFormat.getDecimalFormatSymbols returns a copy, so it is safe to read outside the lock
+    // once obtained.
+    private val symbols: DecimalFormatSymbols get() = read { it.decimalFormatSymbols }
     init {
         val javaRounding = when (style.roundingMode) {
             RoundingMode.Ceiling -> java.math.RoundingMode.CEILING
@@ -102,6 +113,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             RoundingMode.Up -> java.math.RoundingMode.UP
         }
         format.roundingMode = javaRounding
+        parser.roundingMode = javaRounding
         decimalFallback?.roundingMode = javaRounding
     }
 
@@ -153,24 +165,24 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
 
     actual override var positivePrefix: String
-        get() = format.positivePrefix
+        get() = read { it.positivePrefix }
         set(value) {
-            format.positivePrefix = value
+            update { it.positivePrefix = value }
         }
     actual override var positiveSuffix: String
-        get() = format.positiveSuffix
+        get() = read { it.positiveSuffix }
         set(value) {
-            format.positiveSuffix = value
+            update { it.positiveSuffix = value }
         }
     actual override var negativePrefix: String
-        get() = format.negativePrefix
+        get() = read { it.negativePrefix }
         set(value) {
-            format.negativePrefix = value
+            update { it.negativePrefix = value }
         }
     actual override var negativeSuffix: String
-        get() = format.negativeSuffix
+        get() = read { it.negativeSuffix }
         set(value) {
-            format.negativeSuffix = value
+            update { it.negativeSuffix = value }
         }
 
     actual override var groupingSeparator: Char
@@ -181,10 +193,15 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     actual override var usesGroupingSeparator: Boolean
         // The decimal fallback owns grouping so it groups like a normal decimal by default; the toggle
         // drives both notations.
-        get() = (decimalFallback ?: format).isGroupingUsed
+        get() = read { (decimalFallback ?: it).isGroupingUsed }
         set(value) {
-            format.isGroupingUsed = value
-            decimalFallback?.isGroupingUsed = value
+            synchronized(format) {
+                synchronized(parser) {
+                    format.isGroupingUsed = value
+                    parser.isGroupingUsed = value
+                }
+                decimalFallback?.isGroupingUsed = value
+            }
         }
     actual override var decimalSeparator: Char
         get() = symbols.decimalSeparator
@@ -192,9 +209,9 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             applySymbols { it.decimalSeparator = value }
         }
     actual override var alwaysShowsDecimalSeparator: Boolean
-        get() = format.isDecimalSeparatorAlwaysShown
+        get() = read { it.isDecimalSeparatorAlwaysShown }
         set(value) {
-            format.isDecimalSeparatorAlwaysShown = value
+            update { it.isDecimalSeparatorAlwaysShown = value }
         }
     actual override var currencyDecimalSeparator: Char
         get() = symbols.monetaryDecimalSeparator
@@ -203,22 +220,27 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
     actual override var groupingSize: Int
         // The decimal fallback owns its grouping size (the scientific pattern has none); the setter drives both.
-        get() = (decimalFallback ?: format).groupingSize
+        get() = read { (decimalFallback ?: it).groupingSize }
         set(value) {
-            format.groupingSize = value
-            decimalFallback?.groupingSize = value
+            synchronized(format) {
+                synchronized(parser) {
+                    format.groupingSize = value
+                    parser.groupingSize = value
+                }
+                decimalFallback?.groupingSize = value
+            }
         }
     actual override var multiplier: Int
-        get() = format.multiplier
+        get() = read { it.multiplier }
         set(value) {
-            format.multiplier = value
+            update { it.multiplier = value }
         }
 
-    actual override fun format(number: Number): String {
+    actual override fun format(number: Number): String = synchronized(format) {
         val value = number.toDouble()
         val fallback = decimalFallback
         val scientific = decimalThresholdStyle
-        return if (fallback != null && scientific != null && scientific.rendersAsDecimal(value)) {
+        if (fallback != null && scientific != null && scientific.rendersAsDecimal(value)) {
             // Sync everything except grouping (which the fallback owns — see usesGroupingSeparator/groupingSize —
             // so it renders like a normal localized decimal regardless of scientific's no-grouping default).
             fallback.decimalFormatSymbols = format.decimalFormatSymbols
@@ -233,14 +255,26 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             format.format(value)
         }
     }
-    actual override fun parse(string: String): Number? = try {
-        format.parse(string)
-    } catch (e: ParseException) {
-        null
+    actual override fun parse(string: String): Number? = synchronized(parser) {
+        try {
+            parser.parse(string)
+        } catch (e: ParseException) {
+            null
+        }
     }
-    private fun applySymbols(apply: (DecimalFormatSymbols) -> Unit) {
-        val symbols = format.decimalFormatSymbols
+    private inline fun <T> read(action: (DecimalFormat) -> T): T = synchronized(format) { action(format) }
+
+    // Nested in a fixed order (format then parse) so writes cannot deadlock and neither instance is
+    // observed mid-update by format or parse.
+    private inline fun update(action: (DecimalFormat) -> Unit) = synchronized(format) {
+        synchronized(parser) {
+            action(format)
+            action(parser)
+        }
+    }
+    private fun applySymbols(apply: (DecimalFormatSymbols) -> Unit) = update {
+        val symbols = it.decimalFormatSymbols
         apply(symbols)
-        format.decimalFormatSymbols = symbols
+        it.decimalFormatSymbols = symbols
     }
 }
