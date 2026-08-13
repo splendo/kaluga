@@ -77,4 +77,50 @@ class NumberFormatterConcurrencyTest : BaseTest() {
             "${failures.size} corrupted results out of ${WORKERS * ITERATIONS * 2} operations; first: ${failures.take(5)}",
         )
     }
+
+    @Test
+    fun testSharedScientificFormatterWithDecimalThresholdFormatsCorrectlyUnderContention() = testRunBlocking {
+        // Values straddle maxExponentForDecimalNotation so the decimal-fallback path and the plain
+        // scientific path run concurrently on the shared formatter.
+        val formatter = NumberFormatter(createLocale("en", "US"), NumberFormatStyle.Scientific(maxExponentForDecimalNotation = 6U))
+
+        // Establish the single-threaded expectations first, so a failure below can only mean corruption.
+        assertEquals("1,000.0", formatter.format(1000))
+        assertEquals("12,345.678", formatter.format(12345.678))
+        assertEquals("1.0E7", formatter.format(10000000))
+        assertEquals("1.0E-7", formatter.format(0.0000001))
+
+        val failures = (0 until WORKERS).map { worker ->
+            async(Dispatchers.Default) {
+                val workerFailures = mutableListOf<String>()
+
+                // A formatter torn mid-reconfiguration may throw rather than corrupt, so exceptions
+                // count as corruption too.
+                fun expect(operation: String, expected: String, actual: () -> String) {
+                    val result = try {
+                        actual()
+                    } catch (e: Throwable) {
+                        "threw $e"
+                    }
+                    if (result != expected) workerFailures.add("$operation -> $result")
+                }
+                repeat(ITERATIONS) { iteration ->
+                    // Alternate which path goes first per worker so fallback and scientific overlap.
+                    if ((worker + iteration) % 2 == 0) {
+                        expect("format(1000)", "1,000.0") { formatter.format(1000) }
+                        expect("format(10000000)", "1.0E7") { formatter.format(10000000) }
+                    } else {
+                        expect("format(0.0000001)", "1.0E-7") { formatter.format(0.0000001) }
+                        expect("format(12345.678)", "12,345.678") { formatter.format(12345.678) }
+                    }
+                }
+                workerFailures
+            }
+        }.awaitAll().flatten()
+
+        assertTrue(
+            failures.isEmpty(),
+            "${failures.size} corrupted results out of ${WORKERS * ITERATIONS * 2} operations; first: ${failures.take(5)}",
+        )
+    }
 }
