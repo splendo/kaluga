@@ -3,7 +3,7 @@ kaluga = "2.0.0"
 java = "21"
 foojay-resolver = "1.0.0"
 
-androidGradle = "9.3.1"
+androidGradle = "9.3.2"
 # androidx's monthly stable-channel catalog (androidx.gradle:gradle-version-catalog),
 # exposed to builds as `androidxLib` — see settings.gradle.kts
 androidx-version-catalog = "2026.07.01"
