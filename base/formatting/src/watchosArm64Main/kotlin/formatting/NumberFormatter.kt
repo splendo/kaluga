@@ -116,8 +116,9 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     }
 
     // When the Scientific style sets a decimal-notation threshold, values within the threshold are
-    // rendered with this plain decimal formatter instead; its mutable state is synced from `formatter`
-    // at format time so symbol/grouping overrides apply to both notations.
+    // rendered with this plain decimal formatter instead; it is synced from `formatter` once at
+    // construction and kept in sync by the property setters, so format never mutates it —
+    // NSNumberFormatter is only documented thread-safe for non-mutating use.
     private val decimalThresholdStyle: NumberFormatStyle.Scientific? =
         (style as? NumberFormatStyle.Scientific)?.takeIf { it.maxExponentForDecimalNotation != null }
     private val decimalFallback: NSNumberFormatter? = decimalThresholdStyle?.decimalNotation?.let { decimal ->
@@ -133,6 +134,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
     }
 
+    init {
+        decimalFallback?.let(::syncDecimalFallback)
+    }
+
+    // Construction-time only: copies the locale defaults the fallback shares with `formatter`. After
+    // this the property setters write through to both.
     private fun syncDecimalFallback(target: NSNumberFormatter) {
         target.decimalSeparator = formatter.decimalSeparator
         target.groupingSeparator = formatter.groupingSeparator
@@ -162,7 +169,9 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     actual override var minusSign: Char
         get() = formatter.minusSign.getOrNull(0) ?: Char.MIN_VALUE
         set(value) {
-            formatter.minusSign = charArrayOf(value).concatToString()
+            val charValue = charArrayOf(value).concatToString()
+            formatter.minusSign = charValue
+            decimalFallback?.minusSign = charValue
         }
     actual override var exponentSymbol: String
         get() = formatter.exponentSymbol
@@ -172,18 +181,23 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     actual override var zeroSymbol: Char
         get() = formatter.zeroSymbol?.getOrNull(0) ?: '0'
         set(value) {
-            formatter.zeroSymbol = charArrayOf(value).concatToString()
+            val charValue = charArrayOf(value).concatToString()
+            formatter.zeroSymbol = charValue
+            decimalFallback?.zeroSymbol = charValue
         }
     actual override var notANumberSymbol: String
         get() = formatter.notANumberSymbol
         set(value) {
             formatter.notANumberSymbol = value
+            decimalFallback?.notANumberSymbol = value
         }
     actual override var infinitySymbol: String
         get() = formatter.positiveInfinitySymbol
         set(value) {
             formatter.positiveInfinitySymbol = value
             formatter.negativeInfinitySymbol = value
+            decimalFallback?.positiveInfinitySymbol = value
+            decimalFallback?.negativeInfinitySymbol = value
         }
     actual override var currencySymbol: String
         get() = formatter.currencySymbol
@@ -199,21 +213,25 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         get() = formatter.positivePrefix
         set(value) {
             formatter.positivePrefix = value
+            decimalFallback?.positivePrefix = value
         }
     actual override var positiveSuffix: String
         get() = formatter.positiveSuffix
         set(value) {
             formatter.positiveSuffix = value
+            decimalFallback?.positiveSuffix = value
         }
     actual override var negativePrefix: String
         get() = formatter.negativePrefix
         set(value) {
             formatter.negativePrefix = value
+            decimalFallback?.negativePrefix = value
         }
     actual override var negativeSuffix: String
         get() = formatter.negativeSuffix
         set(value) {
             formatter.negativeSuffix = value
+            decimalFallback?.negativeSuffix = value
         }
     actual override var groupingSeparator: Char
         get() = formatter.groupingSeparator.getOrNull(0) ?: Char.MIN_VALUE
@@ -221,6 +239,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             val charValue = charArrayOf(value).concatToString()
             formatter.groupingSeparator = charValue
             formatter.currencyGroupingSeparator = charValue
+            decimalFallback?.groupingSeparator = charValue
         }
     actual override var usesGroupingSeparator: Boolean
         // The decimal fallback owns grouping so it groups like a normal decimal by default; the toggle
@@ -233,12 +252,15 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     actual override var decimalSeparator: Char
         get() = formatter.decimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
         set(value) {
-            formatter.decimalSeparator = charArrayOf(value).concatToString()
+            val charValue = charArrayOf(value).concatToString()
+            formatter.decimalSeparator = charValue
+            decimalFallback?.decimalSeparator = charValue
         }
     actual override var alwaysShowsDecimalSeparator: Boolean
         get() = formatter.alwaysShowsDecimalSeparator
         set(value) {
             formatter.alwaysShowsDecimalSeparator = value
+            decimalFallback?.alwaysShowsDecimalSeparator = value
         }
     actual override var currencyDecimalSeparator: Char
         get() = formatter.currencyDecimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
@@ -259,7 +281,9 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     actual override var multiplier: Int
         get() = formatter.multiplier?.intValue ?: 1
         set(value) {
-            formatter.multiplier = NSNumber.numberWithInt(value)
+            val multiplierValue = NSNumber.numberWithInt(value)
+            formatter.multiplier = multiplierValue
+            decimalFallback?.multiplier = multiplierValue
         }
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
@@ -267,7 +291,6 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         val fallback = decimalFallback
         val scientific = decimalThresholdStyle
         if (fallback != null && scientific != null && scientific.rendersAsDecimal(number.toDouble())) {
-            syncDecimalFallback(fallback)
             return fallback.stringFromNumber(number as NSNumber) ?: ""
         }
         return formatter.stringFromNumber(number as NSNumber) ?: ""
