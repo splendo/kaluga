@@ -103,10 +103,11 @@ class BluetoothPlugin : Plugin<Project> {
                 val generatesMock = ImplementFor.MOCK in implementations
                 sourceSets.commonMain {
                     generatedSourceDir?.let { kotlin.srcDir(it) }
-                    bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
                     dependencies {
                         implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
-                        implementation("com.splendo.kaluga.bluetooth:core:$kalugaVersion")
+                        // core is api: generated interfaces expose Flow, Identifier, GattResponse etc.
+                        // from bluetooth:core in their public signatures, making them visible to consumers.
+                        api("com.splendo.kaluga.bluetooth:core:$kalugaVersion")
                         if (generatesImplementation && BluetoothTarget.CLIENT in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:client:$kalugaVersion")
                         }
@@ -122,10 +123,12 @@ class BluetoothPlugin : Plugin<Project> {
                     }
                 }
 
+                val annotationSourceFiles = bluetoothExtension.annotationSourceDirectories.get().map { file(it) }
                 tasks.withType<KspAATask>().configureEach {
                     if (!isSinglePlatform && name != "kspCommonMainKotlinMetadata") {
                         dependsOn("kspCommonMainKotlinMetadata")
                     }
+                    kspConfig.sourceRoots.from(annotationSourceFiles)
                 }
                 this@run.extensions.configure<KspExtension> {
                     arg(CommonSourceArgumentProvider(sourceSets.commonMain.get().kotlin.sourceDirectories))
@@ -152,7 +155,7 @@ class BluetoothPlugin : Plugin<Project> {
                     dependsOn(generate)
                 }
             }
-            bluetoothExtension.afterEvaluate()
+            bluetoothExtension.afterEvaluate(::file)
         }
     }
 
