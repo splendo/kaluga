@@ -92,7 +92,8 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
     }
 
     private fun KSClassDeclaration.generateBluetoothClientFile() {
-        val clientClass = ClassName(NameHelper.filePackage(this, options), clientName())
+        val prefix = if (!options.generateApi) options.implementationFilePrefix else ""
+        val clientClass = ClassName(NameHelper.filePackage(this, options), clientName(prefix = prefix))
         FileSpec.builder(clientClass).generate(
             GenerationType.Side.CLIENT,
             BluetoothClientBuilder(this, options, logger),
@@ -100,7 +101,8 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
     }
 
     private fun KSClassDeclaration.generateBluetoothServerFile() {
-        val serverClass = ClassName(NameHelper.filePackage(this, options), serverName())
+        val prefix = if (!options.generateApi) options.implementationFilePrefix else ""
+        val serverClass = ClassName(NameHelper.filePackage(this, options), serverName(prefix = prefix))
         FileSpec.builder(serverClass).generate(
             GenerationType.Side.SERVER,
             BluetoothServerBuilder(this, options, logger),

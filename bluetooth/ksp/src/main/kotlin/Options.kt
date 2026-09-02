@@ -45,4 +45,16 @@ data class Options(
 
     /** The package in which the API interfaces live, falling back to [generatedPackage]. */
     fun apiPackage(defaultPackage: String): String = apiPackage ?: generatedPackage(defaultPackage)
+
+    /**
+     * Prefix for implementation file names when [generateApi] is false.
+     * Prevents dex duplicate conflicts when multiple impl modules (e.g. bluetooth + simulator)
+     * are in the same Android dependency graph — each gets its own JVM class name.
+     */
+    val implementationFilePrefix: String get() = when {
+        generateBluetoothImplementation -> "Bluetooth"
+        generateSimulatorImplementation -> "Simulated"
+        generateMockImplementation -> "Mock"
+        else -> ""
+    }
 }
