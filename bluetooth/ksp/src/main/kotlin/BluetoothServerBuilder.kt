@@ -465,7 +465,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
     }
 
     private fun generateServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
-        val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
+        val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
         val name = propertyDeclaration.simpleName.asString()
         val serviceType = serverName(typeDeclaration, type)
         val apiType = serverName(typeDeclaration, GenerationType.Type.API)
