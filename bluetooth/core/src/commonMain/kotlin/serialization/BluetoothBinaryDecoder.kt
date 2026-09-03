@@ -82,7 +82,12 @@ internal class BluetoothBinaryDecoder(
             }
         } else {
             // Otherwise the enum is an (unsized) identifier in the body; check for the first match.
-            binaryDescriptor.enumMap.firstNotNullOf { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
+            val prefix = binaryDescriptor.structureSettings.prefix?.array
+            val postfix = binaryDescriptor.structureSettings.postfix?.array
+            if (prefix != null) decoder.nextBytes(prefix.size)
+            val result = binaryDescriptor.enumMap.firstNotNullOf { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
+            if (postfix != null) decoder.nextBytes(postfix.size)
+            result
         }
     }
 

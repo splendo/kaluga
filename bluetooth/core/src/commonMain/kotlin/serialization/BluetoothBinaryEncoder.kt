@@ -171,9 +171,13 @@ internal class BluetoothBinaryEncoder(
                 builder.addFlag(binaryDescriptor.bitIndex + offset + bit, index.isBitSet(bit))
             }
         } else {
-            binaryDescriptor.enumMap[index]?.array?.let {
-                builder.addAction(it.size) {
-                    add(bytes = it)
+            binaryDescriptor.enumMap[index]?.array?.let { enumBytes ->
+                val prefix = binaryDescriptor.structureSettings.prefix?.array ?: byteArrayOf()
+                val postfix = binaryDescriptor.structureSettings.postfix?.array ?: byteArrayOf()
+                builder.addAction(prefix.size + enumBytes.size + postfix.size) {
+                    add(bytes = prefix)
+                    add(bytes = enumBytes)
+                    add(bytes = postfix)
                 }
             }
         }
