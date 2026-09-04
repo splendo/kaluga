@@ -41,6 +41,7 @@ import com.splendo.kaluga.base.bytes.decodeUTF16Char
 import com.splendo.kaluga.base.bytes.decodeUTF8Char
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
@@ -267,10 +268,23 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
     override fun decodeShortElement(descriptor: SerialDescriptor, index: Int): Short = binaryDescriptorAtIndex(index).decodeShortElement(decoderAtIndex(index))
 
     override fun decodeStringElement(descriptor: SerialDescriptor, index: Int): String = if (descriptor.kind is PolymorphicKind && index == 0) {
-        // For polymorphic classes the first element is its type string. Find its match in the polymorphicMap
-        binaryDescriptor.polymorphicMap.firstNotNullOf { (key, value) ->
-            val decoder = decoderAtIndex(index)
-            key.takeIf { decoder.peekNextIs(value.array, true) }
+        val sizeMap = binaryDescriptor.sizePolymorphicMap
+        val sizeFallback = binaryDescriptor.sizePolymorphicFallback
+        if (sizeMap.isNotEmpty() || sizeFallback != null) {
+            // Size-based dispatch: no prefix consumed; fixed sizes matched first, fallback used otherwise.
+            val remaining = decoderAtIndex(index).remainingPayloadBytes()
+            sizeMap[remaining]
+                ?: sizeFallback
+                ?: throw SerializationException(
+                    "No @SizePolymorphic subtype registered for size $remaining in ${descriptor.serialName}. " +
+                    "Expected one of ${sizeMap.keys}.",
+                )
+        } else {
+            // Byte-prefix-based dispatch: peek at the next bytes to match the subtype identifier.
+            binaryDescriptor.polymorphicMap.firstNotNullOf { (key, value) ->
+                val decoder = decoderAtIndex(index)
+                key.takeIf { decoder.peekNextIs(value.array, true) }
+            }
         }
     } else {
         binaryDescriptorAtIndex(index).decodeStringElement(decoderAtIndex(index))

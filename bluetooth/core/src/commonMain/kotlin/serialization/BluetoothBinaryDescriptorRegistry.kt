@@ -50,6 +50,10 @@ internal data class BluetoothBinaryDescriptor(
     // The flag bits (owned by other properties) whose conjunction determines this property's presence; empty for a
     // property that owns its presence bit at [bitIndex] (or is not nullable).
     val presenceFlagIndices: List<Int> = emptyList(),
+    // When non-empty, subtype is selected by remaining payload byte count instead of a byte prefix.
+    val sizePolymorphicMap: Map<Int, String> = emptyMap(),
+    // Optional catch-all used when no fixed-size entry matches — allows one variable-size subtype.
+    val sizePolymorphicFallback: String? = null,
 ) {
 
     /**
@@ -189,6 +193,7 @@ class FlagIndexException(message: String) : SerializationException(message)
  */
 class InvalidByteOrderException(message: String) : SerializationException(message)
 
+
 internal object BluetoothBinaryDescriptorRegistry {
 
     private class DesiredFlagBitWidth(var width: Int) {
@@ -293,6 +298,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         val collectionSettings = collectionSettings(descriptor, annotations, desiredFlagBitWidth, supportedLengths)
         val enumMap = enumMap(descriptor, byteOrder)
         val polymorphicMap = polymorphicMap(descriptor, byteOrder, serializersModule)
+        val (sizePolymorphicMap, sizePolymorphicFallback) = sizePolymorphicInfo(descriptor, byteOrder, serializersModule)
 
         val blockSettings = blockSettings(annotations)
         val minWidth = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: 0
@@ -325,6 +331,8 @@ internal object BluetoothBinaryDescriptorRegistry {
                 else -> descriptorChildren(descriptor, byteOrder, serializersModule, bitIndex)
             },
             presenceFlagIndices,
+            sizePolymorphicMap,
+            sizePolymorphicFallback,
         )
     }
 
@@ -651,6 +659,123 @@ internal object BluetoothBinaryDescriptorRegistry {
             else -> emptyMap()
         }
         return polymorphicMap
+    }
+
+    /**
+     * Returns `(fixedSizeMap, fallback)` for a `@SizePolymorphic` sealed class.
+     * Fixed-size subtypes populate the map; at most one variable-size subtype is allowed as a
+     * catch-all fallback for remaining byte counts that don't match any fixed entry.
+     */
+    private fun sizePolymorphicInfo(
+        descriptor: SerialDescriptor,
+        byteOrder: ByteOrder,
+        serializersModule: SerializersModule,
+    ): Pair<Map<Int, String>, String?> {
+        if (descriptor.annotations.filterIsInstance<SizePolymorphic>().isEmpty()) return emptyMap<Int, String>() to null
+        if (descriptor.kind !is PolymorphicKind.SEALED) return emptyMap<Int, String>() to null
+
+        val sealedDescriptor = descriptor.getElementDescriptor(1)
+        val fixedEntries = mutableListOf<Pair<Int, String>>()
+        var fallback: String? = null
+
+        for (index in 0..<sealedDescriptor.elementsCount) {
+            val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
+            val optionBinaryDescriptor = bluetoothBinaryDescriptor(optionDescriptor, serializersModule)
+            val size = optionBinaryDescriptor.staticByteSize()
+            if (size == null) {
+                if (fallback != null) {
+                    throw SerializationException(
+                        "@SizePolymorphic '${descriptor.serialName}' has more than one variable-size subtype — " +
+                        "at most one is allowed as a catch-all fallback.",
+                    )
+                }
+                fallback = optionDescriptor.serialName
+            } else {
+                fixedEntries.add(size to optionDescriptor.serialName)
+            }
+        }
+
+        val duplicates = fixedEntries.groupBy { it.first }.filter { it.value.size > 1 }
+        if (duplicates.isNotEmpty()) {
+            throw SerializationException(
+                "@SizePolymorphic dispatch on '${descriptor.serialName}' is ambiguous: " +
+                "multiple subtypes compute to the same byte size. " +
+                duplicates.entries.joinToString("; ") { (size, pairs) ->
+                    "size=$size → ${pairs.map { it.second }}"
+                },
+            )
+        }
+
+        return fixedEntries.toMap() to fallback
+    }
+
+    /**
+     * Computes the total static byte size of this descriptor (flag header + body + prefix + postfix + checksum).
+     * Returns null if any field has a variable or unknowable size.
+     */
+    private fun BluetoothBinaryDescriptor.staticByteSize(): Int? {
+        val flagHeaderBytes = (flagBitSize + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS
+        var bodyBytes = 0
+        for (child in children) {
+            bodyBytes += child.staticChildBodyBytes() ?: return null
+        }
+        return flagHeaderBytes + bodyBytes +
+            (structureSettings.prefix?.array?.size ?: 0) +
+            (structureSettings.postfix?.array?.size ?: 0) +
+            (structureSettings.checksumAlgorithm?.byteWidth ?: 0)
+    }
+
+    private fun BluetoothBinaryDescriptor.staticChildBodyBytes(): Int? {
+        // Purely flag-packed fields (boolean, flag-indexed enum, sub-byte numeric) contribute 0 body bytes.
+        if (isPurelyFlagPacked()) return 0
+
+        // Nullable with body content: size is value-dependent (absent = 0 bytes, present = N bytes).
+        if (isNullable && (numericSettings != null || stringSettings != null ||
+                collectionSettings != null || children.isNotEmpty())) return null
+
+        return when {
+            numericSettings != null -> when (val s = numericSettings) {
+                is BluetoothBinaryDescriptor.NumericSettings.Natural ->
+                    if (s.inFlagsBits != null) 0
+                    else s.supportedLengths.singleOrNull()?.bytes
+                else -> numericSettings.supportedLengths.singleOrNull()?.bytes
+            }
+
+            stringSettings != null -> when (val em = stringSettings.endMarking) {
+                is StringEncodingSettings.FixedLength -> em.length
+                else -> null
+            }
+
+            collectionSettings != null -> null
+
+            enumMap.isNotEmpty() -> {
+                // Non-flag-packed enum: prefix + value bytes + postfix.
+                val valueSizes = enumMap.values.map { it.array.size }.toSet()
+                if (valueSizes.size != 1) null
+                else (structureSettings.prefix?.array?.size ?: 0) + valueSizes.first() +
+                    (structureSettings.postfix?.array?.size ?: 0)
+            }
+
+            // Nested polymorphic type — size depends on runtime value.
+            polymorphicMap.isNotEmpty() || sizePolymorphicMap.isNotEmpty() -> null
+
+            // Nested structure: recursively compute its total size.
+            children.isNotEmpty() -> staticByteSize()
+
+            else -> 0
+        }
+    }
+
+    /** True when a field's entire encoding lives in the flag header and contributes no body bytes. */
+    private fun BluetoothBinaryDescriptor.isPurelyFlagPacked(): Boolean {
+        if (bitIndex < 0 || bitWidth <= 0) return false
+        // Sub-byte integer packed into flags via @FlagIndex + @FlagWidth
+        if (numericSettings is BluetoothBinaryDescriptor.NumericSettings.Natural &&
+            (numericSettings as BluetoothBinaryDescriptor.NumericSettings.Natural).inFlagsBits != null) return true
+        // Boolean or enum ordinal packed into flags (no separate body type)
+        if (numericSettings == null && stringSettings == null && collectionSettings == null &&
+            children.isEmpty() && polymorphicMap.isEmpty()) return true
+        return false
     }
 
     private fun blockSettings(annotations: List<Annotation>): BluetoothBinaryDescriptor.StructureSettings {

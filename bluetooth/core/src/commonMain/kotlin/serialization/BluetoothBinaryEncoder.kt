@@ -60,7 +60,11 @@ internal class BluetoothBinaryEncoder(
                         build()
                     }
                 }
-                if (markUnconstrained) {
+                if (markUnconstrained || binaryDescriptor.sizePolymorphicMap.isNotEmpty() || binaryDescriptor.sizePolymorphicFallback != null) {
+                    // A size-tagged sealed type marks the parent unconstrained after encoding:
+                    // any sibling field following it cannot determine its length boundary, so
+                    // DataAfterUnconstrainedData will fire if one is attempted. Prefix/Postfix/CRC
+                    // on the parent are unaffected — they are written in build(), not addAction().
                     builder.makeUnconstrained()
                 }
             },
@@ -294,7 +298,11 @@ private class BluetoothBinaryCompositeEncoder(
 
     override fun encodeStringElement(descriptor: SerialDescriptor, index: Int, value: String) {
         if (descriptor.kind is PolymorphicKind && index == 0) {
-            // The first string of a Polymorphic kind is its type key. Encode its match in the polymorphicMap
+            if (binaryDescriptor.sizePolymorphicMap.isNotEmpty() || binaryDescriptor.sizePolymorphicFallback != null) {
+                // Size-polymorphic: the payload size is the implicit discriminator — nothing to write.
+                return
+            }
+            // Byte-prefix-based: write the type identifier bytes.
             binaryDescriptor.polymorphicMap[value]?.array?.let {
                 builder.addAction(it.size) {
                     add(it)

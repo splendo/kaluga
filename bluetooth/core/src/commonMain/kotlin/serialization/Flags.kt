@@ -232,6 +232,27 @@ annotation class NullIfEmpty
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
+ * When applied to a sealed polymorphic class, subtypes are identified by their remaining payload
+ * byte count instead of a prefix byte identifier. The expected byte count for each subtype is
+ * computed automatically from its field annotations — no manual size declaration is required.
+ *
+ * All subtypes must have statically-known sizes (fixed-width numerics and nested structures only).
+ * A subtype with variable-size fields (unsized strings, collections, nullable body fields, etc.)
+ * causes a [SerializationException] at descriptor construction time.
+ *
+ * A field of a [SizePolymorphic] type must be the last field in its parent structure; any sibling
+ * that follows will throw [DataAfterUnconstrainedData] when encoding. [Prefix], [Postfix], and
+ * [Checksum] on the parent class are unaffected — they are written in [BinaryBuilder.build], not
+ * via [BinaryBuilder.addAction].
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS)
+annotation class SizePolymorphic
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
  * Adds a [com.splendo.kaluga.base.crc.CRC] value of size [width] to the end of the body (before any prefix)
  * If the decoded checksum does not match the calculated checksum of the body and [BluetoothFormat.validateChecksum] is `true` will result in a [InvalidChecksumException].
  *

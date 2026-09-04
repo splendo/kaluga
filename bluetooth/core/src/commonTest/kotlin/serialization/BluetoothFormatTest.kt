@@ -48,6 +48,7 @@ import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
 import kotlin.jvm.JvmInline
 import kotlin.math.pow
+import kotlinx.serialization.SerializationException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -2015,6 +2016,160 @@ class BluetoothFormatTest {
         }
 
         validateRoundTrip(value, Container.serializer(), expected)
+    }
+
+    // ── @SizePolymorphic dispatch ─────────────────────────────────────────────
+    // The sealed class declares the dispatch mode; subtypes carry no size annotation.
+    // Sizes are computed automatically from field annotations at descriptor construction time.
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface SizeDispatchedPayload
+
+    @Serializable
+    data class FourBytePayload(@Unsigned val value: UInt) : SizeDispatchedPayload   // 4 bytes
+
+    @Serializable
+    data class NineBytePayload(
+        @Unsigned val a: UInt,
+        @Unsigned val b: UInt,
+        val c: UByte,
+    ) : SizeDispatchedPayload  // 4 + 4 + 1 = 9 bytes
+
+    // ── Variable-size fallback ────────────────────────────────────────────────
+    // One fixed-size subtype + one variable-size catch-all.
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface MixedSizeSealed
+
+    @Serializable
+    data class FixedMixed(@Unsigned val value: UInt) : MixedSizeSealed           // 4 bytes — matched first
+
+    @Serializable
+    data class VariableMixed(@Unsized val items: List<UByte>) : MixedSizeSealed  // variable — catch-all
+
+    // ── Failure: two variable-size subtypes ───────────────────────────────────
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface VariableSizeSealed
+
+    @Serializable
+    data class VariableSizeSubtypeA(@NullTerminated val name: String) : VariableSizeSealed
+
+    @Serializable
+    data class VariableSizeSubtypeB(@Unsized val data: List<UByte>) : VariableSizeSealed
+
+    // Used in the ambiguous-size test — two subtypes with identical computed byte sizes.
+    @Serializable
+    @SizePolymorphic
+    sealed interface AmbiguousSizeSealed
+
+    @Serializable
+    data class AmbiguousTypeA(@Unsigned val value: UInt) : AmbiguousSizeSealed  // 4 bytes
+
+    @Serializable
+    data class AmbiguousTypeB(@Unsigned val value: UInt) : AmbiguousSizeSealed  // also 4 bytes
+
+    @Test
+    fun sizeTagDispatch_fourBytePayload() {
+        // No type discriminator bytes — just the content; 4 bytes total.
+        // validateEncoding also verifies Nested<T> round-trips correctly: the sealed is the only
+        // field in Nested, so no sibling fires DataAfterUnconstrainedData, and Prefix/Postfix on
+        // Nested still work because they are written via build(), not addAction().
+        validateEncoding(
+            FourBytePayload(0x01020304u) as SizeDispatchedPayload,
+            BluetoothFormat.serializer<SizeDispatchedPayload>(),
+            byteArrayOf(0x04, 0x03, 0x02, 0x01),
+        )
+    }
+
+    @Test
+    fun sizeTagDispatch_nineBytePayload() {
+        validateEncoding(
+            NineBytePayload(0x01020304u, 0x05060708u, 0x09u) as SizeDispatchedPayload,
+            BluetoothFormat.serializer<SizeDispatchedPayload>(),
+            byteArrayOf(0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05, 0x09),
+        )
+    }
+
+    @Test
+    fun sizePolymorphic_failsWhenSubtypesHaveDuplicateSizes() {
+        // AmbiguousTypeA and AmbiguousTypeB both compute to 4 bytes — dispatch would be impossible.
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(
+                BluetoothFormat.serializer<AmbiguousSizeSealed>(),
+                AmbiguousTypeA(0u),
+            )
+        }
+    }
+
+    @Test
+    fun sizePolymorphic_fixedSubtypeMatchedBeforeFallback() {
+        // 4-byte payload → FixedMixed; variable remainder → VariableMixed (catch-all).
+        validateEncoding(
+            FixedMixed(0x01020304u) as MixedSizeSealed,
+            BluetoothFormat.serializer<MixedSizeSealed>(),
+            byteArrayOf(0x04, 0x03, 0x02, 0x01),
+        )
+    }
+
+    @Test
+    fun sizePolymorphic_fallbackDecodesVariablePayload() {
+        // 3 bytes don't match FixedMixed(4) → falls through to VariableMixed.
+        val bytes = byteArrayOf(0x0A, 0x0B, 0x0C)
+        val result = BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<MixedSizeSealed>(), bytes)
+        assertEquals(VariableMixed(listOf(0x0A.toUByte(), 0x0B.toUByte(), 0x0C.toUByte())), result)
+    }
+
+    @Test
+    fun sizePolymorphic_failsWithMultipleVariableSizeSubtypes() {
+        // Two variable-size subtypes — ambiguous, must be rejected at encode time.
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(
+                BluetoothFormat.serializer<VariableSizeSealed>(),
+                VariableSizeSubtypeA("hello"),
+            )
+        }
+    }
+
+    @Test
+    fun sizeTagDispatch_throwsOnUnrecognisedSize() {
+        // 6 bytes matches neither 4 nor 9.
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<SizeDispatchedPayload>(), ByteArray(6))
+        }
+    }
+
+    @Serializable
+    data class WithSiblingAfter(val payload: SizeDispatchedPayload, val trailing: UByte)
+
+    @Test
+    fun sizeTagDispatch_throwsDataAfterUnconstrainedWhenSiblingFollows() {
+        // A field AFTER the size-polymorphic sealed cannot have its length determined — encoding must fail.
+        // Fields BEFORE the sealed (or the sealed as the last/only field) are fine.
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(
+                BluetoothFormat.serializer<WithSiblingAfter>(),
+                WithSiblingAfter(FourBytePayload(0u), 0u),
+            )
+        }
+    }
+
+    @Serializable
+    @Prefix([0xAA.toByte()])
+    @Postfix([0xBB.toByte()])
+    data class WrappedWithPrefixPostfix(val payload: SizeDispatchedPayload)
+
+    @Test
+    fun sizeTagDispatch_allowsPrefixPostfixOnContainingClass() {
+        // Prefix/Postfix on the containing class are written in build(), not addAction(), so they
+        // are unaffected by the makeUnconstrained() that @SizePolymorphic sets on the parent builder.
+        val value = WrappedWithPrefixPostfix(FourBytePayload(0x01020304u))
+        val bytes = BluetoothFormat.encodeToByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), value)
+        assertTrue(bytes.contentEquals(byteArrayOf(0xAA.toByte(), 0x04, 0x03, 0x02, 0x01, 0xBB.toByte())), bytes.toHexString(separator = " "))
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), bytes))
     }
 
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
