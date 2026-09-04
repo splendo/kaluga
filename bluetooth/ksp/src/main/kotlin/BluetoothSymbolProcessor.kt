@@ -63,28 +63,31 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
             return emptyList()
         }
 
+        // distinctBy guards against KSP returning the same symbol more than once in certain
+        // incremental-build scenarios (e.g. when multiple annotated classes share a UUID or when
+        // a newly added source file causes dirty-set re-expansion).
         val bluetoothDeclarations = resolver.getSymbolsWithAnnotation(Bluetooth::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
             it.includeInGeneration && it.parentDeclaration == null && !it.isFromExternalSource
-        }
+        }.distinctBy { it.qualifiedName?.asString() }
         bluetoothDeclarations.forEach { bluetoothDeclaration ->
             bluetoothDeclaration.generateBluetoothClientFile()
             bluetoothDeclaration.generateBluetoothServerFile()
         }
         val serviceDeclarations = resolver.getSymbolsWithAnnotation(BluetoothService::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
             it.includeInGeneration && it.parentDeclaration == null && !it.isFromExternalSource
-        }
+        }.distinctBy { it.qualifiedName?.asString() }
         serviceDeclarations.forEach { serviceDeclaration ->
             serviceDeclaration.generateBluetoothServiceFile(serviceDeclaration.getAnnotationsByType(BluetoothService::class).first())
         }
         val characteristicDeclarations = resolver.getSymbolsWithAnnotation(BluetoothCharacteristic::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
             it.includeInGeneration && it.parentDeclaration == null && !it.isFromExternalSource
-        }
+        }.distinctBy { it.qualifiedName?.asString() }
         characteristicDeclarations.forEach { characteristicDeclaration ->
             characteristicDeclaration.generateBluetoothCharacteristicFile(characteristicDeclaration.getAnnotationsByType(BluetoothCharacteristic::class).first())
         }
         val descriptorDeclarations = resolver.getSymbolsWithAnnotation(BluetoothDescriptor::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
             it.includeInGeneration && it.parentDeclaration == null && !it.isFromExternalSource
-        }
+        }.distinctBy { it.qualifiedName?.asString() }
         descriptorDeclarations.forEach { descriptorDeclaration ->
             descriptorDeclaration.generateBluetoothDescriptorFile(descriptorDeclaration.getAnnotationsByType(BluetoothDescriptor::class).first())
         }
@@ -171,6 +174,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
     }
 
     private fun FileSpec.Builder.generate(side: GenerationType.Side, builder: AbstractBluetoothClassBuilder) {
+        val sourceFiles = listOfNotNull(builder.declaration.containingFile)
         val typesToAdd = when (side) {
             GenerationType.Side.CLIENT -> {
                 listOfNotNull(
@@ -199,12 +203,21 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
             typesToAdd.forEach { generationType ->
                 builder.generateExtensionFactories(generationType).forEach { addFunction(it) }
             }
-            generate()
+            generate(sourceFiles)
         }
     }
 
-    private fun FileSpec.Builder.generate() = apply {
-        indent("    ").build().writeTo(codeGenerator, Dependencies.ALL_FILES)
+    private fun FileSpec.Builder.generate(sourceFiles: List<com.google.devtools.ksp.symbol.KSFile> = emptyList()) = apply {
+        // aggregating = true: the output can depend on symbols across multiple files (needed for
+        // annotationSource() modules that pull in declarations from external paths). KSP still
+        // tracks the listed source files for cleanup — when they are removed or modified the old
+        // output is deleted before the processor re-runs. This avoids the FileAlreadyExistsException
+        // that arises with ALL_FILES when multiple annotated interfaces share a service UUID:
+        // ALL_FILES marks every output dirty on any source change, so both services try to write
+        // their file in the same processor run while the other's stale file still exists.
+        val dependencies = if (sourceFiles.isEmpty()) Dependencies.ALL_FILES
+                          else Dependencies(aggregating = true, *sourceFiles.toTypedArray())
+        indent("    ").build().writeTo(codeGenerator, dependencies)
     }
 
     private fun KSClassDeclaration.clientName(prefix: String = "", postFix: String = "Client") =

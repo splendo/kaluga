@@ -43,8 +43,26 @@ data class Options(
     /** The package in which generated code is placed, falling back to [defaultPackage] when not configured. */
     fun generatedPackage(defaultPackage: String): String = generatedPackage ?: defaultPackage
 
-    /** The package in which the API interfaces live, falling back to [generatedPackage]. */
-    fun apiPackage(defaultPackage: String): String = apiPackage ?: generatedPackage(defaultPackage)
+    /**
+     * The package in which the API interfaces live, falling back to [generatedPackage].
+     *
+     * The configured override only applies to declarations that belong to this module (i.e. whose
+     * package is related to the configured package). External service declarations — e.g. a battery
+     * service pulled in from another module — live in their own package and must not be remapped,
+     * otherwise KotlinPoet treats them as same-package and omits the import, causing an unresolved
+     * reference at compile time.
+     */
+    fun apiPackage(defaultPackage: String): String {
+        val configured = apiPackage ?: return generatedPackage(defaultPackage)
+        // If the configured package and the declaration's package are related (one is a prefix of the
+        // other), this declaration belongs to the same module → apply the override.
+        // Otherwise it is an external declaration → keep its own package.
+        return if (defaultPackage.startsWith(configured) || configured.startsWith(defaultPackage)) {
+            configured
+        } else {
+            defaultPackage
+        }
+    }
 
     /**
      * Prefix for implementation file names when [generateApi] is false.
