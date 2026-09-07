@@ -21,12 +21,15 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.ksp.helpers.DECODE_FROM_BYTE_ARRAY
+import com.splendo.kaluga.bluetooth.ksp.helpers.AS
 import com.splendo.kaluga.bluetooth.ksp.helpers.DROP
 import com.splendo.kaluga.bluetooth.ksp.helpers.ENCODE_TO_BYTE_ARRAY
 import com.splendo.kaluga.bluetooth.ksp.helpers.ERROR
 import com.splendo.kaluga.bluetooth.ksp.helpers.FAILURE
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IS
+import com.splendo.kaluga.bluetooth.ksp.helpers.OR_NULL
+import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.OFFSET
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
@@ -45,6 +48,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toTypeName
@@ -73,6 +77,8 @@ internal class BluetoothResultTypeBuilder(
     }
 
     fun generateType() = if (hasCustomResult) {
+        val valueType = propertyDeclaration.type.resolve().toTypeName()
+        val successClassName = responseClassName.nestedClass(SUCCESS)
         TypeSpec.classBuilder(responseClassName)
             .addModifiers(KModifier.SEALED)
             .addType(
@@ -81,11 +87,11 @@ internal class BluetoothResultTypeBuilder(
                     .addModifiers(KModifier.DATA)
                     .primaryConstructor(
                         FunSpec.constructorBuilder()
-                            .addParameter(RESPONSE, propertyDeclaration.type.resolve().toTypeName())
+                            .addParameter(RESPONSE, valueType)
                             .build(),
                     )
                     .addProperty(
-                        PropertySpec.builder(RESPONSE, propertyDeclaration.type.resolve().toTypeName())
+                        PropertySpec.builder(RESPONSE, valueType)
                             .initializer(RESPONSE)
                             .build(),
                     )
@@ -103,6 +109,32 @@ internal class BluetoothResultTypeBuilder(
                     .addProperty(
                         PropertySpec.builder(ERROR, References.Bluetooth.readError)
                             .initializer(ERROR)
+                            .build(),
+                    )
+                    .build(),
+            )
+            // Convenience: unwrap or throw / unwrap or null
+            .addProperty(
+                PropertySpec.builder(VALUE, valueType)
+                    .getter(
+                        FunSpec.getterBuilder()
+                            .beginControlFlow("$RETURN $WHEN ($THIS)")
+                            .addStatement("$IS %T -> $RESPONSE", successClassName)
+                            .addStatement(
+                                "$IS %T -> throw %T(\"Read failed: \$$ERROR\")",
+                                responseClassName.nestedClass(FAILURE),
+                                ClassName("kotlin", "IllegalStateException"),
+                            )
+                            .endControlFlow()
+                            .build(),
+                    )
+                    .build(),
+            )
+            .addProperty(
+                PropertySpec.builder("$VALUE$OR_NULL", valueType.copy(nullable = true))
+                    .getter(
+                        FunSpec.getterBuilder()
+                            .addStatement("$RETURN ($THIS $AS? %T)?.$RESPONSE", successClassName)
                             .build(),
                     )
                     .build(),
