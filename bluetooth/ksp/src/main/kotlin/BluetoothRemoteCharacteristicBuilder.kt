@@ -58,6 +58,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.orNullIfNullable
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
+import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -240,6 +241,26 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                             .addModifiers(KModifier.PRIVATE)
                             .initializer("${onWrite.onWriteMethodName}$ACTION").build()
                     },
+                    // Backing field that stores the raw notifiable flow from the constructor.
+                    notifiableProperty?.let { notifiable ->
+                        PropertySpec.builder(
+                            "_${notifiable.simpleName.asString()}",
+                            References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.type.resolve().toTypeName()),
+                        )
+                            .addModifiers(KModifier.PRIVATE)
+                            .initializer(notifiable.simpleName.asString())
+                            .build()
+                    },
+                    // Tracks whether the notifiable flow currently has active collectors.
+                    notifiableProperty?.let {
+                        PropertySpec.builder(
+                            "_isNotifying",
+                            References.KotlinX.Coroutines.Flow.mutableStateFlow.parameterizedBy(BOOLEAN),
+                        )
+                            .addModifiers(KModifier.PRIVATE)
+                            .initializer("%T(false)", References.KotlinX.Coroutines.Flow.mutableStateFlow)
+                            .build()
+                    },
                 ),
             )
             .addTypes(nested)
@@ -285,9 +306,8 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 if (propertyDeclaration.isNotifiable) {
                     if (!hasNotifiableProperty) {
                         hasNotifiableProperty = true
-                        addProperty(
-                            generateNotifiableProperty(propertyDeclaration, type),
-                        )
+                        addProperty(generateNotifiableProperty(propertyDeclaration, type))
+                        addProperty(generateIsNotifyingProperty(type))
                     } else {
                         logOnlyOneProperty(Notifiable::class, Indicatable::class)
                     }
@@ -408,10 +428,48 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 }
 
                 GenerationType.Type.SIMULATOR -> {
-                    initializer(propertyDeclaration.simpleName.asString())
+                    // Expose the backing flow wrapped with onStart/onCompletion so _isNotifying
+                    // reflects whether there is an active collector.
+                    getter(
+                        FunSpec.getterBuilder()
+                            .addStatement(
+                                "$RETURN _%L.%M { _isNotifying.value = true }.%M { _isNotifying.value = false }",
+                                propertyDeclaration.simpleName.asString(),
+                                References.KotlinX.Coroutines.Flow.onStart,
+                                References.KotlinX.Coroutines.Flow.onCompletion,
+                            )
+                            .build(),
+                    )
                 }
             }
         }.build()
+
+    private fun generateIsNotifyingProperty(type: GenerationType.Type): PropertySpec =
+        PropertySpec.builder(
+            "isNotifying",
+            References.KotlinX.Coroutines.Flow.flow.parameterizedBy(BOOLEAN),
+        ).addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                when (type) {
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
+
+                    GenerationType.Type.BLUETOOTH -> {
+                        getter(
+                            FunSpec.getterBuilder()
+                                .addStatement("$RETURN $CHARACTERISTIC.isNotifying")
+                                .build(),
+                        )
+                    }
+
+                    GenerationType.Type.SIMULATOR -> {
+                        getter(
+                            FunSpec.getterBuilder()
+                                .addStatement("$RETURN _isNotifying")
+                                .build(),
+                        )
+                    }
+                }
+            }.build()
 
     private fun generateDescriptorProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
         PropertySpec.builder(

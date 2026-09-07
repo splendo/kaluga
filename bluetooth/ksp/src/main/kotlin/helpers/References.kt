@@ -168,6 +168,7 @@ object References {
                 val distinctUntilChanged = memberName("distinctUntilChanged")
                 val collect = memberName("collect")
                 val update = memberName("update")
+                val onStart = memberName("onStart")
                 val onCompletion = memberName("onCompletion")
                 val emptyFlow = memberName("emptyFlow")
             }
