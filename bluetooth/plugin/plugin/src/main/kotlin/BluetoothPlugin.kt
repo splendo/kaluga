@@ -54,6 +54,7 @@ class BluetoothPlugin : Plugin<Project> {
         plugins.apply(KspGradleSubplugin::class)
 
         val kalugaVersion = BluetoothPluginVersion.kalugaVersion
+        val coroutinesVersion = BluetoothPluginVersion.coroutinesVersion
 
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
@@ -108,6 +109,13 @@ class BluetoothPlugin : Plugin<Project> {
                         // core is api: generated interfaces expose Flow, Identifier, GattResponse etc.
                         // from bluetooth:core in their public signatures, making them visible to consumers.
                         api("com.splendo.kaluga.bluetooth:core:$kalugaVersion")
+                        // Generated Bluetooth class bodies directly call kotlinx.coroutines.flow operators
+                        // (Flow<T>, map, flatMapLatest, firstOrNull, flowOf). bluetooth:core exposes these
+                        // via its own api dep, but that only takes effect once bluetooth:core is rebuilt.
+                        // Declaring it here too makes it available immediately regardless of build cache.
+                        // Gradle's conflict resolution picks the highest declared version, so user-declared
+                        // upgrades (e.g. a bugfix release) are honoured automatically.
+                        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                         if (generatesImplementation && BluetoothTarget.CLIENT in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:client:$kalugaVersion")
                         }
@@ -219,14 +227,19 @@ internal class CommonSourceArgumentProvider(
 }
 
 object BluetoothPluginVersion {
-    val kalugaVersion: String by lazy {
+    private val properties: Properties by lazy {
         BluetoothPluginVersion::class.java
             .classLoader
             .getResourceAsStream("bluetooth.properties")
-            ?.use {
-                Properties().apply { load(it) }
-            }
-            ?.getProperty("kalugaVersion")
-            ?: error("Bluetooth plugin version not found")
+            ?.use { Properties().apply { load(it) } }
+            ?: error("Bluetooth plugin properties not found")
+    }
+
+    val kalugaVersion: String by lazy {
+        properties.getProperty("kalugaVersion") ?: error("kalugaVersion not found in bluetooth.properties")
+    }
+
+    val coroutinesVersion: String by lazy {
+        properties.getProperty("coroutinesVersion") ?: error("coroutinesVersion not found in bluetooth.properties")
     }
 }

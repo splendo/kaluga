@@ -34,7 +34,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.IT
 import com.splendo.kaluga.bluetooth.ksp.helpers.LET
-import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.OR_NULL
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
@@ -89,7 +88,6 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                             ParameterSpec(DESCRIPTOR, References.Bluetooth.remoteDescriptor),
                             ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
                         ),
-
                     )
                     .build(),
             )
@@ -111,8 +109,11 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
             .build()
     }
 
-    private fun generateBluetoothCompanionObject(needsFormatter: NeedsFormatterHelper.NeedsFormatter, className: ClassName, interfaceName: ClassName): TypeSpec =
-        TypeSpec.companionObjectBuilder()
+    private fun generateBluetoothCompanionObject(
+        needsFormatter: NeedsFormatterHelper.NeedsFormatter,
+        className: ClassName,
+        interfaceName: ClassName
+    ): TypeSpec = TypeSpec.companionObjectBuilder()
             .addFunction(
                 FunSpec.builder(FROM_CHARACTERISTIC)
                     .addParameters(

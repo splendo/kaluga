@@ -99,12 +99,14 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
 
     override val needsNamedCompanion: Boolean get() = true
 
-    override fun factoryFor(generationType: GenerationType): FunSpec? = when (generationType) {
-        GenerationType.SERVER_BLUETOOTH -> generateBluetoothFactory()
-        GenerationType.SERVER_SIMULATOR -> generateSimulatorFactory()
-        GenerationType.SERVER_MOCK -> generateMockFactory()
-        else -> null
-    }
+    override fun factoryFor(generationType: GenerationType): List<FunSpec> = listOfNotNull(
+        when (generationType) {
+            GenerationType.SERVER_BLUETOOTH -> generateBluetoothFactory()
+            GenerationType.SERVER_SIMULATOR -> generateSimulatorFactory()
+            GenerationType.SERVER_MOCK -> generateMockFactory()
+            else -> null
+        },
+    )
 
     private fun generateMockFactory(): FunSpec = FunSpec.builder(MOCK).apply {
         val returnType = nameFor(declaration, GenerationType.SERVER_MOCK)

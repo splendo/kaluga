@@ -421,6 +421,10 @@ fun ConnectableDevice.discoveredServices() = filterDiscovering().mapNotNull { di
     discoveredState?.services
 }.distinctUntilChanged()
 
+fun Flow<ConnectableDevice?>.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
+
+fun ConnectableDevice.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
+
 /**
  * Attempts to connect to the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * When this method completes, the devices should be in a [ConnectableDeviceState.Connected] state
