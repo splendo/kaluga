@@ -32,6 +32,11 @@ import com.splendo.kaluga.base.bytes.toInt40
 import com.splendo.kaluga.base.bytes.toInt48
 import com.splendo.kaluga.base.bytes.toUInt40
 import com.splendo.kaluga.base.bytes.toUInt48
+import com.splendo.kaluga.base.decimal.Decimal
+import com.splendo.kaluga.base.decimal.div
+import com.splendo.kaluga.base.decimal.times
+import com.splendo.kaluga.base.decimal.toDecimal
+import com.splendo.kaluga.base.decimal.toInt
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.invoke
@@ -2170,6 +2175,146 @@ class BluetoothFormatTest {
         val bytes = BluetoothFormat.encodeToByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), value)
         assertTrue(bytes.contentEquals(byteArrayOf(0xAA.toByte(), 0x04, 0x03, 0x02, 0x01, 0xBB.toByte())), bytes.toHexString(separator = " "))
         assertEquals(value, BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), bytes))
+    }
+
+    @Test
+    fun encodeRange() {
+        // 8-bit: 0x00 = min, 0xFF = max
+        @Serializable
+        data class EightBit(
+            @Range(0.0, 100.0) @Size(Length.`8_BIT`) val percent: Double,
+        )
+
+        validateEncoding(EightBit(0.0),   buildByteArray { add(0x00.toByte()) })
+        validateEncoding(EightBit(100.0), buildByteArray { add(0xFF.toByte()) })
+
+        // Intermediate: round((75 / 100) × 255) = round(191.25) = 191
+        val encoded8 = BluetoothFormat.encodeToByteArray(EightBit.serializer(), EightBit(75.0))
+        assertEquals(191.toByte(), encoded8[0])
+        // Round-trip: 191 / 255 × 100 ≈ 74.9%
+        val decoded8 = BluetoothFormat.decodeFromByteArray(EightBit.serializer(), encoded8)
+        assertTrue(decoded8.percent in 74.9..75.1, "expected ~75 %, got ${decoded8.percent}")
+
+        // 16-bit: 0x0000 = min, 0xFFFF = max
+        @Serializable
+        data class SixteenBit(
+            @Range(0.0, 100.0) @Size(Length.`16_BIT`) val percent: Double,
+        )
+
+        validateEncoding(SixteenBit(0.0),   buildByteArray { add(uShort = 0u) })
+        validateEncoding(SixteenBit(100.0), buildByteArray { add(uShort = 65535u) })
+
+        // Body field before the range field; verifies byte layout is [rangeByte][other]
+        @Serializable
+        data class WithHeader(
+            val header: Byte,
+            @Range(0.0, 1.0) @Size(Length.`8_BIT`) val fraction: Double,
+        )
+
+        validateEncoding(
+            WithHeader(0x42, 1.0),
+            buildByteArray { add(0x42.toByte()); add(0xFF.toByte()) },
+        )
+
+        // Custom min/max range (temperature −40 °C … +85 °C encoded as unsigned byte)
+        @Serializable
+        data class Temperature(
+            @Range(-40.0, 85.0) @Size(Length.`8_BIT`) val celsius: Double,
+        )
+
+        validateEncoding(Temperature(-40.0), buildByteArray { add(0x00.toByte()) })
+        validateEncoding(Temperature(85.0),  buildByteArray { add(0xFF.toByte()) })
+    }
+
+    @Test
+    fun encodeFlagIndexedLengthList() {
+        @Serializable
+        data class Item(val a: Byte, val b: Byte)
+
+        // 16-bit count in flag header (@LengthPrefix(lengthAsShort=true) + @FlagIndex(0)):
+        //   wire layout: [0-1]=count(UShort LE in flag header) [2]=headerByte [3..]=items×2B
+        // The flag header holds the list count; the body begins with headerByte, then item data.
+        @Serializable
+        data class ContainerShort(
+            val headerByte: Byte,
+            @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>,
+        )
+
+        validateEncoding(
+            ContainerShort(0x42, listOf(Item(0x0A, 0x0B), Item(0x0C, 0x0D), Item(0x0E, 0x0F))),
+            buildByteArray {
+                // flag header: 16 bits encoding count=3, LSB-first → 0x03 0x00
+                add(uShort = 3u)
+                // body: headerByte
+                add(0x42.toByte())
+                // items
+                add(0x0A.toByte()); add(0x0B.toByte())
+                add(0x0C.toByte()); add(0x0D.toByte())
+                add(0x0E.toByte()); add(0x0F.toByte())
+            },
+        )
+
+        // Empty list: count=0 in flag header, body field still present, no item bytes
+        validateEncoding(
+            ContainerShort(0x99.toByte(), emptyList()),
+            buildByteArray {
+                add(uShort = 0u)     // count = 0
+                add(0x99.toByte())   // headerByte
+            },
+        )
+
+        // Large count (>255) to exercise the full 16-bit range
+        val largeList = MutableList(300) { Item(it.toByte(), (it + 1).toByte()) }
+        val largeEncoded = buildByteArray {
+            add(uShort = 300u)       // 0x2C 0x01
+            add(0x01.toByte())       // headerByte
+            largeList.forEach { add(it.a); add(it.b) }
+        }
+        validateEncoding(ContainerShort(0x01, largeList), largeEncoded)
+
+        // 8-bit count in flag header (@LengthPrefix default + @FlagIndex(0)):
+        //   wire layout: [0]=count(UByte in flag header) [1]=extra [2..]=items×2B
+        @Serializable
+        data class ContainerByte(
+            val extra: Byte,
+            @LengthPrefix @FlagIndex(0) val items: List<Item>,
+        )
+
+        validateEncoding(
+            ContainerByte(0x55, listOf(Item(0x01, 0x02), Item(0x03, 0x04))),
+            buildByteArray {
+                // flag header: 8 bits encoding count=2
+                add(uByte = 2u)
+                // body: extra
+                add(0x55.toByte())
+                // items
+                add(0x01.toByte()); add(0x02.toByte())
+                add(0x03.toByte()); add(0x04.toByte())
+            },
+        )
+
+        // Multiple flag-consuming fields alongside the flag-indexed list:
+        //   contactPresent is a nullable Bool at bit 16; items count occupies bits 0-15
+        @Serializable
+        data class ContainerWithSiblingFlag(
+            @FlagIndex(16) val contactPresent: Boolean?,
+            @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>,
+        )
+
+        validateEncoding(
+            ContainerWithSiblingFlag(true, listOf(Item(0xAB.toByte(), 0xCD.toByte()))),
+            buildByteArray {
+                // flag header: 3 bytes (bits 0-23)
+                // bits 0-15: count=1 → 0x01, 0x00
+                // bit 16: nullable present=true → set; bit 17: value=true → set
+                // byte0=0x01, byte1=0x00, byte2=0b00000011=0x03
+                add(uByte = 1u)
+                add(uByte = 0u)
+                add(0b00000011.toByte())
+                // items
+                add(0xAB.toByte()); add(0xCD.toByte())
+            },
+        )
     }
 
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure

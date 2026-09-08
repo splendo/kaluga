@@ -142,6 +142,23 @@ internal data class BluetoothBinaryDescriptor(
                 require((supportedLengths - setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "MedFloat only supports 16 and 32 bit encoding" }
             }
         }
+
+        /**
+         * Encoding as a proportional mapping across the full unsigned range of the wire integer.
+         * `wire = round((value − min) / (max − min) × maxWireValue)` where `maxWireValue = 2^bits − 1`.
+         * Exactly one [Length] must be supplied via [@Size][Size].
+         * @property supportedLengths must contain exactly one entry, giving the wire bit-width.
+         * @property min decoded value for wire = 0
+         * @property max decoded value for wire = maxWireValue
+         */
+        data class RangeEncoded(override val supportedLengths: Set<Length>, val min: Double, val max: Double) : NumericSettings() {
+            init {
+                require(supportedLengths.size == 1) { "@Range requires exactly one @Size, got $supportedLengths" }
+                require(max > min) { "@Range max ($max) must be greater than min ($min)" }
+            }
+            val length: Length get() = supportedLengths.first()
+            val maxWireValue: Long get() = (1L shl (length.bytes * Byte.SIZE_BITS)) - 1L
+        }
     }
 
     /**
@@ -165,6 +182,19 @@ internal data class BluetoothBinaryDescriptor(
         data class NumericLength(val supportedLengths: Set<Length>) : LengthMarking() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
+            }
+        }
+        /**
+         * The collection count is packed into [bits] bits of the parent structure's flag header,
+         * starting at the collection property's own [BluetoothBinaryDescriptor.bitIndex].
+         * Produced when [@LengthPrefix][LengthPrefix] and [@FlagIndex][FlagIndex] are combined on
+         * a List or Map: [bits] is 8 for [ByteLength][StringEncodingSettings.LengthPrefix.ByteLength]
+         * and 16 for [ShortLength][StringEncodingSettings.LengthPrefix.ShortLength].
+         * No count bytes are written to the body; the list data follows the other body fields directly.
+         */
+        data class FlagIndexedLength(val bits: Int) : LengthMarking() {
+            init {
+                require(bits in 1..32) { "FlagIndexedLength bit width must be 1..32, was $bits" }
             }
         }
     }
@@ -525,7 +555,10 @@ internal object BluetoothBinaryDescriptorRegistry {
         PrimitiveKind.FLOAT,
         -> {
             desiredFlagBitWidth.raise(supportedLengths.sizingWidth())
-            if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
+            if (annotations.filterIsInstance<Range>().isNotEmpty()) {
+                val range = annotations.filterIsInstance<Range>().first()
+                BluetoothBinaryDescriptor.NumericSettings.RangeEncoded(supportedLengths, range.min, range.max)
+            } else if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
                 BluetoothBinaryDescriptor.NumericSettings.MedFloat(supportedLengths)
             } else if (annotations.filterIsInstance<Scalar>().isNotEmpty()) {
                 val scalar = annotations.filterIsInstance<Scalar>().first()
@@ -596,9 +629,18 @@ internal object BluetoothBinaryDescriptorRegistry {
 
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
-                        BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix(
-                            lengthPrefix.asLengthPrefix(),
-                        )
+                        if (annotations.filterIsInstance<FlagIndex>().isNotEmpty()) {
+                            // @LengthPrefix + @FlagIndex: pack the count into the parent's flag header
+                            // instead of writing count bytes into the body. The bit width is 8 for
+                            // ByteLength (default) and 16 for ShortLength; WithOverflow falls back to 16.
+                            val bits = if (lengthPrefix.lengthAsShort || lengthPrefix.canOverflow) Short.SIZE_BITS else Byte.SIZE_BITS
+                            desiredFlagBitWidth.raise(bits)
+                            BluetoothBinaryDescriptor.CollectionSettings.FlagIndexedLength(bits)
+                        } else {
+                            BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix(
+                                lengthPrefix.asLengthPrefix(),
+                            )
+                        }
                     }
 
                     annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.Unmarked

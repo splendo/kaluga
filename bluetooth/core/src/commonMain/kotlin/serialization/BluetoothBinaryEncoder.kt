@@ -99,6 +99,15 @@ internal class BluetoothBinaryEncoder(
                     )
                 }
 
+            is BluetoothBinaryDescriptor.CollectionSettings.FlagIndexedLength -> {
+                // Pack the count into the parent's flag header at the collection's bitIndex,
+                // least-significant bit first (mirrors how flag-indexed integers and enum ordinals work).
+                val raw = collectionSize.toLong()
+                for (bit in 0 until lengthMarking.bits) {
+                    builder.addFlag(binaryDescriptor.bitIndex + bit, (raw shr bit) and 1L == 1L)
+                }
+            }
+
             is BluetoothBinaryDescriptor.CollectionSettings.Unmarked -> {}
 
             is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> {}
@@ -416,6 +425,12 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
             }
         }
 
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> {
+            val ratio = (value.toDouble() - settings.min) / (settings.max - settings.min)
+            val wireValue = round(ratio * settings.maxWireValue)
+            encodeNumericElement(wireValue, binaryDescriptor, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, false))
+        }
+
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> {
             // Calculate scaled value and store it as a natural number. The scaled value is meant to be
             // integral; round to the nearest integer rather than letting the downstream `toByte()`/etc.
@@ -477,6 +492,7 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
 private val BluetoothBinaryDescriptor.isUnsigned: Boolean get() = when (numericSettings) {
     is BluetoothBinaryDescriptor.NumericSettings.Natural -> !numericSettings.signed
     is BluetoothBinaryDescriptor.NumericSettings.Scalar -> !numericSettings.signed
+    is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> false
     is BluetoothBinaryDescriptor.NumericSettings.Decimal -> false
     is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> false
     null -> false

@@ -52,6 +52,10 @@ annotation class Postfix(val value: ByteArray)
  * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
  * If applied to an enum, its ordinal is stored in the flags starting at [index], across enough bits for all its
  * cases (i.e. `ceil(log2(caseCount))`) unless a wider [FlagWidth] is given.
+ * If applied to an integer with [@FlagWidth][FlagWidth] but no [@Size][Size], the integer value is packed
+ * directly into the flag bits (sub-byte numeric subfield).
+ * If applied to a List/Map together with [@LengthPrefix][LengthPrefix], the element count is packed into
+ * the flag header bits starting at [index] (8 bits for byte-length, 16 bits for short-length).
  *
  * If the index was already claimed by another property a [FlagIndexException] may be thrown.
  *
@@ -109,8 +113,16 @@ annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FI
  * Similar encoding will be used to add a length to a List/Map.
  * Defaults to [StringEncodingSettings.LengthPrefix.ByteLength]
  *
- * @property lengthAsShort if `true` will use [StringEncodingSettings.LengthPrefix.ShortLength]
- * @property canOverflow if `true` will use [StringEncodingSettings.LengthPrefix.WithOverflow]
+ * **Combined with [@FlagIndex][FlagIndex] on a List/Map**: instead of writing count bytes into the body,
+ * the element count is packed into the parent structure's flag header at the bit position given by
+ * [@FlagIndex][FlagIndex]. The bit width is 8 for the default [ByteLength][StringEncodingSettings.LengthPrefix.ByteLength]
+ * or 16 for [ShortLength][StringEncodingSettings.LengthPrefix.ShortLength]. This lets the count
+ * occupy flag-header bytes that are laid out before the body fields — useful when the wire format
+ * places the count before unrelated body fields that precede the list data (e.g. a packet header
+ * that has [count][2B] [otherField][4B] [anotherField][4B] [items…]).
+ *
+ * @property lengthAsShort if `true` will use [StringEncodingSettings.LengthPrefix.ShortLength] (16-bit count)
+ * @property canOverflow if `true` will use [StringEncodingSettings.LengthPrefix.WithOverflow] (also 16-bit when combined with [@FlagIndex][FlagIndex])
  * @property sentinel the [Byte] to use as the sentinel for [StringEncodingSettings.LengthPrefix.WithOverflow]
  */
 @OptIn(ExperimentalSerializationApi::class)
@@ -176,6 +188,30 @@ annotation class Unsigned
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, val binaryExponent: Int = 0, val offset: Int = 0)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a numeric (Float or Double) field, encodes the value as a proportional mapping
+ * across the full unsigned range of the wire integer:
+ *   `wire = round((value − min) / (max − min) × (2^bits − 1))`
+ *   `value = wire / (2^bits − 1) × (max − min) + min`
+ *
+ * Use [@Size][Size] to control the wire bit-width (defaults to the field type's natural size).
+ * A single [@Size][Size] is required; multiple sizes are not supported.
+ *
+ * Example — 16-bit full-range humidity (0x0000 = 0 %, 0xFFFF = 100 %):
+ * ```kotlin
+ * @Range(0.0, 100.0) @Size(Length.`16_BIT`) val percent: Double
+ * ```
+ *
+ * @property min the decoded value corresponding to a wire value of 0x00…0
+ * @property max the decoded value corresponding to the maximum wire value (0xFF…F for the given bit-width)
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Range(val min: Double = 0.0, val max: Double = 1.0)
 
 /**
  * Annotation added for serializing using [BluetoothFormat]

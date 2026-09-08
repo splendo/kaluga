@@ -166,6 +166,14 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
                     binaryDescriptor.decodeNaturalNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(lengthMarking.supportedLengths, false)).toInt()
                 }
 
+                is BluetoothBinaryDescriptor.CollectionSettings.FlagIndexedLength -> {
+                    // Count is packed in the parent's flag header at the collection's bitIndex,
+                    // least-significant bit first (mirrors the encoder).
+                    (0 until lengthMarking.bits).fold(0) { acc, bit ->
+                        if (decoder.flags[binaryDescriptor.bitIndex + bit]) acc or (1 shl bit) else acc
+                    }
+                }
+
                 // For NullTerminated or Unmarked, the length is unknown when decoding starts
                 is BluetoothBinaryDescriptor.CollectionSettings.Unmarked -> -1
 
@@ -339,6 +347,11 @@ internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: Blue
     }
 }
 
+internal fun BluetoothBinaryDescriptor.decodeRangeNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.RangeEncoded): Double {
+    val rawValue = decodeNaturalNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, false))
+    return rawValue.toDouble() / settings.maxWireValue * (settings.max - settings.min) + settings.min
+}
+
 internal fun BluetoothBinaryDescriptor.decodeScalarNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.Scalar): Double {
     val decoded = decodeNaturalNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, settings.signed))
     val double = if (settings.signed) {
@@ -409,6 +422,8 @@ internal fun BluetoothBinaryDescriptor.decodeByteElement(decoder: BluetoothBinar
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toByte()
 
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toByte()
+
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toByte()
     }
 }
 
@@ -426,6 +441,8 @@ internal fun BluetoothBinaryDescriptor.decodeShortElement(decoder: BluetoothBina
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toShort()
 
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toShort()
+
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toShort()
     }
 }
 
@@ -443,6 +460,8 @@ internal fun BluetoothBinaryDescriptor.decodeIntElement(decoder: BluetoothBinary
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt()
 
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt()
+
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt()
     }
 }
 
@@ -452,6 +471,7 @@ internal fun BluetoothBinaryDescriptor.decodeLongElement(decoder: BluetoothBinar
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toLong()
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toLong()
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toLong()
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toLong()
     }
 }
 
@@ -461,6 +481,7 @@ internal fun BluetoothBinaryDescriptor.decodeFloatElement(decoder: BluetoothBina
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toFloat()
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toFloat()
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toFloat()
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toFloat()
     }
 }
 
@@ -470,6 +491,7 @@ internal fun BluetoothBinaryDescriptor.decodeDoubleElement(decoder: BluetoothBin
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings)
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings)
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings)
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings)
     }
 }
 
