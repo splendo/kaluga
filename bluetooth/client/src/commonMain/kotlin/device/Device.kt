@@ -25,7 +25,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -285,8 +284,8 @@ class ConnectableDeviceImpl(
 
     private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) = when (state) {
         is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
-            is ConnectionSettings.ReconnectionSettings.Always -> state.reconnect
-
+            is ConnectionSettings.ReconnectionSettings.Always if !isIntentional -> state.reconnect
+            is ConnectionSettings.ReconnectionSettings.Always,
             is ConnectionSettings.ReconnectionSettings.Never -> {
                 onDisconnect()
                 state.didDisconnect

@@ -117,7 +117,7 @@ interface DeviceConnectionManager {
          * [Event] indicating the device did disconnect
          * @property onDisconnect the action to execute once the event has been handled
          */
-        data class Disconnected(val onDisconnect: suspend () -> Unit) : Event()
+        data class Disconnected(val isIntentional: Boolean, val onDisconnect: suspend () -> Unit) : Event()
 
         /**
          * [Event] indicating the device started discovering services
@@ -265,6 +265,8 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     private val sharedRssi = MutableSharedFlow<RSSI>(0, 1, BufferOverflow.DROP_OLDEST)
     override val rssi = sharedRssi.asSharedFlow()
 
+    private var disconnectingIntentionally: Boolean = false
+
     override suspend fun readRssi() {
         logger.stateLogger.actionLogger.debug { "Request Read RSSI" }
         requestReadRssi()
@@ -287,6 +289,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     final override fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?) {
         logger.stateLogger.stateChangeLogger.info { "Start Connecting" }
+        disconnectingIntentionally = false
         emitEvent(DeviceConnectionManager.Event.Connecting(reconnectionSettings ?: defaultReconnectionSettings))
     }
 
@@ -333,18 +336,26 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         logger.dataLogger[wrapper.uuid],
     )
 
+    final override fun disconnect() {
+        disconnectingIntentionally = true
+        intentionalDisconnect()
+    }
+
+    protected abstract fun intentionalDisconnect()
+
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = this.currentAction
         currentAction?.fail()
         val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
+            disconnectingIntentionally = false
             this.currentAction = null
             notifyingCharacteristics.clear()
             onDisconnect?.invoke()
             Unit
         }
         logger.stateLogger.stateChangeLogger.info { "Did Disconnect" }
-        emitEvent(DeviceConnectionManager.Event.Disconnected(clean))
+        emitEvent(DeviceConnectionManager.Event.Disconnected(disconnectingIntentionally, clean))
     }
 
     override fun requestMtu(mtu: MTU): DeviceAction.RequestMtu {
@@ -460,7 +471,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
 internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager {
     override fun connect()
-    override fun disconnect()
+    override fun intentionalDisconnect()
     override fun getCurrentState(): DeviceConnectionManager.State
     override suspend fun discoverServices()
     override suspend fun requestReadRssi()
