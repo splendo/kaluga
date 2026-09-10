@@ -2317,6 +2317,109 @@ class BluetoothFormatTest {
         )
     }
 
+    // ── @Reserved ─────────────────────────────────────────────────────────────
+
+    @Test
+    fun reservedBytesAfter() {
+        // Two reserved bytes appended after the last field (trailing padding).
+        @Serializable
+        data class Packet(
+            @Size(Length.`8_BIT`) @Unsigned val a: Int,
+            @Reserved(after = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int,
+        )
+
+        validateEncoding(
+            Packet(0x01, 0x02),
+            byteArrayOf(
+                0x01,               // a
+                0x02,               // b
+                0x00, 0x00,         // 2 reserved bytes after b
+            ),
+        )
+    }
+
+    @Test
+    fun reservedBytesBefore() {
+        // Two reserved bytes before the second field (mid-packet padding).
+        @Serializable
+        data class Packet(
+            @Size(Length.`8_BIT`) @Unsigned val a: Int,
+            @Reserved(before = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int,
+        )
+
+        validateEncoding(
+            Packet(0x01, 0x02),
+            byteArrayOf(
+                0x01,               // a
+                0x00, 0x00,         // 2 reserved bytes before b
+                0x02,               // b
+            ),
+        )
+    }
+
+    @Test
+    fun reservedBytesBeforeAndAfter() {
+        // Both before and after — mirrors the VO2Master gas-exchange layout:
+        //   [feO2 (2B)] [reserved (2B)] [vo2 (2B)] [reserved (2B)]
+        @Serializable
+        data class GasExchange(
+            @Size(Length.`16_BIT`) @Unsigned val feO2: Int,
+            @Reserved(before = 2, after = 2) @Size(Length.`16_BIT`) @Unsigned val vo2: Int,
+        )
+
+        validateEncoding(
+            GasExchange(feO2 = 0x1600, vo2 = 0x0258),
+            byteArrayOf(
+                0x00, 0x16,         // feO2 (LE)
+                0x00, 0x00,         // 2 reserved before vo2
+                0x58, 0x02,         // vo2 (LE)
+                0x00, 0x00,         // 2 reserved after vo2
+            ),
+        )
+    }
+
+    @Test
+    fun reservedBytesDecodeIgnoresContent() {
+        // On decode, non-zero reserved bytes are silently discarded — no exception.
+        @Serializable
+        data class Packet(
+            @Size(Length.`8_BIT`) @Unsigned val a: Int,
+            @Reserved(before = 1, after = 1) @Size(Length.`8_BIT`) @Unsigned val b: Int,
+        )
+
+        val serializer = Packet.serializer()
+        val bytes = byteArrayOf(
+            0x0A,       // a
+            0xFF.toByte(), // reserved before b — garbage, should be ignored
+            0x0B,       // b
+            0xDE.toByte(), // reserved after b — garbage, should be ignored
+        )
+        assertEquals(Packet(0x0A, 0x0B), BluetoothFormat.decodeFromByteArray(serializer, bytes))
+    }
+
+    @Test
+    fun reservedBytesMultipleFields() {
+        // Reserved padding around each of several fields.
+        @Serializable
+        data class Packet(
+            @Reserved(after = 1) @Size(Length.`8_BIT`) @Unsigned val x: Int,
+            @Reserved(before = 1, after = 2) @Size(Length.`8_BIT`) @Unsigned val y: Int,
+            @Size(Length.`8_BIT`) @Unsigned val z: Int,
+        )
+
+        validateEncoding(
+            Packet(x = 0x01, y = 0x02, z = 0x03),
+            byteArrayOf(
+                0x01,               // x
+                0x00,               // 1 reserved after x
+                0x00,               // 1 reserved before y
+                0x02,               // y
+                0x00, 0x00,         // 2 reserved after y
+                0x03,               // z
+            ),
+        )
+    }
+
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
     // cannot legally be nested inside a LEAST_SIGNIFICANT_FIRST one (InvalidByteOrderException).
     private fun <T> validateRoundTrip(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {

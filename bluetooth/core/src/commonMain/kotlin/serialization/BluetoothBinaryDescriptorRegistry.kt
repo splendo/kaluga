@@ -54,6 +54,9 @@ internal data class BluetoothBinaryDescriptor(
     val sizePolymorphicMap: Map<Int, String> = emptyMap(),
     // Optional catch-all used when no fixed-size entry matches — allows one variable-size subtype.
     val sizePolymorphicFallback: String? = null,
+    // Reserved (padding) bytes to silently skip/write around this property on the wire.
+    val reservedBefore: Int = 0,
+    val reservedAfter: Int = 0,
 ) {
 
     /**
@@ -375,7 +378,8 @@ internal object BluetoothBinaryDescriptorRegistry {
             val elementName = descriptor.getElementName(i)
             val elementAnnotations = descriptor.getElementAnnotations(i)
             val elementDescriptor = descriptor.getElementDescriptor(i)
-            getDescriptor(
+            val reserved = elementAnnotations.filterIsInstance<Reserved>().firstOrNull()
+            val child = getDescriptor(
                 elementDescriptor,
                 elementName,
                 i,
@@ -393,6 +397,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                     nextBit++
                 }
             }
+            if (reserved != null) child.copy(reservedBefore = reserved.before, reservedAfter = reserved.after) else child
         }
     }
 

@@ -48,6 +48,23 @@ annotation class Postfix(val value: ByteArray)
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
+ * When applied to a property, [before] reserved (padding) bytes are silently skipped before decoding this
+ * property and zero-filled bytes are written before encoding it; [after] bytes are skipped/written after it.
+ *
+ * Use this for Bluetooth profiles that include reserved or padding bytes that carry no information.
+ * Unlike [@Postfix][Postfix], `@Reserved` does **not** validate the byte values on decode — any content is silently discarded.
+ *
+ * @property before number of reserved bytes immediately before this property in the wire format
+ * @property after number of reserved bytes immediately after this property in the wire format
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Reserved(val before: Int = 0, val after: Int = 0)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
  * When applied, the position of the header flag(s) to be used for storing headers will be set to [index].
  * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
  * If applied to an enum, its ordinal is stored in the flags starting at [index], across enough bits for all its

@@ -242,33 +242,49 @@ private class BluetoothBinaryCompositeEncoder(
     private val getBinaryDescriptor: (Int) -> BluetoothBinaryDescriptor,
 ) : CompositeEncoder {
 
-    override fun encodeBooleanElement(descriptor: SerialDescriptor, index: Int, value: Boolean) {
+    private fun BinaryBuilder.writeReservedBytes(count: Int) {
+        if (count > 0) addAction(count) { add(bytes = ByteArray(count)) }
+    }
+
+    private inline fun withReserved(index: Int, block: () -> Unit) {
+        val desc = getBinaryDescriptor(index)
+        builder.writeReservedBytes(desc.reservedBefore)
+        block()
+        builder.writeReservedBytes(desc.reservedAfter)
+    }
+
+    override fun encodeBooleanElement(descriptor: SerialDescriptor, index: Int, value: Boolean) = withReserved(index) {
         builder.encodeBooleanElement(value, getBinaryDescriptor(index))
     }
 
-    override fun encodeByteElement(descriptor: SerialDescriptor, index: Int, value: Byte) {
+    override fun encodeByteElement(descriptor: SerialDescriptor, index: Int, value: Byte) = withReserved(index) {
         builder.encodeByteElement(value, getBinaryDescriptor(index))
     }
 
-    override fun encodeCharElement(descriptor: SerialDescriptor, index: Int, value: Char) {
+    override fun encodeCharElement(descriptor: SerialDescriptor, index: Int, value: Char) = withReserved(index) {
         builder.encodeCharElement(value, getBinaryDescriptor(index))
     }
 
-    override fun encodeDoubleElement(descriptor: SerialDescriptor, index: Int, value: Double) {
+    override fun encodeDoubleElement(descriptor: SerialDescriptor, index: Int, value: Double) = withReserved(index) {
         builder.encodeDoubleElement(value, getBinaryDescriptor(index))
     }
 
-    override fun encodeFloatElement(descriptor: SerialDescriptor, index: Int, value: Float) {
+    override fun encodeFloatElement(descriptor: SerialDescriptor, index: Int, value: Float) = withReserved(index) {
         builder.encodeFloatElement(value, getBinaryDescriptor(index))
     }
 
-    override fun encodeInlineElement(descriptor: SerialDescriptor, index: Int): Encoder = BluetoothBinaryEncoder(getBinaryDescriptor(index), builder, serializersModule)
+    override fun encodeInlineElement(descriptor: SerialDescriptor, index: Int): Encoder {
+        val desc = getBinaryDescriptor(index)
+        builder.writeReservedBytes(desc.reservedBefore)
+        // reservedAfter for inline elements is written by the nested encoder finishing
+        return BluetoothBinaryEncoder(desc, builder, serializersModule)
+    }
 
-    override fun encodeIntElement(descriptor: SerialDescriptor, index: Int, value: Int) {
+    override fun encodeIntElement(descriptor: SerialDescriptor, index: Int, value: Int) = withReserved(index) {
         builder.encodeIntElement(value, getBinaryDescriptor(index))
     }
 
-    override fun encodeLongElement(descriptor: SerialDescriptor, index: Int, value: Long) {
+    override fun encodeLongElement(descriptor: SerialDescriptor, index: Int, value: Long) = withReserved(index) {
         builder.encodeLongElement(value, getBinaryDescriptor(index))
     }
 
@@ -280,7 +296,7 @@ private class BluetoothBinaryCompositeEncoder(
         }
     }
 
-    override fun <T> encodeSerializableElement(descriptor: SerialDescriptor, index: Int, serializer: SerializationStrategy<T>, value: T) {
+    override fun <T> encodeSerializableElement(descriptor: SerialDescriptor, index: Int, serializer: SerializationStrategy<T>, value: T) = withReserved(index) {
         when (descriptor.kind) {
             is PolymorphicKind.SEALED -> {
                 val binaryDescriptor = getBinaryDescriptor(index).children.first { binaryDescriptor ->
@@ -301,7 +317,7 @@ private class BluetoothBinaryCompositeEncoder(
         }
     }
 
-    override fun encodeShortElement(descriptor: SerialDescriptor, index: Int, value: Short) {
+    override fun encodeShortElement(descriptor: SerialDescriptor, index: Int, value: Short) = withReserved(index) {
         builder.encodeShortElement(value, getBinaryDescriptor(index))
     }
 
@@ -318,7 +334,7 @@ private class BluetoothBinaryCompositeEncoder(
                 }
             } ?: throw IllegalStateException("Polymorphic class for $value has not been annotated with SerializedByteValue")
         } else {
-            builder.encodeStringElement(value, getBinaryDescriptor(index))
+            withReserved(index) { builder.encodeStringElement(value, getBinaryDescriptor(index)) }
         }
     }
 

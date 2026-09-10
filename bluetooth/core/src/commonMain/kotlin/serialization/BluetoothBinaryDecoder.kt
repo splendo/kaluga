@@ -119,11 +119,19 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
 
         var currentIndex = 0
 
-        override fun decodeElementIndex(descriptor: SerialDescriptor): Int = if (currentIndex < binaryDescriptor.children.size) {
-            currentIndex++
-        } else {
-            DECODE_DONE
+        override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+            // Consume reservedAfter bytes for the element we just finished decoding.
+            if (currentIndex > 0) {
+                val prev = binaryDescriptor.children[currentIndex - 1]
+                if (prev.reservedAfter > 0) decoder.nextBytes(prev.reservedAfter)
+            }
+            if (currentIndex >= binaryDescriptor.children.size) return DECODE_DONE
+            // Consume reservedBefore bytes for the element we are about to decode.
+            val child = binaryDescriptor.children[currentIndex]
+            if (child.reservedBefore > 0) decoder.nextBytes(child.reservedBefore)
+            return currentIndex++
         }
+
         override fun binaryDescriptorAtIndex(index: Int): BluetoothBinaryDescriptor = binaryDescriptor.children[index]
 
         override fun endStructure(descriptor: SerialDescriptor) {
