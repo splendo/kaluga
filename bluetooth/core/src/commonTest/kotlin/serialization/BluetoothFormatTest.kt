@@ -2317,7 +2317,200 @@ class BluetoothFormatTest {
         )
     }
 
+    // ── Multi-byte @SerializedByteValue ───────────────────────────────────────
+
+    @Test
+    fun multiByteSealedDiscriminator() {
+        // 2-byte discriminators on a sealed class (e.g. LE command codes where high byte is always 0x00)
+        @Serializable
+        sealed interface TwoByteCmd
+
+        @Serializable
+        @SerializedByteValue(0x01, 0x00)
+        data class CmdA(@Size(Length.`8_BIT`) @Unsigned val param: Int) : TwoByteCmd
+
+        @Serializable
+        @SerializedByteValue(0x02, 0x00)
+        data class CmdB(@Size(Length.`16_BIT`) @Unsigned val param: Int) : TwoByteCmd
+
+        val module = SerializersModule {
+            polymorphic(TwoByteCmd::class) {
+                subclass(CmdA::class)
+                subclass(CmdB::class)
+            }
+        }
+        val format = BluetoothFormat(module)
+
+        validateRoundTrip(
+            CmdA(0x42),
+            CmdA.serializer(),
+            byteArrayOf(0x01, 0x00, 0x42),
+            format,
+        )
+        validateRoundTrip(
+            CmdB(0x0300),
+            CmdB.serializer(),
+            byteArrayOf(0x02, 0x00, 0x00, 0x03),
+            format,
+        )
+    }
+
+    @Test
+    fun multiByteEnumDiscriminator() {
+        // 2-byte discriminators on an enum; distinguishes [0x01 0x00] from [0x00 0x01] (true multi-byte)
+        @Serializable
+        enum class OpCode {
+            @SerializedByteValue(0x00, 0x01) CONNECT,
+            @SerializedByteValue(0x01, 0x00) DISCONNECT,
+        }
+
+        @Serializable
+        data class Frame(val op: OpCode)
+
+        validateEncoding(Frame(OpCode.CONNECT), byteArrayOf(0x00, 0x01))
+        validateEncoding(Frame(OpCode.DISCONNECT), byteArrayOf(0x01, 0x00))
+    }
+
+    @Test
+    fun classNameDiscriminatorsSkipLengthValidation() {
+        // Class-name discriminators naturally have different byte lengths and must NOT trigger
+        // the length-consistency check (the decoder uses forward peek, not fixed-width reads).
+        // UnmarkedSealed already exercises this: One has a shorter name than Three.
+        val container = UnmarkedSealedContainer(UnmarkedSealed.One(42))
+        val bytes = BluetoothFormat.encodeToByteArray(container)
+        val decoded = BluetoothFormat.decodeFromByteArray(UnmarkedSealedContainer.serializer(), bytes)
+        assertEquals(container, decoded)
+    }
+
+    @Test
+    fun inconsistentDiscriminatorLengthsThrows() {
+        // Mixing 1-byte and 2-byte @SerializedByteValue on the same sealed class must fail at descriptor build time
+        @Serializable
+        sealed interface BadCmd
+
+        @Serializable
+        @SerializedByteValue(0x01)
+        data class Good(@Size(Length.`8_BIT`) @Unsigned val x: Int) : BadCmd
+
+        @Serializable
+        @SerializedByteValue(0x02, 0x00)
+        data class AlsoBad(@Size(Length.`8_BIT`) @Unsigned val x: Int) : BadCmd
+
+        val module = SerializersModule {
+            polymorphic(BadCmd::class) {
+                subclass(Good::class)
+                subclass(AlsoBad::class)
+            }
+        }
+        assertFailsWith<SerializationException> {
+            BluetoothFormat(module).encodeToByteArray(Good.serializer(), Good(1))
+        }
+    }
+
+    // ── @ByOrdinal ────────────────────────────────────────────────────────────
+
+    @Test
+    fun byOrdinalZeroBased() {
+        // Default @ByOrdinal: encodes ordinal as 1-byte (ACCEPTED=0x00, REJECTED=0x01, …)
+        @Serializable
+        @ByOrdinal
+        enum class ResponseCode { ACCEPTED, REJECTED, INVALID_CRC, INVALID_STATE }
+
+        @Serializable
+        data class Packet(@Size(Length.`8_BIT`) @Unsigned val id: Int, val code: ResponseCode)
+
+        validateEncoding(Packet(0x10, ResponseCode.ACCEPTED), byteArrayOf(0x10, 0x00))
+        validateEncoding(Packet(0x10, ResponseCode.INVALID_STATE), byteArrayOf(0x10, 0x03))
+    }
+
+    @Test
+    fun byOrdinalWithOffset() {
+        // offset = 1: first variant → 0x01, second → 0x02, …
+        @Serializable
+        @ByOrdinal(offset = 1)
+        enum class UserPiece { MEDIUM, LARGE, RMR }
+
+        @Serializable
+        data class Packet(val piece: UserPiece)
+
+        validateEncoding(Packet(UserPiece.MEDIUM), byteArrayOf(0x01))
+        validateEncoding(Packet(UserPiece.LARGE), byteArrayOf(0x02))
+        validateEncoding(Packet(UserPiece.RMR), byteArrayOf(0x03))
+    }
+
+    @Test
+    fun byOrdinalTwoByte() {
+        // size = 16_BIT: ordinals encoded as 2-byte LE UShort (with default byteOrder)
+        @Serializable
+        @ByOrdinal(size = Length.`16_BIT`)
+        enum class State { NONE, INITIALIZING, IDLE, MEASUREMENT, ERROR }
+
+        @Serializable
+        data class Packet(val state: State)
+
+        // NONE=0 → [0x00 0x00], IDLE=2 → [0x02 0x00] (LE)
+        validateEncoding(Packet(State.NONE), byteArrayOf(0x00, 0x00))
+        validateEncoding(Packet(State.IDLE), byteArrayOf(0x02, 0x00))
+        validateEncoding(Packet(State.ERROR), byteArrayOf(0x04, 0x00))
+    }
+
+    @Test
+    fun byOrdinalPerVariantOverride() {
+        // A per-variant @SerializedByteValue takes precedence over @ByOrdinal for that specific entry.
+        // Useful when one variant has a non-contiguous code while others are ordinal-based.
+        @Serializable
+        @ByOrdinal(offset = 1)
+        enum class DeviceState {
+            CALIBRATE_TO_AMBIENT_AIR,     // ordinal 0 + 1 = 0x01 (from @ByOrdinal)
+            RECORD,                        // ordinal 1 + 1 = 0x02 (from @ByOrdinal)
+            @SerializedByteValue(0x04)     // explicit override — skips 0x03
+            CALIBRATE_FLOW_SENSOR,
+        }
+
+        @Serializable
+        data class Packet(val state: DeviceState)
+
+        validateEncoding(Packet(DeviceState.CALIBRATE_TO_AMBIENT_AIR), byteArrayOf(0x01))
+        validateEncoding(Packet(DeviceState.RECORD), byteArrayOf(0x02))
+        validateEncoding(Packet(DeviceState.CALIBRATE_FLOW_SENSOR), byteArrayOf(0x04))
+    }
+
+    @Test
+    fun byOrdinalInDataClass() {
+        // @ByOrdinal enum used as a field inside a larger structure
+        @Serializable
+        @ByOrdinal
+        enum class BreathState { INHALE, NONE, EXHALE }
+
+        @Serializable
+        data class Notification(
+            @Size(Length.`8_BIT`) @Unsigned val commandCode: Int,
+            val breathState: BreathState,
+        )
+
+        validateEncoding(Notification(0x0F, BreathState.EXHALE), byteArrayOf(0x0F, 0x02))
+    }
+
     // ── @Reserved ─────────────────────────────────────────────────────────────
+
+    @Test
+    fun reservedBytesCountedInStaticSize() {
+        // @Reserved bytes must be included in the staticByteSize used by @SizePolymorphic dispatch.
+        // Short: 1 value byte + 2 reserved after = 3 bytes total.
+        // Long:  1 value byte + 4 reserved after = 5 bytes total.
+        @Serializable
+        @SizePolymorphic
+        sealed interface Payload
+
+        @Serializable
+        data class Short3(@Reserved(after = 2) @Size(Length.`8_BIT`) @Unsigned val value: Int) : Payload
+
+        @Serializable
+        data class Long5(@Reserved(after = 4) @Size(Length.`8_BIT`) @Unsigned val value: Int) : Payload
+
+        validateEncoding(Short3(0x0A), byteArrayOf(0x0A, 0x00, 0x00))
+        validateEncoding(Long5(0x0B), byteArrayOf(0x0B, 0x00, 0x00, 0x00, 0x00))
+    }
 
     @Test
     fun reservedBytesAfter() {

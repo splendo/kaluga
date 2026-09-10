@@ -48,6 +48,24 @@ annotation class Postfix(val value: ByteArray)
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
+ * When applied to a [Serializable] enum class, variants are encoded by their ordinal plus [offset], using [size]
+ * bytes in the byte order of the enclosing structure.
+ * This avoids annotating every variant individually with [@SerializedByteValue][SerializedByteValue].
+ *
+ * A per-variant [@SerializedByteValue][SerializedByteValue] overrides [ByOrdinal] for that specific variant —
+ * mixing is allowed but all resulting byte arrays must have the same byte length.
+ *
+ * @property offset value added to the ordinal before encoding. Use `offset = 1` for 1-based protocols.
+ * @property size wire byte length of each ordinal value. Defaults to 1 byte (max 255 values + offset).
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS)
+annotation class ByOrdinal(val offset: Int = 0, val size: Length = Length.`8_BIT`)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
  * When applied to a property, [before] reserved (padding) bytes are silently skipped before decoding this
  * property and zero-filled bytes are written before encoding it; [after] bytes are skipped/written after it.
  *
@@ -326,11 +344,15 @@ annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * Can be added to elements of an Enum or Polymorphic class. This replaces serializing using the encoded SerialName with [value]
+ * Can be added to elements of an Enum or Polymorphic class. This replaces serializing using the encoded SerialName with [value].
  *
- * @property value the value to use as an identifier of an enum case / polymorphic type
+ * All entries in the same sealed class or enum must supply the same number of bytes.
+ * The format validates this at descriptor construction time and throws if lengths are inconsistent.
+ *
+ * @property value the byte sequence to use as an identifier. A single byte is the common case; multi-byte
+ *   values allow 2-byte (or wider) discriminators as long as every entry in the class uses the same length.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
-annotation class SerializedByteValue(val value: Byte)
+annotation class SerializedByteValue(vararg val value: Byte)

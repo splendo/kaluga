@@ -666,46 +666,73 @@ internal object BluetoothBinaryDescriptorRegistry {
         return collectionSettings
     }
 
-    private fun enumMap(descriptor: SerialDescriptor, byteOrder: ByteOrder): Map<Int, ByteArrayHolder> {
-        val enumMap = if (descriptor.kind is SerialKind.ENUM) {
-            (0 until descriptor.elementsCount).associateWith { index ->
-                ByteArrayHolder(
-                    descriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
-                        byteArrayOf(it.value)
-                    } ?: descriptor.getElementName(index).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder),
-                )
-            }
+    /**
+     * Encodes [this] integer as a [size]-byte value in [byteOrder], suitable for use as a [ByteArrayHolder] discriminator.
+     */
+    private fun Int.toDiscriminatorBytes(size: Length, byteOrder: ByteOrder): ByteArray {
+        val bytes = ByteArray(size.bytes)
+        var remaining = this
+        if (byteOrder == ByteOrder.LEAST_SIGNIFICANT_FIRST) {
+            for (i in 0 until size.bytes) { bytes[i] = (remaining and 0xFF).toByte(); remaining = remaining ushr 8 }
         } else {
-            emptyMap()
+            for (i in size.bytes - 1 downTo 0) { bytes[i] = (remaining and 0xFF).toByte(); remaining = remaining ushr 8 }
         }
-        return enumMap
+        return bytes
     }
+
+    private fun validateDiscriminatorLengths(name: String, entries: Collection<ByteArrayHolder>) {
+        val lengths = entries.filter { it.array.isNotEmpty() }.map { it.array.size }.toSet()
+        if (lengths.size > 1) {
+            throw SerializationException(
+                "All @SerializedByteValue discriminators in '$name' must have the same byte length; got lengths $lengths. " +
+                "Either make all discriminators the same width or use @ByOrdinal for uniform-length ordinal encoding.",
+            )
+        }
+    }
+
+    private fun enumMap(descriptor: SerialDescriptor, byteOrder: ByteOrder): Map<Int, ByteArrayHolder> {
+        if (descriptor.kind !is SerialKind.ENUM) return emptyMap()
+        val byOrdinal = descriptor.annotations.filterIsInstance<ByOrdinal>().firstOrNull()
+        var anyUsesClassName = false
+        val map = (0 until descriptor.elementsCount).associateWith { index ->
+            val perVariant = descriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().firstOrNull()
+            ByteArrayHolder(when {
+                perVariant != null -> perVariant.value
+                byOrdinal != null -> (index + byOrdinal.offset).toDiscriminatorBytes(byOrdinal.size, byteOrder)
+                else -> {
+                    anyUsesClassName = true
+                    descriptor.getElementName(index).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
+                }
+            })
+        }
+        if (!anyUsesClassName) validateDiscriminatorLengths(descriptor.serialName, map.values)
+        return map
+    }
+
     private fun polymorphicMap(descriptor: SerialDescriptor, byteOrder: ByteOrder, serializersModule: SerializersModule): Map<String, ByteArrayHolder> {
-        val polymorphicMap = when (descriptor.kind) {
+        fun buildEntries(optionDescriptors: List<SerialDescriptor>): Pair<Map<String, ByteArrayHolder>, Boolean> {
+            var anyUsesClassName = false
+            val map = optionDescriptors.associate { optionDescriptor ->
+                val bytes = optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.value
+                    ?: run {
+                        anyUsesClassName = true
+                        optionDescriptor.serialName.toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
+                    }
+                optionDescriptor.serialName to ByteArrayHolder(bytes)
+            }
+            return map to anyUsesClassName
+        }
+
+        val (map, anyUsesClassName) = when (descriptor.kind) {
             is PolymorphicKind.SEALED -> {
                 val sealedDescriptor = descriptor.getElementDescriptor(1)
-                (0..<sealedDescriptor.elementsCount).associate { index ->
-                    val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
-                    val serialIdentifier = optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
-                        byteArrayOf(it.value)
-                    } ?: optionDescriptor.serialName.toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
-                    optionDescriptor.serialName to ByteArrayHolder(serialIdentifier)
-                }
+                buildEntries((0..<sealedDescriptor.elementsCount).map { sealedDescriptor.getElementDescriptor(it) })
             }
-
-            is PolymorphicKind.OPEN -> {
-                val polymorphicDescriptors = serializersModule.getPolymorphicDescriptors(descriptor)
-                polymorphicDescriptors.associate { optionDescriptor ->
-                    val serialIdentifier = optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
-                        byteArrayOf(it.value)
-                    } ?: optionDescriptor.serialName.toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
-                    optionDescriptor.serialName to ByteArrayHolder(serialIdentifier)
-                }
-            }
-
-            else -> emptyMap()
+            is PolymorphicKind.OPEN -> buildEntries(serializersModule.getPolymorphicDescriptors(descriptor))
+            else -> return emptyMap()
         }
-        return polymorphicMap
+        if (!anyUsesClassName) validateDiscriminatorLengths(descriptor.serialName, map.values)
+        return map
     }
 
     /**
@@ -773,8 +800,11 @@ internal object BluetoothBinaryDescriptorRegistry {
     }
 
     private fun BluetoothBinaryDescriptor.staticChildBodyBytes(): Int? {
-        // Purely flag-packed fields (boolean, flag-indexed enum, sub-byte numeric) contribute 0 body bytes.
-        if (isPurelyFlagPacked()) return 0
+        val reserved = reservedBefore + reservedAfter
+
+        // Purely flag-packed fields (boolean, flag-indexed enum, sub-byte numeric) contribute 0 body bytes,
+        // but any @Reserved padding around them is still present on the wire.
+        if (isPurelyFlagPacked()) return reserved
 
         // Nullable with body content: size is value-dependent (absent = 0 bytes, present = N bytes).
         if (isNullable && (numericSettings != null || stringSettings != null ||
@@ -810,7 +840,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             children.isNotEmpty() -> staticByteSize()
 
             else -> 0
-        }
+        }?.plus(reserved)
     }
 
     /** True when a field's entire encoding lives in the flag header and contributes no body bytes. */
