@@ -54,8 +54,9 @@ import javax.inject.Inject
 open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     val multiplatformExtension: KotlinMultiplatformExtension,
     versionCatalog: VersionCatalog,
+    androidxVersionCatalog: VersionCatalog,
     objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
+) : BaseKalugaSubprojectExtension(versionCatalog, androidxVersionCatalog, null, objects) {
 
     val isMacOs = Os.isFamily(Os.FAMILY_MAC)
     val ideaActive = System.getProperty("idea.active") == "true"

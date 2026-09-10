@@ -23,8 +23,8 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import javax.inject.Inject
 
-open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
-    BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "compose", objects) {
+open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
+    BaseKalugaAndroidSubprojectExtension(versionCatalog, androidxVersionCatalog, libraryExtension, "compose", objects) {
 
     override fun optInAnnotations() = listOf(
         "androidx.compose.material3.ExperimentalMaterial3Api",
@@ -33,9 +33,9 @@ open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(versionCa
     override fun DependencyHandlerScope.commonDependencies() {
         add("implementation", "compose-foundation".asDependency())
         add("implementation", "compose-ui".asDependency())
-        add("implementation", "androidx-compose-ui-tooling".asDependency())
+        add("implementation", "composeUi-uiTooling".asAndroidxDependency())
         add("implementation", "compose-lifecycle-viewmodel".asDependency())
-        add("implementation", "androidx-activity-compose".asDependency())
+        add("implementation", "activity-activityCompose".asAndroidxDependency())
     }
     override fun LibraryExtension.configure() {
     }

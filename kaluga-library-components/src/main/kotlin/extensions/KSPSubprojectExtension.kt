@@ -27,8 +27,8 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 
-open class KSPSubprojectExtension(versionCatalog: VersionCatalog, objects: ObjectFactory) :
-    BaseKalugaSubprojectExtension(versionCatalog, "ksp", objects) {
+open class KSPSubprojectExtension(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, androidxVersionCatalog, "ksp", objects) {
 
     override var namespace: String? = null
 

@@ -12,6 +12,7 @@ kaluga {
             main {
                 api(project(":core-arch"))
                 api("com.splendo.kaluga:logging:${project.rootProject.version}")
+                api(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.core)
             }
         }

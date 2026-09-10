@@ -22,6 +22,7 @@ import com.splendo.kaluga.system.test.network.MockNetworkManager
 import com.splendo.kaluga.system.test.network.MockNetworkStateRepoBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.test.TestResult
 
 abstract class BaseNetworkStateTest<T, F : Flow<T>> : BaseFlowTest<BaseNetworkStateTest.Configuration, BaseNetworkStateTest.Context, T, F>() {
 
@@ -37,10 +38,9 @@ abstract class BaseNetworkStateTest<T, F : Flow<T>> : BaseFlowTest<BaseNetworkSt
     override val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context =
         { configuration, scope -> Context(configuration, scope) }
 
-    protected fun testNetworkState(initialNetworkConnectionType: NetworkConnectionType, test: suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit) {
+    protected fun testNetworkState(initialNetworkConnectionType: NetworkConnectionType, test: suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit): TestResult =
         testWithFlowAndTestContext(
             Configuration(initialNetworkConnectionType),
             blockWithContext = test,
         )
-    }
 }

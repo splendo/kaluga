@@ -6,6 +6,8 @@
  *
  ***********************************************/
 
+import org.tomlj.Toml
+
 pluginManagement {
     repositories {
         google()
@@ -16,8 +18,38 @@ pluginManagement {
     includeBuild("kaluga-library-components")
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.tomlj:tomlj:1.1.1")
+    }
+}
+
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+dependencyResolutionManagement {
+    // For the catalog artifact below; project dependencies keep using the
+    // repositories the build scripts declare (default PREFER_PROJECT mode).
+    repositories {
+        google()
+        mavenCentral()
+    }
+    versionCatalogs {
+        // androidx's monthly release catalog; the month is pinned by
+        // androidx-version-catalog in libs.versions.toml. The conventional
+        // `libs` catalog can't be re-declared to read it through its builder
+        // (its import from gradle/libs.versions.toml would be a second `from`),
+        // so parse the file.
+        create("androidxLibs") {
+            val month = Toml.parse(file("gradle/libs.versions.toml").toPath())
+                .getString("versions.androidx-version-catalog")
+            from("androidx.gradle:gradle-version-catalog:$month")
+        }
+    }
 }
 
 rootProject.name = "Kaluga"

@@ -7,13 +7,13 @@ kaluga {
     dependencies {
         android {
             main {
-                implementation(libs.androidx.fragment)
+                implementation(androidxLibs.fragment.fragment)
             }
             test {
-                implementation(libs.androidx.fragment.ktx)
+                implementation(androidxLibs.fragment.fragmentKtx)
             }
             device {
-                implementation(libs.androidx.activity.ktx)
+                implementation(androidxLibs.activity.activityKtx)
                 implementation(project(":architecture:architecture", ""))
             }
         }

@@ -26,8 +26,8 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
-sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, protected val namespacePostfix: String?, objects: ObjectFactory) :
-    BaseKalugaExtension(versionCatalog, objects) {
+sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, protected val namespacePostfix: String?, objects: ObjectFactory) :
+    BaseKalugaExtension(versionCatalog, androidxVersionCatalog, objects) {
 
     abstract var namespace: String?
     var moduleName: String
@@ -39,10 +39,10 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
         }
 
     protected val androidMainDependencies = listOf(
-        "androidx-activity-ktx",
-        "androidx-appcompat",
-        "kotlinx-coroutines-android",
-    ).map { it.asDependency() }
+        "activity-activityKtx".asAndroidxDependency(),
+        "appcompat-appcompat".asAndroidxDependency(),
+        "kotlinx-coroutines-android".asDependency(),
+    )
 
     protected val androidTestDependencies = listOf(
         "bytebuddy-agent",
@@ -53,13 +53,14 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
     ).map { it.asDependency() }
 
     protected val androidDeviceTestDependencies = listOf(
-        "androidx-test-core",
-        "androidx-test-core-ktx",
-        "androidx-test-espresso",
-        "androidx-test-junit",
-        "androidx-test-rules",
-        "androidx-test-runner",
-        "androidx-test-uiautomator",
+        "test-core".asAndroidxDependency(),
+        "test-coreKtx".asAndroidxDependency(),
+        "testEspresso-espressoCore".asAndroidxDependency(),
+        "testExt-junit".asAndroidxDependency(),
+        "test-rules".asAndroidxDependency(),
+        "test-runner".asAndroidxDependency(),
+        "testUiautomator-uiautomator".asAndroidxDependency(),
+    ) + listOf(
         "bytebuddy-agent",
         "bytebuddy-android",
         "kotlin-test",
@@ -82,6 +83,8 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
     protected abstract fun Project.configureSubproject()
 
     protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
+
+    protected fun String.asAndroidxDependency() = androidxVersionCatalog.findLibrary(this).get()
 
     @OptIn(ExperimentalAbiValidation::class)
     protected fun AbiValidationExtension.configureKalugaAbi(apiDirectory: Directory) {

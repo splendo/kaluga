@@ -1,4 +1,5 @@
 import com.splendo.kaluga.example.plugin.EmbeddingMode
+import org.gradle.internal.management.VersionCatalogBuilderInternal
 
 pluginManagement {
     repositories {
@@ -18,9 +19,20 @@ plugins {
 }
 
 dependencyResolutionManagement {
+    // For the androidx catalog artifact; project repositories are unaffected
+    // (default PREFER_PROJECT mode).
+    repositories {
+        google()
+        mavenCentral()
+    }
     versionCatalogs {
-        create("libs") {
+        val libs = create("libs") {
             from(files("../gradle/libs.versions.toml"))
+        }
+        // androidx's monthly release catalog, month pinned in the main build's toml
+        create("androidxLibs") {
+            val month = (libs as VersionCatalogBuilderInternal).build().getVersion("androidx-version-catalog").version
+            from("androidx.gradle:gradle-version-catalog:$month")
         }
     }
 }

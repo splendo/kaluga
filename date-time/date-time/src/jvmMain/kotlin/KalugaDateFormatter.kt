@@ -78,16 +78,40 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         }
     }
 
-    private val symbols: DateFormatSymbols get() = format.dateFormatSymbols
+    // SimpleDateFormat is not thread-safe: format and parse both mutate the shared internal Calendar,
+    // so racing them on one instance corrupts results. Parsing therefore gets its own instance,
+    // making format/parse cross-contamination impossible while each path pays only a single
+    // (typically uncontended) monitor. The instances double as the locks, so they must stay private
+    // and never escape this class. Configuration writes go through [update] to both instances so the
+    // format/parse round-trip stays consistent. DateFormat.clone() deep-copies the calendar and
+    // symbols, so the two instances share no mutable state.
+    private val parser = format.clone() as SimpleDateFormat
+
+    // DateFormat.getDateFormatSymbols returns a copy, so it is safe to read outside the lock once
+    // obtained.
+    private val symbols: DateFormatSymbols get() = read { it.dateFormatSymbols }
+
+    private inline fun <T> read(action: (SimpleDateFormat) -> T): T = synchronized(format) { action(format) }
+
+    // Nested in a fixed order (format then parse) so writes cannot deadlock and neither instance is
+    // observed mid-update by format or parse.
+    private inline fun update(action: (SimpleDateFormat) -> Unit) = synchronized(format) {
+        synchronized(parser) {
+            action(format)
+            action(parser)
+        }
+    }
 
     actual override var pattern: String
-        get() = format.toPattern()
-        set(value) = format.applyPattern(value)
+        get() = read { it.toPattern() }
+        set(value) {
+            update { it.applyPattern(value) }
+        }
 
     actual override var timeZone: KalugaTimeZone
-        get() = KalugaTimeZone(format.timeZone)
+        get() = read { KalugaTimeZone(it.timeZone) }
         set(value) {
-            format.timeZone = value.timeZone
+            update { it.timeZone = value.timeZone }
         }
 
     actual override var eras: List<String>
@@ -153,12 +177,14 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
             updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() }
         }
 
-    actual override fun format(date: KalugaDate): String = format.format(date.date)
-    actual override fun parse(string: String): KalugaDate? {
-        val currentTimeZone = timeZone
-        return try {
-            format.parse(string)?.let { date ->
-                val calendar = format.calendar.clone() as Calendar
+    actual override fun format(date: KalugaDate): String = synchronized(format) { format.format(date.date) }
+    actual override fun parse(string: String): KalugaDate? = synchronized(parser) {
+        // Read and restore against the parser's own zone; reading the format instance here would nest
+        // the locks in the reverse order of [update].
+        val currentTimeZone = KalugaTimeZone(parser.timeZone)
+        try {
+            parser.parse(string)?.let { date ->
+                val calendar = parser.calendar.clone() as Calendar
                 DefaultKalugaDate(
                     calendar.apply {
                         time = date
@@ -170,14 +196,14 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
             null
         } finally {
             // Parse may change the timezone to the timezone parsed by the String. This restores the original timezone
-            timeZone = currentTimeZone
+            parser.timeZone = currentTimeZone.timeZone
         }
     }
 
-    private fun updateSymbols(transform: (DateFormatSymbols) -> Unit) {
-        val symbols = this.symbols
+    private fun updateSymbols(transform: (DateFormatSymbols) -> Unit) = update {
+        val symbols = it.dateFormatSymbols
         transform(symbols)
-        format.dateFormatSymbols = symbols
+        it.dateFormatSymbols = symbols
     }
 }
 

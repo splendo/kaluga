@@ -23,8 +23,8 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import javax.inject.Inject
 
-open class DatabindingKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
-    BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "databinding", objects) {
+open class DatabindingKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
+    BaseKalugaAndroidSubprojectExtension(versionCatalog, androidxVersionCatalog, libraryExtension, "databinding", objects) {
 
     override fun DependencyHandlerScope.commonDependencies() {}
     override fun LibraryExtension.configure() {

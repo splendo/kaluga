@@ -33,7 +33,7 @@ import javax.inject.Inject
 /**
  * A [BaseKalugaExtension] used for a [Project] that is the root of other projects
  */
-open class KalugaRootExtension @Inject constructor(healthVersionCatalog: VersionCatalog, objects: ObjectFactory) : BaseKalugaExtension(healthVersionCatalog, objects) {
+open class KalugaRootExtension @Inject constructor(healthVersionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, objects: ObjectFactory) : BaseKalugaExtension(healthVersionCatalog, androidxVersionCatalog, objects) {
 
     /**
      * When `true` all projects will include Maven Local as a repository

@@ -10,6 +10,7 @@ kaluga {
             main {
                 api(project(":base:test"))
                 api(project(":architecture:test"))
+                api(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.core)
             }
         }

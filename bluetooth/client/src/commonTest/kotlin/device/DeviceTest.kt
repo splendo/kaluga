@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager.Acti
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestResult
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -61,12 +62,12 @@ class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithD
     }
 
     @Test
-    fun testNotConnectableToDisconnectedStateTransition() {
+    fun testNotConnectableToDisconnectedStateTransition(): TestResult {
         // Is not connectable initially
         val configuration = Configuration.DeviceWithDescriptor(
             advertisementData = MockAdvertisementData(isConnectable = false),
         )
-        testWithFlowAndTestContext(configuration) {
+        return testWithFlowAndTestContext(configuration) {
             test {
                 deviceConnectionManagerBuilder.createMock.verify(rule = never())
                 assertIs<NotConnectableDeviceState>(it)
