@@ -157,11 +157,11 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
                     when (val endMarking = lengthMarking.endMarking) {
                         is StringEncodingSettings.LengthPrefix.ByteLength -> decoder.nextBytes(1)[0].toInt()
 
-                        is StringEncodingSettings.LengthPrefix.ShortLength -> decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.byteOrder).toInt()
+                        is StringEncodingSettings.LengthPrefix.ShortLength -> decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.childByteOrder).toInt()
 
                         is StringEncodingSettings.LengthPrefix.WithOverflow -> {
                             if (decoder.peekNextIs(byteArrayOf(endMarking.sentinel), true)) {
-                                decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.byteOrder).toInt()
+                                decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.childByteOrder).toInt()
                             } else {
                                 decoder.nextBytes(1)[0].toInt()
                             }

@@ -135,11 +135,15 @@ annotation class FlagWidth(val bits: Int = 1)
  * When applied to a class or collection, a [InvalidByteOrderException] may be thrown if the byte order changed.
  *
  * @property order the [com.splendo.kaluga.base.bytes.ByteOrder] in which to encode the element.
+ * @property excludeStructure when `true` and applied to a class, [order] propagates as the default byte order
+ *   for all child property values but does **not** affect the class's own array accumulation direction.
+ *   This allows all fields in a class to encode their values in [order] while the class itself is still
+ *   written sequentially rather than reversed. Has no effect when applied to a property.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
-annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, val excludeStructure: Boolean = false)
 
 /**
  * Annotation added for serializing using [BluetoothFormat]

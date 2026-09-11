@@ -171,6 +171,9 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
+        // Use flag.byteOrder (builder/accumulation direction) for the root decoder so it reads the byte
+        // array in the same direction it was written — not flag.childByteOrder, which is the field VALUE
+        // encoding direction and may differ when @ByteOrder(order, excludeStructure = true) is in use.
         val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule)
 
         return deserializer.deserialize(decoder)

@@ -39,6 +39,7 @@ internal data class BluetoothBinaryDescriptor(
     val bitIndex: Int,
     val bitWidth: Int,
     val byteOrder: ByteOrder,
+    val childByteOrder: ByteOrder = byteOrder,
     val isNullable: Boolean,
     val numericSettings: NumericSettings?,
     val stringSettings: StringSettings?,
@@ -207,6 +208,8 @@ internal data class BluetoothBinaryDescriptor(
      * @property prefix The [ByteArrayHolder] containing any bytes to be added as a prefix whenever encoding this structure
      * @property postfix The [ByteArrayHolder] containing any bytes to be added as a postfix whenever encoding this structure
      * @property checksumAlgorithm the [CRC] algorithm to use to add a checksum right after the body (but before any postfix) of the structure.
+     * @property checksumByteOrder byte order used when writing the checksum value into the frame.
+     *   Defaults to [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Use [ByteOrder.MOST_SIGNIFICANT_FIRST] for big-endian CRC output.
      */
     data class StructureSettings(val prefix: ByteArrayHolder?, val postfix: ByteArrayHolder?, val checksumAlgorithm: CRC?)
 }
@@ -239,6 +242,11 @@ internal object BluetoothBinaryDescriptorRegistry {
     private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, BluetoothBinaryDescriptor>()
 
     internal fun bluetoothBinaryDescriptor(descriptor: SerialDescriptor, module: SerializersModule): BluetoothBinaryDescriptor = cache.getOrPut(descriptor to module) {
+        // Seed the root preferred orders from the type's own @ByteOrder: preferredByteOrder is the field
+        // encoding direction, preferredBuilderByteOrder the accumulation direction. The latter stays LSB when
+        // excludeStructure = true so the frame is still built sequentially.
+        val byteOrderAnnotation = descriptor.annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()
+
         getDescriptor(
             descriptor,
             descriptor.serialName,
@@ -246,7 +254,8 @@ internal object BluetoothBinaryDescriptorRegistry {
             emptyList(),
             descriptor.isNullable,
             0,
-            descriptor.annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()?.order ?: ByteOrder.LEAST_SIGNIFICANT_FIRST,
+            byteOrderAnnotation?.order ?: ByteOrder.LEAST_SIGNIFICANT_FIRST,
+            byteOrderAnnotation?.takeIf { !it.excludeStructure }?.order ?: ByteOrder.LEAST_SIGNIFICANT_FIRST,
             module,
         ) {
         }
@@ -260,6 +269,13 @@ internal object BluetoothBinaryDescriptorRegistry {
         isNullable: Boolean,
         defaultBitIndex: Int,
         preferredByteOrder: ByteOrder,
+        // preferredBuilderByteOrder tracks the ACCUMULATION DIRECTION separately from preferredByteOrder
+        // (which tracks field VALUE ENCODING direction).  They differ when a parent uses excludeStructure=true:
+        // - preferredByteOrder   = parent.childByteOrder (MSB: field values encode big-endian)
+        // - preferredBuilderByteOrder = parent.byteOrder (LSB: frame is still built sequentially)
+        // Structures without an explicit @ByteOrder annotation inherit the builder direction so they
+        // accumulate in the same direction as their parent, regardless of the field encoding byte order.
+        preferredBuilderByteOrder: ByteOrder = preferredByteOrder,
         serializersModule: SerializersModule,
         reserveIndices: (Set<Int>) -> Unit,
     ): BluetoothBinaryDescriptor = if (descriptor.isInline) {
@@ -290,8 +306,9 @@ internal object BluetoothBinaryDescriptorRegistry {
             isNullable || inlineDescriptor.isNullable,
             defaultBitIndex,
             preferredByteOrder,
-            serializersModule,
-            reserveIndices,
+            serializersModule = serializersModule,
+            reserveIndices = reserveIndices,
+            preferredBuilderByteOrder = preferredBuilderByteOrder,
         )
     } else {
         val annotations = descriptor.annotations + fieldAnnotations
@@ -307,10 +324,30 @@ internal object BluetoothBinaryDescriptorRegistry {
         }
         val customIndex = annotations.filterIsInstance<FlagIndex>().firstOrNull()?.index
 
-        // Byte order cannot be changed when we have a structure of unknown length. We're not doing recursive search here so all structures should just have their order kept the same
-        val byteOrder = annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()?.order ?: preferredByteOrder
-        if ((descriptor.kind is StructureKind || descriptor.kind is PrimitiveKind.STRING) && byteOrder != preferredByteOrder) {
-            throw InvalidByteOrderException("Nested class ${descriptor.serialName} cannot have a byteOrder different than $preferredByteOrder")
+        val byteOrderAnnotation = annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()
+        // childByteOrder: the byte order propagated to child field VALUE encoding.
+        val childByteOrder = byteOrderAnnotation?.order ?: preferredByteOrder
+        // byteOrder: this descriptor's OWN accumulation direction (used by its builder).
+        // - Explicit annotation without excludeStructure: use childByteOrder (standard @ByteOrder behaviour).
+        // - Explicit annotation with excludeStructure: inherit the parent's builder direction.
+        // - No annotation on a StructureKind/PolymorphicKind: inherit parent's builder direction so nested
+        //   structures always accumulate in the same direction as their parent without requiring annotations.
+        // - No annotation on primitives/strings/enums: inherit parent's field encoding direction.
+        val byteOrder = when {
+            byteOrderAnnotation != null -> if (byteOrderAnnotation.excludeStructure) preferredBuilderByteOrder else childByteOrder
+            // CONTEXTUAL is the sealed "value" wrapper: a pass-through that must keep the builder direction
+            // (and propagate it to its subtype children) instead of collapsing it into the field encoding direction.
+            descriptor.kind is StructureKind || descriptor.kind is PolymorphicKind || descriptor.kind is SerialKind.CONTEXTUAL -> preferredBuilderByteOrder
+            else -> childByteOrder
+        }
+
+        if (descriptor.kind is StructureKind && byteOrder != preferredBuilderByteOrder) {
+            throw InvalidByteOrderException("Nested structure ${descriptor.serialName} cannot have a byteOrder different than $preferredBuilderByteOrder")
+        }
+
+        // Strings: childByteOrder governs character encoding and must match the parent's encoding context.
+        if (descriptor.kind is PrimitiveKind.STRING && childByteOrder != preferredByteOrder) {
+            throw InvalidByteOrderException("Nested string ${descriptor.serialName} cannot have a byteOrder different than $preferredByteOrder")
         }
         if (descriptor.kind is PrimitiveKind.BOOLEAN && customIndex != null) {
             desiredFlagBitWidth.raise(1)
@@ -329,9 +366,9 @@ internal object BluetoothBinaryDescriptorRegistry {
         val numericSettings = numericSettings(supportedLengths, descriptor, desiredFlagBitWidth, annotations, numericInFlagsBits)
         val stringSettings = stringSettings(descriptor, annotations, supportedLengths)
         val collectionSettings = collectionSettings(descriptor, annotations, desiredFlagBitWidth, supportedLengths)
-        val enumMap = enumMap(descriptor, byteOrder)
-        val polymorphicMap = polymorphicMap(descriptor, byteOrder, serializersModule)
-        val (sizePolymorphicMap, sizePolymorphicFallback) = sizePolymorphicInfo(descriptor, byteOrder, serializersModule)
+        val enumMap = enumMap(descriptor, childByteOrder)
+        val polymorphicMap = polymorphicMap(descriptor, childByteOrder, serializersModule)
+        val (sizePolymorphicMap, sizePolymorphicFallback) = sizePolymorphicInfo(descriptor, childByteOrder, serializersModule)
 
         val blockSettings = blockSettings(annotations)
         val minWidth = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: 0
@@ -350,6 +387,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             bitIndex,
             width,
             byteOrder,
+            childByteOrder,
             isNullable,
             numericSettings,
             stringSettings,
@@ -358,10 +396,10 @@ internal object BluetoothBinaryDescriptorRegistry {
             polymorphicMap,
             blockSettings,
             when (descriptor.kind) {
-                PolymorphicKind.OPEN -> openDescriptorChildren(serializersModule, descriptor, byteOrder, bitIndex)
-                StructureKind.MAP -> mapDescriptorChildren(descriptor, annotations, byteOrder, serializersModule)
-                StructureKind.LIST -> listDescriptorChildren(descriptor, annotations, byteOrder, serializersModule)
-                else -> descriptorChildren(descriptor, byteOrder, serializersModule, bitIndex)
+                PolymorphicKind.OPEN -> openDescriptorChildren(serializersModule, descriptor, childByteOrder, bitIndex, byteOrder)
+                StructureKind.MAP -> mapDescriptorChildren(descriptor, annotations, childByteOrder, serializersModule, byteOrder)
+                StructureKind.LIST -> listDescriptorChildren(descriptor, annotations, childByteOrder, serializersModule, byteOrder)
+                else -> descriptorChildren(descriptor, childByteOrder, serializersModule, bitIndex, byteOrder)
             },
             presenceFlagIndices,
             sizePolymorphicMap,
@@ -369,7 +407,13 @@ internal object BluetoothBinaryDescriptorRegistry {
         )
     }
 
-    private fun descriptorChildren(descriptor: SerialDescriptor, byteOrder: ByteOrder, serializersModule: SerializersModule, bitIndex: Int): List<BluetoothBinaryDescriptor> {
+    private fun descriptorChildren(
+        descriptor: SerialDescriptor,
+        byteOrder: ByteOrder,
+        serializersModule: SerializersModule,
+        bitIndex: Int,
+        preferredBuilderByteOrder: ByteOrder = byteOrder,
+    ): List<BluetoothBinaryDescriptor> {
         var nextBit = 0
         val reservedSubIndices = mutableSetOf<Int>()
         // A regular structure has as many descriptors as it has children.
@@ -387,7 +431,8 @@ internal object BluetoothBinaryDescriptorRegistry {
                 elementDescriptor.isNullable,
                 nextBit,
                 byteOrder,
-                serializersModule,
+                serializersModule = serializersModule,
+                preferredBuilderByteOrder = preferredBuilderByteOrder,
             ) { flagIndicesToUse ->
                 if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
                     throw FlagIndexException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
@@ -406,6 +451,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         annotations: List<Annotation>,
         byteOrder: ByteOrder,
         serializersModule: SerializersModule,
+        preferredBuilderByteOrder: ByteOrder = byteOrder,
     ): List<BluetoothBinaryDescriptor> {
         val itemDescriptor = descriptor.getElementDescriptor(0)
         val reservedSubIndices = mutableSetOf<Int>()
@@ -419,7 +465,8 @@ internal object BluetoothBinaryDescriptorRegistry {
                 itemDescriptor.isNullable,
                 0,
                 byteOrder,
-                serializersModule,
+                serializersModule = serializersModule,
+                preferredBuilderByteOrder = preferredBuilderByteOrder,
             ) { flagIndicesToUse ->
                 if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
                     throw FlagIndexException("Flags at index $flagIndicesToUse cannot be used for ${itemDescriptor.serialName}. Is already reserved")
@@ -434,6 +481,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         annotations: List<Annotation>,
         byteOrder: ByteOrder,
         serializersModule: SerializersModule,
+        preferredBuilderByteOrder: ByteOrder = byteOrder,
     ): List<BluetoothBinaryDescriptor> {
         val keyDescriptor = descriptor.getElementDescriptor(0)
         val valueDescriptor = descriptor.getElementDescriptor(1)
@@ -450,7 +498,8 @@ internal object BluetoothBinaryDescriptorRegistry {
                 keyDescriptor.isNullable,
                 0,
                 byteOrder,
-                serializersModule,
+                serializersModule = serializersModule,
+                preferredBuilderByteOrder = preferredBuilderByteOrder,
             ) { flagIndicesToUse ->
                 if (flagIndicesToUse.intersect(reservedKeySubIndices).isNotEmpty()) {
                     throw FlagIndexException("Flags at index $flagIndicesToUse cannot be used for ${keyDescriptor.serialName}. Is already reserved")
@@ -465,7 +514,8 @@ internal object BluetoothBinaryDescriptorRegistry {
                 valueDescriptor.isNullable,
                 0,
                 byteOrder,
-                serializersModule,
+                serializersModule = serializersModule,
+                preferredBuilderByteOrder = preferredBuilderByteOrder,
             ) { flagIndicesToUse ->
                 if (flagIndicesToUse.intersect(reservedValueSubIndices).isNotEmpty()) {
                     throw FlagIndexException("Flags at index $flagIndicesToUse cannot be used for ${valueDescriptor.serialName}. Is already reserved")
@@ -475,7 +525,13 @@ internal object BluetoothBinaryDescriptorRegistry {
         )
     }
 
-    private fun openDescriptorChildren(serializersModule: SerializersModule, descriptor: SerialDescriptor, byteOrder: ByteOrder, bitIndex: Int): List<BluetoothBinaryDescriptor> =
+    private fun openDescriptorChildren(
+        serializersModule: SerializersModule,
+        descriptor: SerialDescriptor,
+        byteOrder: ByteOrder,
+        bitIndex: Int,
+        preferredBuilderByteOrder: ByteOrder = byteOrder,
+    ): List<BluetoothBinaryDescriptor> =
         serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
             // For Open Polymorphic classes, all its declared options in serializersModule need to be considered
             val reservedSubIndices = mutableSetOf<Int>()
@@ -487,7 +543,8 @@ internal object BluetoothBinaryDescriptorRegistry {
                 optionDescriptor.isNullable,
                 0,
                 byteOrder,
-                serializersModule,
+                serializersModule = serializersModule,
+                preferredBuilderByteOrder = preferredBuilderByteOrder,
             ) { flagIndicesToUse ->
                 if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
                     throw FlagIndexException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
@@ -856,14 +913,13 @@ internal object BluetoothBinaryDescriptorRegistry {
     }
 
     private fun blockSettings(annotations: List<Annotation>): BluetoothBinaryDescriptor.StructureSettings {
-        val structureSettings = BluetoothBinaryDescriptor.StructureSettings(
+        return BluetoothBinaryDescriptor.StructureSettings(
             annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
             annotations.filterIsInstance<Postfix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
             annotations.filterIsInstance<Checksum>().firstOrNull()?.let { checksum ->
                 CRC(checksum.width, checksum.polynomial, checksum.init, checksum.xorOut, checksum.reflectIn, checksum.reflectOut)
             },
         )
-        return structureSettings
     }
 
     private fun List<Annotation>.itemAnnotations(): List<Annotation> = mapNotNull { annotation ->

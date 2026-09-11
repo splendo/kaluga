@@ -86,7 +86,7 @@ internal class BluetoothBinaryEncoder(
             is BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix ->
                 if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                     builder.addAction(lengthMarking.endMarking.expectedByteSize(collectionSize.toUInt())) {
-                        add(lengthMarking.endMarking.encodeSize(collectionSize.toUInt(), binaryDescriptor.byteOrder))
+                        add(lengthMarking.endMarking.encodeSize(collectionSize.toUInt(), binaryDescriptor.childByteOrder))
                     }
                 }
 
@@ -405,38 +405,38 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                 when (lengthToAdd) {
                     Length.`8_BIT` -> if (settings.signed) add(value.toByte()) else add(value.toByte().toUByte())
 
-                    Length.`16_BIT` -> if (settings.signed) add(value.toShort(), binaryDescriptor.byteOrder) else add(value.toShort().toUShort(), binaryDescriptor.byteOrder)
+                    Length.`16_BIT` -> if (settings.signed) add(value.toShort(), binaryDescriptor.childByteOrder) else add(value.toShort().toUShort(), binaryDescriptor.childByteOrder)
 
                     Length.`24_BIT` -> if (settings.signed) {
                         add(
                             value.toInt().toInt24(),
-                            binaryDescriptor.byteOrder,
+                            binaryDescriptor.childByteOrder,
                         )
                     } else {
-                        add(value.toInt().toUInt().toUInt24(), binaryDescriptor.byteOrder)
+                        add(value.toInt().toUInt().toUInt24(), binaryDescriptor.childByteOrder)
                     }
 
-                    Length.`32_BIT` -> if (settings.signed) add(value.toInt(), binaryDescriptor.byteOrder) else add(value.toInt().toUInt(), binaryDescriptor.byteOrder)
+                    Length.`32_BIT` -> if (settings.signed) add(value.toInt(), binaryDescriptor.childByteOrder) else add(value.toInt().toUInt(), binaryDescriptor.childByteOrder)
 
                     Length.`40_BIT` -> if (settings.signed) {
                         add(
                             value.toLong().toInt40(),
-                            binaryDescriptor.byteOrder,
+                            binaryDescriptor.childByteOrder,
                         )
                     } else {
-                        add(value.toLong().toULong().toUInt40(), binaryDescriptor.byteOrder)
+                        add(value.toLong().toULong().toUInt40(), binaryDescriptor.childByteOrder)
                     }
 
                     Length.`48_BIT` -> if (settings.signed) {
                         add(
                             value.toLong().toInt48(),
-                            binaryDescriptor.byteOrder,
+                            binaryDescriptor.childByteOrder,
                         )
                     } else {
-                        add(value.toLong().toULong().toUInt48(), binaryDescriptor.byteOrder)
+                        add(value.toLong().toULong().toUInt48(), binaryDescriptor.childByteOrder)
                     }
 
-                    Length.`64_BIT` -> if (settings.signed) add(value.toLong(), binaryDescriptor.byteOrder) else add(value.toLong().toULong(), binaryDescriptor.byteOrder)
+                    Length.`64_BIT` -> if (settings.signed) add(value.toLong(), binaryDescriptor.childByteOrder) else add(value.toLong().toULong(), binaryDescriptor.childByteOrder)
                 }
             }
         }
@@ -550,12 +550,12 @@ internal fun BinaryBuilder.encodeStringElement(value: String, binaryDescriptor: 
     val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.UTF_8
     val endMarking = binaryDescriptor.stringSettings?.endMarking ?: StringEncodingSettings.LengthPrefix.ByteLength
     val settings = StringEncodingSettings(endMarking, encoding)
-    addAction(value.byteArraySize(settings)) { add(value, settings, binaryDescriptor.byteOrder) }
+    addAction(value.byteArraySize(settings)) { add(value, settings, binaryDescriptor.childByteOrder) }
     if (endMarking is StringEncodingSettings.NoMarking) {
         makeUnconstrained()
     }
 }
 internal fun BinaryBuilder.encodeCharElement(value: Char, binaryDescriptor: BluetoothBinaryDescriptor) {
     val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.UTF_8
-    addAction(encoding.byteSize) { add(value, encoding, binaryDescriptor.byteOrder) }
+    addAction(encoding.byteSize) { add(value, encoding, binaryDescriptor.childByteOrder) }
 }
