@@ -329,6 +329,15 @@ class BluetoothFormatTest {
     @ByOrdinal
     enum class TriStateOrdinal { FIRST, SECOND, THIRD }
 
+
+    @Serializable
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    enum class ChecksumEnum { A, B }
+
+    @Serializable
+    @Postfix([0x01])
+    enum class FlagEnum { A, B }
+
     @Serializable
     data class OrdinalFieldPacket(@Size(Length.`8_BIT`) @Unsigned val code: Int, val state: TriStateOrdinal)
 
@@ -2566,9 +2575,6 @@ class BluetoothFormatTest {
 
     @Test
     fun enumWithChecksumThrowsAtRegistryTime() {
-        @Serializable
-        @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
-        enum class ChecksumEnum { A, B }
 
         @Serializable
         data class Container(val value: ChecksumEnum)
@@ -2580,9 +2586,6 @@ class BluetoothFormatTest {
 
     @Test
     fun flagPackedEnumWithPrefixThrowsAtRegistryTime() {
-        @Serializable
-        @Prefix([0x01])
-        enum class FlagEnum { A, B }
 
         @Serializable
         data class Container(@FlagIndex(0) val value: FlagEnum)
@@ -2594,9 +2597,6 @@ class BluetoothFormatTest {
 
     @Test
     fun flagPackedEnumWithPostfixThrowsAtRegistryTime() {
-        @Serializable
-        @Postfix([0x01])
-        enum class FlagEnum { A, B }
 
         @Serializable
         data class Container(@FlagIndex(0) val value: FlagEnum)
