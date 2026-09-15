@@ -253,6 +253,16 @@ internal sealed class AndroidServerState {
         }
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
+            // Android silently truncates a notification larger than the negotiated ATT payload (mtu - 3),
+            // delivering a malformed frame with no error. Fail loudly instead of emitting corrupt data.
+            val maxPayloadSize = (device.mtu ?: KalugaBluetoothGattServerCallback.DEFAULT_MTU_SIZE) - KalugaBluetoothGattServerCallback.MTU_HEADER_SIZE
+            if (value.size > maxPayloadSize) {
+                logger.warn(TAG) {
+                    "Notification for characteristic ${characteristic.uuid.uuidString} is ${value.size} bytes but the negotiated MTU only allows $maxPayloadSize. " +
+                        "Not sending to avoid a truncated frame."
+                }
+                return@coroutineScope false
+            }
             val bluetoothDevice = device.device
             val didNotify = async { callback.notificationSent.mapNotNull { (deviceNotified, success) -> success.takeIf { deviceNotified == bluetoothDevice } }.first() }
             logger.info(TAG) { "Notify characteristic ${characteristic.uuid.uuidString} updated to ${value.toHexString(" ")}" }

@@ -298,11 +298,16 @@ internal object BluetoothBinaryDescriptorRegistry {
             "kotlin.ULong" -> annotations + Unsigned()
             else -> annotations
         }
-        getDescriptor(
+        // Prefix, Postfix and Checksum describe the outer boundary of the value class, not its
+        // underlying content. Strip them before forwarding so they are not applied to the body,
+        // then re-apply them as the structureSettings of the returned descriptor so decodeInline/
+        // encodeInline can read them from binaryDescriptor.structureSettings like everything else.
+        val forwardedAnnotations = actualAnnotations.filterNot { it is Prefix || it is Postfix || it is Checksum }
+        val underlyingDescriptor = getDescriptor(
             inlineDescriptor,
             fieldName,
             fieldIndex,
-            actualAnnotations,
+            forwardedAnnotations,
             isNullable || inlineDescriptor.isNullable,
             defaultBitIndex,
             preferredByteOrder,
@@ -310,6 +315,12 @@ internal object BluetoothBinaryDescriptorRegistry {
             reserveIndices = reserveIndices,
             preferredBuilderByteOrder = preferredBuilderByteOrder,
         )
+        val valueClassSettings = blockSettings(descriptor.annotations)
+        if (valueClassSettings.prefix != null || valueClassSettings.postfix != null || valueClassSettings.checksumAlgorithm != null) {
+            underlyingDescriptor.copy(structureSettings = valueClassSettings)
+        } else {
+            underlyingDescriptor
+        }
     } else {
         val annotations = descriptor.annotations + fieldAnnotations
         val desiredFlagBitWidth = DesiredFlagBitWidth(0)
@@ -371,6 +382,25 @@ internal object BluetoothBinaryDescriptorRegistry {
         val (sizePolymorphicMap, sizePolymorphicFallback) = sizePolymorphicInfo(descriptor, childByteOrder, serializersModule)
 
         val blockSettings = blockSettings(annotations)
+
+        if (descriptor.kind is SerialKind.ENUM) {
+            if (blockSettings.checksumAlgorithm != null) {
+                throw SerializationException(
+                    "Enum '${descriptor.serialName}' cannot use @Checksum: enum variants are already " +
+                    "implicitly validated — an unrecognised byte pattern throws during matching.",
+                )
+            }
+            val hasPrefix = blockSettings.prefix != null
+            val hasPostfix = blockSettings.postfix != null
+            if (customIndex != null && (hasPrefix || hasPostfix)) {
+                throw SerializationException(
+                    "Enum '${descriptor.serialName}' is flag-packed via @FlagIndex but also has " +
+                    "${if (hasPrefix && hasPostfix) "@Prefix and @Postfix" else if (hasPrefix) "@Prefix" else "@Postfix"}. " +
+                    "Flag-packed enums have no body bytes to wrap.",
+                )
+            }
+        }
+
         val minWidth = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: 0
         val width = maxOf(desiredFlagBitWidth.width, minWidth)
         val bitIndex = if (width > 0) {

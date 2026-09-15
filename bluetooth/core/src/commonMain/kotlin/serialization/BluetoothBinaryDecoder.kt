@@ -83,18 +83,50 @@ internal class BluetoothBinaryDecoder(
             }
         } else {
             // Otherwise the enum is an (unsized) identifier in the body; check for the first match.
-            val prefix = binaryDescriptor.structureSettings.prefix?.array
-            val postfix = binaryDescriptor.structureSettings.postfix?.array
-            if (prefix != null) decoder.nextBytes(prefix.size)
+            // Prefix/postfix only apply here — flag-packed enums have no body bytes to wrap.
+            decoder.consumePrefix(binaryDescriptor)
             val result = binaryDescriptor.enumMap.firstNotNullOf { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
-            if (postfix != null) decoder.nextBytes(postfix.size)
+            decoder.consumePostfix(binaryDescriptor)
             result
         }
     }
 
     override fun decodeFloat(): Float = binaryDescriptor.decodeFloatElement(decoder)
 
-    override fun decodeInline(descriptor: SerialDescriptor): Decoder = this
+    override fun decodeInline(descriptor: SerialDescriptor): Decoder {
+        val settings = binaryDescriptor.structureSettings
+        if (settings.prefix == null && settings.postfix == null && settings.checksumAlgorithm == null) return this
+
+        decoder.consumePrefix(binaryDescriptor)
+        val bodyStartOffset = decoder.currentOffset
+
+        return object : Decoder by this {
+            private fun consumeFooter() {
+                decoder.validateChecksum(binaryDescriptor, decoder, bodyStartOffset)
+                decoder.consumePostfix(binaryDescriptor)
+            }
+            override fun decodeBoolean() = this@BluetoothBinaryDecoder.decodeBoolean().also { consumeFooter() }
+            override fun decodeByte()    = this@BluetoothBinaryDecoder.decodeByte().also { consumeFooter() }
+            override fun decodeChar()    = this@BluetoothBinaryDecoder.decodeChar().also { consumeFooter() }
+            override fun decodeShort()   = this@BluetoothBinaryDecoder.decodeShort().also { consumeFooter() }
+            override fun decodeInt()     = this@BluetoothBinaryDecoder.decodeInt().also { consumeFooter() }
+            override fun decodeLong()    = this@BluetoothBinaryDecoder.decodeLong().also { consumeFooter() }
+            override fun decodeFloat()   = this@BluetoothBinaryDecoder.decodeFloat().also { consumeFooter() }
+            override fun decodeDouble()  = this@BluetoothBinaryDecoder.decodeDouble().also { consumeFooter() }
+            override fun decodeString()  = this@BluetoothBinaryDecoder.decodeString().also { consumeFooter() }
+            override fun decodeEnum(enumDescriptor: SerialDescriptor) =
+                this@BluetoothBinaryDecoder.decodeEnum(enumDescriptor).also { consumeFooter() }
+            override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
+                val inner = this@BluetoothBinaryDecoder.beginStructure(descriptor)
+                return object : CompositeDecoder by inner {
+                    override fun endStructure(descriptor: SerialDescriptor) {
+                        inner.endStructure(descriptor)
+                        consumeFooter()
+                    }
+                }
+            }
+        }
+    }
 
     override fun decodeInt(): Int = binaryDescriptor.decodeIntElement(decoder)
 

@@ -201,7 +201,50 @@ internal class BluetoothBinaryEncoder(
         builder.encodeFloatElement(value, binaryDescriptor)
     }
 
-    override fun encodeInline(descriptor: SerialDescriptor): Encoder = this
+    override fun encodeInline(descriptor: SerialDescriptor): Encoder {
+        val settings = binaryDescriptor.structureSettings
+        if (settings.prefix == null && settings.postfix == null && settings.checksumAlgorithm == null) return this
+
+        // binaryDescriptor.structureSettings carries the value class's boundary (set by the registry).
+        // ClassBinaryBuilder.build() handles prefix → body → checksum → postfix exactly as for structures.
+        // The underlying encoder uses a descriptor with cleared structureSettings so that encodeEnum and
+        // other methods that read structureSettings do not double-apply the boundary inside the body.
+        val classBuilder = ClassBinaryBuilder(binaryDescriptor) {}
+        val bodyDescriptor = binaryDescriptor.copy(structureSettings = BluetoothBinaryDescriptor.StructureSettings(null, null, null))
+        val underlyingEncoder = BluetoothBinaryEncoder(bodyDescriptor, classBuilder, serializersModule)
+        var finalized = false
+        fun finalizeToParent() {
+            if (!finalized) {
+                finalized = true
+                builder.addAction(classBuilder.expectedSize) { with(classBuilder) { build() } }
+            }
+        }
+
+        return object : Encoder by underlyingEncoder {
+            override fun encodeBoolean(value: Boolean) { underlyingEncoder.encodeBoolean(value); finalizeToParent() }
+            override fun encodeByte(value: Byte)        { underlyingEncoder.encodeByte(value); finalizeToParent() }
+            override fun encodeChar(value: Char)        { underlyingEncoder.encodeChar(value); finalizeToParent() }
+            override fun encodeShort(value: Short)      { underlyingEncoder.encodeShort(value); finalizeToParent() }
+            override fun encodeInt(value: Int)          { underlyingEncoder.encodeInt(value); finalizeToParent() }
+            override fun encodeLong(value: Long)        { underlyingEncoder.encodeLong(value); finalizeToParent() }
+            override fun encodeFloat(value: Float)      { underlyingEncoder.encodeFloat(value); finalizeToParent() }
+            override fun encodeDouble(value: Double)    { underlyingEncoder.encodeDouble(value); finalizeToParent() }
+            override fun encodeString(value: String)    { underlyingEncoder.encodeString(value); finalizeToParent() }
+            override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
+                underlyingEncoder.encodeEnum(enumDescriptor, index)
+                finalizeToParent()
+            }
+            override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
+                val inner = underlyingEncoder.beginStructure(descriptor)
+                return object : CompositeEncoder by inner {
+                    override fun endStructure(descriptor: SerialDescriptor) {
+                        inner.endStructure(descriptor)
+                        finalizeToParent()
+                    }
+                }
+            }
+        }
+    }
 
     override fun encodeInt(value: Int) {
         markNotNull()

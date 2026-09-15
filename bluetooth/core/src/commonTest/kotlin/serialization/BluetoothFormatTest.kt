@@ -55,6 +55,9 @@ import kotlin.jvm.JvmInline
 import kotlin.math.pow
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToByteArray
+import com.splendo.kaluga.bluetooth.serialization.InvalidPrefix
+import com.splendo.kaluga.bluetooth.serialization.InvalidPostfix
+import com.splendo.kaluga.bluetooth.serialization.InvalidChecksumException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -130,6 +133,13 @@ class BluetoothFormatTest {
     @Serializable
     @JvmInline
     value class NumberValueContainer<T>(@Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val value: T)
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    value class ValueContainerWithHeaderAndFooter(@Size(Length.`8_BIT`) val int: Int)
 
     // Spike: a value class that IS a Kaluga ScientificValue and also carries BluetoothFormat annotations.
     @Serializable
@@ -2515,6 +2525,100 @@ class BluetoothFormatTest {
 
         // Full round-trip with checksum validation enabled (default BluetoothFormat): encode then decode.
         validateRoundTrip(value, WithChecksum.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun encodeValueClassWithChecksumAndHeaderFooter() {
+        val byteValue: Byte = 0x12
+        val value = ValueContainerWithHeaderAndFooter(byteValue.toInt())
+        val expectedChecksum = CRC16.compute(byteArrayOf(byteValue))
+        val expectedBytes = buildByteArray {
+            add(0x55.toByte())
+            add(byteValue)
+            add(expectedChecksum.toUShort())
+            add(0xAA.toByte())
+        }
+
+        validateRoundTrip(value, ValueContainerWithHeaderAndFooter.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun valueClassWithHeaderFooterRejectsWrongPrefix() {
+        assertFailsWith<InvalidPrefix> {
+            BluetoothFormat.decodeFromByteArray(
+                ValueContainerWithHeaderAndFooter.serializer(),
+                byteArrayOf(0x44, 0x12, 0x00, 0x00, 0xAA.toByte()), // 0x44 instead of expected 0x55
+            )
+        }
+    }
+
+    @Test
+    fun valueClassWithHeaderFooterRejectsWrongPostfix() {
+        val byteValue: Byte = 0x12
+        val crc = CRC16.compute(byteArrayOf(byteValue))
+        assertFailsWith<InvalidPostfix> {
+            BluetoothFormat.decodeFromByteArray(
+                ValueContainerWithHeaderAndFooter.serializer(),
+                buildByteArray {
+                    add(0x55.toByte())
+                    add(byteValue)
+                    add(crc.toUShort())
+                    add(0xBB.toByte()) // 0xBB instead of expected 0xAA
+                },
+            )
+        }
+    }
+
+    @Test
+    fun valueClassWithHeaderFooterRejectsWrongChecksum() {
+        assertFailsWith<InvalidChecksumException> {
+            BluetoothFormat.decodeFromByteArray(
+                ValueContainerWithHeaderAndFooter.serializer(),
+                byteArrayOf(0x55, 0x12, 0x00, 0x00, 0xAA.toByte()), // 0x0000 is not CRC16(0x12)
+            )
+        }
+    }
+
+    @Test
+    fun enumWithChecksumThrowsAtRegistryTime() {
+        @Serializable
+        @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+        enum class ChecksumEnum { A, B }
+
+        @Serializable
+        data class Container(val value: ChecksumEnum)
+
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(ChecksumEnum.A))
+        }
+    }
+
+    @Test
+    fun flagPackedEnumWithPrefixThrowsAtRegistryTime() {
+        @Serializable
+        @Prefix([0x01])
+        enum class FlagEnum { A, B }
+
+        @Serializable
+        data class Container(@FlagIndex(0) val value: FlagEnum)
+
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
+        }
+    }
+
+    @Test
+    fun flagPackedEnumWithPostfixThrowsAtRegistryTime() {
+        @Serializable
+        @Postfix([0x01])
+        enum class FlagEnum { A, B }
+
+        @Serializable
+        data class Container(@FlagIndex(0) val value: FlagEnum)
+
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
+        }
     }
 
     @Test
