@@ -285,8 +285,10 @@ class ConnectableDeviceImpl(
     private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) = when (state) {
         is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
             is ConnectionSettings.ReconnectionSettings.Always if !isIntentional -> state.reconnect
+
             is ConnectionSettings.ReconnectionSettings.Always,
-            is ConnectionSettings.ReconnectionSettings.Never -> {
+            is ConnectionSettings.ReconnectionSettings.Never,
+            -> {
                 onDisconnect()
                 state.didDisconnect
             }

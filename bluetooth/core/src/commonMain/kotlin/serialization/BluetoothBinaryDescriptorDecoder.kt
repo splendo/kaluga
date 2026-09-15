@@ -212,11 +212,7 @@ internal fun BluetoothBinaryDescriptorDecoder.consumePostfix(descriptor: Bluetoo
     }
 }
 
-internal fun BluetoothBinaryDescriptorDecoder.validateChecksum(
-    descriptor: BluetoothBinaryDescriptor,
-    rootDecoder: BluetoothBinaryDescriptorDecoder,
-    startingOffset: Int
-) {
+internal fun BluetoothBinaryDescriptorDecoder.validateChecksum(descriptor: BluetoothBinaryDescriptor, rootDecoder: BluetoothBinaryDescriptorDecoder, startingOffset: Int) {
     // Validation can be disabled
     descriptor.structureSettings.checksumAlgorithm?.let { crc ->
         if (validateChecksum) {

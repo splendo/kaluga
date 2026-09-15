@@ -186,8 +186,8 @@ class BluetoothFormatTest {
     @Serializable
     @SerializedByteValue(0x01, 0x00, 0x04)
     data class Payload(
-        @Size(Length.`16_BIT`) @Unsigned val a: Int,  // field 1 — must appear first in wire
-        @Size(Length.`16_BIT`) @Unsigned val b: Int,  // field 2 — must appear second
+        @Size(Length.`16_BIT`) @Unsigned val a: Int, // field 1 — must appear first in wire
+        @Size(Length.`16_BIT`) @Unsigned val b: Int, // field 2 — must appear second
     ) : Frame
 
     // childByteOrder (MSB) must propagate to enum ordinal encoding inside the structure.
@@ -204,14 +204,10 @@ class BluetoothFormatTest {
     sealed interface SizeDispatchedPayload
 
     @Serializable
-    data class FourBytePayload(@Unsigned val value: UInt) : SizeDispatchedPayload   // 4 bytes
+    data class FourBytePayload(@Unsigned val value: UInt) : SizeDispatchedPayload // 4 bytes
 
     @Serializable
-    data class NineBytePayload(
-        @Unsigned val a: UInt,
-        @Unsigned val b: UInt,
-        val c: UByte,
-    ) : SizeDispatchedPayload  // 4 + 4 + 1 = 9 bytes
+    data class NineBytePayload(@Unsigned val a: UInt, @Unsigned val b: UInt, val c: UByte) : SizeDispatchedPayload // 4 + 4 + 1 = 9 bytes
 
     // ── Variable-size fallback ────────────────────────────────────────────────
     // One fixed-size subtype + one variable-size catch-all.
@@ -221,10 +217,10 @@ class BluetoothFormatTest {
     sealed interface MixedSizeSealed
 
     @Serializable
-    data class FixedMixed(@Unsigned val value: UInt) : MixedSizeSealed           // 4 bytes — matched first
+    data class FixedMixed(@Unsigned val value: UInt) : MixedSizeSealed // 4 bytes — matched first
 
     @Serializable
-    data class VariableMixed(@Unsized val items: List<UByte>) : MixedSizeSealed  // variable — catch-all
+    data class VariableMixed(@Unsized val items: List<UByte>) : MixedSizeSealed // variable — catch-all
 
     // ── Failure: two variable-size subtypes ───────────────────────────────────
 
@@ -244,10 +240,10 @@ class BluetoothFormatTest {
     sealed interface AmbiguousSizeSealed
 
     @Serializable
-    data class AmbiguousTypeA(@Unsigned val value: UInt) : AmbiguousSizeSealed  // 4 bytes
+    data class AmbiguousTypeA(@Unsigned val value: UInt) : AmbiguousSizeSealed // 4 bytes
 
     @Serializable
-    data class AmbiguousTypeB(@Unsigned val value: UInt) : AmbiguousSizeSealed  // also 4 bytes
+    data class AmbiguousTypeB(@Unsigned val value: UInt) : AmbiguousSizeSealed // also 4 bytes
 
     @Serializable
     data class WithSiblingAfter(val payload: SizeDispatchedPayload, val trailing: UByte)
@@ -272,8 +268,11 @@ class BluetoothFormatTest {
     // 2-byte discriminators on an enum; distinguishes [0x01 0x00] from [0x00 0x01] (true multi-byte)
     @Serializable
     enum class OpCode {
-        @SerializedByteValue(0x00, 0x01) CONNECT,
-        @SerializedByteValue(0x01, 0x00) DISCONNECT,
+        @SerializedByteValue(0x00, 0x01)
+        CONNECT,
+
+        @SerializedByteValue(0x01, 0x00)
+        DISCONNECT,
     }
 
     // Mixing 1-byte and 2-byte @SerializedByteValue on the same sealed class must fail at descriptor build time
@@ -317,9 +316,11 @@ class BluetoothFormatTest {
     @Serializable
     @ByOrdinal(offset = 1)
     enum class OverrideOrdinal {
-        FIRST,                         // ordinal 0 + 1 = 0x01 (from @ByOrdinal)
-        SECOND,                        // ordinal 1 + 1 = 0x02 (from @ByOrdinal)
-        @SerializedByteValue(0x04)     // explicit override — skips 0x03
+        FIRST, // ordinal 0 + 1 = 0x01 (from @ByOrdinal)
+        SECOND,
+
+        // ordinal 1 + 1 = 0x02 (from @ByOrdinal)
+        @SerializedByteValue(0x04) // explicit override — skips 0x03
         THIRD,
     }
 
@@ -329,10 +330,7 @@ class BluetoothFormatTest {
     enum class TriStateOrdinal { FIRST, SECOND, THIRD }
 
     @Serializable
-    data class OrdinalFieldPacket(
-        @Size(Length.`8_BIT`) @Unsigned val code: Int,
-        val state: TriStateOrdinal,
-    )
+    data class OrdinalFieldPacket(@Size(Length.`8_BIT`) @Unsigned val code: Int, val state: TriStateOrdinal)
 
 // @Reserved bytes must be included in the staticByteSize used by @SizePolymorphic dispatch.
     // Short: 1 value byte + 2 reserved after = 3 bytes total.
@@ -1168,11 +1166,9 @@ class BluetoothFormatTest {
     fun encodeRange() {
         // 8-bit: 0x00 = min, 0xFF = max
         @Serializable
-        data class EightBit(
-            @Range(0.0, 100.0) @Size(Length.`8_BIT`) val percent: Double,
-        )
+        data class EightBit(@Range(0.0, 100.0) @Size(Length.`8_BIT`) val percent: Double)
 
-        validateEncoding(EightBit(0.0),   buildByteArray { add(0x00.toByte()) })
+        validateEncoding(EightBit(0.0), buildByteArray { add(0x00.toByte()) })
         validateEncoding(EightBit(100.0), buildByteArray { add(0xFF.toByte()) })
 
         // Intermediate: round((75 / 100) × 255) = round(191.25) = 191
@@ -1184,33 +1180,29 @@ class BluetoothFormatTest {
 
         // 16-bit: 0x0000 = min, 0xFFFF = max
         @Serializable
-        data class SixteenBit(
-            @Range(0.0, 100.0) @Size(Length.`16_BIT`) val percent: Double,
-        )
+        data class SixteenBit(@Range(0.0, 100.0) @Size(Length.`16_BIT`) val percent: Double)
 
-        validateEncoding(SixteenBit(0.0),   buildByteArray { add(uShort = 0u) })
+        validateEncoding(SixteenBit(0.0), buildByteArray { add(uShort = 0u) })
         validateEncoding(SixteenBit(100.0), buildByteArray { add(uShort = 65535u) })
 
         // Body field before the range field; verifies byte layout is [rangeByte][other]
         @Serializable
-        data class WithHeader(
-            val header: Byte,
-            @Range(0.0, 1.0) @Size(Length.`8_BIT`) val fraction: Double,
-        )
+        data class WithHeader(val header: Byte, @Range(0.0, 1.0) @Size(Length.`8_BIT`) val fraction: Double)
 
         validateEncoding(
             WithHeader(0x42, 1.0),
-            buildByteArray { add(0x42.toByte()); add(0xFF.toByte()) },
+            buildByteArray {
+                add(0x42.toByte())
+                add(0xFF.toByte())
+            },
         )
 
         // Custom min/max range (temperature −40 °C … +85 °C encoded as unsigned byte)
         @Serializable
-        data class Temperature(
-            @Range(-40.0, 85.0) @Size(Length.`8_BIT`) val celsius: Double,
-        )
+        data class Temperature(@Range(-40.0, 85.0) @Size(Length.`8_BIT`) val celsius: Double)
 
         validateEncoding(Temperature(-40.0), buildByteArray { add(0x00.toByte()) })
-        validateEncoding(Temperature(85.0),  buildByteArray { add(0xFF.toByte()) })
+        validateEncoding(Temperature(85.0), buildByteArray { add(0xFF.toByte()) })
     }
 
     @Test
@@ -1668,10 +1660,7 @@ class BluetoothFormatTest {
         //   wire layout: [0-1]=count(UShort LE in flag header) [2]=headerByte [3..]=items×2B
         // The flag header holds the list count; the body begins with headerByte, then item data.
         @Serializable
-        data class ContainerShort(
-            val headerByte: Byte,
-            @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>,
-        )
+        data class ContainerShort(val headerByte: Byte, @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>)
 
         validateEncoding(
             ContainerShort(0x42, listOf(Item(0x0A, 0x0B), Item(0x0C, 0x0D), Item(0x0E, 0x0F))),
@@ -1681,9 +1670,12 @@ class BluetoothFormatTest {
                 // body: headerByte
                 add(0x42.toByte())
                 // items
-                add(0x0A.toByte()); add(0x0B.toByte())
-                add(0x0C.toByte()); add(0x0D.toByte())
-                add(0x0E.toByte()); add(0x0F.toByte())
+                add(0x0A.toByte())
+                add(0x0B.toByte())
+                add(0x0C.toByte())
+                add(0x0D.toByte())
+                add(0x0E.toByte())
+                add(0x0F.toByte())
             },
         )
 
@@ -1691,27 +1683,27 @@ class BluetoothFormatTest {
         validateEncoding(
             ContainerShort(0x99.toByte(), emptyList()),
             buildByteArray {
-                add(uShort = 0u)     // count = 0
-                add(0x99.toByte())   // headerByte
+                add(uShort = 0u) // count = 0
+                add(0x99.toByte()) // headerByte
             },
         )
 
         // Large count (>255) to exercise the full 16-bit range
         val largeList = MutableList(300) { Item(it.toByte(), (it + 1).toByte()) }
         val largeEncoded = buildByteArray {
-            add(uShort = 300u)       // 0x2C 0x01
-            add(0x01.toByte())       // headerByte
-            largeList.forEach { add(it.a); add(it.b) }
+            add(uShort = 300u) // 0x2C 0x01
+            add(0x01.toByte()) // headerByte
+            largeList.forEach {
+                add(it.a)
+                add(it.b)
+            }
         }
         validateEncoding(ContainerShort(0x01, largeList), largeEncoded)
 
         // 8-bit count in flag header (@LengthPrefix default + @FlagIndex(0)):
         //   wire layout: [0]=count(UByte in flag header) [1]=extra [2..]=items×2B
         @Serializable
-        data class ContainerByte(
-            val extra: Byte,
-            @LengthPrefix @FlagIndex(0) val items: List<Item>,
-        )
+        data class ContainerByte(val extra: Byte, @LengthPrefix @FlagIndex(0) val items: List<Item>)
 
         validateEncoding(
             ContainerByte(0x55, listOf(Item(0x01, 0x02), Item(0x03, 0x04))),
@@ -1721,18 +1713,17 @@ class BluetoothFormatTest {
                 // body: extra
                 add(0x55.toByte())
                 // items
-                add(0x01.toByte()); add(0x02.toByte())
-                add(0x03.toByte()); add(0x04.toByte())
+                add(0x01.toByte())
+                add(0x02.toByte())
+                add(0x03.toByte())
+                add(0x04.toByte())
             },
         )
 
         // Multiple flag-consuming fields alongside the flag-indexed list:
         //   contactPresent is a nullable Bool at bit 16; items count occupies bits 0-15
         @Serializable
-        data class ContainerWithSiblingFlag(
-            @FlagIndex(16) val contactPresent: Boolean?,
-            @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>,
-        )
+        data class ContainerWithSiblingFlag(@FlagIndex(16) val contactPresent: Boolean?, @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>)
 
         validateEncoding(
             ContainerWithSiblingFlag(true, listOf(Item(0xAB.toByte(), 0xCD.toByte()))),
@@ -1745,7 +1736,8 @@ class BluetoothFormatTest {
                 add(uByte = 0u)
                 add(0b00000011.toByte())
                 // items
-                add(0xAB.toByte()); add(0xCD.toByte())
+                add(0xAB.toByte())
+                add(0xCD.toByte())
             },
         )
     }
@@ -2155,14 +2147,12 @@ class BluetoothFormatTest {
 
     @Test
     fun byOrdinalZeroBased() {
-
         validateEncoding(Packet(0x10, ResponseCode.ACCEPTED), byteArrayOf(0x10, 0x00))
         validateEncoding(Packet(0x10, ResponseCode.INVALID_STATE), byteArrayOf(0x10, 0x03))
     }
 
     @Test
     fun byOrdinalWithOffset() {
-
         validateEncoding(OffsetOrdinalPacket(OffsetOrdinal.FIRST), byteArrayOf(0x01))
         validateEncoding(OffsetOrdinalPacket(OffsetOrdinal.SECOND), byteArrayOf(0x02))
         validateEncoding(OffsetOrdinalPacket(OffsetOrdinal.THIRD), byteArrayOf(0x03))
@@ -2170,7 +2160,6 @@ class BluetoothFormatTest {
 
     @Test
     fun byOrdinalTwoByte() {
-
         // NONE=0 → [0x00 0x00], IDLE=2 → [0x02 0x00] (LE)
         validateEncoding(StatePacket(State.NONE), byteArrayOf(0x00, 0x00))
         validateEncoding(StatePacket(State.IDLE), byteArrayOf(0x02, 0x00))
@@ -2179,7 +2168,6 @@ class BluetoothFormatTest {
 
     @Test
     fun byOrdinalPerVariantOverride() {
-
         @Serializable
         data class Packet(val value: OverrideOrdinal)
 
@@ -2190,7 +2178,6 @@ class BluetoothFormatTest {
 
     @Test
     fun byOrdinalInDataClass() {
-
         validateEncoding(OrdinalFieldPacket(0x0F, TriStateOrdinal.THIRD), byteArrayOf(0x0F, 0x02))
     }
 
@@ -2291,7 +2278,6 @@ class BluetoothFormatTest {
 
     @Test
     fun multiByteEnumDiscriminator() {
-
         @Serializable
         data class Frame(val op: OpCode)
 
@@ -2312,7 +2298,6 @@ class BluetoothFormatTest {
 
     @Test
     fun inconsistentDiscriminatorLengthsThrows() {
-
         assertFailsWith<SerializationException> {
             BluetoothFormat {
                 serializersModule = SerializersModule {
@@ -2659,10 +2644,11 @@ class BluetoothFormatTest {
         @Serializable
         @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
         data class Frame(
-            @Size(Length.`16_BIT`) @Unsigned val a: Int,  // inherits childByteOrder → big-endian
+            @Size(Length.`16_BIT`) @Unsigned val a: Int, // inherits childByteOrder → big-endian
             @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-            @Size(Length.`16_BIT`) @Unsigned val b: Int,  // explicit per-property LSB override
-            @Size(Length.`16_BIT`) @Unsigned val c: Int,  // inherits childByteOrder → big-endian
+            @Size(Length.`16_BIT`)
+            @Unsigned val b: Int, // explicit per-property LSB override
+            @Size(Length.`16_BIT`) @Unsigned val c: Int, // inherits childByteOrder → big-endian
         )
 
         // a=0x0102 → [01 02] (MSB), b=0x0304 → [04 03] (LSB override), c=0x0506 → [05 06] (MSB)
@@ -2705,8 +2691,6 @@ class BluetoothFormatTest {
 
     @Test
     fun byteOrderExcludeStructureUnannotatedNestedStructureInheritsBuilderDirection() {
-
-
         // a=0x0102 → [01 02] first, b=0x0304 → [03 04] second.  Both big-endian, sequential order.
         // If the unannotated Payload inherited MSB as byteOrder it would reverse: [03 04 01 02].
         validateRoundTrip(
@@ -2718,7 +2702,6 @@ class BluetoothFormatTest {
 
     @Test
     fun byteOrderExcludeStructureChildByteOrderPropagatesEnum() {
-
         // ON = ordinal 1, big-endian 2 bytes → [00 01]
         validateEncoding(StatusFrame(Status.ON), byteArrayOf(0x00, 0x01))
     }
@@ -2728,9 +2711,7 @@ class BluetoothFormatTest {
         // For Strings, childByteOrder still governs char encoding — changing it is still disallowed
         // inside a structure whose parent has a different childByteOrder.
         @Serializable
-        data class InvalidStringByteOrder(
-            @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val text: String,
-        )
+        data class InvalidStringByteOrder(@com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val text: String)
 
         assertFailsWith<InvalidByteOrderException> {
             BluetoothFormat.encodeToByteArray(InvalidStringByteOrder.serializer(), InvalidStringByteOrder("fail"))
@@ -2741,7 +2722,6 @@ class BluetoothFormatTest {
 
     @Test
     fun reservedBytesCountedInStaticSize() {
-
         validateEncoding(Short3(0x0A), byteArrayOf(0x0A, 0x00, 0x00))
         validateEncoding(Long5(0x0B), byteArrayOf(0x0B, 0x00, 0x00, 0x00, 0x00))
     }
@@ -2750,17 +2730,15 @@ class BluetoothFormatTest {
     fun reservedBytesAfter() {
         // Two reserved bytes appended after the last field (trailing padding).
         @Serializable
-        data class Packet(
-            @Size(Length.`8_BIT`) @Unsigned val a: Int,
-            @Reserved(after = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int,
-        )
+        data class Packet(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Reserved(after = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int)
 
         validateEncoding(
             Packet(0x01, 0x02),
             byteArrayOf(
-                0x01,               // a
-                0x02,               // b
-                0x00, 0x00,         // 2 reserved bytes after b
+                0x01, // a
+                0x02, // b
+                0x00,
+                0x00, // 2 reserved bytes after b
             ),
         )
     }
@@ -2769,17 +2747,15 @@ class BluetoothFormatTest {
     fun reservedBytesBefore() {
         // Two reserved bytes before the second field (mid-packet padding).
         @Serializable
-        data class Packet(
-            @Size(Length.`8_BIT`) @Unsigned val a: Int,
-            @Reserved(before = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int,
-        )
+        data class Packet(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Reserved(before = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int)
 
         validateEncoding(
             Packet(0x01, 0x02),
             byteArrayOf(
-                0x01,               // a
-                0x00, 0x00,         // 2 reserved bytes before b
-                0x02,               // b
+                0x01, // a
+                0x00,
+                0x00, // 2 reserved bytes before b
+                0x02, // b
             ),
         )
     }
@@ -2789,18 +2765,19 @@ class BluetoothFormatTest {
         // Reserved padding both before and after a single field:
         //   [a (2B)] [reserved (2B)] [b (2B)] [reserved (2B)]
         @Serializable
-        data class Packet(
-            @Size(Length.`16_BIT`) @Unsigned val a: Int,
-            @Reserved(before = 2, after = 2) @Size(Length.`16_BIT`) @Unsigned val b: Int,
-        )
+        data class Packet(@Size(Length.`16_BIT`) @Unsigned val a: Int, @Reserved(before = 2, after = 2) @Size(Length.`16_BIT`) @Unsigned val b: Int)
 
         validateEncoding(
             Packet(a = 0x1600, b = 0x0258),
             byteArrayOf(
-                0x00, 0x16,         // a (LE)
-                0x00, 0x00,         // 2 reserved before b
-                0x58, 0x02,         // b (LE)
-                0x00, 0x00,         // 2 reserved after b
+                0x00,
+                0x16, // a (LE)
+                0x00,
+                0x00, // 2 reserved before b
+                0x58,
+                0x02, // b (LE)
+                0x00,
+                0x00, // 2 reserved after b
             ),
         )
     }
@@ -2809,16 +2786,13 @@ class BluetoothFormatTest {
     fun reservedBytesDecodeIgnoresContent() {
         // On decode, non-zero reserved bytes are silently discarded — no exception.
         @Serializable
-        data class Packet(
-            @Size(Length.`8_BIT`) @Unsigned val a: Int,
-            @Reserved(before = 1, after = 1) @Size(Length.`8_BIT`) @Unsigned val b: Int,
-        )
+        data class Packet(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Reserved(before = 1, after = 1) @Size(Length.`8_BIT`) @Unsigned val b: Int)
 
         val serializer = Packet.serializer()
         val bytes = byteArrayOf(
-            0x0A,       // a
+            0x0A, // a
             0xFF.toByte(), // reserved before b — garbage, should be ignored
-            0x0B,       // b
+            0x0B, // b
             0xDE.toByte(), // reserved after b — garbage, should be ignored
         )
         assertEquals(Packet(0x0A, 0x0B), BluetoothFormat.decodeFromByteArray(serializer, bytes))
@@ -2837,12 +2811,13 @@ class BluetoothFormatTest {
         validateEncoding(
             Packet(x = 0x01, y = 0x02, z = 0x03),
             byteArrayOf(
-                0x01,               // x
-                0x00,               // 1 reserved after x
-                0x00,               // 1 reserved before y
-                0x02,               // y
-                0x00, 0x00,         // 2 reserved after y
-                0x03,               // z
+                0x01, // x
+                0x00, // 1 reserved after x
+                0x00, // 1 reserved before y
+                0x02, // y
+                0x00,
+                0x00, // 2 reserved after y
+                0x03, // z
             ),
         )
     }

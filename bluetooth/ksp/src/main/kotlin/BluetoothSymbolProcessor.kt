@@ -215,8 +215,11 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         // that arises with ALL_FILES when multiple annotated interfaces share a service UUID:
         // ALL_FILES marks every output dirty on any source change, so both services try to write
         // their file in the same processor run while the other's stale file still exists.
-        val dependencies = if (sourceFiles.isEmpty()) Dependencies.ALL_FILES
-                          else Dependencies(aggregating = true, *sourceFiles.toTypedArray())
+        val dependencies = if (sourceFiles.isEmpty()) {
+            Dependencies.ALL_FILES
+        } else {
+            Dependencies(aggregating = true, *sourceFiles.toTypedArray())
+        }
         indent("    ").build().writeTo(codeGenerator, dependencies)
     }
 

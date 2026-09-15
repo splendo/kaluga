@@ -109,11 +109,8 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
             .build()
     }
 
-    private fun generateBluetoothCompanionObject(
-        needsFormatter: NeedsFormatterHelper.NeedsFormatter,
-        className: ClassName,
-        interfaceName: ClassName
-    ): TypeSpec = TypeSpec.companionObjectBuilder()
+    private fun generateBluetoothCompanionObject(needsFormatter: NeedsFormatterHelper.NeedsFormatter, className: ClassName, interfaceName: ClassName): TypeSpec =
+        TypeSpec.companionObjectBuilder()
             .addFunction(
                 FunSpec.builder(FROM_CHARACTERISTIC)
                     .addParameters(

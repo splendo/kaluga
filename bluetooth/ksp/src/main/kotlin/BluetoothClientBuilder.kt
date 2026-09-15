@@ -65,8 +65,11 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
             val returnType = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
             listOf(generateBluetoothSnapshotFactory(needsFormatter, returnType), generateBluetoothFlowFactory(needsFormatter, returnType))
         }
+
         GenerationType.CLIENT_SIMULATOR -> listOfNotNull(if (options.generateServer) generateSimulatorFactory() else null)
+
         GenerationType.CLIENT_MOCK -> listOf(generateMockFactory())
+
         else -> emptyList()
     }
 

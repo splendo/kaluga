@@ -123,11 +123,8 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             .build()
     }
 
-    private fun generateBluetoothCompanionObject(
-        needsFormatter: NeedsFormatterHelper.NeedsFormatter,
-        className: ClassName,
-        interfaceName: ClassName,
-    ): TypeSpec = TypeSpec.companionObjectBuilder()
+    private fun generateBluetoothCompanionObject(needsFormatter: NeedsFormatterHelper.NeedsFormatter, className: ClassName, interfaceName: ClassName): TypeSpec =
+        TypeSpec.companionObjectBuilder()
             .addFunction(
                 FunSpec.builder(FROM_SERVICE)
                     .addParameters(
@@ -446,32 +443,31 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             }
         }.build()
 
-    private fun generateIsNotifyingProperty(type: GenerationType.Type): PropertySpec =
-        PropertySpec.builder(
-            "isNotifying",
-            References.KotlinX.Coroutines.Flow.flow.parameterizedBy(BOOLEAN),
-        ).addModifiers(*type.additionalModifiers.toTypedArray())
-            .apply {
-                when (type) {
-                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
+    private fun generateIsNotifyingProperty(type: GenerationType.Type): PropertySpec = PropertySpec.builder(
+        "isNotifying",
+        References.KotlinX.Coroutines.Flow.flow.parameterizedBy(BOOLEAN),
+    ).addModifiers(*type.additionalModifiers.toTypedArray())
+        .apply {
+            when (type) {
+                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
-                    GenerationType.Type.BLUETOOTH -> {
-                        getter(
-                            FunSpec.getterBuilder()
-                                .addStatement("$RETURN $CHARACTERISTIC.isNotifying")
-                                .build(),
-                        )
-                    }
-
-                    GenerationType.Type.SIMULATOR -> {
-                        getter(
-                            FunSpec.getterBuilder()
-                                .addStatement("$RETURN _isNotifying")
-                                .build(),
-                        )
-                    }
+                GenerationType.Type.BLUETOOTH -> {
+                    getter(
+                        FunSpec.getterBuilder()
+                            .addStatement("$RETURN $CHARACTERISTIC.isNotifying")
+                            .build(),
+                    )
                 }
-            }.build()
+
+                GenerationType.Type.SIMULATOR -> {
+                    getter(
+                        FunSpec.getterBuilder()
+                            .addStatement("$RETURN _isNotifying")
+                            .build(),
+                    )
+                }
+            }
+        }.build()
 
     private fun generateDescriptorProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
         val propertyType = clientName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration)

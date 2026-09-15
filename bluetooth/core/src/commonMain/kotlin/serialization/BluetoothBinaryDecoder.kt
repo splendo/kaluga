@@ -106,16 +106,15 @@ internal class BluetoothBinaryDecoder(
                 decoder.consumePostfix(binaryDescriptor)
             }
             override fun decodeBoolean() = this@BluetoothBinaryDecoder.decodeBoolean().also { consumeFooter() }
-            override fun decodeByte()    = this@BluetoothBinaryDecoder.decodeByte().also { consumeFooter() }
-            override fun decodeChar()    = this@BluetoothBinaryDecoder.decodeChar().also { consumeFooter() }
-            override fun decodeShort()   = this@BluetoothBinaryDecoder.decodeShort().also { consumeFooter() }
-            override fun decodeInt()     = this@BluetoothBinaryDecoder.decodeInt().also { consumeFooter() }
-            override fun decodeLong()    = this@BluetoothBinaryDecoder.decodeLong().also { consumeFooter() }
-            override fun decodeFloat()   = this@BluetoothBinaryDecoder.decodeFloat().also { consumeFooter() }
-            override fun decodeDouble()  = this@BluetoothBinaryDecoder.decodeDouble().also { consumeFooter() }
-            override fun decodeString()  = this@BluetoothBinaryDecoder.decodeString().also { consumeFooter() }
-            override fun decodeEnum(enumDescriptor: SerialDescriptor) =
-                this@BluetoothBinaryDecoder.decodeEnum(enumDescriptor).also { consumeFooter() }
+            override fun decodeByte() = this@BluetoothBinaryDecoder.decodeByte().also { consumeFooter() }
+            override fun decodeChar() = this@BluetoothBinaryDecoder.decodeChar().also { consumeFooter() }
+            override fun decodeShort() = this@BluetoothBinaryDecoder.decodeShort().also { consumeFooter() }
+            override fun decodeInt() = this@BluetoothBinaryDecoder.decodeInt().also { consumeFooter() }
+            override fun decodeLong() = this@BluetoothBinaryDecoder.decodeLong().also { consumeFooter() }
+            override fun decodeFloat() = this@BluetoothBinaryDecoder.decodeFloat().also { consumeFooter() }
+            override fun decodeDouble() = this@BluetoothBinaryDecoder.decodeDouble().also { consumeFooter() }
+            override fun decodeString() = this@BluetoothBinaryDecoder.decodeString().also { consumeFooter() }
+            override fun decodeEnum(enumDescriptor: SerialDescriptor) = this@BluetoothBinaryDecoder.decodeEnum(enumDescriptor).also { consumeFooter() }
             override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
                 val inner = this@BluetoothBinaryDecoder.beginStructure(descriptor)
                 return object : CompositeDecoder by inner {
@@ -325,7 +324,7 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
                 ?: sizeFallback
                 ?: throw SerializationException(
                     "No @SizePolymorphic subtype registered for size $remaining in ${descriptor.serialName}. " +
-                    "Expected one of ${sizeMap.keys}.",
+                        "Expected one of ${sizeMap.keys}.",
                 )
         } else {
             // Byte-prefix-based dispatch: peek at the next bytes to match the subtype identifier.
@@ -387,7 +386,10 @@ internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: Blue
     }
 }
 
-internal fun BluetoothBinaryDescriptor.decodeRangeNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.RangeEncoded): Double {
+internal fun BluetoothBinaryDescriptor.decodeRangeNumericElement(
+    decoder: BluetoothBinaryDescriptorDecoder,
+    settings: BluetoothBinaryDescriptor.NumericSettings.RangeEncoded,
+): Double {
     val rawValue = decodeNaturalNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, false))
     return rawValue.toDouble() / settings.maxWireValue * (settings.max - settings.min) + settings.min
 }

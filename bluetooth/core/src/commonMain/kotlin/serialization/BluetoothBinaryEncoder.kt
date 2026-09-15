@@ -221,15 +221,42 @@ internal class BluetoothBinaryEncoder(
         }
 
         return object : Encoder by underlyingEncoder {
-            override fun encodeBoolean(value: Boolean) { underlyingEncoder.encodeBoolean(value); finalizeToParent() }
-            override fun encodeByte(value: Byte)        { underlyingEncoder.encodeByte(value); finalizeToParent() }
-            override fun encodeChar(value: Char)        { underlyingEncoder.encodeChar(value); finalizeToParent() }
-            override fun encodeShort(value: Short)      { underlyingEncoder.encodeShort(value); finalizeToParent() }
-            override fun encodeInt(value: Int)          { underlyingEncoder.encodeInt(value); finalizeToParent() }
-            override fun encodeLong(value: Long)        { underlyingEncoder.encodeLong(value); finalizeToParent() }
-            override fun encodeFloat(value: Float)      { underlyingEncoder.encodeFloat(value); finalizeToParent() }
-            override fun encodeDouble(value: Double)    { underlyingEncoder.encodeDouble(value); finalizeToParent() }
-            override fun encodeString(value: String)    { underlyingEncoder.encodeString(value); finalizeToParent() }
+            override fun encodeBoolean(value: Boolean) {
+                underlyingEncoder.encodeBoolean(value)
+                finalizeToParent()
+            }
+            override fun encodeByte(value: Byte) {
+                underlyingEncoder.encodeByte(value)
+                finalizeToParent()
+            }
+            override fun encodeChar(value: Char) {
+                underlyingEncoder.encodeChar(value)
+                finalizeToParent()
+            }
+            override fun encodeShort(value: Short) {
+                underlyingEncoder.encodeShort(value)
+                finalizeToParent()
+            }
+            override fun encodeInt(value: Int) {
+                underlyingEncoder.encodeInt(value)
+                finalizeToParent()
+            }
+            override fun encodeLong(value: Long) {
+                underlyingEncoder.encodeLong(value)
+                finalizeToParent()
+            }
+            override fun encodeFloat(value: Float) {
+                underlyingEncoder.encodeFloat(value)
+                finalizeToParent()
+            }
+            override fun encodeDouble(value: Double) {
+                underlyingEncoder.encodeDouble(value)
+                finalizeToParent()
+            }
+            override fun encodeString(value: String) {
+                underlyingEncoder.encodeString(value)
+                finalizeToParent()
+            }
             override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
                 underlyingEncoder.encodeEnum(enumDescriptor, index)
                 finalizeToParent()
@@ -448,7 +475,14 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                 when (lengthToAdd) {
                     Length.`8_BIT` -> if (settings.signed) add(value.toByte()) else add(value.toByte().toUByte())
 
-                    Length.`16_BIT` -> if (settings.signed) add(value.toShort(), binaryDescriptor.childByteOrder) else add(value.toShort().toUShort(), binaryDescriptor.childByteOrder)
+                    Length.`16_BIT` -> if (settings.signed) {
+                        add(
+                            value.toShort(),
+                            binaryDescriptor.childByteOrder,
+                        )
+                    } else {
+                        add(value.toShort().toUShort(), binaryDescriptor.childByteOrder)
+                    }
 
                     Length.`24_BIT` -> if (settings.signed) {
                         add(

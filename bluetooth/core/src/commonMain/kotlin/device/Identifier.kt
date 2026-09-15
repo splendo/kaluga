@@ -94,32 +94,66 @@ private fun sha1(data: ByteArray): ByteArray {
     val w = IntArray(80)
     for (chunk in msg.indices step 64) {
         for (i in 0..15) {
-            w[i] = ((msg[chunk + i * 4].toInt()     and 0xFF) shl 24) or
-                   ((msg[chunk + i * 4 + 1].toInt() and 0xFF) shl 16) or
-                   ((msg[chunk + i * 4 + 2].toInt() and 0xFF) shl 8)  or
-                   (msg[chunk + i * 4 + 3].toInt()  and 0xFF)
+            w[i] = ((msg[chunk + i * 4].toInt() and 0xFF) shl 24) or
+                ((msg[chunk + i * 4 + 1].toInt() and 0xFF) shl 16) or
+                ((msg[chunk + i * 4 + 2].toInt() and 0xFF) shl 8) or
+                (msg[chunk + i * 4 + 3].toInt() and 0xFF)
         }
         for (i in 16..79) {
-            val x = w[i-3] xor w[i-8] xor w[i-14] xor w[i-16]
+            val x = w[i - 3] xor w[i - 8] xor w[i - 14] xor w[i - 16]
             w[i] = (x shl 1) or (x ushr 31)
         }
-        var a = h0; var b = h1; var c = h2; var d = h3; var e = h4
+        var a = h0
+        var b = h1
+        var c = h2
+        var d = h3
+        var e = h4
         for (i in 0..79) {
-            val f: Int; val k: Int
+            val f: Int
+            val k: Int
             when (i) {
-                in  0..19 -> { f = (b and c) or (b.inv() and d); k = 0x5A827999 }
-                in 20..39 -> { f = b xor c xor d;                k = 0x6ED9EBA1 }
-                in 40..59 -> { f = (b and c) or (b and d) or (c and d); k = 0x8F1BBCDC.toInt() }
-                else       -> { f = b xor c xor d;                k = 0xCA62C1D6.toInt() }
+                in 0..19 -> {
+                    f = (b and c) or (b.inv() and d)
+                    k = 0x5A827999
+                }
+
+                in 20..39 -> {
+                    f = b xor c xor d
+                    k = 0x6ED9EBA1
+                }
+
+                in 40..59 -> {
+                    f = (b and c) or (b and d) or (c and d)
+                    k = 0x8F1BBCDC.toInt()
+                }
+
+                else -> {
+                    f = b xor c xor d
+                    k = 0xCA62C1D6.toInt()
+                }
             }
             val temp = ((a shl 5) or (a ushr 27)) + f + e + k + w[i]
-            e = d; d = c; c = (b shl 30) or (b ushr 2); b = a; a = temp
+            e = d
+            d = c
+            c = (b shl 30) or (b ushr 2)
+            b = a
+            a = temp
         }
-        h0 += a; h1 += b; h2 += c; h3 += d; h4 += e
+        h0 += a
+        h1 += b
+        h2 += c
+        h3 += d
+        h4 += e
     }
 
     return ByteArray(20) { i ->
-        val word = when (i / 4) { 0 -> h0; 1 -> h1; 2 -> h2; 3 -> h3; else -> h4 }
+        val word = when (i / 4) {
+            0 -> h0
+            1 -> h1
+            2 -> h2
+            3 -> h3
+            else -> h4
+        }
         (word ushr (24 - (i % 4) * 8)).toByte()
     }
 }
