@@ -27,6 +27,7 @@ import com.splendo.kaluga.bluetooth.device.randomIdentifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.server.BluetoothServerBuilder
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
@@ -41,7 +42,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /** A connected client surfaced in the Client tab — either the in-process simulated loopback or a real device. */
-data class SelectedClient(val key: String, val client: DemoDeviceClient)
+data class SelectedClient(val key: String, val client: Flow<DemoDeviceClient?>)
 
 /**
  * Owns the feature session: the device acts as a server (a real Bluetooth server + an in-process simulated
@@ -111,7 +112,7 @@ class GenerationViewModel(
 
     // ----- Client: the simulated loopback + scanned real devices -----
     val scannedDevices = client.devices().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
-    private val simulatedClient: DemoDeviceClient = DemoDeviceClient.simulated(randomIdentifier(), simulatedServer)
+    private val simulatedClient: Flow<DemoDeviceClient> = flowOf(DemoDeviceClient.simulated(randomIdentifier(), simulatedServer))
 
     private val _selected = MutableStateFlow<SelectedClient?>(null)
     val selected = _selected.asStateFlow()
