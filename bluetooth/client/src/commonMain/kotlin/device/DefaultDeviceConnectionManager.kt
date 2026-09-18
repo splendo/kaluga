@@ -115,6 +115,7 @@ interface DeviceConnectionManager {
 
         /**
          * [Event] indicating the device did disconnect
+         * @property isIntentional if `true` this disconnect was triggered by an explicit call in the code to disconnect.
          * @property onDisconnect the action to execute once the event has been handled
          */
         data class Disconnected(val isIntentional: Boolean, val onDisconnect: suspend () -> Unit) : Event()

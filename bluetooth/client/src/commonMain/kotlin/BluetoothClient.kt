@@ -421,8 +421,20 @@ fun ConnectableDevice.discoveredServices() = filterDiscovering().mapNotNull { di
     discoveredState?.services
 }.distinctUntilChanged()
 
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice] in a [Flow]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [discoveredServices] in that the resulting flow will emit `null` if no services have been discovered (yet).
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice], or `null` if not (yet) discovered.
+ */
 fun Flow<ConnectableDevice?>.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
 
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [discoveredServices] in that the resulting flow will emit `null` if no services have been discovered (yet).
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice], or `null` if not (yet) discovered.
+ */
 fun ConnectableDevice.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
 
 /**
