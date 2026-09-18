@@ -444,10 +444,8 @@ suspend fun Flow<ConnectableDevice?>.connect(reconnectionSettings: ConnectionSet
  */
 suspend fun Flow<ConnectableDevice?>.disconnect() {
     transformLatest { device ->
-        device?.let {
-            it.disconnect()
-            emit(Unit)
-        }
+        device?.disconnect()
+        emit(Unit)
     }.first()
 }
 
