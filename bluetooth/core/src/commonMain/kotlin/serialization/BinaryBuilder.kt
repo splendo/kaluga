@@ -112,12 +112,12 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
                     buildBody()
                 }
                 add(body)
-                // Store the checksum as a [crc.byteWidth]-wide numeric in the structure's byte order, just like
-                // every other multi-byte value. The full ULong is encoded in [byteOrder] and the [crc.byteWidth]
-                // least-significant bytes are kept (the high zero bytes sit at the most-significant end).
-                val crcBytes = crc.compute(body).toByteArray(binaryDescriptor.byteOrder)
+                // CRC is emitted in childByteOrder — the same byte order used for all field values.
+                // When @ByteOrder(order, excludeStructure = true) is used, byteOrder (builder direction)
+                // and childByteOrder (field encoding) differ; the CRC correctly follows field encoding.
+                val crcBytes = crc.compute(body).toByteArray(binaryDescriptor.childByteOrder)
                 add(
-                    when (binaryDescriptor.byteOrder) {
+                    when (binaryDescriptor.childByteOrder) {
                         ByteOrder.MOST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(crcBytes.size - crc.byteWidth, crcBytes.size)
                         ByteOrder.LEAST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(0, crc.byteWidth)
                     },
@@ -129,12 +129,13 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
             binaryDescriptor.structureSettings.postfix?.let {
                 add(it.array)
             }
-        } else {
+        } else if (expectedSize > 0) {
             add(
                 buildByteArray(binaryDescriptor.byteOrder, expectedSize) {
                     build()
                 },
             )
+            // else: zero-size structure in a different-byte-order context contributes no bytes.
         }
     }
 
@@ -251,7 +252,7 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
  */
 internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
-        binaryDescriptor.byteOrder,
+        binaryDescriptor.childByteOrder,
         MutableList(size) {
             ItemBinaryBuilder(binaryDescriptor.children.first(), onUnconstrained)
         },
@@ -263,7 +264,7 @@ internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, si
  */
 internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
-        binaryDescriptor.byteOrder,
+        binaryDescriptor.childByteOrder,
         MutableList(size * 2) {
             val index = it % 2
             ItemBinaryBuilder(binaryDescriptor.children[index], onUnconstrained)

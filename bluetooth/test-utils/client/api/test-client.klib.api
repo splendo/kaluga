@@ -190,7 +190,6 @@ final class com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager
 
     final fun connect() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.connect|connect(){}[0]
     final fun create(com.splendo.kaluga.bluetooth/RemoteServiceWrapper): com.splendo.kaluga.bluetooth/RemoteService // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.create|create(com.splendo.kaluga.bluetooth.RemoteServiceWrapper){}[0]
-    final fun disconnect() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.disconnect|disconnect(){}[0]
     final fun discover(kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteService>) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.discover|discover(kotlin.collections.List<com.splendo.kaluga.bluetooth.RemoteService>){}[0]
     final fun getCurrentState(): com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.State // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.getCurrentState|getCurrentState(){}[0]
     final fun handleNewRssi(kotlin/Int) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.handleNewRssi|handleNewRssi(kotlin.Int){}[0]

@@ -59,15 +59,17 @@ val generatePluginVersion by tasks.registering {
     val outputDir = layout.buildDirectory.dir("generated/resources/main")
     val outputFile = outputDir.map { it.file("bluetooth.properties") }
     val version = kalugaVersion
+    val coroutinesVersion = libs.versions.kotlinx.coroutines.get()
 
     inputs.property("kalugaVersion", version)
+    inputs.property("coroutinesVersion", coroutinesVersion)
     outputs.file(outputFile)
 
     doLast {
         val file = outputFile.get().asFile
         file.parentFile.mkdirs()
 
-        file.writeText("kalugaVersion=$version\n")
+        file.writeText("kalugaVersion=$version\ncoroutinesVersion=$coroutinesVersion\n")
     }
 }
 

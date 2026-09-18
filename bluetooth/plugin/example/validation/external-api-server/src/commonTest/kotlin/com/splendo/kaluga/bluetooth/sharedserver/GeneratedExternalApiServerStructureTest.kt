@@ -38,8 +38,10 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 // Real runtime round-trip against a behavioral mock Bluetooth server for the external-api flavour: the generated
-// SharedDeviceServer.bluetooth() factory (in :sharedserver) builds a behavioral MockBluetoothServer whose delegate tree wires
-// the contract interfaces (in :sharedcontract), and a simulated central drives reads/writes/subscriptions end-to-end.
+// SharedDeviceServer.bluetooth() factory (in :sharedserver) builds a behavioral MockBluetoothServer whose delegate tree
+// wires the contract interfaces (in :sharedcontract), and a simulated central drives reads/writes/subscriptions
+// end-to-end. Note the impl (sharedserver) and API (sharedcontract) packages are deliberately unrelated to the spec
+// package (sharedspec): the plugin repackages by declaration origin, not by package-name prefix.
 class GeneratedExternalApiServerStructureTest : BaseTest() {
 
     private class CharacteristicDelegate : LocalSharedCharacteristic.Delegate {

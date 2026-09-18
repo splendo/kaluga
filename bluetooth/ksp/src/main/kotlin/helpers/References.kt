@@ -118,6 +118,8 @@ object References {
         val uuidFrom = memberName("uuidFrom")
         val value = memberName("value")
         val discoveredServices = memberName("discoveredServices")
+        val discoveredServicesOrNull = memberName("discoveredServicesOrNull")
+        val services = memberName("services")
     }
 
     object Permissions : ClassNameProvider {
@@ -162,12 +164,16 @@ object References {
                 val mutableStateFlow = className("MutableStateFlow")
                 val mutableSharedFlow = className("MutableSharedFlow")
                 val first = memberName("first")
+                val firstOrNull = memberName("firstOrNull")
+                val flatMapLatest = memberName("flatMapLatest")
+                val flowOf = memberName("flowOf")
                 val map = memberName("map")
                 val asStateFlow = memberName("asStateFlow")
                 val asSharedFlow = memberName("asSharedFlow")
                 val distinctUntilChanged = memberName("distinctUntilChanged")
                 val collect = memberName("collect")
                 val update = memberName("update")
+                val onStart = memberName("onStart")
                 val onCompletion = memberName("onCompletion")
                 val emptyFlow = memberName("emptyFlow")
             }

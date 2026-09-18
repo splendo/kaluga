@@ -422,6 +422,22 @@ fun ConnectableDevice.discoveredServices() = filterDiscovering().mapNotNull { di
 }.distinctUntilChanged()
 
 /**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice] in a [Flow]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [discoveredServices] in that the resulting flow will emit `null` if no services have been discovered (yet).
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice], or `null` if not (yet) discovered.
+ */
+fun Flow<ConnectableDevice?>.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
+
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [discoveredServices] in that the resulting flow will emit `null` if no services have been discovered (yet).
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice], or `null` if not (yet) discovered.
+ */
+fun ConnectableDevice.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
+
+/**
  * Attempts to connect to the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * When this method completes, the devices should be in a [ConnectableDeviceState.Connected] state
  * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use if the [ConnectableDevice] disconnects after connecting. If `null` the default will be used.
@@ -440,10 +456,8 @@ suspend fun Flow<ConnectableDevice?>.connect(reconnectionSettings: ConnectionSet
  */
 suspend fun Flow<ConnectableDevice?>.disconnect() {
     transformLatest { device ->
-        device?.let {
-            it.disconnect()
-            emit(Unit)
-        }
+        device?.disconnect()
+        emit(Unit)
     }.first()
 }
 

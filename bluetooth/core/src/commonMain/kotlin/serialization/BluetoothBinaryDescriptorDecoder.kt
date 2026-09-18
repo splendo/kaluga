@@ -22,7 +22,9 @@ import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.decodeULong
 import com.splendo.kaluga.base.bytes.isBitSet
 import com.splendo.kaluga.base.bytes.toHexString
+import com.splendo.kaluga.base.crc.CRC
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.encoding.Decoder
 
 /**
  * Exception thrown if the [ByteArray] provided to [BluetoothFormat] is smaller than expected
@@ -47,24 +49,32 @@ class InvalidPostfix(override val message: String) : SerializationException()
 internal interface BluetoothBinaryDescriptorDecoder {
 
     val flags: BooleanArray
+    val currentOffset: Int
+    val validateChecksum: Boolean
+
+    fun subArrayFrom(offset: Int): ByteArray
 
     fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int = binaryDescriptor.flagBitSize): BluetoothBinaryDescriptorDecoder
     fun endStructure()
 
     fun isEmpty(): Boolean
+    fun remainingPayloadBytes(): Int
     fun peekNextIs(value: ByteArray, consumeIfMatch: Boolean): Boolean
     fun isNextBitSet(): Boolean
     fun nextBytes(size: Int): ByteArray
 }
 
-internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder, private val validateChecksum: Boolean) :
+internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder, override val validateChecksum: Boolean) :
     BluetoothBinaryDescriptorDecoder {
 
     override val flags: BooleanArray = BooleanArray(0)
     private var offset = 0
     private var bitOffset = 0
+    override val currentOffset: Int get() = offset
 
     override fun isEmpty(): Boolean = !hasAtLeast(1)
+
+    override fun remainingPayloadBytes(): Int = byteArray.size - offset
 
     override fun peekNextIs(value: ByteArray, consumeIfMatch: Boolean): Boolean = if (hasAtLeast(value.size)) {
         val start = if (bitOffset > 0) offset + 1 else offset
@@ -100,7 +110,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
         }
     }
 
-    fun subArrayFrom(offset: Int) = when (byteOrder) {
+    override fun subArrayFrom(offset: Int) = when (byteOrder) {
         ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - this.offset, byteArray.size - offset)
         ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(offset, this.offset)
     }
@@ -122,13 +132,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
         // Whenever we start a new structure, we start a new flag byte
         consumeBit()
 
-        // Consume prefix
-        binaryDescriptor.structureSettings.prefix?.let { prefixBytes ->
-            val actualPrefix = nextBytes(prefixBytes.array.size)
-            if (!actualPrefix.contentEquals(prefixBytes.array)) {
-                throw InvalidPrefix("Expected Prefix ${prefixBytes.array.toHexString()} but got ${actualPrefix.toHexString()}")
-            }
-        }
+        consumePrefix(binaryDescriptor)
 
         // Current offset is the start of the body of the structure
         val startingOffset = offset
@@ -138,7 +142,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
             isNextBitSet()
         }
 
-        return StructureBluetoothBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, validateChecksum, parentFooterSize)
+        return StructureBluetoothBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, parentFooterSize)
     }
 
     override fun endStructure() {
@@ -165,12 +169,17 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     val rootDecoder: RootBluetoothBinaryDescriptorDecoder,
     override val flags: BooleanArray,
     private val startingOffset: Int,
-    private val validateChecksum: Boolean,
     parentFooterSize: Int,
 ) : BluetoothBinaryDescriptorDecoder {
     private val footerSize = parentFooterSize + (descriptor.structureSettings.postfix?.array?.size ?: 0)
 
+    override val currentOffset: Int get() = rootDecoder.currentOffset
+    override val validateChecksum: Boolean get() = rootDecoder.validateChecksum
+    override fun subArrayFrom(offset: Int): ByteArray = rootDecoder.subArrayFrom(offset)
+
     override fun isEmpty(): Boolean = !rootDecoder.hasAtLeast(footerSize + 1)
+
+    override fun remainingPayloadBytes(): Int = rootDecoder.remainingPayloadBytes() - footerSize
 
     override fun peekNextIs(value: ByteArray, consumeIfMatch: Boolean): Boolean = rootDecoder.peekNextIs(value, consumeIfMatch)
     override fun isNextBitSet(): Boolean = rootDecoder.isNextBitSet()
@@ -180,36 +189,50 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
         rootDecoder.beginStructure(binaryDescriptor, footerSize, flagBitSize)
     override fun endStructure() {
         // Consume and validate checksum if available
-        descriptor.structureSettings.checksumAlgorithm?.let { crc ->
+        validateChecksum(descriptor, rootDecoder, startingOffset)
+        consumePostfix(descriptor)
+    }
+}
 
-            // Validation can be disabled
-            if (validateChecksum) {
-                // Get the subset from startingOffset to currentOffset so we know the part decoded by this structure
-                val body = rootDecoder.subArrayFrom(startingOffset)
-                // Use the body to compute the checksum. Must be
-                val checksum = buildByteArray(descriptor.byteOrder, maxOf(crc.byteWidth, 8)) {
-                    add(nextBytes(crc.byteWidth))
-                    // Zero pad so we can decode as ULong
-                    if (crc.byteWidth < 8) {
-                        add(ByteArray(8 - crc.byteWidth))
-                    }
-                }.decodeULong(0, descriptor.byteOrder)
-                val actual = crc.compute(body)
-                if (checksum != actual) {
-                    throw InvalidChecksumException(checksum, actual)
-                }
-            } else {
-                // Even if not validating, we should still consume the CRC bytes
-                nextBytes(crc.byteWidth)
-            }
+internal fun BluetoothBinaryDescriptorDecoder.consumePrefix(descriptor: BluetoothBinaryDescriptor) {
+    descriptor.structureSettings.prefix?.let { prefixBytes ->
+        val actual = nextBytes(prefixBytes.array.size)
+        if (!actual.contentEquals(prefixBytes.array)) {
+            throw InvalidPrefix("Expected Prefix ${prefixBytes.array.toHexString()} but got ${actual.toHexString()}")
         }
+    }
+}
 
-        // Consume postfix
-        descriptor.structureSettings.postfix?.let { postfixBytes ->
-            val actualPostfix = nextBytes(postfixBytes.array.size)
-            if (!actualPostfix.contentEquals(postfixBytes.array)) {
-                throw InvalidPostfix("Expected Postfix ${postfixBytes.array.toHexString()} but got ${actualPostfix.toHexString()}")
+internal fun BluetoothBinaryDescriptorDecoder.consumePostfix(descriptor: BluetoothBinaryDescriptor) {
+    descriptor.structureSettings.postfix?.let { postfixBytes ->
+        val actual = nextBytes(postfixBytes.array.size)
+        if (!actual.contentEquals(postfixBytes.array)) {
+            throw InvalidPostfix("Expected Postfix ${postfixBytes.array.toHexString()} but got ${actual.toHexString()}")
+        }
+    }
+}
+
+internal fun BluetoothBinaryDescriptorDecoder.validateChecksum(descriptor: BluetoothBinaryDescriptor, rootDecoder: BluetoothBinaryDescriptorDecoder, startingOffset: Int) {
+    // Validation can be disabled
+    descriptor.structureSettings.checksumAlgorithm?.let { crc ->
+        if (validateChecksum) {
+            // Get the subset from startingOffset to currentOffset so we know the part decoded by this structure
+            val body = rootDecoder.subArrayFrom(startingOffset)
+            // Use the body to compute the checksum. Must be
+            val checksum = buildByteArray(descriptor.childByteOrder, maxOf(crc.byteWidth, 8)) {
+                add(nextBytes(crc.byteWidth))
+                // Zero pad so we can decode as ULong
+                if (crc.byteWidth < 8) {
+                    add(ByteArray(8 - crc.byteWidth))
+                }
+            }.decodeULong(0, descriptor.childByteOrder)
+            val actual = crc.compute(body)
+            if (checksum != actual) {
+                throw InvalidChecksumException(checksum, actual)
             }
+        } else {
+            // Even if not validating, we should still consume the CRC bytes
+            nextBytes(crc.byteWidth)
         }
     }
 }

@@ -48,10 +48,49 @@ annotation class Postfix(val value: ByteArray)
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
+ * When applied to a [Serializable] enum class, variants are encoded by their ordinal plus [offset], using [size]
+ * bytes in the byte order of the enclosing structure.
+ * This avoids annotating every variant individually with [@SerializedByteValue][SerializedByteValue].
+ *
+ * A per-variant [@SerializedByteValue][SerializedByteValue] overrides [ByOrdinal] for that specific variant —
+ * mixing is allowed but all resulting byte arrays must have the same byte length.
+ *
+ * @property offset value added to the ordinal before encoding. Use `offset = 1` for 1-based protocols.
+ * @property size wire byte length of each ordinal value. Defaults to 1 byte (max 255 values + offset).
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS)
+annotation class ByOrdinal(val offset: Int = 0, val size: Length = Length.`8_BIT`)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a property, [before] reserved (padding) bytes are silently skipped before decoding this
+ * property and zero-filled bytes are written before encoding it; [after] bytes are skipped/written after it.
+ *
+ * Use this for Bluetooth profiles that include reserved or padding bytes that carry no information.
+ * Unlike [@Postfix][Postfix], `@Reserved` does **not** validate the byte values on decode — any content is silently discarded.
+ *
+ * @property before number of reserved bytes immediately before this property in the wire format
+ * @property after number of reserved bytes immediately after this property in the wire format
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Reserved(val before: Int = 0, val after: Int = 0)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
  * When applied, the position of the header flag(s) to be used for storing headers will be set to [index].
  * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
  * If applied to an enum, its ordinal is stored in the flags starting at [index], across enough bits for all its
  * cases (i.e. `ceil(log2(caseCount))`) unless a wider [FlagWidth] is given.
+ * If applied to an integer with [@FlagWidth][FlagWidth] but no [@Size][Size], the integer value is packed
+ * directly into the flag bits (sub-byte numeric subfield).
+ * If applied to a List/Map together with [@LengthPrefix][LengthPrefix], the element count is packed into
+ * the flag header bits starting at [index] (8 bits for byte-length, 16 bits for short-length).
  *
  * If the index was already claimed by another property a [FlagIndexException] may be thrown.
  *
@@ -96,11 +135,15 @@ annotation class FlagWidth(val bits: Int = 1)
  * When applied to a class or collection, a [InvalidByteOrderException] may be thrown if the byte order changed.
  *
  * @property order the [com.splendo.kaluga.base.bytes.ByteOrder] in which to encode the element.
+ * @property excludeStructure when `true` and applied to a class, [order] propagates as the default byte order
+ *   for all child property values but does **not** affect the class's own array accumulation direction.
+ *   This allows all fields in a class to encode their values in [order] while the class itself is still
+ *   written sequentially rather than reversed. Has no effect when applied to a property.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
-annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, val excludeStructure: Boolean = false)
 
 /**
  * Annotation added for serializing using [BluetoothFormat]
@@ -109,8 +152,16 @@ annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FI
  * Similar encoding will be used to add a length to a List/Map.
  * Defaults to [StringEncodingSettings.LengthPrefix.ByteLength]
  *
- * @property lengthAsShort if `true` will use [StringEncodingSettings.LengthPrefix.ShortLength]
- * @property canOverflow if `true` will use [StringEncodingSettings.LengthPrefix.WithOverflow]
+ * **Combined with [@FlagIndex][FlagIndex] on a List/Map**: instead of writing count bytes into the body,
+ * the element count is packed into the parent structure's flag header at the bit position given by
+ * [@FlagIndex][FlagIndex]. The bit width is 8 for the default [ByteLength][StringEncodingSettings.LengthPrefix.ByteLength]
+ * or 16 for [ShortLength][StringEncodingSettings.LengthPrefix.ShortLength]. This lets the count
+ * occupy flag-header bytes that are laid out before the body fields — useful when the wire format
+ * places the count before unrelated body fields that precede the list data (e.g. a packet header
+ * that has [count][2B] [otherField][4B] [anotherField][4B] [items…]).
+ *
+ * @property lengthAsShort if `true` will use [StringEncodingSettings.LengthPrefix.ShortLength] (16-bit count)
+ * @property canOverflow if `true` will use [StringEncodingSettings.LengthPrefix.WithOverflow] (also 16-bit when combined with [@FlagIndex][FlagIndex])
  * @property sentinel the [Byte] to use as the sentinel for [StringEncodingSettings.LengthPrefix.WithOverflow]
  */
 @OptIn(ExperimentalSerializationApi::class)
@@ -180,6 +231,30 @@ annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, v
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
+ * When applied to a numeric (Float or Double) field, encodes the value as a proportional mapping
+ * across the full unsigned range of the wire integer:
+ *   `wire = round((value − min) / (max − min) × (2^bits − 1))`
+ *   `value = wire / (2^bits − 1) × (max − min) + min`
+ *
+ * Use [@Size][Size] to control the wire bit-width (defaults to the field type's natural size).
+ * A single [@Size][Size] is required; multiple sizes are not supported.
+ *
+ * Example — 16-bit full-range humidity (0x0000 = 0 %, 0xFFFF = 100 %):
+ * ```kotlin
+ * @Range(0.0, 100.0) @Size(Length.`16_BIT`) val percent: Double
+ * ```
+ *
+ * @property min the decoded value corresponding to a wire value of 0x00…0
+ * @property max the decoded value corresponding to the maximum wire value (0xFF…F for the given bit-width)
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Range(val min: Double = 0.0, val max: Double = 1.0)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
  * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.base.bytes.MedFloat16] or [com.splendo.kaluga.base.bytes.MedFloat32], depending on [Size]
  * Can only add [Length.`16_BIT`] or [Length.`32_BIT`] using [Size].
  * Size defaults to:
@@ -232,6 +307,27 @@ annotation class NullIfEmpty
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
+ * When applied to a sealed polymorphic class, subtypes are identified by their remaining payload
+ * byte count instead of a prefix byte identifier. The expected byte count for each subtype is
+ * computed automatically from its field annotations — no manual size declaration is required.
+ *
+ * All subtypes must have statically-known sizes (fixed-width numerics and nested structures only).
+ * A subtype with variable-size fields (unsized strings, collections, nullable body fields, etc.)
+ * causes a [SerializationException] at descriptor construction time.
+ *
+ * A field of a [SizePolymorphic] type must be the last field in its parent structure; any sibling
+ * that follows will throw [DataAfterUnconstrainedData] when encoding. [Prefix], [Postfix], and
+ * [Checksum] on the parent class are unaffected — they are written in [BinaryBuilder.build], not
+ * via [BinaryBuilder.addAction].
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS)
+annotation class SizePolymorphic
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
  * Adds a [com.splendo.kaluga.base.crc.CRC] value of size [width] to the end of the body (before any prefix)
  * If the decoded checksum does not match the calculated checksum of the body and [BluetoothFormat.validateChecksum] is `true` will result in a [InvalidChecksumException].
  *
@@ -252,11 +348,15 @@ annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * Can be added to elements of an Enum or Polymorphic class. This replaces serializing using the encoded SerialName with [value]
+ * Can be added to elements of an Enum or Polymorphic class. This replaces serializing using the encoded SerialName with [value].
  *
- * @property value the value to use as an identifier of an enum case / polymorphic type
+ * All entries in the same sealed class or enum must supply the same number of bytes.
+ * The format validates this at descriptor construction time and throws if lengths are inconsistent.
+ *
+ * @property value the byte sequence to use as an identifier. A single byte is the common case; multi-byte
+ *   values allow 2-byte (or wider) discriminators as long as every entry in the class uses the same length.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
-annotation class SerializedByteValue(val value: Byte)
+annotation class SerializedByteValue(vararg val value: Byte)
