@@ -100,7 +100,7 @@ class BluetoothPlugin : Plugin<Project> {
                 val isSinglePlatform = targets.count { it.name != "metadata" } == 1
                 val bluetoothTargets = bluetoothExtension.target.get()
                 val implementations = bluetoothExtension.implementFor.get()
-                val generatesImplementation = implementations.isNotEmpty()
+                val concreteImplementation = ImplementFor.BLUETOOTH in implementations
                 val generatesMock = ImplementFor.MOCK in implementations
                 sourceSets.commonMain {
                     generatedSourceDir?.let { kotlin.srcDir(it) }
@@ -116,10 +116,10 @@ class BluetoothPlugin : Plugin<Project> {
                         // Gradle's conflict resolution picks the highest declared version, so user-declared
                         // upgrades (e.g. a bugfix release) are honoured automatically.
                         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                        if (generatesImplementation && BluetoothTarget.CLIENT in bluetoothTargets) {
+                        if (concreteImplementation && BluetoothTarget.CLIENT in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:client:$kalugaVersion")
                         }
-                        if (generatesImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
+                        if (concreteImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:server:$kalugaVersion")
                         }
                         if (generatesMock) {
