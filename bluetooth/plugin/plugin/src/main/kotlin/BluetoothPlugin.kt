@@ -69,13 +69,12 @@ class BluetoothPlugin : Plugin<Project> {
         }
 
         // The KSP-generated sources are registered as a commonMain source directory, so kotlinter's tasks read from the
-        // KSP output directory. That directory is a task output, so Gradle requires an explicit dependency (it rejects the
-        // otherwise-implicit one). We also exclude those files from the kotlinter source: they are produced output (already
-        // formatted by KotlinPoet), not hand-written code, so they should be neither linted nor reformatted.
+        // KSP output directory. Those files are produced output (already formatted by KotlinPoet), not hand-written code,
+        // so exclude them from the kotlinter source: they should be neither linted nor reformatted. The producer
+        // dependency kotlinter needs on that generated dir is wired in afterEvaluate, once the generating KSP task is
+        // known, so only that task runs on format/lint rather than every per-target KSP task.
         val generatedRoot = layout.buildDirectory.dir("generated").get().asFile.absolutePath
-        val kspTasks = tasks.withType<KspAATask>()
         tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
-            dependsOn(kspTasks)
             (this as? SourceTask)?.exclude { it.file.absolutePath.startsWith(generatedRoot) }
         }
 
@@ -98,6 +97,20 @@ class BluetoothPlugin : Plugin<Project> {
                     }
                 }
                 val isSinglePlatform = targets.count { it.name != "metadata" } == 1
+
+                // kotlinter reads the KSP output registered as a commonMain source dir; that dir is a task output, so
+                // Gradle needs an explicit producer dependency. Only the metadata pass (multi-target) or the single leaf
+                // pass writes a registered source dir, so depend on just that one. Depending on every KspAATask would
+                // force js/wasmJs/macos KSP to run on every formatKotlin/lintKotlin.
+                val generatingKspTaskName = if (isSinglePlatform) {
+                    "ksp${targets.first { it.name != "metadata" }.name.uppercaseFirstChar()}Main"
+                } else {
+                    "kspCommonMainKotlinMetadata"
+                }
+                tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
+                    dependsOn(tasks.matching { it.name == generatingKspTaskName })
+                }
+
                 val bluetoothTargets = bluetoothExtension.target.get()
                 val implementations = bluetoothExtension.implementFor.get()
                 val concreteImplementation = ImplementFor.BLUETOOTH in implementations
@@ -139,7 +152,14 @@ class BluetoothPlugin : Plugin<Project> {
                     kspConfig.sourceRoots.from(annotationSourceFiles)
                 }
                 this@run.extensions.configure<KspExtension> {
-                    arg(CommonSourceArgumentProvider(sourceSets.commonMain.get().kotlin.sourceDirectories))
+                    // The annotationSource directories hold shared @Bluetooth definitions whose generation is owned by
+                    // the metadata (or single leaf) pass. Include them in commonSource so the per-target passes recognise
+                    // them as common and skip regenerating them (which would emit duplicate js/wasmJs/etc. output).
+                    arg(
+                        CommonSourceArgumentProvider(
+                            this@run.files(sourceSets.commonMain.get().kotlin.sourceDirectories, annotationSourceFiles),
+                        ),
+                    )
                     arg("isSingleTarget", "$isSinglePlatform")
                 }
 
