@@ -18,6 +18,8 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteArrayBuilder
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.ByteStuffingScheme
 import com.splendo.kaluga.base.bytes.buildByteArray
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.DeserializationStrategy
@@ -63,6 +65,10 @@ import kotlinx.serialization.serializer
  * Attempting to encode data after will lead to an exception.
  * - Use [NullIfEmpty] to mark a Collection as nullable if it is empty. When null its size will not be encoded.
  * - Use [SerializedByteValue] to change the byte identifier of an Enum or Polymorphic class. This replaces serializing its serial name as an unsized string.
+ * - Use [ByteStuffed] (CSafe) or [ByteStuffedXor] (PPP-style) to byte-stuff so a delimiter never appears literally in the content
+ * (only for [com.splendo.kaluga.base.bytes.ByteOrder.LEAST_SIGNIFICANT_FIRST]). On the root structure it stuffs the body and [Checksum] while leaving
+ * a [Prefix]/[Postfix] frame untouched (CSafe framing); on a String or Collection it is itself a `0x00`-terminated marking, stuffing the content so the
+ * `0x00` terminator stays unambiguous (use [ByteStuffedXor], as CSafe cannot escape `0x00`). Nested stuffed frames are not yet supported.
  *
  * Equivalent flags are available to encode items in a List (e.g. [ItemSize]) or key/values in a Map (e.g. [KeyEncoded], [ValueNullTerminated])
  * @property validateChecksum if `true` decoding any data marked with [Checksum] will automatically validate the checksum and throw an exception if they don't match.
@@ -162,21 +168,55 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
         val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule)
         serializer.serialize(encoder, value)
 
-        return buildByteArray(flag.byteOrder, builder.expectedSize) {
+        val raw = buildByteArray(flag.byteOrder, builder.expectedSize) {
             with(builder) {
                 build()
             }
         }
+        // Stuffing wraps the body + checksum but leaves the framing prefix/postfix untouched.
+        return flag.rootByteStuffing()?.let { stuffing ->
+            val (prefix, body, postfix) = flag.splitFrame(raw)
+            prefix + stuffing.stuff(body) + postfix
+        } ?: raw
     }
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
+        // Un-stuffing restores the frame to exactly what a non-stuffed decoder expects, so the rest of
+        // decoding is unchanged.
+        val prepared = flag.rootByteStuffing()?.let { stuffing ->
+            val (prefix, body, postfix) = flag.splitFrame(bytes)
+            prefix + stuffing.unstuff(body) + postfix
+        } ?: bytes
         // Use flag.byteOrder (builder/accumulation direction) for the root decoder so it reads the byte
         // array in the same direction it was written — not flag.childByteOrder, which is the field VALUE
         // encoding direction and may differ when @ByteOrder(order, excludeStructure = true) is in use.
-        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule)
+        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(prepared, flag.byteOrder, validateChecksum), serializersModule)
 
         return deserializer.deserialize(decoder)
+    }
+
+    // Returns the root frame byte-stuffing scheme after validating placement, or null when none is configured.
+    private fun BluetoothBinaryDescriptor.rootByteStuffing(): ByteStuffingScheme? {
+        val stuffing = structureSettings.byteStuffing ?: return null
+        if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
+            throw UnsupportedByteStuffing("@ByteStuffed is only supported for LEAST_SIGNIFICANT_FIRST byte order")
+        }
+        return stuffing
+    }
+
+    // Splits a frame into (prefix, body-and-checksum, postfix); only the middle is stuffed.
+    private fun BluetoothBinaryDescriptor.splitFrame(bytes: ByteArray): Triple<ByteArray, ByteArray, ByteArray> {
+        val prefixSize = structureSettings.prefix?.array?.size ?: 0
+        val postfixSize = structureSettings.postfix?.array?.size ?: 0
+        if (bytes.size < prefixSize + postfixSize) {
+            throw UnsupportedByteStuffing("Frame of ${bytes.size} bytes is too small for its ${prefixSize + postfixSize}-byte prefix and postfix")
+        }
+        return Triple(
+            bytes.copyOfRange(0, prefixSize),
+            bytes.copyOfRange(prefixSize, bytes.size - postfixSize),
+            bytes.copyOfRange(bytes.size - postfixSize, bytes.size),
+        )
     }
 
     /**

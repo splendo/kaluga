@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
+import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.decodeAsciiChar
@@ -61,9 +62,26 @@ internal class BluetoothBinaryDecoder(
 ) : Decoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
-        is StructureKind.LIST -> BluetoothBinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
-        is StructureKind.MAP -> BluetoothBinaryCompositeDecoder.Map(binaryDescriptor, decoder, serializersModule)
+        is StructureKind.LIST -> stuffedCollection()?.let { (descriptor, subDecoder) ->
+            BluetoothBinaryCompositeDecoder.List(descriptor, subDecoder, serializersModule)
+        } ?: BluetoothBinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
+
+        is StructureKind.MAP -> stuffedCollection()?.let { (descriptor, subDecoder) ->
+            BluetoothBinaryCompositeDecoder.Map(descriptor, subDecoder, serializersModule)
+        } ?: BluetoothBinaryCompositeDecoder.Map(binaryDescriptor, decoder, serializersModule)
+
         else -> BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
+    }
+
+    // For a byte-stuffed terminated collection, un-stuff the body up to (and consuming) the raw terminator byte
+    // into a fresh sub-decoder, and present the collection as Unmarked so it reads that body to the end.
+    private fun stuffedCollection(): Pair<BluetoothBinaryDescriptor, BluetoothBinaryDescriptorDecoder>? {
+        val settings = binaryDescriptor.collectionSettings ?: return null
+        val stuffing = settings.byteStuffing ?: return null
+        val terminalMarked = settings.lengthMarking as? BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked ?: return null
+        val body = stuffing.unstuffUntil(decoder.byteIterator()) { it == terminalMarked.terminator }
+        val unmarked = binaryDescriptor.copy(collectionSettings = settings.copy(lengthMarking = BluetoothBinaryDescriptor.CollectionSettings.Unmarked))
+        return unmarked to RootBluetoothBinaryDescriptorDecoder(body, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum)
     }
 
     override fun decodeBoolean(): Boolean = binaryDescriptor.decodeBoolean(decoder)
@@ -216,16 +234,19 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
                 // For NullTerminated or Unmarked, the length is unknown when decoding starts
                 is BluetoothBinaryDescriptor.CollectionSettings.Unmarked -> -1
 
-                is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> -1
+                is BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked -> -1
             }
         } else {
             0
         }
 
-        protected fun hasElementAtIndex(index: Int): Boolean = when {
-            expectedSize >= 0 -> index < expectedSize
-            collectionSettings.lengthMarking is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> !decoder.peekNextIs(byteArrayOf(0x00), true)
-            else -> !decoder.isEmpty()
+        protected fun hasElementAtIndex(index: Int): Boolean {
+            val lengthMarking = collectionSettings.lengthMarking
+            return when {
+                expectedSize >= 0 -> index < expectedSize
+                lengthMarking is BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked -> !decoder.peekNextIs(byteArrayOf(lengthMarking.terminator), true)
+                else -> !decoder.isEmpty()
+            }
         }
 
         override fun decoderAtIndex(index: Int): BluetoothBinaryDescriptorDecoder = decoders.getOrPut(index) {

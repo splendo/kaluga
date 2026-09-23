@@ -25,6 +25,26 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/ByteOrder : kot
         final fun <get-order>(): com.splendo.kaluga.base.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/ByteOrder.order.<get-order>|<get-order>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bluetooth.serialization/ByteStuffed : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteStuffed|null[0]
+    constructor <init>(kotlin/Byte = ..., kotlin/Byte = ...) // com.splendo.kaluga.bluetooth.serialization/ByteStuffed.<init>|<init>(kotlin.Byte;kotlin.Byte){}[0]
+
+    final val escapeByte // com.splendo.kaluga.bluetooth.serialization/ByteStuffed.escapeByte|{}escapeByte[0]
+        final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffed.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+    final val mask // com.splendo.kaluga.bluetooth.serialization/ByteStuffed.mask|{}mask[0]
+        final fun <get-mask>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffed.mask.<get-mask>|<get-mask>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor|null[0]
+    constructor <init>(kotlin/Byte, kotlin/ByteArray, kotlin/Byte = ...) // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.<init>|<init>(kotlin.Byte;kotlin.ByteArray;kotlin.Byte){}[0]
+
+    final val escapeByte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapeByte|{}escapeByte[0]
+        final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+    final val escapedBytes // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapedBytes|{}escapedBytes[0]
+        final fun <get-escapedBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapedBytes.<get-escapedBytes>|<get-escapedBytes>(){}[0]
+    final val xorKey // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.xorKey|{}xorKey[0]
+        final fun <get-xorKey>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.xorKey.<get-xorKey>|<get-xorKey>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bluetooth.serialization/Checksum : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/Checksum|null[0]
     constructor <init>(kotlin/Int, kotlin/ULong, kotlin/ULong, kotlin/ULong = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // com.splendo.kaluga.bluetooth.serialization/Checksum.<init>|<init>(kotlin.Int;kotlin.ULong;kotlin.ULong;kotlin.ULong;kotlin.Boolean;kotlin.Boolean){}[0]
 
@@ -268,6 +288,13 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/Size : kotlin/A
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/SizePolymorphic : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/SizePolymorphic|null[0]
     constructor <init>() // com.splendo.kaluga.bluetooth.serialization/SizePolymorphic.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.serialization/Terminal : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/Terminal|null[0]
+    constructor <init>(kotlin/Byte) // com.splendo.kaluga.bluetooth.serialization/Terminal.<init>|<init>(kotlin.Byte){}[0]
+
+    final val terminator // com.splendo.kaluga.bluetooth.serialization/Terminal.terminator|{}terminator[0]
+        final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/Terminal.terminator.<get-terminator>|<get-terminator>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/Unsigned : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/Unsigned|null[0]
@@ -861,11 +888,15 @@ final class com.splendo.kaluga.bluetooth.serialization/UnexpectedBytesRemaining 
         final fun <get-message>(): kotlin/String // com.splendo.kaluga.bluetooth.serialization/UnexpectedBytesRemaining.message.<get-message>|<get-message>(){}[0]
 }
 
-final class com.splendo.kaluga.bluetooth.serialization/UnexpectedNullTermination : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bluetooth.serialization/UnexpectedNullTermination|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.serialization/UnexpectedNullTermination.<init>|<init>(kotlin.String){}[0]
+final class com.splendo.kaluga.bluetooth.serialization/UnexpectedTerminator : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bluetooth.serialization/UnexpectedTerminator|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.serialization/UnexpectedTerminator.<init>|<init>(kotlin.String){}[0]
 
-    final val message // com.splendo.kaluga.bluetooth.serialization/UnexpectedNullTermination.message|{}message[0]
-        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bluetooth.serialization/UnexpectedNullTermination.message.<get-message>|<get-message>(){}[0]
+    final val message // com.splendo.kaluga.bluetooth.serialization/UnexpectedTerminator.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bluetooth.serialization/UnexpectedTerminator.message.<get-message>|<get-message>(){}[0]
+}
+
+final class com.splendo.kaluga.bluetooth.serialization/UnsupportedByteStuffing : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bluetooth.serialization/UnsupportedByteStuffing|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.serialization/UnsupportedByteStuffing.<init>|<init>(kotlin.String){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth/DefaultBluetoothMonitor : com.splendo.kaluga.bluetooth/BluetoothMonitor, com.splendo.kaluga.service/DefaultServiceMonitor { // com.splendo.kaluga.bluetooth/DefaultBluetoothMonitor|null[0]

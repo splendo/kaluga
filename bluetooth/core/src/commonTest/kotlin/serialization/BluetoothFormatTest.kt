@@ -1472,7 +1472,7 @@ class BluetoothFormatTest {
         @Serializable
         data class NullTerminatedList(@NullTerminated val list: List<Byte>)
 
-        assertFailsWith<UnexpectedNullTermination> {
+        assertFailsWith<UnexpectedTerminator> {
             BluetoothFormat.encodeToByteArray(NullTerminatedList.serializer(), NullTerminatedList(listOf(0x00.toByte(), 0x01.toByte())))
         }
 
@@ -1882,7 +1882,7 @@ class BluetoothFormatTest {
         @Serializable
         data class NullTerminatedMap(@NullTerminated val map: Map<Byte, Byte>)
 
-        assertFailsWith<UnexpectedNullTermination> {
+        assertFailsWith<UnexpectedTerminator> {
             BluetoothFormat.encodeToByteArray(NullTerminatedMap.serializer(), NullTerminatedMap(mapOf(0x00.toByte() to 0x01.toByte())))
         }
 
@@ -2816,6 +2816,221 @@ class BluetoothFormatTest {
                 0x03, // z
             ),
         )
+    }
+
+    // CSafe framing: 0xF1 start flag, 0xF2 stop flag, body byte-stuffed with the default 0xF3/0x03 scheme.
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    data class CSafeFrame(
+        @Size(Length.`8_BIT`) @Unsigned val command: Int,
+        @Size(Length.`8_BIT`) @Unsigned val value: Int,
+    )
+
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    data class CSafePacket(@Unsized val content: List<Byte>)
+
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    @Checksum(8, 0x07u, 0x00u)
+    data class CSafeChecksummedFrame(
+        @Size(Length.`8_BIT`) @Unsigned val command: Int,
+        @Size(Length.`8_BIT`) @Unsigned val value: Int,
+    )
+
+    @Serializable
+    @ByteStuffed
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    data class BigEndianStuffed(@Size(Length.`8_BIT`) @Unsigned val value: Int)
+
+    // Big-endian field VALUES with a sequentially-accumulated (excludeStructure) frame — the combination
+    // real big-endian frames use. Stuffing checks only the accumulation direction, so it is allowed here.
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class BigEndianStuffedFrame(@Size(Length.`16_BIT`) @Unsigned val value: Int)
+
+    // A byte-stuffed string: the stuffing annotation is itself a 0x00-terminated marking (no @NullTerminated needed).
+    // The XOR scheme escapes 0x00 (here the UTF-16 high byte of each ASCII char) so it never collides with the terminator.
+    @Serializable
+    data class StuffedStringHolder(
+        @Encoded(Encoding.UTF_16)
+        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x00])
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A byte-stuffed list: the stuffing annotation implies a 0x00-terminated collection (no @NullTerminated needed).
+    // Items may contain the 0x00 terminator value; stuffing keeps it unambiguous.
+    @Serializable
+    data class StuffedListHolder(
+        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x00])
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // @Terminal overrides the 0x00 terminator; the scheme escapes the chosen terminator (0x7C = '|').
+    @Serializable
+    data class TerminalStringHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x7C])
+        @Terminal(0x7C)
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    @Serializable
+    data class TerminalListHolder(
+        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x7C])
+        @Terminal(0x7C)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // @Terminal without stuffing is a plain byte-terminated string; the content must not encode the terminator.
+    @Serializable
+    data class PlainTerminatedString(
+        @Encoded(Encoding.ASCII)
+        @Terminal(0x0A)
+        val line: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    @Serializable
+    data class PlainTerminatedList(
+        @Terminal(0x0A)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    @Test
+    fun encodeByteStuffing() {
+        // A content byte in 0xF0..0xF3 is escaped as 0xF3 followed by its low two bits; the start (0xF1)
+        // and stop (0xF2) flags frame the stuffed region untouched.
+        validateRoundTrip(
+            CSafeFrame(command = 0xF1, value = 0x05),
+            CSafeFrame.serializer(),
+            byteArrayOf(0xF1.toByte(), 0xF3.toByte(), 0x01, 0x05, 0xF2.toByte()),
+        )
+
+        // A body free of escaped bytes is framed as-is.
+        validateRoundTrip(
+            CSafeFrame(command = 0x10, value = 0x20),
+            CSafeFrame.serializer(),
+            byteArrayOf(0xF1.toByte(), 0x10, 0x20, 0xF2.toByte()),
+        )
+
+        // Each of the four escaped values, including the escape byte 0xF3 itself.
+        validateRoundTrip(
+            CSafePacket(listOf(0xF0.toByte(), 0xF1.toByte(), 0xF2.toByte(), 0xF3.toByte(), 0x0A)),
+            CSafePacket.serializer(),
+            byteArrayOf(
+                0xF1.toByte(),
+                0xF3.toByte(), 0x00,
+                0xF3.toByte(), 0x01,
+                0xF3.toByte(), 0x02,
+                0xF3.toByte(), 0x03,
+                0x0A,
+                0xF2.toByte(),
+            ),
+        )
+    }
+
+    @Test
+    fun byteStuffingStuffsChecksum() {
+        // The checksum is computed over the unstuffed body and then itself stuffed, so the frame still
+        // round-trips and stays framed by the untouched start/stop flags.
+        val frame = CSafeChecksummedFrame(command = 0x02, value = 0x03)
+        val encoded = BluetoothFormat.encodeToByteArray(CSafeChecksummedFrame.serializer(), frame)
+        assertEquals(frame, BluetoothFormat.decodeFromByteArray(CSafeChecksummedFrame.serializer(), encoded))
+        assertEquals(0xF1.toByte(), encoded.first())
+        assertEquals(0xF2.toByte(), encoded.last())
+    }
+
+    @Test
+    fun byteStuffingNullTerminatedString() {
+        // "AB" in UTF-16 LE is 41 00 42 00; the 0x00 bytes are escaped (7D, 00^20=20), then the raw 0x00
+        // terminator, then the trailing field — proving the stuffed string is self-delimiting.
+        validateRoundTrip(
+            StuffedStringHolder(name = "AB", trailer = 0x09),
+            StuffedStringHolder.serializer(),
+            byteArrayOf(0x41, 0x7D, 0x20, 0x42, 0x7D, 0x20, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun byteStuffingNullTerminatedList() {
+        // Items [0x01, 0x00, 0x7D]: 0x00 -> 7D 20, 0x7D -> 7D 5D; then the raw 0x00 terminator and the trailer.
+        validateRoundTrip(
+            StuffedListHolder(values = listOf(0x01, 0x00, 0x7D), trailer = 0x09),
+            StuffedListHolder.serializer(),
+            byteArrayOf(0x01, 0x7D, 0x20, 0x7D, 0x5D, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun byteStuffingCustomTerminator() {
+        // String terminated by 0x7C ('|'): "A|B" -> the '|' is escaped (7D, 7C^20=5C), then the raw 0x7C terminator.
+        validateRoundTrip(
+            TerminalStringHolder(name = "A|B", trailer = 0x09),
+            TerminalStringHolder.serializer(),
+            byteArrayOf(0x41, 0x7D, 0x5C, 0x42, 0x7C, 0x09),
+        )
+
+        // List terminated by 0x7C: items [0x01, 0x7C, 0x7D] -> 01, (7C->7D 5C), (7D->7D 5D), then 0x7C, then trailer.
+        validateRoundTrip(
+            TerminalListHolder(values = listOf(0x01, 0x7C, 0x7D), trailer = 0x09),
+            TerminalListHolder.serializer(),
+            byteArrayOf(0x01, 0x7D, 0x5C, 0x7D, 0x5D, 0x7C, 0x09),
+        )
+    }
+
+    @Test
+    fun plainByteTerminatorWithoutStuffing() {
+        // A newline-terminated ASCII field: "Hi" -> 48 69, then the raw 0x0A terminator, then the trailer.
+        validateRoundTrip(
+            PlainTerminatedString(line = "Hi", trailer = 0x09),
+            PlainTerminatedString.serializer(),
+            byteArrayOf(0x48, 0x69, 0x0A, 0x09),
+        )
+
+        // A 0x0A-terminated list of bytes (no item equals the terminator).
+        validateRoundTrip(
+            PlainTerminatedList(values = listOf(0x01, 0x02), trailer = 0x09),
+            PlainTerminatedList.serializer(),
+            byteArrayOf(0x01, 0x02, 0x0A, 0x09),
+        )
+
+        // Encoding fails if the content itself contains the terminator byte (no stuffing to protect it).
+        assertFailsWith<IllegalArgumentException> {
+            BluetoothFormat.encodeToByteArray(PlainTerminatedString.serializer(), PlainTerminatedString(line = "a\nb", trailer = 0x00))
+        }
+    }
+
+    @Test
+    fun byteStuffingWithBigEndianFieldValues() {
+        // value 0xF012 encodes big-endian as [0xF0, 0x12]; 0xF0 is stuffed to 0xF3 0x00, framed by F1/F2.
+        validateRoundTrip(
+            BigEndianStuffedFrame(0xF012),
+            BigEndianStuffedFrame.serializer(),
+            byteArrayOf(0xF1.toByte(), 0xF3.toByte(), 0x00, 0x12, 0xF2.toByte()),
+        )
+    }
+
+    @Test
+    fun byteStuffingRequiresLeastSignificantFirst() {
+        // Full-reversal MSB (accumulation direction) is rejected; big-endian field values via excludeStructure are not.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(BigEndianStuffed.serializer(), BigEndianStuffed(0x01))
+        }
     }
 
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure

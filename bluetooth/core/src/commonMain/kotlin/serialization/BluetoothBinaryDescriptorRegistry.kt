@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.Encoding
+import com.splendo.kaluga.base.bytes.ByteStuffingScheme
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.crc.CRC
@@ -176,12 +177,15 @@ internal data class BluetoothBinaryDescriptor(
      * The encoding settings to apply when encoding a Collection (List or Map)
      * @property lengthMarking the [LengthMarking] to use when encoding the collection.
      * @property nullIfEmpty if the collection should be encoded as null if it is empty. When `true` an additional null flag will be added to the flags header.
+     * @property byteStuffing when non-null (only with [TerminalMarked]), the collection body is byte-stuffed so its terminator stays unambiguous.
      */
-    data class CollectionSettings(val lengthMarking: LengthMarking, val nullIfEmpty: Boolean) {
+    data class CollectionSettings(val lengthMarking: LengthMarking, val nullIfEmpty: Boolean, val byteStuffing: ByteStuffingScheme? = null) {
 
         sealed class LengthMarking
         data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix) : LengthMarking()
-        data object NullMarked : LengthMarking()
+
+        /** The collection ends at the first (unescaped, when stuffed) [terminator] byte. Defaults to `0x00`. */
+        data class TerminalMarked(val terminator: Byte = 0x00) : LengthMarking()
         data object Unmarked : LengthMarking()
         data class NumericLength(val supportedLengths: Set<Length>) : LengthMarking() {
             init {
@@ -211,9 +215,16 @@ internal data class BluetoothBinaryDescriptor(
      * @property checksumAlgorithm the [CRC] algorithm to use to add a checksum right after the body (but before any postfix) of the structure.
      * @property checksumByteOrder byte order used when writing the checksum value into the frame.
      *   Defaults to [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Use [ByteOrder.MOST_SIGNIFICANT_FIRST] for big-endian CRC output.
+     * @property byteStuffing when non-null, the body and checksum (class) or delimited content (property) are byte-stuffed.
      */
-    data class StructureSettings(val prefix: ByteArrayHolder?, val postfix: ByteArrayHolder?, val checksumAlgorithm: CRC?)
+    data class StructureSettings(val prefix: ByteArrayHolder?, val postfix: ByteArrayHolder?, val checksumAlgorithm: CRC?, val byteStuffing: ByteStuffingScheme? = null)
 }
+
+/**
+ * Thrown when byte stuffing (see [ByteStuffed]) is used in an unsupported position or configuration
+ * (e.g. a nested field, a non-LSB byte order, or a scheme that cannot protect the delimiter).
+ */
+class UnsupportedByteStuffing(message: String) : SerializationException(message)
 
 @JvmInline
 internal value class ByteArrayHolder(val array: ByteArray) {
@@ -679,10 +690,24 @@ internal object BluetoothBinaryDescriptorRegistry {
     }
 
     private fun stringSettings(descriptor: SerialDescriptor, annotations: List<Annotation>, supportedLengths: Set<Length>): BluetoothBinaryDescriptor.StringSettings? {
+        val byteStuffing = annotations.byteStuffingScheme()
+        val terminal = annotations.terminalByte()
         val stringSettings = when (descriptor.kind) {
             PrimitiveKind.STRING -> {
                 val encoding = annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.UTF_8
                 when {
+                    // A byte-stuffing annotation is itself a terminated marking, so @NullTerminated is not required.
+                    byteStuffing != null -> {
+                        val terminator = terminal ?: 0x00.toByte()
+                        if (!byteStuffing.escapes(terminator)) {
+                            throw UnsupportedByteStuffing("Byte stuffing on a String must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])")
+                        }
+                        BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.ByteStuffed(byteStuffing, terminator))
+                    }
+
+                    // @Terminal without stuffing is a plain byte-terminated string: the content must not encode the terminator.
+                    terminal != null -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.Terminated(terminal))
+
                     annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NullTerminated)
 
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
@@ -723,8 +748,22 @@ internal object BluetoothBinaryDescriptorRegistry {
             is StructureKind.LIST,
             is StructureKind.MAP,
             -> {
+                val byteStuffing = annotations.byteStuffingScheme()
+                val terminal = annotations.terminalByte()
                 val lengthMarking = when {
-                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.NullMarked
+                    // Byte stuffing implies a terminated (TerminalMarked) collection, so @NullTerminated is not required.
+                    byteStuffing != null -> {
+                        val terminator = terminal ?: 0x00.toByte()
+                        if (!byteStuffing.escapes(terminator)) {
+                            throw UnsupportedByteStuffing("Byte stuffing on a Collection must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])")
+                        }
+                        BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked(terminator)
+                    }
+
+                    // @Terminal without stuffing is a plain byte-terminated collection (no item may start with the terminator).
+                    terminal != null -> BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked(terminal)
+
+                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked()
 
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
@@ -752,6 +791,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                 BluetoothBinaryDescriptor.CollectionSettings(
                     lengthMarking,
                     annotations.filterIsInstance<NullIfEmpty>().isNotEmpty(),
+                    byteStuffing,
                 )
             }
 
@@ -981,7 +1021,20 @@ internal object BluetoothBinaryDescriptorRegistry {
         annotations.filterIsInstance<Checksum>().firstOrNull()?.let { checksum ->
             CRC(checksum.width, checksum.polynomial, checksum.init, checksum.xorOut, checksum.reflectIn, checksum.reflectOut)
         },
+        annotations.byteStuffingScheme(),
     )
+
+    // Resolves the byte-stuffing scheme from either @ByteStuffed (CSafe) or @ByteStuffedXor; they are mutually exclusive.
+    private fun List<Annotation>.byteStuffingScheme(): ByteStuffingScheme? {
+        val cSafe = filterIsInstance<ByteStuffed>().firstOrNull()
+        val xor = filterIsInstance<ByteStuffedXor>().firstOrNull()
+        if (cSafe != null && xor != null) throw UnsupportedByteStuffing("@ByteStuffed and @ByteStuffedXor cannot be combined")
+        return cSafe?.let { ByteStuffingScheme.CSafe(it.escapeByte, it.mask) }
+            ?: xor?.let { ByteStuffingScheme.Xor(it.escapeByte, it.escapedBytes.toSet(), it.xorKey) }
+    }
+
+    // Resolves the @Terminal terminator override, or null if absent.
+    private fun List<Annotation>.terminalByte(): Byte? = filterIsInstance<Terminal>().firstOrNull()?.terminator
 
     private fun List<Annotation>.itemAnnotations(): List<Annotation> = mapNotNull { annotation ->
         when (annotation) {

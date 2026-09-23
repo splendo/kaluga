@@ -59,6 +59,10 @@ abstract interface com.splendo.kaluga.base.bytes/ByteArrayBuilder { // com.splen
     abstract fun add(kotlin/UShort, com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.base.bytes/ByteArrayBuilder.add|add(kotlin.UShort;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 }
 
+final class com.splendo.kaluga.base.bytes/ByteStuffingException : kotlin/Exception { // com.splendo.kaluga.base.bytes/ByteStuffingException|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.base.bytes/ByteStuffingException.<init>|<init>(kotlin.String){}[0]
+}
+
 final class com.splendo.kaluga.base.bytes/KalugaCharacterCodingException : kotlin/Exception { // com.splendo.kaluga.base.bytes/KalugaCharacterCodingException|null[0]
     constructor <init>(kotlin/String?) // com.splendo.kaluga.base.bytes/KalugaCharacterCodingException.<init>|<init>(kotlin.String?){}[0]
 
@@ -81,6 +85,29 @@ final class com.splendo.kaluga.base.bytes/StringEncodingSettings { // com.splend
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/StringEncodingSettings.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/StringEncodingSettings.toString|toString(){}[0]
 
+    sealed interface EndMarking // com.splendo.kaluga.base.bytes/StringEncodingSettings.EndMarking|null[0]
+
+    sealed interface WithTerminal : com.splendo.kaluga.base.bytes/StringEncodingSettings.EndMarking { // com.splendo.kaluga.base.bytes/StringEncodingSettings.WithTerminal|null[0]
+        abstract val terminator // com.splendo.kaluga.base.bytes/StringEncodingSettings.WithTerminal.terminator|{}terminator[0]
+            abstract fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.base.bytes/StringEncodingSettings.WithTerminal.terminator.<get-terminator>|<get-terminator>(){}[0]
+    }
+
+    final class ByteStuffed : com.splendo.kaluga.base.bytes/StringEncodingSettings.WithTerminal { // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed|null[0]
+        constructor <init>(com.splendo.kaluga.base.bytes/ByteStuffingScheme, kotlin/Byte = ...) // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.<init>|<init>(com.splendo.kaluga.base.bytes.ByteStuffingScheme;kotlin.Byte){}[0]
+
+        final val scheme // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.scheme|{}scheme[0]
+            final fun <get-scheme>(): com.splendo.kaluga.base.bytes/ByteStuffingScheme // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.scheme.<get-scheme>|<get-scheme>(){}[0]
+        final val terminator // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.terminator|{}terminator[0]
+            final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.terminator.<get-terminator>|<get-terminator>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.base.bytes/ByteStuffingScheme // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.component1|component1(){}[0]
+        final fun component2(): kotlin/Byte // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.component2|component2(){}[0]
+        final fun copy(com.splendo.kaluga.base.bytes/ByteStuffingScheme = ..., kotlin/Byte = ...): com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.copy|copy(com.splendo.kaluga.base.bytes.ByteStuffingScheme;kotlin.Byte){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/StringEncodingSettings.ByteStuffed.toString|toString(){}[0]
+    }
+
     final class FixedLength : com.splendo.kaluga.base.bytes/StringEncodingSettings.EndMarking { // com.splendo.kaluga.base.bytes/StringEncodingSettings.FixedLength|null[0]
         constructor <init>(kotlin/Int) // com.splendo.kaluga.base.bytes/StringEncodingSettings.FixedLength.<init>|<init>(kotlin.Int){}[0]
 
@@ -94,7 +121,18 @@ final class com.splendo.kaluga.base.bytes/StringEncodingSettings { // com.splend
         final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/StringEncodingSettings.FixedLength.toString|toString(){}[0]
     }
 
-    sealed class EndMarking // com.splendo.kaluga.base.bytes/StringEncodingSettings.EndMarking|null[0]
+    final class Terminated : com.splendo.kaluga.base.bytes/StringEncodingSettings.WithTerminal { // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated|null[0]
+        constructor <init>(kotlin/Byte) // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.<init>|<init>(kotlin.Byte){}[0]
+
+        final val terminator // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.terminator|{}terminator[0]
+            final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.terminator.<get-terminator>|<get-terminator>(){}[0]
+
+        final fun component1(): kotlin/Byte // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.component1|component1(){}[0]
+        final fun copy(kotlin/Byte = ...): com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.copy|copy(kotlin.Byte){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/StringEncodingSettings.Terminated.toString|toString(){}[0]
+    }
 
     sealed class LengthPrefix : com.splendo.kaluga.base.bytes/StringEncodingSettings.EndMarking { // com.splendo.kaluga.base.bytes/StringEncodingSettings.LengthPrefix|null[0]
         abstract fun copyEncodedSizeInto(kotlin/ByteArray, kotlin/UInt, com.splendo.kaluga.base.bytes/ByteOrder, kotlin/Int): kotlin/ByteArray // com.splendo.kaluga.base.bytes/StringEncodingSettings.LengthPrefix.copyEncodedSizeInto|copyEncodedSizeInto(kotlin.ByteArray;kotlin.UInt;com.splendo.kaluga.base.bytes.ByteOrder;kotlin.Int){}[0]
@@ -139,7 +177,10 @@ final class com.splendo.kaluga.base.bytes/StringEncodingSettings { // com.splend
         final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/StringEncodingSettings.NoMarking.toString|toString(){}[0]
     }
 
-    final object NullTerminated : com.splendo.kaluga.base.bytes/StringEncodingSettings.EndMarking { // com.splendo.kaluga.base.bytes/StringEncodingSettings.NullTerminated|null[0]
+    final object NullTerminated : com.splendo.kaluga.base.bytes/StringEncodingSettings.WithTerminal { // com.splendo.kaluga.base.bytes/StringEncodingSettings.NullTerminated|null[0]
+        final val terminator // com.splendo.kaluga.base.bytes/StringEncodingSettings.NullTerminated.terminator|{}terminator[0]
+            final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.base.bytes/StringEncodingSettings.NullTerminated.terminator.<get-terminator>|<get-terminator>(){}[0]
+
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/StringEncodingSettings.NullTerminated.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/StringEncodingSettings.NullTerminated.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/StringEncodingSettings.NullTerminated.toString|toString(){}[0]
@@ -371,6 +412,56 @@ final value class com.splendo.kaluga.base.bytes/UInt48 : kotlin/Comparable<com.s
             final fun <get-MAX_VALUE>(): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.Companion.MAX_VALUE.<get-MAX_VALUE>|<get-MAX_VALUE>(){}[0]
         final val MIN_VALUE // com.splendo.kaluga.base.bytes/UInt48.Companion.MIN_VALUE|{}MIN_VALUE[0]
             final fun <get-MIN_VALUE>(): com.splendo.kaluga.base.bytes/UInt48 // com.splendo.kaluga.base.bytes/UInt48.Companion.MIN_VALUE.<get-MIN_VALUE>|<get-MIN_VALUE>(){}[0]
+    }
+}
+
+sealed class com.splendo.kaluga.base.bytes/ByteStuffingScheme { // com.splendo.kaluga.base.bytes/ByteStuffingScheme|null[0]
+    abstract val escapeByte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.escapeByte|{}escapeByte[0]
+        abstract fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+
+    abstract fun decodeStored(kotlin/Byte): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.decodeStored|decodeStored(kotlin.Byte){}[0]
+    abstract fun encodeStored(kotlin/Byte): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.encodeStored|encodeStored(kotlin.Byte){}[0]
+    abstract fun escapes(kotlin/Byte): kotlin/Boolean // com.splendo.kaluga.base.bytes/ByteStuffingScheme.escapes|escapes(kotlin.Byte){}[0]
+    final fun stuff(kotlin/ByteArray): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.stuff|stuff(kotlin.ByteArray){}[0]
+    final fun stuffedSize(kotlin/ByteArray): kotlin/Int // com.splendo.kaluga.base.bytes/ByteStuffingScheme.stuffedSize|stuffedSize(kotlin.ByteArray){}[0]
+    final fun unstuff(kotlin/ByteArray): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.unstuff|unstuff(kotlin.ByteArray){}[0]
+    final fun unstuffUntil(kotlin.collections/Iterator<kotlin/Byte>, kotlin/Function1<kotlin/Byte, kotlin/Boolean>): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.unstuffUntil|unstuffUntil(kotlin.collections.Iterator<kotlin.Byte>;kotlin.Function1<kotlin.Byte,kotlin.Boolean>){}[0]
+
+    final class CSafe : com.splendo.kaluga.base.bytes/ByteStuffingScheme { // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe|null[0]
+        constructor <init>(kotlin/Byte = ..., kotlin/Byte = ...) // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.<init>|<init>(kotlin.Byte;kotlin.Byte){}[0]
+
+        final val escapeByte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.escapeByte|{}escapeByte[0]
+            final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+        final val mask // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.mask|{}mask[0]
+            final fun <get-mask>(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.mask.<get-mask>|<get-mask>(){}[0]
+
+        final fun component1(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.component1|component1(){}[0]
+        final fun component2(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.component2|component2(){}[0]
+        final fun copy(kotlin/Byte = ..., kotlin/Byte = ...): com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.copy|copy(kotlin.Byte;kotlin.Byte){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.equals|equals(kotlin.Any?){}[0]
+        final fun escapes(kotlin/Byte): kotlin/Boolean // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.escapes|escapes(kotlin.Byte){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.toString|toString(){}[0]
+    }
+
+    final class Xor : com.splendo.kaluga.base.bytes/ByteStuffingScheme { // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor|null[0]
+        constructor <init>(kotlin/Byte, kotlin.collections/Set<kotlin/Byte>, kotlin/Byte = ...) // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.<init>|<init>(kotlin.Byte;kotlin.collections.Set<kotlin.Byte>;kotlin.Byte){}[0]
+
+        final val escapeByte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.escapeByte|{}escapeByte[0]
+            final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+        final val escapedBytes // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.escapedBytes|{}escapedBytes[0]
+            final fun <get-escapedBytes>(): kotlin.collections/Set<kotlin/Byte> // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.escapedBytes.<get-escapedBytes>|<get-escapedBytes>(){}[0]
+        final val xorKey // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.xorKey|{}xorKey[0]
+            final fun <get-xorKey>(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.xorKey.<get-xorKey>|<get-xorKey>(){}[0]
+
+        final fun component1(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.component1|component1(){}[0]
+        final fun component2(): kotlin.collections/Set<kotlin/Byte> // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.component2|component2(){}[0]
+        final fun component3(): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.component3|component3(){}[0]
+        final fun copy(kotlin/Byte = ..., kotlin.collections/Set<kotlin/Byte> = ..., kotlin/Byte = ...): com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.copy|copy(kotlin.Byte;kotlin.collections.Set<kotlin.Byte>;kotlin.Byte){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.equals|equals(kotlin.Any?){}[0]
+        final fun escapes(kotlin/Byte): kotlin/Boolean // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.escapes|escapes(kotlin.Byte){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Xor.toString|toString(){}[0]
     }
 }
 

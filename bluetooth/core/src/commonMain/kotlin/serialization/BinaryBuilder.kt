@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteArrayBuilder
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.ByteStuffingScheme
 import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.toByteArray
 import kotlinx.serialization.SerializationException
@@ -174,22 +175,27 @@ internal class ItemBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, on
         (binaryDescriptor.bitIndex + binaryDescriptor.bitWidth),
         onUnconstrained,
     ) {
-    fun checkIfStartsWithNull(value: ByteArray, order: ByteOrder): Boolean = when (order) {
-        ByteOrder.LEAST_SIGNIFICANT_FIRST -> value.firstOrNull() == 0x00.toByte()
-        ByteOrder.MOST_SIGNIFICANT_FIRST -> value.lastOrNull() == 0x00.toByte()
+    fun startsWithTerminator(value: ByteArray, order: ByteOrder, terminator: Byte): Boolean = when (order) {
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> value.firstOrNull() == terminator
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> value.lastOrNull() == terminator
     }
 }
 
 /**
- * Exception thrown when a collection is marked with [NullTerminated] but one of its items starts with a 0x00 byte.
+ * Exception thrown when a terminator-marked collection has an item that starts with the terminator byte,
+ * which would be indistinguishable from the end of the collection.
  */
-class UnexpectedNullTermination(override val message: String) : SerializationException()
+class UnexpectedTerminator(override val message: String) : SerializationException()
 
 /**
  * A [BinaryBuilder] to build data for a collection (List/Map) structure
  */
-internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder, private val classBuilders: List<ItemBinaryBuilder>, private val isNullTerminated: Boolean) :
-    BinaryBuilder {
+internal abstract class CollectionBinaryBuilder(
+    private val byteOrder: ByteOrder,
+    private val classBuilders: List<ItemBinaryBuilder>,
+    private val terminator: Byte?,
+    private val byteStuffing: ByteStuffingScheme? = null,
+) : BinaryBuilder {
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
 
@@ -217,16 +223,24 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
     }
 
     override fun ByteArrayBuilder.build() {
-        if (byteOrder == this@CollectionBinaryBuilder.byteOrder) {
+        val stuffing = byteStuffing
+        if (stuffing != null) {
+            // Stuff the whole collection body (LSB-only); the raw 0x00 terminator is appended separately by the
+            // encoder. Because 0x00 is escaped, an item may legitimately start with it, so no start-with-null check.
+            val body = buildByteArray(this@CollectionBinaryBuilder.byteOrder, maxOf(expectedSize, 1)) {
+                classBuilders.forEach { with(it) { build() } }
+            }
+            add(stuffing.stuff(body))
+        } else if (byteOrder == this@CollectionBinaryBuilder.byteOrder) {
             classBuilders.forEachIndexed { index, classBuilder ->
-                if (isNullTerminated && classBuilder.binaryDescriptor.fieldIndex == 0) {
+                if (terminator != null && classBuilder.binaryDescriptor.fieldIndex == 0) {
                     val value = buildByteArray(expectedSize = classBuilder.expectedSize) {
                         with(classBuilder) {
                             build()
                         }
                     }
-                    if (classBuilder.checkIfStartsWithNull(value, byteOrder)) {
-                        throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
+                    if (classBuilder.startsWithTerminator(value, byteOrder, terminator)) {
+                        throw UnexpectedTerminator("The element at $index starts with the terminator byte in a terminated List")
                     }
                     add(value)
                 } else {
@@ -250,24 +264,26 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
 /**
  * A [CollectionBinaryBuilder] for a List
  */
-internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
+internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         binaryDescriptor.childByteOrder,
         MutableList(size) {
             ItemBinaryBuilder(binaryDescriptor.children.first(), onUnconstrained)
         },
-        isNullTerminated,
+        terminator,
+        binaryDescriptor.collectionSettings?.byteStuffing,
     )
 
 /**
  * A [CollectionBinaryBuilder] for a Map
  */
-internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
+internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         binaryDescriptor.childByteOrder,
         MutableList(size * 2) {
             val index = it % 2
             ItemBinaryBuilder(binaryDescriptor.children[index], onUnconstrained)
         },
-        isNullTerminated,
+        terminator,
+        binaryDescriptor.collectionSettings?.byteStuffing,
     )

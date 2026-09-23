@@ -110,15 +110,17 @@ internal class BluetoothBinaryEncoder(
 
             is BluetoothBinaryDescriptor.CollectionSettings.Unmarked -> {}
 
-            is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> {}
+            is BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked -> {}
         }
 
-        val isNullTerminated = collectionSettings.lengthMarking is BluetoothBinaryDescriptor.CollectionSettings.NullMarked
+        // The terminator byte for a null-marked collection (null when the collection is not terminator-marked); used
+        // only for the non-stuffed start-with-terminator safety check, as stuffed collections escape it.
+        val terminator = (collectionSettings.lengthMarking as? BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked)?.terminator
 
         var markUnconstrained = false
         val binaryBuilder = when (descriptor.kind) {
-            is StructureKind.LIST -> ListBinaryBuilder(binaryDescriptor, collectionSize, isNullTerminated) { markUnconstrained = true }
-            is StructureKind.MAP -> MapBinaryBuilder(binaryDescriptor, collectionSize, isNullTerminated) { markUnconstrained = true }
+            is StructureKind.LIST -> ListBinaryBuilder(binaryDescriptor, collectionSize, terminator) { markUnconstrained = true }
+            is StructureKind.MAP -> MapBinaryBuilder(binaryDescriptor, collectionSize, terminator) { markUnconstrained = true }
             else -> throw IllegalArgumentException("SerialKind ${descriptor.kind} is not Supported as a Collection")
         }
 
@@ -136,10 +138,10 @@ internal class BluetoothBinaryEncoder(
                 }
 
                 // When done, mark end if necessary
-                when (collectionSettings.lengthMarking) {
-                    is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> {
+                when (val lengthMarking = collectionSettings.lengthMarking) {
+                    is BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked -> {
                         if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
-                            builder.addAction(1) { add(0x00.toByte()) }
+                            builder.addAction(1) { add(lengthMarking.terminator) }
                         }
                     }
 

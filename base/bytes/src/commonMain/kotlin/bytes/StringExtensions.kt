@@ -68,12 +68,20 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
     /**
      * Method used for marking the end of a String when encoding it to a [ByteArray]
      */
-    sealed class EndMarking
+    sealed interface EndMarking
+
+    /**
+     * An [EndMarking] that ends the String with a single [terminator] byte. Implemented by [NullTerminated],
+     * [Terminated] and [ByteStuffed], letting callers read the terminator uniformly.
+     */
+    sealed interface WithTerminal : EndMarking {
+        val terminator: Byte
+    }
 
     /**
      * An [EndMarking] where the length of the String is encoded as a prefix.
      */
-    sealed class LengthPrefix : EndMarking() {
+    sealed class LengthPrefix : EndMarking {
 
         /**
          * The expected number of [Byte]s required to encode the length of the String.
@@ -163,12 +171,14 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
     /**
      * An [EndMarking] where the end is marked by a final empty character `\u0000`. If the string contains this character encoding will fail.
      */
-    data object NullTerminated : EndMarking()
+    data object NullTerminated : WithTerminal {
+        override val terminator: Byte = 0x00
+    }
 
     /**
      * No [EndMarking] will be used, the entire array should be decoded
      */
-    data object NoMarking : EndMarking()
+    data object NoMarking : EndMarking
 
     /**
      * An [EndMarking] where the String is always encoded as a fixed length [length].
@@ -176,7 +186,30 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
      * If it is smaller, it will be padded with null characters.
      */
 
-    data class FixedLength(val length: Int) : EndMarking()
+    data class FixedLength(val length: Int) : EndMarking
+
+    /**
+     * An [EndMarking] where the end is marked by a single [terminator] byte, but the content is first byte-stuffed
+     * with [scheme] so the terminator value never appears literally in the content and stays unambiguous. This is the
+     * only end marking under which the string may itself contain the [terminator] value.
+     *
+     * Only supported for [ByteOrder.LEAST_SIGNIFICANT_FIRST]; [scheme] must escape [terminator].
+     * @property scheme the [ByteStuffingScheme] applied to the content before the terminator is appended.
+     * @property terminator the byte marking the end of the string. Defaults to `0x00` (like [NullTerminated]).
+     */
+    data class ByteStuffed(val scheme: ByteStuffingScheme, override val terminator: Byte = 0x00) : WithTerminal {
+        init {
+            require(scheme.escapes(terminator)) { "A ByteStuffed end marking's scheme must escape its terminator byte" }
+        }
+    }
+
+    /**
+     * An [EndMarking] where the end is marked by a single [terminator] byte, matched at the byte level. Unlike
+     * [NullTerminated] — which is `0x00` with UTF-16-aware handling — the encoded content must not contain the
+     * [terminator] byte, and encoding fails if it does. Use [ByteStuffed] when the content may legitimately contain it.
+     * @property terminator the byte marking the end of the string.
+     */
+    data class Terminated(override val terminator: Byte) : WithTerminal
 }
 
 /**
@@ -192,7 +225,11 @@ fun String.byteArraySize(settings: StringEncodingSettings): Int {
             stringSize + lengthSize
         }
 
-        is StringEncodingSettings.NullTerminated -> stringSize + 1
+        // The terminator is a single byte; the stuffed characters expand by however many escaped bytes they contain.
+        is StringEncodingSettings.ByteStuffed -> endMarking.scheme.stuffedSize(settings.encoding.encodeString(this, ByteOrder.LEAST_SIGNIFICANT_FIRST)) + 1
+
+        // Any other terminated marking ([NullTerminated], [Terminated]) writes the content plus a single terminator byte.
+        is StringEncodingSettings.WithTerminal -> stringSize + 1
 
         is StringEncodingSettings.NoMarking -> stringSize
 
@@ -239,20 +276,37 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
             }
         }
 
-        is StringEncodingSettings.NullTerminated -> {
-            require(!contains('\u0000')) { "Null terminated string cannot contain null character" }
+        is StringEncodingSettings.ByteStuffed -> {
+            require(order == ByteOrder.LEAST_SIGNIFICANT_FIRST) { "Byte stuffing is only supported for LEAST_SIGNIFICANT_FIRST" }
+            // The scheme escapes the terminator, so the content may itself contain the terminator value.
+            val stuffed = endMarking.scheme.stuff(settings.encoding.encodeString(this, order))
+            stuffed.copyInto(array, offset)
+            array[offset + stuffed.size] = endMarking.terminator
+            array
+        }
+
+        // [NullTerminated] and [Terminated]: content followed by a single terminator byte. NullTerminated forbids
+        // only the U+0000 character (its UTF-16 0x00 bytes are tolerated on decode via alignment); any other
+        // terminator is forbidden as a byte in the encoded content.
+        is StringEncodingSettings.WithTerminal -> {
+            val encoded = settings.encoding.encodeString(this, order)
+            if (endMarking is StringEncodingSettings.NullTerminated) {
+                require(!contains(0.toChar())) { "Null terminated string cannot contain null character" }
+            } else {
+                require(endMarking.terminator !in encoded) { "A string terminated by a byte cannot encode to bytes containing that terminator; use a ByteStuffed end marking" }
+            }
             when (order) {
                 ByteOrder.MOST_SIGNIFICANT_FIRST -> {
-                    array[offset] = 0x00.toByte()
-                    settings.encoding.copyEncodedStringIntoArray(this, array, offset + 1, order)
+                    array[offset] = endMarking.terminator
+                    encoded.copyInto(array, offset + 1)
                 }
 
                 ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
-                    settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
-                    array[offset + stringSize] = 0x00.toByte()
-                    array
+                    encoded.copyInto(array, offset)
+                    array[offset + encoded.size] = endMarking.terminator
                 }
             }
+            array
         }
 
         is StringEncodingSettings.NoMarking -> settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
@@ -543,14 +597,21 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
             stringBytes
         }
 
-        is StringEncodingSettings.NullTerminated -> {
-            var hasFoundNull = false
+        // Un-stuff on the fly: the terminator value is escaped in the content, so the only unescaped occurrence is
+        // the real terminator. (This also avoids the UTF-16 odd-index exception the plain path needs.)
+        is StringEncodingSettings.ByteStuffed -> endMarking.scheme.unstuffUntil(iterator()) { it == endMarking.terminator }.toList()
+
+        // [NullTerminated] / [Terminated]: read until the terminator byte. NullTerminated also tolerates a 0x00 byte
+        // that is the high byte of a UTF-16 character (odd index); [Terminated] never contains its terminator byte.
+        is StringEncodingSettings.WithTerminal -> {
+            val allowUtf16NullByte = endMarking is StringEncodingSettings.NullTerminated && settings.encoding == UTF_16
+            var hasFoundTerminator = false
             val stringBytes = withIndex().takeWhile { (index, byte) ->
-                val isCharacterByte = (settings.encoding == UTF_16 && index % 2 != 0) || byte != 0x00.toByte()
-                hasFoundNull = !isCharacterByte
+                val isCharacterByte = (allowUtf16NullByte && index % 2 != 0) || byte != endMarking.terminator
+                hasFoundTerminator = !isCharacterByte
                 isCharacterByte
             }.map { (_, byte) -> byte }.toList()
-            require(hasFoundNull) { "Does not end with a null marker" }
+            require(hasFoundTerminator) { "Does not end with the terminator byte" }
             stringBytes
         }
 

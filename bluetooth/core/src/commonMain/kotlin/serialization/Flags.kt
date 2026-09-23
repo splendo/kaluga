@@ -360,3 +360,59 @@ annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class SerializedByteValue(vararg val value: Byte)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Applies CSafe-style byte stuffing so a delimiter never appears literally in the content, using a
+ * [com.splendo.kaluga.base.bytes.ByteStuffingScheme.CSafe] scheme. Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST].
+ *
+ * - On a **class** the body and any [Checksum] are stuffed after encoding (and un-stuffed before decoding), while a
+ *   [Prefix] and [Postfix] frame the stuffed region untouched — the CSafe frame `[start flag][stuffed body+checksum][stop flag]`.
+ * - On a **String or Collection property** it is itself a `0x00`-terminated marking (no [NullTerminated] needed), stuffing the
+ *   content so the terminator stays unambiguous. As CSafe does not escape `0x00`, use [ByteStuffedXor] there instead.
+ *
+ * The escaped values are the contiguous `[mask]`-aligned block sharing the high bits of [escapeByte]; defaults escape `0xF0..0xF3`.
+ *
+ * @property escapeByte the byte prepended to an escaped value (and itself always escaped)
+ * @property mask the low-bit mask of the escaped block sharing the high bits of [escapeByte]
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY)
+annotation class ByteStuffed(val escapeByte: Byte = 0xF3.toByte(), val mask: Byte = 0x03)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Terminates a String or Collection with [terminator] instead of the default `0x00`.
+ *
+ * - **With** a byte-stuffing annotation ([ByteStuffed] / [ByteStuffedXor]) the content is stuffed so it may contain
+ *   [terminator] freely; the scheme must escape [terminator].
+ * - **Without** stuffing it is a plain byte terminator: the encoded content must not contain [terminator] (encoding
+ *   fails if it does), and for a Collection no item may start with it.
+ *
+ * @property terminator the byte marking the end of the String or Collection
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Terminal(val terminator: Byte)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Applies PPP/HDLC-style byte stuffing, using a [com.splendo.kaluga.base.bytes.ByteStuffingScheme.Xor] scheme. Only for
+ * [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]; because the escaped set is explicit,
+ * this can protect a `0x00` terminator (use `escapedBytes = [0x00]` on a String or Collection — no [NullTerminated] needed).
+ *
+ * Each escaped byte is stored XOR-ed with [xorKey]. [escapeByte] is always escaped in addition to [escapedBytes].
+ *
+ * @property escapeByte the byte prepended to an escaped value (and itself always escaped)
+ * @property escapedBytes the additional byte values to escape (e.g. the delimiter)
+ * @property xorKey the value XOR-ed with an escaped byte to produce its stored form
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY)
+annotation class ByteStuffedXor(val escapeByte: Byte, val escapedBytes: ByteArray, val xorKey: Byte = 0x20)

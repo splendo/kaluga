@@ -194,6 +194,15 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     }
 }
 
+/**
+ * Reads bytes one at a time via [BluetoothBinaryDescriptorDecoder.nextBytes] until the decoder [is empty][BluetoothBinaryDescriptorDecoder.isEmpty].
+ * Used to feed a byte-stuffed region to [com.splendo.kaluga.base.bytes.ByteStuffingScheme.unstuffUntil].
+ */
+internal fun BluetoothBinaryDescriptorDecoder.byteIterator(): Iterator<Byte> = object : Iterator<Byte> {
+    override fun hasNext(): Boolean = !isEmpty()
+    override fun next(): Byte = nextBytes(1)[0]
+}
+
 internal fun BluetoothBinaryDescriptorDecoder.consumePrefix(descriptor: BluetoothBinaryDescriptor) {
     descriptor.structureSettings.prefix?.let { prefixBytes ->
         val actual = nextBytes(prefixBytes.array.size)
