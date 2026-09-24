@@ -54,6 +54,14 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
+      - name: ktLint plugin
+        run: ./gradlew lintKotlin
+        working-directory: bytes/plugin
+
+      - name: ktLint example
+        run: ./gradlew lintKotlin
+        working-directory: bytes/plugin/example
+
       - name: run bytes plugin unit tests
         run: ./gradlew --stacktrace :plugin:test
         working-directory: bytes/plugin
