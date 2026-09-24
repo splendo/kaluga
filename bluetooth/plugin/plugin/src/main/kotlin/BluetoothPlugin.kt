@@ -54,6 +54,7 @@ class BluetoothPlugin : Plugin<Project> {
         plugins.apply(KspGradleSubplugin::class)
 
         val kalugaVersion = BluetoothPluginVersion.kalugaVersion
+        val coroutinesVersion = BluetoothPluginVersion.coroutinesVersion
 
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
@@ -68,13 +69,12 @@ class BluetoothPlugin : Plugin<Project> {
         }
 
         // The KSP-generated sources are registered as a commonMain source directory, so kotlinter's tasks read from the
-        // KSP output directory. That directory is a task output, so Gradle requires an explicit dependency (it rejects the
-        // otherwise-implicit one). We also exclude those files from the kotlinter source: they are produced output (already
-        // formatted by KotlinPoet), not hand-written code, so they should be neither linted nor reformatted.
+        // KSP output directory. Those files are produced output (already formatted by KotlinPoet), not hand-written code,
+        // so exclude them from the kotlinter source: they should be neither linted nor reformatted. The producer
+        // dependency kotlinter needs on that generated dir is wired in afterEvaluate, once the generating KSP task is
+        // known, so only that task runs on format/lint rather than every per-target KSP task.
         val generatedRoot = layout.buildDirectory.dir("generated").get().asFile.absolutePath
-        val kspTasks = tasks.withType<KspAATask>()
         tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
-            dependsOn(kspTasks)
             (this as? SourceTask)?.exclude { it.file.absolutePath.startsWith(generatedRoot) }
         }
 
@@ -97,20 +97,42 @@ class BluetoothPlugin : Plugin<Project> {
                     }
                 }
                 val isSinglePlatform = targets.count { it.name != "metadata" } == 1
+
+                // kotlinter reads the KSP output registered as a commonMain source dir; that dir is a task output, so
+                // Gradle needs an explicit producer dependency. Only the metadata pass (multi-target) or the single leaf
+                // pass writes a registered source dir, so depend on just that one. Depending on every KspAATask would
+                // force js/wasmJs/macos KSP to run on every formatKotlin/lintKotlin.
+                val generatingKspTaskName = if (isSinglePlatform) {
+                    "ksp${targets.first { it.name != "metadata" }.name.uppercaseFirstChar()}Main"
+                } else {
+                    "kspCommonMainKotlinMetadata"
+                }
+                tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
+                    dependsOn(tasks.matching { it.name == generatingKspTaskName })
+                }
+
                 val bluetoothTargets = bluetoothExtension.target.get()
                 val implementations = bluetoothExtension.implementFor.get()
-                val generatesImplementation = implementations.isNotEmpty()
+                val concreteImplementation = ImplementFor.BLUETOOTH in implementations
                 val generatesMock = ImplementFor.MOCK in implementations
                 sourceSets.commonMain {
                     generatedSourceDir?.let { kotlin.srcDir(it) }
-                    bluetoothExtension.annotationSourceDirectories.get().forEach { kotlin.srcDir(it) }
                     dependencies {
                         implementation("com.splendo.kaluga.bluetooth:annotations:$kalugaVersion")
-                        implementation("com.splendo.kaluga.bluetooth:core:$kalugaVersion")
-                        if (generatesImplementation && BluetoothTarget.CLIENT in bluetoothTargets) {
+                        // core is api: generated interfaces expose Flow, Identifier, GattResponse etc.
+                        // from bluetooth:core in their public signatures, making them visible to consumers.
+                        api("com.splendo.kaluga.bluetooth:core:$kalugaVersion")
+                        // Generated Bluetooth class bodies directly call kotlinx.coroutines.flow operators
+                        // (Flow<T>, map, flatMapLatest, firstOrNull, flowOf). bluetooth:core exposes these
+                        // via its own api dep, but that only takes effect once bluetooth:core is rebuilt.
+                        // Declaring it here too makes it available immediately regardless of build cache.
+                        // Gradle's conflict resolution picks the highest declared version, so user-declared
+                        // upgrades (e.g. a bugfix release) are honoured automatically.
+                        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                        if (concreteImplementation && BluetoothTarget.CLIENT in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:client:$kalugaVersion")
                         }
-                        if (generatesImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
+                        if (concreteImplementation && BluetoothTarget.SERVER in bluetoothTargets) {
                             implementation("com.splendo.kaluga.bluetooth:server:$kalugaVersion")
                         }
                         if (generatesMock) {
@@ -122,13 +144,22 @@ class BluetoothPlugin : Plugin<Project> {
                     }
                 }
 
+                val annotationSourceFiles = bluetoothExtension.annotationSourceDirectories.get().map { file(it) }
                 tasks.withType<KspAATask>().configureEach {
                     if (!isSinglePlatform && name != "kspCommonMainKotlinMetadata") {
                         dependsOn("kspCommonMainKotlinMetadata")
                     }
+                    kspConfig.sourceRoots.from(annotationSourceFiles)
                 }
                 this@run.extensions.configure<KspExtension> {
-                    arg(CommonSourceArgumentProvider(sourceSets.commonMain.get().kotlin.sourceDirectories))
+                    // The annotationSource directories hold shared @Bluetooth definitions whose generation is owned by
+                    // the metadata (or single leaf) pass. Include them in commonSource so the per-target passes recognise
+                    // them as common and skip regenerating them (which would emit duplicate js/wasmJs/etc. output).
+                    arg(
+                        CommonSourceArgumentProvider(
+                            this@run.files(sourceSets.commonMain.get().kotlin.sourceDirectories, annotationSourceFiles),
+                        ),
+                    )
                     arg("isSingleTarget", "$isSinglePlatform")
                 }
 
@@ -152,7 +183,7 @@ class BluetoothPlugin : Plugin<Project> {
                     dependsOn(generate)
                 }
             }
-            bluetoothExtension.afterEvaluate()
+            bluetoothExtension.afterEvaluate(::file)
         }
     }
 
@@ -216,14 +247,19 @@ internal class CommonSourceArgumentProvider(
 }
 
 object BluetoothPluginVersion {
-    val kalugaVersion: String by lazy {
+    private val properties: Properties by lazy {
         BluetoothPluginVersion::class.java
             .classLoader
             .getResourceAsStream("bluetooth.properties")
-            ?.use {
-                Properties().apply { load(it) }
-            }
-            ?.getProperty("kalugaVersion")
-            ?: error("Bluetooth plugin version not found")
+            ?.use { Properties().apply { load(it) } }
+            ?: error("Bluetooth plugin properties not found")
+    }
+
+    val kalugaVersion: String by lazy {
+        properties.getProperty("kalugaVersion") ?: error("kalugaVersion not found in bluetooth.properties")
+    }
+
+    val coroutinesVersion: String by lazy {
+        properties.getProperty("coroutinesVersion") ?: error("coroutinesVersion not found in bluetooth.properties")
     }
 }

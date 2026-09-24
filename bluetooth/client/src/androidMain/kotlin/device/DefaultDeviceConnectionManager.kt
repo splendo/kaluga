@@ -216,7 +216,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    actual override fun disconnect() {
+    actual override fun intentionalDisconnect() {
         val gatt = gatt.getCompletedOrNull()
         if (gatt != null && lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
             gatt.disconnect()

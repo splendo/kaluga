@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteArrayBuilder
+import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.buildByteArray
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.DeserializationStrategy
@@ -63,6 +64,14 @@ import kotlinx.serialization.serializer
  * Attempting to encode data after will lead to an exception.
  * - Use [NullIfEmpty] to mark a Collection as nullable if it is empty. When null its size will not be encoded.
  * - Use [SerializedByteValue] to change the byte identifier of an Enum or Polymorphic class. This replaces serializing its serial name as an unsized string.
+ * - Use [ByteStuffed] (CSafe), [ByteStuffedXor] (PPP-style), [ByteStuffedSlip] (SLIP) or [ByteStuffedCobs] (COBS) to byte-stuff so a delimiter never
+ * appears literally in the content (only for [com.splendo.kaluga.base.bytes.ByteOrder.LEAST_SIGNIFICANT_FIRST]). On the root structure it stuffs the body
+ * and [Checksum] while leaving a [Prefix]/[Postfix] frame untouched (CSafe framing); on a String or Collection it is itself a terminated marking, stuffing
+ * the content so the terminator stays unambiguous (`@ByteStuffedXor`/`@ByteStuffedCobs` for `0x00`, `@ByteStuffedSlip` for `0xC0`). Stuffing also
+ * applies to nested structures: a nested stuffed structure stuffs its body and [Checksum] (leaving any [Prefix]/[Postfix] frame untouched,
+ * as on the root) and is bounded by its terminator (a delimiter scheme's delimiter, or an explicit `@Terminal`) or, when unterminated
+ * (e.g. `@ByteStuffed` with no `@Terminal`), by being the last, unsized field. A stuffed structure nested inside another stuffed structure
+ * is stuffed once per layer (i.e. double-stuffed); wrap a type in an annotated value class to control whether stuffing applies at a use site.
  *
  * Equivalent flags are available to encode items in a List (e.g. [ItemSize]) or key/values in a Map (e.g. [KeyEncoded], [ValueNullTerminated])
  * @property validateChecksum if `true` decoding any data marked with [Checksum] will automatically validate the checksum and throw an exception if they don't match.
@@ -159,7 +168,9 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
                 }
             }
         }
-        val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule)
+        // The root frame owns its byte stuffing: the encoder stuffs the body + checksum (leaving prefix/postfix untouched),
+        // length-delimited by the whole payload, so no terminator is appended.
+        val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule, isRootFrame = true)
         serializer.serialize(encoder, value)
 
         return buildByteArray(flag.byteOrder, builder.expectedSize) {
@@ -171,7 +182,10 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
-        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule)
+        // Use flag.byteOrder (builder/accumulation direction) for the root decoder so it reads the byte
+        // array in the same direction it was written — not flag.childByteOrder, which is the field VALUE
+        // encoding direction and may differ when @ByteOrder(order, excludeStructure = true) is in use.
+        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule, isRootFrame = true)
 
         return deserializer.deserialize(decoder)
     }

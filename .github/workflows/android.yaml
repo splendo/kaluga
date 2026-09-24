@@ -12,7 +12,7 @@ jobs:
           submodules: recursive
 
       - name: set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 21
@@ -30,7 +30,7 @@ jobs:
           submodules: recursive
 
       - name: set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 21
@@ -39,6 +39,10 @@ jobs:
       - name: validate bluetooth code generation
         run: ./gradlew --stacktrace compileAndroidMain
         working-directory: bluetooth/plugin/example
+
+      - name: run plugin unit tests
+        run: ./gradlew --stacktrace :plugin:test
+        working-directory: bluetooth/plugin
 
   test:
     runs-on: ubuntu-latest
@@ -49,7 +53,7 @@ jobs:
           submodules: recursive
 
       - name: set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 21

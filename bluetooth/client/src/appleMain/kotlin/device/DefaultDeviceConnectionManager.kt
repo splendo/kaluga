@@ -188,7 +188,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    actual override fun disconnect() {
+    actual override fun intentionalDisconnect() {
         val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
         peripheral.delegate = null
