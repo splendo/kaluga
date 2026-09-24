@@ -56,6 +56,12 @@ sealed interface ByteStuffingScheme {
     fun stuffedSize(data: ByteArray): Int
 
     /**
+     * Lazily stuffs [source] into a folded byte stream — the streaming dual of [stuff]. Each source byte is transformed
+     * on demand, so a stuffing layer can be composed over a byte [Sequence] without materialising the whole array.
+     */
+    fun stuff(source: Sequence<Byte>): Sequence<Byte>
+
+    /**
      * A scheme that escapes each protected byte by replacing it with [escapeByte] followed by a transformed "stored"
      * byte. Covers CSafe, XOR/PPP and SLIP style stuffing.
      */
@@ -64,13 +70,15 @@ sealed interface ByteStuffingScheme {
         sealed class WithDelimiter :
             EscapeBased(),
             DelimiterByteStuffingScheme {
-            override fun unstuffUntil(iterator: Iterator<Byte>): ByteArray = unstuffUntil(iterator) { it == delimiter }
+            override fun unstuff(iterator: Iterator<Byte>): ByteArray = collectUnstuffed(iterator) { it == delimiter }
+            override fun unstuff(source: Sequence<Byte>): Sequence<Byte> = unstuffed(source.iterator()) { it == delimiter }
         }
 
         sealed class WithoutDelimiter :
             EscapeBased(),
             NonDelimiterByteStuffingScheme {
-            public override fun unstuffUntil(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray = super.unstuffUntil(iterator, isDelimiter)
+            override fun unstuff(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray = collectUnstuffed(iterator, isDelimiter)
+            override fun unstuff(source: Sequence<Byte>, isDelimiter: (Byte) -> Boolean): Sequence<Byte> = unstuffed(source.iterator(), isDelimiter)
         }
 
         /** The byte prepended to an escaped value. It is always itself escaped. */
@@ -91,18 +99,26 @@ sealed interface ByteStuffingScheme {
             return size
         }
 
+        // Emits the stuffed form of one byte — an escape prefix and stored value, or the byte itself. Shared by the
+        // eager and folded stuff paths so they cannot diverge.
+        private inline fun stuffByte(byte: Byte, emit: (Byte) -> Unit) {
+            if (escapes(byte)) {
+                emit(escapeByte)
+                emit(encodeStored(byte))
+            } else {
+                emit(byte)
+            }
+        }
+
         override fun stuff(data: ByteArray): ByteArray {
             val out = ByteArray(stuffedSize(data))
             var index = 0
-            for (byte in data) {
-                if (escapes(byte)) {
-                    out[index++] = escapeByte
-                    out[index++] = encodeStored(byte)
-                } else {
-                    out[index++] = byte
-                }
-            }
+            for (byte in data) stuffByte(byte) { out[index++] = it }
             return out
+        }
+
+        override fun stuff(source: Sequence<Byte>): Sequence<Byte> = sequence {
+            for (byte in source) stuffByte(byte) { yield(it) }
         }
 
         override fun unstuff(data: ByteArray): ByteArray {
@@ -121,22 +137,29 @@ sealed interface ByteStuffingScheme {
             return out.copyOf(outIndex)
         }
 
-        protected open fun unstuffUntil(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray {
-            val out = GrowableByteArray()
+        // Lazily un-stuffs [iterator] up to — and consuming — the first unescaped [isDelimiter] byte. Both the folded
+        // Sequence un-stuff and the eager array un-stuff run off this single decode loop via [collectUnstuffed].
+        protected fun unstuffed(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): Sequence<Byte> = sequence {
             while (iterator.hasNext()) {
                 val byte = iterator.next()
                 when {
                     byte == escapeByte -> {
                         if (!iterator.hasNext()) throw ByteStuffingException("Escape byte at end of stuffed data with no value to follow")
-                        out.append(decodeStored(iterator.next()))
+                        yield(decodeStored(iterator.next()))
                     }
 
-                    isDelimiter(byte) -> return out.toByteArray()
+                    isDelimiter(byte) -> return@sequence
 
-                    else -> out.append(byte)
+                    else -> yield(byte)
                 }
             }
             throw ByteStuffingException("Stuffed data ended before an unescaped delimiter was found")
+        }
+
+        protected fun collectUnstuffed(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray {
+            val out = GrowableByteArray()
+            for (byte in unstuffed(iterator, isDelimiter)) out.append(byte)
+            return out.toByteArray()
         }
     }
 
@@ -257,14 +280,50 @@ sealed interface ByteStuffingScheme {
             return out
         }
 
-        override fun unstuffUntil(iterator: Iterator<Byte>): ByteArray {
-            val encoded = GrowableByteArray()
-            while (iterator.hasNext()) {
-                val byte = iterator.next()
-                if (byte == delimiter) return unstuff(encoded.toByteArray())
-                encoded.append(byte)
+        override fun unstuff(iterator: Iterator<Byte>): ByteArray {
+            val out = GrowableByteArray()
+            for (byte in unstuff(iterator.asSequence())) out.append(byte)
+            return out.toByteArray()
+        }
+
+        // Streaming COBS buffers each block of up to 254 non-zero bytes until it knows the code byte (a 0x00 in the
+        // input or a full block), so its output is emitted one block at a time.
+        override fun stuff(source: Sequence<Byte>): Sequence<Byte> = sequence {
+            val block = ArrayList<Byte>(0xFE)
+            for (byte in source) {
+                if (byte == 0x00.toByte()) {
+                    yield((block.size + 1).toByte())
+                    yieldAll(block)
+                    block.clear()
+                } else {
+                    block.add(byte)
+                    if (block.size == 0xFE) {
+                        yield(0xFF.toByte())
+                        yieldAll(block)
+                        block.clear()
+                    }
+                }
             }
-            throw ByteStuffingException("COBS data ended before its delimiter was found")
+            yield((block.size + 1).toByte())
+            yieldAll(block)
+        }
+
+        // Lazily un-stuffs [source] up to — and consuming — the delimiter (a raw 0x00, which COBS output never contains),
+        // the folded dual of the eager [unstuff]. Each block's trailing zero is re-inserted unless the delimiter follows it.
+        override fun unstuff(source: Sequence<Byte>): Sequence<Byte> = sequence {
+            val iterator = source.iterator()
+            if (!iterator.hasNext()) throw ByteStuffingException("COBS data ended before its delimiter was found")
+            var code = iterator.next().toInt() and 0xFF
+            while (code != 0) {
+                for (i in 1 until code) {
+                    if (!iterator.hasNext()) throw ByteStuffingException("Truncated COBS data")
+                    yield(iterator.next())
+                }
+                if (!iterator.hasNext()) throw ByteStuffingException("COBS data ended before its delimiter was found")
+                val next = iterator.next().toInt() and 0xFF
+                if (code < 0xFF && next != 0) yield(0)
+                code = next
+            }
         }
 
         // The exact decoded length, walking only the code bytes (jumping over data), so [unstuff] allocates once.
@@ -296,7 +355,14 @@ sealed interface DelimiterByteStuffingScheme : ByteStuffingScheme {
      * (which is consumed and discarded), and returns the reconstructed content.
      * @throws ByteStuffingException if the iterator ends before an unescaped delimiter is found.
      */
-    fun unstuffUntil(iterator: Iterator<Byte>): ByteArray
+    fun unstuff(iterator: Iterator<Byte>): ByteArray
+
+    /**
+     * Lazily un-stuffs [source] until an unescaped byte matching [delimiter] (which is consumed), the folded dual of
+     * [unstuff]. The returned [Sequence] ends at the delimiter and throws [ByteStuffingException], when consumed,
+     * if [source] ends before one is found.
+     */
+    fun unstuff(source: Sequence<Byte>): Sequence<Byte>
 }
 
 /**
@@ -309,7 +375,14 @@ sealed interface NonDelimiterByteStuffingScheme : ByteStuffingScheme {
      * (which is consumed and discarded), and returns the reconstructed content.
      * @throws ByteStuffingException if the iterator ends before an unescaped delimiter is found.
      */
-    fun unstuffUntil(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray
+    fun unstuff(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray
+
+    /**
+     * Lazily un-stuffs [source] until an unescaped byte matching [isDelimiter] (which is consumed), the folded dual of
+     * [unstuff]. The returned [Sequence] ends at the delimiter and throws [ByteStuffingException], when consumed,
+     * if [source] ends before one is found.
+     */
+    fun unstuff(source: Sequence<Byte>, isDelimiter: (Byte) -> Boolean): Sequence<Byte>
 }
 
 /**

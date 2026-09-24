@@ -608,9 +608,9 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
 
         // Un-stuff on the fly: the terminator value is escaped in the content, so the only unescaped occurrence is
         // the real terminator. (This also avoids the UTF-16 odd-index exception the plain path needs.)
-        is StringEncodingSettings.ByteStuffed.Delimited -> endMarking.scheme.unstuffUntil(iterator()).toList()
+        is StringEncodingSettings.ByteStuffed.Delimited -> endMarking.scheme.unstuff(iterator()).toList()
 
-        is StringEncodingSettings.ByteStuffed.Explicit -> endMarking.scheme.unstuffUntil(iterator()) { it == endMarking.terminator }.toList()
+        is StringEncodingSettings.ByteStuffed.Explicit -> endMarking.scheme.unstuff(iterator()) { it == endMarking.terminator }.toList()
 
         // [NullTerminated] / [Terminated]: read until the terminator byte. NullTerminated also tolerates a 0x00 byte
         // that is the high byte of a UTF-16 character (odd index); [Terminated] never contains its terminator byte.

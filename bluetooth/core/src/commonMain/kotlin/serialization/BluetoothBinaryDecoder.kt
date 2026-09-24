@@ -99,8 +99,8 @@ internal class BluetoothBinaryDecoder(
             null -> stuffing.unstuff(decoder.nextBytes(decoder.remainingPayloadBytes() - postfixSize))
 
             else -> when (stuffing) {
-                is DelimiterByteStuffingScheme -> stuffing.unstuffUntil(decoder.byteIterator())
-                is NonDelimiterByteStuffingScheme -> stuffing.unstuffUntil(decoder.byteIterator()) { it == terminator }
+                is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
+                is NonDelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator()) { it == terminator }
             }
         }
         decoder.consumePostfix(binaryDescriptor)
@@ -113,11 +113,11 @@ internal class BluetoothBinaryDecoder(
         val settings = binaryDescriptor.collectionSettings ?: return null
         val stuffing = settings.byteStuffing ?: return null
         val body = when (stuffing) {
-            is DelimiterByteStuffingScheme -> stuffing.unstuffUntil(decoder.byteIterator())
+            is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
 
             is NonDelimiterByteStuffingScheme -> {
                 val terminalMarked = settings.lengthMarking as? BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked ?: return null
-                stuffing.unstuffUntil(decoder.byteIterator()) { it == terminalMarked.terminator }
+                stuffing.unstuff(decoder.byteIterator()) { it == terminalMarked.terminator }
             }
         }
         val unmarked = binaryDescriptor.copy(collectionSettings = settings.copy(lengthMarking = BluetoothBinaryDescriptor.CollectionSettings.Unmarked))

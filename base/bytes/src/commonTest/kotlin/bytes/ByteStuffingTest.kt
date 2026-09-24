@@ -19,6 +19,8 @@ package bytes
 
 import com.splendo.kaluga.base.bytes.ByteStuffingException
 import com.splendo.kaluga.base.bytes.ByteStuffingScheme
+import com.splendo.kaluga.base.bytes.DelimiterByteStuffingScheme
+import com.splendo.kaluga.base.bytes.NonDelimiterByteStuffingScheme
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.toHexString
 import kotlin.test.Test
@@ -65,7 +67,7 @@ class ByteStuffingTest {
         // Content [0x41, 0x00] stuffed, then an unescaped 0x00 terminator, then trailing bytes left unread.
         val stream = byteArrayOf(0x41, 0x7D, 0x20, 0x00, 0x99.toByte())
         val iterator = stream.iterator()
-        val content = scheme.unstuffUntil(iterator)
+        val content = scheme.unstuff(iterator)
         assertTrue(content.contentEquals(byteArrayOf(0x41, 0x00)))
         assertEquals(0x99.toByte(), iterator.next())
     }
@@ -131,7 +133,7 @@ class ByteStuffingTest {
         // COBS-encoded [0x11, 0x00, 0x22] followed by a raw 0x00 delimiter, then a trailing byte.
         val stream = scheme.stuff(byteArrayOf(0x11, 0x00, 0x22)) + byteArrayOf(0x00, 0x99.toByte())
         val iterator = stream.iterator()
-        val content = scheme.unstuffUntil(iterator)
+        val content = scheme.unstuff(iterator)
         assertTrue(content.contentEquals(byteArrayOf(0x11, 0x00, 0x22)))
         assertEquals(0x99.toByte(), iterator.next())
     }
@@ -175,8 +177,60 @@ class ByteStuffingTest {
     fun malformedStuffedData() {
         val scheme = ByteStuffingScheme.CSafe()
         assertFailsWith<ByteStuffingException> { scheme.unstuff(byteArrayOf(0x0A, 0xF3.toByte())) }
-        assertFailsWith<ByteStuffingException> { scheme.unstuffUntil(byteArrayOf(0x0A, 0x0B).iterator()) { it == 0x00.toByte() } }
+        assertFailsWith<ByteStuffingException> { scheme.unstuff(byteArrayOf(0x0A, 0x0B).iterator()) { it == 0x00.toByte() } }
         // A 0x00 code byte is never valid COBS output.
         assertFailsWith<ByteStuffingException> { ByteStuffingScheme.Cobs.unstuff(byteArrayOf(0x00, 0x11)) }
+    }
+
+    // The folded unstuff ends at a delimiter, so append one the scheme escapes before decoding.
+    private fun ByteStuffingScheme.unstuffFolded(stuffed: Sequence<Byte>): ByteArray = when (this) {
+        is DelimiterByteStuffingScheme -> unstuff(stuffed + delimiter).toList().toByteArray()
+        is NonDelimiterByteStuffingScheme -> {
+            val terminator = (0..0xFF).map { it.toByte() }.first { canTerminateWith(it) }
+            unstuff(stuffed + terminator) { it == terminator }.toList().toByteArray()
+        }
+        else -> error("unreachable")
+    }
+
+    // The folded Sequence<Byte> transforms must produce the same bytes as the eager array versions and round-trip.
+    private fun ByteStuffingScheme.assertFoldedMatchesEager(data: ByteArray) {
+        val folded = stuff(data.asSequence()).toList().toByteArray()
+        val eager = stuff(data)
+        assertTrue(folded.contentEquals(eager), "folded stuff ${folded.toHexString(separator = " ")} != eager ${eager.toHexString(separator = " ")}")
+        assertTrue(unstuffFolded(eager.asSequence()).contentEquals(data), "folded unstuff did not round-trip")
+        // Folding stuff into unstuff composes lazily and round-trips.
+        assertTrue(unstuffFolded(stuff(data.asSequence())).contentEquals(data), "folded composition did not round-trip")
+    }
+
+    @Test
+    fun foldedTransforms() {
+        ByteStuffingScheme.CSafe().assertFoldedMatchesEager(byteArrayOf(0xF0.toByte(), 0x0A, 0xF3.toByte(), 0x2B))
+        ByteStuffingScheme.CSafe().assertFoldedMatchesEager(byteArrayOf())
+        ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00).assertFoldedMatchesEager(byteArrayOf(0x41, 0x00, 0x7D, 0x42))
+        ByteStuffingScheme.Slip().assertFoldedMatchesEager(byteArrayOf(0xC0.toByte(), 0x41, 0xDB.toByte(), 0x42))
+        ByteStuffingScheme.Cobs.assertFoldedMatchesEager(byteArrayOf(0x11, 0x22, 0x00, 0x33))
+        ByteStuffingScheme.Cobs.assertFoldedMatchesEager(byteArrayOf(0x00, 0x00))
+        ByteStuffingScheme.Cobs.assertFoldedMatchesEager(byteArrayOf())
+        // COBS across the 254-byte block boundary.
+        ByteStuffingScheme.Cobs.assertFoldedMatchesEager(ByteArray(300) { 0x01 })
+    }
+
+    @Test
+    fun foldedUnstuffIsLazy() {
+        // The folded transform must pull no more of the source than the consumer takes.
+        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00)
+        var consumed = 0
+        val source = sequenceOf<Byte>(0x41, 0x42, 0x43, 0x44).onEach { consumed++ }
+        assertEquals(0x41.toByte(), scheme.unstuff(source).first())
+        assertEquals(1, consumed)
+    }
+
+    @Test
+    fun foldedMalformed() {
+        // Malformed input throws only once the folded stream is consumed up to the fault.
+        // A trailing escape byte with no stored value to follow.
+        assertFailsWith<ByteStuffingException> { ByteStuffingScheme.CSafe().unstuff(byteArrayOf(0x0A, 0xF3.toByte()).asSequence()) { it == 0x00.toByte() }.toList() }
+        // A COBS block claiming more bytes than remain, with no delimiter.
+        assertFailsWith<ByteStuffingException> { ByteStuffingScheme.Cobs.unstuff(byteArrayOf(0x05, 0x11).asSequence()).toList() }
     }
 }
