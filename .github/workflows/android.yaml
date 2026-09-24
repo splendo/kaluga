@@ -40,6 +40,10 @@ jobs:
         run: ./gradlew --stacktrace compileAndroidMain
         working-directory: bluetooth/plugin/example
 
+      - name: run plugin unit tests
+        run: ./gradlew --stacktrace :plugin:test
+        working-directory: bluetooth/plugin
+
   test:
     runs-on: ubuntu-latest
     steps:
