@@ -218,13 +218,21 @@ internal data class BluetoothBinaryDescriptor(
      * @property checksumByteOrder byte order used when writing the checksum value into the frame.
      *   Defaults to [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Use [ByteOrder.MOST_SIGNIFICANT_FIRST] for big-endian CRC output.
      * @property byteStuffing when non-null, the body and checksum (class) or delimited content (property) are byte-stuffed.
+     * @property byteStuffingTerminator the terminator marking the end of a nested stuffed structure (a delimiter scheme's
+     *   canonical delimiter, or an explicit `@Terminal`); `null` means the structure is unsized and bounded by the remaining payload.
      */
-    data class StructureSettings(val prefix: ByteArrayHolder?, val postfix: ByteArrayHolder?, val checksumAlgorithm: CRC?, val byteStuffing: ByteStuffingScheme? = null)
+    data class StructureSettings(
+        val prefix: ByteArrayHolder?,
+        val postfix: ByteArrayHolder?,
+        val checksumAlgorithm: CRC?,
+        val byteStuffing: ByteStuffingScheme? = null,
+        val byteStuffingTerminator: Byte? = null,
+    )
 }
 
 /**
  * Thrown when byte stuffing (see [ByteStuffed]) is used in an unsupported position or configuration
- * (e.g. a nested field, a non-LSB byte order, or a scheme that cannot protect the delimiter).
+ * (e.g. a non-LSB byte order, or a scheme that cannot protect the delimiter).
  */
 class UnsupportedByteStuffing(message: String) : SerializationException(message)
 
@@ -713,7 +721,9 @@ internal object BluetoothBinaryDescriptorRegistry {
                                     throw UnsupportedByteStuffing("ByteStuffing $byteStuffing must be provided a terminal via @Terminal")
                                 }
                                 if (!byteStuffing.canTerminateWith(terminal)) {
-                                    throw UnsupportedByteStuffing("Byte stuffing on a String must escape its terminator byte and never emit it literally; use @ByteStuffedXor(delimiter = <terminator>) instead")
+                                    throw UnsupportedByteStuffing(
+                                        "Byte stuffing on a String must escape its terminator byte and never emit it literally; use @ByteStuffedXor(delimiter = <terminator>) instead",
+                                    )
                                 }
                                 StringEncodingSettings.ByteStuffed.Explicit(byteStuffing, terminal)
                             }
@@ -1049,14 +1059,38 @@ internal object BluetoothBinaryDescriptorRegistry {
         return false
     }
 
-    private fun blockSettings(annotations: List<Annotation>): BluetoothBinaryDescriptor.StructureSettings = BluetoothBinaryDescriptor.StructureSettings(
-        annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
-        annotations.filterIsInstance<Postfix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
-        annotations.filterIsInstance<Checksum>().firstOrNull()?.let { checksum ->
-            CRC(checksum.width, checksum.polynomial, checksum.init, checksum.xorOut, checksum.reflectIn, checksum.reflectOut)
-        },
-        annotations.byteStuffingScheme(),
-    )
+    private fun blockSettings(annotations: List<Annotation>): BluetoothBinaryDescriptor.StructureSettings {
+        val byteStuffing = annotations.byteStuffingScheme()
+        return BluetoothBinaryDescriptor.StructureSettings(
+            annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
+            annotations.filterIsInstance<Postfix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
+            annotations.filterIsInstance<Checksum>().firstOrNull()?.let { checksum ->
+                CRC(checksum.width, checksum.polynomial, checksum.init, checksum.xorOut, checksum.reflectIn, checksum.reflectOut)
+            },
+            byteStuffing,
+            byteStuffing?.let { structureByteStuffingTerminator(it, annotations.terminalByte()) },
+        )
+    }
+
+    // The terminator that bounds a byte-stuffed structure: a delimiter scheme uses its canonical delimiter (an explicit
+    // @Terminal is rejected); a non-delimiter scheme uses an explicit @Terminal, or null — meaning the structure is
+    // unsized and bounded by the remaining payload (the same rule @Unsized applies to Strings and Collections).
+    private fun structureByteStuffingTerminator(scheme: ByteStuffingScheme, terminal: Byte?): Byte? = when (scheme) {
+        is DelimiterByteStuffingScheme -> {
+            if (terminal != null) {
+                throw UnsupportedByteStuffing("$scheme has a fixed delimiter; @Terminal is not supported alongside it")
+            }
+            scheme.delimiter
+        }
+
+        is NonDelimiterByteStuffingScheme -> terminal?.also {
+            if (!scheme.canTerminateWith(it)) {
+                throw UnsupportedByteStuffing(
+                    "Byte stuffing on a structure must escape its terminator byte and never emit it literally; use @ByteStuffedXor(delimiter = <terminator>) instead",
+                )
+            }
+        }
+    }
 
     // Resolves the byte-stuffing scheme from one of the @ByteStuffed* annotations; they are mutually exclusive.
     private fun List<Annotation>.byteStuffingScheme(): ByteStuffingScheme? {

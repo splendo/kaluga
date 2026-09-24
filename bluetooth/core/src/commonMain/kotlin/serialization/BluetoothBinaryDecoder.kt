@@ -62,6 +62,9 @@ internal class BluetoothBinaryDecoder(
     private val binaryDescriptor: BluetoothBinaryDescriptor,
     private val decoder: BluetoothBinaryDescriptorDecoder,
     override val serializersModule: SerializersModule,
+    // The root frame is un-stuffed by BluetoothFormat before decoding starts; suppress it here so the root structure is
+    // not un-stuffed twice. Nested structures always un-stuff themselves (default `false`).
+    private val suppressOwnStuffing: Boolean = false,
 ) : Decoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
@@ -73,7 +76,35 @@ internal class BluetoothBinaryDecoder(
             BluetoothBinaryCompositeDecoder.Map(descriptor, subDecoder, serializersModule)
         } ?: BluetoothBinaryCompositeDecoder.Map(binaryDescriptor, decoder, serializersModule)
 
-        else -> BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
+        else -> stuffedStructure()?.let { subDecoder ->
+            // The prefix/postfix were consumed from the parent frame, so decode the un-stuffed body+checksum with a
+            // descriptor whose frame is stripped (checksum kept) — the sub-decoder must not expect them again.
+            val innerDescriptor = binaryDescriptor.copy(
+                structureSettings = binaryDescriptor.structureSettings.copy(prefix = null, postfix = null),
+            )
+            BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, subDecoder.beginStructure(innerDescriptor), serializersModule)
+        } ?: BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
+    }
+
+    // For a nested byte-stuffed structure, un-stuff its body + checksum into a fresh sub-decoder that then decodes it as a
+    // standalone structure. Any prefix/postfix frame the stuffed region untouched (as on the root) and are consumed here.
+    // The region is bounded either by the terminator (delimiter or @Terminal) or, when unterminated, by the remaining
+    // payload minus the postfix (unsized). Returns null when the structure is not stuffed (or stuffing is suppressed).
+    private fun stuffedStructure(): BluetoothBinaryDescriptorDecoder? {
+        val settings = binaryDescriptor.structureSettings
+        val stuffing = settings.byteStuffing?.takeUnless { suppressOwnStuffing } ?: return null
+        decoder.consumePrefix(binaryDescriptor)
+        val postfixSize = settings.postfix?.array?.size ?: 0
+        val bodyAndChecksum = when (val terminator = settings.byteStuffingTerminator) {
+            null -> stuffing.unstuff(decoder.nextBytes(decoder.remainingPayloadBytes() - postfixSize))
+
+            else -> when (stuffing) {
+                is DelimiterByteStuffingScheme -> stuffing.unstuffUntil(decoder.byteIterator())
+                is NonDelimiterByteStuffingScheme -> stuffing.unstuffUntil(decoder.byteIterator()) { it == terminator }
+            }
+        }
+        decoder.consumePostfix(binaryDescriptor)
+        return RootBluetoothBinaryDescriptorDecoder(bodyAndChecksum, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum)
     }
 
     // For a byte-stuffed terminated collection, un-stuff the body up to (and consuming) the raw terminator byte

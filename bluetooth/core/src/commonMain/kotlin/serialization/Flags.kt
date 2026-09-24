@@ -367,8 +367,10 @@ annotation class SerializedByteValue(vararg val value: Byte)
  * Applies CSafe-style byte stuffing so a delimiter never appears literally in the content, using a
  * [com.splendo.kaluga.base.bytes.ByteStuffingScheme.CSafe] scheme. Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST].
  *
- * - On a **class** the body and any [Checksum] are stuffed after encoding (and un-stuffed before decoding), while a
+ * - On the **root class** the body and any [Checksum] are stuffed after encoding (and un-stuffed before decoding), while a
  *   [Prefix] and [Postfix] frame the stuffed region untouched — the CSafe frame `[start flag][stuffed body+checksum][stop flag]`.
+ * - On a **nested class** the body and any [Checksum] are stuffed while a [Prefix]/[Postfix] frame it untouched (as on the
+ *   root), bounded by its terminator ([Terminal]) or — with no [Terminal], as CSafe has no delimiter — by being the last, unsized field.
  * - On a **String or Collection property** it is itself a `0x00`-terminated marking (no [NullTerminated] needed), stuffing the
  *   content so the terminator stays unambiguous. As CSafe does not escape `0x00`, use [ByteStuffedXor] there instead.
  *

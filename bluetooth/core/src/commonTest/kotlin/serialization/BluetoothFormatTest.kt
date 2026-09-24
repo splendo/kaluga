@@ -3070,6 +3070,156 @@ class BluetoothFormatTest {
         }
     }
 
+    // --- Nested byte-stuffed structures ---
+
+    @Serializable
+    data class StuffChild(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    // A nested stuffed structure inside a plain parent: the child's whole encoding is stuffed and bounded by the
+    // scheme's delimiter (0x7C), which is escaped within the stuffed bytes.
+    @Serializable
+    data class PlainParentStuffedChild(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: StuffChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // CSafe has no delimiter, so without @Terminal the nested stuffed structure is unsized and must be the last field.
+    @Serializable
+    data class UnsizedStuffedChildParent(@Size(Length.`8_BIT`) @Unsigned val head: Int, @ByteStuffed val child: StuffChild)
+
+    // Illegal: a field after an unsized (unterminated) nested stuffed structure has no boundary to decode against.
+    @Serializable
+    data class FieldAfterUnsizedStuffedChild(@ByteStuffed val child: StuffChild, @Size(Length.`8_BIT`) @Unsigned val trailer: Int)
+
+    @Serializable
+    @Checksum(8, 0x07u, 0x00u)
+    data class ChecksummedChild(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    @Serializable
+    data class ChecksummedStuffedChildParent(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: ChecksummedChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A nested stuffed structure's own @Prefix/@Postfix frame the stuffed region untouched, exactly as the root does.
+    @Serializable
+    @Prefix([0xAA.toByte()])
+    @Postfix([0xBB.toByte()])
+    data class FramedChild(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    @Serializable
+    data class FramedStuffedChildParent(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: FramedChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A stuffed root frame containing a stuffed child — the child's bytes are stuffed once per layer (double-stuffed).
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    data class DoubleStuffedRoot(@Size(Length.`8_BIT`) @Unsigned val head: Int, @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: StuffChild)
+
+    // A stuffed structure that itself contains a stuffed list — each layer stuffs independently.
+    @Serializable
+    data class ListChild(@ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x00) val values: List<Byte>, @Size(Length.`8_BIT`) @Unsigned val tag: Int)
+
+    @Serializable
+    data class StructOverList(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7E, delimiter = 0x7C) val child: ListChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // Three levels of stuffed structures, each with a distinct scheme/delimiter.
+    @Serializable
+    data class Level3(@Size(Length.`8_BIT`) @Unsigned val v: Int)
+
+    @Serializable
+    data class Level2(@ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7A) val inner: Level3, @Size(Length.`8_BIT`) @Unsigned val t2: Int)
+
+    @Serializable
+    data class Level1(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7E, delimiter = 0x7C) val mid: Level2,
+        @Size(Length.`8_BIT`) @Unsigned val t1: Int,
+    )
+
+    @Test
+    fun nestedStuffedStructureInPlainParent() {
+        // child [0x7C, 0x05]: 0x7C -> 7D 5C, 0x05 stays; then the raw 0x7C terminator, framed by head and trailer.
+        validateRoundTrip(
+            PlainParentStuffedChild(head = 0x01, child = StuffChild(a = 0x7C, b = 0x05), trailer = 0x09),
+            PlainParentStuffedChild.serializer(),
+            byteArrayOf(0x01, 0x7D, 0x5C, 0x05, 0x7C, 0x09),
+        )
+    }
+
+    @Test
+    fun unsizedNestedStuffedStructure() {
+        // CSafe with no @Terminal: child [0xF1, 0x05] -> F3 01 05, no terminator; it is the last, unsized field.
+        validateRoundTrip(
+            UnsizedStuffedChildParent(head = 0x01, child = StuffChild(a = 0xF1, b = 0x05)),
+            UnsizedStuffedChildParent.serializer(),
+            byteArrayOf(0x01, 0xF3.toByte(), 0x01, 0x05),
+        )
+    }
+
+    @Test
+    fun fieldAfterUnsizedStuffedStructureFails() {
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(
+                FieldAfterUnsizedStuffedChild.serializer(),
+                FieldAfterUnsizedStuffedChild(child = StuffChild(a = 0x01, b = 0x02), trailer = 0x09),
+            )
+        }
+    }
+
+    @Test
+    fun nestedStuffedStructureWithChecksum() {
+        // The child's CRC is computed over its logical body, then stuffed with it; the stuffed region still round-trips.
+        val value = ChecksummedStuffedChildParent(head = 0x01, child = ChecksummedChild(a = 0x7C, b = 0x03), trailer = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(ChecksummedStuffedChildParent.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ChecksummedStuffedChildParent.serializer(), encoded))
+    }
+
+    @Test
+    fun nestedStuffedStructureFramesPrefixAndPostfixUntouched() {
+        // As on the root, the child's @Prefix (0xAA) and @Postfix (0xBB) frame the stuffed region untouched: only the
+        // body [0x7C, 0x05] is stuffed (0x7C -> 7D 5C), then the raw 0x7C terminator, with 0xAA/0xBB outside it.
+        validateRoundTrip(
+            FramedStuffedChildParent(head = 0x01, child = FramedChild(a = 0x7C, b = 0x05), trailer = 0x09),
+            FramedStuffedChildParent.serializer(),
+            byteArrayOf(0x01, 0xAA.toByte(), 0x7D, 0x5C, 0x05, 0x7C, 0xBB.toByte(), 0x09),
+        )
+    }
+
+    @Test
+    fun stuffedChildInsideStuffedRootDoubleStuffs() {
+        val value = DoubleStuffedRoot(head = 0x10, child = StuffChild(a = 0xF1, b = 0x7C))
+        val encoded = BluetoothFormat.encodeToByteArray(DoubleStuffedRoot.serializer(), value)
+        assertEquals(0xF1.toByte(), encoded.first())
+        assertEquals(0xF2.toByte(), encoded.last())
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(DoubleStuffedRoot.serializer(), encoded))
+    }
+
+    @Test
+    fun stuffedStructureContainingStuffedList() {
+        val value = StructOverList(head = 0x01, child = ListChild(values = listOf(0x00, 0x7C, 0x11), tag = 0x22), trailer = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(StructOverList.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(StructOverList.serializer(), encoded))
+    }
+
+    @Test
+    fun threeLevelsOfStuffedStructures() {
+        val value = Level1(head = 0x01, mid = Level2(inner = Level3(v = 0x7A), t2 = 0x7C), t1 = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(Level1.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(Level1.serializer(), encoded))
+    }
+
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
     // cannot legally be nested inside a LEAST_SIGNIFICANT_FIRST one (InvalidByteOrderException).
     private fun <T> validateRoundTrip(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {

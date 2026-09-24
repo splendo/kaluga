@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.byteArraySize
 import com.splendo.kaluga.base.bytes.isBitSet
 import com.splendo.kaluga.base.bytes.MedFloat16
@@ -44,6 +45,9 @@ internal class BluetoothBinaryEncoder(
     private val binaryDescriptor: BluetoothBinaryDescriptor,
     private val builder: BinaryBuilder,
     override val serializersModule: SerializersModule,
+    // The root frame's stuffing is applied by BluetoothFormat over the whole body; suppress it here so the root
+    // structure is not stuffed twice. Nested structures always stuff themselves (default `false`).
+    private val suppressOwnStuffing: Boolean = false,
 ) : Encoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
@@ -54,10 +58,33 @@ internal class BluetoothBinaryEncoder(
             classBuilder,
             serializersModule,
             onFinishStructure = {
-                builder.addAction(classBuilder.expectedSize) {
-                    // Make sure the parent builder includes this builder in its build tree
-                    with(classBuilder) {
-                        build()
+                val stuffing = binaryDescriptor.structureSettings.byteStuffing?.takeUnless { suppressOwnStuffing }
+                if (stuffing != null) {
+                    // A nested stuffed structure stuffs only its body + checksum, leaving any prefix/postfix as an
+                    // untouched frame (as the root does), then appends its terminator (or, when unterminated, marks the
+                    // parent unconstrained so it must be the last field). Frame: [prefix][stuffed body+crc][term?][postfix].
+                    val terminator = binaryDescriptor.structureSettings.byteStuffingTerminator
+                    val prefix = binaryDescriptor.structureSettings.prefix?.array ?: byteArrayOf()
+                    val postfix = binaryDescriptor.structureSettings.postfix?.array ?: byteArrayOf()
+                    val bodyAndChecksum = buildByteArray(binaryDescriptor.byteOrder, classBuilder.expectedSize - prefix.size - postfix.size) {
+                        with(classBuilder) { buildBodyAndChecksum() }
+                    }
+                    val stuffed = stuffing.stuff(bodyAndChecksum)
+                    builder.addAction(prefix.size + stuffed.size + (if (terminator != null) 1 else 0) + postfix.size) {
+                        add(prefix)
+                        add(stuffed)
+                        terminator?.let { add(it) }
+                        add(postfix)
+                    }
+                    if (terminator == null) {
+                        builder.makeUnconstrained()
+                    }
+                } else {
+                    builder.addAction(classBuilder.expectedSize) {
+                        // Make sure the parent builder includes this builder in its build tree
+                        with(classBuilder) {
+                            build()
+                        }
                     }
                 }
                 if (markUnconstrained || binaryDescriptor.sizePolymorphicMap.isNotEmpty() || binaryDescriptor.sizePolymorphicFallback != null) {

@@ -106,27 +106,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
             binaryDescriptor.structureSettings.prefix?.let {
                 add(it.array)
             }
-            val crc = binaryDescriptor.structureSettings.checksumAlgorithm
-            if (crc != null) {
-                // The body is the flag bits + remaining body. This is also the part used for checksum verification
-                val body = buildByteArray(binaryDescriptor.byteOrder, totalBodySize) {
-                    buildBody()
-                }
-                add(body)
-                // CRC is emitted in childByteOrder — the same byte order used for all field values.
-                // When @ByteOrder(order, excludeStructure = true) is used, byteOrder (builder direction)
-                // and childByteOrder (field encoding) differ; the CRC correctly follows field encoding.
-                val crcBytes = crc.compute(body).toByteArray(binaryDescriptor.childByteOrder)
-                add(
-                    when (binaryDescriptor.childByteOrder) {
-                        ByteOrder.MOST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(crcBytes.size - crc.byteWidth, crcBytes.size)
-                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(0, crc.byteWidth)
-                    },
-                )
-            } else {
-                buildBody()
-            }
-
+            buildBodyAndChecksum()
             binaryDescriptor.structureSettings.postfix?.let {
                 add(it.array)
             }
@@ -137,6 +117,31 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
                 },
             )
             // else: zero-size structure in a different-byte-order context contributes no bytes.
+        }
+    }
+
+    // The body (flag bits + fields) followed by any [Checksum], excluding the prefix/postfix frame. A byte-stuffed
+    // structure stuffs exactly this region, leaving the prefix/postfix frame untouched (as the root frame does).
+    fun ByteArrayBuilder.buildBodyAndChecksum() {
+        val crc = binaryDescriptor.structureSettings.checksumAlgorithm
+        if (crc != null) {
+            // The body is the flag bits + remaining body. This is also the part used for checksum verification
+            val body = buildByteArray(binaryDescriptor.byteOrder, totalBodySize) {
+                buildBody()
+            }
+            add(body)
+            // CRC is emitted in childByteOrder — the same byte order used for all field values.
+            // When @ByteOrder(order, excludeStructure = true) is used, byteOrder (builder direction)
+            // and childByteOrder (field encoding) differ; the CRC correctly follows field encoding.
+            val crcBytes = crc.compute(body).toByteArray(binaryDescriptor.childByteOrder)
+            add(
+                when (binaryDescriptor.childByteOrder) {
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(crcBytes.size - crc.byteWidth, crcBytes.size)
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(0, crc.byteWidth)
+                },
+            )
+        } else {
+            buildBody()
         }
     }
 
