@@ -193,13 +193,22 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
      * with [scheme] so the terminator value never appears literally in the content and stays unambiguous. This is the
      * only end marking under which the string may itself contain the [terminator] value.
      *
-     * Only supported for [ByteOrder.LEAST_SIGNIFICANT_FIRST]; [scheme] must escape [terminator].
-     * @property scheme the [ByteStuffingScheme] applied to the content before the terminator is appended.
-     * @property terminator the byte marking the end of the string. Defaults to `0x00` (like [NullTerminated]).
+     * Only supported for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Constructed as either [Delimited] (the scheme supplies the
+     * terminator) or [Explicit] (a terminator is given for a scheme that has no canonical one).
      */
-    data class ByteStuffed(val scheme: ByteStuffingScheme, override val terminator: Byte = 0x00) : WithTerminal {
-        init {
-            require(scheme.escapes(terminator)) { "A ByteStuffed end marking's scheme must escape its terminator byte" }
+    sealed class ByteStuffed : WithTerminal {
+        abstract val scheme: ByteStuffingScheme
+
+        /** Terminated by the [scheme]'s own [DelimiterByteStuffingScheme.delimiter], so no terminator is (or can be) chosen. */
+        data class Delimited(override val scheme: DelimiterByteStuffingScheme) : ByteStuffed() {
+            override val terminator: Byte get() = scheme.delimiter
+        }
+
+        /** Terminated by an explicit [terminator] that the [scheme] must escape. */
+        data class Explicit(override val scheme: NonDelimiterByteStuffingScheme, override val terminator: Byte) : ByteStuffed() {
+            init {
+                require(scheme.escapes(terminator)) { "A ByteStuffed end marking's scheme must escape its terminator byte" }
+            }
         }
     }
 
@@ -599,7 +608,9 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
 
         // Un-stuff on the fly: the terminator value is escaped in the content, so the only unescaped occurrence is
         // the real terminator. (This also avoids the UTF-16 odd-index exception the plain path needs.)
-        is StringEncodingSettings.ByteStuffed -> endMarking.scheme.unstuffUntil(iterator()) { it == endMarking.terminator }.toList()
+        is StringEncodingSettings.ByteStuffed.Delimited -> endMarking.scheme.unstuffUntil(iterator()).toList()
+
+        is StringEncodingSettings.ByteStuffed.Explicit -> endMarking.scheme.unstuffUntil(iterator()) { it == endMarking.terminator }.toList()
 
         // [NullTerminated] / [Terminated]: read until the terminator byte. NullTerminated also tolerates a 0x00 byte
         // that is the high byte of a UTF-16 character (odd index); [Terminated] never contains its terminator byte.

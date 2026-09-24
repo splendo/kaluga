@@ -432,40 +432,40 @@ class StringExtensionTests {
     @Test
     fun nullTerminatedByteStuffing() {
         // A scheme that escapes the 0x00 terminator and its own escape byte (PPP-style, XOR 0x20).
-        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, escapedBytes = setOf(0x00))
+        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00)
 
         // Plain ASCII text has no escaped bytes: stuffing only appends the terminator.
         "Hi".encodeDecode(
-            StringEncodingSettings(StringEncodingSettings.ByteStuffed(scheme), Encoding.UTF_8),
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(scheme), Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
             byteArrayOf(0x48, 0x69, 0x00),
         )
 
         // '}' (0x7D) is the escape byte, so it is escaped as 0x7D, (0x7D xor 0x20 = 0x5D).
         "a}b".encodeDecode(
-            StringEncodingSettings(StringEncodingSettings.ByteStuffed(scheme), Encoding.ASCII),
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(scheme), Encoding.ASCII),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
             byteArrayOf(0x61, 0x7D, 0x5D, 0x62, 0x00),
         )
 
         // UTF-16 packs a 0x00 byte into each ASCII character; stuffing escapes them so only the terminator is a raw 0x00.
         "AB".encodeDecode(
-            StringEncodingSettings(StringEncodingSettings.ByteStuffed(scheme), Encoding.UTF_16),
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(scheme), Encoding.UTF_16),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
             byteArrayOf(0x41, 0x7D, 0x20, 0x42, 0x7D, 0x20, 0x00),
         )
 
         // A literal null character is allowed with stuffing (it is escaped); without stuffing it would be rejected.
         ("a" + 0.toChar() + "b").encodeDecode(
-            StringEncodingSettings(StringEncodingSettings.ByteStuffed(scheme), Encoding.UTF_8),
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(scheme), Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
             byteArrayOf(0x61, 0x7D, 0x20, 0x62, 0x00),
         )
 
         // The terminator need not be 0x00: here 0x7C ('|') terminates, and a '|' in the content is escaped.
-        val pipeScheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, escapedBytes = setOf(0x7C))
+        val pipeScheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x7C)
         "A|B".encodeDecode(
-            StringEncodingSettings(StringEncodingSettings.ByteStuffed(pipeScheme, terminator = 0x7C), Encoding.ASCII),
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(pipeScheme), Encoding.ASCII),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
             byteArrayOf(0x41, 0x7D, 0x5C, 0x42, 0x7C),
         )

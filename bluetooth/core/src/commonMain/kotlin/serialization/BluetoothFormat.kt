@@ -65,10 +65,10 @@ import kotlinx.serialization.serializer
  * Attempting to encode data after will lead to an exception.
  * - Use [NullIfEmpty] to mark a Collection as nullable if it is empty. When null its size will not be encoded.
  * - Use [SerializedByteValue] to change the byte identifier of an Enum or Polymorphic class. This replaces serializing its serial name as an unsized string.
- * - Use [ByteStuffed] (CSafe) or [ByteStuffedXor] (PPP-style) to byte-stuff so a delimiter never appears literally in the content
- * (only for [com.splendo.kaluga.base.bytes.ByteOrder.LEAST_SIGNIFICANT_FIRST]). On the root structure it stuffs the body and [Checksum] while leaving
- * a [Prefix]/[Postfix] frame untouched (CSafe framing); on a String or Collection it is itself a `0x00`-terminated marking, stuffing the content so the
- * `0x00` terminator stays unambiguous (use [ByteStuffedXor], as CSafe cannot escape `0x00`). Nested stuffed frames are not yet supported.
+ * - Use [ByteStuffed] (CSafe), [ByteStuffedXor] (PPP-style), [ByteStuffedSlip] (SLIP) or [ByteStuffedCobs] (COBS) to byte-stuff so a delimiter never
+ * appears literally in the content (only for [com.splendo.kaluga.base.bytes.ByteOrder.LEAST_SIGNIFICANT_FIRST]). On the root structure it stuffs the body
+ * and [Checksum] while leaving a [Prefix]/[Postfix] frame untouched (CSafe framing); on a String or Collection it is itself a terminated marking, stuffing
+ * the content so the terminator stays unambiguous (`@ByteStuffedXor`/`@ByteStuffedCobs` for `0x00`, `@ByteStuffedSlip` for `0xC0`). Nested stuffed frames are not yet supported.
  *
  * Equivalent flags are available to encode items in a List (e.g. [ItemSize]) or key/values in a Map (e.g. [KeyEncoded], [ValueNullTerminated])
  * @property validateChecksum if `true` decoding any data marked with [Checksum] will automatically validate the checksum and throw an exception if they don't match.

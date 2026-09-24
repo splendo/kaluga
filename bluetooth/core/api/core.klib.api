@@ -34,13 +34,32 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/ByteStuffed : k
         final fun <get-mask>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffed.mask.<get-mask>|<get-mask>(){}[0]
 }
 
-open annotation class com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor|null[0]
-    constructor <init>(kotlin/Byte, kotlin/ByteArray, kotlin/Byte = ...) // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.<init>|<init>(kotlin.Byte;kotlin.ByteArray;kotlin.Byte){}[0]
+open annotation class com.splendo.kaluga.bluetooth.serialization/ByteStuffedCobs : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteStuffedCobs|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.serialization/ByteStuffedCobs.<init>|<init>(){}[0]
+}
 
+open annotation class com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip|null[0]
+    constructor <init>(kotlin/Byte = ..., kotlin/Byte = ..., kotlin/Byte = ..., kotlin/Byte = ...) // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.<init>|<init>(kotlin.Byte;kotlin.Byte;kotlin.Byte;kotlin.Byte){}[0]
+
+    final val end // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.end|{}end[0]
+        final fun <get-end>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.end.<get-end>|<get-end>(){}[0]
+    final val escapeByte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.escapeByte|{}escapeByte[0]
+        final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+    final val escapedEnd // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.escapedEnd|{}escapedEnd[0]
+        final fun <get-escapedEnd>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.escapedEnd.<get-escapedEnd>|<get-escapedEnd>(){}[0]
+    final val escapedEsc // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.escapedEsc|{}escapedEsc[0]
+        final fun <get-escapedEsc>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedSlip.escapedEsc.<get-escapedEsc>|<get-escapedEsc>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor|null[0]
+    constructor <init>(kotlin/Byte, kotlin/Byte, kotlin/ByteArray = ..., kotlin/Byte = ...) // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.<init>|<init>(kotlin.Byte;kotlin.Byte;kotlin.ByteArray;kotlin.Byte){}[0]
+
+    final val additionalEscapedBytes // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.additionalEscapedBytes|{}additionalEscapedBytes[0]
+        final fun <get-additionalEscapedBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.additionalEscapedBytes.<get-additionalEscapedBytes>|<get-additionalEscapedBytes>(){}[0]
+    final val delimiter // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.delimiter|{}delimiter[0]
+        final fun <get-delimiter>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.delimiter.<get-delimiter>|<get-delimiter>(){}[0]
     final val escapeByte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapeByte|{}escapeByte[0]
         final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
-    final val escapedBytes // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapedBytes|{}escapedBytes[0]
-        final fun <get-escapedBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.escapedBytes.<get-escapedBytes>|<get-escapedBytes>(){}[0]
     final val xorKey // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.xorKey|{}xorKey[0]
         final fun <get-xorKey>(): kotlin/Byte // com.splendo.kaluga.bluetooth.serialization/ByteStuffedXor.xorKey.<get-xorKey>|<get-xorKey>(){}[0]
 }

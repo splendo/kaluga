@@ -18,7 +18,10 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.ByteStuffingScheme
+import com.splendo.kaluga.base.bytes.DelimiterByteStuffingScheme
 import com.splendo.kaluga.base.bytes.Encoding
+import com.splendo.kaluga.base.bytes.NonDelimiterByteStuffingScheme
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.decodeAsciiChar
 import com.splendo.kaluga.base.bytes.decodeDouble
@@ -78,8 +81,14 @@ internal class BluetoothBinaryDecoder(
     private fun stuffedCollection(): Pair<BluetoothBinaryDescriptor, BluetoothBinaryDescriptorDecoder>? {
         val settings = binaryDescriptor.collectionSettings ?: return null
         val stuffing = settings.byteStuffing ?: return null
-        val terminalMarked = settings.lengthMarking as? BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked ?: return null
-        val body = stuffing.unstuffUntil(decoder.byteIterator()) { it == terminalMarked.terminator }
+        val body = when (stuffing) {
+            is DelimiterByteStuffingScheme -> stuffing.unstuffUntil(decoder.byteIterator())
+
+            is NonDelimiterByteStuffingScheme -> {
+                val terminalMarked = settings.lengthMarking as? BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked ?: return null
+                stuffing.unstuffUntil(decoder.byteIterator()) { it == terminalMarked.terminator }
+            }
+        }
         val unmarked = binaryDescriptor.copy(collectionSettings = settings.copy(lengthMarking = BluetoothBinaryDescriptor.CollectionSettings.Unmarked))
         return unmarked to RootBluetoothBinaryDescriptorDecoder(body, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum)
     }

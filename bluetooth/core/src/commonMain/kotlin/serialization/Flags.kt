@@ -406,13 +406,42 @@ annotation class Terminal(val terminator: Byte)
  * [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]; because the escaped set is explicit,
  * this can protect a `0x00` terminator (use `escapedBytes = [0x00]` on a String or Collection — no [NullTerminated] needed).
  *
- * Each escaped byte is stored XOR-ed with [xorKey]. [escapeByte] is always escaped in addition to [escapedBytes].
+ * Each escaped byte is stored XOR-ed with [xorKey]. [escapeByte] is always escaped in addition to [additionalEscapedBytes].
  *
  * @property escapeByte the byte prepended to an escaped value (and itself always escaped)
- * @property escapedBytes the additional byte values to escape (e.g. the delimiter)
+ * @property additionalEscapedBytes the additional byte values to escape (e.g. the delimiter)
  * @property xorKey the value XOR-ed with an escaped byte to produce its stored form
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY)
-annotation class ByteStuffedXor(val escapeByte: Byte, val escapedBytes: ByteArray, val xorKey: Byte = 0x20)
+annotation class ByteStuffedXor(val escapeByte: Byte, val delimiter: Byte, val additionalEscapedBytes: ByteArray = [], val xorKey: Byte = 0x20)
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Applies SLIP-style byte stuffing (RFC 1055), using a [com.splendo.kaluga.base.bytes.ByteStuffingScheme.Slip] scheme.
+ * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. Its natural delimiter is
+ * [end] (`0xC0`), so on a String or Collection the terminator defaults to [end] (override with [Terminal] if needed).
+ *
+ * @property end the frame delimiter byte, escaped within the content (also the default terminator)
+ * @property escapeByte the escape marker
+ * @property escapedEnd the stored byte representing an escaped [end]
+ * @property escapedEsc the stored byte representing an escaped [escapeByte]
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY)
+annotation class ByteStuffedSlip(val end: Byte = 0xC0.toByte(), val escapeByte: Byte = 0xDB.toByte(), val escapedEnd: Byte = 0xDC.toByte(), val escapedEsc: Byte = 0xDD.toByte())
+
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Applies COBS byte stuffing (Consistent Overhead Byte Stuffing), using [com.splendo.kaluga.base.bytes.ByteStuffingScheme.Cobs].
+ * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. COBS eliminates `0x00`
+ * from the output with ~1 byte overhead per 254, so on a String or Collection it uses the default `0x00` terminator.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY)
+annotation class ByteStuffedCobs

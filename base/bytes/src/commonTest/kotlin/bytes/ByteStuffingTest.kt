@@ -19,6 +19,7 @@ package bytes
 
 import com.splendo.kaluga.base.bytes.ByteStuffingException
 import com.splendo.kaluga.base.bytes.ByteStuffingScheme
+import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.toHexString
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -49,7 +50,7 @@ class ByteStuffingTest {
     @Test
     fun xorStuffing() {
         // A scheme that protects the 0x00 delimiter: 0x00 and the escape byte are stored XOR 0x20.
-        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, escapedBytes = setOf(0x00))
+        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00)
         scheme.assertRoundTrip(
             byteArrayOf(0x41, 0x00, 0x7D, 0x42),
             byteArrayOf(0x41, 0x7D, 0x20, 0x7D, 0x5D, 0x42),
@@ -60,7 +61,7 @@ class ByteStuffingTest {
 
     @Test
     fun unstuffUntilDelimiter() {
-        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, escapedBytes = setOf(0x00))
+        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00)
         // Content [0x41, 0x00] stuffed, then an unescaped 0x00 terminator, then trailing bytes left unread.
         val stream = byteArrayOf(0x41, 0x7D, 0x20, 0x00, 0x99.toByte())
         val iterator = stream.iterator()
@@ -70,9 +71,95 @@ class ByteStuffingTest {
     }
 
     @Test
+    fun slipStuffing() {
+        // RFC 1055: END (0xC0) -> ESC ESC_END (0xDB 0xDC); ESC (0xDB) -> ESC ESC_ESC (0xDB 0xDD); other bytes pass through.
+        val scheme = ByteStuffingScheme.Slip()
+        scheme.assertRoundTrip(
+            byteArrayOf(0xC0.toByte(), 0x41, 0xDB.toByte(), 0x42),
+            byteArrayOf(0xDB.toByte(), 0xDC.toByte(), 0x41, 0xDB.toByte(), 0xDD.toByte(), 0x42),
+        )
+        assertTrue(scheme.escapes(0xC0.toByte()))
+        assertTrue(scheme.escapes(0xDB.toByte()))
+        assertTrue(!scheme.escapes(0x00))
+    }
+
+    @Test
+    fun cobsStuffing() {
+        val scheme = ByteStuffingScheme.Cobs
+        // A single 0x00 splits the data into two blocks; the code bytes are the distances to the next zero/end.
+        scheme.assertRoundTrip(
+            byteArrayOf(0x11, 0x22, 0x00, 0x33),
+            byteArrayOf(0x03, 0x11, 0x22, 0x02, 0x33),
+        )
+        // Zero-free data becomes one block prefixed by its length + 1.
+        scheme.assertRoundTrip(byteArrayOf(0x11, 0x22, 0x33), byteArrayOf(0x04, 0x11, 0x22, 0x33))
+        // Consecutive zeros become 0x01 code bytes; the output never contains 0x00.
+        scheme.assertRoundTrip(byteArrayOf(0x00, 0x00), byteArrayOf(0x01, 0x01, 0x01))
+        assertTrue(scheme.escapes(0x00))
+        assertTrue(!scheme.escapes(0xF2.toByte()))
+    }
+
+    @Test
+    fun cobsLongRun() {
+        // A run of 254 non-zero bytes forces a 0xFF code byte (max block) and a trailing 0x01 block; still no 0x00.
+        val scheme = ByteStuffingScheme.Cobs
+        val data = ByteArray(300) { 0x01 }
+        val stuffed = scheme.stuff(data)
+        assertTrue(stuffed.none { it == 0x00.toByte() }, "COBS output must not contain 0x00")
+        assertEquals(0xFF.toByte(), stuffed.first())
+        assertTrue(scheme.unstuff(stuffed).contentEquals(data))
+    }
+
+    @Test
+    fun cobsSizeConsistency() {
+        // stuffedSize (used for the encode buffer) must match the actual encoding, and decode must round-trip,
+        // across the 254-byte block boundary and mixed data.
+        val scheme = ByteStuffingScheme.Cobs
+        for (n in listOf(0, 1, 253, 254, 255, 508, 509)) {
+            val data = ByteArray(n) { 0x01 }
+            assertEquals(scheme.stuff(data).size, scheme.stuffedSize(data), "stuffedSize mismatch for n=$n")
+            assertTrue(scheme.unstuff(scheme.stuff(data)).contentEquals(data), "round-trip failed for n=$n")
+        }
+        val mixed = byteArrayOf(0x00, 0x11, 0x00, 0x00, 0x22, 0x33)
+        assertEquals(scheme.stuff(mixed).size, scheme.stuffedSize(mixed))
+        assertTrue(scheme.unstuff(scheme.stuff(mixed)).contentEquals(mixed))
+    }
+
+    @Test
+    fun cobsUnstuffUntilDelimiter() {
+        val scheme = ByteStuffingScheme.Cobs
+        // COBS-encoded [0x11, 0x00, 0x22] followed by a raw 0x00 delimiter, then a trailing byte.
+        val stream = scheme.stuff(byteArrayOf(0x11, 0x00, 0x22)) + byteArrayOf(0x00, 0x99.toByte())
+        val iterator = stream.iterator()
+        val content = scheme.unstuffUntil(iterator)
+        assertTrue(content.contentEquals(byteArrayOf(0x11, 0x00, 0x22)))
+        assertEquals(0x99.toByte(), iterator.next())
+    }
+
+    @Test
+    fun schemeDelimiter() {
+        // Delimiter schemes expose the byte they canonically frame with (always one they escape). CSafe/Xor carry no
+        // delimiter — that they need an explicit terminator is enforced at the type level (NonDelimiterByteStuffingScheme).
+        assertEquals(0x00.toByte(), ByteStuffingScheme.Cobs.delimiter)
+        assertEquals(0xC0.toByte(), ByteStuffingScheme.Slip().delimiter)
+    }
+
+    @Test
+    fun byteStuffedTerminator() {
+        // A delimiter scheme supplies its own terminator via ByteStuffed.Delimited — no override is possible.
+        assertEquals(0x00.toByte(), StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Cobs).terminator)
+        assertEquals(0xC0.toByte(), StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Slip()).terminator)
+        // A non-delimiter scheme requires an explicit terminator it escapes (CSafe escapes 0xF0..0xF3).
+        assertEquals(0xF2.toByte(), StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0xF2.toByte()).terminator)
+        assertFailsWith<IllegalArgumentException> { StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0x00) }
+    }
+
+    @Test
     fun malformedStuffedData() {
         val scheme = ByteStuffingScheme.CSafe()
         assertFailsWith<ByteStuffingException> { scheme.unstuff(byteArrayOf(0x0A, 0xF3.toByte())) }
         assertFailsWith<ByteStuffingException> { scheme.unstuffUntil(byteArrayOf(0x0A, 0x0B).iterator()) { it == 0x00.toByte() } }
+        // A 0x00 code byte is never valid COBS output.
+        assertFailsWith<ByteStuffingException> { ByteStuffingScheme.Cobs.unstuff(byteArrayOf(0x00, 0x11)) }
     }
 }

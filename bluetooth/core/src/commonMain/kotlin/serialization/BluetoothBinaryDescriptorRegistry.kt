@@ -20,6 +20,8 @@ package com.splendo.kaluga.bluetooth.serialization
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.ByteStuffingScheme
+import com.splendo.kaluga.base.bytes.DelimiterByteStuffingScheme
+import com.splendo.kaluga.base.bytes.NonDelimiterByteStuffingScheme
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.crc.CRC
@@ -698,11 +700,21 @@ internal object BluetoothBinaryDescriptorRegistry {
                 when {
                     // A byte-stuffing annotation is itself a terminated marking, so @NullTerminated is not required.
                     byteStuffing != null -> {
-                        val terminator = terminal ?: 0x00.toByte()
-                        if (!byteStuffing.escapes(terminator)) {
-                            throw UnsupportedByteStuffing("Byte stuffing on a String must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])")
+                        val endMarking = when (byteStuffing) {
+                            is DelimiterByteStuffingScheme -> StringEncodingSettings.ByteStuffed.Delimited(byteStuffing)
+
+                            is NonDelimiterByteStuffingScheme -> {
+                                if (terminal == null) {
+                                    throw UnsupportedByteStuffing("ByteStuffing $byteStuffing must be provided a terminal via @Terminal")
+                                }
+                                if (!byteStuffing.escapes(terminal)) {
+                                    throw UnsupportedByteStuffing("Byte stuffing on a String must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])")
+                                }
+                                StringEncodingSettings.ByteStuffed.Explicit(byteStuffing, terminal)
+                            }
                         }
-                        BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.ByteStuffed(byteStuffing, terminator))
+
+                        BluetoothBinaryDescriptor.StringSettings(encoding, endMarking)
                     }
 
                     // @Terminal without stuffing is a plain byte-terminated string: the content must not encode the terminator.
@@ -753,11 +765,23 @@ internal object BluetoothBinaryDescriptorRegistry {
                 val lengthMarking = when {
                     // Byte stuffing implies a terminated (TerminalMarked) collection, so @NullTerminated is not required.
                     byteStuffing != null -> {
-                        val terminator = terminal ?: 0x00.toByte()
-                        if (!byteStuffing.escapes(terminator)) {
-                            throw UnsupportedByteStuffing("Byte stuffing on a Collection must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])")
+                        val delimiter = when (byteStuffing) {
+                            is DelimiterByteStuffingScheme -> byteStuffing.delimiter
+
+                            is NonDelimiterByteStuffingScheme -> {
+                                if (terminal == null) {
+                                    throw UnsupportedByteStuffing("ByteStuffing $byteStuffing must be provided a terminal via @Terminal")
+                                }
+                                if (!byteStuffing.escapes(terminal)) {
+                                    throw UnsupportedByteStuffing(
+                                        "Byte stuffing on a Collection must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])",
+                                    )
+                                }
+                                terminal
+                            }
                         }
-                        BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked(terminator)
+
+                        BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked(delimiter)
                     }
 
                     // @Terminal without stuffing is a plain byte-terminated collection (no item may start with the terminator).
@@ -1024,13 +1048,19 @@ internal object BluetoothBinaryDescriptorRegistry {
         annotations.byteStuffingScheme(),
     )
 
-    // Resolves the byte-stuffing scheme from either @ByteStuffed (CSafe) or @ByteStuffedXor; they are mutually exclusive.
+    // Resolves the byte-stuffing scheme from one of the @ByteStuffed* annotations; they are mutually exclusive.
     private fun List<Annotation>.byteStuffingScheme(): ByteStuffingScheme? {
         val cSafe = filterIsInstance<ByteStuffed>().firstOrNull()
         val xor = filterIsInstance<ByteStuffedXor>().firstOrNull()
-        if (cSafe != null && xor != null) throw UnsupportedByteStuffing("@ByteStuffed and @ByteStuffedXor cannot be combined")
+        val slip = filterIsInstance<ByteStuffedSlip>().firstOrNull()
+        val cobs = filterIsInstance<ByteStuffedCobs>().firstOrNull()
+        if (listOfNotNull(cSafe, xor, slip, cobs).size > 1) {
+            throw UnsupportedByteStuffing("At most one @ByteStuffed* annotation is allowed on an element")
+        }
         return cSafe?.let { ByteStuffingScheme.CSafe(it.escapeByte, it.mask) }
-            ?: xor?.let { ByteStuffingScheme.Xor(it.escapeByte, it.escapedBytes.toSet(), it.xorKey) }
+            ?: xor?.let { ByteStuffingScheme.Xor(it.escapeByte, it.delimiter, it.additionalEscapedBytes.toSet(), it.xorKey) }
+            ?: slip?.let { ByteStuffingScheme.Slip(it.end, it.escapeByte, it.escapedEnd, it.escapedEsc) }
+            ?: cobs?.let { ByteStuffingScheme.Cobs }
     }
 
     // Resolves the @Terminal terminator override, or null if absent.

@@ -85,16 +85,14 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingException : java/la
 	public fun <init> (Ljava/lang/String;)V
 }
 
-public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme {
+public abstract interface class com/splendo/kaluga/base/bytes/ByteStuffingScheme {
 	public abstract fun escapes (B)Z
-	public abstract fun getEscapeByte ()B
-	public final fun stuff ([B)[B
-	public final fun stuffedSize ([B)I
-	public final fun unstuff ([B)[B
-	public final fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+	public abstract fun stuff ([B)[B
+	public abstract fun stuffedSize ([B)I
+	public abstract fun unstuff ([B)[B
 }
 
-public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$CSafe : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
+public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$CSafe : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithoutDelimiter {
 	public fun <init> ()V
 	public fun <init> (BB)V
 	public synthetic fun <init> (BBILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -110,18 +108,69 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$CSafe : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
-	public fun <init> (BLjava/util/Set;B)V
-	public synthetic fun <init> (BLjava/util/Set;BILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()B
-	public final fun component2 ()Ljava/util/Set;
-	public final fun component3 ()B
-	public final fun copy (BLjava/util/Set;B)Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor;BLjava/util/Set;BILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor;
+public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Cobs : com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Cobs;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun escapes (B)Z
+	public fun getDelimiter ()B
+	public fun hashCode ()I
+	public fun stuff ([B)[B
+	public fun stuffedSize ([B)I
+	public fun toString ()Ljava/lang/String;
+	public fun unstuff ([B)[B
+	public fun unstuffUntil (Ljava/util/Iterator;)[B
+}
+
+public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
+	public abstract fun getEscapeByte ()B
+	public fun stuff ([B)[B
+	public fun stuffedSize ([B)I
+	public fun unstuff ([B)[B
+	public final fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+}
+
+public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithDelimiter : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased, com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme {
+	public fun unstuffUntil (Ljava/util/Iterator;)[B
+}
+
+public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithoutDelimiter : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased, com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme {
+}
+
+public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Slip : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithDelimiter {
+	public fun <init> ()V
+	public fun <init> (BBBB)V
+	public synthetic fun <init> (BBBBILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()B
+	public final fun component2 ()B
+	public final fun component3 ()B
+	public final fun component4 ()B
+	public final fun copy (BBBB)Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Slip;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Slip;BBBBILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Slip;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun escapes (B)Z
+	public fun getDelimiter ()B
+	public final fun getEnd ()B
 	public fun getEscapeByte ()B
-	public final fun getEscapedBytes ()Ljava/util/Set;
+	public final fun getEscapedEnd ()B
+	public final fun getEscapedEsc ()B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithDelimiter {
+	public fun <init> (BBLjava/util/Set;B)V
+	public synthetic fun <init> (BBLjava/util/Set;BILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()B
+	public final fun component2 ()B
+	public final fun component3 ()Ljava/util/Set;
+	public final fun component4 ()B
+	public final fun copy (BBLjava/util/Set;B)Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor;BBLjava/util/Set;BILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Xor;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun escapes (B)Z
+	public final fun getAdditionalEscapedBytes ()Ljava/util/Set;
+	public fun getDelimiter ()B
+	public fun getEscapeByte ()B
 	public final fun getXorKey ()B
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -154,6 +203,11 @@ public final class com/splendo/kaluga/base/bytes/CharExtensionsKt {
 	public static final fun toAscii (C)B
 	public static final fun toAsciiOrNull (C)Ljava/lang/Byte;
 	public static final fun toUTF16 (CLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public abstract interface class com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
+	public abstract fun getDelimiter ()B
+	public abstract fun unstuffUntil (Ljava/util/Iterator;)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/DoubleExtensionsKt {
@@ -422,6 +476,10 @@ public final class com/splendo/kaluga/base/bytes/MedFloat32ExtensionsKt {
 	public static final fun toByteArray-aT6FoKI (D)[B
 }
 
+public abstract interface class com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
+	public abstract fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+}
+
 public final class com/splendo/kaluga/base/bytes/Sha1Kt {
 	public static final fun sha1 ([B)[B
 }
@@ -452,15 +510,32 @@ public final class com/splendo/kaluga/base/bytes/StringEncodingSettings {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed : com/splendo/kaluga/base/bytes/StringEncodingSettings$WithTerminal {
-	public fun <init> (Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;B)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;BILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;
-	public final fun component2 ()B
-	public final fun copy (Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;B)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed;Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;BILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed;
+public abstract class com/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed : com/splendo/kaluga/base/bytes/StringEncodingSettings$WithTerminal {
+	public abstract fun getScheme ()Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Delimited : com/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme;)V
+	public final fun component1 ()Lcom/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme;
+	public final fun copy (Lcom/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Delimited;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Delimited;Lcom/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme;ILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Delimited;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getScheme ()Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;
+	public synthetic fun getScheme ()Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;
+	public fun getScheme ()Lcom/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme;
+	public fun getTerminator ()B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Explicit : com/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme;B)V
+	public final fun component1 ()Lcom/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme;
+	public final fun component2 ()B
+	public final fun copy (Lcom/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme;B)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Explicit;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Explicit;Lcom/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme;BILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$ByteStuffed$Explicit;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getScheme ()Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;
+	public fun getScheme ()Lcom/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme;
 	public fun getTerminator ()B
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

@@ -32,11 +32,6 @@ import com.splendo.kaluga.base.bytes.toInt40
 import com.splendo.kaluga.base.bytes.toInt48
 import com.splendo.kaluga.base.bytes.toUInt40
 import com.splendo.kaluga.base.bytes.toUInt48
-import com.splendo.kaluga.base.decimal.Decimal
-import com.splendo.kaluga.base.decimal.div
-import com.splendo.kaluga.base.decimal.times
-import com.splendo.kaluga.base.decimal.toDecimal
-import com.splendo.kaluga.base.decimal.toInt
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.invoke
@@ -55,15 +50,11 @@ import kotlin.jvm.JvmInline
 import kotlin.math.pow
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToByteArray
-import com.splendo.kaluga.bluetooth.serialization.InvalidPrefix
-import com.splendo.kaluga.bluetooth.serialization.InvalidPostfix
-import com.splendo.kaluga.bluetooth.serialization.InvalidChecksumException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
@@ -2823,10 +2814,7 @@ class BluetoothFormatTest {
     @Prefix([0xF1.toByte()])
     @Postfix([0xF2.toByte()])
     @ByteStuffed
-    data class CSafeFrame(
-        @Size(Length.`8_BIT`) @Unsigned val command: Int,
-        @Size(Length.`8_BIT`) @Unsigned val value: Int,
-    )
+    data class CSafeFrame(@Size(Length.`8_BIT`) @Unsigned val command: Int, @Size(Length.`8_BIT`) @Unsigned val value: Int)
 
     @Serializable
     @Prefix([0xF1.toByte()])
@@ -2839,10 +2827,7 @@ class BluetoothFormatTest {
     @Postfix([0xF2.toByte()])
     @ByteStuffed
     @Checksum(8, 0x07u, 0x00u)
-    data class CSafeChecksummedFrame(
-        @Size(Length.`8_BIT`) @Unsigned val command: Int,
-        @Size(Length.`8_BIT`) @Unsigned val value: Int,
-    )
+    data class CSafeChecksummedFrame(@Size(Length.`8_BIT`) @Unsigned val command: Int, @Size(Length.`8_BIT`) @Unsigned val value: Int)
 
     @Serializable
     @ByteStuffed
@@ -2863,7 +2848,7 @@ class BluetoothFormatTest {
     @Serializable
     data class StuffedStringHolder(
         @Encoded(Encoding.UTF_16)
-        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x00])
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x00)
         val name: String,
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
@@ -2872,7 +2857,7 @@ class BluetoothFormatTest {
     // Items may contain the 0x00 terminator value; stuffing keeps it unambiguous.
     @Serializable
     data class StuffedListHolder(
-        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x00])
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x00)
         val values: List<Byte>,
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
@@ -2881,7 +2866,7 @@ class BluetoothFormatTest {
     @Serializable
     data class TerminalStringHolder(
         @Encoded(Encoding.ASCII)
-        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x7C])
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
         @Terminal(0x7C)
         val name: String,
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
@@ -2889,7 +2874,7 @@ class BluetoothFormatTest {
 
     @Serializable
     data class TerminalListHolder(
-        @ByteStuffedXor(escapeByte = 0x7D, escapedBytes = [0x7C])
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
         @Terminal(0x7C)
         val values: List<Byte>,
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
@@ -2910,6 +2895,42 @@ class BluetoothFormatTest {
         val values: List<Byte>,
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
+
+    // COBS eliminates 0x00, so it uses the default 0x00 terminator; content may contain 0x00.
+    @Serializable
+    data class CobsListHolder(
+        @ByteStuffedCobs
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // SLIP's delimiter is 0xC0, so the terminator defaults to 0xC0 (no @Terminal needed); 0xC0/0xDB in content are escaped.
+    @Serializable
+    data class SlipListHolder(
+        @ByteStuffedSlip
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    @Test
+    fun cobsByteStuffing() {
+        // Items [0x11, 0x00, 0x22] -> COBS [0x02, 0x11, 0x02, 0x22], then the raw 0x00 terminator, then the trailer.
+        validateRoundTrip(
+            CobsListHolder(values = listOf(0x11, 0x00, 0x22), trailer = 0x09),
+            CobsListHolder.serializer(),
+            byteArrayOf(0x02, 0x11, 0x02, 0x22, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun slipByteStuffing() {
+        // Items [0xC0, 0x41, 0xDB]: END -> DB DC, ESC -> DB DD; then the raw 0xC0 END terminator, then the trailer.
+        validateRoundTrip(
+            SlipListHolder(values = listOf(0xC0.toByte(), 0x41, 0xDB.toByte()), trailer = 0x09),
+            SlipListHolder.serializer(),
+            byteArrayOf(0xDB.toByte(), 0xDC.toByte(), 0x41, 0xDB.toByte(), 0xDD.toByte(), 0xC0.toByte(), 0x09),
+        )
+    }
 
     @Test
     fun encodeByteStuffing() {
