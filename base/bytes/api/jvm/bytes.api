@@ -422,6 +422,10 @@ public final class com/splendo/kaluga/base/bytes/MedFloat32ExtensionsKt {
 	public static final fun toByteArray-aT6FoKI (D)[B
 }
 
+public final class com/splendo/kaluga/base/bytes/Sha1Kt {
+	public static final fun sha1 ([B)[B
+}
+
 public final class com/splendo/kaluga/base/bytes/ShortExtensionsKt {
 	public static final fun copyIntoByteArray (S[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 	public static synthetic fun copyIntoByteArray$default (S[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B

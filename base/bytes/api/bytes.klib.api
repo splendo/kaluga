@@ -572,6 +572,7 @@ final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUTF16Char(kotli
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/decodeUTF8Char(kotlin/Int): kotlin/Char // com.splendo.kaluga.base.bytes/decodeUTF8Char|decodeUTF8Char@kotlin.ByteArray(kotlin.Int){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/isBitSet(kotlin/Number): kotlin/Boolean // com.splendo.kaluga.base.bytes/isBitSet|isBitSet@kotlin.ByteArray(kotlin.Number){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/setBit(kotlin/Number): kotlin/ByteArray // com.splendo.kaluga.base.bytes/setBit|setBit@kotlin.ByteArray(kotlin.Number){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/sha1(): kotlin/ByteArray // com.splendo.kaluga.base.bytes/sha1|sha1@kotlin.ByteArray(){}[0]
 final fun (kotlin/ByteArray).com.splendo.kaluga.base.bytes/toHexString(kotlin/CharSequence = ...): kotlin/String // com.splendo.kaluga.base.bytes/toHexString|toHexString@kotlin.ByteArray(kotlin.CharSequence){}[0]
 final fun (kotlin/Char).com.splendo.kaluga.base.bytes/copyUTF16IntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyUTF16IntoByteArray|copyUTF16IntoByteArray@kotlin.Char(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/Char).com.splendo.kaluga.base.bytes/toAscii(): kotlin/Byte // com.splendo.kaluga.base.bytes/toAscii|toAscii@kotlin.Char(){}[0]
