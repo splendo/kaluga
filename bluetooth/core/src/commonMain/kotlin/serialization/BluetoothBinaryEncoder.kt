@@ -45,9 +45,9 @@ internal class BluetoothBinaryEncoder(
     private val binaryDescriptor: BluetoothBinaryDescriptor,
     private val builder: BinaryBuilder,
     override val serializersModule: SerializersModule,
-    // The root frame's stuffing is applied by BluetoothFormat over the whole body; suppress it here so the root
-    // structure is not stuffed twice. Nested structures always stuff themselves (default `false`).
-    private val suppressOwnStuffing: Boolean = false,
+    // True only for the top-level frame. The root stuffed region is bounded by the whole payload, so it is stuffed
+    // without a terminator; a nested region (default `false`) appends its terminator so the parent can find its end.
+    private val isRootFrame: Boolean = false,
 ) : Encoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
@@ -58,12 +58,13 @@ internal class BluetoothBinaryEncoder(
             classBuilder,
             serializersModule,
             onFinishStructure = {
-                val stuffing = binaryDescriptor.structureSettings.byteStuffing?.takeUnless { suppressOwnStuffing }
+                val stuffing = binaryDescriptor.structureSettings.byteStuffing
                 if (stuffing != null) {
-                    // A nested stuffed structure stuffs only its body + checksum, leaving any prefix/postfix as an
-                    // untouched frame (as the root does), then appends its terminator (or, when unterminated, marks the
-                    // parent unconstrained so it must be the last field). Frame: [prefix][stuffed body+crc][term?][postfix].
-                    val terminator = binaryDescriptor.structureSettings.byteStuffingTerminator
+                    binaryDescriptor.requireLeastSignificantFirstForStuffing()
+                    // Stuffs only the body + checksum, leaving any prefix/postfix as an untouched frame. A nested region
+                    // appends its terminator (or is marked unconstrained so it must be the last field); the root region
+                    // is bounded by the whole payload and needs neither. Frame: [prefix][stuffed body+crc][term?][postfix].
+                    val terminator = if (isRootFrame) null else binaryDescriptor.structureSettings.byteStuffingTerminator
                     val prefix = binaryDescriptor.structureSettings.prefix?.array ?: byteArrayOf()
                     val postfix = binaryDescriptor.structureSettings.postfix?.array ?: byteArrayOf()
                     val bodyAndChecksum = buildByteArray(binaryDescriptor.byteOrder, classBuilder.expectedSize - prefix.size - postfix.size) {
@@ -76,7 +77,7 @@ internal class BluetoothBinaryEncoder(
                         terminator?.let { add(it) }
                         add(postfix)
                     }
-                    if (terminator == null) {
+                    if (terminator == null && !isRootFrame) {
                         builder.makeUnconstrained()
                     }
                 } else {
@@ -243,8 +244,29 @@ internal class BluetoothBinaryEncoder(
         val underlyingEncoder = BluetoothBinaryEncoder(bodyDescriptor, classBuilder, serializersModule)
         var finalized = false
         fun finalizeToParent() {
-            if (!finalized) {
-                finalized = true
+            if (finalized) return
+            finalized = true
+            // A stuffed value class stuffs its body + checksum within the prefix/postfix, then appends its terminator
+            // (or marks the parent unconstrained when unterminated) — the same framing a nested stuffed structure uses.
+            // The root region is bounded by the whole payload, so it is stuffed without a terminator.
+            val stuffing = settings.byteStuffing
+            if (stuffing != null) {
+                binaryDescriptor.requireLeastSignificantFirstForStuffing()
+                val terminator = if (isRootFrame) null else settings.byteStuffingTerminator
+                val prefix = settings.prefix?.array ?: byteArrayOf()
+                val postfix = settings.postfix?.array ?: byteArrayOf()
+                val bodyAndChecksum = buildByteArray(binaryDescriptor.byteOrder, classBuilder.expectedSize - prefix.size - postfix.size) {
+                    with(classBuilder) { buildBodyAndChecksum() }
+                }
+                val stuffed = stuffing.stuff(bodyAndChecksum)
+                builder.addAction(prefix.size + stuffed.size + (if (terminator != null) 1 else 0) + postfix.size) {
+                    add(prefix)
+                    add(stuffed)
+                    terminator?.let { add(it) }
+                    add(postfix)
+                }
+                if (terminator == null && !isRootFrame) builder.makeUnconstrained()
+            } else {
                 builder.addAction(classBuilder.expectedSize) { with(classBuilder) { build() } }
             }
         }
@@ -290,8 +312,23 @@ internal class BluetoothBinaryEncoder(
                 underlyingEncoder.encodeEnum(enumDescriptor, index)
                 finalizeToParent()
             }
+            // A value class wrapping a structure/collection encodes its content through encodeSerializableValue; route it
+            // through this wrapper (not the delegated underlyingEncoder) so the overridden beginStructure/beginCollection
+            // flush the framed body to the parent.
+            override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) = serializer.serialize(this, value)
+
             override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
                 val inner = underlyingEncoder.beginStructure(descriptor)
+                return object : CompositeEncoder by inner {
+                    override fun endStructure(descriptor: SerialDescriptor) {
+                        inner.endStructure(descriptor)
+                        finalizeToParent()
+                    }
+                }
+            }
+
+            override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
+                val inner = underlyingEncoder.beginCollection(descriptor, collectionSize)
                 return object : CompositeEncoder by inner {
                     override fun endStructure(descriptor: SerialDescriptor) {
                         inner.endStructure(descriptor)

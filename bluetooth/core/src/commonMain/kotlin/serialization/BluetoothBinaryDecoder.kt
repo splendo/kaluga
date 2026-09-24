@@ -62,9 +62,9 @@ internal class BluetoothBinaryDecoder(
     private val binaryDescriptor: BluetoothBinaryDescriptor,
     private val decoder: BluetoothBinaryDescriptorDecoder,
     override val serializersModule: SerializersModule,
-    // The root frame is un-stuffed by BluetoothFormat before decoding starts; suppress it here so the root structure is
-    // not un-stuffed twice. Nested structures always un-stuff themselves (default `false`).
-    private val suppressOwnStuffing: Boolean = false,
+    // True only for the top-level frame. The root stuffed region spans the whole payload, so it is un-stuffed without a
+    // terminator; a nested region (default `false`) is un-stuffed up to its terminator.
+    private val isRootFrame: Boolean = false,
 ) : Decoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
@@ -86,16 +86,16 @@ internal class BluetoothBinaryDecoder(
         } ?: BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
     }
 
-    // For a nested byte-stuffed structure, un-stuff its body + checksum into a fresh sub-decoder that then decodes it as a
-    // standalone structure. Any prefix/postfix frame the stuffed region untouched (as on the root) and are consumed here.
-    // The region is bounded either by the terminator (delimiter or @Terminal) or, when unterminated, by the remaining
-    // payload minus the postfix (unsized). Returns null when the structure is not stuffed (or stuffing is suppressed).
+    // For a byte-stuffed structure, un-stuff its body + checksum into a fresh sub-decoder that then decodes it as a
+    // standalone structure. Any prefix/postfix frame the stuffed region untouched and are consumed here. A nested region
+    // is bounded by its terminator (delimiter or @Terminal) or, when unterminated, by the remaining payload minus the
+    // postfix; the root region spans the whole payload minus the postfix. Returns null when the structure is not stuffed.
     private fun stuffedStructure(): BluetoothBinaryDescriptorDecoder? {
         val settings = binaryDescriptor.structureSettings
-        val stuffing = settings.byteStuffing?.takeUnless { suppressOwnStuffing } ?: return null
+        val stuffing = settings.byteStuffing ?: return null
         decoder.consumePrefix(binaryDescriptor)
         val postfixSize = settings.postfix?.array?.size ?: 0
-        val bodyAndChecksum = when (val terminator = settings.byteStuffingTerminator) {
+        val bodyAndChecksum = when (val terminator = if (isRootFrame) null else settings.byteStuffingTerminator) {
             null -> stuffing.unstuff(decoder.nextBytes(decoder.remainingPayloadBytes() - postfixSize))
 
             else -> when (stuffing) {
@@ -156,7 +156,37 @@ internal class BluetoothBinaryDecoder(
         if (settings.prefix == null && settings.postfix == null && settings.checksumAlgorithm == null) return this
 
         decoder.consumePrefix(binaryDescriptor)
+
+        // A stuffed value class un-stuffs its body + checksum (bounded by the terminator, or the remaining payload when
+        // unterminated or at the root) and decodes the inner value from it — the same framing a nested stuffed structure uses.
+        val stuffing = settings.byteStuffing
+        if (stuffing != null) {
+            val postfixSize = settings.postfix?.array?.size ?: 0
+            val bodyAndChecksum = when (val terminator = if (isRootFrame) null else settings.byteStuffingTerminator) {
+                null -> stuffing.unstuff(decoder.nextBytes(decoder.remainingPayloadBytes() - postfixSize))
+                else -> when (stuffing) {
+                    is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
+                    is NonDelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator()) { it == terminator }
+                }
+            }
+            decoder.consumePostfix(binaryDescriptor)
+            // Decode the inner value from the un-stuffed body+checksum: prefix/postfix consumed, stuffing stripped, checksum kept.
+            val innerDescriptor = binaryDescriptor.copy(
+                structureSettings = settings.copy(prefix = null, postfix = null, byteStuffing = null, byteStuffingTerminator = null),
+            )
+            return BluetoothBinaryDecoder(
+                innerDescriptor,
+                RootBluetoothBinaryDescriptorDecoder(bodyAndChecksum, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum),
+                serializersModule,
+            )
+        }
+
         val bodyStartOffset = decoder.currentOffset
+
+        // A value class wrapping a structure/collection decodes its content with the frame stripped (the prefix is
+        // consumed above and the footer by consumeFooter), so the inner beginStructure does not re-consume the boundary.
+        val bodyDescriptor = binaryDescriptor.copy(structureSettings = BluetoothBinaryDescriptor.StructureSettings(null, null, null))
+        val bodyDecoder = BluetoothBinaryDecoder(bodyDescriptor, decoder, serializersModule)
 
         return object : Decoder by this {
             private fun consumeFooter() {
@@ -173,8 +203,9 @@ internal class BluetoothBinaryDecoder(
             override fun decodeDouble() = this@BluetoothBinaryDecoder.decodeDouble().also { consumeFooter() }
             override fun decodeString() = this@BluetoothBinaryDecoder.decodeString().also { consumeFooter() }
             override fun decodeEnum(enumDescriptor: SerialDescriptor) = this@BluetoothBinaryDecoder.decodeEnum(enumDescriptor).also { consumeFooter() }
+            override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T = deserializer.deserialize(this)
             override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-                val inner = this@BluetoothBinaryDecoder.beginStructure(descriptor)
+                val inner = bodyDecoder.beginStructure(descriptor)
                 return object : CompositeDecoder by inner {
                     override fun endStructure(descriptor: SerialDescriptor) {
                         inner.endStructure(descriptor)

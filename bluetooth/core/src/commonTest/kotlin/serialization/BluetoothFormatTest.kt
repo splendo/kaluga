@@ -2920,6 +2920,88 @@ class BluetoothFormatTest {
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
 
+    @Serializable
+    data class TwoBytes(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    // A value class carrying a stuffing annotation — the recommended way to attach wire modifiers to a model.
+    @Serializable
+    @JvmInline
+    @ByteStuffedCobs
+    value class StuffedValueClass(val value: TwoBytes)
+
+    // A value class wrapping a struct with a prefix/postfix/checksum frame — NO stuffing (isolation control).
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    @Checksum(8, 0x07u, 0x00u)
+    value class FramedStructValueClass(val value: TwoBytes)
+
+    // A value class carrying stuffing together with a prefix/postfix/checksum frame.
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    @Checksum(8, 0x07u, 0x00u)
+    @ByteStuffedCobs
+    value class FramedStuffedValueClass(val value: TwoBytes)
+
+    @Serializable
+    data class StuffedValueClassField(val child: StuffedValueClass, @Size(Length.`8_BIT`) @Unsigned val trailer: Int)
+
+    @Serializable
+    data class FramedStuffedValueClassField(val child: FramedStuffedValueClass, @Size(Length.`8_BIT`) @Unsigned val trailer: Int)
+
+    @Test
+    fun valueClassByteStuffing() {
+        // Body [0x00, 0x11] -> COBS [0x01, 0x02, 0x11].
+        validateRoundTrip(
+            StuffedValueClass(TwoBytes(a = 0x00, b = 0x11)),
+            StuffedValueClass.serializer(),
+            byteArrayOf(0x01, 0x02, 0x11),
+        )
+    }
+
+    @Test
+    fun valueClassByteStuffingAsField() {
+        // The stuffed value class as a nested field: COBS body [0x01, 0x02, 0x11], its 0x00 terminator, then the trailer.
+        validateRoundTrip(
+            StuffedValueClassField(StuffedValueClass(TwoBytes(a = 0x00, b = 0x11)), trailer = 0x09),
+            StuffedValueClassField.serializer(),
+            byteArrayOf(0x01, 0x02, 0x11, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun framedValueClassByteStuffingAsField() {
+        // A framed + stuffed value class as a nested field: body+checksum are COBS-stuffed inside the 0x55/0xAA frame,
+        // followed by the 0x00 terminator, then the parent's trailer.
+        val value = FramedStuffedValueClassField(FramedStuffedValueClass(TwoBytes(a = 0x00, b = 0x11)), trailer = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(FramedStuffedValueClassField.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStuffedValueClassField.serializer(), encoded))
+        assertEquals(0x55.toByte(), encoded.first())
+        assertEquals(0x09.toByte(), encoded.last())
+    }
+
+    @Test
+    fun framedStructValueClassControl() {
+        val value = FramedStructValueClass(TwoBytes(a = 0x00, b = 0x11))
+        val encoded = BluetoothFormat.encodeToByteArray(FramedStructValueClass.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStructValueClass.serializer(), encoded))
+    }
+
+    @Test
+    fun framedValueClassByteStuffing() {
+        // The checksum is computed over the unstuffed body, then body+checksum are COBS-stuffed inside the 0x55/0xAA frame.
+        val value = FramedStuffedValueClass(TwoBytes(a = 0x00, b = 0x11))
+        val encoded = BluetoothFormat.encodeToByteArray(FramedStuffedValueClass.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStuffedValueClass.serializer(), encoded))
+        assertEquals(0x55.toByte(), encoded.first())
+        assertEquals(0xAA.toByte(), encoded.last())
+        // The stuffed region must not contain a raw 0x00 (COBS eliminates it); a dropped stuffing would leave the 0x00 body byte.
+        assertTrue(encoded.drop(1).dropLast(1).none { it == 0x00.toByte() }, "stuffing dropped: ${encoded.toHexString(separator = " ")}")
+    }
+
     @Test
     fun cobsByteStuffing() {
         // Items [0x11, 0x00, 0x22] -> COBS [0x02, 0x11, 0x02, 0x22], then the raw 0x00 terminator, then the trailer.

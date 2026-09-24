@@ -236,6 +236,14 @@ internal data class BluetoothBinaryDescriptor(
  */
 class UnsupportedByteStuffing(message: String) : SerializationException(message)
 
+// Stuffing operates on the frame's accumulation direction, which must be least-significant-first (a full MSB reversal
+// would reorder the stuffed bytes). `@ByteOrder(MSB, excludeStructure = true)` keeps the builder LSB and is allowed.
+internal fun BluetoothBinaryDescriptor.requireLeastSignificantFirstForStuffing() {
+    if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
+        throw UnsupportedByteStuffing("@ByteStuffed is only supported for LEAST_SIGNIFICANT_FIRST byte order")
+    }
+}
+
 @JvmInline
 internal value class ByteArrayHolder(val array: ByteArray) {
     override fun toString(): String = array.toHexString(separator = " ")

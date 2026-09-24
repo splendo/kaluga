@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteArrayBuilder
 import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.ByteStuffingScheme
 import com.splendo.kaluga.base.bytes.buildByteArray
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.DeserializationStrategy
@@ -169,58 +168,26 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
                 }
             }
         }
-        val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule, suppressOwnStuffing = true)
+        // The root frame owns its byte stuffing: the encoder stuffs the body + checksum (leaving prefix/postfix untouched),
+        // length-delimited by the whole payload, so no terminator is appended.
+        val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule, isRootFrame = true)
         serializer.serialize(encoder, value)
 
-        val raw = buildByteArray(flag.byteOrder, builder.expectedSize) {
+        return buildByteArray(flag.byteOrder, builder.expectedSize) {
             with(builder) {
                 build()
             }
         }
-        // Stuffing wraps the body + checksum but leaves the framing prefix/postfix untouched.
-        return flag.rootByteStuffing()?.let { stuffing ->
-            val (prefix, body, postfix) = flag.splitFrame(raw)
-            prefix + stuffing.stuff(body) + postfix
-        } ?: raw
     }
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
-        // Un-stuffing restores the frame to exactly what a non-stuffed decoder expects, so the rest of
-        // decoding is unchanged.
-        val prepared = flag.rootByteStuffing()?.let { stuffing ->
-            val (prefix, body, postfix) = flag.splitFrame(bytes)
-            prefix + stuffing.unstuff(body) + postfix
-        } ?: bytes
         // Use flag.byteOrder (builder/accumulation direction) for the root decoder so it reads the byte
         // array in the same direction it was written — not flag.childByteOrder, which is the field VALUE
         // encoding direction and may differ when @ByteOrder(order, excludeStructure = true) is in use.
-        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(prepared, flag.byteOrder, validateChecksum), serializersModule, suppressOwnStuffing = true)
+        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule, isRootFrame = true)
 
         return deserializer.deserialize(decoder)
-    }
-
-    // Returns the root frame byte-stuffing scheme after validating placement, or null when none is configured.
-    private fun BluetoothBinaryDescriptor.rootByteStuffing(): ByteStuffingScheme? {
-        val stuffing = structureSettings.byteStuffing ?: return null
-        if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
-            throw UnsupportedByteStuffing("@ByteStuffed is only supported for LEAST_SIGNIFICANT_FIRST byte order")
-        }
-        return stuffing
-    }
-
-    // Splits a frame into (prefix, body-and-checksum, postfix); only the middle is stuffed.
-    private fun BluetoothBinaryDescriptor.splitFrame(bytes: ByteArray): Triple<ByteArray, ByteArray, ByteArray> {
-        val prefixSize = structureSettings.prefix?.array?.size ?: 0
-        val postfixSize = structureSettings.postfix?.array?.size ?: 0
-        if (bytes.size < prefixSize + postfixSize) {
-            throw UnsupportedByteStuffing("Frame of ${bytes.size} bytes is too small for its ${prefixSize + postfixSize}-byte prefix and postfix")
-        }
-        return Triple(
-            bytes.copyOfRange(0, prefixSize),
-            bytes.copyOfRange(prefixSize, bytes.size - postfixSize),
-            bytes.copyOfRange(bytes.size - postfixSize, bytes.size),
-        )
     }
 
     /**

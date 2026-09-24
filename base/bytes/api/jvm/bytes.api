@@ -88,6 +88,7 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingException : java/la
 public abstract interface class com/splendo/kaluga/base/bytes/ByteStuffingScheme {
 	public fun canTerminateWith (B)Z
 	public abstract fun escapes (B)Z
+	public abstract fun stuff (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public abstract fun stuff ([B)[B
 	public abstract fun stuffedSize ([B)I
 	public abstract fun unstuff ([B)[B
@@ -116,11 +117,13 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Cobs : com/s
 	public fun escapes (B)Z
 	public fun getDelimiter ()B
 	public fun hashCode ()I
+	public fun stuff (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public fun stuff ([B)[B
 	public fun stuffedSize ([B)I
 	public fun toString ()Ljava/lang/String;
+	public fun unstuff (Ljava/util/Iterator;)[B
+	public fun unstuff (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public fun unstuff ([B)[B
-	public fun unstuffUntil (Ljava/util/Iterator;)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$DefaultImpls {
@@ -130,17 +133,20 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$DefaultImpls
 public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
 	public fun canTerminateWith (B)Z
 	public abstract fun getEscapeByte ()B
+	public fun stuff (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 	public fun stuff ([B)[B
 	public fun stuffedSize ([B)I
 	public fun unstuff ([B)[B
 }
 
 public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithDelimiter : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased, com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme {
-	public fun unstuffUntil (Ljava/util/Iterator;)[B
+	public fun unstuff (Ljava/util/Iterator;)[B
+	public fun unstuff (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 }
 
 public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithoutDelimiter : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased, com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme {
-	public fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+	public fun unstuff (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+	public fun unstuff (Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function1;)Lkotlin/sequences/Sequence;
 }
 
 public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Slip : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithDelimiter {
@@ -214,7 +220,8 @@ public final class com/splendo/kaluga/base/bytes/CharExtensionsKt {
 
 public abstract interface class com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
 	public abstract fun getDelimiter ()B
-	public abstract fun unstuffUntil (Ljava/util/Iterator;)[B
+	public abstract fun unstuff (Ljava/util/Iterator;)[B
+	public abstract fun unstuff (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
 }
 
 public final class com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme$DefaultImpls {
@@ -488,7 +495,8 @@ public final class com/splendo/kaluga/base/bytes/MedFloat32ExtensionsKt {
 }
 
 public abstract interface class com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
-	public abstract fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+	public abstract fun unstuff (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+	public abstract fun unstuff (Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function1;)Lkotlin/sequences/Sequence;
 }
 
 public final class com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme$DefaultImpls {
