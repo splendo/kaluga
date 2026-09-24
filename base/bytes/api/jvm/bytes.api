@@ -660,6 +660,8 @@ public final class com/splendo/kaluga/base/bytes/StringExtensionsKt {
 	public static synthetic fun copyUTF16IntoArray$default (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun copyUTF8IntoArray (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;Z)[B
 	public static synthetic fun copyUTF8IntoArray$default (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;ZILjava/lang/Object;)[B
+	public static final fun decodeCharacters ([BIILcom/splendo/kaluga/base/bytes/Encoding;Z)Ljava/lang/String;
+	public static synthetic fun decodeCharacters$default ([BIILcom/splendo/kaluga/base/bytes/Encoding;ZILjava/lang/Object;)Ljava/lang/String;
 	public static final fun decodeString (Lkotlin/sequences/Sequence;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;)Ljava/lang/String;
 	public static final fun decodeString ([BLcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;)Ljava/lang/String;
 	public static final fun encodeString (Lcom/splendo/kaluga/base/bytes/Encoding;Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B

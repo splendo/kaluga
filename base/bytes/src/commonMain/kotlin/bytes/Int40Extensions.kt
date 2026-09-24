@@ -54,8 +54,13 @@ fun ByteArray.decodeInt40(octetIndex: Int, byteOrder: ByteOrder): Int40 {
             "Cannot convert ByteArray to Int40. The byte with index ${octetIndex + offset} is not available in ByteArray."
         }
     }
-    val value = drop(octetIndex).take(Int40.SIZE_BYTES).foldIndexed(0L) { index, acc, byte ->
-        acc or ((byte.toLong() and 0xFF) shl byteOrder.shift(index, Int40.SIZE_BITS))
+    val value = run {
+        var acc = 0L
+        for (index in 0..<Int40.SIZE_BYTES) {
+            val byte = this[octetIndex + index]
+            acc = acc or ((byte.toLong() and 0xFF) shl byteOrder.shift(index, Int40.SIZE_BITS))
+        }
+        acc
     }
     return if (value and (1L shl (Int40.SIZE_BITS - 1)) != 0L) {
         Int40(value or (-1L shl Int40.SIZE_BITS))

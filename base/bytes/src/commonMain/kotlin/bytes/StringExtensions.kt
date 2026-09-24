@@ -441,12 +441,12 @@ fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteO
 private val REPLACEMENT_BYTE_SEQUENCE: ByteArray = byteArrayOf(0xEF.toByte(), 0xBF.toByte(), 0xBD.toByte())
 
 /**
- * Decodes a single UTF-8 code point from an [Iterator] of [Byte], advancing the iterator past all the
+ * Decodes a single UTF-8 code point from an [Iterator] of [Byte] into [result], advancing the iterator past all the
  * bytes of the sequence. The lead byte's high bits determine the sequence length (1/2/3/4 bytes) and the
  * continuation bytes are pulled from the iterator. A code point outside the Basic Multilingual Plane is
- * returned as a surrogate pair, hence the result is a [String] of one or two [Char]s.
+ * appended as a surrogate pair.
  */
-private fun Iterator<Byte>.decodeUTF8CodePoint(): String {
+private fun Iterator<Byte>.decodeUTF8CodePoint(result: StringBuilder) {
     val lead = next().toInt() and 0xFF
     val codePoint = when {
         lead < 0x80 -> lead
@@ -454,11 +454,11 @@ private fun Iterator<Byte>.decodeUTF8CodePoint(): String {
         lead < 0xF0 -> (lead and 0x0F) shl 12 or (continuationByte() shl 6) or continuationByte()
         else -> (lead and 0x07) shl 18 or (continuationByte() shl 12) or (continuationByte() shl 6) or continuationByte()
     }
-    return if (codePoint > 0xFFFF) {
+    if (codePoint > 0xFFFF) {
         val offset = codePoint - 0x10000
-        charArrayOf(((offset shr 10) + 0xD800).toChar(), ((offset and 0x3FF) + 0xDC00).toChar()).concatToString()
+        result.append(((offset shr 10) + 0xD800).toChar()).append(((offset and 0x3FF) + 0xDC00).toChar())
     } else {
-        codePoint.toChar().toString()
+        result.append(codePoint.toChar())
     }
 }
 
@@ -631,20 +631,47 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
             toList()
         }
     }
-    var result = ""
-    val iterator = stringBytes.iterator()
-    while (iterator.hasNext()) {
-        when (settings.encoding) {
-            UTF_8 -> result += iterator.decodeUTF8CodePoint()
-            UTF_16 -> result += listOf(iterator.next(), iterator.next()).toByteArray().decodeUTF16Char(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
-            ASCII -> result += iterator.next().decodeAsciiChar()
+    return stringBytes.iterator().decodeCharacters(settings.encoding, settings.endMarking is StringEncodingSettings.FixedLength)
+}
+
+/**
+ * Decodes the characters [encoding] encodes in `[from, to)` of this array, as [decodeString] decodes the characters
+ * of a string once it has found where they are: without its length prefix or terminator.
+ * @param trimTrailingNulls whether to drop the `0x00` characters padding a fixed length string.
+ * @throws NoSuchElementException when the last character is cut off.
+ * @throws IllegalArgumentException when a UTF-8 sequence is cut off.
+ */
+fun ByteArray.decodeCharacters(from: Int, to: Int, encoding: Encoding, trimTrailingNulls: Boolean = false): String {
+    require(from in 0..to && to <= size) { "Range [$from, $to) is not within an array of $size bytes" }
+    val array = this
+    return object : Iterator<Byte> {
+        var index = from
+        override fun hasNext(): Boolean = index < to
+        override fun next(): Byte = if (index < to) array[index++] else throw NoSuchElementException("No byte at $index")
+    }.decodeCharacters(encoding, trimTrailingNulls)
+}
+
+private fun Iterator<Byte>.decodeCharacters(encoding: Encoding, trimTrailingNulls: Boolean): String {
+    val result = StringBuilder()
+    while (hasNext()) {
+        when (encoding) {
+            UTF_8 -> decodeUTF8CodePoint(result)
+
+            UTF_16 -> {
+                val low = next().toInt() and 0xFF
+                val high = next().toInt() and 0xFF
+                result.append(Char(low or (high shl Byte.SIZE_BITS)))
+            }
+
+            ASCII -> result.append(next().decodeAsciiChar())
         }
     }
-    return if (settings.endMarking is StringEncodingSettings.FixedLength) {
-        result.dropLastWhile { it == 0x00.toChar() }
-    } else {
-        result
+    if (trimTrailingNulls) {
+        var length = result.length
+        while (length > 0 && result[length - 1] == 0x00.toChar()) length--
+        result.setLength(length)
     }
+    return result.toString()
 }
 
 /**
