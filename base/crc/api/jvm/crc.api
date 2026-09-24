@@ -1,6 +1,7 @@
 public final class com/splendo/kaluga/base/crc/CKSUM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CKSUM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -8,6 +9,7 @@ public final class com/splendo/kaluga/base/crc/CKSUM : com/splendo/kaluga/base/c
 public abstract interface class com/splendo/kaluga/base/crc/CRC {
 	public static final field Companion Lcom/splendo/kaluga/base/crc/CRC$Companion;
 	public abstract fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public abstract fun getWidth ()I
 }
@@ -18,12 +20,14 @@ public final class com/splendo/kaluga/base/crc/CRC$Companion {
 }
 
 public final class com/splendo/kaluga/base/crc/CRC$DefaultImpls {
+	public static fun compute-qJGtvoU (Lcom/splendo/kaluga/base/crc/CRC;[BII)J
 	public static fun getByteWidth (Lcom/splendo/kaluga/base/crc/CRC;)I
 }
 
 public final class com/splendo/kaluga/base/crc/CRC10 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC10;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -31,6 +35,7 @@ public final class com/splendo/kaluga/base/crc/CRC10 : com/splendo/kaluga/base/c
 public final class com/splendo/kaluga/base/crc/CRC10$CDMA2000 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC10$CDMA2000;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -38,6 +43,7 @@ public final class com/splendo/kaluga/base/crc/CRC10$CDMA2000 : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC10$GSM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC10$GSM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -45,6 +51,7 @@ public final class com/splendo/kaluga/base/crc/CRC10$GSM : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC11 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC11;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -52,6 +59,7 @@ public final class com/splendo/kaluga/base/crc/CRC11 : com/splendo/kaluga/base/c
 public final class com/splendo/kaluga/base/crc/CRC11$UMTS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC11$UMTS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -63,6 +71,7 @@ public final class com/splendo/kaluga/base/crc/CRC12 {
 public final class com/splendo/kaluga/base/crc/CRC12$CDMA2000 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC12$CDMA2000;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -70,6 +79,7 @@ public final class com/splendo/kaluga/base/crc/CRC12$CDMA2000 : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC12$DECT : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC12$DECT;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -77,6 +87,7 @@ public final class com/splendo/kaluga/base/crc/CRC12$DECT : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC12$GSM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC12$GSM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -84,6 +95,7 @@ public final class com/splendo/kaluga/base/crc/CRC12$GSM : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC12$UMTS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC12$UMTS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -95,6 +107,7 @@ public final class com/splendo/kaluga/base/crc/CRC13 {
 public final class com/splendo/kaluga/base/crc/CRC13$BBC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC13$BBC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -106,6 +119,7 @@ public final class com/splendo/kaluga/base/crc/CRC14 {
 public final class com/splendo/kaluga/base/crc/CRC14$DARC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC14$DARC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -113,6 +127,7 @@ public final class com/splendo/kaluga/base/crc/CRC14$DARC : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC14$GSM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC14$GSM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -120,6 +135,7 @@ public final class com/splendo/kaluga/base/crc/CRC14$GSM : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC15 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC15;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -127,6 +143,7 @@ public final class com/splendo/kaluga/base/crc/CRC15 : com/splendo/kaluga/base/c
 public final class com/splendo/kaluga/base/crc/CRC15$MPT1327 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC15$MPT1327;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -134,6 +151,7 @@ public final class com/splendo/kaluga/base/crc/CRC15$MPT1327 : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC16 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -141,6 +159,7 @@ public final class com/splendo/kaluga/base/crc/CRC16 : com/splendo/kaluga/base/c
 public final class com/splendo/kaluga/base/crc/CRC16$Autosar : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$Autosar;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -148,6 +167,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$Autosar : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC16$CDMA2000 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$CDMA2000;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -155,6 +175,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$CDMA2000 : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC16$CMS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$CMS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -162,6 +183,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$CMS : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC16$DARC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$DARC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -169,6 +191,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$DARC : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC16$DDS110 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$DDS110;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -180,6 +203,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$DECT {
 public final class com/splendo/kaluga/base/crc/CRC16$DECT$R : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$DECT$R;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -187,6 +211,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$DECT$R : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC16$DECT$X : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$DECT$X;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -194,6 +219,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$DECT$X : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC16$DNP : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$DNP;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -201,6 +227,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$DNP : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC16$EN13757 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$EN13757;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -208,6 +235,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$EN13757 : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC16$GSM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$GSM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -215,6 +243,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$GSM : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC16$Kermit : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$Kermit;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -222,6 +251,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$Kermit : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC16$LJ1200 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$LJ1200;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -229,6 +259,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$LJ1200 : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC16$M17 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$M17;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -236,6 +267,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$M17 : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC16$MCRF4XX : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$MCRF4XX;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -243,6 +275,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$MCRF4XX : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC16$Maxim : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$Maxim;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -250,6 +283,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$Maxim : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC16$Modbus : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$Modbus;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -257,6 +291,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$Modbus : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC16$NRSC5 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$NRSC5;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -268,6 +303,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$OpenSafety {
 public final class com/splendo/kaluga/base/crc/CRC16$OpenSafety$A : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$OpenSafety$A;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -275,6 +311,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$OpenSafety$A : com/splendo/
 public final class com/splendo/kaluga/base/crc/CRC16$OpenSafety$B : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$OpenSafety$B;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -282,6 +319,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$OpenSafety$B : com/splendo/
 public final class com/splendo/kaluga/base/crc/CRC16$PROFIBUS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$PROFIBUS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -289,6 +327,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$PROFIBUS : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC16$Riello : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$Riello;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -296,6 +335,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$Riello : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC16$SPIFujitsu : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$SPIFujitsu;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -303,6 +343,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$SPIFujitsu : com/splendo/ka
 public final class com/splendo/kaluga/base/crc/CRC16$T10DIF : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$T10DIF;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -310,6 +351,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$T10DIF : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC16$TMS37157 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$TMS37157;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -317,6 +359,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$TMS37157 : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC16$TeleDisk : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$TeleDisk;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -324,6 +367,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$TeleDisk : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC16$UMTS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$UMTS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -331,6 +375,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$UMTS : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC16$USB : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$USB;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -338,6 +383,7 @@ public final class com/splendo/kaluga/base/crc/CRC16$USB : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC16$XModem : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC16$XModem;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -349,6 +395,7 @@ public final class com/splendo/kaluga/base/crc/CRC17 {
 public final class com/splendo/kaluga/base/crc/CRC17$CANFD : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC17$CANFD;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -360,6 +407,7 @@ public final class com/splendo/kaluga/base/crc/CRC21 {
 public final class com/splendo/kaluga/base/crc/CRC21$CANFD : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC21$CANFD;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -367,6 +415,7 @@ public final class com/splendo/kaluga/base/crc/CRC21$CANFD : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC24 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -374,6 +423,7 @@ public final class com/splendo/kaluga/base/crc/CRC24 : com/splendo/kaluga/base/c
 public final class com/splendo/kaluga/base/crc/CRC24$BLE : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24$BLE;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -385,6 +435,7 @@ public final class com/splendo/kaluga/base/crc/CRC24$Flexray {
 public final class com/splendo/kaluga/base/crc/CRC24$Flexray$A : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24$Flexray$A;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -392,6 +443,7 @@ public final class com/splendo/kaluga/base/crc/CRC24$Flexray$A : com/splendo/kal
 public final class com/splendo/kaluga/base/crc/CRC24$Flexray$B : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24$Flexray$B;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -399,6 +451,7 @@ public final class com/splendo/kaluga/base/crc/CRC24$Flexray$B : com/splendo/kal
 public final class com/splendo/kaluga/base/crc/CRC24$Interlaken : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24$Interlaken;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -410,6 +463,7 @@ public final class com/splendo/kaluga/base/crc/CRC24$LTE {
 public final class com/splendo/kaluga/base/crc/CRC24$LTE$A : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24$LTE$A;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -417,6 +471,7 @@ public final class com/splendo/kaluga/base/crc/CRC24$LTE$A : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC24$LTE$B : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24$LTE$B;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -424,6 +479,7 @@ public final class com/splendo/kaluga/base/crc/CRC24$LTE$B : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC24$OS9 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC24$OS9;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -435,6 +491,7 @@ public final class com/splendo/kaluga/base/crc/CRC3 {
 public final class com/splendo/kaluga/base/crc/CRC3$GSM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC3$GSM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -442,6 +499,7 @@ public final class com/splendo/kaluga/base/crc/CRC3$GSM : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC3$ROHC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC3$ROHC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -453,6 +511,7 @@ public final class com/splendo/kaluga/base/crc/CRC30 {
 public final class com/splendo/kaluga/base/crc/CRC30$CDMA : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC30$CDMA;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -464,6 +523,7 @@ public final class com/splendo/kaluga/base/crc/CRC31 {
 public final class com/splendo/kaluga/base/crc/CRC31$Philips : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC31$Philips;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -471,6 +531,7 @@ public final class com/splendo/kaluga/base/crc/CRC31$Philips : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC32 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -478,6 +539,7 @@ public final class com/splendo/kaluga/base/crc/CRC32 : com/splendo/kaluga/base/c
 public final class com/splendo/kaluga/base/crc/CRC32$AIXM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$AIXM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -485,6 +547,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$AIXM : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC32$Autosar : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$Autosar;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -492,6 +555,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$Autosar : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC32$BZip2 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$BZip2;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -499,6 +563,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$BZip2 : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC32$Base91D : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$Base91D;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -506,6 +571,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$Base91D : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC32$CDROMEDC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$CDROMEDC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -513,6 +579,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$CDROMEDC : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC32$ISCSI : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$ISCSI;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -520,6 +587,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$ISCSI : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC32$MEF : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$MEF;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -527,6 +595,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$MEF : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC32$MPEG2 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$MPEG2;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -534,6 +603,7 @@ public final class com/splendo/kaluga/base/crc/CRC32$MPEG2 : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC32$XFER : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC32$XFER;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -545,6 +615,7 @@ public final class com/splendo/kaluga/base/crc/CRC4 {
 public final class com/splendo/kaluga/base/crc/CRC4$ITU : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC4$ITU;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -552,6 +623,7 @@ public final class com/splendo/kaluga/base/crc/CRC4$ITU : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC4$Interlaken : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC4$Interlaken;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -563,6 +635,7 @@ public final class com/splendo/kaluga/base/crc/CRC40 {
 public final class com/splendo/kaluga/base/crc/CRC40$GSM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC40$GSM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -574,6 +647,7 @@ public final class com/splendo/kaluga/base/crc/CRC5 {
 public final class com/splendo/kaluga/base/crc/CRC5$EPC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC5$EPC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -581,6 +655,7 @@ public final class com/splendo/kaluga/base/crc/CRC5$EPC : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC5$ITU : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC5$ITU;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -588,6 +663,7 @@ public final class com/splendo/kaluga/base/crc/CRC5$ITU : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC5$USB : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC5$USB;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -603,6 +679,7 @@ public final class com/splendo/kaluga/base/crc/CRC6$CDMA2000 {
 public final class com/splendo/kaluga/base/crc/CRC6$CDMA2000$A : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC6$CDMA2000$A;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -610,6 +687,7 @@ public final class com/splendo/kaluga/base/crc/CRC6$CDMA2000$A : com/splendo/kal
 public final class com/splendo/kaluga/base/crc/CRC6$CDMA2000$B : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC6$CDMA2000$B;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -617,6 +695,7 @@ public final class com/splendo/kaluga/base/crc/CRC6$CDMA2000$B : com/splendo/kal
 public final class com/splendo/kaluga/base/crc/CRC6$DARC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC6$DARC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -624,6 +703,7 @@ public final class com/splendo/kaluga/base/crc/CRC6$DARC : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC6$GSM : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC6$GSM;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -631,6 +711,7 @@ public final class com/splendo/kaluga/base/crc/CRC6$GSM : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC6$ITU : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC6$ITU;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -638,6 +719,7 @@ public final class com/splendo/kaluga/base/crc/CRC6$ITU : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC64 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC64;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -645,6 +727,7 @@ public final class com/splendo/kaluga/base/crc/CRC64 : com/splendo/kaluga/base/c
 public final class com/splendo/kaluga/base/crc/CRC64$GOISO : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC64$GOISO;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -652,6 +735,7 @@ public final class com/splendo/kaluga/base/crc/CRC64$GOISO : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC64$MS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC64$MS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -659,6 +743,7 @@ public final class com/splendo/kaluga/base/crc/CRC64$MS : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC64$NVME : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC64$NVME;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -666,6 +751,7 @@ public final class com/splendo/kaluga/base/crc/CRC64$NVME : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC64$REDIS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC64$REDIS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -673,6 +759,7 @@ public final class com/splendo/kaluga/base/crc/CRC64$REDIS : com/splendo/kaluga/
 public final class com/splendo/kaluga/base/crc/CRC64$WE : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC64$WE;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -680,6 +767,7 @@ public final class com/splendo/kaluga/base/crc/CRC64$WE : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC64$XZ : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC64$XZ;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -687,6 +775,7 @@ public final class com/splendo/kaluga/base/crc/CRC64$XZ : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC7 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC7;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -694,6 +783,7 @@ public final class com/splendo/kaluga/base/crc/CRC7 : com/splendo/kaluga/base/cr
 public final class com/splendo/kaluga/base/crc/CRC7$ROHC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC7$ROHC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -701,6 +791,7 @@ public final class com/splendo/kaluga/base/crc/CRC7$ROHC : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC7$UMTS : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC7$UMTS;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -708,6 +799,7 @@ public final class com/splendo/kaluga/base/crc/CRC7$UMTS : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC8 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -715,6 +807,7 @@ public final class com/splendo/kaluga/base/crc/CRC8 : com/splendo/kaluga/base/cr
 public final class com/splendo/kaluga/base/crc/CRC8$AES : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$AES;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -722,6 +815,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$AES : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC8$Autosar : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$Autosar;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -729,6 +823,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$Autosar : com/splendo/kaluga
 public final class com/splendo/kaluga/base/crc/CRC8$Bluetooth : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$Bluetooth;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -736,6 +831,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$Bluetooth : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC8$CDMA2000 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$CDMA2000;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -743,6 +839,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$CDMA2000 : com/splendo/kalug
 public final class com/splendo/kaluga/base/crc/CRC8$DARC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$DARC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -750,6 +847,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$DARC : com/splendo/kaluga/ba
 public final class com/splendo/kaluga/base/crc/CRC8$DVBS2 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$DVBS2;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -761,6 +859,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$GSM {
 public final class com/splendo/kaluga/base/crc/CRC8$GSM$A : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$GSM$A;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -768,6 +867,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$GSM$A : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC8$GSM$B : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$GSM$B;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -775,6 +875,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$GSM$B : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC8$HITAG : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$HITAG;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -782,6 +883,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$HITAG : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC8$ICODE : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$ICODE;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -789,6 +891,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$ICODE : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC8$ITU : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$ITU;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -796,6 +899,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$ITU : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC8$LTE : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$LTE;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -803,6 +907,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$LTE : com/splendo/kaluga/bas
 public final class com/splendo/kaluga/base/crc/CRC8$Maxim : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$Maxim;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -814,6 +919,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$Mifare {
 public final class com/splendo/kaluga/base/crc/CRC8$Mifare$MAD : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$Mifare$MAD;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -821,6 +927,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$Mifare$MAD : com/splendo/kal
 public final class com/splendo/kaluga/base/crc/CRC8$NRSC5 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$NRSC5;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -828,6 +935,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$NRSC5 : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRC8$OpenSafety : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$OpenSafety;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -835,6 +943,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$OpenSafety : com/splendo/kal
 public final class com/splendo/kaluga/base/crc/CRC8$ROHC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$ROHC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -846,6 +955,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$SAE {
 public final class com/splendo/kaluga/base/crc/CRC8$SAE$J1850 : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$SAE$J1850;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -853,6 +963,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$SAE$J1850 : com/splendo/kalu
 public final class com/splendo/kaluga/base/crc/CRC8$WCDMA : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRC8$WCDMA;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -860,6 +971,7 @@ public final class com/splendo/kaluga/base/crc/CRC8$WCDMA : com/splendo/kaluga/b
 public final class com/splendo/kaluga/base/crc/CRCA : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRCA;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -867,6 +979,7 @@ public final class com/splendo/kaluga/base/crc/CRCA : com/splendo/kaluga/base/cr
 public final class com/splendo/kaluga/base/crc/CRCB : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/CRCB;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
@@ -874,6 +987,7 @@ public final class com/splendo/kaluga/base/crc/CRCB : com/splendo/kaluga/base/cr
 public final class com/splendo/kaluga/base/crc/JAMCRC : com/splendo/kaluga/base/crc/CRC {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/crc/JAMCRC;
 	public fun compute-I7RO_PI ([B)J
+	public fun compute-qJGtvoU ([BII)J
 	public fun getByteWidth ()I
 	public fun getWidth ()I
 }
