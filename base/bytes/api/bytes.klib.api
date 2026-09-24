@@ -64,6 +64,7 @@ sealed interface com.splendo.kaluga.base.bytes/ByteStuffingScheme { // com.splen
     abstract fun stuff(kotlin/ByteArray): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.stuff|stuff(kotlin.ByteArray){}[0]
     abstract fun stuffedSize(kotlin/ByteArray): kotlin/Int // com.splendo.kaluga.base.bytes/ByteStuffingScheme.stuffedSize|stuffedSize(kotlin.ByteArray){}[0]
     abstract fun unstuff(kotlin/ByteArray): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.unstuff|unstuff(kotlin.ByteArray){}[0]
+    open fun canTerminateWith(kotlin/Byte): kotlin/Boolean // com.splendo.kaluga.base.bytes/ByteStuffingScheme.canTerminateWith|canTerminateWith(kotlin.Byte){}[0]
 
     final class CSafe : com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.WithoutDelimiter { // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe|null[0]
         constructor <init>(kotlin/Byte = ..., kotlin/Byte = ...) // com.splendo.kaluga.base.bytes/ByteStuffingScheme.CSafe.<init>|<init>(kotlin.Byte;kotlin.Byte){}[0]
@@ -136,16 +137,19 @@ sealed interface com.splendo.kaluga.base.bytes/ByteStuffingScheme { // com.splen
 
         abstract fun decodeStored(kotlin/Byte): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.decodeStored|decodeStored(kotlin.Byte){}[0]
         abstract fun encodeStored(kotlin/Byte): kotlin/Byte // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.encodeStored|encodeStored(kotlin.Byte){}[0]
-        final fun unstuffUntil(kotlin.collections/Iterator<kotlin/Byte>, kotlin/Function1<kotlin/Byte, kotlin/Boolean>): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.unstuffUntil|unstuffUntil(kotlin.collections.Iterator<kotlin.Byte>;kotlin.Function1<kotlin.Byte,kotlin.Boolean>){}[0]
+        open fun canTerminateWith(kotlin/Byte): kotlin/Boolean // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.canTerminateWith|canTerminateWith(kotlin.Byte){}[0]
         open fun stuff(kotlin/ByteArray): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.stuff|stuff(kotlin.ByteArray){}[0]
         open fun stuffedSize(kotlin/ByteArray): kotlin/Int // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.stuffedSize|stuffedSize(kotlin.ByteArray){}[0]
         open fun unstuff(kotlin/ByteArray): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.unstuff|unstuff(kotlin.ByteArray){}[0]
+        open fun unstuffUntil(kotlin.collections/Iterator<kotlin/Byte>, kotlin/Function1<kotlin/Byte, kotlin/Boolean>): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.unstuffUntil|unstuffUntil(kotlin.collections.Iterator<kotlin.Byte>;kotlin.Function1<kotlin.Byte,kotlin.Boolean>){}[0]
 
         sealed class WithDelimiter : com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased, com.splendo.kaluga.base.bytes/DelimiterByteStuffingScheme { // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.WithDelimiter|null[0]
             open fun unstuffUntil(kotlin.collections/Iterator<kotlin/Byte>): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.WithDelimiter.unstuffUntil|unstuffUntil(kotlin.collections.Iterator<kotlin.Byte>){}[0]
         }
 
-        sealed class WithoutDelimiter : com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased, com.splendo.kaluga.base.bytes/NonDelimiterByteStuffingScheme // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.WithoutDelimiter|null[0]
+        sealed class WithoutDelimiter : com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased, com.splendo.kaluga.base.bytes/NonDelimiterByteStuffingScheme { // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.WithoutDelimiter|null[0]
+            open fun unstuffUntil(kotlin.collections/Iterator<kotlin/Byte>, kotlin/Function1<kotlin/Byte, kotlin/Boolean>): kotlin/ByteArray // com.splendo.kaluga.base.bytes/ByteStuffingScheme.EscapeBased.WithoutDelimiter.unstuffUntil|unstuffUntil(kotlin.collections.Iterator<kotlin.Byte>;kotlin.Function1<kotlin.Byte,kotlin.Boolean>){}[0]
+        }
     }
 
     final object Cobs : com.splendo.kaluga.base.bytes/DelimiterByteStuffingScheme { // com.splendo.kaluga.base.bytes/ByteStuffingScheme.Cobs|null[0]

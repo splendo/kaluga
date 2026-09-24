@@ -32,8 +32,19 @@ class ByteStuffingException(message: String) : Exception(message)
  */
 sealed interface ByteStuffingScheme {
 
-    /** Whether [byte] never appears literally in [stuff]ed output, so it can serve as a delimiter. */
+    /**
+     * Whether [byte] is escaped (transformed) when it occurs in the input. This includes the escape byte itself, which
+     * — unlike other escaped values — still appears literally in the output as an escape prefix; use [canTerminateWith]
+     * to test whether a byte is safe as a terminator.
+     */
     fun escapes(byte: Byte): Boolean
+
+    /**
+     * Whether [byte] can unambiguously terminate [stuff]ed output appended with it: it is escaped within the content and
+     * never emitted literally. Defaults to [escapes]; escape-based schemes additionally exclude their escape byte, which
+     * does appear literally.
+     */
+    fun canTerminateWith(byte: Byte): Boolean = escapes(byte)
 
     /** Transforms [data] so no escaped byte appears literally. */
     fun stuff(data: ByteArray): ByteArray
@@ -58,7 +69,9 @@ sealed interface ByteStuffingScheme {
 
         sealed class WithoutDelimiter :
             EscapeBased(),
-            NonDelimiterByteStuffingScheme
+            NonDelimiterByteStuffingScheme {
+            public override fun unstuffUntil(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray = super.unstuffUntil(iterator, isDelimiter)
+        }
 
         /** The byte prepended to an escaped value. It is always itself escaped. */
         abstract val escapeByte: Byte
@@ -68,6 +81,9 @@ sealed interface ByteStuffingScheme {
 
         /** Reconstructs the original byte from the [stored] byte that followed [escapeByte]. */
         protected abstract fun decodeStored(stored: Byte): Byte
+
+        // The escape byte is escaped but still emitted literally as a prefix, so it cannot serve as a terminator.
+        override fun canTerminateWith(byte: Byte): Boolean = escapes(byte) && byte != escapeByte
 
         override fun stuffedSize(data: ByteArray): Int {
             var size = 0
@@ -105,7 +121,7 @@ sealed interface ByteStuffingScheme {
             return out.copyOf(outIndex)
         }
 
-        fun unstuffUntil(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray {
+        protected open fun unstuffUntil(iterator: Iterator<Byte>, isDelimiter: (Byte) -> Boolean): ByteArray {
             val out = GrowableByteArray()
             while (iterator.hasNext()) {
                 val byte = iterator.next()

@@ -701,14 +701,19 @@ internal object BluetoothBinaryDescriptorRegistry {
                     // A byte-stuffing annotation is itself a terminated marking, so @NullTerminated is not required.
                     byteStuffing != null -> {
                         val endMarking = when (byteStuffing) {
-                            is DelimiterByteStuffingScheme -> StringEncodingSettings.ByteStuffed.Delimited(byteStuffing)
+                            is DelimiterByteStuffingScheme -> {
+                                if (terminal != null) {
+                                    throw UnsupportedByteStuffing("$byteStuffing has a fixed delimiter; @Terminal is not supported alongside it")
+                                }
+                                StringEncodingSettings.ByteStuffed.Delimited(byteStuffing)
+                            }
 
                             is NonDelimiterByteStuffingScheme -> {
                                 if (terminal == null) {
                                     throw UnsupportedByteStuffing("ByteStuffing $byteStuffing must be provided a terminal via @Terminal")
                                 }
-                                if (!byteStuffing.escapes(terminal)) {
-                                    throw UnsupportedByteStuffing("Byte stuffing on a String must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])")
+                                if (!byteStuffing.canTerminateWith(terminal)) {
+                                    throw UnsupportedByteStuffing("Byte stuffing on a String must escape its terminator byte and never emit it literally; use @ByteStuffedXor(delimiter = <terminator>) instead")
                                 }
                                 StringEncodingSettings.ByteStuffed.Explicit(byteStuffing, terminal)
                             }
@@ -766,15 +771,20 @@ internal object BluetoothBinaryDescriptorRegistry {
                     // Byte stuffing implies a terminated (TerminalMarked) collection, so @NullTerminated is not required.
                     byteStuffing != null -> {
                         val delimiter = when (byteStuffing) {
-                            is DelimiterByteStuffingScheme -> byteStuffing.delimiter
+                            is DelimiterByteStuffingScheme -> {
+                                if (terminal != null) {
+                                    throw UnsupportedByteStuffing("$byteStuffing has a fixed delimiter; @Terminal is not supported alongside it")
+                                }
+                                byteStuffing.delimiter
+                            }
 
                             is NonDelimiterByteStuffingScheme -> {
                                 if (terminal == null) {
                                     throw UnsupportedByteStuffing("ByteStuffing $byteStuffing must be provided a terminal via @Terminal")
                                 }
-                                if (!byteStuffing.escapes(terminal)) {
+                                if (!byteStuffing.canTerminateWith(terminal)) {
                                     throw UnsupportedByteStuffing(
-                                        "Byte stuffing on a Collection must escape its terminator byte; use @ByteStuffedXor(escapedBytes = [<terminator>])",
+                                        "Byte stuffing on a Collection must escape its terminator byte and never emit it literally; use @ByteStuffedXor(delimiter = <terminator>) instead",
                                     )
                                 }
                                 terminal

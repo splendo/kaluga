@@ -65,7 +65,7 @@ class ByteStuffingTest {
         // Content [0x41, 0x00] stuffed, then an unescaped 0x00 terminator, then trailing bytes left unread.
         val stream = byteArrayOf(0x41, 0x7D, 0x20, 0x00, 0x99.toByte())
         val iterator = stream.iterator()
-        val content = scheme.unstuffUntil(iterator) { it == 0x00.toByte() }
+        val content = scheme.unstuffUntil(iterator)
         assertTrue(content.contentEquals(byteArrayOf(0x41, 0x00)))
         assertEquals(0x99.toByte(), iterator.next())
     }
@@ -138,10 +138,11 @@ class ByteStuffingTest {
 
     @Test
     fun schemeDelimiter() {
-        // Delimiter schemes expose the byte they canonically frame with (always one they escape). CSafe/Xor carry no
-        // delimiter — that they need an explicit terminator is enforced at the type level (NonDelimiterByteStuffingScheme).
+        // Delimiter schemes expose the byte they canonically frame with (always one they escape). CSafe carries no
+        // delimiter — that it needs an explicit terminator is enforced at the type level (NonDelimiterByteStuffingScheme).
         assertEquals(0x00.toByte(), ByteStuffingScheme.Cobs.delimiter)
         assertEquals(0xC0.toByte(), ByteStuffingScheme.Slip().delimiter)
+        assertEquals(0x7C.toByte(), ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x7C).delimiter)
     }
 
     @Test
@@ -151,7 +152,23 @@ class ByteStuffingTest {
         assertEquals(0xC0.toByte(), StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Slip()).terminator)
         // A non-delimiter scheme requires an explicit terminator it escapes (CSafe escapes 0xF0..0xF3).
         assertEquals(0xF2.toByte(), StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0xF2.toByte()).terminator)
+        // A byte the scheme does not escape (0x00) cannot terminate; nor can the escape byte itself (0xF3), which is
+        // escaped yet still emitted literally as a prefix.
         assertFailsWith<IllegalArgumentException> { StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0x00) }
+        assertFailsWith<IllegalArgumentException> { StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0xF3.toByte()) }
+    }
+
+    @Test
+    fun canTerminateWith() {
+        val cSafe = ByteStuffingScheme.CSafe() // escape byte 0xF3, escapes 0xF0..0xF3
+        assertTrue(cSafe.canTerminateWith(0xF2.toByte()))
+        assertTrue(!cSafe.canTerminateWith(0xF3.toByte())) // the escape byte is emitted literally
+        assertTrue(!cSafe.canTerminateWith(0x00)) // not escaped at all
+        // A delimiter scheme's escape byte is likewise unsafe, but its delimiter is.
+        val slip = ByteStuffingScheme.Slip()
+        assertTrue(slip.canTerminateWith(slip.delimiter))
+        assertTrue(!slip.canTerminateWith(0xDB.toByte())) // the escape byte
+        assertTrue(ByteStuffingScheme.Cobs.canTerminateWith(0x00))
     }
 
     @Test

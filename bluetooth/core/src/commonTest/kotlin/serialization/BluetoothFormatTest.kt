@@ -2862,12 +2862,11 @@ class BluetoothFormatTest {
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
 
-    // @Terminal overrides the 0x00 terminator; the scheme escapes the chosen terminator (0x7C = '|').
+    // The XOR scheme's own delimiter is the terminator (0x7C = '|'), which it escapes within the content.
     @Serializable
     data class TerminalStringHolder(
         @Encoded(Encoding.ASCII)
         @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
-        @Terminal(0x7C)
         val name: String,
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
@@ -2875,8 +2874,17 @@ class BluetoothFormatTest {
     @Serializable
     data class TerminalListHolder(
         @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
-        @Terminal(0x7C)
         val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A delimiter scheme's terminator is fixed by the scheme, so an accompanying @Terminal is rejected.
+    @Serializable
+    data class ConflictingTerminalHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
+        @Terminal(0x0A)
+        val name: String,
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
 
@@ -3012,6 +3020,14 @@ class BluetoothFormatTest {
             TerminalListHolder.serializer(),
             byteArrayOf(0x01, 0x7D, 0x5C, 0x7D, 0x5D, 0x7C, 0x09),
         )
+    }
+
+    @Test
+    fun delimiterSchemeRejectsExplicitTerminal() {
+        // A scheme with a fixed delimiter cannot have its terminator overridden via @Terminal.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(ConflictingTerminalHolder.serializer(), ConflictingTerminalHolder(name = "A", trailer = 0x09))
+        }
     }
 
     @Test

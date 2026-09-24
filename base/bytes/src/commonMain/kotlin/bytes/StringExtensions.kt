@@ -207,7 +207,7 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
         /** Terminated by an explicit [terminator] that the [scheme] must escape. */
         data class Explicit(override val scheme: NonDelimiterByteStuffingScheme, override val terminator: Byte) : ByteStuffed() {
             init {
-                require(scheme.escapes(terminator)) { "A ByteStuffed end marking's scheme must escape its terminator byte" }
+                require(scheme.canTerminateWith(terminator)) { "A ByteStuffed end marking's scheme must escape its terminator byte and never emit it literally" }
             }
         }
     }

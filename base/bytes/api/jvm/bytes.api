@@ -86,6 +86,7 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingException : java/la
 }
 
 public abstract interface class com/splendo/kaluga/base/bytes/ByteStuffingScheme {
+	public fun canTerminateWith (B)Z
 	public abstract fun escapes (B)Z
 	public abstract fun stuff ([B)[B
 	public abstract fun stuffedSize ([B)I
@@ -110,6 +111,7 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$CSafe : com/
 
 public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Cobs : com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme$Cobs;
+	public fun canTerminateWith (B)Z
 	public fun equals (Ljava/lang/Object;)Z
 	public fun escapes (B)Z
 	public fun getDelimiter ()B
@@ -121,12 +123,16 @@ public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Cobs : com/s
 	public fun unstuffUntil (Ljava/util/Iterator;)[B
 }
 
+public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$DefaultImpls {
+	public static fun canTerminateWith (Lcom/splendo/kaluga/base/bytes/ByteStuffingScheme;B)Z
+}
+
 public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
+	public fun canTerminateWith (B)Z
 	public abstract fun getEscapeByte ()B
 	public fun stuff ([B)[B
 	public fun stuffedSize ([B)I
 	public fun unstuff ([B)[B
-	public final fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
 }
 
 public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithDelimiter : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased, com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme {
@@ -134,6 +140,7 @@ public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBas
 }
 
 public abstract class com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithoutDelimiter : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased, com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme {
+	public fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/ByteStuffingScheme$Slip : com/splendo/kaluga/base/bytes/ByteStuffingScheme$EscapeBased$WithDelimiter {
@@ -208,6 +215,10 @@ public final class com/splendo/kaluga/base/bytes/CharExtensionsKt {
 public abstract interface class com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
 	public abstract fun getDelimiter ()B
 	public abstract fun unstuffUntil (Ljava/util/Iterator;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme$DefaultImpls {
+	public static fun canTerminateWith (Lcom/splendo/kaluga/base/bytes/DelimiterByteStuffingScheme;B)Z
 }
 
 public final class com/splendo/kaluga/base/bytes/DoubleExtensionsKt {
@@ -478,6 +489,10 @@ public final class com/splendo/kaluga/base/bytes/MedFloat32ExtensionsKt {
 
 public abstract interface class com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme : com/splendo/kaluga/base/bytes/ByteStuffingScheme {
 	public abstract fun unstuffUntil (Ljava/util/Iterator;Lkotlin/jvm/functions/Function1;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme$DefaultImpls {
+	public static fun canTerminateWith (Lcom/splendo/kaluga/base/bytes/NonDelimiterByteStuffingScheme;B)Z
 }
 
 public final class com/splendo/kaluga/base/bytes/Sha1Kt {

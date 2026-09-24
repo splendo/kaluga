@@ -403,13 +403,14 @@ annotation class Terminal(val terminator: Byte)
  * Annotation added for serializing using [BluetoothFormat]
  *
  * Applies PPP/HDLC-style byte stuffing, using a [com.splendo.kaluga.base.bytes.ByteStuffingScheme.Xor] scheme. Only for
- * [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]; because the escaped set is explicit,
- * this can protect a `0x00` terminator (use `escapedBytes = [0x00]` on a String or Collection — no [NullTerminated] needed).
+ * [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]; because the delimiter is explicit,
+ * this can protect a `0x00` terminator (use `delimiter = 0x00` on a String or Collection — no [NullTerminated] needed).
  *
- * Each escaped byte is stored XOR-ed with [xorKey]. [escapeByte] is always escaped in addition to [additionalEscapedBytes].
+ * Each escaped byte is stored XOR-ed with [xorKey]. [escapeByte] and [delimiter] are always escaped in addition to [additionalEscapedBytes].
  *
  * @property escapeByte the byte prepended to an escaped value (and itself always escaped)
- * @property additionalEscapedBytes the additional byte values to escape (e.g. the delimiter)
+ * @property delimiter the terminator byte the content is framed with (always escaped)
+ * @property additionalEscapedBytes further byte values to escape beyond [escapeByte] and [delimiter]
  * @property xorKey the value XOR-ed with an escaped byte to produce its stored form
  */
 @OptIn(ExperimentalSerializationApi::class)
