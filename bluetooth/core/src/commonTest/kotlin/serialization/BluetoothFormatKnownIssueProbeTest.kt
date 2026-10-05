@@ -284,6 +284,8 @@ class BluetoothFormatKnownIssueProbeTest {
         fail("decode threw ${e::class.simpleName}(\"${e.message}\") for encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A Long outside Int range is truncated to Int before the 8-bit range check, so it is wrongly written as fitting in 8 bits.
+    // Fails with: expected v=4294967296 but was v=0, encoded=00 00.
     @Test
     fun longEightAndSixtyFourBitSelectionRoundTrips() {
         val value = ProbeLongWideSelection8Bit(v = 1L shl 32)
@@ -292,6 +294,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A Long outside Int range is truncated to Int before the 16-bit range check, so it is wrongly written as fitting in 16 bits.
+    // Fails with: expected v=4294967296 but was v=0, encoded=00 00 00.
     @Test
     fun longSixteenAndSixtyFourBitSelectionRoundTrips() {
         val value = ProbeLongWideSelection16Bit(v = 1L shl 32)
@@ -300,6 +304,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A negative Long outside Int range is truncated to Int before the 8-bit range check, so it is wrongly written as fitting in 8 bits.
+    // Fails with: expected v=-1099511627776 but was v=0, encoded=00 00.
     @Test
     fun longNegativeOutOfIntRangeSelectionRoundTrips() {
         val value = ProbeLongWideSelection8Bit(v = -(1L shl 40))
@@ -316,6 +322,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A Char property is always treated as variable-size in @SizePolymorphic dispatch although it has a fixed wire width.
+    // Fails with: SerializationException "@SizePolymorphic 'ProbeCharSizeVariant' has more than one variable-size subtype" on encode.
     @Test
     fun charFieldGivesSizePolymorphicSubtypesDistinctFixedSizes() {
         val value = ProbeCharSizeHolder(ProbeCharSizeSmall('A'))
@@ -362,6 +370,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A value class with @Prefix or @Postfix crashes on encode when its wrapped value needs a header bit, because the flag header is sized from the empty child list.
+    // Fails with: ArrayIndexOutOfBoundsException "Index 0 out of bounds for length 0".
     @Test
     fun flagPackedValueInFramedValueClassRoundTrips() {
         val value = ProbeFramedFlagHolder(wrapped = ProbeFramedFlagValue(ProbeMode3.HIGH), trailer = 0x2A)
@@ -370,6 +380,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: Float and Double are written little-endian in an MSB excludeStructure frame because the encoder ignores childByteOrder for decimals.
+    // Fails with: expected wire 3f c0 00 00 40 04 00 00 00 00 00 00 but got 00 00 c0 3f 00 00 00 00 00 00 04 40.
     @Test
     fun msbExcludeStructureFloatsUseBigEndianWireBytes() {
         val value = ProbeMsbExcludeStructureFloats(a = 1.5f, b = 2.5)
@@ -384,6 +396,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value.b, decoded.b)
     }
 
+    // Known bug: A nested structure's flag bits are packed into the parent's partial byte by the encoder, but the decoder starts the nested structure on a fresh byte.
+    // Fails with: expected nested flag=true but was flag=false, encoded=05 00 2a.
     @Test
     fun nestedFlagHeaderAfterParentBooleansRoundTrips() {
         val value = ProbeParentBooleansThenNestedFlagHeader(boolA = true, boolB = false, nested = ProbeNestedFlagHeader(flag = true), trailer = 0x2A)
@@ -392,6 +406,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A nested structure's leading Boolean is packed into the parent's partial byte by the encoder, but the decoder starts the nested structure on a fresh byte.
+    // Fails with: expected nested flag=true but was flag=false, encoded=05 00 2a.
     @Test
     fun nestedLeadingBooleanAfterParentBooleansRoundTrips() {
         val value = ProbeParentBooleansThenNestedLeadingBoolean(boolA = true, boolB = false, nested = ProbeNestedLeadingBoolean(flag = true), trailer = 0x2A)
@@ -408,6 +424,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @Reserved on a nullable property is skipped by the encoder when the value is null, but the decoder always skips the reserved bytes.
+    // Fails with: IndexOutOfBoundsException "toIndex (3) is greater than size (2)." for encoded=00 22.
     @Test
     fun reservedAfterOnNullablePropertySkipsPaddingWhenNull() {
         val value = ProbeReservedAfterNullable(v = null, trailer = 0x22)
@@ -416,6 +434,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A value class with @Prefix or @Postfix crashes on encode when its wrapped number uses width-selecting @Size, because the flag header is sized from the empty child list.
+    // Fails with: ArrayIndexOutOfBoundsException "Index 0 out of bounds for length 0".
     @Test
     fun wideSizeSelectionOnFramedValueClassPropertyRoundTrips() {
         val small = ProbeFramedWideSizeHolder(wrapped = ProbeFramedWideSizeValue(5L), trailer = 0x2A)
@@ -442,6 +462,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(absent, absentDecoded, "encoded=${absentEncoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A value class with @Prefix or @Postfix crashes on encode when it wraps a nullable, because the presence bit has no header to live in.
+    // Fails with: ArrayIndexOutOfBoundsException "Index 0 out of bounds for length 0".
     @Test
     fun framedValueClassWrappingNullableRoundTrips() {
         val present = ProbeNullableWrappedFramedHolder(wrapped = ProbeNullableWrappedFramed(0x11), trailer = 0x22)
@@ -455,6 +477,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(absent, absentDecoded, "encoded=${absentEncoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A one-byte string length prefix above 127 is read back as a negative signed byte.
+    // Fails with: ByteArrayEndedBeforeSerializationCompleted "Requested element count -56 is less than zero." for a 200-byte string (prefix c8).
     @Test
     fun longByteLengthPrefixedStringRoundTrips() {
         val value = ProbeLongByteLengthString(s = "x".repeat(200), trailer = 0x2A)
@@ -463,6 +487,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A one-byte collection count above 127 is read back as a negative signed byte, so the list reads until the frame is empty and swallows the following fields.
+    // Fails with: ByteArrayEndedBeforeSerializationCompleted "Not enough bytes remaining" for a 200-item list (count c8).
     @Test
     fun longByteLengthPrefixedListRoundTrips() {
         val value = ProbeLongByteLengthList(items = List(200) { ProbeLongByteLengthListItem(it.toByte()) }, trailer = 0x2A)
@@ -471,6 +497,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: An empty nullable list without @NullIfEmpty has its presence flag cleared but its count still written, so the decoder returns null and misreads the count as the next field.
+    // Fails with: expected items=[], trailer=42 but was items=null, trailer=0, encoded=00 00 2a.
     @Test
     fun nullableListWithoutNullIfEmptyRoundTrips() {
         val nullValue = ProbeNullableListNoNullIfEmpty(items = null, trailer = 0x2A)
@@ -484,6 +512,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(emptyValue, emptyDecoded, "empty-list case, encoded=${emptyEncoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A List of nullable @Serializable class items disagrees between encoder and decoder on where each item's presence header ends.
+    // Fails with: expected [Point(1, 2), null] but was [null, Point(2, 0)], encoded=02 00 01 02 00.
     @Test
     fun listOfNullableSerializableClassRoundTrips() {
         val value = ProbeNullableItemListHolder(items = listOf(ProbePoint(0x01, 0x02), null))
@@ -492,6 +522,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @Prefix, @Postfix and @Checksum on a list item class are written twice per item, by the item builder and again by the enclosing list.
+    // Fails with: InvalidPrefix "Expected Prefix 50 but got db" for encoded=02 50 50 11 77 60 db 60 50 50 22 ee 60 db 60 2a.
     @Test
     fun itemLevelPrefixPostfixChecksumOnListItemRoundTrips() {
         val value = ProbeFramedChecksumItemListHolder(
@@ -511,6 +543,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: An overflowing @LengthPrefix(canOverflow = true) count in an MSB excludeStructure frame is written as count then sentinel, but the decoder reads the sentinel first.
+    // Fails with: list of 300 items does not round-trip (decoded as 44 items), encoded=01 2c ff 2b 2a ....
     @Test
     fun msbOverflowLengthPrefixedListStructureExcludedRoundTrips() {
         val value = ProbeMsbOverflowListExcluded(items = List(300) { it.toByte() })
@@ -527,6 +561,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A 16-bit collection count in an MSB excludeStructure frame is written in childByteOrder but read in the structure's byteOrder.
+    // Fails with: ByteArrayEndedBeforeSerializationCompleted "Not enough bytes remaining" for encoded=00 04 04 03 02 01 (count 4 read as 1024).
     @Test
     fun msbSixteenBitListCountStructureExcludedRoundTrips() {
         val value = ProbeMsbSizedListExcluded(items = listOf(1, 2, 3, 4).map { it.toByte() })
@@ -535,6 +571,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A nullable unsigned property loses its unsignedness because the registry matches the serial name with its trailing "?", so a widened value is sign-extended.
+    // Fails with: non-null=c8 00 2a but nullable=01 c8 ff 2a (UByte@16_BIT holding 200).
     @Test
     fun nullableSizedUByteMatchesNonNullWireBytes() {
         val nonNull = ProbeNullableSizedUByteNonNull(b = 200u, trailer = 0x2A)
@@ -554,6 +592,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(nullable, decoded, "round trip: encoded=${nullableEncoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A nullable UInt loses its unsignedness because the registry matches the serial name with its trailing "?", so widening to 64 bit sign-extends.
+    // Fails with: non-null=00 5e d0 b2 00 00 00 00 2a but nullable=01 00 5e d0 b2 ff ff ff ff 2a.
     @Test
     fun nullableWideUIntMatchesNonNullWireBytes() {
         val nonNull = ProbeNullableWideUIntNonNull(v = 3_000_000_000u, trailer = 0x2A)
@@ -573,6 +613,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(nullable, decoded, "round trip: encoded=${nullableEncoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A nullable UInt list item loses its unsignedness because the registry matches the serial name with its trailing "?", so widening to 64 bit sign-extends.
+    // Fails with: non-null=01 00 5e d0 b2 00 00 00 00 2a but nullable=01 01 00 5e d0 b2 ff ff ff ff 2a.
     @Test
     fun nullableWideUIntListItemMatchesNonNullWireBytes() {
         val nonNull = ProbeNullableWideUIntListNonNull(items = listOf(3_000_000_000u), trailer = 0x2A)
@@ -592,6 +634,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(nullable, decoded, "round trip: encoded=${nullableEncoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @Terminal on a @ByteStuffedXor String is rejected, while the Terminal and ByteStuffedSlip KDocs say it overrides the scheme's delimiter; code or KDoc needs to change.
+    // Fails with: UnsupportedByteStuffing "Xor(escapeByte=125, delimiter=-64, ...) has a fixed delimiter; @Terminal is not supported alongside it".
     @Test
     fun terminalOverridesXorStuffedStringDelimiter() {
         val value = ProbeTerminalOverridesXorStuffedString(s = "hi", trailer = 0x2A)
@@ -606,6 +650,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @Terminal on a @ByteStuffedSlip String is rejected, while the Terminal and ByteStuffedSlip KDocs say it overrides the scheme's delimiter; code or KDoc needs to change.
+    // Fails with: UnsupportedByteStuffing "Slip(end=-64, ...) has a fixed delimiter; @Terminal is not supported alongside it".
     @Test
     fun terminalOverridesSlipStuffedStringDelimiter() {
         val value = ProbeTerminalOverridesSlipStuffedString(s = "hi", trailer = 0x2A)
@@ -620,6 +666,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @Terminal on a @ByteStuffedCobs String is rejected, while the Terminal and ByteStuffedSlip KDocs say it overrides the scheme's delimiter; code or KDoc needs to change.
+    // Fails with: UnsupportedByteStuffing "Cobs has a fixed delimiter; @Terminal is not supported alongside it".
     @Test
     fun terminalOverridesCobsStuffedStringDelimiter() {
         val value = ProbeTerminalOverridesCobsStuffedString(s = "hi", trailer = 0x2A)
@@ -634,6 +682,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @Terminal on a @ByteStuffedXor List is rejected, while the Terminal and ByteStuffedSlip KDocs say it overrides the scheme's delimiter; code or KDoc needs to change.
+    // Fails with: UnsupportedByteStuffing "Xor(escapeByte=125, delimiter=-64, ...) has a fixed delimiter; @Terminal is not supported alongside it".
     @Test
     fun terminalOverridesXorStuffedListDelimiter() {
         val value = ProbeTerminalOverridesXorStuffedList(items = listOf(0x01, 0x02), trailer = 0x2A)
@@ -648,6 +698,8 @@ class BluetoothFormatKnownIssueProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @ByteStuffed on a String without @Terminal is rejected although its KDoc describes a 0x00 terminator needing nothing else.
+    // Fails with: UnsupportedByteStuffing "ByteStuffing CSafe(escapeByte=-13, mask=3) must be provided a terminal via @Terminal" on encode.
     @Test
     fun csafeStuffedStringWithoutTerminalDefaultsToNullTerminator() {
         val value = ProbeCSafeStuffedStringWithoutTerminal(s = "hi", trailer = 0x2A)

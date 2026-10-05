@@ -73,6 +73,8 @@ class BluetoothFormatMismatchProbeTest {
         fail("decode threw ${e::class.simpleName}(\"${e.message}\") for encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: String length prefix and null terminator are written in a different order than the decoder reads them when the structure is MSB with excludeStructure.
+    // Fails with: ByteArrayEndedBeforeSerializationCompleted "String size 5 does not match encoded size 66" for encoded=42 41 02 00 44 43.
     @Test
     fun msbExcludeStructureLengthPrefixAndNullTerminatedStringRoundTrips() {
         val value = ProbeMsbStringFrame(prefixed = "AB", terminated = "CD")
@@ -81,6 +83,8 @@ class BluetoothFormatMismatchProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: List and Map items come back in reverse order in an MSB excludeStructure frame because the item blocks are accumulated and then re-wrapped in reverse.
+    // Fails with: expected [1, 2, 3] but was [3, 2, 1], encoded=03 03 02 01 03 1e 03 14 02 0a 01.
     @Test
     fun msbExcludeStructureListAndMapPreserveItemOrder() {
         val value = ProbeMsbCollectionFrame(
@@ -97,6 +101,8 @@ class BluetoothFormatMismatchProbeTest {
         )
     }
 
+    // Known bug: @Unsized payload with @Checksum cannot decode because the remaining-payload size does not subtract the checksum width, so the list swallows the CRC.
+    // Fails with: ByteArrayEndedBeforeSerializationCompleted "Not enough bytes remaining" for encoded=11 01 02 03 10 a1 22.
     @Test
     fun unsizedPayloadWithChecksumRoundTrips() {
         val value = ProbeUnsizedWithChecksum(payload = listOf(0x01, 0x02, 0x03))
@@ -105,6 +111,8 @@ class BluetoothFormatMismatchProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: @SizePolymorphic payload with @Checksum dispatches on the wrong size because the remaining-payload size does not subtract the checksum width.
+    // Fails with: SerializationException "No @SizePolymorphic subtype registered for size 6 ... Expected one of [4]" for encoded=11 04 03 02 01 31 90 22.
     @Test
     fun sizePolymorphicPayloadWithChecksumRoundTrips() {
         val value = ProbeSizePolymorphicWithChecksum(ProbeFourBytePayload(0x01020304u))
@@ -113,6 +121,8 @@ class BluetoothFormatMismatchProbeTest {
         assertEquals(value, decoded, "encoded=${encoded.toHexString(separator = " ")}")
     }
 
+    // Known bug: A @PresentWhenAllSet index owned by no field makes the encoder write a 1-byte flag header while the decoder reads 2 bytes.
+    // Fails with: IndexOutOfBoundsException "toIndex (3) is greater than size (2)." for encoded=01 05.
     @Test
     fun presentWhenAllSetReferencingUnownedBitRoundTrips() {
         val value = ProbeUnownedGateContainer(a = 5, b = null)
