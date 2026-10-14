@@ -52,11 +52,14 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
 
     val flagBits: BooleanArray = BooleanArray(flagBitsSize.coerceAtLeast(0))
 
+    /** The frame ([Prefix]/[Postfix]/[Checksum]) this builder is responsible for writing. */
+    protected open val structureSettings: BluetoothBinaryDescriptor.StructureSettings get() = binaryDescriptor.structureSettings
+
     override val expectedSize: Int
         get() = totalBodySize +
-            (binaryDescriptor.structureSettings.checksumAlgorithm?.byteWidth ?: 0) +
-            (binaryDescriptor.structureSettings.prefix?.array?.size ?: 0) +
-            (binaryDescriptor.structureSettings.postfix?.array?.size ?: 0)
+            (structureSettings.checksumAlgorithm?.byteWidth ?: 0) +
+            (structureSettings.prefix?.array?.size ?: 0) +
+            (structureSettings.postfix?.array?.size ?: 0)
     private var currentBits: Int = flagBitsSize % Byte.SIZE_BITS
     private var expectedBodySize: Int = flagBitsSize / Byte.SIZE_BITS
 
@@ -90,7 +93,14 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
         }
         if (currentBits > 0) {
             expectedBodySize++
+            // Emit the alignment padding here rather than only at the end of the body: an action that writes bits
+            // of its own (a nested structure's flag header, or its leading Booleans) would otherwise keep filling
+            // this partial byte, while the decoder starts every action on a fresh one.
+            val padding = Byte.SIZE_BITS - currentBits
             currentBits = 0
+            actions += {
+                repeat(padding) { add(false) }
+            }
         }
         expectedBodySize += expectedSize
         actions += action
@@ -103,11 +113,11 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
 
     override fun ByteArrayBuilder.build() {
         if (byteOrder == binaryDescriptor.byteOrder) {
-            binaryDescriptor.structureSettings.prefix?.let {
+            structureSettings.prefix?.let {
                 add(it.array)
             }
             buildBodyAndChecksum()
-            binaryDescriptor.structureSettings.postfix?.let {
+            structureSettings.postfix?.let {
                 add(it.array)
             }
         } else if (expectedSize > 0) {
@@ -123,7 +133,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
     // The body (flag bits + fields) followed by any [Checksum], excluding the prefix/postfix frame. A byte-stuffed
     // structure stuffs exactly this region, leaving the prefix/postfix frame untouched (as the root frame does).
     fun ByteArrayBuilder.buildBodyAndChecksum() {
-        val crc = binaryDescriptor.structureSettings.checksumAlgorithm
+        val crc = structureSettings.checksumAlgorithm
         if (crc != null) {
             // The body is the flag bits + remaining body. This is also the part used for checksum verification
             val body = buildByteArray(binaryDescriptor.byteOrder, totalBodySize) {
@@ -180,6 +190,12 @@ internal class ItemBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, on
         (binaryDescriptor.bitIndex + binaryDescriptor.bitWidth),
         onUnconstrained,
     ) {
+    // The item's own encoder already writes any @Prefix/@Postfix/@Checksum the item type carries — through
+    // beginStructure, encodeInline or encodeEnum — so this builder contributes the item's flag bits and body
+    // only, never a second copy of the frame. The descriptor itself keeps its settings: it is handed to that
+    // encoder by [CollectionBinaryBuilder.setIndex].
+    override val structureSettings = binaryDescriptor.structureSettings.copy(prefix = null, postfix = null, checksumAlgorithm = null)
+
     fun startsWithTerminator(value: ByteArray, order: ByteOrder, terminator: Byte): Boolean = when (order) {
         ByteOrder.LEAST_SIGNIFICANT_FIRST -> value.firstOrNull() == terminator
         ByteOrder.MOST_SIGNIFICANT_FIRST -> value.lastOrNull() == terminator

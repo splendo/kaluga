@@ -185,10 +185,12 @@ class ByteStuffingTest {
     // The folded unstuff ends at a delimiter, so append one the scheme escapes before decoding.
     private fun ByteStuffingScheme.unstuffFolded(stuffed: Sequence<Byte>): ByteArray = when (this) {
         is DelimiterByteStuffingScheme -> unstuff(stuffed + delimiter).toList().toByteArray()
+
         is NonDelimiterByteStuffingScheme -> {
             val terminator = (0..0xFF).map { it.toByte() }.first { canTerminateWith(it) }
             unstuff(stuffed + terminator) { it == terminator }.toList().toByteArray()
         }
+
         else -> error("unreachable")
     }
 

@@ -588,12 +588,13 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
                         require(encodedShort.size == 2) { "Did not include a Short as length" }
                         encodedShort.decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
                     } else {
-                        first
+                        // A one-byte length is unsigned: 128..255 must not read back as a negative Byte.
+                        first.toUByte().toInt()
                     }
                 }
 
-                else -> first()
-            }.toInt() * settings.encoding.byteSize
+                else -> first().toUByte().toInt()
+            } * settings.encoding.byteSize
             val stringBytes = take(length).toList()
             require(stringBytes.size == length) { "String size ${stringBytes.size} does not match encoded size $length" }
             stringBytes

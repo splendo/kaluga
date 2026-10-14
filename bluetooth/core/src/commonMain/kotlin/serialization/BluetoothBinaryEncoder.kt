@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
+import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.buildByteArray
@@ -102,19 +103,23 @@ internal class BluetoothBinaryEncoder(
     }
 
     override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
-        if (binaryDescriptor.isNullable) {
-            builder.addFlag(binaryDescriptor.bitIndex, collectionSize > 0)
-        }
         val collectionSettings =
             binaryDescriptor.collectionSettings
                 ?: BluetoothBinaryDescriptor.CollectionSettings(BluetoothBinaryDescriptor.CollectionSettings.NumericLength(setOf(Length.`8_BIT`)), false)
+
+        if (binaryDescriptor.isNullable) {
+            // Reaching here means the collection is not null, so it is only absent when [NullIfEmpty] turns an
+            // empty one into a null. Without that annotation an empty collection is still present, and its count
+            // is written below — clearing the flag would make the decoder return null and misread that count.
+            builder.addFlag(binaryDescriptor.bitIndex, collectionSize > 0 || !collectionSettings.nullIfEmpty)
+        }
 
         // Encode length if necessary
         when (val lengthMarking = collectionSettings.lengthMarking) {
             is BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix ->
                 if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                     builder.addAction(lengthMarking.endMarking.expectedByteSize(collectionSize.toUInt())) {
-                        add(lengthMarking.endMarking.encodeSize(collectionSize.toUInt(), binaryDescriptor.childByteOrder))
+                        add(binaryDescriptor.encodeCollectionSize(lengthMarking.endMarking, collectionSize.toUInt()))
                     }
                 }
 
@@ -241,7 +246,14 @@ internal class BluetoothBinaryEncoder(
         // other methods that read structureSettings do not double-apply the boundary inside the body.
         val classBuilder = ClassBinaryBuilder(binaryDescriptor) {}
         val bodyDescriptor = binaryDescriptor.copy(structureSettings = BluetoothBinaryDescriptor.StructureSettings(null, null, null))
-        val underlyingEncoder = BluetoothBinaryEncoder(bodyDescriptor, classBuilder, serializersModule)
+        // A value class has no children, so it has no flag header of its own. Any bit its wrapped value needs
+        // (nullability, @FlagIndex, @Size width selection) lives in the enclosing structure's header — the same
+        // place as when the value class carries no frame, and the place the decoder reads it from. Only body
+        // bytes go inside the frame, so route addFlag to the parent and everything else to the framed builder.
+        val bodyBuilder = object : BinaryBuilder by classBuilder {
+            override fun addFlag(index: Int, value: Boolean) = builder.addFlag(index, value)
+        }
+        val underlyingEncoder = BluetoothBinaryEncoder(bodyDescriptor, bodyBuilder, serializersModule)
         var finalized = false
         fun finalizeToParent() {
             if (finalized) return
@@ -312,10 +324,27 @@ internal class BluetoothBinaryEncoder(
                 underlyingEncoder.encodeEnum(enumDescriptor, index)
                 finalizeToParent()
             }
+
             // A value class wrapping a structure/collection encodes its content through encodeSerializableValue; route it
             // through this wrapper (not the delegated underlyingEncoder) so the overridden beginStructure/beginCollection
             // flush the framed body to the parent.
             override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) = serializer.serialize(this, value)
+
+            // A value class wrapping a nullable still has its frame on the wire when the value is absent — only the
+            // body bytes drop out — so an absent value must flush too. Route the nullable dispatch through this
+            // wrapper as well, since the delegate's default would call its own encodeNull and skip the frame.
+            @ExperimentalSerializationApi
+            override fun <T : Any> encodeNullableSerializableValue(serializer: SerializationStrategy<T>, value: T?) = if (value == null) {
+                encodeNull()
+            } else {
+                encodeSerializableValue(serializer, value)
+            }
+
+            @ExperimentalSerializationApi
+            override fun encodeNull() {
+                underlyingEncoder.encodeNull()
+                finalizeToParent()
+            }
 
             override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
                 val inner = underlyingEncoder.beginStructure(descriptor)
@@ -362,6 +391,11 @@ internal class BluetoothBinaryEncoder(
         markNotNull()
         builder.encodeStringElement(value, binaryDescriptor)
     }
+
+    // Called by kotlinx's nullable serializer before a non-null value. Primitives also mark themselves when they
+    // encode, but a structure, collection or value class only gets its presence flag set here.
+    @ExperimentalSerializationApi
+    override fun encodeNotNullMark() = markNotNull()
 
     private fun markNotNull() {
         if (binaryDescriptor.isNullable) {
@@ -476,6 +510,20 @@ private class BluetoothBinaryCompositeEncoder(
 
     override fun endStructure(descriptor: SerialDescriptor) {
         onFinishStructure()
+    }
+}
+
+// A [LengthPrefix] collection count. The count VALUE is encoded in childByteOrder, but a [WithOverflow] sentinel is
+// placed according to the accumulation direction — the direction the decoder scans the bytes in. The two coincide
+// unless @ByteOrder(order, excludeStructure = true) is in play.
+private fun BluetoothBinaryDescriptor.encodeCollectionSize(endMarking: StringEncodingSettings.LengthPrefix, size: UInt): ByteArray {
+    val bytes = endMarking.encodeSize(size, childByteOrder)
+    // Only an overflowing WithOverflow prefix has a sentinel to place; anything else is just the count.
+    if (byteOrder == childByteOrder || endMarking !is StringEncodingSettings.LengthPrefix.WithOverflow || bytes.size == 1) return bytes
+    // encodeSize put the sentinel at the childByteOrder end; move it to the accumulation-direction end.
+    return when (byteOrder) {
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> bytes.copyOfRange(1, bytes.size) + bytes[0]
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArrayOf(bytes[bytes.size - 1]) + bytes.copyOfRange(0, bytes.size - 1)
     }
 }
 
@@ -615,9 +663,12 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
             }
 
             addAction(lengthToAdd.bytes) {
+                // Pass childByteOrder explicitly rather than relying on the builder's own direction: under
+                // @ByteOrder(order, excludeStructure = true) the two differ, and the decoder reads decimals
+                // in childByteOrder.
                 when (lengthToAdd) {
-                    Length.`32_BIT` -> add(value.toFloat())
-                    Length.`64_BIT` -> add(value.toDouble())
+                    Length.`32_BIT` -> add(value.toFloat(), binaryDescriptor.childByteOrder)
+                    Length.`64_BIT` -> add(value.toDouble(), binaryDescriptor.childByteOrder)
                     else -> throw IllegalArgumentException("Decimal only supports 32 and 64 bit encoding")
                 }
             }

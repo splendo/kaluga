@@ -2904,6 +2904,42 @@ class BluetoothFormatTest {
         @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
     )
 
+    // COBS's 0x00 delimiter is definitional, so an accompanying @Terminal is rejected.
+    @Serializable
+    data class CobsTerminalHolder(
+        @ByteStuffedCobs
+        @Terminal(0x7E)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // CSafe has no delimiter of its own, so a String using it without @Terminal has no boundary to decode against.
+    @Serializable
+    data class CSafeStringWithoutTerminalHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffed
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // CSafe with a @Terminal drawn from the block it escapes (0xF0..0xF2, excluding the 0xF3 escape byte).
+    @Serializable
+    data class CSafeStringHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffed
+        @Terminal(0xF0.toByte())
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // SLIP's terminator is its `end` byte, so a different one is chosen through `end` rather than @Terminal.
+    @Serializable
+    data class SlipCustomEndHolder(
+        @ByteStuffedSlip(end = 0x7E)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
     // COBS eliminates 0x00, so it uses the default 0x00 terminator; content may contain 0x00.
     @Serializable
     data class CobsListHolder(
@@ -3110,6 +3146,44 @@ class BluetoothFormatTest {
         assertFailsWith<UnsupportedByteStuffing> {
             BluetoothFormat.encodeToByteArray(ConflictingTerminalHolder.serializer(), ConflictingTerminalHolder(name = "A", trailer = 0x09))
         }
+    }
+
+    @Test
+    fun cobsRejectsExplicitTerminal() {
+        // COBS only ever eliminates 0x00, so 0x00 is the only byte that can unambiguously terminate it.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(CobsTerminalHolder.serializer(), CobsTerminalHolder(values = listOf(0x01), trailer = 0x09))
+        }
+    }
+
+    @Test
+    fun cSafeStringRequiresExplicitTerminal() {
+        // CSafe has no delimiter of its own, so a String using it must name a terminator it escapes.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(CSafeStringWithoutTerminalHolder.serializer(), CSafeStringWithoutTerminalHolder(name = "hi", trailer = 0x09))
+        }
+    }
+
+    @Test
+    fun cSafeStringWithEscapedTerminal() {
+        // 0xF0 is within CSafe's escaped block and is not the escape byte, so it can terminate the content.
+        // "A\u00F0B" in ASCII would be 41 F0 42; the 0xF0 is escaped to F3 F0 so the raw terminator stays unambiguous.
+        validateRoundTrip(
+            CSafeStringHolder(name = "A", trailer = 0x09),
+            CSafeStringHolder.serializer(),
+            byteArrayOf(0x41, 0xF0.toByte(), 0x09),
+        )
+    }
+
+    @Test
+    fun slipCustomDelimiterReplacesTerminator() {
+        // The documented alternative to @Terminal on SLIP: set `end`, so the scheme escapes the byte it terminates with.
+        // 0x7E -> DB DC (escaped end), 0x41 stays, then the raw 0x7E terminator.
+        validateRoundTrip(
+            SlipCustomEndHolder(values = listOf(0x7E, 0x41), trailer = 0x09),
+            SlipCustomEndHolder.serializer(),
+            byteArrayOf(0xDB.toByte(), 0xDC.toByte(), 0x41, 0x7E, 0x09),
+        )
     }
 
     @Test
@@ -3384,6 +3458,437 @@ class BluetoothFormatTest {
             byteArrayOf(0x01, 0x00, 0x05),
         )
     }
+
+    // ── numeric width selection ──────────────────────────────────────────────
+
+    @Serializable
+    data class LongWideSelection8Bit(@Size(Length.`8_BIT`) @Size(Length.`64_BIT`) val v: Long)
+
+    @Serializable
+    data class LongWideSelection16Bit(@Size(Length.`16_BIT`) @Size(Length.`64_BIT`) val v: Long)
+
+    @Test
+    fun longEightAndSixtyFourBitSelectionRoundTrips() {
+        val value = LongWideSelection8Bit(v = 1L shl 32)
+        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
+    }
+
+    @Test
+    fun longSixteenAndSixtyFourBitSelectionRoundTrips() {
+        val value = LongWideSelection16Bit(v = 1L shl 32)
+        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection16Bit.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection16Bit.serializer(), encoded))
+    }
+
+    @Test
+    fun longNegativeOutOfIntRangeSelectionRoundTrips() {
+        val value = LongWideSelection8Bit(v = -(1L shl 40))
+        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
+    }
+
+    // ── @SizePolymorphic subtype sizing ──────────────────────────────────────
+
+    @Serializable
+    enum class PackedMode { OFF, LOW, MED, HIGH }
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface FlagEnumSizeVariant
+
+    // header(1) + body(2) = 3 bytes
+    @Serializable
+    data class FlagEnumPacked(@FlagIndex(0) val mode: PackedMode, @Size(Length.`16_BIT`) val x: Short) : FlagEnumSizeVariant
+
+    @Serializable
+    data class FlagEnumWide(@Size(Length.`8_BIT`) val x: Byte, @Size(Length.`8_BIT`) val y: Byte) : FlagEnumSizeVariant // 2 bytes
+
+    @Serializable
+    data class FlagEnumSizeHolder(val payload: FlagEnumSizeVariant)
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface CharSizeVariant
+
+    @Serializable
+    data class CharSizeSmall(val c: Char) : CharSizeVariant // 1 byte
+
+    @Serializable
+    data class CharSizeLarge(val c: Char, @Size(Length.`8_BIT`) val x: Byte) : CharSizeVariant // 2 bytes
+
+    @Serializable
+    data class CharSizeHolder(val payload: CharSizeVariant)
+
+    @Test
+    fun flagPackedEnumInSizePolymorphicSubtypeDispatchesBySize() {
+        val value = FlagEnumSizeHolder(FlagEnumPacked(mode = PackedMode.HIGH, x = 300))
+        val encoded = BluetoothFormat.encodeToByteArray(FlagEnumSizeHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FlagEnumSizeHolder.serializer(), encoded))
+    }
+
+    @Test
+    fun charFieldGivesSizePolymorphicSubtypesDistinctFixedSizes() {
+        val value = CharSizeHolder(CharSizeSmall('A'))
+        val encoded = BluetoothFormat.encodeToByteArray(CharSizeHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(CharSizeHolder.serializer(), encoded))
+    }
+
+    // ── @Reserved around inline / unsigned / nullable properties ─────────────
+
+    @Serializable
+    data class ReservedAfterValueClass(@Reserved(after = 2) val wrapped: ValueContainer<Byte>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class ReservedAfterUnsigned(@Reserved(after = 2) val v: UByte, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class ReservedAfterNullable(@Reserved(after = 2) val v: Byte?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun reservedAfterOnValueClassPropertyWritesPadding() {
+        validateRoundTrip(
+            ReservedAfterValueClass(wrapped = ValueContainer(0x11), trailer = 0x22),
+            ReservedAfterValueClass.serializer(),
+            byteArrayOf(0x11, 0x00, 0x00, 0x22),
+        )
+    }
+
+    @Test
+    fun reservedAfterOnUnsignedPropertyWritesPadding() {
+        validateRoundTrip(
+            ReservedAfterUnsigned(v = 0x11u, trailer = 0x22),
+            ReservedAfterUnsigned.serializer(),
+            byteArrayOf(0x11, 0x00, 0x00, 0x22),
+        )
+    }
+
+    @Test
+    fun reservedAfterOnNullablePropertyWritesPaddingWhenPresent() {
+        validateRoundTrip(
+            ReservedAfterNullable(v = 0x11, trailer = 0x22),
+            ReservedAfterNullable.serializer(),
+            byteArrayOf(0x01, 0x11, 0x00, 0x00, 0x22),
+        )
+    }
+
+    @Test
+    fun reservedAfterOnNullablePropertySkipsPaddingWhenNull() {
+        val value = ReservedAfterNullable(v = null, trailer = 0x22)
+        val encoded = BluetoothFormat.encodeToByteArray(ReservedAfterNullable.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ReservedAfterNullable.serializer(), encoded))
+    }
+
+    // ── bit alignment of a nested structure after parent body Booleans ───────
+
+    @Serializable
+    data object EmptyMarker
+
+    @Serializable
+    data class EmptyNestedAfterBooleans(val flagA: Boolean, val flagB: Boolean, val marker: EmptyMarker, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NestedFlagHeader(@FlagIndex(0) val flag: Boolean)
+
+    @Serializable
+    data class NestedLeadingBoolean(val flag: Boolean)
+
+    @Serializable
+    data class ParentBooleansThenNestedFlagHeader(val boolA: Boolean, val boolB: Boolean, val nested: NestedFlagHeader, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class ParentBooleansThenNestedLeadingBoolean(val boolA: Boolean, val boolB: Boolean, val nested: NestedLeadingBoolean, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun emptyNestedStructureAfterBodyBooleansRoundTrips() {
+        val value = EmptyNestedAfterBooleans(flagA = true, flagB = false, marker = EmptyMarker, trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(EmptyNestedAfterBooleans.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(EmptyNestedAfterBooleans.serializer(), encoded))
+    }
+
+    @Test
+    fun nestedFlagHeaderAfterParentBooleansRoundTrips() {
+        val value = ParentBooleansThenNestedFlagHeader(boolA = true, boolB = false, nested = NestedFlagHeader(flag = true), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(ParentBooleansThenNestedFlagHeader.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ParentBooleansThenNestedFlagHeader.serializer(), encoded))
+    }
+
+    @Test
+    fun nestedLeadingBooleanAfterParentBooleansRoundTrips() {
+        val value = ParentBooleansThenNestedLeadingBoolean(boolA = true, boolB = false, nested = NestedLeadingBoolean(flag = true), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), encoded))
+    }
+
+    // ── value classes carrying a @Prefix/@Postfix frame ──────────────────────
+
+    @Serializable
+    enum class Mode3 { OFF, LOW, HIGH }
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x77])
+    @Postfix([0x88.toByte()])
+    value class FramedFlagValue(@FlagIndex(0) val mode: Mode3)
+
+    @Serializable
+    data class FramedFlagHolder(val wrapped: FramedFlagValue, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x66])
+    @Postfix([0x99.toByte()])
+    value class FramedWideSizeValue(@Size(Length.`8_BIT`) @Size(Length.`64_BIT`) val v: Long)
+
+    @Serializable
+    data class FramedWideSizeHolder(val wrapped: FramedWideSizeValue, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    @JvmInline
+    value class NullableWrapped(val v: Byte?)
+
+    @Serializable
+    data class NullableWrappedHolder(val wrapped: NullableWrapped, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    value class NullableWrappedFramed(val v: Byte?)
+
+    @Serializable
+    data class NullableWrappedFramedHolder(val wrapped: NullableWrappedFramed, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun flagPackedValueInFramedValueClassRoundTrips() {
+        val value = FramedFlagHolder(wrapped = FramedFlagValue(Mode3.HIGH), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(FramedFlagHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedFlagHolder.serializer(), encoded))
+    }
+
+    @Test
+    fun wideSizeSelectionOnFramedValueClassPropertyRoundTrips() {
+        val small = FramedWideSizeHolder(wrapped = FramedWideSizeValue(5L), trailer = 0x2A)
+        val smallEncoded = BluetoothFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), small)
+        assertEquals(small, BluetoothFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), smallEncoded))
+
+        val large = FramedWideSizeHolder(wrapped = FramedWideSizeValue(1L shl 40), trailer = 0x2A)
+        val largeEncoded = BluetoothFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), large)
+        assertEquals(large, BluetoothFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), largeEncoded))
+    }
+
+    @Test
+    fun valueClassWrappingNullableRoundTrips() {
+        val present = NullableWrappedHolder(wrapped = NullableWrapped(0x11), trailer = 0x22)
+        val presentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedHolder.serializer(), present)
+        assertEquals(present, BluetoothFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), presentEncoded))
+
+        val absent = NullableWrappedHolder(wrapped = NullableWrapped(null), trailer = 0x22)
+        val absentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedHolder.serializer(), absent)
+        assertEquals(absent, BluetoothFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), absentEncoded))
+    }
+
+    @Test
+    fun framedValueClassWrappingNullableRoundTrips() {
+        val present = NullableWrappedFramedHolder(wrapped = NullableWrappedFramed(0x11), trailer = 0x22)
+        val presentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), present)
+        assertEquals(present, BluetoothFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), presentEncoded))
+
+        val absent = NullableWrappedFramedHolder(wrapped = NullableWrappedFramed(null), trailer = 0x22)
+        val absentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), absent)
+        assertEquals(absent, BluetoothFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), absentEncoded))
+    }
+
+    // ── counts and length prefixes ───────────────────────────────────────────
+
+    @Serializable
+    data class LongByteLengthString(@LengthPrefix val s: String, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class LongByteLengthListItem(val v: Byte)
+
+    @Serializable
+    data class LongByteLengthList(@LengthPrefix val items: List<LongByteLengthListItem>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableListItem(val v: Byte)
+
+    @Serializable
+    data class NullableListNoNullIfEmpty(val items: List<NullableListItem>?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun longByteLengthPrefixedStringRoundTrips() {
+        val value = LongByteLengthString(s = "x".repeat(200), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(LongByteLengthString.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongByteLengthString.serializer(), encoded))
+    }
+
+    @Test
+    fun longByteLengthPrefixedListRoundTrips() {
+        val value = LongByteLengthList(items = List(200) { LongByteLengthListItem(it.toByte()) }, trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(LongByteLengthList.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongByteLengthList.serializer(), encoded))
+    }
+
+    @Test
+    fun nullableListWithoutNullIfEmptyRoundTrips() {
+        val nullValue = NullableListNoNullIfEmpty(items = null, trailer = 0x2A)
+        val nullEncoded = BluetoothFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), nullValue)
+        assertEquals(nullValue, BluetoothFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), nullEncoded))
+
+        val emptyValue = NullableListNoNullIfEmpty(items = emptyList(), trailer = 0x2A)
+        val emptyEncoded = BluetoothFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), emptyValue)
+        assertEquals(emptyValue, BluetoothFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), emptyEncoded))
+    }
+
+    // ── list items that are themselves structures ────────────────────────────
+
+    @Serializable
+    data class NullableItemPoint(val x: Byte, val y: Byte)
+
+    @Serializable
+    data class NullableItemListHolder(val items: List<NullableItemPoint?>)
+
+    @Serializable
+    @Prefix([0x50])
+    @Postfix([0x60])
+    @Checksum(8, 0x07u, 0x00u)
+    data class FramedChecksumItem(val v: Byte)
+
+    @Serializable
+    data class FramedChecksumItemListHolder(val items: List<FramedChecksumItem>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun listOfNullableSerializableClassRoundTrips() {
+        val value = NullableItemListHolder(items = listOf(NullableItemPoint(0x01, 0x02), null))
+        val encoded = BluetoothFormat.encodeToByteArray(NullableItemListHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(NullableItemListHolder.serializer(), encoded))
+    }
+
+    @Test
+    fun itemLevelPrefixPostfixChecksumOnListItemRoundTrips() {
+        val value = FramedChecksumItemListHolder(items = listOf(FramedChecksumItem(0x11), FramedChecksumItem(0x22)), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(FramedChecksumItemListHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedChecksumItemListHolder.serializer(), encoded))
+    }
+
+    // ── MOST_SIGNIFICANT_FIRST frames, with and without excludeStructure ─────
+
+    @Serializable
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbFloatFrame(val a: Float, val b: Double)
+
+    @Serializable
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    data class MsbOverflowListIncluded(@LengthPrefix(canOverflow = true) val items: List<Byte>)
+
+    @Serializable
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbOverflowListExcluded(@LengthPrefix(canOverflow = true) val items: List<Byte>)
+
+    @Serializable
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    data class MsbSizedListIncluded(@Size(Length.`16_BIT`) val items: List<Byte>)
+
+    @Serializable
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbSizedListExcluded(@Size(Length.`16_BIT`) val items: List<Byte>)
+
+    @Test
+    fun msbExcludeStructureFloatsUseBigEndianWireBytes() {
+        val value = MsbFloatFrame(a = 1.5f, b = 2.5)
+        val expected = byteArrayOf(0x3F, 0xC0.toByte(), 0x00, 0x00, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+        val encoded = BluetoothFormat.encodeToByteArray(MsbFloatFrame.serializer(), value)
+        assertTrue(encoded.contentEquals(expected), "Expected ${expected.toHexString(separator = " ")} but got ${encoded.toHexString(separator = " ")}")
+        val decoded = BluetoothFormat.decodeFromByteArray(MsbFloatFrame.serializer(), encoded)
+        assertEquals(value.a.as32Bit(), decoded.a)
+        assertEquals(value.b, decoded.b)
+    }
+
+    @Test
+    fun msbOverflowLengthPrefixedListStructureIncludedRoundTrips() {
+        val value = MsbOverflowListIncluded(items = List(300) { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbOverflowListIncluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbOverflowListIncluded.serializer(), encoded))
+    }
+
+    @Test
+    fun msbOverflowLengthPrefixedListStructureExcludedRoundTrips() {
+        val value = MsbOverflowListExcluded(items = List(300) { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbOverflowListExcluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbOverflowListExcluded.serializer(), encoded))
+    }
+
+    @Test
+    fun msbSixteenBitListCountStructureIncludedRoundTrips() {
+        val value = MsbSizedListIncluded(items = listOf(1, 2, 3, 4).map { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbSizedListIncluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbSizedListIncluded.serializer(), encoded))
+    }
+
+    @Test
+    fun msbSixteenBitListCountStructureExcludedRoundTrips() {
+        val value = MsbSizedListExcluded(items = listOf(1, 2, 3, 4).map { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbSizedListExcluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbSizedListExcluded.serializer(), encoded))
+    }
+
+    // ── nullable unsigned numbers keep their unsignedness ────────────────────
+
+    @Serializable
+    data class NullableSizedUByteNonNull(@Size(Length.`16_BIT`) val b: UByte, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableSizedUByte(@Size(Length.`16_BIT`) val b: UByte?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUIntNonNull(@Size(Length.`64_BIT`) val v: UInt, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUInt(@Size(Length.`64_BIT`) val v: UInt?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUIntListNonNull(@ItemSize(Length.`64_BIT`) val items: List<UInt>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUIntList(@ItemSize(Length.`64_BIT`) val items: List<UInt?>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    // A nullable number differs from its non-null declaration only by the presence flag, so the value bytes
+    // that follow must be identical — in particular the widened value must not be sign-extended.
+    private fun <T, U> assertNullableMatchesNonNull(nonNull: T, nonNullSerializer: KSerializer<T>, nullable: U, nullableSerializer: KSerializer<U>) {
+        val nonNullEncoded = BluetoothFormat.encodeToByteArray(nonNullSerializer, nonNull)
+        val nullableEncoded = BluetoothFormat.encodeToByteArray(nullableSerializer, nullable)
+        val tail = nullableEncoded.copyOfRange(nullableEncoded.size - nonNullEncoded.size, nullableEncoded.size)
+        assertTrue(
+            tail.contentEquals(nonNullEncoded),
+            "non-null=${nonNullEncoded.toHexString(separator = " ")} nullable=${nullableEncoded.toHexString(separator = " ")}",
+        )
+        assertEquals(nullable, BluetoothFormat.decodeFromByteArray(nullableSerializer, nullableEncoded))
+    }
+
+    @Test
+    fun nullableSizedUByteMatchesNonNullWireBytes() = assertNullableMatchesNonNull(
+        NullableSizedUByteNonNull(b = 200u, trailer = 0x2A),
+        NullableSizedUByteNonNull.serializer(),
+        NullableSizedUByte(b = 200u, trailer = 0x2A),
+        NullableSizedUByte.serializer(),
+    )
+
+    @Test
+    fun nullableWideUIntMatchesNonNullWireBytes() = assertNullableMatchesNonNull(
+        NullableWideUIntNonNull(v = 3_000_000_000u, trailer = 0x2A),
+        NullableWideUIntNonNull.serializer(),
+        NullableWideUInt(v = 3_000_000_000u, trailer = 0x2A),
+        NullableWideUInt.serializer(),
+    )
+
+    @Test
+    fun nullableWideUIntListItemMatchesNonNullWireBytes() = assertNullableMatchesNonNull(
+        NullableWideUIntListNonNull(items = listOf(3_000_000_000u), trailer = 0x2A),
+        NullableWideUIntListNonNull.serializer(),
+        NullableWideUIntList(items = listOf(3_000_000_000u), trailer = 0x2A),
+        NullableWideUIntList.serializer(),
+    )
 
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
     // cannot legally be nested inside a LEAST_SIGNIFICANT_FIRST one (InvalidByteOrderException).

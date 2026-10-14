@@ -164,6 +164,7 @@ internal class BluetoothBinaryDecoder(
             val postfixSize = settings.postfix?.array?.size ?: 0
             val bodyAndChecksum = when (val terminator = if (isRootFrame) null else settings.byteStuffingTerminator) {
                 null -> stuffing.unstuff(decoder.nextBytes(decoder.remainingPayloadBytes() - postfixSize))
+
                 else -> when (stuffing) {
                     is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
                     is NonDelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator()) { it == terminator }
@@ -204,6 +205,19 @@ internal class BluetoothBinaryDecoder(
             override fun decodeString() = this@BluetoothBinaryDecoder.decodeString().also { consumeFooter() }
             override fun decodeEnum(enumDescriptor: SerialDescriptor) = this@BluetoothBinaryDecoder.decodeEnum(enumDescriptor).also { consumeFooter() }
             override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T = deserializer.deserialize(this)
+
+            // The frame is on the wire even when the wrapped value is absent (the encoder writes it either way),
+            // so an absent value must still consume the footer. Route the nullable dispatch through this wrapper,
+            // since the delegate's default would call its own decodeNull and leave the postfix unread.
+            @ExperimentalSerializationApi
+            override fun <T : Any> decodeNullableSerializableValue(deserializer: DeserializationStrategy<T?>): T? = if (decodeNotNullMark()) {
+                decodeSerializableValue(deserializer)
+            } else {
+                decodeNull()
+            }
+
+            @ExperimentalSerializationApi
+            override fun decodeNull(): Nothing? = this@BluetoothBinaryDecoder.decodeNull().also { consumeFooter() }
             override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
                 val inner = bodyDecoder.beginStructure(descriptor)
                 return object : CompositeDecoder by inner {
@@ -239,16 +253,18 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
 
         var currentIndex = 0
 
+        // Reserved padding belongs to the property's slot on the wire, so it is only present when the property
+        // itself is — matching the encoder, which writes neither for an absent nullable.
         override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
             // Consume reservedAfter bytes for the element we just finished decoding.
             if (currentIndex > 0) {
                 val prev = binaryDescriptor.children[currentIndex - 1]
-                if (prev.reservedAfter > 0) decoder.nextBytes(prev.reservedAfter)
+                if (prev.reservedAfter > 0 && prev.isPresent(decoder.flags)) decoder.nextBytes(prev.reservedAfter)
             }
             if (currentIndex >= binaryDescriptor.children.size) return DECODE_DONE
             // Consume reservedBefore bytes for the element we are about to decode.
             val child = binaryDescriptor.children[currentIndex]
-            if (child.reservedBefore > 0) decoder.nextBytes(child.reservedBefore)
+            if (child.reservedBefore > 0 && child.isPresent(decoder.flags)) decoder.nextBytes(child.reservedBefore)
             return currentIndex++
         }
 
@@ -274,8 +290,9 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
             when (val lengthMarking = collectionSettings.lengthMarking) {
                 is BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix -> {
                     // Length Prefix prefixes the length of the array
+                    // A one-byte count is unsigned: 128..255 must not read back as a negative Byte.
                     when (val endMarking = lengthMarking.endMarking) {
-                        is StringEncodingSettings.LengthPrefix.ByteLength -> decoder.nextBytes(1)[0].toInt()
+                        is StringEncodingSettings.LengthPrefix.ByteLength -> decoder.nextBytes(1)[0].toUByte().toInt()
 
                         is StringEncodingSettings.LengthPrefix.ShortLength -> decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.childByteOrder).toInt()
 
@@ -283,7 +300,7 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
                             if (decoder.peekNextIs(byteArrayOf(endMarking.sentinel), true)) {
                                 decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.childByteOrder).toInt()
                             } else {
-                                decoder.nextBytes(1)[0].toInt()
+                                decoder.nextBytes(1)[0].toUByte().toInt()
                             }
                         }
                     }
@@ -322,7 +339,12 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
 
         override fun decoderAtIndex(index: Int): BluetoothBinaryDescriptorDecoder = decoders.getOrPut(index) {
             val elementDescriptor = binaryDescriptorAtIndex(index)
-            decoder.beginStructure(elementDescriptor, elementDescriptor.bitWidth)
+            // This decoder only reads the item's own flag bits. Any @Prefix/@Postfix/@Checksum the item type
+            // carries is consumed by the item's own decoder, so strip the frame here to avoid reading it twice.
+            val headerDescriptor = elementDescriptor.copy(
+                structureSettings = elementDescriptor.structureSettings.copy(prefix = null, postfix = null, checksumAlgorithm = null),
+            )
+            decoder.beginStructure(headerDescriptor, elementDescriptor.bitWidth)
         }
 
         override fun endStructure(descriptor: SerialDescriptor) {}
@@ -466,15 +488,17 @@ internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: Blue
         }
     }
     val bytes = decoder.nextBytes(expectedLength.bytes)
+    // childByteOrder is the VALUE encoding direction the encoder used. For a primitive field it equals byteOrder;
+    // they differ for a collection's own count, whose descriptor accumulates in the enclosing structure's direction.
     // Because we deal with flexible sizing and unsigned elements, always return a Long so no data will be lost
     return when (expectedLength) {
         Length.`8_BIT` -> if (settings.signed) bytes[0].toLong() else bytes[0].toUByte().toUShort().toShort().toLong()
-        Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, byteOrder).toLong() else bytes.decodeUShort(0, byteOrder).toUInt().toLong()
-        Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, byteOrder).value.toLong() else bytes.decodeUInt24(0, byteOrder).value.toULong().toLong()
-        Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, byteOrder).toLong() else bytes.decodeUInt(0, byteOrder).toULong().toLong()
-        Length.`40_BIT` -> if (settings.signed) bytes.decodeInt40(0, byteOrder).value else bytes.decodeUInt40(0, byteOrder).value.toLong()
-        Length.`48_BIT` -> if (settings.signed) bytes.decodeInt48(0, byteOrder).value else bytes.decodeUInt48(0, byteOrder).value.toLong()
-        Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, byteOrder) else bytes.decodeULong(0, byteOrder).toLong()
+        Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, childByteOrder).toLong() else bytes.decodeUShort(0, childByteOrder).toUInt().toLong()
+        Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, childByteOrder).value.toLong() else bytes.decodeUInt24(0, childByteOrder).value.toULong().toLong()
+        Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, childByteOrder).toLong() else bytes.decodeUInt(0, childByteOrder).toULong().toLong()
+        Length.`40_BIT` -> if (settings.signed) bytes.decodeInt40(0, childByteOrder).value else bytes.decodeUInt40(0, childByteOrder).value.toLong()
+        Length.`48_BIT` -> if (settings.signed) bytes.decodeInt48(0, childByteOrder).value else bytes.decodeUInt48(0, childByteOrder).value.toLong()
+        Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, childByteOrder) else bytes.decodeULong(0, childByteOrder).toLong()
     }
 }
 
@@ -509,8 +533,8 @@ internal fun BluetoothBinaryDescriptor.decodeDecimalNumericElement(decoder: Blue
     }
     val bytes = decoder.nextBytes(lengthToDecode.bytes)
     return when (lengthToDecode) {
-        Length.`32_BIT` -> bytes.decodeFloat(0, byteOrder).toDouble()
-        Length.`64_BIT` -> bytes.decodeDouble(0, byteOrder)
+        Length.`32_BIT` -> bytes.decodeFloat(0, childByteOrder).toDouble()
+        Length.`64_BIT` -> bytes.decodeDouble(0, childByteOrder)
         else -> throw IllegalArgumentException("Decimal only supports 32 and 64 bit decoding")
     }
 }

@@ -371,8 +371,9 @@ annotation class SerializedByteValue(vararg val value: Byte)
  *   [Prefix] and [Postfix] frame the stuffed region untouched — the CSafe frame `[start flag][stuffed body+checksum][stop flag]`.
  * - On a **nested class** the body and any [Checksum] are stuffed while a [Prefix]/[Postfix] frame it untouched (as on the
  *   root), bounded by its terminator ([Terminal]) or — with no [Terminal], as CSafe has no delimiter — by being the last, unsized field.
- * - On a **String or Collection property** it is itself a `0x00`-terminated marking (no [NullTerminated] needed), stuffing the
- *   content so the terminator stays unambiguous. As CSafe does not escape `0x00`, use [ByteStuffedXor] there instead.
+ * - On a **String or Collection property** CSafe has no delimiter of its own, so it requires an explicit [Terminal] drawn
+ *   from the bytes it escapes (`0xF0..0xF2` by default — not [escapeByte], which is still emitted literally as a prefix).
+ *   It cannot protect a `0x00` terminator; use `@ByteStuffedXor(delimiter = 0x00)` or [ByteStuffedCobs] for that.
  *
  * The escaped values are the contiguous `[mask]`-aligned block sharing the high bits of [escapeByte]; defaults escape `0xF0..0xF3`.
  *
@@ -389,8 +390,13 @@ annotation class ByteStuffed(val escapeByte: Byte = 0xF3.toByte(), val mask: Byt
  *
  * Terminates a String or Collection with [terminator] instead of the default `0x00`.
  *
- * - **With** a byte-stuffing annotation ([ByteStuffed] / [ByteStuffedXor]) the content is stuffed so it may contain
- *   [terminator] freely; the scheme must escape [terminator].
+ * - **With** [ByteStuffed] — the one scheme that has no delimiter of its own — it is required, and the content is
+ *   stuffed so it may contain [terminator] freely. The scheme must escape [terminator], so it must be one of
+ *   `0xF0..0xF2` by default.
+ * - **With a delimiter scheme** ([ByteStuffedXor], [ByteStuffedSlip], [ByteStuffedCobs]) it is rejected: the
+ *   terminator is the scheme's own delimiter, which is what the stuffing escapes. Choose it through the scheme
+ *   instead — `@ByteStuffedXor(delimiter = ...)` or `@ByteStuffedSlip(end = ...)`. [ByteStuffedCobs] always
+ *   terminates with `0x00`.
  * - **Without** stuffing it is a plain byte terminator: the encoded content must not contain [terminator] (encoding
  *   fails if it does), and for a Collection no item may start with it.
  *
@@ -424,10 +430,11 @@ annotation class ByteStuffedXor(val escapeByte: Byte, val delimiter: Byte, val a
  * Annotation added for serializing using [BluetoothFormat]
  *
  * Applies SLIP-style byte stuffing (RFC 1055), using a [com.splendo.kaluga.base.bytes.ByteStuffingScheme.Slip] scheme.
- * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. Its natural delimiter is
- * [end] (`0xC0`), so on a String or Collection the terminator defaults to [end] (override with [Terminal] if needed).
+ * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. Its delimiter is
+ * [end] (`0xC0`), so on a String or Collection that is the terminator. Set [end] to use a different one — a [Terminal]
+ * is rejected, as only [end] and [escapeByte] are escaped and any other byte could appear literally in the content.
  *
- * @property end the frame delimiter byte, escaped within the content (also the default terminator)
+ * @property end the frame delimiter byte, escaped within the content (also the terminator)
  * @property escapeByte the escape marker
  * @property escapedEnd the stored byte representing an escaped [end]
  * @property escapedEsc the stored byte representing an escaped [escapeByte]

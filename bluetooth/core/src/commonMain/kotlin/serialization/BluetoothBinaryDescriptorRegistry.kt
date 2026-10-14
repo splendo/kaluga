@@ -172,8 +172,10 @@ internal data class BluetoothBinaryDescriptor(
      * The encoding settings to apply when encoding a String or Char
      * @property encoding the [Encoding] with which to encode each char
      * @property endMarking the [StringEncodingSettings.EndMarking] to use when encoding the string. Ignored when only encoding a [Char].
+     * @property isSingleChar `true` when these settings describe a single Char rather than a String, so its wire
+     * width is fixed at [Encoding.byteSize] and [endMarking] does not apply.
      */
-    data class StringSettings(val encoding: Encoding, val endMarking: StringEncodingSettings.EndMarking)
+    data class StringSettings(val encoding: Encoding, val endMarking: StringEncodingSettings.EndMarking, val isSingleChar: Boolean = false)
 
     /**
      * The encoding settings to apply when encoding a Collection (List or Map)
@@ -312,7 +314,9 @@ internal object BluetoothBinaryDescriptorRegistry {
         val inlineDescriptor = descriptor.getElementDescriptor(0)
         val annotations = descriptor.annotations + fieldAnnotations + descriptor.getElementAnnotations(0)
         // Unsigned numbers in Kotlin are simply Inline wrappers around a primary type. However since we encode with flexible lengths, we should preserve this information.
-        val actualAnnotations = when (descriptor.serialName) {
+        // A nullable descriptor's serialName carries a trailing "?", so match on the name without it — otherwise a
+        // nullable UByte/UInt/... would silently lose its Unsigned() and sign-extend once widened.
+        val actualAnnotations = when (descriptor.serialName.removeSuffix("?")) {
             "com.splendo.kaluga.base.bytes.MedFloat16" -> annotations + MedFloat() + Size(Length.`16_BIT`)
             "com.splendo.kaluga.base.bytes.MedFloat32" -> annotations + MedFloat() + Size(Length.`32_BIT`)
             "com.splendo.kaluga.base.bytes.Int24" -> annotations + Size(Length.`24_BIT`)
@@ -770,6 +774,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             PrimitiveKind.CHAR -> BluetoothBinaryDescriptor.StringSettings(
                 annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.UTF_8,
                 StringEncodingSettings.NoMarking,
+                isSingleChar = true,
             )
 
             else -> null
@@ -1025,9 +1030,10 @@ internal object BluetoothBinaryDescriptorRegistry {
                 else -> numericSettings.supportedLengths.singleOrNull()?.bytes
             }
 
-            stringSettings != null -> when (val em = stringSettings.endMarking) {
-                is StringEncodingSettings.FixedLength -> em.length
-                else -> null
+            // A single Char has a fixed wire width; a String only does when it is fixed-length.
+            stringSettings != null -> when {
+                stringSettings.isSingleChar -> stringSettings.encoding.byteSize
+                else -> (stringSettings.endMarking as? StringEncodingSettings.FixedLength)?.length
             }
 
             collectionSettings != null -> null
