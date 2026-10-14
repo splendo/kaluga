@@ -839,7 +839,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         GenerationType.Type.SIMULATOR -> {
                             addCode(
                                 CodeBlock.builder()
-                                    .beginControlFlow("$RETURN _${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.$VALUE.$ALL")
+                                    .beginControlFlow("$RETURN $REMOTES.keys.$ALL")
                                     .addStatement(
                                         "$NOTIFY${
                                             propertyDeclaration.simpleName.asString().replaceFirstChar {
@@ -889,7 +889,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                     CodeBlock.builder()
                                         .add("$RETURN $REMOTES[$IDENTIFIER]?.$LET { (_, $MUTABLE_FLOW) ->\n")
                                         .indent()
-                                        .beginControlFlow("$IF (_${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.$VALUE.$CONTAINS($IDENTIFIER))")
+                                        .beginControlFlow("$IF ($MUTABLE_FLOW.$SUBSCRIPTION_COUNT.$VALUE > 0)")
                                         .addStatement("$MUTABLE_FLOW.$EMIT(${propertyDeclaration.simpleName.asString()})")
                                         .addStatement(TRUE)
                                         .nextControlFlow(ELSE)

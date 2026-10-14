@@ -66,6 +66,9 @@ internal object NameHelper {
 
     private fun packageFor(declaration: KSClassDeclaration, generationType: GenerationType, options: Options): String {
         val default = declaration.packageName.asString()
+        // Only this module's own declarations are repackaged; external-source and compiled-dependency types keep the
+        // package their owning module generated them into.
+        if (!options.isOwnDeclaration(declaration)) return default
         return when (generationType.type) {
             GenerationType.Type.API -> options.apiPackage(default)
             GenerationType.Type.BLUETOOTH, GenerationType.Type.SIMULATOR, GenerationType.Type.MOCK -> options.generatedPackage(default)
