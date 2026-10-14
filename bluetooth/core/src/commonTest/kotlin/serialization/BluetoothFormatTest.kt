@@ -3302,6 +3302,89 @@ class BluetoothFormatTest {
         assertEquals(value, BluetoothFormat.decodeFromByteArray(Level1.serializer(), encoded))
     }
 
+    // ── encode/decode round-trip edge cases ──────────────────────────────────
+
+    @Serializable
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbStringFrame(@LengthPrefix val prefixed: String, @NullTerminated val terminated: String)
+
+    @Serializable
+    @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbCollectionFrame(val items: List<Byte>, val pairs: Map<Byte, Byte>)
+
+    @Serializable
+    @Prefix([0x11])
+    @Postfix([0x22])
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    data class UnsizedWithChecksum(@Unsized val payload: List<Byte>)
+
+    @Serializable
+    @Prefix([0x11])
+    @Postfix([0x22])
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    data class SizePolymorphicWithChecksum(val payload: SizeDispatchedPayload)
+
+    @Serializable
+    data class UnownedGateContainer(@Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?, @Size(Length.`8_BIT`) @PresentWhenAllSet(10) val b: Byte?)
+
+    @Test
+    fun msbExcludeStructureLengthPrefixAndNullTerminatedStringRoundTrips() {
+        validateEncoding(
+            MsbStringFrame(prefixed = "AB", terminated = "CD"),
+            MsbStringFrame.serializer(),
+            byteArrayOf(0x02, 0x41, 0x42, 0x43, 0x44, 0x00),
+        )
+    }
+
+    @Test
+    fun msbExcludeStructureListAndMapPreserveItemOrder() {
+        validateEncoding(
+            MsbCollectionFrame(
+                items = listOf(1, 2, 3),
+                pairs = linkedMapOf(1.toByte() to 10.toByte(), 2.toByte() to 20.toByte(), 3.toByte() to 30.toByte()),
+            ),
+            MsbCollectionFrame.serializer(),
+            byteArrayOf(0x03, 0x01, 0x02, 0x03, 0x03, 0x01, 0x0A, 0x02, 0x14, 0x03, 0x1E),
+        )
+    }
+
+    @Test
+    fun unsizedPayloadWithChecksumRoundTrips() {
+        val body = byteArrayOf(0x01, 0x02, 0x03)
+        val expectedBytes = buildByteArray {
+            add(0x11.toByte())
+            add(body)
+            add(CRC16.compute(body).toUShort())
+            add(0x22.toByte())
+        }
+
+        validateEncoding(UnsizedWithChecksum(payload = listOf(0x01, 0x02, 0x03)), UnsizedWithChecksum.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun sizePolymorphicPayloadWithChecksumRoundTrips() {
+        val body = byteArrayOf(0x04, 0x03, 0x02, 0x01)
+        val expectedBytes = buildByteArray {
+            add(0x11.toByte())
+            add(body)
+            add(CRC16.compute(body).toUShort())
+            add(0x22.toByte())
+        }
+
+        validateEncoding(SizePolymorphicWithChecksum(FourBytePayload(0x01020304u)), SizePolymorphicWithChecksum.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun presentWhenAllSetReferencingUnownedBitRoundTrips() {
+        // Bit 10 is owned by no field, so it is never set: `b` is always absent.
+        // The flags header must still be wide enough to contain it on both sides.
+        validateEncoding(
+            UnownedGateContainer(a = 5, b = null),
+            UnownedGateContainer.serializer(),
+            byteArrayOf(0x01, 0x00, 0x05),
+        )
+    }
+
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
     // cannot legally be nested inside a LEAST_SIGNIFICANT_FIRST one (InvalidByteOrderException).
     private fun <T> validateRoundTrip(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {

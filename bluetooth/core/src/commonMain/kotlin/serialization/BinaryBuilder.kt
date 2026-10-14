@@ -164,9 +164,9 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
 internal class ClassBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, onUnconstrained: () -> Unit) :
     StructureBinaryBuilder(
         binaryDescriptor,
-        binaryDescriptor.children.fold(0) { max, binaryDescriptor ->
-            maxOf(binaryDescriptor.bitIndex + binaryDescriptor.bitWidth, max)
-        },
+        // Same width the decoder reads: wide enough for every child's own bits AND for any bit a child only derives
+        // its presence from — a [PresentWhenAllSet] index that no property owns still has to fit in the header.
+        binaryDescriptor.flagBitSize,
         onUnconstrained,
     )
 
@@ -271,7 +271,9 @@ internal abstract class CollectionBinaryBuilder(
  */
 internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
-        binaryDescriptor.childByteOrder,
+        // The accumulation direction, not childByteOrder: items are laid out in the same direction as the enclosing
+        // structure. Under @ByteOrder(order, excludeStructure = true) only the item VALUES follow childByteOrder.
+        binaryDescriptor.byteOrder,
         MutableList(size) {
             ItemBinaryBuilder(binaryDescriptor.children.first(), onUnconstrained)
         },
@@ -284,7 +286,8 @@ internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, si
  */
 internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
-        binaryDescriptor.childByteOrder,
+        // See [ListBinaryBuilder]: entries accumulate in the enclosing structure's direction.
+        binaryDescriptor.byteOrder,
         MutableList(size * 2) {
             val index = it % 2
             ItemBinaryBuilder(binaryDescriptor.children[index], onUnconstrained)

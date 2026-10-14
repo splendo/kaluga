@@ -171,7 +171,12 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     private val startingOffset: Int,
     parentFooterSize: Int,
 ) : BluetoothBinaryDescriptorDecoder {
-    private val footerSize = parentFooterSize + (descriptor.structureSettings.postfix?.array?.size ?: 0)
+    // Bytes trailing this structure's body that belong to the frame rather than its fields. The [Checksum] counts
+    // towards it just like the [Postfix]: an @Unsized field must stop before it, and @SizePolymorphic dispatch
+    // must not include it in the payload size it dispatches on.
+    private val footerSize = parentFooterSize +
+        (descriptor.structureSettings.checksumAlgorithm?.byteWidth ?: 0) +
+        (descriptor.structureSettings.postfix?.array?.size ?: 0)
 
     override val currentOffset: Int get() = rootDecoder.currentOffset
     override val validateChecksum: Boolean get() = rootDecoder.validateChecksum

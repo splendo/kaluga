@@ -693,7 +693,9 @@ internal fun BinaryBuilder.encodeStringElement(value: String, binaryDescriptor: 
     val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.UTF_8
     val endMarking = binaryDescriptor.stringSettings?.endMarking ?: StringEncodingSettings.LengthPrefix.ByteLength
     val settings = StringEncodingSettings(endMarking, encoding)
-    addAction(value.byteArraySize(settings)) { add(value, settings, binaryDescriptor.childByteOrder) }
+    // byteOrder, not childByteOrder: a String's layout follows the accumulation direction, which is the direction
+    // the decoder reads its bytes back in.
+    addAction(value.byteArraySize(settings)) { add(value, settings, binaryDescriptor.byteOrder) }
     if (endMarking is StringEncodingSettings.NoMarking) {
         makeUnconstrained()
     }

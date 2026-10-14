@@ -372,13 +372,17 @@ internal object BluetoothBinaryDescriptorRegistry {
         // - Explicit annotation with excludeStructure: inherit the parent's builder direction.
         // - No annotation on a StructureKind/PolymorphicKind: inherit parent's builder direction so nested
         //   structures always accumulate in the same direction as their parent without requiring annotations.
-        // - No annotation on primitives/strings/enums: inherit parent's field encoding direction.
+        // - No annotation on primitives/enums: inherit parent's field encoding direction.
         val byteOrder = when {
             byteOrderAnnotation != null -> if (byteOrderAnnotation.excludeStructure) preferredBuilderByteOrder else childByteOrder
 
             // CONTEXTUAL is the sealed "value" wrapper: a pass-through that must keep the builder direction
             // (and propagate it to its subtype children) instead of collapsing it into the field encoding direction.
             descriptor.kind is StructureKind || descriptor.kind is PolymorphicKind || descriptor.kind is SerialKind.CONTEXTUAL -> preferredBuilderByteOrder
+
+            // A String is laid out — length prefix / terminator placement and character sequence — in the
+            // accumulation direction, like a structure, since that is the direction the decoder reads it back in.
+            descriptor.kind is PrimitiveKind.STRING -> preferredBuilderByteOrder
 
             else -> childByteOrder
         }
