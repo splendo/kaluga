@@ -17,17 +17,6 @@
 
 package com.splendo.kaluga.bytes
 
-import com.splendo.kaluga.bytes.integer.Int24
-import com.splendo.kaluga.bytes.integer.UInt24
-import com.splendo.kaluga.bytes.integer.add
-import com.splendo.kaluga.bytes.medfloat.MedFloat16
-import com.splendo.kaluga.bytes.medfloat.MedFloat32
-import com.splendo.kaluga.bytes.medfloat.add
-import com.splendo.kaluga.bytes.medfloat.toByteArray
-import com.splendo.kaluga.bytes.strings.Encoding
-import com.splendo.kaluga.bytes.strings.StringEncodingSettings
-import com.splendo.kaluga.bytes.strings.add
-import com.splendo.kaluga.bytes.strings.toByteArray
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
@@ -49,20 +38,12 @@ class ByteArrayBuilderTest {
             add(uByte = 0x81u)
             add(short = 0x0203)
             add(uShort = 0x8203u)
-            add(Int24(0x040506))
-            add(UInt24(0x840506u))
             add(0x0708090A)
             add(0x8708090Au)
             add(0x0102030405060708)
             add(0x8102030405060708u)
             add(0.3f)
             add(0.025)
-            add(MedFloat16(0.1234))
-            add(MedFloat32(0.567890))
-            add('a')
-            add('b', Encoding.UTF_16)
-            add("Hello World")
-            add("Foo Bar", StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_16))
         }
 
         println(byteArray.toHexString(separator = " "))
@@ -74,20 +55,13 @@ class ByteArrayBuilderTest {
                 0x81.toByte(),
                 0x03, 0x02,
                 0x03, 0x82.toByte(),
-                0x06, 0x05, 0x04,
-                0x06, 0x05, 0x84.toByte(),
                 0x0A, 0x09, 0x08, 0x07,
                 0x0A, 0x09, 0x08, 0x87.toByte(),
                 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01,
                 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x81.toByte(),
             ) +
                 0.3f.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
-                0.025.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
-                MedFloat16(0.1234).toByteArray() +
-                MedFloat32(0.567890).toByteArray() +
-                byteArrayOf(0x61, 0x62, 0x00) +
-                "Hello World".toByteArray(StringEncodingSettings(), ByteOrder.LEAST_SIGNIFICANT_FIRST) +
-                "Foo Bar".toByteArray(StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_16), ByteOrder.LEAST_SIGNIFICANT_FIRST),
+                0.025.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST),
             byteArray,
         )
     }
@@ -108,39 +82,24 @@ class ByteArrayBuilderTest {
             add(uByte = 0x81u)
             add(short = 0x0203)
             add(uShort = 0x8203u)
-            add(Int24(0x040506))
-            add(UInt24(0x840506u))
             add(0x0708090A)
             add(0x8708090Au)
             add(0x0102030405060708)
             add(0x8102030405060708u)
             add(0.3f)
             add(0.025)
-            add(MedFloat16(0.1234))
-            add(MedFloat32(0.567890))
-            add('a')
-            add('b', Encoding.UTF_16)
-            add("Hello World")
-            add("Foo Bar", StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_16))
         }
 
         println(byteArray.toHexString(separator = " "))
 
         assertContentEquals(
-            "Foo Bar".toByteArray(StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_16), ByteOrder.MOST_SIGNIFICANT_FIRST) +
-                "Hello World".toByteArray(StringEncodingSettings(), ByteOrder.MOST_SIGNIFICANT_FIRST) +
-                byteArrayOf(0x00, 0x62, 0x61) +
-                MedFloat32(0.567890).toByteArray() +
-                MedFloat16(0.1234).toByteArray() +
-                0.025.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) +
+            0.025.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) +
                 0.3f.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) +
                 byteArrayOf(
                     0x81.toByte(), 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                     0x87.toByte(), 0x08, 0x09, 0x0A,
                     0x07, 0x08, 0x09, 0x0A,
-                    0x84.toByte(), 0x05, 0x06,
-                    0x04, 0x05, 0x06,
                     0x82.toByte(), 0x03,
                     0x02, 0x03,
                     0x81.toByte(),

@@ -47,11 +47,3 @@ fun String.decodeHex(): ByteArray? {
         it.toString().toInt(ByteUtils.HEX_RADIX).toByte()
     }.toByteArray()
 }
-
-// Whether the bytes from [index] are [pattern], which the caller has checked fit.
-internal fun ByteArray.matchesAt(index: Int, pattern: ByteArray): Boolean {
-    for (offset in pattern.indices) {
-        if (this[index + offset] != pattern[offset]) return false
-    }
-    return true
-}

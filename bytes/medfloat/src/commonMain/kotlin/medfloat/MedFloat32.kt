@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bytes.medfloat
 
-import com.splendo.kaluga.bytes.integer.Int24
+import com.splendo.kaluga.bytes.IntLimits
 import kotlin.jvm.JvmInline
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -41,7 +41,7 @@ value class MedFloat32(val value: Double) : Comparable<MedFloat32> {
                 val scaled = value / 10.0.pow(exp)
 
                 val mantissa = scaled.roundToInt()
-                mantissa.toDouble() == scaled && mantissa in Int24.MIN_VALUE.value..Int24.MAX_VALUE.value
+                mantissa.toDouble() == scaled && mantissa in IntLimits.INT24_MIN_VALUE..IntLimits.INT24_MAX_VALUE
             } != null
         }
     }

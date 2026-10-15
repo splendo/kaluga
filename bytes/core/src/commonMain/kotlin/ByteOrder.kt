@@ -37,4 +37,10 @@ internal fun ByteOrder.octetIndex(index: Int, bitsCount: Int) = when (this) {
     ByteOrder.MOST_SIGNIFICANT_FIRST -> bitsCount / Byte.SIZE_BITS - index - 1
 }
 
-internal fun ByteOrder.shift(index: Int, bitsCount: Int) = octetIndex(index, bitsCount) * Byte.SIZE_BITS
+/**
+ * The number of bits a value of [bitsCount] bits is shifted by to reach the octet stored at [index] in this [ByteOrder].
+ * @param index the index of the octet within the encoded value.
+ * @param bitsCount the number of bits of the encoded value.
+ * @return the shift in bits.
+ */
+fun ByteOrder.shift(index: Int, bitsCount: Int) = octetIndex(index, bitsCount) * Byte.SIZE_BITS

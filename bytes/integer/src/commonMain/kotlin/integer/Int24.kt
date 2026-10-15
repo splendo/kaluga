@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bytes.integer
 
 import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.IntLimits
 import com.splendo.kaluga.bytes.toByteArray
 import kotlin.jvm.JvmInline
 
@@ -28,18 +29,15 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class Int24(val value: Int) : Comparable<Int24> {
     companion object {
-        private const val MIN_VALUE_INT = -0x800000
-        private const val MAX_VALUE_INT = 0x7FFFFF
-
         /**
          * A constant holding the minimum value an instance of Int24 can have.
          */
-        val MIN_VALUE = Int24(MIN_VALUE_INT)
+        val MIN_VALUE = Int24(IntLimits.INT24_MIN_VALUE)
 
         /**
          * A constant holding the maximum value an instance of Int24 can have.
          */
-        val MAX_VALUE = Int24(MAX_VALUE_INT)
+        val MAX_VALUE = Int24(IntLimits.INT24_MAX_VALUE)
 
         /**
          * The number of bytes used to represent an instance of Int24 in a binary form.
@@ -52,7 +50,7 @@ value class Int24(val value: Int) : Comparable<Int24> {
         const val SIZE_BITS = 24
     }
     init {
-        require(value in MIN_VALUE_INT..MAX_VALUE_INT) {
+        require(value in IntLimits.INT24_MIN_VALUE..IntLimits.INT24_MAX_VALUE) {
             "Value $value out of signed 24-bit range"
         }
     }

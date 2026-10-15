@@ -17,10 +17,7 @@
 
 package com.splendo.kaluga.bytes.medfloat
 
-import com.splendo.kaluga.bytes.ByteOrder
-import com.splendo.kaluga.bytes.integer.Int24
-import com.splendo.kaluga.bytes.integer.decodeInt24
-import com.splendo.kaluga.bytes.matchesAt
+import com.splendo.kaluga.bytes.IntLimits
 import kotlin.math.pow
 
 /**
@@ -47,9 +44,12 @@ fun ByteArray.decodeMedFloat32(octetIndex: Int): MedFloat32 {
         matchesAt(octetIndex, MedFloat32.RESERVED_FOR_FUTURE_USE_BYTE_VALUE) -> Double.NaN
 
         else -> {
-            val mantissa = decodeInt24(octetIndex, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+            // The signed top byte sign-extends the 24-bit mantissa.
+            val mantissa = (get(octetIndex).toInt() and 0xFF) or
+                ((get(octetIndex + 1).toInt() and 0xFF) shl 8) or
+                (get(octetIndex + 2).toInt() shl 16)
             val exponent = get(octetIndex + 3).toInt()
-            mantissa.value * 10.0.pow(exponent)
+            mantissa * 10.0.pow(exponent)
         }
     }.let { MedFloat32(it) }
 }
@@ -77,27 +77,27 @@ fun MedFloat32.copyIntoByteArray(array: ByteArray, offset: Int = 0): ByteArray {
     var mantissa = value
     var exponent = 0
 
-    while (mantissa !in Int24.MIN_VALUE.value.toDouble()..Int24.MAX_VALUE.value.toDouble() && exponent < Byte.MAX_VALUE) {
+    while (mantissa !in IntLimits.INT24_MIN_VALUE.toDouble()..IntLimits.INT24_MAX_VALUE.toDouble() && exponent < Byte.MAX_VALUE) {
         mantissa /= 10.0
         exponent++
     }
 
     while (
-        mantissa in (Int24.MIN_VALUE.value.toDouble()) / 10.0..(Int24.MAX_VALUE.value.toDouble() / 10.0) &&
+        mantissa in (IntLimits.INT24_MIN_VALUE.toDouble()) / 10.0..(IntLimits.INT24_MAX_VALUE.toDouble() / 10.0) &&
         mantissa != mantissa.toInt().toDouble() &&
         exponent > Byte.MIN_VALUE
     ) {
         mantissa *= 10.0
         exponent--
 
-        if (mantissa !in Int24.MIN_VALUE.value.toDouble()..Int24.MAX_VALUE.value.toDouble()) {
+        if (mantissa !in IntLimits.INT24_MIN_VALUE.toDouble()..IntLimits.INT24_MAX_VALUE.toDouble()) {
             mantissa /= 10.0
             exponent++
             break
         }
     }
 
-    if (mantissa.toInt() !in Int24.MIN_VALUE.value..Int24.MAX_VALUE.value) {
+    if (mantissa.toInt() !in IntLimits.INT24_MIN_VALUE..IntLimits.INT24_MAX_VALUE) {
         return MedFloat32.NOT_AT_THIS_RESOLUTION_BYTE_VALUE.copyInto(array, offset)
     }
 

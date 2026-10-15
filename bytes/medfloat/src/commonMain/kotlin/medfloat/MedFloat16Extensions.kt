@@ -19,7 +19,6 @@ package com.splendo.kaluga.bytes.medfloat
 
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.decodeShort
-import com.splendo.kaluga.bytes.matchesAt
 import com.splendo.kaluga.bytes.shr
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -126,4 +125,12 @@ fun MedFloat16.copyIntoByteArray(array: ByteArray, offset: Int = 0): ByteArray {
     array[offset] = (raw and 0xFF).toByte()
     array[offset + 1] = ((raw shr 8) and 0xFF).toByte()
     return array
+}
+
+// Whether the bytes from [index] are [pattern], which the caller has checked fit.
+internal fun ByteArray.matchesAt(index: Int, pattern: ByteArray): Boolean {
+    for (offset in pattern.indices) {
+        if (this[index + offset] != pattern[offset]) return false
+    }
+    return true
 }
