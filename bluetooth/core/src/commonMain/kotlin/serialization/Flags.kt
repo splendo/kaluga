@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.Encoding
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
 

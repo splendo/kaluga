@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.Encoding
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
-import com.splendo.kaluga.base.bytes.toByteArray
-import com.splendo.kaluga.base.crc.CRC
-import com.splendo.kaluga.base.bytes.toHexString
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.crc.CRC
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
+import com.splendo.kaluga.bytes.strings.toByteArray
+import com.splendo.kaluga.bytes.toHexString
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.PrimitiveKind

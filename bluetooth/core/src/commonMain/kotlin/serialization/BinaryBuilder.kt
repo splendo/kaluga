@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.ByteArrayBuilder
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.buildByteArray
-import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.bytes.ByteArrayBuilder
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.buildByteArray
+import com.splendo.kaluga.bytes.toByteArray
 import kotlinx.serialization.SerializationException
 
 /**

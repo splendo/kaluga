@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.ByteArrayBuilder
-import com.splendo.kaluga.base.bytes.buildByteArray
+import com.splendo.kaluga.bytes.ByteArrayBuilder
+import com.splendo.kaluga.bytes.buildByteArray
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer

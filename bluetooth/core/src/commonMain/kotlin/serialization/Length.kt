@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.Int24
-import com.splendo.kaluga.base.bytes.UInt24
-import com.splendo.kaluga.base.bytes.Int40
-import com.splendo.kaluga.base.bytes.UInt40
-import com.splendo.kaluga.base.bytes.Int48
-import com.splendo.kaluga.base.bytes.UInt48
+import com.splendo.kaluga.bytes.integer.Int24
+import com.splendo.kaluga.bytes.integer.Int40
+import com.splendo.kaluga.bytes.integer.Int48
+import com.splendo.kaluga.bytes.integer.UInt24
+import com.splendo.kaluga.bytes.integer.UInt40
+import com.splendo.kaluga.bytes.integer.UInt48
 
 /**
  * The length used for encoding (numeric) data.

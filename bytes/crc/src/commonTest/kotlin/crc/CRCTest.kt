@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.base.crc
+package com.splendo.kaluga.bytes.crc
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.Encoding
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
-import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
+import com.splendo.kaluga.bytes.strings.toByteArray
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
