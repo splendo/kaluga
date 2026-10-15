@@ -1,4 +1,4 @@
-# Base CRC
+# Bytes CRC
 | Android | iOS | JVM | JS | WasmJS | macOS | tvOS | watchOS |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -6,7 +6,7 @@
 This library calculates Cyclic Redundancy Checks (CRC) over `ByteArray`s.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Base CRC as follows:
+This library is available on Maven Central. You can import Kaluga Bytes CRC as follows:
 
 ```kotlin
 repositories {
@@ -16,7 +16,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga.base:crc:$kalugaVersion")
+    implementation("com.splendo.kaluga.bytes:crc:$kalugaVersion")
 }
 ```
 
