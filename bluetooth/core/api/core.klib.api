@@ -8,10 +8,10 @@
 
 // Library unique name: <com.splendo.kaluga.bluetooth:core>
 open annotation class com.splendo.kaluga.bluetooth.serialization/ByteOrder : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ByteOrder|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/ByteOrder.<init>|<init>(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/ByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder){}[0]
 
     final val order // com.splendo.kaluga.bluetooth.serialization/ByteOrder.order|{}order[0]
-        final fun <get-order>(): com.splendo.kaluga.base.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/ByteOrder.order.<get-order>|<get-order>(){}[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/ByteOrder.order.<get-order>|<get-order>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/Checksum : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/Checksum|null[0]
@@ -32,10 +32,10 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/Checksum : kotl
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/Encoded : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/Encoded|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/Encoded.<init>|<init>(com.splendo.kaluga.base.bytes.Encoding){}[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/Encoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
 
     final val encoding // com.splendo.kaluga.bluetooth.serialization/Encoded.encoding|{}encoding[0]
-        final fun <get-encoding>(): com.splendo.kaluga.base.bytes/Encoding // com.splendo.kaluga.bluetooth.serialization/Encoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bluetooth.serialization/Encoded.encoding.<get-encoding>|<get-encoding>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/FlagIndex : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/FlagIndex|null[0]
@@ -53,17 +53,17 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/FlagWidth : kot
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/ItemByteOrder : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ItemByteOrder|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/ItemByteOrder.<init>|<init>(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/ItemByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder){}[0]
 
     final val order // com.splendo.kaluga.bluetooth.serialization/ItemByteOrder.order|{}order[0]
-        final fun <get-order>(): com.splendo.kaluga.base.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/ItemByteOrder.order.<get-order>|<get-order>(){}[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/ItemByteOrder.order.<get-order>|<get-order>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/ItemEncoded : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ItemEncoded|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/ItemEncoded.<init>|<init>(com.splendo.kaluga.base.bytes.Encoding){}[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/ItemEncoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
 
     final val encoding // com.splendo.kaluga.bluetooth.serialization/ItemEncoded.encoding|{}encoding[0]
-        final fun <get-encoding>(): com.splendo.kaluga.base.bytes/Encoding // com.splendo.kaluga.bluetooth.serialization/ItemEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bluetooth.serialization/ItemEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/ItemLengthPrefix : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ItemLengthPrefix|null[0]
@@ -110,17 +110,17 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/ItemUnsigned : 
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/KeyByteOrder : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/KeyByteOrder|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/KeyByteOrder.<init>|<init>(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/KeyByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder){}[0]
 
     final val order // com.splendo.kaluga.bluetooth.serialization/KeyByteOrder.order|{}order[0]
-        final fun <get-order>(): com.splendo.kaluga.base.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/KeyByteOrder.order.<get-order>|<get-order>(){}[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/KeyByteOrder.order.<get-order>|<get-order>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/KeyEncoded : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/KeyEncoded|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/KeyEncoded.<init>|<init>(com.splendo.kaluga.base.bytes.Encoding){}[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/KeyEncoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
 
     final val encoding // com.splendo.kaluga.bluetooth.serialization/KeyEncoded.encoding|{}encoding[0]
-        final fun <get-encoding>(): com.splendo.kaluga.base.bytes/Encoding // com.splendo.kaluga.bluetooth.serialization/KeyEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bluetooth.serialization/KeyEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/KeyLengthPrefix : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/KeyLengthPrefix|null[0]
@@ -246,17 +246,17 @@ open annotation class com.splendo.kaluga.bluetooth.serialization/Unsized : kotli
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/ValueByteOrder : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ValueByteOrder|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/ValueByteOrder.<init>|<init>(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bluetooth.serialization/ValueByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder){}[0]
 
     final val order // com.splendo.kaluga.bluetooth.serialization/ValueByteOrder.order|{}order[0]
-        final fun <get-order>(): com.splendo.kaluga.base.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/ValueByteOrder.order.<get-order>|<get-order>(){}[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bluetooth.serialization/ValueByteOrder.order.<get-order>|<get-order>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/ValueEncoded : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ValueEncoded|null[0]
-    constructor <init>(com.splendo.kaluga.base.bytes/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/ValueEncoded.<init>|<init>(com.splendo.kaluga.base.bytes.Encoding){}[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bluetooth.serialization/ValueEncoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
 
     final val encoding // com.splendo.kaluga.bluetooth.serialization/ValueEncoded.encoding|{}encoding[0]
-        final fun <get-encoding>(): com.splendo.kaluga.base.bytes/Encoding // com.splendo.kaluga.bluetooth.serialization/ValueEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bluetooth.serialization/ValueEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bluetooth.serialization/ValueLengthPrefix : kotlin/Annotation { // com.splendo.kaluga.bluetooth.serialization/ValueLengthPrefix|null[0]

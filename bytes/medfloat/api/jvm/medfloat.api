@@ -1,0 +1,82 @@
+public final class com/splendo/kaluga/bytes/medfloat/ByteArrayBuilderExtensionsKt {
+	public static final fun add--2fIcUs (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;D)V
+	public static final fun add-SWsnxas (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;D)V
+}
+
+public final class com/splendo/kaluga/bytes/medfloat/MedFloat16 : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/bytes/medfloat/MedFloat16$Companion;
+	public static final field MAX_EXPONENT I
+	public static final field MAX_MANTISSA I
+	public static final field MIN_EXPONENT I
+	public static final field MIN_MANTISSA I
+	public static final synthetic fun box-impl (D)Lcom/splendo/kaluga/bytes/medfloat/MedFloat16;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-KQWe7hM (D)I
+	public static fun compareTo-KQWe7hM (DD)I
+	public static fun constructor-impl (D)D
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (DLjava/lang/Object;)Z
+	public static final fun equals-impl0 (DD)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public static fun hashCode-impl (D)I
+	public static final fun isFinite-impl (D)Z
+	public static final fun isInfinite-impl (D)Z
+	public static final fun isNaN-impl (D)Z
+	public static final fun isNegativeInfinity-impl (D)Z
+	public static final fun isNotAvailableAtThisResolution-impl (D)Z
+	public static final fun isPositiveInfinity-impl (D)Z
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (D)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()D
+}
+
+public final class com/splendo/kaluga/bytes/medfloat/MedFloat16$Companion {
+	public final fun canRepresent (D)Z
+	public final fun getNAN-XZzNCOg ()D
+	public final fun getNEGATIVE_INFINITY-XZzNCOg ()D
+	public final fun getPOSITIVE_INFINITY-XZzNCOg ()D
+}
+
+public final class com/splendo/kaluga/bytes/medfloat/MedFloat16ExtensionsKt {
+	public static final fun copyIntoByteArray--Q_e07U (D[BI)[B
+	public static synthetic fun copyIntoByteArray--Q_e07U$default (D[BIILjava/lang/Object;)[B
+	public static final fun decodeMedFloat16 ([BI)D
+	public static final fun toByteArray-KQWe7hM (D)[B
+}
+
+public final class com/splendo/kaluga/bytes/medfloat/MedFloat32 : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/bytes/medfloat/MedFloat32$Companion;
+	public static final synthetic fun box-impl (D)Lcom/splendo/kaluga/bytes/medfloat/MedFloat32;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo--gcQ_mU (D)I
+	public static fun compareTo--gcQ_mU (DD)I
+	public static fun constructor-impl (D)D
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (DLjava/lang/Object;)Z
+	public static final fun equals-impl0 (DD)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public static fun hashCode-impl (D)I
+	public static final fun isFinite-impl (D)Z
+	public static final fun isInfinite-impl (D)Z
+	public static final fun isNaN-impl (D)Z
+	public static final fun isNegativeInfinity-impl (D)Z
+	public static final fun isNotAvailableAtThisResolution-impl (D)Z
+	public static final fun isPositiveInfinity-impl (D)Z
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (D)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()D
+}
+
+public final class com/splendo/kaluga/bytes/medfloat/MedFloat32$Companion {
+	public final fun canRepresent (D)Z
+}
+
+public final class com/splendo/kaluga/bytes/medfloat/MedFloat32ExtensionsKt {
+	public static final fun copyIntoByteArray-YaGCylY (D[BI)[B
+	public static synthetic fun copyIntoByteArray-YaGCylY$default (D[BIILjava/lang/Object;)[B
+	public static final fun decodeMedFloat32 ([BI)D
+	public static final fun toByteArray--gcQ_mU (D)[B
+}
+

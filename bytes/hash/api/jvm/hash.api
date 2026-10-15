@@ -1,0 +1,4 @@
+public final class com/splendo/kaluga/bytes/hash/Sha1Kt {
+	public static final fun sha1 ([B)[B
+}
+
