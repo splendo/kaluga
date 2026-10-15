@@ -73,6 +73,11 @@ kaluga-bluetooth-server = { module = "com.splendo.kaluga.bluetooth:server", vers
 kaluga-bluetooth-server-testutils = { module = "com.splendo.kaluga.bluetooth:test-server", version.ref = "kaluga" }
 kaluga-bytes-core = { module = "com.splendo.kaluga.bytes:core", version.ref = "kaluga" }
 kaluga-bytes-crc = { module = "com.splendo.kaluga.bytes:crc", version.ref = "kaluga" }
+kaluga-bytes-hash = { module = "com.splendo.kaluga.bytes:hash", version.ref = "kaluga" }
+kaluga-bytes-integer = { module = "com.splendo.kaluga.bytes:integer", version.ref = "kaluga" }
+kaluga-bytes-medfloat = { module = "com.splendo.kaluga.bytes:medfloat", version.ref = "kaluga" }
+kaluga-bytes-strings = { module = "com.splendo.kaluga.bytes:strings", version.ref = "kaluga" }
+kaluga-bytes-stuffing = { module = "com.splendo.kaluga.bytes:stuffing", version.ref = "kaluga" }
 kaluga-datetime = { module = "com.splendo.kaluga.date-time:date-time", version.ref = "kaluga" }
 kaluga-datetime-timer = { module = "com.splendo.kaluga.date-time:timer", version.ref = "kaluga" }
 kaluga-datetimepicker = { module = "com.splendo.kaluga.date-time-picker:date-time-picker", version.ref = "kaluga" }

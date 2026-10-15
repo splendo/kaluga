@@ -17,6 +17,7 @@ kaluga {
             test {
                 implementation(project(":base:test", ""))
                 implementation(project(":bytes:core", ""))
+                implementation(project(":bytes:strings", ""))
             }
         }
     }
