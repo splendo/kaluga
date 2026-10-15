@@ -71,6 +71,7 @@ kaluga-bluetooth-core-testutils = { module = "com.splendo.kaluga.bluetooth:test-
 kaluga-bluetooth-ksp = { module = "com.splendo.kaluga.bluetooth:ksp", version.ref = "kaluga" }
 kaluga-bluetooth-server = { module = "com.splendo.kaluga.bluetooth:server", version.ref = "kaluga" }
 kaluga-bluetooth-server-testutils = { module = "com.splendo.kaluga.bluetooth:test-server", version.ref = "kaluga" }
+kaluga-bytes-annotations = { module = "com.splendo.kaluga.bytes:annotations", version.ref = "kaluga" }
 kaluga-bytes-core = { module = "com.splendo.kaluga.bytes:core", version.ref = "kaluga" }
 kaluga-bytes-crc = { module = "com.splendo.kaluga.bytes:crc", version.ref = "kaluga" }
 kaluga-bytes-hash = { module = "com.splendo.kaluga.bytes:hash", version.ref = "kaluga" }

@@ -1,0 +1,262 @@
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ByOrdinal : java/lang/annotation/Annotation {
+	public abstract fun offset ()I
+	public abstract fun size ()Lcom/splendo/kaluga/bytes/annotations/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ByteOrder : java/lang/annotation/Annotation {
+	public abstract fun excludeStructure ()Z
+	public abstract fun order ()Lcom/splendo/kaluga/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ByteStuffed : java/lang/annotation/Annotation {
+	public abstract fun escapeByte ()B
+	public abstract fun mask ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ByteStuffedCobs : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ByteStuffedSlip : java/lang/annotation/Annotation {
+	public abstract fun end ()B
+	public abstract fun escapeByte ()B
+	public abstract fun escapedEnd ()B
+	public abstract fun escapedEsc ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ByteStuffedXor : java/lang/annotation/Annotation {
+	public abstract fun additionalEscapedBytes ()[B
+	public abstract fun delimiter ()B
+	public abstract fun escapeByte ()B
+	public abstract fun xorKey ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/BytesLayout : java/lang/annotation/Annotation {
+	public abstract fun generate ()[Lcom/splendo/kaluga/bytes/annotations/Generate;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Checksum : java/lang/annotation/Annotation {
+	public abstract fun init ()J
+	public abstract fun polynomial ()J
+	public abstract fun reflectIn ()Z
+	public abstract fun reflectOut ()Z
+	public abstract fun width ()I
+	public abstract fun xorOut ()J
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Encoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/FlagIndex : java/lang/annotation/Annotation {
+	public abstract fun index ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/FlagWidth : java/lang/annotation/Annotation {
+	public abstract fun bits ()I
+}
+
+public final class com/splendo/kaluga/bytes/annotations/Generate : java/lang/Enum {
+	public static final field DATA Lcom/splendo/kaluga/bytes/annotations/Generate;
+	public static final field VIEW Lcom/splendo/kaluga/bytes/annotations/Generate;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bytes/annotations/Generate;
+	public static fun values ()[Lcom/splendo/kaluga/bytes/annotations/Generate;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemByteOrder : java/lang/annotation/Annotation {
+	public abstract fun order ()Lcom/splendo/kaluga/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemEncoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemLengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemMedFloat : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemNullTerminated : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemScalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemSize : java/lang/annotation/Annotation {
+	public abstract fun size ()Lcom/splendo/kaluga/bytes/annotations/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemSize$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bytes/annotations/ItemSize;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemUnsigned : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeyByteOrder : java/lang/annotation/Annotation {
+	public abstract fun order ()Lcom/splendo/kaluga/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeyEncoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeyLengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeyMedFloat : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeyNullTerminated : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeyScalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeySize : java/lang/annotation/Annotation {
+	public abstract fun size ()Lcom/splendo/kaluga/bytes/annotations/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeySize$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bytes/annotations/KeySize;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/KeyUnsigned : java/lang/annotation/Annotation {
+}
+
+public final class com/splendo/kaluga/bytes/annotations/Length : java/lang/Enum {
+	public static final field 16_BIT Lcom/splendo/kaluga/bytes/annotations/Length;
+	public static final field 24_BIT Lcom/splendo/kaluga/bytes/annotations/Length;
+	public static final field 32_BIT Lcom/splendo/kaluga/bytes/annotations/Length;
+	public static final field 40_BIT Lcom/splendo/kaluga/bytes/annotations/Length;
+	public static final field 48_BIT Lcom/splendo/kaluga/bytes/annotations/Length;
+	public static final field 64_BIT Lcom/splendo/kaluga/bytes/annotations/Length;
+	public static final field 8_BIT Lcom/splendo/kaluga/bytes/annotations/Length;
+	public final fun getBytes ()I
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bytes/annotations/Length;
+	public static fun values ()[Lcom/splendo/kaluga/bytes/annotations/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/LengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/MedFloat : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/NullIfEmpty : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/NullTerminated : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Postfix : java/lang/annotation/Annotation {
+	public abstract fun value ()[B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Prefix : java/lang/annotation/Annotation {
+	public abstract fun value ()[B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/PresentWhenAllSet : java/lang/annotation/Annotation {
+	public abstract fun indices ()[I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Range : java/lang/annotation/Annotation {
+	public abstract fun max ()D
+	public abstract fun min ()D
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Reserved : java/lang/annotation/Annotation {
+	public abstract fun after ()I
+	public abstract fun before ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Scalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/SerializedByteValue : java/lang/annotation/Annotation {
+	public abstract fun value ()[B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Size : java/lang/annotation/Annotation {
+	public abstract fun length ()Lcom/splendo/kaluga/bytes/annotations/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Size$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bytes/annotations/Size;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/SizePolymorphic : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Terminal : java/lang/annotation/Annotation {
+	public abstract fun terminator ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Unsigned : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Unsized : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueByteOrder : java/lang/annotation/Annotation {
+	public abstract fun order ()Lcom/splendo/kaluga/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueEncoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueLengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueMedFloat : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueNullTerminated : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueScalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueSize : java/lang/annotation/Annotation {
+	public abstract fun size ()Lcom/splendo/kaluga/bytes/annotations/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueSize$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bytes/annotations/ValueSize;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ValueUnsigned : java/lang/annotation/Annotation {
+}
+
