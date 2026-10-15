@@ -17,11 +17,12 @@
 package com.splendo.kaluga.bytes.layout
 
 /**
- * Marks what the Kaluga bytes modules call among themselves: the layout compiler and its dumps, and the numeric codec.
- * It follows those modules, not compatibility, so it may change in any release; `BytesFormat`, the annotations and the
- * exceptions they throw are the public API.
+ * Marks what the Kaluga bytes modules and the code the bytes plugin generates call among themselves: the layout
+ * compiler and its dumps, the numeric codec, and the runtime of generated views. It follows the generated code, not
+ * compatibility, so it may change in any release; `BytesFormat`, the annotations, the generated DATA classes and
+ * views, and the exceptions they throw are the public API.
  */
-@RequiresOptIn(message = "An internal API of the Kaluga bytes modules; it may change in any release", level = RequiresOptIn.Level.ERROR)
+@RequiresOptIn(message = "An internal API of the Kaluga bytes modules, called by generated code; it may change in any release", level = RequiresOptIn.Level.ERROR)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.CONSTRUCTOR)
 annotation class InternalBytesApi

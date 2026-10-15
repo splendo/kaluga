@@ -1,6 +1,6 @@
 # Bytes
 
-Working with binary data: `ByteArray` utilities and byte orders, 24-, 40- and 48-bit integers, IEEE 11073 medical floats, byte stuffing, string codecs, SHA-1, CRC and a serialization format for byte-packed wire layouts.
+Working with binary data: `ByteArray` utilities and byte orders, 24-, 40- and 48-bit integers, IEEE 11073 medical floats, byte stuffing, string codecs, SHA-1, CRC, and a serialization format for byte-packed wire layouts with code generation of data classes and zero-copy views.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:
 
@@ -16,3 +16,6 @@ This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containi
 | [annotations](annotations/) | Annotations describing a byte-packed wire layout | `com.splendo.kaluga.bytes:annotations` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [layout](layout/) | Compiling and validating byte-packed wire layouts | `com.splendo.kaluga.bytes:layout` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [serialization](serialization/) | `BytesFormat`, a Kotlin Serialization format for byte-packed wire layouts | `com.splendo.kaluga.bytes:serialization` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [view](view/) | Runtime support for the zero-copy views generated from `@BytesLayout` interfaces | `com.splendo.kaluga.bytes:view` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [ksp](ksp/) | KSP processor that generates data classes and zero-copy views from `@BytesLayout` interfaces (build-time) | `com.splendo.kaluga.bytes:ksp` |  |  | ✅ |  |  |  |  |  |
+| [plugin](plugin/) | Gradle plugin wiring up the bytes code generation (build-time) | `com.splendo.kaluga.bytes.plugin` |  |  | ✅ |  |  |  |  |  |

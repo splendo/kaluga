@@ -144,7 +144,8 @@ dependency on the specific module(s) you use, and update the affected imports.
 `base` → `base:core` plus `base:state`, `base:decimal`, `base:i18n`, `base:formatting`. The byte
 utilities and CRC moved out of `base` into the `bytes` group (`bytes:core`, `bytes:integer`,
 `bytes:medfloat`, `bytes:strings`, `bytes:crc`, alongside the new `bytes:stuffing`, `bytes:hash`,
-`bytes:annotations`, `bytes:layout` and `bytes:serialization`).
+`bytes:annotations`, `bytes:layout`, `bytes:serialization`, `bytes:view` and `bytes:ksp`, and the
+`com.splendo.kaluga.bytes.plugin` Gradle plugin).
 `date-time` → `date-time:date-time` (the calendar types and date formatter) and `date-time:timer`
 (`RecurringTimer`).
 
