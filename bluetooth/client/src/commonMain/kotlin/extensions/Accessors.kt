@@ -8,7 +8,7 @@ import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.descriptors
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.discoveredServices
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.value
 import com.splendo.kaluga.bluetooth.valueOrNull
@@ -266,7 +266,7 @@ fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: S
  * @param serviceUUID string service uuid representation
  * @param characteristicUUID string characteristic uuid representation
  * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param bluetoothFormat the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @throws UUIDException.InvalidFormat if [serviceUUID] or [characteristicUUID] is not valid
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] associated with [serviceUUID] and [characteristicUUID]. Flow throws [NoSuchElementException] if the characteristic cannot be found after discovery.
  */
@@ -274,7 +274,7 @@ inline fun <reified T> ConnectableDevice.dataFlow(
     serviceUUID: String,
     characteristicUUID: String,
     deserializationStrategy: DeserializationStrategy<T>,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
 ) = characteristicFlow(serviceUUID, characteristicUUID).value(deserializationStrategy, bluetoothFormat)
 
 /**
@@ -284,7 +284,7 @@ inline fun <reified T> ConnectableDevice.dataFlow(
  * @param serviceUUID string service uuid representation
  * @param characteristicUUID string characteristic uuid representation
  * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param bluetoothFormat the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @throws UUIDException.InvalidFormat if [serviceUUID] or [characteristicUUID] is not valid
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] associated with [serviceUUID] and [characteristicUUID]. Flow throws [NoSuchElementException] if the characteristic cannot be found after discovery.
  */
@@ -292,7 +292,7 @@ inline fun <reified T> Flow<ConnectableDevice?>.dataFlow(
     serviceUUID: String,
     characteristicUUID: String,
     deserializationStrategy: DeserializationStrategy<T>,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
 ) = characteristicFlow(serviceUUID, characteristicUUID).value(deserializationStrategy, bluetoothFormat)
 
 /**
@@ -320,7 +320,7 @@ fun Flow<ConnectableDevice?>.dataOrEmptyFlow(serviceUUID: String, characteristic
  * @param serviceUUID string service uuid representation
  * @param characteristicUUID string characteristic uuid representation
  * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param bluetoothFormat the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @throws UUIDException.InvalidFormat if [serviceUUID] or [characteristicUUID] is not valid
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] associated with [serviceUUID] and [characteristicUUID]. Emits `null` if the descriptor cannot be found.
  */
@@ -328,7 +328,7 @@ inline fun <reified T> ConnectableDevice.dataOrNullFlow(
     serviceUUID: String,
     characteristicUUID: String,
     deserializationStrategy: DeserializationStrategy<T>,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
 ) = characteristicOrNullFlow(serviceUUID, characteristicUUID).valueOrNull(deserializationStrategy, bluetoothFormat)
 
 /**
@@ -338,7 +338,7 @@ inline fun <reified T> ConnectableDevice.dataOrNullFlow(
  * @param serviceUUID string service uuid representation
  * @param characteristicUUID string characteristic uuid representation
  * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param bluetoothFormat the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @throws UUIDException.InvalidFormat if [serviceUUID] or [characteristicUUID] is not valid
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] associated with [serviceUUID] and [characteristicUUID]. Emits `null` if the descriptor cannot be found.
  */
@@ -346,5 +346,5 @@ inline fun <reified T> Flow<ConnectableDevice?>.dataOrNullFlow(
     serviceUUID: String,
     characteristicUUID: String,
     deserializationStrategy: DeserializationStrategy<T>,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
 ) = characteristicOrNullFlow(serviceUUID, characteristicUUID).valueOrNull(deserializationStrategy, bluetoothFormat)

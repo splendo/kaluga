@@ -33,7 +33,7 @@ import com.splendo.kaluga.bluetooth.filterDiscovering
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.includedServices
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bluetooth.startDiscovering
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.value
@@ -243,12 +243,12 @@ interface RemoteAttributeBinding<T> {
          * Responds to a [Trigger] to cause the [RemoteAttribute] to be read.
          * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
          * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
-         * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+         * @param bluetoothFormat the [BytesFormat] to use for deserialization.
          * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
          */
         fun <Response> triggerRead(
             deserializationStrategy: DeserializationStrategy<Response>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            bluetoothFormat: BytesFormat = BytesFormat,
             unitBuilder: ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit,
         ) = triggerRead({
             bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
@@ -272,13 +272,13 @@ interface RemoteAttributeBinding<T> {
          * Responds to a [Trigger] to have [Data] written to the [RemoteAttribute].
          * @param Data the type of data to write to the [RemoteAttribute].
          * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
-         * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+         * @param bluetoothFormat the [BytesFormat] to use for serialization.
          * @param mapper maps the [Trigger] to the [Data] to write.
          * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
          */
         fun <Data> triggerWrite(
             serializationStrategy: SerializationStrategy<Data>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            bluetoothFormat: BytesFormat = BytesFormat,
             mapper: Trigger.() -> Data,
             builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
         ) = triggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, mapper()) }, builder)
@@ -286,12 +286,12 @@ interface RemoteAttributeBinding<T> {
         /**
          * Responds to a [Trigger] to write it to the [RemoteAttribute].
          * @param serializationStrategy the [SerializationStrategy] to map the [Trigger] to a [ByteArray] to write.
-         * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+         * @param bluetoothFormat the [BytesFormat] to use for serialization.
          * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
          */
         fun triggerWrite(
             serializationStrategy: SerializationStrategy<Trigger>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            bluetoothFormat: BytesFormat = BytesFormat,
             builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
         ) = triggerWrite(serializationStrategy, bluetoothFormat, { this }, builder)
     }
@@ -328,12 +328,12 @@ fun <Response, T> RemoteAttributeBinding.TriggerResponse<Unit, T>.triggerRead(as
  * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
  * @param T  the type of the object to bind to
  * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
- * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+ * @param bluetoothFormat the [BytesFormat] to use for deserialization.
  * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
  */
 fun <Response, T> RemoteAttributeBinding.TriggerResponse<Unit, T>.triggerRead(
     deserializationStrategy: DeserializationStrategy<Response>,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
     unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
 ) = triggerRead({
     bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
@@ -361,11 +361,11 @@ fun <T> RemoteAttributeBinding.TriggerResponse<ByteArray, T>.triggerWrite(builde
  * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
  * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
  * @param T  the type of the object to bind to
- * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+ * @param bluetoothFormat the [BytesFormat] to use for deserialization.
  * @param builder sets up the response to a triggered read using a [RemoteAttributeBinding.ReadBuilder.NonMutating]
  */
 inline fun <reified Response, Trigger, T> RemoteAttributeBinding.TriggerResponse<Trigger, T>.triggerRead(
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
     noinline builder: RemoteAttributeBinding.ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit,
 ) = triggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, builder)
 
@@ -373,12 +373,12 @@ inline fun <reified Response, Trigger, T> RemoteAttributeBinding.TriggerResponse
  * Responds to a [Unit] to cause the [RemoteAttribute] to be read.
  * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
  * @param T  the type of the object to bind to
- * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+ * @param bluetoothFormat the [BytesFormat] to use for deserialization.
  * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
  */
 @JvmName("triggerReadFromUnit")
 inline fun <reified Response, T> RemoteAttributeBinding.TriggerResponse<Unit, T>.triggerRead(
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
     noinline unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
 ) = triggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, unitBuilder)
 
@@ -387,12 +387,12 @@ inline fun <reified Response, T> RemoteAttributeBinding.TriggerResponse<Unit, T>
  * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
  * @param Data the type of data to write to the [RemoteAttribute].
  * @param T  the type of the object to bind to
- * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+ * @param bluetoothFormat the [BytesFormat] to use for serialization.
  * @param mapper maps the [Trigger] to the [Data] to write.
  * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
  */
 inline fun <Trigger, reified Data, T> RemoteAttributeBinding.TriggerResponse<Trigger, T>.triggerWrite(
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
     noinline mapper: Trigger.() -> Data,
     noinline builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
 ) = triggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, mapper, builder)
@@ -401,11 +401,11 @@ inline fun <Trigger, reified Data, T> RemoteAttributeBinding.TriggerResponse<Tri
  * Consumes [Trigger] from a [Channel] to write it to the [RemoteAttribute].
  * @param Trigger the type of data to write to the [RemoteAttribute].
  * @param T  the type of the object to bind to
- * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+ * @param bluetoothFormat the [BytesFormat] to use for serialization.
  * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
  */
 inline fun <reified Trigger, T> RemoteAttributeBinding.TriggerResponse<Trigger, T>.triggerWrite(
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
     noinline builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
 ) = triggerWrite(bluetoothFormat.serializersModule.serializer<Trigger>(), bluetoothFormat, builder)
 
@@ -849,12 +849,12 @@ sealed interface RemoteCharacteristicBinding<T> : RemoteAttributeBinding<T> {
      * Sets up observation of a [Notification] from the [RemoteCharacteristic]
      * @param Notification the type of Notification to receive from the [RemoteCharacteristic]
      * @param deserializationStrategy the [DeserializationStrategy] to use to convert the [ByteArray] to the [Notification]
-     * @param bluetoothFormat the [BluetoothFormat] to use to convert the [ByteArray] to the [Notification]
+     * @param bluetoothFormat the [BytesFormat] to use to convert the [ByteArray] to the [Notification]
      * @param builder sets up the observation response to a new [Notification]
      */
     fun <Notification> observe(
         deserializationStrategy: DeserializationStrategy<Notification>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        bluetoothFormat: BytesFormat = BytesFormat,
         builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit,
     ) = observe({ bluetoothFormat.decodeFromByteArray(deserializationStrategy, this) }, builder)
 
@@ -869,11 +869,11 @@ sealed interface RemoteCharacteristicBinding<T> : RemoteAttributeBinding<T> {
  * Sets up observation of a [Notification] from the [RemoteCharacteristic]
  * @param Notification the type of Notification to receive from the [RemoteCharacteristic]
  * @param T  the type of the object to bind to
- * @param bluetoothFormat the [BluetoothFormat] to use to convert the [ByteArray] to the [Notification]
+ * @param bluetoothFormat the [BytesFormat] to use to convert the [ByteArray] to the [Notification]
  * @param builder sets up the observation response to a new [Notification]
  */
 inline fun <reified Notification, T> RemoteCharacteristicBinding<T>.observe(
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    bluetoothFormat: BytesFormat = BytesFormat,
     noinline builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit,
 ) = observe(bluetoothFormat.serializersModule.serializer<Notification>(), bluetoothFormat, builder)
 

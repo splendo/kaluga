@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.test.mock.call
 import com.splendo.kaluga.base.test.mock.on
 import com.splendo.kaluga.base.test.mock.parameters.mock
 import com.splendo.kaluga.base.test.mock.singleParametersMock
+import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.RemoteService
@@ -35,7 +36,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.PairingResult
 import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.test.MockDescriptorWrapper
-import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -163,7 +163,7 @@ class MockDeviceConnectionManager(
 
     override suspend fun discoverServices(): Unit = discoverServicesMock.call()
 
-    override fun disconnect(): Unit = disconnectMock.call()
+    override fun intentionalDisconnect() = disconnectMock.call()
 
     override suspend fun requestReadRssi(): Unit = readRssiMock.call()
 

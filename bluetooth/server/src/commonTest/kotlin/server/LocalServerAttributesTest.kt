@@ -27,7 +27,7 @@ import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bluetooth.test.randomUUID
 import com.splendo.kaluga.bluetooth.test.server.MockConnectedDevice
 import com.splendo.kaluga.bluetooth.test.server.MockLocalServiceWrapperBuilder
@@ -147,7 +147,7 @@ class LocalServerAttributesTest : BaseTest() {
         }.build()
 
         val onWrite = fixture.writes.getValue(charUuid)
-        val bytes = BluetoothFormat.encodeToByteArray(serializer<Int>(), 42)
+        val bytes = BytesFormat.encodeToByteArray(serializer<Int>(), 42)
         val response = runBlocking { onWrite(service.characteristics.single(), MockConnectedDevice(), bytes, 0) }
         assertEquals(GattResponse.WriteSuccess.Acknowledged, response)
         assertEquals(listOf(42), decoded)

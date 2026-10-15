@@ -26,17 +26,15 @@ kaluga {
             main {
                 api(project(":base:core"))
                 api(project(":bytes:core"))
-                api(project(":bytes:strings"))
-                implementation(project(":bytes:integer"))
-                implementation(project(":bytes:medfloat"))
-                implementation(project(":bytes:crc"))
+                api(project(":bytes:serialization"))
+                implementation(project(":bytes:hash"))
                 implementation(project(":base:formatting"))
                 api(project(":service:service"))
                 api(libs.kotlinx.serialization.core)
+                api(libs.kotlinx.coroutines.core)
             }
             test {
                 implementation(project(":bluetooth:test-core", ""))
-                implementation(project(":scientific:scientific"))
             }
         }
     }

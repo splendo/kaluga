@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import kotlinx.serialization.SerializationStrategy
 
 /**
@@ -52,11 +52,11 @@ sealed interface GattResponse {
              * @param value the value read
              * @param offset the offset of the ByteArray to read
              * @param serializationStrategy the [SerializationStrategy] used to encode [value]
-             * @param bluetoothFormat the [BluetoothFormat] to use for encoding [value]
+             * @param bluetoothFormat the [BytesFormat] to use for encoding [value]
              * @throws kotlinx.serialization.SerializationException if [value] cannot be encoded using [serializationStrategy]
              * @return a [GattResponse.ReadSuccess] response where [GattResponse.ReadSuccess.value] can be deserialized by [bluetoothFormat] using a [kotlinx.serialization.DeserializationStrategy] similar to [serializationStrategy]
              */
-            operator fun <T> invoke(value: T, offset: Int = 0, serializationStrategy: SerializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): ReadSuccess =
+            operator fun <T> invoke(value: T, offset: Int = 0, serializationStrategy: SerializationStrategy<T>, bluetoothFormat: BytesFormat = BytesFormat): ReadSuccess =
                 ReadSuccess(bluetoothFormat.encodeToByteArray(serializationStrategy, value).drop(offset).toByteArray())
 
             /**
@@ -64,11 +64,11 @@ sealed interface GattResponse {
              * @param T the type of the value read
              * @param value the value read
              * @param offset the offset of the ByteArray to read
-             * @param bluetoothFormat the [BluetoothFormat] to use for encoding [value]
+             * @param bluetoothFormat the [BytesFormat] to use for encoding [value]
              * @throws kotlinx.serialization.SerializationException if [value] cannot be encoded
              * @return a [GattResponse.ReadSuccess] response where [GattResponse.ReadSuccess.value] can be deserialized by [bluetoothFormat]
              */
-            inline operator fun <reified T : Any> invoke(value: T, offset: Int = 0, bluetoothFormat: BluetoothFormat = BluetoothFormat) =
+            inline operator fun <reified T : Any> invoke(value: T, offset: Int = 0, bluetoothFormat: BytesFormat = BytesFormat) =
                 invoke(value, offset, bluetoothFormat.serializer<T>(), bluetoothFormat)
         }
 

@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.bytes.toHexString
 
 /**
  * Data advertised by a Bluetooth [Device]
