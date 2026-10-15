@@ -1,0 +1,38 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bytes:serialization>
+final class com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData|null[0]
+    constructor <init>(kotlin/String?) // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.<init>|<init>(kotlin.String?){}[0]
+
+    final val message // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.message|{}message[0]
+        final fun <get-message>(): kotlin/String? // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.message.<get-message>|<get-message>(){}[0]
+}
+
+sealed class com.splendo.kaluga.bytes.serialization/BytesFormat : kotlinx.serialization/BinaryFormat { // com.splendo.kaluga.bytes.serialization/BytesFormat|null[0]
+    open val serializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.serializersModule|{}serializersModule[0]
+        open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+
+    final inline fun <#A1: reified kotlin/Any?> serializer(): kotlinx.serialization/KSerializer<#A1> // com.splendo.kaluga.bytes.serialization/BytesFormat.serializer|serializer(){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> decodeFromByteArray(kotlinx.serialization/DeserializationStrategy<#A1>, kotlin/ByteArray): #A1 // com.splendo.kaluga.bytes.serialization/BytesFormat.decodeFromByteArray|decodeFromByteArray(kotlinx.serialization.DeserializationStrategy<0:0>;kotlin.ByteArray){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> encodeToByteArray(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlin/ByteArray // com.splendo.kaluga.bytes.serialization/BytesFormat.encodeToByteArray|encodeToByteArray(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
+
+    final class Builder { // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder|null[0]
+        final var serializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule|{}serializersModule[0]
+            final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+            final fun <set-serializersModule>(kotlinx.serialization.modules/SerializersModule) // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule.<set-serializersModule>|<set-serializersModule>(kotlinx.serialization.modules.SerializersModule){}[0]
+        final var validateChecksum // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.validateChecksum|{}validateChecksum[0]
+            final fun <get-validateChecksum>(): kotlin/Boolean // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.validateChecksum.<get-validateChecksum>|<get-validateChecksum>(){}[0]
+            final fun <set-validateChecksum>(kotlin/Boolean) // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.validateChecksum.<set-validateChecksum>|<set-validateChecksum>(kotlin.Boolean){}[0]
+    }
+
+    final object Default : com.splendo.kaluga.bytes.serialization/BytesFormat { // com.splendo.kaluga.bytes.serialization/BytesFormat.Default|null[0]
+        final fun invoke(com.splendo.kaluga.bytes.serialization/BytesFormat = ..., kotlin/Function1<com.splendo.kaluga.bytes.serialization/BytesFormat.Builder, kotlin/Unit>): com.splendo.kaluga.bytes.serialization/BytesFormat // com.splendo.kaluga.bytes.serialization/BytesFormat.Default.invoke|invoke(com.splendo.kaluga.bytes.serialization.BytesFormat;kotlin.Function1<com.splendo.kaluga.bytes.serialization.BytesFormat.Builder,kotlin.Unit>){}[0]
+    }
+}
+
+final fun com.splendo.kaluga.bytes.serialization/layoutDumpOf(kotlinx.serialization.descriptors/SerialDescriptor, kotlinx.serialization.modules/SerializersModule = ...): kotlin/String // com.splendo.kaluga.bytes.serialization/layoutDumpOf|layoutDumpOf(kotlinx.serialization.descriptors.SerialDescriptor;kotlinx.serialization.modules.SerializersModule){}[0]
