@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "base.crc"
+    moduleName = "bytes.crc"
 
     supportJVM = true
     supportJS = true
@@ -16,7 +16,7 @@ kaluga {
         common {
             test {
                 implementation(project(":base:test", ""))
-                implementation(project(":base:bytes", ""))
+                implementation(project(":bytes:core", ""))
             }
         }
     }

@@ -3,7 +3,7 @@ plugins {
 }
 
 kaluga {
-    moduleName = "base.bytes"
+    moduleName = "bytes.core"
 
     supportJVM = true
     supportJS = true
