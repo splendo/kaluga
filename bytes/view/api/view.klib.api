@@ -1,0 +1,143 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bytes:view>
+abstract fun interface <#A: in kotlin/Any?> com.splendo.kaluga.bytes.view/ItemWrite { // com.splendo.kaluga.bytes.view/ItemWrite|null[0]
+    abstract fun write(kotlin/ByteArray, kotlin/Int, kotlin/Int, #A) // com.splendo.kaluga.bytes.view/ItemWrite.write|write(kotlin.ByteArray;kotlin.Int;kotlin.Int;1:0){}[0]
+}
+
+abstract fun interface <#A: out kotlin/Any?> com.splendo.kaluga.bytes.view/ItemRead { // com.splendo.kaluga.bytes.view/ItemRead|null[0]
+    abstract fun read(kotlin/ByteArray, kotlin/Int, kotlin/Int): #A // com.splendo.kaluga.bytes.view/ItemRead.read|read(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+}
+
+abstract fun interface com.splendo.kaluga.bytes.view/ItemEnd { // com.splendo.kaluga.bytes.view/ItemEnd|null[0]
+    abstract fun end(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ItemEnd.end|end(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+}
+
+abstract fun interface com.splendo.kaluga.bytes.view/ItemVisit { // com.splendo.kaluga.bytes.view/ItemVisit|null[0]
+    abstract fun visit(kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ItemVisit.visit|visit(kotlin.Int;kotlin.Int){}[0]
+}
+
+abstract fun interface com.splendo.kaluga.bytes.view/ViewParent { // com.splendo.kaluga.bytes.view/ViewParent|null[0]
+    abstract fun changed() // com.splendo.kaluga.bytes.view/ViewParent.changed|changed(){}[0]
+}
+
+final class <#A: kotlin/Any?> com.splendo.kaluga.bytes.view/FixedStrideList : kotlin.collections/AbstractList<#A> { // com.splendo.kaluga.bytes.view/FixedStrideList|null[0]
+    final val size // com.splendo.kaluga.bytes.view/FixedStrideList.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.splendo.kaluga.bytes.view/FixedStrideList.size.<get-size>|<get-size>(){}[0]
+
+    final fun get(kotlin/Int): #A // com.splendo.kaluga.bytes.view/FixedStrideList.get|get(kotlin.Int){}[0]
+    final fun set(kotlin/Int, #A): #A // com.splendo.kaluga.bytes.view/FixedStrideList.set|set(kotlin.Int;1:0){}[0]
+
+    final object Companion { // com.splendo.kaluga.bytes.view/FixedStrideList.Companion|null[0]
+        final fun <#A2: kotlin/Any?> of(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.view/ItemRead<#A2>, com.splendo.kaluga.bytes.view/ItemWrite<#A2>? = ..., com.splendo.kaluga.bytes.view/ViewParent? = ..., kotlin/Boolean = ...): com.splendo.kaluga.bytes.view/FixedStrideList<#A2> // com.splendo.kaluga.bytes.view/FixedStrideList.Companion.of|of(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.view.ItemRead<0:0>;com.splendo.kaluga.bytes.view.ItemWrite<0:0>?;com.splendo.kaluga.bytes.view.ViewParent?;kotlin.Boolean){0§<kotlin.Any?>}[0]
+    }
+}
+
+final class <#A: out kotlin/Any?> com.splendo.kaluga.bytes.view/ScannedList : kotlin.collections/AbstractList<#A> { // com.splendo.kaluga.bytes.view/ScannedList|null[0]
+    final val size // com.splendo.kaluga.bytes.view/ScannedList.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.splendo.kaluga.bytes.view/ScannedList.size.<get-size>|<get-size>(){}[0]
+
+    final fun get(kotlin/Int): #A // com.splendo.kaluga.bytes.view/ScannedList.get|get(kotlin.Int){}[0]
+}
+
+final class com.splendo.kaluga.bytes.view/ViewContents { // com.splendo.kaluga.bytes.view/ViewContents|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.view/ViewContents.<init>|<init>(){}[0]
+
+    final fun add(kotlin/ByteArray) // com.splendo.kaluga.bytes.view/ViewContents.add|add(kotlin.ByteArray){}[0]
+    final fun take(): kotlin/ByteArray? // com.splendo.kaluga.bytes.view/ViewContents.take|take(){}[0]
+}
+
+final object com.splendo.kaluga.bytes.view/ViewBatch : com.splendo.kaluga.bytes.view/ViewParent { // com.splendo.kaluga.bytes.view/ViewBatch|null[0]
+    final fun changed() // com.splendo.kaluga.bytes.view/ViewBatch.changed|changed(){}[0]
+}
+
+final object com.splendo.kaluga.bytes.view/ViewBytes { // com.splendo.kaluga.bytes.view/ViewBytes|null[0]
+    final fun <#A1: kotlin/Enum<#A1>> entry(kotlin.collections/List<#A1>, kotlin/Int, kotlin/String): #A1 // com.splendo.kaluga.bytes.view/ViewBytes.entry|entry(kotlin.collections.List<0:0>;kotlin.Int;kotlin.String){0§<kotlin.Enum<0:0>>}[0]
+    final fun alignBits(kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.alignBits|alignBits(kotlin.Int){}[0]
+    final fun bit(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Boolean // com.splendo.kaluga.bytes.view/ViewBytes.bit|bit(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+    final fun bits(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Long // com.splendo.kaluga.bytes.view/ViewBytes.bits|bits(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+    final fun checkRange(kotlin/Int, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkRange|checkRange(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+    final fun checkWrapRange(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkWrapRange|checkWrapRange(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun clear(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.clear|clear(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun hex(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/String // com.splendo.kaluga.bytes.view/ViewBytes.hex|hex(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun matchIndex(kotlin/ByteArray, kotlin/Int, kotlin/Array<kotlin/ByteArray>, kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.matchIndex|matchIndex(kotlin.ByteArray;kotlin.Int;kotlin.Array<kotlin.ByteArray>;kotlin.Int){}[0]
+    final fun matches(kotlin/ByteArray, kotlin/Int, kotlin/ByteArray, kotlin/Int): kotlin/Boolean // com.splendo.kaluga.bytes.view/ViewBytes.matches|matches(kotlin.ByteArray;kotlin.Int;kotlin.ByteArray;kotlin.Int){}[0]
+    final fun mirror(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.mirror|mirror(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun packedNatural(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Boolean, kotlin/Int): kotlin/Long // com.splendo.kaluga.bytes.view/ViewBytes.packedNatural|packedNatural(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Boolean;kotlin.Int){}[0]
+    final fun rangeEquals(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Boolean // com.splendo.kaluga.bytes.view/ViewBytes.rangeEquals|rangeEquals(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun rangeHashCode(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.rangeHashCode|rangeHashCode(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun readChar(kotlin/ByteArray, kotlin/Int, com.splendo.kaluga.bytes.strings/Encoding, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/Char // com.splendo.kaluga.bytes.view/ViewBytes.readChar|readChar(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.strings.Encoding;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun readDouble(kotlin/ByteArray, kotlin/Int, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/Double // com.splendo.kaluga.bytes.view/ViewBytes.readDouble|readDouble(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun readFloat(kotlin/ByteArray, kotlin/Int, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/Float // com.splendo.kaluga.bytes.view/ViewBytes.readFloat|readFloat(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun readMedFloat16(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Double // com.splendo.kaluga.bytes.view/ViewBytes.readMedFloat16|readMedFloat16(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun readMedFloat32(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Double // com.splendo.kaluga.bytes.view/ViewBytes.readMedFloat32|readMedFloat32(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun readNatural(kotlin/ByteArray, kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/Long // com.splendo.kaluga.bytes.view/ViewBytes.readNatural|readNatural(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun readSigned(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/Long // com.splendo.kaluga.bytes.view/ViewBytes.readSigned|readSigned(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun readUnsigned(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/Long // com.splendo.kaluga.bytes.view/ViewBytes.readUnsigned|readUnsigned(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun s8(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.s8|s8(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun selectedLength(kotlin/Array<com.splendo.kaluga.bytes.annotations/Length>, kotlin/Int): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.view/ViewBytes.selectedLength|selectedLength(kotlin.Array<com.splendo.kaluga.bytes.annotations.Length>;kotlin.Int){}[0]
+    final fun setBit(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Boolean, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.setBit|setBit(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Boolean;kotlin.Int){}[0]
+    final fun setBits(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Long, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.setBits|setBits(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Long;kotlin.Int){}[0]
+    final fun setPackedNatural(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Long, kotlin/Boolean, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.setPackedNatural|setPackedNatural(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Long;kotlin.Boolean;kotlin.Int){}[0]
+    final fun u8(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.u8|u8(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun write(kotlin/ByteArray, kotlin/Int, kotlin/ByteArray, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.write|write(kotlin.ByteArray;kotlin.Int;kotlin.ByteArray;kotlin.Int){}[0]
+    final fun writeChar(kotlin/ByteArray, kotlin/Int, kotlin/Char, com.splendo.kaluga.bytes.strings/Encoding, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.writeChar|writeChar(kotlin.ByteArray;kotlin.Int;kotlin.Char;com.splendo.kaluga.bytes.strings.Encoding;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun writeDouble(kotlin/ByteArray, kotlin/Int, kotlin/Double, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.writeDouble|writeDouble(kotlin.ByteArray;kotlin.Int;kotlin.Double;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun writeFloat(kotlin/ByteArray, kotlin/Int, kotlin/Float, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.writeFloat|writeFloat(kotlin.ByteArray;kotlin.Int;kotlin.Float;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun writeMedFloat16(kotlin/ByteArray, kotlin/Int, kotlin/Double, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.writeMedFloat16|writeMedFloat16(kotlin.ByteArray;kotlin.Int;kotlin.Double;kotlin.Int){}[0]
+    final fun writeMedFloat32(kotlin/ByteArray, kotlin/Int, kotlin/Double, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.writeMedFloat32|writeMedFloat32(kotlin.ByteArray;kotlin.Int;kotlin.Double;kotlin.Int){}[0]
+    final fun writeNatural(kotlin/ByteArray, kotlin/Int, kotlin/Double, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.writeNatural|writeNatural(kotlin.ByteArray;kotlin.Int;kotlin.Double;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun writeNatural(kotlin/ByteArray, kotlin/Int, kotlin/Long, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.writeNatural|writeNatural(kotlin.ByteArray;kotlin.Int;kotlin.Long;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+}
+
+final object com.splendo.kaluga.bytes.view/ViewChecksum { // com.splendo.kaluga.bytes.view/ViewChecksum|null[0]
+    final fun check(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.layout/ChecksumSpec, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int, kotlin/Int = ...) // com.splendo.kaluga.bytes.view/ViewChecksum.check|check(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.ChecksumSpec;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int;kotlin.Int){}[0]
+    final fun checkPostfix(kotlin/ByteArray, kotlin/Int, kotlin/ByteArray, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewChecksum.checkPostfix|checkPostfix(kotlin.ByteArray;kotlin.Int;kotlin.ByteArray;kotlin.Int){}[0]
+    final fun checkPrefix(kotlin/ByteArray, kotlin/Int, kotlin/ByteArray, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewChecksum.checkPrefix|checkPrefix(kotlin.ByteArray;kotlin.Int;kotlin.ByteArray;kotlin.Int){}[0]
+    final fun compute(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.layout/ChecksumSpec): kotlin/ULong // com.splendo.kaluga.bytes.view/ViewChecksum.compute|compute(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.ChecksumSpec){}[0]
+    final fun read(kotlin/ByteArray, kotlin/Int, com.splendo.kaluga.bytes.layout/ChecksumSpec, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/ULong // com.splendo.kaluga.bytes.view/ViewChecksum.read|read(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.layout.ChecksumSpec;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+    final fun update(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.layout/ChecksumSpec, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int, kotlin/Int = ...) // com.splendo.kaluga.bytes.view/ViewChecksum.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.ChecksumSpec;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int;kotlin.Int){}[0]
+}
+
+final object com.splendo.kaluga.bytes.view/ViewCollections { // com.splendo.kaluga.bytes.view/ViewCollections|null[0]
+    final const val UNBOUNDED // com.splendo.kaluga.bytes.view/ViewCollections.UNBOUNDED|{}UNBOUNDED[0]
+        final fun <get-UNBOUNDED>(): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.UNBOUNDED.<get-UNBOUNDED>|<get-UNBOUNDED>(){}[0]
+
+    final fun <#A1: kotlin/Any?, #B1: kotlin/Any?> map(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Byte?, com.splendo.kaluga.bytes.view/ItemEnd, com.splendo.kaluga.bytes.view/ItemRead<#A1>, com.splendo.kaluga.bytes.view/ItemEnd, com.splendo.kaluga.bytes.view/ItemRead<#B1>, kotlin/Boolean = ...): kotlin.collections/Map<#A1, #B1> // com.splendo.kaluga.bytes.view/ViewCollections.map|map(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Byte?;com.splendo.kaluga.bytes.view.ItemEnd;com.splendo.kaluga.bytes.view.ItemRead<0:0>;com.splendo.kaluga.bytes.view.ItemEnd;com.splendo.kaluga.bytes.view.ItemRead<0:1>;kotlin.Boolean){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> list(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Byte?, com.splendo.kaluga.bytes.view/ItemEnd, com.splendo.kaluga.bytes.view/ItemRead<#A1>, kotlin/Boolean = ...): kotlin.collections/List<#A1> // com.splendo.kaluga.bytes.view/ViewCollections.list|list(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Byte?;com.splendo.kaluga.bytes.view.ItemEnd;com.splendo.kaluga.bytes.view.ItemRead<0:0>;kotlin.Boolean){0§<kotlin.Any?>}[0]
+    final fun checkNotTerminator(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Byte, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewCollections.checkNotTerminator|checkNotTerminator(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Byte;kotlin.Int){}[0]
+    final fun end(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Byte?, com.splendo.kaluga.bytes.view/ItemEnd, com.splendo.kaluga.bytes.view/ItemEnd? = ...): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.end|end(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Byte?;com.splendo.kaluga.bytes.view.ItemEnd;com.splendo.kaluga.bytes.view.ItemEnd?){}[0]
+    final fun endDown(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Byte?, com.splendo.kaluga.bytes.view/ItemEnd, com.splendo.kaluga.bytes.view/ItemEnd? = ...): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.endDown|endDown(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Byte?;com.splendo.kaluga.bytes.view.ItemEnd;com.splendo.kaluga.bytes.view.ItemEnd?){}[0]
+    final fun forEach(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Byte?, com.splendo.kaluga.bytes.view/ItemEnd, com.splendo.kaluga.bytes.view/ItemEnd?, kotlin/Boolean, com.splendo.kaluga.bytes.view/ItemVisit) // com.splendo.kaluga.bytes.view/ViewCollections.forEach|forEach(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Byte?;com.splendo.kaluga.bytes.view.ItemEnd;com.splendo.kaluga.bytes.view.ItemEnd?;kotlin.Boolean;com.splendo.kaluga.bytes.view.ItemVisit){}[0]
+    final fun lengthPrefixCount(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix, com.splendo.kaluga.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.lengthPrefixCount|lengthPrefixCount(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix;com.splendo.kaluga.bytes.ByteOrder){}[0]
+    final fun lengthPrefixCountDown(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix, com.splendo.kaluga.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.lengthPrefixCountDown|lengthPrefixCountDown(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix;com.splendo.kaluga.bytes.ByteOrder){}[0]
+    final fun lengthPrefixSize(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.lengthPrefixSize|lengthPrefixSize(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix){}[0]
+    final fun lengthPrefixSizeDown(kotlin/ByteArray, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.lengthPrefixSizeDown|lengthPrefixSizeDown(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix){}[0]
+    final fun writeLengthPrefix(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix, com.splendo.kaluga.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.writeLengthPrefix|writeLengthPrefix(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix;com.splendo.kaluga.bytes.ByteOrder){}[0]
+    final fun writeLengthPrefixDown(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix, com.splendo.kaluga.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.writeLengthPrefixDown|writeLengthPrefixDown(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix;com.splendo.kaluga.bytes.ByteOrder){}[0]
+}
+
+final object com.splendo.kaluga.bytes.view/ViewStrings { // com.splendo.kaluga.bytes.view/ViewStrings|null[0]
+    final fun check(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings) // com.splendo.kaluga.bytes.view/ViewStrings.check|check(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+    final fun read(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings): kotlin/String // com.splendo.kaluga.bytes.view/ViewStrings.read|read(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+    final fun readDown(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings): kotlin/String // com.splendo.kaluga.bytes.view/ViewStrings.readDown|readDown(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+    final fun size(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings): kotlin/Int // com.splendo.kaluga.bytes.view/ViewStrings.size|size(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+    final fun sizeDown(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings): kotlin/Int // com.splendo.kaluga.bytes.view/ViewStrings.sizeDown|sizeDown(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+    final fun sizeOf(kotlin/String, com.splendo.kaluga.bytes.strings/StringEncodingSettings): kotlin/Int // com.splendo.kaluga.bytes.view/ViewStrings.sizeOf|sizeOf(kotlin.String;com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+    final fun write(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/String, com.splendo.kaluga.bytes.strings/StringEncodingSettings, com.splendo.kaluga.bytes/ByteOrder) // com.splendo.kaluga.bytes.view/ViewStrings.write|write(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.String;com.splendo.kaluga.bytes.strings.StringEncodingSettings;com.splendo.kaluga.bytes.ByteOrder){}[0]
+    final fun writeDown(kotlin/ByteArray, kotlin/Int, kotlin/String, com.splendo.kaluga.bytes.strings/StringEncodingSettings, com.splendo.kaluga.bytes/ByteOrder) // com.splendo.kaluga.bytes.view/ViewStrings.writeDown|writeDown(kotlin.ByteArray;kotlin.Int;kotlin.String;com.splendo.kaluga.bytes.strings.StringEncodingSettings;com.splendo.kaluga.bytes.ByteOrder){}[0]
+}
+
+final object com.splendo.kaluga.bytes.view/ViewStuffing { // com.splendo.kaluga.bytes.view/ViewStuffing|null[0]
+    final fun end(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme, kotlin/Byte): kotlin/Int // com.splendo.kaluga.bytes.view/ViewStuffing.end|end(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme;kotlin.Byte){}[0]
+    final fun fromWire(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme): kotlin/ByteArray // com.splendo.kaluga.bytes.view/ViewStuffing.fromWire|fromWire(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme){}[0]
+    final fun sizeOf(kotlin/ByteArray, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme): kotlin/Int // com.splendo.kaluga.bytes.view/ViewStuffing.sizeOf|sizeOf(kotlin.ByteArray;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme){}[0]
+    final fun toWire(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme): kotlin/ByteArray // com.splendo.kaluga.bytes.view/ViewStuffing.toWire|toWire(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme){}[0]
+    final fun unstuff(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme, kotlin/Byte): kotlin/ByteArray // com.splendo.kaluga.bytes.view/ViewStuffing.unstuff|unstuff(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme;kotlin.Byte){}[0]
+    final fun write(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/ByteArray, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme, kotlin/Byte): kotlin/Int // com.splendo.kaluga.bytes.view/ViewStuffing.write|write(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.ByteArray;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme;kotlin.Byte){}[0]
+}
