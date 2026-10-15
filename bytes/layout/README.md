@@ -4,7 +4,7 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-The core layout compilation and validation framework for byte-packed wire formats. Used internally by [serialization](../serialization/) (at runtime) and the bytes code generator (at compile time) to describe and validate layouts.
+The core layout compilation and validation framework for byte-packed wire formats. Used internally by [serialization](../serialization/) (at runtime) and the [bytes code generator](../ksp/) (at compile time) to describe and validate layouts.
 
 ## Installing
 
@@ -29,7 +29,7 @@ The bytes layout framework converts interface descriptions into executable wire 
 ## Key components
 
 `TypeShape`, `LayoutCompiler`, the layout dumps and `NumericCodec` are marked `@InternalBytesApi`, an opt-in marker
-this module defines: the bytes modules and the code the bytes plugin generates call them, and they may change in any
+this module defines: the bytes modules and the code the [bytes plugin](../plugin/) generates call them, and they may change in any
 release. Opt in with `@OptIn(InternalBytesApi::class)` only to inspect a layout, for instance through its dump.
 
 ### TypeShape
@@ -57,7 +57,7 @@ release. Opt in with `@OptIn(InternalBytesApi::class)` only to inspect a layout,
 
 The layout is read by:
 - `BytesFormat` (at runtime, to encode/decode `@Serializable` classes)
-- The bytes code generator (at compile time, to generate data classes and zero-copy views, and in the views' runtime helpers)
+- The [bytes code generator](../ksp/) (at compile time, to generate data classes and zero-copy views, and in the views' runtime helpers)
 
 ### Layout dumps
 
@@ -68,7 +68,7 @@ The layout is read by:
 - Size/padding information
 - Discriminator and size-dispatch details for sealed and enum types
 
-[serialization](../serialization/) exposes the same thing from a `SerialDescriptor` as `layoutDumpOf(descriptor)`, and the bytes code generator compares its compile-time dump against it to catch generator/runtime drift. Useful for debugging layout mismatches and understanding how annotated fields map to wire bytes.
+[serialization](../serialization/) exposes the same thing from a `SerialDescriptor` as `layoutDumpOf(descriptor)`, and the [bytes code generator](../ksp/) compares its compile-time dump against it to catch generator/runtime drift. Useful for debugging layout mismatches and understanding how annotated fields map to wire bytes.
 
 ### NumericCodec
 

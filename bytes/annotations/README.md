@@ -4,7 +4,7 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-The `@BytesLayout` annotation and supporting annotations that describe a byte-packed wire layout. [serialization](../serialization/) reads these annotations at runtime to encode and decode a `@Serializable` class; the bytes code generator (`com.splendo.kaluga.bytes.plugin`) reads them at compile time to generate data classes and zero-copy views.
+The `@BytesLayout` annotation and supporting annotations that describe a byte-packed wire layout. [serialization](../serialization/) reads these annotations at runtime to encode and decode a `@Serializable` class; the [bytes code generator](../ksp/) (applied by the [`com.splendo.kaluga.bytes.plugin`](../plugin/) Gradle plugin) reads them at compile time to generate data classes and zero-copy views.
 
 ## Installing
 
@@ -24,7 +24,7 @@ dependencies {
 
 ## The `@BytesLayout` annotation
 
-Mark an interface with `@BytesLayout` to describe a byte-packed wire layout. The bytes code generator generates implementations from it:
+Mark an interface with `@BytesLayout` to describe a byte-packed wire layout. The [bytes code generator](../ksp/) generates implementations from it:
 
 ```kotlin
 @BytesLayout

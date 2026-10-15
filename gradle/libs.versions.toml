@@ -40,6 +40,7 @@ jetbrains-navigation = "2.9.2"
 jetbrains-lifecycle = "2.11.0"
 ksp="2.3.10"
 kotlinpoet="2.3.0"
+kctfork = "0.13.0"
 bytebuddy = "1.18.11"
 junit = "4.13.2"
 koin = "4.2.2"
@@ -76,11 +77,13 @@ kaluga-bytes-core = { module = "com.splendo.kaluga.bytes:core", version.ref = "k
 kaluga-bytes-crc = { module = "com.splendo.kaluga.bytes:crc", version.ref = "kaluga" }
 kaluga-bytes-hash = { module = "com.splendo.kaluga.bytes:hash", version.ref = "kaluga" }
 kaluga-bytes-integer = { module = "com.splendo.kaluga.bytes:integer", version.ref = "kaluga" }
+kaluga-bytes-ksp = { module = "com.splendo.kaluga.bytes:ksp", version.ref = "kaluga" }
 kaluga-bytes-layout = { module = "com.splendo.kaluga.bytes:layout", version.ref = "kaluga" }
 kaluga-bytes-medfloat = { module = "com.splendo.kaluga.bytes:medfloat", version.ref = "kaluga" }
 kaluga-bytes-serialization = { module = "com.splendo.kaluga.bytes:serialization", version.ref = "kaluga" }
 kaluga-bytes-strings = { module = "com.splendo.kaluga.bytes:strings", version.ref = "kaluga" }
 kaluga-bytes-stuffing = { module = "com.splendo.kaluga.bytes:stuffing", version.ref = "kaluga" }
+kaluga-bytes-view = { module = "com.splendo.kaluga.bytes:view", version.ref = "kaluga" }
 kaluga-datetime = { module = "com.splendo.kaluga.date-time:date-time", version.ref = "kaluga" }
 kaluga-datetime-timer = { module = "com.splendo.kaluga.date-time:timer", version.ref = "kaluga" }
 kaluga-datetimepicker = { module = "com.splendo.kaluga.date-time-picker:date-time-picker", version.ref = "kaluga" }
@@ -185,9 +188,12 @@ google-devtools-ksp-gradle = { module = "com.google.devtools.ksp:com.google.devt
 google-devtools-ksp-symbolProcessingAPI = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
+kotlin-serialization-compiler-plugin-embeddable = { module = "org.jetbrains.kotlin:kotlin-serialization-compiler-plugin-embeddable", version.ref = "kotlin" }
 
 ## Test
 junit = { module = "junit:junit", version.ref = "junit" }
+kctfork-core = { module = "dev.zacsweers.kctfork:core", version.ref = "kctfork" }
+kctfork-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kctfork" }
 
 # Koin
 # The BoM governs the version of every Koin artifact, so the entries below carry none.
@@ -228,5 +234,6 @@ foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", ver
 palantir-git-version = { id = "com.palantir.git-version", version.ref = "palantir-git-version" }
 
 kaluga-bluetooth = { id = "com.splendo.kaluga.bluetooth.plugin", version.ref = "kaluga" }
+kaluga-bytes = { id = "com.splendo.kaluga.bytes.plugin", version.ref = "kaluga" }
 
 [bundles]

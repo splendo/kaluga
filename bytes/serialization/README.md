@@ -24,7 +24,7 @@ dependencies {
 
 ## Basic usage
 
-Mark a `@Serializable` data class with the annotations of the [annotations](../annotations/) module to describe its wire format. (`@BytesLayout` itself only applies to the interfaces the bytes code generator generates from; a hand-written `@Serializable` class carries the layout annotations directly.)
+Mark a `@Serializable` data class with the annotations of the [annotations](../annotations/) module to describe its wire format. (`@BytesLayout` itself only applies to the interfaces the [bytes code generator](../ksp/) generates from; a hand-written `@Serializable` class carries the layout annotations directly.)
 
 ```kotlin
 @Serializable
