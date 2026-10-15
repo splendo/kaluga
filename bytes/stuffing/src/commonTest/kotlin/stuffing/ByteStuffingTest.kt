@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bytes.stuffing
 
-import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.toHexString
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -141,19 +140,6 @@ class ByteStuffingTest {
         assertEquals(0x00.toByte(), ByteStuffingScheme.Cobs.delimiter)
         assertEquals(0xC0.toByte(), ByteStuffingScheme.Slip().delimiter)
         assertEquals(0x7C.toByte(), ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x7C).delimiter)
-    }
-
-    @Test
-    fun byteStuffedTerminator() {
-        // A delimiter scheme supplies its own terminator via ByteStuffed.Delimited — no override is possible.
-        assertEquals(0x00.toByte(), StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Cobs).terminator)
-        assertEquals(0xC0.toByte(), StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Slip()).terminator)
-        // A non-delimiter scheme requires an explicit terminator it escapes (CSafe escapes 0xF0..0xF3).
-        assertEquals(0xF2.toByte(), StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0xF2.toByte()).terminator)
-        // A byte the scheme does not escape (0x00) cannot terminate; nor can the escape byte itself (0xF3), which is
-        // escaped yet still emitted literally as a prefix.
-        assertFailsWith<IllegalArgumentException> { StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0x00) }
-        assertFailsWith<IllegalArgumentException> { StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0xF3.toByte()) }
     }
 
     @Test
