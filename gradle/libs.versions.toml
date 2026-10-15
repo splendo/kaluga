@@ -234,5 +234,6 @@ foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", ver
 palantir-git-version = { id = "com.palantir.git-version", version.ref = "palantir-git-version" }
 
 kaluga-bluetooth = { id = "com.splendo.kaluga.bluetooth.plugin", version.ref = "kaluga" }
+kaluga-bytes = { id = "com.splendo.kaluga.bytes.plugin", version.ref = "kaluga" }
 
 [bundles]
