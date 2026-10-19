@@ -93,6 +93,18 @@ sealed interface ByteStuffingScheme {
         // The escape byte is escaped but still emitted literally as a prefix, so it cannot serve as a terminator.
         override fun canTerminateWith(byte: Byte): Boolean = escapes(byte) && byte != escapeByte
 
+        // A stored byte that is itself escaped would put an escaped value literally in the output, right after the
+        // escape prefix; anything framing on that value would cut the frame there. Each scheme runs this from its own
+        // init block, once the properties [escapes] and [encodeStored] read exist.
+        protected fun requireStoredBytesUnescaped(escaped: Iterable<Byte>) {
+            for (byte in escaped) {
+                val stored = encodeStored(byte)
+                require(!escapes(stored)) {
+                    "Escaped byte ${byteArrayOf(byte).toHexString()} is stored as ${byteArrayOf(stored).toHexString()}, which is itself escaped and would appear literally"
+                }
+            }
+        }
+
         override fun stuffedSize(data: ByteArray): Int {
             var size = 0
             for (byte in data) size += if (escapes(byte)) 2 else 1
@@ -173,6 +185,14 @@ sealed interface ByteStuffingScheme {
     data class CSafe(override val escapeByte: Byte = 0xF3.toByte(), val mask: Byte = 0x03) : EscapeBased.WithoutDelimiter() {
         private val maskInt: Int = mask.toInt() and 0xFF
         private val base: Int = (escapeByte.toInt() and 0xFF) and maskInt.inv()
+
+        init {
+            // escapes() treats the block as the range base..(base or mask) while encodeStored keeps the mask bits, which
+            // only agree for a contiguous run of low bits.
+            require(maskInt and (maskInt + 1) == 0) { "CSafe mask must be a contiguous run of low bits, got ${byteArrayOf(mask).toHexString()}" }
+            requireStoredBytesUnescaped((base..(base or maskInt)).map { it.toByte() })
+        }
+
         override fun escapes(byte: Byte): Boolean = (byte.toInt() and 0xFF) in base..(base or maskInt)
         override fun encodeStored(original: Byte): Byte = (original.toInt() and maskInt).toByte()
         override fun decodeStored(stored: Byte): Byte = (base or (stored.toInt() and maskInt)).toByte()
@@ -191,6 +211,12 @@ sealed interface ByteStuffingScheme {
         EscapeBased.WithDelimiter() {
         private val allEscaped: Set<Byte> = additionalEscapedBytes + escapeByte + delimiter
         private val xorInt: Int = xorKey.toInt() and 0xFF
+
+        init {
+            require(delimiter != escapeByte) { "The delimiter cannot be the escape byte, which is emitted literally" }
+            requireStoredBytesUnescaped(allEscaped)
+        }
+
         override fun escapes(byte: Byte): Boolean = byte in allEscaped
         override fun encodeStored(original: Byte): Byte = ((original.toInt() and 0xFF) xor xorInt).toByte()
         override fun decodeStored(stored: Byte): Byte = ((stored.toInt() and 0xFF) xor xorInt).toByte()
@@ -209,6 +235,13 @@ sealed interface ByteStuffingScheme {
     data class Slip(val end: Byte = 0xC0.toByte(), override val escapeByte: Byte = 0xDB.toByte(), val escapedEnd: Byte = 0xDC.toByte(), val escapedEsc: Byte = 0xDD.toByte()) :
         EscapeBased.WithDelimiter() {
         override val delimiter: Byte get() = end
+
+        init {
+            require(end != escapeByte) { "The end byte cannot be the escape byte, which is emitted literally" }
+            require(escapedEnd != escapedEsc) { "escapedEnd and escapedEsc must differ, or an escape cannot be decoded" }
+            requireStoredBytesUnescaped(listOf(end, escapeByte))
+        }
+
         override fun escapes(byte: Byte): Boolean = byte == end || byte == escapeByte
         override fun encodeStored(original: Byte): Byte = if (original == end) escapedEnd else escapedEsc
         override fun decodeStored(stored: Byte): Byte = when (stored) {

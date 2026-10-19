@@ -161,6 +161,39 @@ class ByteStuffingTest {
     }
 
     @Test
+    fun storedBytesMustNotBeEscaped() {
+        // XOR 0x00 stores the delimiter as itself, so the delimiter would follow the escape byte literally.
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00, xorKey = 0x00) }
+        // The stored form of 0x5D (0x5D xor 0x20 = 0x7D) is the escape byte.
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00, additionalEscapedBytes = setOf(0x5D)) }
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x7D) }
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.Slip(escapedEnd = 0xC0.toByte()) }
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.Slip(escapedEsc = 0xDB.toByte()) }
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.Slip(escapedEnd = 0xDD.toByte()) }
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.Slip(end = 0xDB.toByte()) }
+        // The escaped block 0x00..0x03 is stored as 0x00..0x03.
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.CSafe(escapeByte = 0x03, mask = 0x03) }
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.CSafe(escapeByte = 0xFF.toByte(), mask = 0xFF.toByte()) }
+        // Valid variants of each still construct.
+        ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00, additionalEscapedBytes = setOf(0x7E))
+        ByteStuffingScheme.Slip(end = 0x7E, escapeByte = 0x7D, escapedEnd = 0x5E, escapedEsc = 0x5D)
+        ByteStuffingScheme.CSafe(escapeByte = 0x17, mask = 0x07)
+    }
+
+    @Test
+    fun cSafeMaskMustBeContiguous() {
+        // 0x05 is not a run of low bits: escapes() would cover 0xF0..0xF5 while the stored form keeps only bits 0 and 2.
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.CSafe(escapeByte = 0xF5.toByte(), mask = 0x05) }
+        assertFailsWith<IllegalArgumentException> { ByteStuffingScheme.CSafe(escapeByte = 0xF2.toByte(), mask = 0x02) }
+        val wide = ByteStuffingScheme.CSafe(escapeByte = 0xF7.toByte(), mask = 0x07)
+        wide.assertRoundTrip(byteArrayOf(0xF0.toByte(), 0xF4.toByte(), 0xF7.toByte()), byteArrayOf(0xF7.toByte(), 0x00, 0xF7.toByte(), 0x04, 0xF7.toByte(), 0x07))
+        ByteStuffingScheme.CSafe(
+            escapeByte = 0xF0.toByte(),
+            mask = 0x00,
+        ).assertRoundTrip(byteArrayOf(0xF0.toByte(), 0xF1.toByte()), byteArrayOf(0xF0.toByte(), 0x00, 0xF1.toByte()))
+    }
+
+    @Test
     fun canTerminateWith() {
         val cSafe = ByteStuffingScheme.CSafe() // escape byte 0xF3, escapes 0xF0..0xF3
         assertTrue(cSafe.canTerminateWith(0xF2.toByte()))
