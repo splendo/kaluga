@@ -507,6 +507,27 @@ class StringExtensionTests {
     }
 
     @Test
+    fun nullTerminatedUTF16RejectsNullLowByte() {
+        val settings = StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_16)
+        // U+0100 encodes as 0x00 0x01: the leading 0x00 would read as the terminator, so encoding must refuse it.
+        for (order in ByteOrder.entries) {
+            assertFailsWith<IllegalArgumentException> { "Ā".toByteArray(settings, order) }
+            assertFailsWith<IllegalArgumentException> { "a b".toByteArray(settings, order) }
+        }
+        // A 0x00 high byte is fine: it sits at an odd index.
+        "Aÿ".encodeDecode(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST, byteArrayOf(0x41, 0x00, 0xFF.toByte(), 0x00, 0x00))
+        // Stuffing is the way to carry such characters under a null terminator.
+        val stuffed = StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00)), Encoding.UTF_16)
+        "Ā".encodeDecode(stuffed, ByteOrder.LEAST_SIGNIFICANT_FIRST, byteArrayOf(0x7D, 0x20, 0x01, 0x00))
+        // UTF-8 and ASCII only produce a 0x00 byte for U+0000, so other characters stay allowed.
+        "Ā".encodeDecode(
+            StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_8),
+            ByteOrder.LEAST_SIGNIFICANT_FIRST,
+            byteArrayOf(0xC4.toByte(), 0x80.toByte(), 0x00),
+        )
+    }
+
+    @Test
     fun byteTerminatedWithoutStuffing() {
         // A plain byte terminator (0x0A): the content is matched at the byte level and must not contain it.
         "Hi".encodeDecode(

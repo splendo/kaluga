@@ -169,7 +169,8 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
     }
 
     /**
-     * An [EndMarking] where the end is marked by a final empty character `\u0000`. If the string contains this character encoding will fail.
+     * An [EndMarking] where the end is marked by a single `0x00` byte. Encoding fails if the string contains `\u0000`, or,
+     * with [Encoding.UTF_16], any character whose low byte is `0x00`; use [ByteStuffed] to carry those.
      */
     data object NullTerminated : WithTerminal {
         override val terminator: Byte = 0x00
@@ -291,13 +292,19 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
             stuffed.copyTerminatedInto(array, endMarking.terminator, offset, order)
         }
 
-        // [NullTerminated] and [Terminated]: content followed by a single terminator byte. NullTerminated forbids
-        // only the U+0000 character (its UTF-16 0x00 bytes are tolerated on decode via alignment); any other
-        // terminator is forbidden as a byte in the encoded content.
         is StringEncodingSettings.WithTerminal -> {
             val encoded = settings.encoding.encodeString(this, order)
             if (endMarking is StringEncodingSettings.NullTerminated) {
-                require(!contains(0.toChar())) { "Null terminated string cannot contain null character" }
+                // The decoder reads a UTF-16 code unit low byte first and takes a 0x00 in that position as the
+                // terminator, so any character with a 0x00 low byte would end the string early.
+                val isNullByte: (Char) -> Boolean = if (settings.encoding == UTF_16) {
+                    { it.code and 0xFF == 0 }
+                } else {
+                    { it == '\u0000' }
+                }
+                require(none(isNullByte)) {
+                    "Null terminated string cannot contain a null character or, in UTF-16, a character with a 0x00 low byte; use a ByteStuffed end marking"
+                }
             } else {
                 require(endMarking.terminator !in encoded) { "A string terminated by a byte cannot encode to bytes containing that terminator; use a ByteStuffed end marking" }
             }
@@ -627,8 +634,8 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
 
         is StringEncodingSettings.ByteStuffed.Explicit -> endMarking.scheme.unstuff(iterator()) { it == endMarking.terminator }.toList()
 
-        // [NullTerminated] / [Terminated]: read until the terminator byte. NullTerminated also tolerates a 0x00 byte
-        // that is the high byte of a UTF-16 character (odd index); [Terminated] never contains its terminator byte.
+        // A UTF-16 code unit arrives low byte first, so a 0x00 at an odd index is a high byte, not the terminator; the
+        // encoder rejects characters whose low byte is 0x00 for the same reason.
         is StringEncodingSettings.WithTerminal -> {
             val allowUtf16NullByte = endMarking is StringEncodingSettings.NullTerminated && settings.encoding == UTF_16
             var hasFoundTerminator = false
