@@ -472,6 +472,41 @@ class StringExtensionTests {
     }
 
     @Test
+    fun byteStuffingMostSignificantFirst() {
+        val scheme = ByteStuffingScheme.Xor(escapeByte = 0x7D, delimiter = 0x00)
+        // The terminator comes first and the stuffed bytes are mirrored as a whole, so the escape pair reads back in
+        // order when the array is walked from the end.
+        "a}b".encodeDecode(
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(scheme), Encoding.ASCII),
+            ByteOrder.MOST_SIGNIFICANT_FIRST,
+            byteArrayOf(0x00, 0x62, 0x5D, 0x7D, 0x61),
+        )
+        "AB".encodeDecode(
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(scheme), Encoding.UTF_16),
+            ByteOrder.MOST_SIGNIFICANT_FIRST,
+            byteArrayOf(0x00, 0x20, 0x7D, 0x42, 0x20, 0x7D, 0x41),
+        )
+        ("a" + 0.toChar() + "b").encodeDecode(
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Cobs), Encoding.UTF_8),
+            ByteOrder.MOST_SIGNIFICANT_FIRST,
+            byteArrayOf(0x00, 0x62, 0x02, 0x61, 0x02),
+        )
+        ("a" + 0.toChar() + "b").encodeDecode(
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0xF2.toByte()), Encoding.UTF_8),
+            ByteOrder.MOST_SIGNIFICANT_FIRST,
+            byteArrayOf(0xF2.toByte(), 0x62, 0x00, 0x61),
+        )
+        // The same content lands at an offset with the content mirrored after the terminator.
+        val array = "a}b".copyIntoArray(
+            ByteArray(7),
+            StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(scheme), Encoding.ASCII),
+            offset = 1,
+            order = ByteOrder.MOST_SIGNIFICANT_FIRST,
+        )
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x62, 0x5D, 0x7D, 0x61, 0x00), array)
+    }
+
+    @Test
     fun byteTerminatedWithoutStuffing() {
         // A plain byte terminator (0x0A): the content is matched at the byte level and must not contain it.
         "Hi".encodeDecode(

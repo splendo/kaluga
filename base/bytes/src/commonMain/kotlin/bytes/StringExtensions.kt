@@ -193,8 +193,8 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
      * with [scheme] so the terminator value never appears literally in the content and stays unambiguous. This is the
      * only end marking under which the string may itself contain the [terminator] value.
      *
-     * Only supported for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Constructed as either [Delimited] (the scheme supplies the
-     * terminator) or [Explicit] (a terminator is given for a scheme that has no canonical one).
+     * Constructed as either [Delimited] (the scheme supplies the terminator) or [Explicit] (a terminator is given for a
+     * scheme that has no canonical one).
      */
     sealed class ByteStuffed : WithTerminal {
         abstract val scheme: ByteStuffingScheme
@@ -286,12 +286,9 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
         }
 
         is StringEncodingSettings.ByteStuffed -> {
-            require(order == ByteOrder.LEAST_SIGNIFICANT_FIRST) { "Byte stuffing is only supported for LEAST_SIGNIFICANT_FIRST" }
             // The scheme escapes the terminator, so the content may itself contain the terminator value.
-            val stuffed = endMarking.scheme.stuff(settings.encoding.encodeString(this, order))
-            stuffed.copyInto(array, offset)
-            array[offset + stuffed.size] = endMarking.terminator
-            array
+            val stuffed = endMarking.scheme.stuff(settings.encoding.encodeString(this, ByteOrder.LEAST_SIGNIFICANT_FIRST))
+            stuffed.copyTerminatedInto(array, endMarking.terminator, offset, order)
         }
 
         // [NullTerminated] and [Terminated]: content followed by a single terminator byte. NullTerminated forbids
@@ -343,6 +340,23 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
             array
         }
     }
+}
+
+// Stuffing is directional, so the stuffed bytes are produced least significant first and mirrored as a whole for
+// MOST_SIGNIFICANT_FIRST, the way the array decoder reads them back.
+private fun ByteArray.copyTerminatedInto(array: ByteArray, terminator: Byte, offset: Int, order: ByteOrder): ByteArray {
+    when (order) {
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+            array[offset] = terminator
+            for (index in indices) array[offset + size - index] = this[index]
+        }
+
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+            copyInto(array, offset)
+            array[offset + size] = terminator
+        }
+    }
+    return array
 }
 
 /**
