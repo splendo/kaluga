@@ -234,10 +234,8 @@ fun String.byteArraySize(settings: StringEncodingSettings): Int {
             stringSize + lengthSize
         }
 
-        // The terminator is a single byte; the stuffed characters expand by however many escaped bytes they contain.
         is StringEncodingSettings.ByteStuffed -> endMarking.scheme.stuffedSize(settings.encoding.encodeString(this, ByteOrder.LEAST_SIGNIFICANT_FIRST)) + 1
 
-        // Any other terminated marking ([NullTerminated], [Terminated]) writes the content plus a single terminator byte.
         is StringEncodingSettings.WithTerminal -> stringSize + 1
 
         is StringEncodingSettings.NoMarking -> stringSize
@@ -295,7 +293,6 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
         }
 
         is StringEncodingSettings.ByteStuffed -> {
-            // The scheme escapes the terminator, so the content may itself contain the terminator value.
             val stuffed = stuffedContent(settings.encoding, endMarking)
             requireRoom(stuffed.size + 1)
             stuffed.copyTerminatedInto(array, endMarking.terminator, offset, order)
