@@ -545,6 +545,17 @@ class StringExtensionTests {
         assertFails {
             "a\nb".toByteArray(StringEncodingSettings(StringEncodingSettings.Terminated(0x0A), Encoding.ASCII), ByteOrder.LEAST_SIGNIFICANT_FIRST)
         }
+        // Including a terminator byte inside a multibyte UTF-8 sequence ('é' is 0xC3 0xA9), in either order.
+        for (order in ByteOrder.entries) {
+            assertFailsWith<IllegalArgumentException> {
+                "é".toByteArray(StringEncodingSettings(StringEncodingSettings.Terminated(0xA9.toByte()), Encoding.UTF_8), order)
+            }
+        }
+        "é".encodeDecode(
+            StringEncodingSettings(StringEncodingSettings.Terminated(0x0A), Encoding.UTF_8),
+            ByteOrder.MOST_SIGNIFICANT_FIRST,
+            byteArrayOf(0x0A, 0xA9.toByte(), 0xC3.toByte()),
+        )
     }
 
     private fun String.encodeDecode(settings: StringEncodingSettings, order: ByteOrder, expectedBytes: ByteArray, expectedString: String = this) {
