@@ -128,6 +128,8 @@ internal fun LengthPrefix.asLengthPrefix() = when {
  * Annotation added for serializing using [BluetoothFormat]
  *
  * When applied to a [String] or [Char], [encoding] will be used for encoding each char.
+ * For a [Char], [Encoding.UTF_8] is the same as [Encoding.ASCII]: one byte, ASCII only, and any other character
+ * throws an [IllegalArgumentException]. Use [Encoding.UTF_16] or a [String] for characters outside ASCII.
  *
  * @property encoding the [Encoding] to use.
  */
