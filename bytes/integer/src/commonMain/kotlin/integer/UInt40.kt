@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.integer
 
+import com.splendo.kaluga.bytes.IntLimits
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.toByteArray
 import kotlin.jvm.JvmInline
@@ -29,18 +30,15 @@ import kotlin.jvm.JvmInline
 value class UInt40(val value: ULong) : Comparable<UInt40> {
 
     companion object {
-        private const val MIN_ULONG_VALUE = 0UL
-        private const val MAX_ULONG_VALUE = 0xFFFFFFFFFFUL
-
         /**
          * A constant holding the minimum value an instance of UInt40 can have.
          */
-        val MIN_VALUE = UInt40(MIN_ULONG_VALUE)
+        val MIN_VALUE = UInt40(0UL)
 
         /**
          * A constant holding the maximum value an instance of UInt40 can have.
          */
-        val MAX_VALUE = UInt40(MAX_ULONG_VALUE)
+        val MAX_VALUE = UInt40(IntLimits.UINT40_MAX_VALUE)
 
         /**
          * The number of bytes used to represent an instance of UInt40 in a binary form.
@@ -54,7 +52,7 @@ value class UInt40(val value: ULong) : Comparable<UInt40> {
     }
 
     init {
-        require(value in MIN_ULONG_VALUE..MAX_ULONG_VALUE) {
+        require(value <= IntLimits.UINT40_MAX_VALUE) {
             "Value $value out of unsigned 40-bit range"
         }
     }

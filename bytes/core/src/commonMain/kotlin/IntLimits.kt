@@ -18,7 +18,8 @@
 package com.splendo.kaluga.bytes
 
 /**
- * Value ranges of integers narrower than [Int] that binary protocols commonly use.
+ * Value ranges of the 24-, 40- and 48-bit integers that binary protocols commonly use.
+ * The unsigned ranges start at zero.
  */
 object IntLimits {
 
@@ -31,4 +32,39 @@ object IntLimits {
      * The maximum value of a signed 24-bit integer.
      */
     const val INT24_MAX_VALUE = 0x7FFFFF
+
+    /**
+     * The minimum value of a signed 40-bit integer.
+     */
+    const val INT40_MIN_VALUE = -0x8000000000L
+
+    /**
+     * The maximum value of a signed 40-bit integer.
+     */
+    const val INT40_MAX_VALUE = 0x7FFFFFFFFFL
+
+    /**
+     * The minimum value of a signed 48-bit integer.
+     */
+    const val INT48_MIN_VALUE = -0x800000000000L
+
+    /**
+     * The maximum value of a signed 48-bit integer.
+     */
+    const val INT48_MAX_VALUE = 0x7FFFFFFFFFFFL
+
+    /**
+     * The maximum value of an unsigned 24-bit integer.
+     */
+    const val UINT24_MAX_VALUE = 0xFFFFFFU
+
+    /**
+     * The maximum value of an unsigned 40-bit integer.
+     */
+    const val UINT40_MAX_VALUE = 0xFFFFFFFFFFUL
+
+    /**
+     * The maximum value of an unsigned 48-bit integer.
+     */
+    const val UINT48_MAX_VALUE = 0xFFFFFFFFFFFFUL
 }

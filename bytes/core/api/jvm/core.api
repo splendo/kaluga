@@ -101,6 +101,13 @@ public final class com/splendo/kaluga/bytes/IntLimits {
 	public static final field INSTANCE Lcom/splendo/kaluga/bytes/IntLimits;
 	public static final field INT24_MAX_VALUE I
 	public static final field INT24_MIN_VALUE I
+	public static final field INT40_MAX_VALUE J
+	public static final field INT40_MIN_VALUE J
+	public static final field INT48_MAX_VALUE J
+	public static final field INT48_MIN_VALUE J
+	public static final field UINT24_MAX_VALUE I
+	public static final field UINT40_MAX_VALUE J
+	public static final field UINT48_MAX_VALUE J
 }
 
 public final class com/splendo/kaluga/bytes/LongExtensionsKt {

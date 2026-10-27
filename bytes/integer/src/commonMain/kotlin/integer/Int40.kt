@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.integer
 
+import com.splendo.kaluga.bytes.IntLimits
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.toByteArray
 import kotlin.jvm.JvmInline
@@ -28,18 +29,15 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class Int40(val value: Long) : Comparable<Int40> {
     companion object {
-        private const val MIN_VALUE_LONG = -0x8000000000L
-        private const val MAX_VALUE_LONG = 0x7FFFFFFFFFL
-
         /**
          * A constant holding the minimum value an instance of Int40 can have.
          */
-        val MIN_VALUE = Int40(MIN_VALUE_LONG)
+        val MIN_VALUE = Int40(IntLimits.INT40_MIN_VALUE)
 
         /**
          * A constant holding the maximum value an instance of Int40 can have.
          */
-        val MAX_VALUE = Int40(MAX_VALUE_LONG)
+        val MAX_VALUE = Int40(IntLimits.INT40_MAX_VALUE)
 
         /**
          * The number of bytes used to represent an instance of Int40 in a binary form.
@@ -52,7 +50,7 @@ value class Int40(val value: Long) : Comparable<Int40> {
         const val SIZE_BITS = 40
     }
     init {
-        require(value in MIN_VALUE_LONG..MAX_VALUE_LONG) {
+        require(value in IntLimits.INT40_MIN_VALUE..IntLimits.INT40_MAX_VALUE) {
             "Value $value out of signed 40-bit range"
         }
     }

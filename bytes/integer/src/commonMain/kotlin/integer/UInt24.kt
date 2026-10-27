@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.integer
 
+import com.splendo.kaluga.bytes.IntLimits
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.toByteArray
 import kotlin.jvm.JvmInline
@@ -29,18 +30,15 @@ import kotlin.jvm.JvmInline
 value class UInt24(val value: UInt) : Comparable<UInt24> {
 
     companion object {
-        private const val MIN_UINT_VALUE = 0U
-        private const val MAX_UINT_VALUE = 0xFFFFFFU
-
         /**
          * A constant holding the minimum value an instance of UInt24 can have.
          */
-        val MIN_VALUE = UInt24(MIN_UINT_VALUE)
+        val MIN_VALUE = UInt24(0U)
 
         /**
          * A constant holding the maximum value an instance of UInt24 can have.
          */
-        val MAX_VALUE = UInt24(MAX_UINT_VALUE)
+        val MAX_VALUE = UInt24(IntLimits.UINT24_MAX_VALUE)
 
         /**
          * The number of bytes used to represent an instance of UInt24 in a binary form.
@@ -54,7 +52,7 @@ value class UInt24(val value: UInt) : Comparable<UInt24> {
     }
 
     init {
-        require(value in MIN_UINT_VALUE..MAX_UINT_VALUE) {
+        require(value <= IntLimits.UINT24_MAX_VALUE) {
             "Value $value out of unsigned 24-bit range"
         }
     }

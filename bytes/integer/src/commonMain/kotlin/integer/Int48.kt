@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.integer
 
+import com.splendo.kaluga.bytes.IntLimits
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.toByteArray
 import kotlin.jvm.JvmInline
@@ -28,18 +29,15 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class Int48(val value: Long) : Comparable<Int48> {
     companion object {
-        private const val MIN_VALUE_LONG = -0x800000000000L
-        private const val MAX_VALUE_LONG = 0x7FFFFFFFFFFFL
-
         /**
          * A constant holding the minimum value an instance of Int48 can have.
          */
-        val MIN_VALUE = Int48(MIN_VALUE_LONG)
+        val MIN_VALUE = Int48(IntLimits.INT48_MIN_VALUE)
 
         /**
          * A constant holding the maximum value an instance of Int48 can have.
          */
-        val MAX_VALUE = Int48(MAX_VALUE_LONG)
+        val MAX_VALUE = Int48(IntLimits.INT48_MAX_VALUE)
 
         /**
          * The number of bytes used to represent an instance of Int48 in a binary form.
@@ -52,7 +50,7 @@ value class Int48(val value: Long) : Comparable<Int48> {
         const val SIZE_BITS = 48
     }
     init {
-        require(value in MIN_VALUE_LONG..MAX_VALUE_LONG) {
+        require(value in IntLimits.INT48_MIN_VALUE..IntLimits.INT48_MAX_VALUE) {
             "Value $value out of signed 48-bit range"
         }
     }
