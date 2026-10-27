@@ -485,7 +485,7 @@ fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteO
     return array
 }
 
-private val REPLACEMENT_BYTE_SEQUENCE: ByteArray = byteArrayOf(0xEF.toByte(), 0xBF.toByte(), 0xBD.toByte())
+internal val REPLACEMENT_BYTE_SEQUENCE: ByteArray = byteArrayOf(0xEF.toByte(), 0xBF.toByte(), 0xBD.toByte())
 
 /**
  * Decodes a single UTF-8 code point from an [Iterator] of [Byte] into [result], advancing the iterator past all the

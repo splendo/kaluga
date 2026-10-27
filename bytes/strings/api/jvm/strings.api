@@ -6,6 +6,7 @@ public final class com/splendo/kaluga/bytes/strings/ByteArrayBuilderExtensionsKt
 }
 
 public final class com/splendo/kaluga/bytes/strings/CharExtensionsKt {
+	public static final fun byteSizeOf (Lcom/splendo/kaluga/bytes/strings/Encoding;C)I
 	public static final fun copyCharIntoByteArray (Lcom/splendo/kaluga/bytes/strings/Encoding;C[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
 	public static synthetic fun copyCharIntoByteArray$default (Lcom/splendo/kaluga/bytes/strings/Encoding;C[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun copyUTF16IntoByteArray (C[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
@@ -14,11 +15,15 @@ public final class com/splendo/kaluga/bytes/strings/CharExtensionsKt {
 	public static final fun decodeAsciiChar ([BI)C
 	public static final fun decodeUTF16Char ([BILcom/splendo/kaluga/bytes/ByteOrder;)C
 	public static final fun decodeUTF8Char (B)C
+	public static final fun decodeUTF8Char (Lkotlin/jvm/functions/Function0;)C
 	public static final fun decodeUTF8Char ([BI)C
 	public static final fun encodeChar (Lcom/splendo/kaluga/bytes/strings/Encoding;CLcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static final fun isUTF8Continuation (I)Z
 	public static final fun toAscii (C)B
 	public static final fun toAsciiOrNull (C)Ljava/lang/Byte;
 	public static final fun toUTF16 (CLcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static final fun utf8Char (II)C
+	public static final fun utf8Char (III)C
 }
 
 public final class com/splendo/kaluga/bytes/strings/Encoding : java/lang/Enum {

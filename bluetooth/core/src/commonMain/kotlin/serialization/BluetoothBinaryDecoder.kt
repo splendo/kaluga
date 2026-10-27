@@ -455,7 +455,7 @@ internal fun BluetoothBinaryDescriptor.decodeDoubleElement(decoder: BluetoothBin
 }
 
 internal fun BluetoothBinaryDescriptor.decodeCharElement(decoder: BluetoothBinaryDescriptorDecoder): Char = when (stringSettings?.encoding ?: Encoding.UTF_8) {
-    Encoding.UTF_8 -> decoder.nextBytes(1).first().decodeUTF8Char()
+    Encoding.UTF_8 -> decodeUTF8Char { decoder.nextBytes(1).first() }
     Encoding.UTF_16 -> decoder.nextBytes(2).decodeUTF16Char(0, byteOrder)
     Encoding.ASCII -> decoder.nextBytes(1).first().decodeAsciiChar()
 }

@@ -32,6 +32,7 @@ import com.splendo.kaluga.bytes.strings.Encoding
 import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.strings.add
 import com.splendo.kaluga.bytes.strings.byteArraySize
+import com.splendo.kaluga.bytes.strings.byteSizeOf
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.PolymorphicKind
@@ -516,5 +517,5 @@ internal fun BinaryBuilder.encodeStringElement(value: String, binaryDescriptor: 
 }
 internal fun BinaryBuilder.encodeCharElement(value: Char, binaryDescriptor: BluetoothBinaryDescriptor) {
     val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.UTF_8
-    addAction(encoding.byteSize) { add(value, encoding, binaryDescriptor.byteOrder) }
+    addAction(encoding.byteSizeOf(value)) { add(value, encoding, binaryDescriptor.byteOrder) }
 }

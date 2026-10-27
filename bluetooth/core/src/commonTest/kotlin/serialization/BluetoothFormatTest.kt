@@ -1006,6 +1006,34 @@ class BluetoothFormatTest {
     }
 
     @Test
+    fun encodeNonAsciiChar() {
+        @Serializable
+        data class Container(
+            val twoBytes: Char,
+            @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val threeBytesMirrored: Char,
+            val ascii: Char,
+        )
+
+        validateEncoding(
+            Container('é', '€', 'a'),
+            byteArrayOf(0xC3.toByte(), 0xA9.toByte(), 0xAC.toByte(), 0x82.toByte(), 0xE2.toByte(), 0x61),
+        )
+
+        @Serializable
+        @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        data class MostSignificantFirst(val threeBytes: Char, @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.LEAST_SIGNIFICANT_FIRST) val twoBytes: Char)
+
+        validateRoundTrip(
+            MostSignificantFirst('€', 'é'),
+            MostSignificantFirst.serializer(),
+            buildByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) {
+                add('€')
+                add('é', order = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+            },
+        )
+    }
+
+    @Test
     fun encodeString() {
         // validateEncoding("Hello world", buildByteArray { add("Hello world") })
 
