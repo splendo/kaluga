@@ -17,18 +17,21 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.Encoding
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
-import com.splendo.kaluga.base.bytes.byteArraySize
-import com.splendo.kaluga.base.bytes.isBitSet
-import com.splendo.kaluga.base.bytes.MedFloat16
-import com.splendo.kaluga.base.bytes.MedFloat32
-import com.splendo.kaluga.base.bytes.toInt24
-import com.splendo.kaluga.base.bytes.toUInt24
-import com.splendo.kaluga.base.bytes.toInt40
-import com.splendo.kaluga.base.bytes.toUInt40
-import com.splendo.kaluga.base.bytes.toInt48
-import com.splendo.kaluga.base.bytes.toUInt48
+import com.splendo.kaluga.bytes.integer.add
+import com.splendo.kaluga.bytes.integer.toInt24
+import com.splendo.kaluga.bytes.integer.toInt40
+import com.splendo.kaluga.bytes.integer.toInt48
+import com.splendo.kaluga.bytes.integer.toUInt24
+import com.splendo.kaluga.bytes.integer.toUInt40
+import com.splendo.kaluga.bytes.integer.toUInt48
+import com.splendo.kaluga.bytes.isBitSet
+import com.splendo.kaluga.bytes.medfloat.MedFloat16
+import com.splendo.kaluga.bytes.medfloat.MedFloat32
+import com.splendo.kaluga.bytes.medfloat.add
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
+import com.splendo.kaluga.bytes.strings.add
+import com.splendo.kaluga.bytes.strings.byteArraySize
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.PolymorphicKind

@@ -1,0 +1,9 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bytes:hash>
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.hash/sha1(): kotlin/ByteArray // com.splendo.kaluga.bytes.hash/sha1|sha1@kotlin.ByteArray(){}[0]

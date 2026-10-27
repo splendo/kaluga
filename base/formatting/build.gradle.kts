@@ -20,7 +20,7 @@ kaluga {
         common {
             main {
                 implementation(project(":base:core", ""))
-                implementation(project(":base:bytes", ""))
+                implementation(project(":bytes:core", ""))
                 api(project(":base:i18n", ""))
                 implementation(project(":date-time:date-time", ""))
             }

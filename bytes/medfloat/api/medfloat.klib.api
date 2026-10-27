@@ -1,0 +1,76 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bytes:medfloat>
+final value class com.splendo.kaluga.bytes.medfloat/MedFloat16 : kotlin/Comparable<com.splendo.kaluga.bytes.medfloat/MedFloat16> { // com.splendo.kaluga.bytes.medfloat/MedFloat16|null[0]
+    constructor <init>(kotlin/Double) // com.splendo.kaluga.bytes.medfloat/MedFloat16.<init>|<init>(kotlin.Double){}[0]
+
+    final val value // com.splendo.kaluga.bytes.medfloat/MedFloat16.value|{}value[0]
+        final fun <get-value>(): kotlin/Double // com.splendo.kaluga.bytes.medfloat/MedFloat16.value.<get-value>|<get-value>(){}[0]
+
+    final fun compareTo(com.splendo.kaluga.bytes.medfloat/MedFloat16): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat16.compareTo|compareTo(com.splendo.kaluga.bytes.medfloat.MedFloat16){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat16.hashCode|hashCode(){}[0]
+    final fun isFinite(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.isFinite|isFinite(){}[0]
+    final fun isInfinite(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.isInfinite|isInfinite(){}[0]
+    final fun isNaN(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.isNaN|isNaN(){}[0]
+    final fun isNegativeInfinity(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.isNegativeInfinity|isNegativeInfinity(){}[0]
+    final fun isNotAvailableAtThisResolution(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.isNotAvailableAtThisResolution|isNotAvailableAtThisResolution(){}[0]
+    final fun isPositiveInfinity(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.isPositiveInfinity|isPositiveInfinity(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.bytes.medfloat/MedFloat16.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion|null[0]
+        final const val MAX_EXPONENT // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MAX_EXPONENT|{}MAX_EXPONENT[0]
+            final fun <get-MAX_EXPONENT>(): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MAX_EXPONENT.<get-MAX_EXPONENT>|<get-MAX_EXPONENT>(){}[0]
+        final const val MAX_MANTISSA // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MAX_MANTISSA|{}MAX_MANTISSA[0]
+            final fun <get-MAX_MANTISSA>(): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MAX_MANTISSA.<get-MAX_MANTISSA>|<get-MAX_MANTISSA>(){}[0]
+        final const val MIN_EXPONENT // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MIN_EXPONENT|{}MIN_EXPONENT[0]
+            final fun <get-MIN_EXPONENT>(): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MIN_EXPONENT.<get-MIN_EXPONENT>|<get-MIN_EXPONENT>(){}[0]
+        final const val MIN_MANTISSA // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MIN_MANTISSA|{}MIN_MANTISSA[0]
+            final fun <get-MIN_MANTISSA>(): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.MIN_MANTISSA.<get-MIN_MANTISSA>|<get-MIN_MANTISSA>(){}[0]
+
+        final val NAN // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.NAN|{}NAN[0]
+            final fun <get-NAN>(): com.splendo.kaluga.bytes.medfloat/MedFloat16 // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.NAN.<get-NAN>|<get-NAN>(){}[0]
+        final val NEGATIVE_INFINITY // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.NEGATIVE_INFINITY|{}NEGATIVE_INFINITY[0]
+            final fun <get-NEGATIVE_INFINITY>(): com.splendo.kaluga.bytes.medfloat/MedFloat16 // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.NEGATIVE_INFINITY.<get-NEGATIVE_INFINITY>|<get-NEGATIVE_INFINITY>(){}[0]
+        final val POSITIVE_INFINITY // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.POSITIVE_INFINITY|{}POSITIVE_INFINITY[0]
+            final fun <get-POSITIVE_INFINITY>(): com.splendo.kaluga.bytes.medfloat/MedFloat16 // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.POSITIVE_INFINITY.<get-POSITIVE_INFINITY>|<get-POSITIVE_INFINITY>(){}[0]
+
+        final fun canRepresent(kotlin/Double): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat16.Companion.canRepresent|canRepresent(kotlin.Double){}[0]
+    }
+}
+
+final value class com.splendo.kaluga.bytes.medfloat/MedFloat32 : kotlin/Comparable<com.splendo.kaluga.bytes.medfloat/MedFloat32> { // com.splendo.kaluga.bytes.medfloat/MedFloat32|null[0]
+    constructor <init>(kotlin/Double) // com.splendo.kaluga.bytes.medfloat/MedFloat32.<init>|<init>(kotlin.Double){}[0]
+
+    final val value // com.splendo.kaluga.bytes.medfloat/MedFloat32.value|{}value[0]
+        final fun <get-value>(): kotlin/Double // com.splendo.kaluga.bytes.medfloat/MedFloat32.value.<get-value>|<get-value>(){}[0]
+
+    final fun compareTo(com.splendo.kaluga.bytes.medfloat/MedFloat32): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat32.compareTo|compareTo(com.splendo.kaluga.bytes.medfloat.MedFloat32){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.medfloat/MedFloat32.hashCode|hashCode(){}[0]
+    final fun isFinite(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.isFinite|isFinite(){}[0]
+    final fun isInfinite(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.isInfinite|isInfinite(){}[0]
+    final fun isNaN(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.isNaN|isNaN(){}[0]
+    final fun isNegativeInfinity(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.isNegativeInfinity|isNegativeInfinity(){}[0]
+    final fun isNotAvailableAtThisResolution(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.isNotAvailableAtThisResolution|isNotAvailableAtThisResolution(){}[0]
+    final fun isPositiveInfinity(): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.isPositiveInfinity|isPositiveInfinity(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.bytes.medfloat/MedFloat32.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.bytes.medfloat/MedFloat32.Companion|null[0]
+        final fun canRepresent(kotlin/Double): kotlin/Boolean // com.splendo.kaluga.bytes.medfloat/MedFloat32.Companion.canRepresent|canRepresent(kotlin.Double){}[0]
+    }
+}
+
+final fun (com.splendo.kaluga.bytes.medfloat/MedFloat16).com.splendo.kaluga.bytes.medfloat/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/ByteArray // com.splendo.kaluga.bytes.medfloat/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.bytes.medfloat.MedFloat16(kotlin.ByteArray;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.bytes.medfloat/MedFloat16).com.splendo.kaluga.bytes.medfloat/toByteArray(): kotlin/ByteArray // com.splendo.kaluga.bytes.medfloat/toByteArray|toByteArray@com.splendo.kaluga.bytes.medfloat.MedFloat16(){}[0]
+final fun (com.splendo.kaluga.bytes.medfloat/MedFloat32).com.splendo.kaluga.bytes.medfloat/copyIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/ByteArray // com.splendo.kaluga.bytes.medfloat/copyIntoByteArray|copyIntoByteArray@com.splendo.kaluga.bytes.medfloat.MedFloat32(kotlin.ByteArray;kotlin.Int){}[0]
+final fun (com.splendo.kaluga.bytes.medfloat/MedFloat32).com.splendo.kaluga.bytes.medfloat/toByteArray(): kotlin/ByteArray // com.splendo.kaluga.bytes.medfloat/toByteArray|toByteArray@com.splendo.kaluga.bytes.medfloat.MedFloat32(){}[0]
+final fun (com.splendo.kaluga.bytes/ByteArrayBuilder).com.splendo.kaluga.bytes.medfloat/add(com.splendo.kaluga.bytes.medfloat/MedFloat16) // com.splendo.kaluga.bytes.medfloat/add|add@com.splendo.kaluga.bytes.ByteArrayBuilder(com.splendo.kaluga.bytes.medfloat.MedFloat16){}[0]
+final fun (com.splendo.kaluga.bytes/ByteArrayBuilder).com.splendo.kaluga.bytes.medfloat/add(com.splendo.kaluga.bytes.medfloat/MedFloat32) // com.splendo.kaluga.bytes.medfloat/add|add@com.splendo.kaluga.bytes.ByteArrayBuilder(com.splendo.kaluga.bytes.medfloat.MedFloat32){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.medfloat/decodeMedFloat16(kotlin/Int): com.splendo.kaluga.bytes.medfloat/MedFloat16 // com.splendo.kaluga.bytes.medfloat/decodeMedFloat16|decodeMedFloat16@kotlin.ByteArray(kotlin.Int){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.medfloat/decodeMedFloat32(kotlin/Int): com.splendo.kaluga.bytes.medfloat/MedFloat32 // com.splendo.kaluga.bytes.medfloat/decodeMedFloat32|decodeMedFloat32@kotlin.ByteArray(kotlin.Int){}[0]

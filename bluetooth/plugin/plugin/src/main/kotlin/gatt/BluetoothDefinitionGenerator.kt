@@ -509,7 +509,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     }
 
     private fun encoded(encoding: String) = AnnotationSpec.builder(ClassName(SERIALIZATION, "Encoded"))
-        .addMember("%T.%L", ClassName(BASE_BYTES, "Encoding"), encoding)
+        .addMember("%T.%L", ClassName(BYTES_STRINGS, "Encoding"), encoding)
         .build()
 
     private fun annotation(simpleName: String, uuid: String) = AnnotationSpec.builder(ClassName(ANNOTATIONS, simpleName))
@@ -532,7 +532,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
 
     private companion object {
         const val SERIALIZATION = "com.splendo.kaluga.bluetooth.serialization"
-        const val BASE_BYTES = "com.splendo.kaluga.base.bytes"
+        const val BYTES_STRINGS = "com.splendo.kaluga.bytes.strings"
         const val ANNOTATIONS = "com.splendo.kaluga.bluetooth.annotations"
         const val SCIENTIFIC = "com.splendo.kaluga.scientific"
         const val SCIENTIFIC_UNIT = "com.splendo.kaluga.scientific.unit"

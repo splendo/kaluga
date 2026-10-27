@@ -1,0 +1,162 @@
+public abstract interface class com/splendo/kaluga/bytes/ByteArrayBuilder {
+	public abstract fun add (B)V
+	public abstract fun add (DLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public abstract fun add (FLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public abstract fun add (ILcom/splendo/kaluga/bytes/ByteOrder;)V
+	public abstract fun add (JLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public abstract fun add (SLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public abstract fun add (Z)V
+	public abstract fun add ([B)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;DLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;FLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-4PLdz1A (JLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-4PLdz1A$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-7apg3OU (B)V
+	public abstract fun add-qim9Vi0 (ILcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-qim9Vi0$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-vckuEUM (SLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-vckuEUM$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun getByteOrder ()Lcom/splendo/kaluga/bytes/ByteOrder;
+}
+
+public final class com/splendo/kaluga/bytes/ByteArrayBuilder$DefaultImpls {
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;DLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;FLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-4PLdz1A$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-qim9Vi0$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-vckuEUM$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bytes/ByteArrayBuilderKt {
+	public static final fun buildByteArray (Lcom/splendo/kaluga/bytes/ByteOrder;ILkotlin/jvm/functions/Function1;)[B
+	public static synthetic fun buildByteArray$default (Lcom/splendo/kaluga/bytes/ByteOrder;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)[B
+}
+
+public final class com/splendo/kaluga/bytes/ByteExtensionsKt {
+	public static final fun isBitSet (BLjava/lang/Number;)Z
+	public static final fun isBitSet ([BLjava/lang/Number;)Z
+	public static final fun setBit (BLjava/lang/Number;)B
+	public static final fun setBit ([BLjava/lang/Number;)[B
+	public static final fun shl (BI)B
+	public static final fun shr (BI)B
+}
+
+public final class com/splendo/kaluga/bytes/ByteOrder : java/lang/Enum {
+	public static final field LEAST_SIGNIFICANT_FIRST Lcom/splendo/kaluga/bytes/ByteOrder;
+	public static final field MOST_SIGNIFICANT_FIRST Lcom/splendo/kaluga/bytes/ByteOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bytes/ByteOrder;
+	public static fun values ()[Lcom/splendo/kaluga/bytes/ByteOrder;
+}
+
+public final class com/splendo/kaluga/bytes/ByteOrderKt {
+	public static final fun shift (Lcom/splendo/kaluga/bytes/ByteOrder;II)I
+}
+
+public final class com/splendo/kaluga/bytes/ByteUtils {
+	public static final field BYTE_STRING_LENGTH I
+	public static final field HEX_RADIX I
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/ByteUtils;
+}
+
+public final class com/splendo/kaluga/bytes/ByteUtilsKt {
+	public static final fun bytesOf ([I)[B
+	public static final fun decodeHex (Ljava/lang/String;)[B
+	public static final fun toHexString ([BLjava/lang/CharSequence;)Ljava/lang/String;
+	public static synthetic fun toHexString$default ([BLjava/lang/CharSequence;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/DoubleExtensionsKt {
+	public static final fun copyIntoByteArray (D[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (D[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeDouble ([BILcom/splendo/kaluga/bytes/ByteOrder;)D
+	public static final fun toByteArray (DLcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/bytes/FloatExtensionsKt {
+	public static final fun copyIntoByteArray (F[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (F[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeFloat ([BILcom/splendo/kaluga/bytes/ByteOrder;)F
+	public static final fun toByteArray (FLcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/bytes/IntExtensionsKt {
+	public static final fun copyIntoByteArray (I[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (I[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeInt ([BILcom/splendo/kaluga/bytes/ByteOrder;)I
+	public static final fun isBitSet (ILjava/lang/Number;)Z
+	public static final fun length (I)I
+	public static final fun setBit (ILjava/lang/Number;)I
+	public static final fun toByteArray (ILcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/bytes/IntLimits {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/IntLimits;
+	public static final field INT24_MAX_VALUE I
+	public static final field INT24_MIN_VALUE I
+}
+
+public final class com/splendo/kaluga/bytes/LongExtensionsKt {
+	public static final fun copyIntoByteArray (J[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (J[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeLong ([BILcom/splendo/kaluga/bytes/ByteOrder;)J
+	public static final fun isBitSet (JLjava/lang/Number;)Z
+	public static final fun setBit (JLjava/lang/Number;)J
+	public static final fun toByteArray (JLcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/bytes/ShortExtensionsKt {
+	public static final fun copyIntoByteArray (S[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (S[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeShort ([BILcom/splendo/kaluga/bytes/ByteOrder;)S
+	public static final fun isBitSet (SLjava/lang/Number;)Z
+	public static final fun setBit (SLjava/lang/Number;)S
+	public static final fun shl (SI)S
+	public static final fun shr (SI)S
+	public static final fun toByteArray (SLcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/bytes/UByteExtensionsKt {
+	public static final fun decodeUByte ([BI)B
+	public static final fun isBitSet-0ky7B_Q (BLjava/lang/Number;)Z
+	public static final fun setBit-0ky7B_Q (BLjava/lang/Number;)B
+	public static final fun shl-0ky7B_Q (BI)B
+	public static final fun shr-0ky7B_Q (BI)B
+	public static final fun toByteArray-7apg3OU (B)[B
+}
+
+public final class com/splendo/kaluga/bytes/UIntExtensionsKt {
+	public static final fun copyIntoByteArray-SGjrQA4 (I[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-SGjrQA4$default (I[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeUInt ([BILcom/splendo/kaluga/bytes/ByteOrder;)I
+	public static final fun isBitSet-qim9Vi0 (ILjava/lang/Number;)Z
+	public static final fun setBit-qim9Vi0 (ILjava/lang/Number;)I
+	public static final fun toByteArray-qim9Vi0 (ILcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/bytes/ULongExtensionsKt {
+	public static final fun copyIntoByteArray-v3sQxsQ (J[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-v3sQxsQ$default (J[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeULong ([BILcom/splendo/kaluga/bytes/ByteOrder;)J
+	public static final fun isBitSet-4PLdz1A (JLjava/lang/Number;)Z
+	public static final fun setBit-4PLdz1A (JLjava/lang/Number;)J
+	public static final fun toByteArray-4PLdz1A (JLcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/bytes/UShortExtensionsKt {
+	public static final fun copyIntoByteArray-k_pLkZQ (S[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-k_pLkZQ$default (S[BILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun decodeUShort ([BILcom/splendo/kaluga/bytes/ByteOrder;)S
+	public static final fun isBitSet-vckuEUM (SLjava/lang/Number;)Z
+	public static final fun setBit-vckuEUM (SLjava/lang/Number;)S
+	public static final fun shl-vckuEUM (SI)S
+	public static final fun shr-vckuEUM (SI)S
+	public static final fun toByteArray-vckuEUM (SLcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+

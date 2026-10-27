@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.base.formatting
 
-import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.base.formatting.StringFormatter.Companion.getZero
+import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.datetime.DefaultKalugaDate
 import com.splendo.kaluga.datetime.KalugaDate
 import com.splendo.kaluga.base.i18n.KalugaLocale

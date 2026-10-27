@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
-import com.splendo.kaluga.base.bytes.toHexString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RSSI
@@ -28,6 +27,7 @@ import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
