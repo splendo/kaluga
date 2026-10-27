@@ -34,6 +34,7 @@ public final class com/splendo/kaluga/bytes/ByteArrayBuilder$DefaultImpls {
 }
 
 public final class com/splendo/kaluga/bytes/ByteArrayBuilderKt {
+	public static final fun addEncoded (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILkotlin/jvm/functions/Function2;)V
 	public static final fun buildByteArray (Lcom/splendo/kaluga/bytes/ByteOrder;ILkotlin/jvm/functions/Function1;)[B
 	public static synthetic fun buildByteArray$default (Lcom/splendo/kaluga/bytes/ByteOrder;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)[B
 }
@@ -109,6 +110,12 @@ public final class com/splendo/kaluga/bytes/LongExtensionsKt {
 	public static final fun isBitSet (JLjava/lang/Number;)Z
 	public static final fun setBit (JLjava/lang/Number;)J
 	public static final fun toByteArray (JLcom/splendo/kaluga/bytes/ByteOrder;)[B
+}
+
+public abstract interface class com/splendo/kaluga/bytes/ReservingByteArrayBuilder : com/splendo/kaluga/bytes/ByteArrayBuilder {
+	public abstract fun commitReserved ()V
+	public abstract fun getReservedOffset ()I
+	public abstract fun reserve (I)[B
 }
 
 public final class com/splendo/kaluga/bytes/ShortExtensionsKt {

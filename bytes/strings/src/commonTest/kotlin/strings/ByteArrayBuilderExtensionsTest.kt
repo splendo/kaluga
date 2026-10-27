@@ -19,6 +19,7 @@ package com.splendo.kaluga.bytes.strings
 
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.buildByteArray
+import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
@@ -58,5 +59,40 @@ class ByteArrayBuilderExtensionsTest {
                 byteArrayOf(0x00, 0x62, 0x61, 0x01),
             byteArray,
         )
+    }
+
+    @Test
+    fun buildMultiByteChars() {
+        val chars = "a\u00E9\u20AC\uD800z"
+        for (order in ByteOrder.entries) {
+            val expected = chars.toList().let { if (order == ByteOrder.MOST_SIGNIFICANT_FIRST) it.reversed() else it }
+                .fold(byteArrayOf()) { acc, char -> acc + Encoding.UTF_8.encodeChar(char, order) }
+            for (expectedSize in listOf(1, 2, 3, 64)) {
+                val built = buildByteArray(order, expectedSize) { chars.forEach { add(it) } }
+                assertContentEquals(expected, built, "$order, expected size $expectedSize")
+            }
+        }
+    }
+
+    @Test
+    fun buildStringsAcrossChunks() {
+        val nullTerminated = StringEncodingSettings(StringEncodingSettings.NullTerminated)
+        val stuffed = StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Cobs))
+        for (order in ByteOrder.entries) {
+            val parts = listOf(
+                "h\u00E9llo".toByteArray(nullTerminated, order),
+                "a\u0000b".toByteArray(stuffed, order),
+                "x".toByteArray(StringEncodingSettings(), order),
+            )
+            val expected = (if (order == ByteOrder.MOST_SIGNIFICANT_FIRST) parts.reversed() else parts).reduce { acc, bytes -> acc + bytes }
+            for (expectedSize in listOf(1, 3, 64)) {
+                val built = buildByteArray(order, expectedSize) {
+                    add("h\u00E9llo", nullTerminated)
+                    add("a\u0000b", stuffed)
+                    add("x")
+                }
+                assertContentEquals(expected, built, "$order, expected size $expectedSize")
+            }
+        }
     }
 }

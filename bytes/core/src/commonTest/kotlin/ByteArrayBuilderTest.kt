@@ -19,6 +19,8 @@ package com.splendo.kaluga.bytes
 
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ByteArrayBuilderTest {
 
@@ -108,5 +110,67 @@ class ByteArrayBuilderTest {
                 ),
             byteArray,
         )
+    }
+
+    @Test
+    fun addEncoded() {
+        for (order in ByteOrder.entries) {
+            val expected = when (order) {
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArrayOf(0x01, 0x0A, 0x0B, 0x0C, 0x02)
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArrayOf(0x02, 0x0A, 0x0B, 0x0C, 0x01)
+            }
+            for (expectedSize in 1..6) {
+                val built = buildByteArray(order, expectedSize) {
+                    add(byte = 0x01)
+                    addEncoded(3) { array, offset ->
+                        array[offset] = 0x0A
+                        array[offset + 1] = 0x0B
+                        array[offset + 2] = 0x0C
+                    }
+                    add(byte = 0x02)
+                }
+                assertContentEquals(expected, built, "$order, expected size $expectedSize")
+            }
+        }
+    }
+
+    @Test
+    fun addEncodedFailureAddsNothing() {
+        for (expectedSize in listOf(1, 64)) {
+            val built = buildByteArray(expectedSize = expectedSize) {
+                add(byte = 0x01)
+                assertFailsWith<IllegalStateException> { addEncoded(2) { _, _ -> error("encoding failed") } }
+                add(byte = 0x02)
+            }
+            assertContentEquals(byteArrayOf(0x01, 0x02), built, "expected size $expectedSize")
+        }
+    }
+
+    @Test
+    fun addEncodedOnOtherBuilder() {
+        val added = mutableListOf<ByteArray>()
+        val builder = object : ByteArrayBuilder {
+            override val byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST
+            override fun add(byte: Byte) = throw UnsupportedOperationException()
+            override fun add(short: Short, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(int: Int, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(long: Long, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(float: Float, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(double: Double, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(uByte: UByte) = throw UnsupportedOperationException()
+            override fun add(uShort: UShort, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(uInt: UInt, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(uLong: ULong, order: ByteOrder) = throw UnsupportedOperationException()
+            override fun add(flag: Boolean) = throw UnsupportedOperationException()
+            override fun add(bytes: ByteArray) {
+                added += bytes
+            }
+        }
+        builder.addEncoded(2) { array, offset ->
+            array[offset] = 0x0A
+            array[offset + 1] = 0x0B
+        }
+        assertEquals(1, added.size)
+        assertContentEquals(byteArrayOf(0x0A, 0x0B), added.single())
     }
 }

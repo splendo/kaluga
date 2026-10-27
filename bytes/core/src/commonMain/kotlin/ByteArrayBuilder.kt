@@ -117,6 +117,24 @@ interface ByteArrayBuilder {
 }
 
 /**
+ * Adds [size] bytes that [encodeInto] writes into the array it is given, starting at the offset it is given.
+ * Like [ByteArrayBuilder.add] for a [ByteArray], the bytes keep the order in which they are written, but when they fit
+ * in the builder's current buffer they are written there directly instead of through an intermediate array.
+ * @param size the number of bytes [encodeInto] writes.
+ * @param encodeInto writes exactly [size] bytes into the array, starting at the offset. It must not add anything to this
+ * builder, since the array may be the builder's own buffer and the bytes are only added once it returns.
+ */
+inline fun ByteArrayBuilder.addEncoded(size: Int, encodeInto: (array: ByteArray, offset: Int) -> Unit) {
+    if (this is ReservingByteArrayBuilder) {
+        val array = reserve(size)
+        encodeInto(array, reservedOffset)
+        commitReserved()
+    } else {
+        add(ByteArray(size).also { encodeInto(it, 0) })
+    }
+}
+
+/**
  * Builds a [ByteArray] using a [ByteArrayBuilder]
  * @param order the [ByteOrder] in which to add to the [ByteArray]. This is the default order in which elements will be encoded.
  * @param expectedSize the initial size the ByteArray will use to approximate its final size.
@@ -128,16 +146,38 @@ fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, expecte
     order,
 ).apply(block).build()
 
-private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: ByteOrder) : ByteArrayBuilder {
+/**
+ * A [ByteArrayBuilder] that [addEncoded] can write into directly.
+ */
+@PublishedApi
+internal interface ReservingByteArrayBuilder : ByteArrayBuilder {
+
+    /**
+     * The offset in the array returned by the last [reserve] at which the reserved bytes are written.
+     */
+    val reservedOffset: Int
+
+    /**
+     * Returns the array to write [size] bytes into at [reservedOffset]. They are added by [commitReserved].
+     */
+    fun reserve(size: Int): ByteArray
+
+    /**
+     * Adds the bytes written into the array returned by the last [reserve].
+     */
+    fun commitReserved()
+}
+
+internal class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: ByteOrder) : ReservingByteArrayBuilder {
 
     init {
         require(expectedSize > 0) { "buildByteArray must have an expected size larger than 0" }
     }
     private val completedChunks = mutableListOf<ByteArray>()
-    var currentChunk = ByteArray(expectedSize)
-    var currentByteOffset = 0
-    var currentByte: Byte = 0
-    var currentBit = 0
+    private var currentChunk = ByteArray(expectedSize)
+    private var currentByteOffset = 0
+    private var currentByte: Byte = 0
+    private var currentBit = 0
 
     override fun add(flag: Boolean) {
         if (flag) {
@@ -237,48 +277,82 @@ private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: By
         )
     }
 
+    private var reservedSize = 0
+    private var reservedOverflow: ByteArray? = null
+
+    override var reservedOffset = 0
+        private set
+
+    override fun reserve(size: Int): ByteArray {
+        if (currentBit > 0) {
+            addCurrentByte()
+        }
+        reservedSize = size
+        val remaining = currentChunk.size - currentByteOffset
+        return if (size in 1..<remaining) {
+            reservedOverflow = null
+            reservedOffset = chunkOffset(size, remaining)
+            currentChunk
+        } else {
+            reservedOffset = 0
+            ByteArray(size).also { reservedOverflow = it }
+        }
+    }
+
+    override fun commitReserved() {
+        val overflow = reservedOverflow
+        if (overflow == null) {
+            currentByteOffset += reservedSize
+            checkChunkCompleted()
+        } else {
+            reservedOverflow = null
+            addSegment(overflow)
+        }
+    }
+
     private inline fun add(expectedSize: Int, generateIntoMethod: (Int) -> Unit, generateMethod: () -> ByteArray) {
         if (currentBit > 0) {
             addCurrentByte()
         }
 
         val remaining = currentChunk.size - currentByteOffset
-        when {
-            expectedSize in 1..<remaining -> {
-                generateIntoMethod(
-                    when (byteOrder) {
-                        ByteOrder.MOST_SIGNIFICANT_FIRST -> remaining - expectedSize
-                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> currentByteOffset
-                    },
-                )
-                currentByteOffset += expectedSize
+        if (expectedSize in 1..<remaining) {
+            generateIntoMethod(chunkOffset(expectedSize, remaining))
+            currentByteOffset += expectedSize
+            checkChunkCompleted()
+        } else {
+            addSegment(generateMethod())
+        }
+    }
+
+    private fun chunkOffset(size: Int, remaining: Int) = when (byteOrder) {
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> remaining - size
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> currentByteOffset
+    }
+
+    private fun addSegment(fullSegment: ByteArray) {
+        val remaining = currentChunk.size - currentByteOffset
+        val splitIndex = min(fullSegment.size, remaining)
+        when (byteOrder) {
+            ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                fullSegment.copyInto(currentChunk, currentByteOffset, 0, splitIndex)
+                currentByteOffset += splitIndex
+                if (splitIndex < fullSegment.size) {
+                    completedChunks.add(currentChunk)
+                    completedChunks.add(fullSegment.sliceArray(splitIndex..<fullSegment.size))
+                    currentChunk = ByteArray(currentChunk.size * 2)
+                    currentByteOffset = 0
+                }
             }
 
-            else -> {
-                val fullSegment = generateMethod()
-                val splitIndex = min(fullSegment.size, remaining)
-                when (byteOrder) {
-                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
-                        fullSegment.copyInto(currentChunk, currentByteOffset, 0, splitIndex)
-                        currentByteOffset += splitIndex
-                        if (splitIndex < fullSegment.size) {
-                            completedChunks.add(currentChunk)
-                            completedChunks.add(fullSegment.sliceArray(splitIndex..<fullSegment.size))
-                            currentChunk = ByteArray(currentChunk.size * 2)
-                            currentByteOffset = 0
-                        }
-                    }
-
-                    ByteOrder.MOST_SIGNIFICANT_FIRST -> {
-                        fullSegment.copyInto(currentChunk, remaining - splitIndex, fullSegment.size - splitIndex)
-                        currentByteOffset += splitIndex
-                        if (splitIndex < fullSegment.size) {
-                            completedChunks.add(currentChunk)
-                            completedChunks.add(fullSegment.sliceArray(0..<fullSegment.size - splitIndex))
-                            currentChunk = ByteArray(currentChunk.size * 2)
-                            currentByteOffset = 0
-                        }
-                    }
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                fullSegment.copyInto(currentChunk, remaining - splitIndex, fullSegment.size - splitIndex)
+                currentByteOffset += splitIndex
+                if (splitIndex < fullSegment.size) {
+                    completedChunks.add(currentChunk)
+                    completedChunks.add(fullSegment.sliceArray(0..<fullSegment.size - splitIndex))
+                    currentChunk = ByteArray(currentChunk.size * 2)
+                    currentByteOffset = 0
                 }
             }
         }

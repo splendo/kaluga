@@ -35,6 +35,14 @@ abstract interface com.splendo.kaluga.bytes/ByteArrayBuilder { // com.splendo.ka
     abstract fun add(kotlin/UShort, com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bytes/ByteArrayBuilder.add|add(kotlin.UShort;com.splendo.kaluga.bytes.ByteOrder){}[0]
 }
 
+abstract interface com.splendo.kaluga.bytes/ReservingByteArrayBuilder : com.splendo.kaluga.bytes/ByteArrayBuilder { // com.splendo.kaluga.bytes/ReservingByteArrayBuilder|null[0]
+    abstract val reservedOffset // com.splendo.kaluga.bytes/ReservingByteArrayBuilder.reservedOffset|{}reservedOffset[0]
+        abstract fun <get-reservedOffset>(): kotlin/Int // com.splendo.kaluga.bytes/ReservingByteArrayBuilder.reservedOffset.<get-reservedOffset>|<get-reservedOffset>(){}[0]
+
+    abstract fun commitReserved() // com.splendo.kaluga.bytes/ReservingByteArrayBuilder.commitReserved|commitReserved(){}[0]
+    abstract fun reserve(kotlin/Int): kotlin/ByteArray // com.splendo.kaluga.bytes/ReservingByteArrayBuilder.reserve|reserve(kotlin.Int){}[0]
+}
+
 final object com.splendo.kaluga.bytes/ByteUtils { // com.splendo.kaluga.bytes/ByteUtils|null[0]
     final const val BYTE_STRING_LENGTH // com.splendo.kaluga.bytes/ByteUtils.BYTE_STRING_LENGTH|{}BYTE_STRING_LENGTH[0]
         final fun <get-BYTE_STRING_LENGTH>(): kotlin/Int // com.splendo.kaluga.bytes/ByteUtils.BYTE_STRING_LENGTH.<get-BYTE_STRING_LENGTH>|<get-BYTE_STRING_LENGTH>(){}[0]
@@ -107,3 +115,4 @@ final fun (kotlin/UShort).com.splendo.kaluga.bytes/shr(kotlin/Int): kotlin/UShor
 final fun (kotlin/UShort).com.splendo.kaluga.bytes/toByteArray(com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes/toByteArray|toByteArray@kotlin.UShort(com.splendo.kaluga.bytes.ByteOrder){}[0]
 final fun com.splendo.kaluga.bytes/buildByteArray(com.splendo.kaluga.bytes/ByteOrder = ..., kotlin/Int = ..., kotlin/Function1<com.splendo.kaluga.bytes/ByteArrayBuilder, kotlin/Unit>): kotlin/ByteArray // com.splendo.kaluga.bytes/buildByteArray|buildByteArray(com.splendo.kaluga.bytes.ByteOrder;kotlin.Int;kotlin.Function1<com.splendo.kaluga.bytes.ByteArrayBuilder,kotlin.Unit>){}[0]
 final fun com.splendo.kaluga.bytes/bytesOf(kotlin/IntArray...): kotlin/ByteArray // com.splendo.kaluga.bytes/bytesOf|bytesOf(kotlin.IntArray...){}[0]
+final inline fun (com.splendo.kaluga.bytes/ByteArrayBuilder).com.splendo.kaluga.bytes/addEncoded(kotlin/Int, kotlin/Function2<kotlin/ByteArray, kotlin/Int, kotlin/Unit>) // com.splendo.kaluga.bytes/addEncoded|addEncoded@com.splendo.kaluga.bytes.ByteArrayBuilder(kotlin.Int;kotlin.Function2<kotlin.ByteArray,kotlin.Int,kotlin.Unit>){}[0]

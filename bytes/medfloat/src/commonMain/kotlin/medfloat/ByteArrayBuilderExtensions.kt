@@ -18,15 +18,16 @@
 package com.splendo.kaluga.bytes.medfloat
 
 import com.splendo.kaluga.bytes.ByteArrayBuilder
+import com.splendo.kaluga.bytes.addEncoded
 
 /**
  * Adds a [MedFloat16] to the array.
  * @param medFloat16 The [MedFloat16] to add.
  */
-fun ByteArrayBuilder.add(medFloat16: MedFloat16) = add(medFloat16.toByteArray())
+fun ByteArrayBuilder.add(medFloat16: MedFloat16) = addEncoded(Short.SIZE_BYTES) { array, offset -> medFloat16.copyIntoByteArray(array, offset) }
 
 /**
  * Adds a [MedFloat32] to the array.
  * @param medFloat32 The [MedFloat32] to add.
  */
-fun ByteArrayBuilder.add(medFloat32: MedFloat32) = add(medFloat32.toByteArray())
+fun ByteArrayBuilder.add(medFloat32: MedFloat32) = addEncoded(Int.SIZE_BYTES) { array, offset -> medFloat32.copyIntoByteArray(array, offset) }
