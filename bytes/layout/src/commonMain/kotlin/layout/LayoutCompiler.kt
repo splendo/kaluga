@@ -556,10 +556,13 @@ object LayoutCompiler {
                 }
             }
 
-            TypeKind.CHAR -> StringSettings(
-                annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.UTF_8,
-                StringEncodingSettings.NoMarking,
-            )
+            TypeKind.CHAR -> {
+                val encoding = annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.ASCII
+                if (encoding == Encoding.UTF_8) {
+                    throw UnsupportedCharEncoding("A Char has a fixed size, so it cannot be UTF-8; use ASCII, UTF-16 or a String")
+                }
+                StringSettings(encoding, StringEncodingSettings.NoMarking)
+            }
 
             else -> null
         }

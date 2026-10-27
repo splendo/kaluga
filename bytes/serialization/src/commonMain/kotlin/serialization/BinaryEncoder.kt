@@ -673,6 +673,6 @@ internal fun BinaryBuilder.encodeStringElement(value: String, binaryDescriptor: 
     }
 }
 internal fun BinaryBuilder.encodeCharElement(value: Char, binaryDescriptor: BinaryDescriptor) {
-    val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.UTF_8
+    val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.ASCII
     addAction(encoding.byteSize) { add(value, encoding, binaryDescriptor.childByteOrder) }
 }

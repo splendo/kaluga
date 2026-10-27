@@ -529,6 +529,10 @@ final class com.splendo.kaluga.bytes.layout/UnsupportedByteStuffing : kotlinx.se
     constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/UnsupportedByteStuffing.<init>|<init>(kotlin.String){}[0]
 }
 
+final class com.splendo.kaluga.bytes.layout/UnsupportedCharEncoding : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/UnsupportedCharEncoding|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/UnsupportedCharEncoding.<init>|<init>(kotlin.String){}[0]
+}
+
 final value class com.splendo.kaluga.bytes.layout/ByteArrayHolder { // com.splendo.kaluga.bytes.layout/ByteArrayHolder|null[0]
     constructor <init>(kotlin/ByteArray) // com.splendo.kaluga.bytes.layout/ByteArrayHolder.<init>|<init>(kotlin.ByteArray){}[0]
 

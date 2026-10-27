@@ -56,7 +56,7 @@ Control numeric encoding options.
 
 Control how strings are terminated and encoded.
 
-- `@Encoded(Encoding.UTF_8 | ASCII | ...)` — Specify the character encoding (default UTF-8).
+- `@Encoded(Encoding.UTF_8 | ASCII | ...)` — Specify the character encoding (default UTF-8). A `Char` has a fixed size, so it takes ASCII (the default for a `Char`) or UTF-16; UTF-8 is rejected for it, so use a `String` for UTF-8 text.
 - `@LengthPrefix(lengthAsShort, canOverflow, sentinel)` — Prefix the string with a length byte (or short if `lengthAsShort = true`). Supports overflow detection if `canOverflow = true`.
 - `@NullTerminated` — Terminate the string with a null byte (0x00) instead of a length prefix. The string must not contain null bytes.
 - `@Unsized` — Consume all remaining bytes (except checksum/postfix). No other field may follow.

@@ -57,6 +57,11 @@ class InvalidEnumLayout(message: String) : SerializationException(message)
 class InvalidNumericSettings(message: String) : SerializationException(message)
 
 /**
+ * Thrown when a [Char] is given an encoding without a fixed size, such as UTF-8.
+ */
+class UnsupportedCharEncoding(message: String) : SerializationException(message)
+
+/**
  * Exception thrown if the [ByteArray] being decoded is smaller than its layout requires.
  */
 class ByteArrayEndedBeforeSerializationCompleted(override val message: String) : SerializationException()

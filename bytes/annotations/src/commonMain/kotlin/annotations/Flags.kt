@@ -174,6 +174,8 @@ annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflo
  * Annotation added for serializing using BytesFormat
  *
  * When applied to a [String] or [Char], [encoding] will be used for encoding each char.
+ * A [Char] has a fixed size, so it takes [Encoding.ASCII] (one byte, the default for a Char) or [Encoding.UTF_16]
+ * (two bytes). [Encoding.UTF_8] is rejected for a Char; use a [String] for UTF-8 text.
  *
  * @property encoding the [Encoding] to use.
  */

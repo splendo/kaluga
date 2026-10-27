@@ -779,7 +779,6 @@ class BytesFormatCollectionsTest : BytesFormatTestBase(BytesFormatBackend.Factor
     private object EncodeStringMapFixtures {
         @Serializable
         data class StringMapContainer(
-            @KeyEncoded(Encoding.UTF_8)
             @ValueEncoded(Encoding.UTF_8)
             val utf8Map: Map<Char, String>,
             @KeyEncoded(Encoding.UTF_16)
@@ -824,11 +823,11 @@ class BytesFormatCollectionsTest : BytesFormatTestBase(BytesFormatBackend.Factor
             ),
             buildByteArray {
                 add(uByte = 3u)
-                add('A', Encoding.UTF_8)
+                add('A', Encoding.ASCII)
                 add("Alfa", StringEncodingSettings(encoding = Encoding.UTF_8))
-                add('B', Encoding.UTF_8)
+                add('B', Encoding.ASCII)
                 add("Bravo", StringEncodingSettings(encoding = Encoding.UTF_8))
-                add('C', Encoding.UTF_8)
+                add('C', Encoding.ASCII)
                 add("Charlie", StringEncodingSettings(encoding = Encoding.UTF_8))
                 add(uByte = 3u)
                 add('D', Encoding.UTF_16)

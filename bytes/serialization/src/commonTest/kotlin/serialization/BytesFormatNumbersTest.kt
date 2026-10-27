@@ -43,6 +43,7 @@ import com.splendo.kaluga.bytes.annotations.Scalar
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.Unsigned
 import com.splendo.kaluga.bytes.annotations.Encoded
+import com.splendo.kaluga.bytes.annotations.KeyEncoded
 import com.splendo.kaluga.bytes.strings.Encoding
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
@@ -57,6 +58,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.UnsupportedCharEncoding
 
 // Spike: a value class that IS a Kaluga ScientificValue and also carries BytesFormat annotations.
 @Serializable
@@ -980,7 +982,6 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         @Serializable
         data class Container(
             val default: Char,
-            @Encoded(Encoding.UTF_8) val utf8: Char,
             @Encoded(Encoding.UTF_16) val utf16: Char,
             @Encoded(Encoding.ASCII) val ascii: Char,
             val nullable: Char?,
@@ -996,7 +997,6 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         validateEncoding(
             EncodeCharFixtures.Container(
                 'a',
-                'b',
                 'c',
                 'd',
                 'e',
@@ -1006,15 +1006,44 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
             buildByteArray {
                 add(true) // nullable flag
                 add(true) // nullableUTF16
-                add('a')
-                add('b')
+                add('a', Encoding.ASCII)
                 add('c', Encoding.UTF_16)
                 add('d', Encoding.ASCII)
-                add('e')
+                add('e', Encoding.ASCII)
                 add('f', Encoding.UTF_16, ByteOrder.MOST_SIGNIFICANT_FIRST)
                 add('g', Encoding.UTF_16)
             },
         )
+    }
+
+    private object Utf8CharFixtures {
+        @Serializable
+        data class Container(val char: Char)
+
+        @Serializable
+        data class Utf8Container(@Encoded(Encoding.UTF_8) val char: Char)
+
+        @Serializable
+        data class Utf8KeyContainer(@KeyEncoded(Encoding.UTF_8) val map: Map<Char, String>)
+    }
+
+    @Test
+    fun rejectsUtf8Chars() {
+        assertFailsWith<UnsupportedCharEncoding> {
+            BytesFormat.encodeToByteArray(Utf8CharFixtures.Utf8Container.serializer(), Utf8CharFixtures.Utf8Container('a'))
+        }
+        assertFailsWith<UnsupportedCharEncoding> {
+            BytesFormat.decodeFromByteArray(Utf8CharFixtures.Utf8Container.serializer(), byteArrayOf(0x61))
+        }
+        assertFailsWith<UnsupportedCharEncoding> {
+            BytesFormat.encodeToByteArray(Utf8CharFixtures.Utf8KeyContainer.serializer(), Utf8CharFixtures.Utf8KeyContainer(emptyMap()))
+        }
+        assertFailsWith<IllegalArgumentException> {
+            BytesFormat.encodeToByteArray(Utf8CharFixtures.Container.serializer(), Utf8CharFixtures.Container('é'))
+        }
+        assertFailsWith<IllegalArgumentException> {
+            BytesFormat.decodeFromByteArray(Utf8CharFixtures.Container.serializer(), byteArrayOf(0xC3.toByte()))
+        }
     }
 
     private object LongSelectionFixtures {
