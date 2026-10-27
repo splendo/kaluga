@@ -126,11 +126,3 @@ fun MedFloat16.copyIntoByteArray(array: ByteArray, offset: Int = 0): ByteArray {
     array[offset + 1] = ((raw shr 8) and 0xFF).toByte()
     return array
 }
-
-// Whether the bytes from [index] are [pattern], which the caller has checked fit.
-internal fun ByteArray.matchesAt(index: Int, pattern: ByteArray): Boolean {
-    for (offset in pattern.indices) {
-        if (this[index + offset] != pattern[offset]) return false
-    }
-    return true
-}
