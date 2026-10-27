@@ -32,8 +32,6 @@ import com.splendo.kaluga.bytes.decodeFloat
 import com.splendo.kaluga.bytes.medfloat.decodeMedFloat16
 import com.splendo.kaluga.bytes.medfloat.decodeMedFloat32
 import com.splendo.kaluga.bytes.strings.decodeUTF16Char
-import com.splendo.kaluga.bytes.strings.decodeUTF8Char
-import com.splendo.kaluga.bytes.strings.encodeChar
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bytes.layout.NumericCodec
 import com.splendo.kaluga.bytes.strings.toAscii
@@ -170,38 +168,21 @@ object ViewBytes {
         MedFloat32(value).copyIntoByteArray(b, pos)
     }
 
-    /** Reads a [Char] of [Encoding.byteSize] bytes as `BytesFormat` decodes one. */
+    /** Reads a [Char] of [Encoding.byteSize] bytes as `BytesFormat` decodes one. The layout never gives a Char UTF-8. */
     fun readChar(b: ByteArray, pos: Int, encoding: Encoding, order: ByteOrder, lim: Int): Char {
         checkRange(pos, encoding.byteSize, lim)
         return when (encoding) {
-            Encoding.UTF_8 -> b[pos].decodeUTF8Char()
+            Encoding.ASCII, Encoding.UTF_8 -> b[pos].decodeAsciiChar()
             Encoding.UTF_16 -> b.decodeUTF16Char(pos, order)
-            Encoding.ASCII -> b[pos].decodeAsciiChar()
         }
     }
 
-    /**
-     * Writes a [Char] into [Encoding.byteSize] bytes as `BytesFormat` encodes one. Like `BytesFormat`, only the first
-     * byte of a multi-byte UTF-8 character is kept.
-     */
+    /** Writes a [Char] into [Encoding.byteSize] bytes as `BytesFormat` encodes one. The layout never gives a Char UTF-8. */
     fun writeChar(b: ByteArray, pos: Int, value: Char, encoding: Encoding, order: ByteOrder, lim: Int) {
         checkRange(pos, encoding.byteSize, lim)
         when (encoding) {
-            Encoding.UTF_8 -> b[pos] = utf8FirstByte(value, order)
+            Encoding.ASCII, Encoding.UTF_8 -> b[pos] = value.toAscii()
             Encoding.UTF_16 -> value.copyUTF16IntoByteArray(b, pos, order)
-            Encoding.ASCII -> b[pos] = value.toAscii()
-        }
-    }
-
-    // The first byte BytesFormat's UTF-8 encoder writes for [value], which in MOST_SIGNIFICANT_FIRST is its last.
-    private fun utf8FirstByte(value: Char, order: ByteOrder): Byte {
-        val code = value.code
-        return when {
-            code < 0x80 -> code.toByte()
-            value.isSurrogate() -> Encoding.UTF_8.encodeChar(value, order).first()
-            order == ByteOrder.MOST_SIGNIFICANT_FIRST -> (0x80 or (code and 0x3F)).toByte()
-            code < 0x800 -> (0xC0 or (code shr 6)).toByte()
-            else -> (0xE0 or (code shr 12)).toByte()
         }
     }
 

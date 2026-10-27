@@ -263,7 +263,6 @@ object EncodeNumericMapFixtures {
 object EncodeStringMapFixtures {
     @BytesLayout
     interface StringMapContainer {
-        @KeyEncoded(Encoding.UTF_8)
         @ValueEncoded(Encoding.UTF_8)
         val utf8Map: Map<Char, String>
 

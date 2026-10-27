@@ -409,6 +409,18 @@ class LayoutErrorTest {
         modes = listOf("DATA,VIEW"),
     )
 
+    @Test
+    fun `rejects a UTF-8 char`() = assertLayoutError(
+        "test.Utf8Char",
+        "cannot be UTF-8",
+        """
+        @BytesLayout
+        interface Utf8Char {
+            @Encoded(Encoding.UTF_8) val value: Char
+        }
+        """,
+    )
+
     private fun assertLayoutError(declaration: String, expected: String, source: String, modes: List<String> = listOf("DATA", "VIEW")) = modes.forEach { generate ->
         val compilation = BytesCompilation(layoutSource(source), generate = generate)
         assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, compilation.result.exitCode, "$generate: ${compilation.result.messages}")

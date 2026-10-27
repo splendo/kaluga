@@ -724,7 +724,6 @@ abstract class NumbersSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
         validateEncoding(
             EncodeCharFixturesContainerData(
                 'a',
-                'b',
                 'c',
                 'd',
                 'e',
@@ -734,11 +733,10 @@ abstract class NumbersSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
             buildByteArray {
                 add(true) // nullable flag
                 add(true) // nullableUTF16
-                add('a')
-                add('b')
+                add('a', Encoding.ASCII)
                 add('c', Encoding.UTF_16)
                 add('d', Encoding.ASCII)
-                add('e')
+                add('e', Encoding.ASCII)
                 add('f', Encoding.UTF_16, ByteOrder.MOST_SIGNIFICANT_FIRST)
                 add('g', Encoding.UTF_16)
             },

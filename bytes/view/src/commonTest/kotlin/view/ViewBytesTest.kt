@@ -19,7 +19,6 @@ package com.splendo.kaluga.bytes.view
 
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.strings.Encoding
-import com.splendo.kaluga.bytes.strings.encodeChar
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bytes.integer.toByteArray
@@ -166,19 +165,18 @@ class ViewBytesTest {
         assertContentEquals(byteArrayOf(0x00, 0xE9.toByte()), bytes)
         assertEquals('é', ViewBytes.readChar(bytes, 0, Encoding.UTF_16, msb, 2))
         ViewBytes.writeChar(bytes, 1, 'a', Encoding.ASCII, lsb, 2)
-        assertEquals('a', ViewBytes.readChar(bytes, 1, Encoding.UTF_8, lsb, 2))
+        assertEquals('a', ViewBytes.readChar(bytes, 1, Encoding.ASCII, lsb, 2))
         assertFailsWith<IllegalArgumentException> { ViewBytes.writeChar(bytes, 0, 'é', Encoding.ASCII, lsb, 2) }
     }
 
     @Test
-    fun keepsTheFirstByteBytesFormatWritesOfAUtf8Char() {
+    fun rejectsNonAsciiChars() {
         val bytes = ByteArray(1)
-        for (char in listOf('a', '\u007F', 'é', '\u07FF', '\u0800', '€', '\uD83D', '\uDE00', '\uFFFF')) {
-            for (order in listOf(lsb, msb)) {
-                ViewBytes.writeChar(bytes, 0, char, Encoding.UTF_8, order, 1)
-                assertEquals(Encoding.UTF_8.encodeChar(char, order).first(), bytes[0], "$char $order")
-            }
-        }
+        ViewBytes.writeChar(bytes, 0, '\u007F', Encoding.ASCII, msb, 1)
+        assertEquals('\u007F', ViewBytes.readChar(bytes, 0, Encoding.ASCII, msb, 1))
+        assertFailsWith<IllegalArgumentException> { ViewBytes.writeChar(bytes, 0, 'é', Encoding.ASCII, lsb, 1) }
+        bytes[0] = 0xC3.toByte()
+        assertFailsWith<IllegalArgumentException> { ViewBytes.readChar(bytes, 0, Encoding.ASCII, lsb, 1) }
     }
 
     @Test

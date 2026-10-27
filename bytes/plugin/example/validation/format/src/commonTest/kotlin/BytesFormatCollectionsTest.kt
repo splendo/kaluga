@@ -546,11 +546,11 @@ abstract class CollectionsSuite(backendFactory: ByteLayoutBackendFactory) : Byte
             ),
             buildByteArray {
                 add(uByte = 3u)
-                add('A', Encoding.UTF_8)
+                add('A', Encoding.ASCII)
                 add("Alfa", StringEncodingSettings(encoding = Encoding.UTF_8))
-                add('B', Encoding.UTF_8)
+                add('B', Encoding.ASCII)
                 add("Bravo", StringEncodingSettings(encoding = Encoding.UTF_8))
-                add('C', Encoding.UTF_8)
+                add('C', Encoding.ASCII)
                 add("Charlie", StringEncodingSettings(encoding = Encoding.UTF_8))
                 add(uByte = 3u)
                 add('D', Encoding.UTF_16)

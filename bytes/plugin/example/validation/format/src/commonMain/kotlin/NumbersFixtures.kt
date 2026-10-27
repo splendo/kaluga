@@ -522,9 +522,6 @@ object EncodeCharFixtures {
     interface Container {
         val default: Char
 
-        @Encoded(Encoding.UTF_8)
-        val utf8: Char
-
         @Encoded(Encoding.UTF_16)
         val utf16: Char
 
