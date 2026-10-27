@@ -155,19 +155,21 @@ The following types changed package (find-and-replace the import):
 | `KalugaLocale`, `UnitSystem`, `AvailableLocales`, `String.lowerCased`/`upperCased` | `com.splendo.kaluga.base.utils` / `…base.text` | `com.splendo.kaluga.base.i18n` | `base:i18n` |
 | `NumberFormatter`, `StringFormatter`, `FormatSpecifier`, `lineSeparator`, … | `com.splendo.kaluga.base.text` | `com.splendo.kaluga.base.formatting` | `base:formatting` |
 | `Decimal`, `toDecimal`, `RoundingMode` (the `Decimal` one) | `com.splendo.kaluga.base.utils` | `com.splendo.kaluga.base.decimal` | `base:decimal` |
-| `ByteUtils`, `toHexString`, `decodeHex`, `bytesOf`, `ByteOrder`, `ByteArrayBuilder`, `buildByteArray`, … | `com.splendo.kaluga.base.utils` / `…base.bytes` | `com.splendo.kaluga.bytes` | `bytes:core` |
-| `Int24`, `Int40`, `Int48`, `UInt24`, `UInt40`, `UInt48` (+ their extensions) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.integer` | `bytes:integer` |
-| `MedFloat16`, `MedFloat32` (+ their extensions) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.medfloat` | `bytes:medfloat` |
-| `Encoding`, `StringEncodingSettings` (+ the Char and String extensions) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.strings` | `bytes:strings` |
-| `CRC` and its standard variants | `com.splendo.kaluga.base.crc` | `com.splendo.kaluga.bytes.crc` | `bytes:crc` |
+| `toHexString`, `decodeHex`, `bytesOf` | `com.splendo.kaluga.base.utils` | `com.splendo.kaluga.bytes` | `bytes:core` |
+| `ByteOrder`, `ByteArrayBuilder`, `buildByteArray`, … (2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes` | `bytes:core` |
+| `Int24`, `Int40`, `Int48`, `UInt24`, `UInt40`, `UInt48` (+ their extensions; 2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.integer` | `bytes:integer` |
+| `MedFloat16`, `MedFloat32` (+ their extensions; 2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.medfloat` | `bytes:medfloat` |
+| `Encoding`, `StringEncodingSettings` (+ the Char and String extensions; 2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.strings` | `bytes:strings` |
+| `CRC` and its standard variants (2.0.0 alphas only) | `com.splendo.kaluga.base.crc` | `com.splendo.kaluga.bytes.crc` | `bytes:crc` |
 
-`ByteArrayBuilder.add` for the types in `bytes:integer`, `bytes:medfloat` and `bytes:strings` is now an
-extension in that module; add its `add` import (e.g. `com.splendo.kaluga.bytes.integer.add`).
+If you used the 2.0.0 alphas: `ByteArrayBuilder.add` for the types in `bytes:integer`, `bytes:medfloat`
+and `bytes:strings` is now an extension in that module; add its `add` import (e.g.
+`com.splendo.kaluga.bytes.integer.add`).
 
 Types whose package is **unchanged** but which now live in a smaller module (so you only need to
 add the module dependency): `KalugaState`/`StateRepo` (`com.splendo.kaluga.base.state` → `base:state`).
-The Luxon JS interop moved from
-`com.splendo.kaluga.base.externals` to `com.splendo.kaluga.datetime.externals`.
+The Luxon JS interop moved from `com.splendo.kaluga.base.externals` to
+`com.splendo.kaluga.datetime.externals`.
 
 ### Bluetooth
 

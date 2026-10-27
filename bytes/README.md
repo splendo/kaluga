@@ -1,6 +1,6 @@
 # Bytes
 
-Working with binary data: `ByteArray` utilities and byte orders, odd-width integers, IEEE 11073 medical floats, byte stuffing, string codecs, SHA-1 and CRC.
+Working with binary data: `ByteArray` utilities and byte orders, 24-, 40- and 48-bit integers, IEEE 11073 medical floats, byte stuffing, string codecs, SHA-1 and CRC.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:
 
