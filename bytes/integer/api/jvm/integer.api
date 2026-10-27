@@ -1,18 +1,3 @@
-public final class com/splendo/kaluga/bytes/integer/ByteArrayBuilderExtensionsKt {
-	public static final fun add-C--SDP4 (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static synthetic fun add-C--SDP4$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-	public static final fun add-N5sqsoI (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static synthetic fun add-N5sqsoI$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-	public static final fun add-WKmmJxA (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static synthetic fun add-WKmmJxA$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-	public static final fun add-XKTr9jc (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static synthetic fun add-XKTr9jc$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-	public static final fun add-cWCFMEg (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static synthetic fun add-cWCFMEg$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-	public static final fun add-lyiNP3w (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static synthetic fun add-lyiNP3w$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-}
-
 public final class com/splendo/kaluga/bytes/integer/Int24 : java/lang/Comparable {
 	public static final field Companion Lcom/splendo/kaluga/bytes/integer/Int24$Companion;
 	public static final field SIZE_BITS I
@@ -152,6 +137,21 @@ public final class com/splendo/kaluga/bytes/integer/Int48ExtensionsKt {
 public final class com/splendo/kaluga/bytes/integer/Int48Kt {
 	public static final fun toInt48 (Ljava/lang/Number;)J
 	public static final fun toUInt48-h-EwxZc (J)J
+}
+
+public final class com/splendo/kaluga/bytes/integer/IntegerByteArrayBuilderKt {
+	public static final fun add-C--SDP4 (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-C--SDP4$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static final fun add-N5sqsoI (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-N5sqsoI$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static final fun add-WKmmJxA (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-WKmmJxA$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static final fun add-XKTr9jc (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-XKTr9jc$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static final fun add-cWCFMEg (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-cWCFMEg$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static final fun add-lyiNP3w (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add-lyiNP3w$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/bytes/integer/UInt24 : java/lang/Comparable {

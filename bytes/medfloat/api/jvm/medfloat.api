@@ -1,8 +1,3 @@
-public final class com/splendo/kaluga/bytes/medfloat/ByteArrayBuilderExtensionsKt {
-	public static final fun add--2fIcUs (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;D)V
-	public static final fun add-SWsnxas (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;D)V
-}
-
 public final class com/splendo/kaluga/bytes/medfloat/MedFloat16 : java/lang/Comparable {
 	public static final field Companion Lcom/splendo/kaluga/bytes/medfloat/MedFloat16$Companion;
 	public static final field MAX_EXPONENT I
@@ -78,5 +73,10 @@ public final class com/splendo/kaluga/bytes/medfloat/MedFloat32ExtensionsKt {
 	public static synthetic fun copyIntoByteArray-YaGCylY$default (D[BIILjava/lang/Object;)[B
 	public static final fun decodeMedFloat32 ([BI)D
 	public static final fun toByteArray--gcQ_mU (D)[B
+}
+
+public final class com/splendo/kaluga/bytes/medfloat/MedFloatByteArrayBuilderKt {
+	public static final fun add--2fIcUs (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;D)V
+	public static final fun add-SWsnxas (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;D)V
 }
 

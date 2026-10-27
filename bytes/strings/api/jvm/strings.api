@@ -1,10 +1,3 @@
-public final class com/splendo/kaluga/bytes/strings/ByteArrayBuilderExtensionsKt {
-	public static final fun add (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;CLcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static final fun add (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;Ljava/lang/String;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings;Lcom/splendo/kaluga/bytes/ByteOrder;)V
-	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;CLcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;Ljava/lang/String;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings;Lcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
-}
-
 public final class com/splendo/kaluga/bytes/strings/CharExtensionsKt {
 	public static final fun byteSizeOf (Lcom/splendo/kaluga/bytes/strings/Encoding;C)I
 	public static final fun copyCharIntoByteArray (Lcom/splendo/kaluga/bytes/strings/Encoding;C[BILcom/splendo/kaluga/bytes/ByteOrder;)[B
@@ -39,6 +32,13 @@ public final class com/splendo/kaluga/bytes/strings/Encoding : java/lang/Enum {
 public final class com/splendo/kaluga/bytes/strings/KalugaCharacterCodingException : java/lang/Exception {
 	public fun <init> (Ljava/lang/String;)V
 	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/strings/StringByteArrayBuilderKt {
+	public static final fun add (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;CLcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static final fun add (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;Ljava/lang/String;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings;Lcom/splendo/kaluga/bytes/ByteOrder;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;CLcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/bytes/ByteArrayBuilder;Ljava/lang/String;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings;Lcom/splendo/kaluga/bytes/ByteOrder;ILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/bytes/strings/StringEncodingSettings {

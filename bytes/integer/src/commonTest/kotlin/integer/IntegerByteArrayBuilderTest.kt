@@ -22,7 +22,7 @@ import com.splendo.kaluga.bytes.buildByteArray
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
-class ByteArrayBuilderExtensionsTest {
+class IntegerByteArrayBuilderTest {
 
     @Test
     fun buildByteArray() {
