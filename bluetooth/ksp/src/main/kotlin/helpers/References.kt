@@ -71,9 +71,9 @@ object References {
             val identifier = className("Identifier")
         }
         object Serialization : ClassNameProvider {
-            override val packageName = "${Bluetooth.packageName}.serialization"
+            override val packageName = "com.splendo.kaluga.bytes.serialization"
 
-            val bluetoothFormat = className("BluetoothFormat")
+            val bytesFormat = className("BytesFormat")
         }
         object Server : ClassNameProvider {
             override val packageName: String = "${Bluetooth.packageName}.server"

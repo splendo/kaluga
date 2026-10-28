@@ -97,7 +97,7 @@ characteristic.value().collect {
 }
 ```
 
-All these methods have alternative implementations that automatically (de)serialize a ByteArray into a kotlin class. See the `BluetoothFormat` documentation in [`core`](../core/).
+Each of these methods also has an overload that takes a kotlinx.serialization `DeserializationStrategy` or `SerializationStrategy` and converts the bytes to or from a `@Serializable` class with [`BytesFormat`](../../bytes/serialization/), for example `characteristic.read(HeartRate.serializer())`.
 
 #### Binding
 Using the `bind` methods, an object can be make to transform based on bluetooth communication:

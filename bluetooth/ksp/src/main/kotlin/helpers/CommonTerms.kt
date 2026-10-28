@@ -80,7 +80,6 @@ const val RESPONSE = "response"
 const val SUCCESS = "Success"
 
 // Encoding
-const val BLUETOOTH_FORMAT = "bluetoothFormat"
 const val DECODE_FROM_BYTE_ARRAY = "decodeFromByteArray"
 const val ENCODE_TO_BYTE_ARRAY = "encodeToByteArray"
 const val FORMAT = "format"

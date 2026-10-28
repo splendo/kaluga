@@ -27,7 +27,6 @@ import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
 import com.splendo.kaluga.bluetooth.ksp.helpers.ALSO
-import com.splendo.kaluga.bluetooth.ksp.helpers.BLUETOOTH_FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CONFIGURE
 import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_CONTEXT
@@ -216,7 +215,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                     )
                     val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
                     if (needsFormatter.needsFormatter) {
-                        addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                        addParameter(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                     }
                     addCode(
                         CodeBlock.builder()
@@ -305,7 +304,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
             .indent()
             .addStatement("$ENCRYPTED = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
             .addStatement("$DESERIALIZATION_STRATEGY = %L,", propertyDeclaration.type.resolve().toTypeName().serializer(logger))
-            .addStatement("$BLUETOOTH_FORMAT = $FORMAT,")
+            .addStatement("$FORMAT = $FORMAT,")
             .addStatement("$ON_FAILED_TO_WRITE = { $DEVICE, $EXCEPTION ->")
             .indent()
             .beginControlFlow("$WITH($delegateName)")

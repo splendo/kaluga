@@ -135,8 +135,8 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                 listOfNotNull(
                     ParameterSpec(BUILDER, References.Bluetooth.Server.baseBluetoothServerBuilder),
                     delegateParameter,
-                    ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
-                        .defaultValue("%T", References.Bluetooth.Serialization.bluetoothFormat)
+                    ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
+                        .defaultValue("%T", References.Bluetooth.Serialization.bytesFormat)
                         .build().takeIf { serverNeedsFormatter.needsFormatter || delegateNeedsFormatter.needsFormatter },
                     ParameterSpec.builder(
                         SETTINGS_BUILDER,
@@ -258,7 +258,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(SERVER, References.Bluetooth.Server.bluetoothServer),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
 
                     )
@@ -272,7 +272,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                 listOfNotNull(
                     PropertySpec.builder(SERVER, References.Bluetooth.Server.bluetoothServer)
                         .initializer(SERVER).build(),
-                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                         .addModifiers(KModifier.PRIVATE)
                         .initializer(FORMAT)
                         .build().takeIf { needsFormatter.needsFormatter },
@@ -301,7 +301,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                     )
                     val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
                     if (needsFormatter.needsFormatter) {
-                        addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                        addParameter(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                     }
                     addCode(
                         CodeBlock.builder()

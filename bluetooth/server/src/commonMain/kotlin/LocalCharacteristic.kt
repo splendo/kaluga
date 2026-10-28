@@ -24,8 +24,8 @@ import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
-import com.splendo.kaluga.bluetooth.serialization.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.serialization.BytesFormat
+import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Permission
 import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.CoroutineScope
@@ -96,18 +96,18 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
          * Otherwise will add [Permission.READABLE]
          * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+         * @param format the [BytesFormat] to use to encode the [T] to a [ByteArray]
          * @param onRead the function to call when reading from the characteristic.
          * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return the [T] being read.
          */
         fun <T> readableAlwaysSuccess(
             encrypted: Boolean = false,
             serializationStrategy: SerializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            format: BytesFormat = BytesFormat,
             onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
         ) {
             readable(encrypted) { device, offset ->
-                GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, bluetoothFormat)
+                GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, format)
             }
         }
 
@@ -144,7 +144,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
             encrypted: Boolean = false,
             deserializationStrategy: DeserializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            format: BytesFormat = BytesFormat,
             onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
             onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
         ) {
@@ -164,7 +164,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                 }
                 valueToDeserialize?.let {
                     try {
-                        onWrite(device, bluetoothFormat.decodeFromByteArray(deserializationStrategy, it))
+                        onWrite(device, format.decodeFromByteArray(deserializationStrategy, it))
                     } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
                         GattResponse.WriteSuccess.Acknowledged
@@ -211,13 +211,13 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
             encrypted: Boolean = false,
             deserializationStrategy: DeserializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            format: BytesFormat = BytesFormat,
             onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
         ) = writable(
             properties,
             encrypted,
             deserializationStrategy,
-            bluetoothFormat,
+            format,
             { _, _ -> GattResponse.WriteSuccess.Acknowledged },
         ) { device, value ->
             onWrite(device, value)
@@ -297,15 +297,15 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
              * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
              * @param encrypted `true` if subscribing to the characteristic should be encrypted.
              * @param serializationStrategy the [SerializationStrategy] to use to encode the [Trigger] to a [ByteArray]
-             * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Trigger] to a [ByteArray]
+             * @param format the [BytesFormat] to use to encode the [Trigger] to a [ByteArray]
              */
             fun triggerNotification(
                 properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
                 encrypted: Boolean = false,
                 serializationStrategy: SerializationStrategy<Trigger>,
-                bluetoothFormat: BluetoothFormat = BluetoothFormat,
+                format: BytesFormat = BytesFormat,
             ) = triggerNotification(properties, encrypted) {
-                bluetoothFormat.encodeToByteArray(serializationStrategy, this)
+                format.encodeToByteArray(serializationStrategy, this)
             }
         }
 
@@ -487,26 +487,26 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * @param device the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that should be notified
          * @param notification the new data
          * @param serializationStrategy the [SerializationStrategy] to use to encode the [Notification] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @param format the [BytesFormat] to use to encode the [Notification] to a [ByteArray]
          * @return `true` if the notification was successful, `false` otherwise
          */
         suspend fun <Notification> notify(
             device: ConnectedDevice,
             notification: Notification,
             serializationStrategy: SerializationStrategy<Notification>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        ): Boolean = notify(device, bluetoothFormat.encodeToByteArray(serializationStrategy, notification))
+            format: BytesFormat = BytesFormat,
+        ): Boolean = notify(device, format.encodeToByteArray(serializationStrategy, notification))
 
         /**
          * Notifies a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that that the data changed to [notification]
          * @param Notification the type of the data to notify
          * @param device the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] that should be notified
          * @param notification the new data
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @param format the [BytesFormat] to use to encode the [Notification] to a [ByteArray]
          * @return `true` if the notification was successful, `false` otherwise
          */
-        suspend inline fun <reified Notification> notify(device: ConnectedDevice, notification: Notification, bluetoothFormat: BluetoothFormat = BluetoothFormat): Boolean =
-            notify(device, bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), notification))
+        suspend inline fun <reified Notification> notify(device: ConnectedDevice, notification: Notification, format: BytesFormat = BytesFormat): Boolean =
+            notify(device, format.encodeToByteArray(format.serializer(), notification))
 
         /**
          * Notifies all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] currently subscribed that that the data changed to [value]
@@ -537,24 +537,21 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * @param Notification the type of the data to notify
          * @param notification the new data
          * @param serializationStrategy the [SerializationStrategy] to use to encode the [Notification] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @param format the [BytesFormat] to use to encode the [Notification] to a [ByteArray]
          * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.server.ConnectedDevice], `false` otherwise
          */
-        suspend fun <Notification> notifyAll(
-            notification: Notification,
-            serializationStrategy: SerializationStrategy<Notification>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        ): Boolean = notifyAll(bluetoothFormat.encodeToByteArray(serializationStrategy, notification))
+        suspend fun <Notification> notifyAll(notification: Notification, serializationStrategy: SerializationStrategy<Notification>, format: BytesFormat = BytesFormat): Boolean =
+            notifyAll(format.encodeToByteArray(serializationStrategy, notification))
 
         /**
          * Notifies all [com.splendo.kaluga.bluetooth.server.ConnectedDevice] currently subscribed that that the data changed to [notification]
          * @param Notification the type of the data to notify
          * @param notification the new data
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @param format the [BytesFormat] to use to encode the [Notification] to a [ByteArray]
          * @return `true` if the notification was successfully sent to all [com.splendo.kaluga.bluetooth.server.ConnectedDevice], `false` otherwise
          */
-        suspend inline fun <reified Notification> notifyAll(notification: Notification, bluetoothFormat: BluetoothFormat = BluetoothFormat): Boolean =
-            notifyAll(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), notification))
+        suspend inline fun <reified Notification> notifyAll(notification: Notification, format: BytesFormat = BytesFormat): Boolean =
+            notifyAll(format.encodeToByteArray(format.serializer(), notification))
 
         override suspend fun emit(value: ByteArray) {
             notifyAll(value)
@@ -706,15 +703,15 @@ expect interface LocalCharacteristicWrapper {
  * @param T the type of the data being read
  * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
  * Otherwise will add [Permission.READABLE]
- * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+ * @param format the [BytesFormat] to use to encode the [T] to a [ByteArray]
  * @param onRead the function to call when reading from the characteristic.
  * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return the [T] being read.
  */
 inline fun <reified T : Any> LocalCharacteristic.DSL.readableAlwaysSuccess(
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    format: BytesFormat = BytesFormat,
     noinline onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
-) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onRead)
+) = readableAlwaysSuccess(encrypted, format.serializer<T>(), format, onRead)
 
 /**
  * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
@@ -732,10 +729,10 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.readableAlwaysSuccess(
 inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
     properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    format: BytesFormat = BytesFormat,
     noinline onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
     noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
-) = writable(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
+) = writable(properties, encrypted, format.serializer<T>(), format, onFailedToWrite, onWrite)
 
 /**
  * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
@@ -751,9 +748,9 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
 inline fun <reified T : Any> LocalCharacteristic.DSL.writableAlwaysSuccess(
     properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    format: BytesFormat = BytesFormat,
     noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
-) = writableAlwaysSuccess(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onWrite)
+) = writableAlwaysSuccess(properties, encrypted, format.serializer<T>(), format, onWrite)
 
 /**
  * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
@@ -774,10 +771,10 @@ fun LocalCharacteristic.DSL.NotificationDSL<ByteArray>.triggerNotification(
  * @param Trigger the type of the data being collected
  * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
  * @param encrypted `true` if subscribing to the characteristic should be encrypted.
- * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Trigger] to a [ByteArray]
+ * @param format the [BytesFormat] to use to encode the [Trigger] to a [ByteArray]
  */
 inline fun <reified Trigger> LocalCharacteristic.DSL.NotificationDSL<Trigger>.triggerNotification(
     properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
-) = triggerNotification(properties, encrypted, bluetoothFormat.serializer<Trigger>(), bluetoothFormat)
+    format: BytesFormat = BytesFormat,
+) = triggerNotification(properties, encrypted, format.serializer<Trigger>(), format)

@@ -41,7 +41,7 @@ import kotlin.math.abs
 
 /**
  * Generates Kaluga `@Bluetooth` definitions from parsed GATT XML: the `@Serializable` value class for each
- * characteristic (translating field formats/scaling into `BluetoothFormat` annotations), the `@BluetoothCharacteristic`
+ * characteristic (translating field formats/scaling into `BytesFormat` annotations), the `@BluetoothCharacteristic`
  * and `@BluetoothService` interfaces, and the `@Bluetooth` device that ties them together.
  *
  * A leading flags byte becomes a flat class where each bit either selects a field's width (multiple `@Size`), gates a
@@ -352,7 +352,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
 
     // The element of a generated list carries its format through the @Item* variant of each field annotation.
     private fun AnnotationSpec.asItemAnnotation(): AnnotationSpec {
-        val builder = AnnotationSpec.builder(ClassName(SERIALIZATION, "Item${(typeName as ClassName).simpleName}"))
+        val builder = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "Item${(typeName as ClassName).simpleName}"))
         members.forEach(builder::addMember)
         return builder.build()
     }
@@ -399,9 +399,9 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         return name
     }
 
-    private fun flagIndex(index: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagIndex")).addMember("%L", index).build()
+    private fun flagIndex(index: Int) = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "FlagIndex")).addMember("%L", index).build()
 
-    private fun presentWhenAllSet(indices: List<Int>) = AnnotationSpec.builder(ClassName(SERIALIZATION, "PresentWhenAllSet"))
+    private fun presentWhenAllSet(indices: List<Int>) = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "PresentWhenAllSet"))
         .apply { indices.forEach { addMember("%L", it) } }
         .build()
 
@@ -413,9 +413,9 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         else -> emptyList()
     }
 
-    private fun flagWidth(bits: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagWidth")).addMember("bits = %L", bits).build()
+    private fun flagWidth(bits: Int) = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "FlagWidth")).addMember("bits = %L", bits).build()
 
-    private fun serializedByteValue(discriminator: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "SerializedByteValue"))
+    private fun serializedByteValue(discriminator: Int) = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "SerializedByteValue"))
         .addMember("%L", discriminator)
         .build()
 
@@ -476,8 +476,8 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         else -> if (bits <= 24) INT else LONG
     }
 
-    private fun size(bits: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "Size"))
-        .addMember("%T.%L", ClassName(SERIALIZATION, "Length"), "`${bits}_BIT`")
+    private fun size(bits: Int) = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "Size"))
+        .addMember("%T.%L", ClassName(BYTES_ANNOTATIONS, "Length"), "`${bits}_BIT`")
         .build()
 
     // GATT defines the physical value as `raw * multiplier * 10^decimalExponent * 2^binaryExponent` (GATT Specification
@@ -501,14 +501,14 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         val scalarMultiplier = if (multiplier < 0) -1 else 1
         val scalarDecimalExponent = -(decimalExponent + decimalFromMultiplier)
         val scalarBinaryExponent = -(binaryExponent + binaryFromMultiplier)
-        return AnnotationSpec.builder(ClassName(SERIALIZATION, "Scalar")).apply {
+        return AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "Scalar")).apply {
             if (scalarMultiplier != 1) addMember("multiplier = %L", scalarMultiplier)
             if (scalarDecimalExponent != 0) addMember("decimalExponent = %L", scalarDecimalExponent)
             if (scalarBinaryExponent != 0) addMember("binaryExponent = %L", scalarBinaryExponent)
         }.build()
     }
 
-    private fun encoded(encoding: String) = AnnotationSpec.builder(ClassName(SERIALIZATION, "Encoded"))
+    private fun encoded(encoding: String) = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "Encoded"))
         .addMember("%T.%L", ClassName(BYTES_STRINGS, "Encoding"), encoding)
         .build()
 
@@ -531,7 +531,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     ).build()
 
     private companion object {
-        const val SERIALIZATION = "com.splendo.kaluga.bluetooth.serialization"
+        const val BYTES_ANNOTATIONS = "com.splendo.kaluga.bytes.annotations"
         const val BYTES_STRINGS = "com.splendo.kaluga.bytes.strings"
         const val ANNOTATIONS = "com.splendo.kaluga.bluetooth.annotations"
         const val SCIENTIFIC = "com.splendo.kaluga.scientific"
@@ -546,9 +546,9 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
         val SUPPORTED_INTEGER_WIDTHS = setOf(8, 16, 24, 32, 40, 48, 64)
         val JVM_INLINE = AnnotationSpec.builder(ClassName("kotlin.jvm", "JvmInline")).build()
         val SERIALIZABLE = AnnotationSpec.builder(ClassName("kotlinx.serialization", "Serializable")).build()
-        val UNSIGNED = AnnotationSpec.builder(ClassName(SERIALIZATION, "Unsigned")).build()
-        val MED_FLOAT = AnnotationSpec.builder(ClassName(SERIALIZATION, "MedFloat")).build()
-        val NULL_IF_EMPTY = AnnotationSpec.builder(ClassName(SERIALIZATION, "NullIfEmpty")).build()
-        val UNSIZED = AnnotationSpec.builder(ClassName(SERIALIZATION, "Unsized")).build()
+        val UNSIGNED = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "Unsigned")).build()
+        val MED_FLOAT = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "MedFloat")).build()
+        val NULL_IF_EMPTY = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "NullIfEmpty")).build()
+        val UNSIZED = AnnotationSpec.builder(ClassName(BYTES_ANNOTATIONS, "Unsized")).build()
     }
 }

@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bluetooth.sharedcontract.LocalSharedCharacteristic
 import com.splendo.kaluga.bluetooth.sharedcontract.LocalSharedService
 import com.splendo.kaluga.bluetooth.sharedcontract.SharedCharacteristicReadResponse
@@ -86,11 +86,11 @@ class GeneratedExternalApiServerStructureTest : BaseTest() {
 
                 val readResponse = mock.triggerRead(LocalSharedCharacteristic.UUID)
                 val readSuccess = assertIs<GattResponse.ReadSuccess>(readResponse)
-                assertEquals(42, BluetoothFormat.decodeFromByteArray(serializer<Int>(), readSuccess.value))
+                assertEquals(42, BytesFormat.decodeFromByteArray(serializer<Int>(), readSuccess.value))
 
                 val writeResponse = mock.triggerWrite(
                     LocalSharedCharacteristic.UUID,
-                    BluetoothFormat.encodeToByteArray(serializer<Int>(), 7),
+                    BytesFormat.encodeToByteArray(serializer<Int>(), 7),
                 )
                 assertIs<GattResponse.WriteSuccess>(writeResponse)
                 assertEquals(7, characteristicDelegate.written)

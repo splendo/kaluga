@@ -90,8 +90,8 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
                 listOfNotNull(
                     ParameterSpec(BLUETOOTH, References.Bluetooth.bluetoothClient),
                     ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
-                    ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
-                        .defaultValue("%T", References.Bluetooth.Serialization.bluetoothFormat)
+                    ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
+                        .defaultValue("%T", References.Bluetooth.Serialization.bytesFormat)
                         .build().takeIf { needsFormatter.needsFormatter },
                 ),
             )
@@ -114,8 +114,8 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
                 listOfNotNull(
                     ParameterSpec(BLUETOOTH, References.Bluetooth.bluetoothClient),
                     ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
-                    ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
-                        .defaultValue("%T", References.Bluetooth.Serialization.bluetoothFormat)
+                    ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
+                        .defaultValue("%T", References.Bluetooth.Serialization.bytesFormat)
                         .build().takeIf { needsFormatter.needsFormatter },
                 ),
             )
@@ -158,7 +158,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(DISCOVERED_SERVICES, LIST.parameterizedBy(References.Bluetooth.remoteService)),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
                     )
                     .build(),
@@ -168,7 +168,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
                 listOfNotNull(
                     PropertySpec.builder(DISCOVERED_SERVICES, LIST.parameterizedBy(References.Bluetooth.remoteService))
                         .initializer(DISCOVERED_SERVICES).build(),
-                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                         .addModifiers(KModifier.PRIVATE)
                         .initializer(FORMAT).build().takeIf { needsFormatter.needsFormatter },
                 ),

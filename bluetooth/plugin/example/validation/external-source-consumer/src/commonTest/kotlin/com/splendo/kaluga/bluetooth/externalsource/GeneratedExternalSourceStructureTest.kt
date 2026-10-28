@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth.externalsource
 import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bluetooth.test.ConnectedMockClient
 import com.splendo.kaluga.bluetooth.test.characteristic
 import com.splendo.kaluga.bluetooth.test.connectedMockClient
@@ -64,9 +64,9 @@ class GeneratedExternalSourceStructureTest : BaseTest() {
         withTimeout(5.seconds) {
             val mock = connect(this)
             try {
-                // The read value the mock device returns for e101: BluetoothFormat-encoded Int 42.
+                // The read value the mock device returns for e101: BytesFormat-encoded Int 42.
                 mock.characteristicWrapper(RemoteExternalService.UUID, RemoteExternalCharacteristic.UUID)
-                    .updateValue(BluetoothFormat.encodeToByteArray(BluetoothFormat.serializer<Int>(), 42))
+                    .updateValue(BytesFormat.encodeToByteArray(BytesFormat.serializer<Int>(), 42))
 
                 val client = ComposedDeviceClient.bluetoothSnapshot(mock.client, mock.identifier)
 

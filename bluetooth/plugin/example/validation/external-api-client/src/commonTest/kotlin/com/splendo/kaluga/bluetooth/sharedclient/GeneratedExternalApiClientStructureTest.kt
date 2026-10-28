@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.test.BaseTest
 import com.splendo.kaluga.base.test.testRunBlocking
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.GattResponse
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bluetooth.sharedcontract.RemoteSharedCharacteristic
 import com.splendo.kaluga.bluetooth.sharedcontract.RemoteSharedService
 import com.splendo.kaluga.bluetooth.sharedcontract.SharedCharacteristicReadResponse
@@ -62,9 +62,9 @@ class GeneratedExternalApiClientStructureTest : BaseTest() {
         withTimeout(5.seconds) {
             val mock = connect(this)
             try {
-                // The read value the mock device returns for b101: BluetoothFormat-encoded Int 42.
+                // The read value the mock device returns for b101: BytesFormat-encoded Int 42.
                 mock.characteristicWrapper(RemoteSharedService.UUID, RemoteSharedCharacteristic.UUID)
-                    .updateValue(BluetoothFormat.encodeToByteArray(BluetoothFormat.serializer<Int>(), 42))
+                    .updateValue(BytesFormat.encodeToByteArray(BytesFormat.serializer<Int>(), 42))
 
                 val client = SharedDeviceClient.bluetooth(mock.client, mock.identifier)
 
@@ -91,8 +91,8 @@ class GeneratedExternalApiClientStructureTest : BaseTest() {
                 // The mock recorded the written bytes on the characteristic wrapper.
                 assertEquals(
                     7,
-                    BluetoothFormat.decodeFromByteArray(
-                        BluetoothFormat.serializer<Int>(),
+                    BytesFormat.decodeFromByteArray(
+                        BytesFormat.serializer<Int>(),
                         mock.characteristicWrapper(RemoteSharedService.UUID, RemoteSharedCharacteristic.UUID).value!!,
                     ),
                 )

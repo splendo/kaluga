@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.generated
 
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.scientific.unit.Celsius
 import com.splendo.kaluga.scientific.unit.Pascal
 import kotlin.test.Test
@@ -43,12 +43,12 @@ class GeneratedSerializationTest {
         // The Pressure field has a GATT Multiplier of 10 (physical = raw * 10), which has no integer reciprocal, so the
         // generator folds it into @Scalar(decimalExponent = -1): 5000 Pa encodes as raw 500 (0x01F4), little-endian.
         val value = PressureValue(PressureValue.Pressure(5000.0))
-        val bytes = BluetoothFormat.encodeToByteArray(PressureValue.serializer(), value)
+        val bytes = BytesFormat.encodeToByteArray(PressureValue.serializer(), value)
         assertTrue(
             bytes.contentEquals(byteArrayOf(0xF4.toByte(), 0x01)),
             "Expected f4 01 but got ${bytes.hex()}",
         )
-        val decoded = BluetoothFormat.decodeFromByteArray(PressureValue.serializer(), bytes)
+        val decoded = BytesFormat.decodeFromByteArray(PressureValue.serializer(), bytes)
         assertEquals(value, decoded)
         assertEquals(5000.0, decoded.pressure.value)
         assertEquals(Pascal, decoded.pressure.unit)
@@ -111,13 +111,13 @@ class GeneratedSerializationTest {
     fun wideCountersRoundTripThrough40And48BitWidths() {
         // uint40 -> 5 bytes, sint48 -> 6 bytes, both little-endian. 0x123456789A and -42 (sign-extended across 6 bytes).
         val value = WideCountersValue(packetCounter = 0x123456789AL, signedOffset = -42L)
-        val bytes = BluetoothFormat.encodeToByteArray(WideCountersValue.serializer(), value)
+        val bytes = BytesFormat.encodeToByteArray(WideCountersValue.serializer(), value)
         val expected = byteArrayOf(
             0x9A.toByte(), 0x78, 0x56, 0x34, 0x12,
             0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(),
         )
         assertTrue(bytes.contentEquals(expected), "Expected ${expected.hex()} but got ${bytes.hex()}")
-        val decoded = BluetoothFormat.decodeFromByteArray(WideCountersValue.serializer(), bytes)
+        val decoded = BytesFormat.decodeFromByteArray(WideCountersValue.serializer(), bytes)
         assertEquals(value, decoded)
         assertEquals(0x123456789AL, decoded.packetCounter)
         assertEquals(-42L, decoded.signedOffset)
@@ -128,12 +128,12 @@ class GeneratedSerializationTest {
         // Reading Pair's two fields each reference the Reading characteristic (2BE0), so they embed ReadingValue.
         // Each Reading is a uint16; 100 -> 0x0064, 200 -> 0x00C8, both little-endian and concatenated.
         val value = ReadingPairValue(first = ReadingValue(100), second = ReadingValue(200))
-        val bytes = BluetoothFormat.encodeToByteArray(ReadingPairValue.serializer(), value)
+        val bytes = BytesFormat.encodeToByteArray(ReadingPairValue.serializer(), value)
         assertTrue(
             bytes.contentEquals(byteArrayOf(0x64, 0x00, 0xC8.toByte(), 0x00)),
             "Expected 64 00 c8 00 but got ${bytes.hex()}",
         )
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(ReadingPairValue.serializer(), bytes))
+        assertEquals(value, BytesFormat.decodeFromByteArray(ReadingPairValue.serializer(), bytes))
     }
 
     @Test
@@ -156,43 +156,43 @@ class GeneratedSerializationTest {
     }
 
     private fun validateCompoundFlags(value: CompoundFlagsValue, expectedBytes: ByteArray) {
-        val bytes = BluetoothFormat.encodeToByteArray(CompoundFlagsValue.serializer(), value)
+        val bytes = BytesFormat.encodeToByteArray(CompoundFlagsValue.serializer(), value)
         assertTrue(bytes.contentEquals(expectedBytes), "Expected ${expectedBytes.hex()} but got ${bytes.hex()}")
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(CompoundFlagsValue.serializer(), bytes))
+        assertEquals(value, BytesFormat.decodeFromByteArray(CompoundFlagsValue.serializer(), bytes))
     }
 
     private fun validateDualFlags(value: DualFlagsValue, expectedBytes: ByteArray) {
-        val bytes = BluetoothFormat.encodeToByteArray(DualFlagsValue.serializer(), value)
+        val bytes = BytesFormat.encodeToByteArray(DualFlagsValue.serializer(), value)
         assertTrue(bytes.contentEquals(expectedBytes), "Expected ${expectedBytes.hex()} but got ${bytes.hex()}")
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(DualFlagsValue.serializer(), bytes))
+        assertEquals(value, BytesFormat.decodeFromByteArray(DualFlagsValue.serializer(), bytes))
     }
 
     private fun validateHeartRate(value: HeartRateMeasurementValue, expectedBytes: ByteArray) {
-        val bytes = BluetoothFormat.encodeToByteArray(HeartRateMeasurementValue.serializer(), value)
+        val bytes = BytesFormat.encodeToByteArray(HeartRateMeasurementValue.serializer(), value)
         assertTrue(
             bytes.contentEquals(expectedBytes),
             "Expected ${expectedBytes.hex()} but got ${bytes.hex()}",
         )
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(HeartRateMeasurementValue.serializer(), bytes))
+        assertEquals(value, BytesFormat.decodeFromByteArray(HeartRateMeasurementValue.serializer(), bytes))
     }
 
     private fun validateTemperature(celsius: Double, expectedBytes: ByteArray) {
         val value = InternalTemperatureValue(InternalTemperatureValue.Temperature(celsius))
-        val bytes = BluetoothFormat.encodeToByteArray(InternalTemperatureValue.serializer(), value)
+        val bytes = BytesFormat.encodeToByteArray(InternalTemperatureValue.serializer(), value)
         assertTrue(
             bytes.contentEquals(expectedBytes),
             "Expected ${expectedBytes.hex()} but got ${bytes.hex()}",
         )
-        val decoded = BluetoothFormat.decodeFromByteArray(InternalTemperatureValue.serializer(), bytes)
+        val decoded = BytesFormat.decodeFromByteArray(InternalTemperatureValue.serializer(), bytes)
         assertEquals(value, decoded)
         assertEquals(celsius, decoded.temperature.value)
         assertEquals(Celsius, decoded.temperature.unit)
     }
 
     private fun <T> validateRoundTrip(serializer: kotlinx.serialization.KSerializer<T>, value: T, expectedBytes: ByteArray) {
-        val bytes = BluetoothFormat.encodeToByteArray(serializer, value)
+        val bytes = BytesFormat.encodeToByteArray(serializer, value)
         assertTrue(bytes.contentEquals(expectedBytes), "Expected ${expectedBytes.hex()} but got ${bytes.hex()}")
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(serializer, bytes))
+        assertEquals(value, BytesFormat.decodeFromByteArray(serializer, bytes))
     }
 
     private fun ByteArray.hex() = joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }

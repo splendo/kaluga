@@ -86,7 +86,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(DESCRIPTOR, References.Bluetooth.remoteDescriptor),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
                     )
                     .build(),
@@ -99,7 +99,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                 listOfNotNull(
                     PropertySpec.builder(DESCRIPTOR, References.Bluetooth.remoteDescriptor)
                         .initializer(DESCRIPTOR).build(),
-                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                         .addModifiers(KModifier.PRIVATE)
                         .initializer(FORMAT).build().takeIf { needsFormatter.needsFormatter },
                 ),
@@ -116,7 +116,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
                     )
                     .returns(className)
@@ -133,7 +133,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
                     )
                     .returns(className.copy(nullable = true))
