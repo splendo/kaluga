@@ -141,9 +141,11 @@ The single `base` module and the single `date-time` module have each been split 
 focused modules, and several types moved to a package that matches their new module. Add a
 dependency on the specific module(s) you use, and update the affected imports.
 
-`base` → `base:core` plus `base:state`, `base:decimal`, `base:bytes`, `base:crc`, `base:i18n`,
-`base:formatting`. `date-time` → `date-time:date-time` (the calendar types and date formatter)
-and `date-time:timer` (`RecurringTimer`).
+`base` → `base:core` plus `base:state`, `base:decimal`, `base:i18n`, `base:formatting`. The byte
+utilities and CRC moved out of `base` into the `bytes` group (`bytes:core`, `bytes:integer`,
+`bytes:medfloat`, `bytes:strings`, `bytes:crc`, alongside the new `bytes:stuffing` and `bytes:hash`).
+`date-time` → `date-time:date-time` (the calendar types and date formatter) and `date-time:timer`
+(`RecurringTimer`).
 
 The following types changed package (find-and-replace the import):
 
@@ -153,12 +155,21 @@ The following types changed package (find-and-replace the import):
 | `KalugaLocale`, `UnitSystem`, `AvailableLocales`, `String.lowerCased`/`upperCased` | `com.splendo.kaluga.base.utils` / `…base.text` | `com.splendo.kaluga.base.i18n` | `base:i18n` |
 | `NumberFormatter`, `StringFormatter`, `FormatSpecifier`, `lineSeparator`, … | `com.splendo.kaluga.base.text` | `com.splendo.kaluga.base.formatting` | `base:formatting` |
 | `Decimal`, `toDecimal`, `RoundingMode` (the `Decimal` one) | `com.splendo.kaluga.base.utils` | `com.splendo.kaluga.base.decimal` | `base:decimal` |
+| `toHexString`, `decodeHex`, `bytesOf` | `com.splendo.kaluga.base.utils` | `com.splendo.kaluga.bytes` | `bytes:core` |
+| `ByteOrder`, `ByteArrayBuilder`, `buildByteArray`, … (2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes` | `bytes:core` |
+| `Int24`, `Int40`, `Int48`, `UInt24`, `UInt40`, `UInt48` (+ their extensions; 2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.integer` | `bytes:integer` |
+| `MedFloat16`, `MedFloat32` (+ their extensions; 2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.medfloat` | `bytes:medfloat` |
+| `Encoding`, `StringEncodingSettings` (+ the Char and String extensions; 2.0.0 alphas only) | `com.splendo.kaluga.base.bytes` | `com.splendo.kaluga.bytes.strings` | `bytes:strings` |
+| `CRC` and its standard variants (2.0.0 alphas only) | `com.splendo.kaluga.base.crc` | `com.splendo.kaluga.bytes.crc` | `bytes:crc` |
+
+If you used the 2.0.0 alphas: `ByteArrayBuilder.add` for the types in `bytes:integer`, `bytes:medfloat`
+and `bytes:strings` is now an extension in that module; add its `add` import (e.g.
+`com.splendo.kaluga.bytes.integer.add`).
 
 Types whose package is **unchanged** but which now live in a smaller module (so you only need to
-add the module dependency): `KalugaState`/`StateRepo` (`com.splendo.kaluga.base.state` → `base:state`),
-the byte utilities (`com.splendo.kaluga.base.bytes` → `base:bytes`), and CRC
-(`com.splendo.kaluga.base.crc` → `base:crc`). The Luxon JS interop moved from
-`com.splendo.kaluga.base.externals` to `com.splendo.kaluga.datetime.externals`.
+add the module dependency): `KalugaState`/`StateRepo` (`com.splendo.kaluga.base.state` → `base:state`).
+The Luxon JS interop moved from `com.splendo.kaluga.base.externals` to
+`com.splendo.kaluga.datetime.externals`.
 
 ### Bluetooth
 

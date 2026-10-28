@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.Encoding
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
 
@@ -92,10 +92,10 @@ annotation class FlagWidth(val bits: Int = 1)
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * When applied, the [com.splendo.kaluga.base.bytes.ByteOrder] in which this element is encoded is set to [order].
+ * When applied, the [com.splendo.kaluga.bytes.ByteOrder] in which this element is encoded is set to [order].
  * When applied to a class or collection, a [InvalidByteOrderException] may be thrown if the byte order changed.
  *
- * @property order the [com.splendo.kaluga.base.bytes.ByteOrder] in which to encode the element.
+ * @property order the [com.splendo.kaluga.bytes.ByteOrder] in which to encode the element.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
@@ -128,6 +128,8 @@ internal fun LengthPrefix.asLengthPrefix() = when {
  * Annotation added for serializing using [BluetoothFormat]
  *
  * When applied to a [String] or [Char], [encoding] will be used for encoding each char.
+ * For a [Char], [Encoding.UTF_8] is the same as [Encoding.ASCII]: one byte, ASCII only, and any other character
+ * throws an [IllegalArgumentException]. Use [Encoding.UTF_16] or a [String] for characters outside ASCII.
  *
  * @property encoding the [Encoding] to use.
  */
@@ -180,7 +182,7 @@ annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, v
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.base.bytes.MedFloat16] or [com.splendo.kaluga.base.bytes.MedFloat32], depending on [Size]
+ * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.bytes.medfloat.MedFloat16] or [com.splendo.kaluga.bytes.medfloat.MedFloat32], depending on [Size]
  * Can only add [Length.`16_BIT`] or [Length.`32_BIT`] using [Size].
  * Size defaults to:
  * - [Length.`16_BIT`] for [Byte], [Short], and [Float]
@@ -232,10 +234,10 @@ annotation class NullIfEmpty
 /**
  * Annotation added for serializing using [BluetoothFormat]
  *
- * Adds a [com.splendo.kaluga.base.crc.CRC] value of size [width] to the end of the body (before any prefix)
+ * Adds a [com.splendo.kaluga.bytes.crc.CRC] value of size [width] to the end of the body (before any prefix)
  * If the decoded checksum does not match the calculated checksum of the body and [BluetoothFormat.validateChecksum] is `true` will result in a [InvalidChecksumException].
  *
- * @see [com.splendo.kaluga.base.crc.CRC.invoke]
+ * @see [com.splendo.kaluga.bytes.crc.CRC.invoke]
  *
  * @param width the width of the CRC in bits. Must be between 1 and 64 bits.
  * @param polynomial the polynomial used to compute the CRC.

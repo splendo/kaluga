@@ -17,21 +17,25 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.Encoding
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
-import com.splendo.kaluga.base.bytes.buildByteArray
-import com.splendo.kaluga.base.bytes.toByteArray
-import com.splendo.kaluga.base.crc.CRC16
-import com.splendo.kaluga.base.bytes.MedFloat16
-import com.splendo.kaluga.base.bytes.MedFloat32
-import com.splendo.kaluga.base.bytes.UInt24
-import com.splendo.kaluga.base.bytes.toHexString
-import com.splendo.kaluga.base.bytes.toInt24
-import com.splendo.kaluga.base.bytes.toInt40
-import com.splendo.kaluga.base.bytes.toInt48
-import com.splendo.kaluga.base.bytes.toUInt40
-import com.splendo.kaluga.base.bytes.toUInt48
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.buildByteArray
+import com.splendo.kaluga.bytes.crc.CRC16
+import com.splendo.kaluga.bytes.integer.UInt24
+import com.splendo.kaluga.bytes.integer.add
+import com.splendo.kaluga.bytes.integer.toInt24
+import com.splendo.kaluga.bytes.integer.toInt40
+import com.splendo.kaluga.bytes.integer.toInt48
+import com.splendo.kaluga.bytes.integer.toUInt40
+import com.splendo.kaluga.bytes.integer.toUInt48
+import com.splendo.kaluga.bytes.medfloat.MedFloat16
+import com.splendo.kaluga.bytes.medfloat.MedFloat32
+import com.splendo.kaluga.bytes.medfloat.add
+import com.splendo.kaluga.bytes.medfloat.toByteArray
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
+import com.splendo.kaluga.bytes.strings.add
+import com.splendo.kaluga.bytes.toByteArray
+import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.invoke
@@ -999,6 +1003,15 @@ class BluetoothFormatTest {
                 add('g', Encoding.UTF_16)
             },
         )
+    }
+
+    @Test
+    fun rejectNonAsciiUtf8Char() {
+        @Serializable
+        data class Container(val char: Char)
+
+        assertFailsWith<IllegalArgumentException> { BluetoothFormat.encodeToByteArray(Container.serializer(), Container('é')) }
+        assertFailsWith<IllegalArgumentException> { BluetoothFormat.decodeFromByteArray(Container.serializer(), byteArrayOf(0xC3.toByte())) }
     }
 
     @Test

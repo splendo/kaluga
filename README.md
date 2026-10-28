@@ -109,8 +109,6 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [base/core](base/core/) | Threading, flowables and concurrent collections | `com.splendo.kaluga.base:core` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/state](base/state/) | State machines (`KalugaState`, `StateRepo`) | `com.splendo.kaluga.base:state` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/decimal](base/decimal/) | High-precision decimal arithmetic | `com.splendo.kaluga.base:decimal` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| [base/bytes](base/bytes/) | ByteArray utilities, hex conversion and numeric byte encoding | `com.splendo.kaluga.base:bytes` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| [base/crc](base/crc/) | Cyclic Redundancy Check (CRC) calculation | `com.splendo.kaluga.base:crc` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/i18n](base/i18n/) | Locales, unit systems and locale-aware String casing | `com.splendo.kaluga.base:i18n` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/formatting](base/formatting/) | Formatting and parsing of numbers and strings | `com.splendo.kaluga.base:formatting` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [base/test-utils](base/test-utils/) | Test helpers built on top of base | `com.splendo.kaluga.base:test` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -121,6 +119,13 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [bluetooth/test-utils/core](bluetooth/test-utils/core/) | Test helpers for the Bluetooth core module | `com.splendo.kaluga.bluetooth:test-core` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bluetooth/test-utils/client](bluetooth/test-utils/client/) | Test helpers for the Bluetooth client module | `com.splendo.kaluga.bluetooth:test-client` | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bluetooth/test-utils/server](bluetooth/test-utils/server/) | Test helpers for the Bluetooth server module | `com.splendo.kaluga.bluetooth:test-server` | ✅ | ✅ |  |  |  | ✅ |  |  |
+| [bytes/core](bytes/core/) | ByteArray utilities, hex conversion, `ByteOrder` and numeric byte encoding | `com.splendo.kaluga.bytes:core` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/integer](bytes/integer/) | 24-, 40- and 48-bit integers (`Int24`, `UInt24`, …) | `com.splendo.kaluga.bytes:integer` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/medfloat](bytes/medfloat/) | IEEE 11073 medical floats (`MedFloat16`, `MedFloat32`) | `com.splendo.kaluga.bytes:medfloat` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/stuffing](bytes/stuffing/) | Byte stuffing schemes (CSafe, Xor, SLIP, COBS) | `com.splendo.kaluga.bytes:stuffing` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/strings](bytes/strings/) | Encoding and decoding Chars and Strings to and from bytes | `com.splendo.kaluga.bytes:strings` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/hash](bytes/hash/) | SHA-1 digests | `com.splendo.kaluga.bytes:hash` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/crc](bytes/crc/) | Cyclic Redundancy Check (CRC) calculation | `com.splendo.kaluga.bytes:crc` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time/date-time](date-time/date-time/) | Dates, time zones and date formatting | `com.splendo.kaluga.date-time:date-time` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time/timer](date-time/timer/) | A RecurringTimer providing ticks at regular intervals | `com.splendo.kaluga.date-time:timer` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time-picker/date-time-picker](date-time-picker/date-time-picker/) | Showing a Date or Time Picker | `com.splendo.kaluga.date-time-picker:date-time-picker` | ✅ | ✅ |  |  |  |  |  |  |

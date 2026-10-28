@@ -31,7 +31,7 @@ You can run code on the OS Main Thread by using `runOnMain`. Use the `MainQueueD
 ## Data Converters
 - (iOS Only) Convert `NSData` to `ByteArray` and vice versa using `toByteArray()` and `toNSData()` respectively.
 
-For converting a `ByteArray` to a hexadecimal String and other byte utilities, see [`:base:bytes`](../bytes/).
+For converting a `ByteArray` to a hexadecimal String and other byte utilities, see [`:bytes:core`](../../bytes/core/).
 
 ## BufferedAsListChannel
 Consuming a flow may often take longer than producing it. Kotlin Flows can handle this using `buffer` but this progressively increase the time between data being produced and data being consumed.

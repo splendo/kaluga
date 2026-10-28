@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import com.splendo.kaluga.base.bytes.bytesOf
-import com.splendo.kaluga.base.bytes.decodeHex
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
@@ -28,6 +26,8 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.test.createDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager
+import com.splendo.kaluga.bytes.bytesOf
+import com.splendo.kaluga.bytes.decodeHex
 import kotlinx.coroutines.CoroutineScope
 
 typealias ServiceData = Map<UUID, ByteArray?>

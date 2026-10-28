@@ -1,0 +1,208 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bytes:strings>
+final enum class com.splendo.kaluga.bytes.strings/Encoding : kotlin/Enum<com.splendo.kaluga.bytes.strings/Encoding> { // com.splendo.kaluga.bytes.strings/Encoding|null[0]
+    enum entry ASCII // com.splendo.kaluga.bytes.strings/Encoding.ASCII|null[0]
+    enum entry UTF_16 // com.splendo.kaluga.bytes.strings/Encoding.UTF_16|null[0]
+    enum entry UTF_8 // com.splendo.kaluga.bytes.strings/Encoding.UTF_8|null[0]
+
+    final val byteSize // com.splendo.kaluga.bytes.strings/Encoding.byteSize|{}byteSize[0]
+        final fun <get-byteSize>(): kotlin/Int // com.splendo.kaluga.bytes.strings/Encoding.byteSize.<get-byteSize>|<get-byteSize>(){}[0]
+    final val entries // com.splendo.kaluga.bytes.strings/Encoding.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.bytes.strings/Encoding> // com.splendo.kaluga.bytes.strings/Encoding.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.strings/Encoding.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.bytes.strings/Encoding> // com.splendo.kaluga.bytes.strings/Encoding.values|values#static(){}[0]
+}
+
+final class com.splendo.kaluga.bytes.strings/KalugaCharacterCodingException : kotlin/Exception { // com.splendo.kaluga.bytes.strings/KalugaCharacterCodingException|null[0]
+    constructor <init>(kotlin/String?) // com.splendo.kaluga.bytes.strings/KalugaCharacterCodingException.<init>|<init>(kotlin.String?){}[0]
+
+    final val message // com.splendo.kaluga.bytes.strings/KalugaCharacterCodingException.message|{}message[0]
+        final fun <get-message>(): kotlin/String? // com.splendo.kaluga.bytes.strings/KalugaCharacterCodingException.message.<get-message>|<get-message>(){}[0]
+}
+
+final class com.splendo.kaluga.bytes.strings/StringEncodingSettings { // com.splendo.kaluga.bytes.strings/StringEncodingSettings|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking = ..., com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.strings/StringEncodingSettings.<init>|<init>(com.splendo.kaluga.bytes.strings.StringEncodingSettings.EndMarking;com.splendo.kaluga.bytes.strings.Encoding){}[0]
+
+    final val encoding // com.splendo.kaluga.bytes.strings/StringEncodingSettings.encoding|{}encoding[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.strings/StringEncodingSettings.encoding.<get-encoding>|<get-encoding>(){}[0]
+    final val endMarking // com.splendo.kaluga.bytes.strings/StringEncodingSettings.endMarking|{}endMarking[0]
+        final fun <get-endMarking>(): com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking // com.splendo.kaluga.bytes.strings/StringEncodingSettings.endMarking.<get-endMarking>|<get-endMarking>(){}[0]
+
+    final fun component1(): com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking // com.splendo.kaluga.bytes.strings/StringEncodingSettings.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.strings/StringEncodingSettings.component2|component2(){}[0]
+    final fun copy(com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking = ..., com.splendo.kaluga.bytes.strings/Encoding = ...): com.splendo.kaluga.bytes.strings/StringEncodingSettings // com.splendo.kaluga.bytes.strings/StringEncodingSettings.copy|copy(com.splendo.kaluga.bytes.strings.StringEncodingSettings.EndMarking;com.splendo.kaluga.bytes.strings.Encoding){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.toString|toString(){}[0]
+
+    sealed interface EndMarking // com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking|null[0]
+
+    sealed interface WithTerminal : com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.WithTerminal|null[0]
+        abstract val terminator // com.splendo.kaluga.bytes.strings/StringEncodingSettings.WithTerminal.terminator|{}terminator[0]
+            abstract fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.WithTerminal.terminator.<get-terminator>|<get-terminator>(){}[0]
+    }
+
+    final class FixedLength : com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength|null[0]
+        constructor <init>(kotlin/Int) // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.<init>|<init>(kotlin.Int){}[0]
+
+        final val length // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.length|{}length[0]
+            final fun <get-length>(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.length.<get-length>|<get-length>(){}[0]
+
+        final fun component1(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.component1|component1(){}[0]
+        final fun copy(kotlin/Int = ...): com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.copy|copy(kotlin.Int){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.FixedLength.toString|toString(){}[0]
+    }
+
+    final class Terminated : com.splendo.kaluga.bytes.strings/StringEncodingSettings.WithTerminal { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated|null[0]
+        constructor <init>(kotlin/Byte) // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.<init>|<init>(kotlin.Byte){}[0]
+
+        final val terminator // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.terminator|{}terminator[0]
+            final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.terminator.<get-terminator>|<get-terminator>(){}[0]
+
+        final fun component1(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.component1|component1(){}[0]
+        final fun copy(kotlin/Byte = ...): com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.copy|copy(kotlin.Byte){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.Terminated.toString|toString(){}[0]
+    }
+
+    sealed class ByteStuffed : com.splendo.kaluga.bytes.strings/StringEncodingSettings.WithTerminal { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed|null[0]
+        abstract val scheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.scheme|{}scheme[0]
+            abstract fun <get-scheme>(): com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.scheme.<get-scheme>|<get-scheme>(){}[0]
+
+        final class Delimited : com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited|null[0]
+            constructor <init>(com.splendo.kaluga.bytes.stuffing/DelimiterByteStuffingScheme) // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.<init>|<init>(com.splendo.kaluga.bytes.stuffing.DelimiterByteStuffingScheme){}[0]
+
+            final val scheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.scheme|{}scheme[0]
+                final fun <get-scheme>(): com.splendo.kaluga.bytes.stuffing/DelimiterByteStuffingScheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.scheme.<get-scheme>|<get-scheme>(){}[0]
+            final val terminator // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.terminator|{}terminator[0]
+                final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.terminator.<get-terminator>|<get-terminator>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.bytes.stuffing/DelimiterByteStuffingScheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.component1|component1(){}[0]
+            final fun copy(com.splendo.kaluga.bytes.stuffing/DelimiterByteStuffingScheme = ...): com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.copy|copy(com.splendo.kaluga.bytes.stuffing.DelimiterByteStuffingScheme){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Delimited.toString|toString(){}[0]
+        }
+
+        final class Explicit : com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit|null[0]
+            constructor <init>(com.splendo.kaluga.bytes.stuffing/NonDelimiterByteStuffingScheme, kotlin/Byte) // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.<init>|<init>(com.splendo.kaluga.bytes.stuffing.NonDelimiterByteStuffingScheme;kotlin.Byte){}[0]
+
+            final val scheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.scheme|{}scheme[0]
+                final fun <get-scheme>(): com.splendo.kaluga.bytes.stuffing/NonDelimiterByteStuffingScheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.scheme.<get-scheme>|<get-scheme>(){}[0]
+            final val terminator // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.terminator|{}terminator[0]
+                final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.terminator.<get-terminator>|<get-terminator>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.bytes.stuffing/NonDelimiterByteStuffingScheme // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.component1|component1(){}[0]
+            final fun component2(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.component2|component2(){}[0]
+            final fun copy(com.splendo.kaluga.bytes.stuffing/NonDelimiterByteStuffingScheme = ..., kotlin/Byte = ...): com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.copy|copy(com.splendo.kaluga.bytes.stuffing.NonDelimiterByteStuffingScheme;kotlin.Byte){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.ByteStuffed.Explicit.toString|toString(){}[0]
+        }
+    }
+
+    sealed class LengthPrefix : com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix|null[0]
+        abstract fun copyEncodedSizeInto(kotlin/ByteArray, kotlin/UInt, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.copyEncodedSizeInto|copyEncodedSizeInto(kotlin.ByteArray;kotlin.UInt;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+        abstract fun expectedByteSize(kotlin/UInt): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.expectedByteSize|expectedByteSize(kotlin.UInt){}[0]
+        final fun encodeSize(kotlin/UInt, com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.encodeSize|encodeSize(kotlin.UInt;com.splendo.kaluga.bytes.ByteOrder){}[0]
+
+        final class WithOverflow : com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow|null[0]
+            constructor <init>(kotlin/Byte = ...) // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.<init>|<init>(kotlin.Byte){}[0]
+
+            final val sentinel // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.sentinel|{}sentinel[0]
+                final fun <get-sentinel>(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.sentinel.<get-sentinel>|<get-sentinel>(){}[0]
+
+            final fun component1(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.component1|component1(){}[0]
+            final fun copy(kotlin/Byte = ...): com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.copy|copy(kotlin.Byte){}[0]
+            final fun copyEncodedSizeInto(kotlin/ByteArray, kotlin/UInt, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.copyEncodedSizeInto|copyEncodedSizeInto(kotlin.ByteArray;kotlin.UInt;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.equals|equals(kotlin.Any?){}[0]
+            final fun expectedByteSize(kotlin/UInt): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.expectedByteSize|expectedByteSize(kotlin.UInt){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.WithOverflow.toString|toString(){}[0]
+        }
+
+        final object ByteLength : com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ByteLength|null[0]
+            final fun copyEncodedSizeInto(kotlin/ByteArray, kotlin/UInt, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ByteLength.copyEncodedSizeInto|copyEncodedSizeInto(kotlin.ByteArray;kotlin.UInt;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ByteLength.equals|equals(kotlin.Any?){}[0]
+            final fun expectedByteSize(kotlin/UInt): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ByteLength.expectedByteSize|expectedByteSize(kotlin.UInt){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ByteLength.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ByteLength.toString|toString(){}[0]
+        }
+
+        final object ShortLength : com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ShortLength|null[0]
+            final fun copyEncodedSizeInto(kotlin/ByteArray, kotlin/UInt, com.splendo.kaluga.bytes/ByteOrder, kotlin/Int): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ShortLength.copyEncodedSizeInto|copyEncodedSizeInto(kotlin.ByteArray;kotlin.UInt;com.splendo.kaluga.bytes.ByteOrder;kotlin.Int){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ShortLength.equals|equals(kotlin.Any?){}[0]
+            final fun expectedByteSize(kotlin/UInt): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ShortLength.expectedByteSize|expectedByteSize(kotlin.UInt){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ShortLength.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix.ShortLength.toString|toString(){}[0]
+        }
+    }
+
+    final object NoMarking : com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NoMarking|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NoMarking.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NoMarking.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NoMarking.toString|toString(){}[0]
+    }
+
+    final object NullTerminated : com.splendo.kaluga.bytes.strings/StringEncodingSettings.WithTerminal { // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NullTerminated|null[0]
+        final val terminator // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NullTerminated.terminator|{}terminator[0]
+            final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NullTerminated.terminator.<get-terminator>|<get-terminator>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NullTerminated.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NullTerminated.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bytes.strings/StringEncodingSettings.NullTerminated.toString|toString(){}[0]
+    }
+}
+
+final val com.splendo.kaluga.bytes.strings/asciiSize // com.splendo.kaluga.bytes.strings/asciiSize|@kotlin.String{}asciiSize[0]
+    final fun (kotlin/String).<get-asciiSize>(): kotlin/Int // com.splendo.kaluga.bytes.strings/asciiSize.<get-asciiSize>|<get-asciiSize>@kotlin.String(){}[0]
+final val com.splendo.kaluga.bytes.strings/utf16Size // com.splendo.kaluga.bytes.strings/utf16Size|@kotlin.String{}utf16Size[0]
+    final fun (kotlin/String).<get-utf16Size>(): kotlin/Int // com.splendo.kaluga.bytes.strings/utf16Size.<get-utf16Size>|<get-utf16Size>@kotlin.String(){}[0]
+final val com.splendo.kaluga.bytes.strings/utf8Size // com.splendo.kaluga.bytes.strings/utf8Size|@kotlin.String{}utf8Size[0]
+    final fun (kotlin/String).<get-utf8Size>(): kotlin/Int // com.splendo.kaluga.bytes.strings/utf8Size.<get-utf8Size>|<get-utf8Size>@kotlin.String(){}[0]
+
+final fun (com.splendo.kaluga.bytes.strings/Encoding).com.splendo.kaluga.bytes.strings/byteSizeOf(kotlin/Char): kotlin/Int // com.splendo.kaluga.bytes.strings/byteSizeOf|byteSizeOf@com.splendo.kaluga.bytes.strings.Encoding(kotlin.Char){}[0]
+final fun (com.splendo.kaluga.bytes.strings/Encoding).com.splendo.kaluga.bytes.strings/byteSizeOf(kotlin/String): kotlin/Int // com.splendo.kaluga.bytes.strings/byteSizeOf|byteSizeOf@com.splendo.kaluga.bytes.strings.Encoding(kotlin.String){}[0]
+final fun (com.splendo.kaluga.bytes.strings/Encoding).com.splendo.kaluga.bytes.strings/copyCharIntoByteArray(kotlin/Char, kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/copyCharIntoByteArray|copyCharIntoByteArray@com.splendo.kaluga.bytes.strings.Encoding(kotlin.Char;kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.bytes.strings/Encoding).com.splendo.kaluga.bytes.strings/copyEncodedStringIntoArray(kotlin/String, kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/copyEncodedStringIntoArray|copyEncodedStringIntoArray@com.splendo.kaluga.bytes.strings.Encoding(kotlin.String;kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.bytes.strings/Encoding).com.splendo.kaluga.bytes.strings/encodeChar(kotlin/Char, com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/encodeChar|encodeChar@com.splendo.kaluga.bytes.strings.Encoding(kotlin.Char;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.bytes.strings/Encoding).com.splendo.kaluga.bytes.strings/encodeString(kotlin/String, com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/encodeString|encodeString@com.splendo.kaluga.bytes.strings.Encoding(kotlin.String;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.bytes/ByteArrayBuilder).com.splendo.kaluga.bytes.strings/add(kotlin/Char, com.splendo.kaluga.bytes.strings/Encoding = ..., com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bytes.strings/add|add@com.splendo.kaluga.bytes.ByteArrayBuilder(kotlin.Char;com.splendo.kaluga.bytes.strings.Encoding;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (com.splendo.kaluga.bytes/ByteArrayBuilder).com.splendo.kaluga.bytes.strings/add(kotlin/String, com.splendo.kaluga.bytes.strings/StringEncodingSettings = ..., com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bytes.strings/add|add@com.splendo.kaluga.bytes.ByteArrayBuilder(kotlin.String;com.splendo.kaluga.bytes.strings.StringEncodingSettings;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin.sequences/Sequence<kotlin/Byte>).com.splendo.kaluga.bytes.strings/decodeString(com.splendo.kaluga.bytes.strings/StringEncodingSettings): kotlin/String // com.splendo.kaluga.bytes.strings/decodeString|decodeString@kotlin.sequences.Sequence<kotlin.Byte>(com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+final fun (kotlin/Byte).com.splendo.kaluga.bytes.strings/decodeAsciiChar(): kotlin/Char // com.splendo.kaluga.bytes.strings/decodeAsciiChar|decodeAsciiChar@kotlin.Byte(){}[0]
+final fun (kotlin/Byte).com.splendo.kaluga.bytes.strings/decodeUTF8Char(): kotlin/Char // com.splendo.kaluga.bytes.strings/decodeUTF8Char|decodeUTF8Char@kotlin.Byte(){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.strings/decodeAsciiChar(kotlin/Int): kotlin/Char // com.splendo.kaluga.bytes.strings/decodeAsciiChar|decodeAsciiChar@kotlin.ByteArray(kotlin.Int){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.strings/decodeCharacters(kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/Encoding, kotlin/Boolean = ...): kotlin/String // com.splendo.kaluga.bytes.strings/decodeCharacters|decodeCharacters@kotlin.ByteArray(kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.Encoding;kotlin.Boolean){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.strings/decodeString(com.splendo.kaluga.bytes.strings/StringEncodingSettings, com.splendo.kaluga.bytes/ByteOrder): kotlin/String // com.splendo.kaluga.bytes.strings/decodeString|decodeString@kotlin.ByteArray(com.splendo.kaluga.bytes.strings.StringEncodingSettings;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.strings/decodeUTF16Char(kotlin/Int, com.splendo.kaluga.bytes/ByteOrder): kotlin/Char // com.splendo.kaluga.bytes.strings/decodeUTF16Char|decodeUTF16Char@kotlin.ByteArray(kotlin.Int;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/ByteArray).com.splendo.kaluga.bytes.strings/decodeUTF8Char(kotlin/Int): kotlin/Char // com.splendo.kaluga.bytes.strings/decodeUTF8Char|decodeUTF8Char@kotlin.ByteArray(kotlin.Int){}[0]
+final fun (kotlin/Char).com.splendo.kaluga.bytes.strings/copyUTF16IntoByteArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/copyUTF16IntoByteArray|copyUTF16IntoByteArray@kotlin.Char(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/Char).com.splendo.kaluga.bytes.strings/toAscii(): kotlin/Byte // com.splendo.kaluga.bytes.strings/toAscii|toAscii@kotlin.Char(){}[0]
+final fun (kotlin/Char).com.splendo.kaluga.bytes.strings/toAsciiOrNull(): kotlin/Byte? // com.splendo.kaluga.bytes.strings/toAsciiOrNull|toAsciiOrNull@kotlin.Char(){}[0]
+final fun (kotlin/Char).com.splendo.kaluga.bytes.strings/toUTF16(com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/toUTF16|toUTF16@kotlin.Char(com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/Int).com.splendo.kaluga.bytes.strings/isUTF8Continuation(): kotlin/Boolean // com.splendo.kaluga.bytes.strings/isUTF8Continuation|isUTF8Continuation@kotlin.Int(){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/byteArraySize(com.splendo.kaluga.bytes.strings/StringEncodingSettings): kotlin/Int // com.splendo.kaluga.bytes.strings/byteArraySize|byteArraySize@kotlin.String(com.splendo.kaluga.bytes.strings.StringEncodingSettings){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/copyAsciiIntoArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/copyAsciiIntoArray|copyAsciiIntoArray@kotlin.String(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/copyIntoArray(kotlin/ByteArray, com.splendo.kaluga.bytes.strings/StringEncodingSettings, kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/copyIntoArray|copyIntoArray@kotlin.String(kotlin.ByteArray;com.splendo.kaluga.bytes.strings.StringEncodingSettings;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/copyUTF16IntoArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/copyUTF16IntoArray|copyUTF16IntoArray@kotlin.String(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/copyUTF8IntoArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder, kotlin/Boolean = ...): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/copyUTF8IntoArray|copyUTF8IntoArray@kotlin.String(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/toAscii(com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/toAscii|toAscii@kotlin.String(com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/toAsciiOrNull(com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray? // com.splendo.kaluga.bytes.strings/toAsciiOrNull|toAsciiOrNull@kotlin.String(com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/toByteArray(com.splendo.kaluga.bytes.strings/StringEncodingSettings, com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/toByteArray|toByteArray@kotlin.String(com.splendo.kaluga.bytes.strings.StringEncodingSettings;com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/toUTF16(com.splendo.kaluga.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/toUTF16|toUTF16@kotlin.String(com.splendo.kaluga.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/toUTF8(com.splendo.kaluga.bytes/ByteOrder, kotlin/Boolean = ...): kotlin/ByteArray // com.splendo.kaluga.bytes.strings/toUTF8|toUTF8@kotlin.String(com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean){}[0]
+final fun (kotlin/String).com.splendo.kaluga.bytes.strings/utf8Size(kotlin/Boolean): kotlin/Int // com.splendo.kaluga.bytes.strings/utf8Size|utf8Size@kotlin.String(kotlin.Boolean){}[0]
+final fun com.splendo.kaluga.bytes.strings/utf8Char(kotlin/Int, kotlin/Int): kotlin/Char // com.splendo.kaluga.bytes.strings/utf8Char|utf8Char(kotlin.Int;kotlin.Int){}[0]
+final fun com.splendo.kaluga.bytes.strings/utf8Char(kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Char // com.splendo.kaluga.bytes.strings/utf8Char|utf8Char(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+final inline fun com.splendo.kaluga.bytes.strings/decodeUTF8Char(kotlin/Function0<kotlin/Byte>): kotlin/Char // com.splendo.kaluga.bytes.strings/decodeUTF8Char|decodeUTF8Char(kotlin.Function0<kotlin.Byte>){}[0]
