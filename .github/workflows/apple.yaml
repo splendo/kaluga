@@ -100,6 +100,26 @@ jobs:
         run: ./gradlew iosSimulatorArm64Test
         working-directory: bluetooth/plugin/example
 
+  bytes-plugin:
+    needs: build
+    runs-on: macos-26
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+      # Validate the Bytes code generation plugin: the validation fixtures' tests both compile the generated code for
+      # iOS and run it (encoding/decoding the generated data classes and views).
+      - name: validate bytes code generation
+        run: ./gradlew iosSimulatorArm64Test
+        working-directory: bytes/plugin/example
+
   example-ios:
     needs: build
     runs-on: macos-26
@@ -155,7 +175,7 @@ jobs:
   # The per-run workspace cache is only useful within this run; delete it so it doesn't
   # pile up against the repo's 10GB cache quota.
   cleanup-caches:
-    needs: [build, validation, test, example-ios, example-macos, bluetooth-plugin]
+    needs: [build, validation, test, example-ios, example-macos, bluetooth-plugin, bytes-plugin]
     if: always()
     runs-on: ubuntu-latest
     permissions:
