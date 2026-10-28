@@ -59,4 +59,7 @@ include(":validation:external-api-mock")
 include(":validation:external-source-provider")
 include(":validation:external-source-consumer")
 
-includeBuild("../../../")
+// Named explicitly: named after its directory, the checkout would clash with the plugin build when both share a name.
+includeBuild("../../../") {
+    name = "kaluga"
+}
