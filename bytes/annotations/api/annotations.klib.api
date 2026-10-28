@@ -1,0 +1,399 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga.bytes:annotations>
+open annotation class com.splendo.kaluga.bytes.annotations/ByOrdinal : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ByOrdinal|null[0]
+    constructor <init>(kotlin/Int = ..., com.splendo.kaluga.bytes.annotations/Length = ...) // com.splendo.kaluga.bytes.annotations/ByOrdinal.<init>|<init>(kotlin.Int;com.splendo.kaluga.bytes.annotations.Length){}[0]
+
+    final val offset // com.splendo.kaluga.bytes.annotations/ByOrdinal.offset|{}offset[0]
+        final fun <get-offset>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ByOrdinal.offset.<get-offset>|<get-offset>(){}[0]
+    final val size // com.splendo.kaluga.bytes.annotations/ByOrdinal.size|{}size[0]
+        final fun <get-size>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/ByOrdinal.size.<get-size>|<get-size>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ByteOrder : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ByteOrder|null[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ..., kotlin/Boolean = ...) // com.splendo.kaluga.bytes.annotations/ByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean){}[0]
+
+    final val excludeStructure // com.splendo.kaluga.bytes.annotations/ByteOrder.excludeStructure|{}excludeStructure[0]
+        final fun <get-excludeStructure>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/ByteOrder.excludeStructure.<get-excludeStructure>|<get-excludeStructure>(){}[0]
+    final val order // com.splendo.kaluga.bytes.annotations/ByteOrder.order|{}order[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bytes.annotations/ByteOrder.order.<get-order>|<get-order>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ByteStuffed : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ByteStuffed|null[0]
+    constructor <init>(kotlin/Byte = ..., kotlin/Byte = ...) // com.splendo.kaluga.bytes.annotations/ByteStuffed.<init>|<init>(kotlin.Byte;kotlin.Byte){}[0]
+
+    final val escapeByte // com.splendo.kaluga.bytes.annotations/ByteStuffed.escapeByte|{}escapeByte[0]
+        final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffed.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+    final val mask // com.splendo.kaluga.bytes.annotations/ByteStuffed.mask|{}mask[0]
+        final fun <get-mask>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffed.mask.<get-mask>|<get-mask>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ByteStuffedCobs : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ByteStuffedCobs|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/ByteStuffedCobs.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ByteStuffedSlip : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip|null[0]
+    constructor <init>(kotlin/Byte = ..., kotlin/Byte = ..., kotlin/Byte = ..., kotlin/Byte = ...) // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.<init>|<init>(kotlin.Byte;kotlin.Byte;kotlin.Byte;kotlin.Byte){}[0]
+
+    final val end // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.end|{}end[0]
+        final fun <get-end>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.end.<get-end>|<get-end>(){}[0]
+    final val escapeByte // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.escapeByte|{}escapeByte[0]
+        final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+    final val escapedEnd // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.escapedEnd|{}escapedEnd[0]
+        final fun <get-escapedEnd>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.escapedEnd.<get-escapedEnd>|<get-escapedEnd>(){}[0]
+    final val escapedEsc // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.escapedEsc|{}escapedEsc[0]
+        final fun <get-escapedEsc>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedSlip.escapedEsc.<get-escapedEsc>|<get-escapedEsc>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ByteStuffedXor : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ByteStuffedXor|null[0]
+    constructor <init>(kotlin/Byte, kotlin/Byte, kotlin/ByteArray = ..., kotlin/Byte = ...) // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.<init>|<init>(kotlin.Byte;kotlin.Byte;kotlin.ByteArray;kotlin.Byte){}[0]
+
+    final val additionalEscapedBytes // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.additionalEscapedBytes|{}additionalEscapedBytes[0]
+        final fun <get-additionalEscapedBytes>(): kotlin/ByteArray // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.additionalEscapedBytes.<get-additionalEscapedBytes>|<get-additionalEscapedBytes>(){}[0]
+    final val delimiter // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.delimiter|{}delimiter[0]
+        final fun <get-delimiter>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.delimiter.<get-delimiter>|<get-delimiter>(){}[0]
+    final val escapeByte // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.escapeByte|{}escapeByte[0]
+        final fun <get-escapeByte>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.escapeByte.<get-escapeByte>|<get-escapeByte>(){}[0]
+    final val xorKey // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.xorKey|{}xorKey[0]
+        final fun <get-xorKey>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.xorKey.<get-xorKey>|<get-xorKey>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Checksum : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Checksum|null[0]
+    constructor <init>(kotlin/Int, kotlin/ULong, kotlin/ULong, kotlin/ULong = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // com.splendo.kaluga.bytes.annotations/Checksum.<init>|<init>(kotlin.Int;kotlin.ULong;kotlin.ULong;kotlin.ULong;kotlin.Boolean;kotlin.Boolean){}[0]
+
+    final val init // com.splendo.kaluga.bytes.annotations/Checksum.init|{}init[0]
+        final fun <get-init>(): kotlin/ULong // com.splendo.kaluga.bytes.annotations/Checksum.init.<get-init>|<get-init>(){}[0]
+    final val polynomial // com.splendo.kaluga.bytes.annotations/Checksum.polynomial|{}polynomial[0]
+        final fun <get-polynomial>(): kotlin/ULong // com.splendo.kaluga.bytes.annotations/Checksum.polynomial.<get-polynomial>|<get-polynomial>(){}[0]
+    final val reflectIn // com.splendo.kaluga.bytes.annotations/Checksum.reflectIn|{}reflectIn[0]
+        final fun <get-reflectIn>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/Checksum.reflectIn.<get-reflectIn>|<get-reflectIn>(){}[0]
+    final val reflectOut // com.splendo.kaluga.bytes.annotations/Checksum.reflectOut|{}reflectOut[0]
+        final fun <get-reflectOut>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/Checksum.reflectOut.<get-reflectOut>|<get-reflectOut>(){}[0]
+    final val width // com.splendo.kaluga.bytes.annotations/Checksum.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Checksum.width.<get-width>|<get-width>(){}[0]
+    final val xorOut // com.splendo.kaluga.bytes.annotations/Checksum.xorOut|{}xorOut[0]
+        final fun <get-xorOut>(): kotlin/ULong // com.splendo.kaluga.bytes.annotations/Checksum.xorOut.<get-xorOut>|<get-xorOut>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Encoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Encoded|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.annotations/Encoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
+
+    final val encoding // com.splendo.kaluga.bytes.annotations/Encoded.encoding|{}encoding[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.annotations/Encoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/FlagIndex : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/FlagIndex|null[0]
+    constructor <init>(kotlin/Int) // com.splendo.kaluga.bytes.annotations/FlagIndex.<init>|<init>(kotlin.Int){}[0]
+
+    final val index // com.splendo.kaluga.bytes.annotations/FlagIndex.index|{}index[0]
+        final fun <get-index>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/FlagIndex.index.<get-index>|<get-index>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/FlagWidth : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/FlagWidth|null[0]
+    constructor <init>(kotlin/Int = ...) // com.splendo.kaluga.bytes.annotations/FlagWidth.<init>|<init>(kotlin.Int){}[0]
+
+    final val bits // com.splendo.kaluga.bytes.annotations/FlagWidth.bits|{}bits[0]
+        final fun <get-bits>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/FlagWidth.bits.<get-bits>|<get-bits>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemByteOrder : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemByteOrder|null[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bytes.annotations/ItemByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder){}[0]
+
+    final val order // com.splendo.kaluga.bytes.annotations/ItemByteOrder.order|{}order[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bytes.annotations/ItemByteOrder.order.<get-order>|<get-order>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemEncoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemEncoded|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.annotations/ItemEncoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
+
+    final val encoding // com.splendo.kaluga.bytes.annotations/ItemEncoded.encoding|{}encoding[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.annotations/ItemEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemLengthPrefix : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Byte = ...) // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Byte){}[0]
+
+    final val canOverflow // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix.canOverflow|{}canOverflow[0]
+        final fun <get-canOverflow>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix.canOverflow.<get-canOverflow>|<get-canOverflow>(){}[0]
+    final val lengthAsShort // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix.lengthAsShort|{}lengthAsShort[0]
+        final fun <get-lengthAsShort>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix.lengthAsShort.<get-lengthAsShort>|<get-lengthAsShort>(){}[0]
+    final val sentinel // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix.sentinel|{}sentinel[0]
+        final fun <get-sentinel>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ItemLengthPrefix.sentinel.<get-sentinel>|<get-sentinel>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemMedFloat : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemMedFloat|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/ItemMedFloat.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemNullTerminated : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemNullTerminated|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/ItemNullTerminated.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemScalar : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemScalar|null[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.bytes.annotations/ItemScalar.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+
+    final val binaryExponent // com.splendo.kaluga.bytes.annotations/ItemScalar.binaryExponent|{}binaryExponent[0]
+        final fun <get-binaryExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ItemScalar.binaryExponent.<get-binaryExponent>|<get-binaryExponent>(){}[0]
+    final val decimalExponent // com.splendo.kaluga.bytes.annotations/ItemScalar.decimalExponent|{}decimalExponent[0]
+        final fun <get-decimalExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ItemScalar.decimalExponent.<get-decimalExponent>|<get-decimalExponent>(){}[0]
+    final val multiplier // com.splendo.kaluga.bytes.annotations/ItemScalar.multiplier|{}multiplier[0]
+        final fun <get-multiplier>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ItemScalar.multiplier.<get-multiplier>|<get-multiplier>(){}[0]
+    final val offset // com.splendo.kaluga.bytes.annotations/ItemScalar.offset|{}offset[0]
+        final fun <get-offset>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ItemScalar.offset.<get-offset>|<get-offset>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemSize : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemSize|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.annotations/Length) // com.splendo.kaluga.bytes.annotations/ItemSize.<init>|<init>(com.splendo.kaluga.bytes.annotations.Length){}[0]
+
+    final val size // com.splendo.kaluga.bytes.annotations/ItemSize.size|{}size[0]
+        final fun <get-size>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/ItemSize.size.<get-size>|<get-size>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ItemUnsigned : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ItemUnsigned|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/ItemUnsigned.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeyByteOrder : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeyByteOrder|null[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bytes.annotations/KeyByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder){}[0]
+
+    final val order // com.splendo.kaluga.bytes.annotations/KeyByteOrder.order|{}order[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bytes.annotations/KeyByteOrder.order.<get-order>|<get-order>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeyEncoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeyEncoded|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.annotations/KeyEncoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
+
+    final val encoding // com.splendo.kaluga.bytes.annotations/KeyEncoded.encoding|{}encoding[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.annotations/KeyEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeyLengthPrefix : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Byte = ...) // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Byte){}[0]
+
+    final val canOverflow // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix.canOverflow|{}canOverflow[0]
+        final fun <get-canOverflow>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix.canOverflow.<get-canOverflow>|<get-canOverflow>(){}[0]
+    final val lengthAsShort // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix.lengthAsShort|{}lengthAsShort[0]
+        final fun <get-lengthAsShort>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix.lengthAsShort.<get-lengthAsShort>|<get-lengthAsShort>(){}[0]
+    final val sentinel // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix.sentinel|{}sentinel[0]
+        final fun <get-sentinel>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/KeyLengthPrefix.sentinel.<get-sentinel>|<get-sentinel>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeyMedFloat : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeyMedFloat|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/KeyMedFloat.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeyNullTerminated : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeyNullTerminated|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/KeyNullTerminated.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeyScalar : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeyScalar|null[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.bytes.annotations/KeyScalar.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+
+    final val binaryExponent // com.splendo.kaluga.bytes.annotations/KeyScalar.binaryExponent|{}binaryExponent[0]
+        final fun <get-binaryExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/KeyScalar.binaryExponent.<get-binaryExponent>|<get-binaryExponent>(){}[0]
+    final val decimalExponent // com.splendo.kaluga.bytes.annotations/KeyScalar.decimalExponent|{}decimalExponent[0]
+        final fun <get-decimalExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/KeyScalar.decimalExponent.<get-decimalExponent>|<get-decimalExponent>(){}[0]
+    final val multiplier // com.splendo.kaluga.bytes.annotations/KeyScalar.multiplier|{}multiplier[0]
+        final fun <get-multiplier>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/KeyScalar.multiplier.<get-multiplier>|<get-multiplier>(){}[0]
+    final val offset // com.splendo.kaluga.bytes.annotations/KeyScalar.offset|{}offset[0]
+        final fun <get-offset>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/KeyScalar.offset.<get-offset>|<get-offset>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeySize : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeySize|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.annotations/Length) // com.splendo.kaluga.bytes.annotations/KeySize.<init>|<init>(com.splendo.kaluga.bytes.annotations.Length){}[0]
+
+    final val size // com.splendo.kaluga.bytes.annotations/KeySize.size|{}size[0]
+        final fun <get-size>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/KeySize.size.<get-size>|<get-size>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/KeyUnsigned : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/KeyUnsigned|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/KeyUnsigned.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/LengthPrefix : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/LengthPrefix|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Byte = ...) // com.splendo.kaluga.bytes.annotations/LengthPrefix.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Byte){}[0]
+
+    final val canOverflow // com.splendo.kaluga.bytes.annotations/LengthPrefix.canOverflow|{}canOverflow[0]
+        final fun <get-canOverflow>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/LengthPrefix.canOverflow.<get-canOverflow>|<get-canOverflow>(){}[0]
+    final val lengthAsShort // com.splendo.kaluga.bytes.annotations/LengthPrefix.lengthAsShort|{}lengthAsShort[0]
+        final fun <get-lengthAsShort>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/LengthPrefix.lengthAsShort.<get-lengthAsShort>|<get-lengthAsShort>(){}[0]
+    final val sentinel // com.splendo.kaluga.bytes.annotations/LengthPrefix.sentinel|{}sentinel[0]
+        final fun <get-sentinel>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/LengthPrefix.sentinel.<get-sentinel>|<get-sentinel>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/MedFloat : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/MedFloat|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/MedFloat.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/NullIfEmpty : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/NullIfEmpty|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/NullIfEmpty.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/NullTerminated : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/NullTerminated|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/NullTerminated.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Postfix : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Postfix|null[0]
+    constructor <init>(kotlin/ByteArray) // com.splendo.kaluga.bytes.annotations/Postfix.<init>|<init>(kotlin.ByteArray){}[0]
+
+    final val value // com.splendo.kaluga.bytes.annotations/Postfix.value|{}value[0]
+        final fun <get-value>(): kotlin/ByteArray // com.splendo.kaluga.bytes.annotations/Postfix.value.<get-value>|<get-value>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Prefix : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Prefix|null[0]
+    constructor <init>(kotlin/ByteArray) // com.splendo.kaluga.bytes.annotations/Prefix.<init>|<init>(kotlin.ByteArray){}[0]
+
+    final val value // com.splendo.kaluga.bytes.annotations/Prefix.value|{}value[0]
+        final fun <get-value>(): kotlin/ByteArray // com.splendo.kaluga.bytes.annotations/Prefix.value.<get-value>|<get-value>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/PresentWhenAllSet : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/PresentWhenAllSet|null[0]
+    constructor <init>(kotlin/IntArray...) // com.splendo.kaluga.bytes.annotations/PresentWhenAllSet.<init>|<init>(kotlin.IntArray...){}[0]
+
+    final val indices // com.splendo.kaluga.bytes.annotations/PresentWhenAllSet.indices|{}indices[0]
+        final fun <get-indices>(): kotlin/IntArray // com.splendo.kaluga.bytes.annotations/PresentWhenAllSet.indices.<get-indices>|<get-indices>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Range : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Range|null[0]
+    constructor <init>(kotlin/Double = ..., kotlin/Double = ...) // com.splendo.kaluga.bytes.annotations/Range.<init>|<init>(kotlin.Double;kotlin.Double){}[0]
+
+    final val max // com.splendo.kaluga.bytes.annotations/Range.max|{}max[0]
+        final fun <get-max>(): kotlin/Double // com.splendo.kaluga.bytes.annotations/Range.max.<get-max>|<get-max>(){}[0]
+    final val min // com.splendo.kaluga.bytes.annotations/Range.min|{}min[0]
+        final fun <get-min>(): kotlin/Double // com.splendo.kaluga.bytes.annotations/Range.min.<get-min>|<get-min>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Reserved : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Reserved|null[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.bytes.annotations/Reserved.<init>|<init>(kotlin.Int;kotlin.Int){}[0]
+
+    final val after // com.splendo.kaluga.bytes.annotations/Reserved.after|{}after[0]
+        final fun <get-after>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Reserved.after.<get-after>|<get-after>(){}[0]
+    final val before // com.splendo.kaluga.bytes.annotations/Reserved.before|{}before[0]
+        final fun <get-before>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Reserved.before.<get-before>|<get-before>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Scalar : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Scalar|null[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.bytes.annotations/Scalar.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+
+    final val binaryExponent // com.splendo.kaluga.bytes.annotations/Scalar.binaryExponent|{}binaryExponent[0]
+        final fun <get-binaryExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Scalar.binaryExponent.<get-binaryExponent>|<get-binaryExponent>(){}[0]
+    final val decimalExponent // com.splendo.kaluga.bytes.annotations/Scalar.decimalExponent|{}decimalExponent[0]
+        final fun <get-decimalExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Scalar.decimalExponent.<get-decimalExponent>|<get-decimalExponent>(){}[0]
+    final val multiplier // com.splendo.kaluga.bytes.annotations/Scalar.multiplier|{}multiplier[0]
+        final fun <get-multiplier>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Scalar.multiplier.<get-multiplier>|<get-multiplier>(){}[0]
+    final val offset // com.splendo.kaluga.bytes.annotations/Scalar.offset|{}offset[0]
+        final fun <get-offset>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Scalar.offset.<get-offset>|<get-offset>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/SerializedByteValue : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/SerializedByteValue|null[0]
+    constructor <init>(kotlin/ByteArray...) // com.splendo.kaluga.bytes.annotations/SerializedByteValue.<init>|<init>(kotlin.ByteArray...){}[0]
+
+    final val value // com.splendo.kaluga.bytes.annotations/SerializedByteValue.value|{}value[0]
+        final fun <get-value>(): kotlin/ByteArray // com.splendo.kaluga.bytes.annotations/SerializedByteValue.value.<get-value>|<get-value>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Size : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Size|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.annotations/Length) // com.splendo.kaluga.bytes.annotations/Size.<init>|<init>(com.splendo.kaluga.bytes.annotations.Length){}[0]
+
+    final val length // com.splendo.kaluga.bytes.annotations/Size.length|{}length[0]
+        final fun <get-length>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/Size.length.<get-length>|<get-length>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/SizePolymorphic : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/SizePolymorphic|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/SizePolymorphic.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Terminal : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Terminal|null[0]
+    constructor <init>(kotlin/Byte) // com.splendo.kaluga.bytes.annotations/Terminal.<init>|<init>(kotlin.Byte){}[0]
+
+    final val terminator // com.splendo.kaluga.bytes.annotations/Terminal.terminator|{}terminator[0]
+        final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/Terminal.terminator.<get-terminator>|<get-terminator>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Unsigned : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Unsigned|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/Unsigned.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Unsized : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Unsized|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/Unsized.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueByteOrder : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueByteOrder|null[0]
+    constructor <init>(com.splendo.kaluga.bytes/ByteOrder = ...) // com.splendo.kaluga.bytes.annotations/ValueByteOrder.<init>|<init>(com.splendo.kaluga.bytes.ByteOrder){}[0]
+
+    final val order // com.splendo.kaluga.bytes.annotations/ValueByteOrder.order|{}order[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bytes.annotations/ValueByteOrder.order.<get-order>|<get-order>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueEncoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueEncoded|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.annotations/ValueEncoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
+
+    final val encoding // com.splendo.kaluga.bytes.annotations/ValueEncoded.encoding|{}encoding[0]
+        final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.annotations/ValueEncoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueLengthPrefix : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Byte = ...) // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Byte){}[0]
+
+    final val canOverflow // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix.canOverflow|{}canOverflow[0]
+        final fun <get-canOverflow>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix.canOverflow.<get-canOverflow>|<get-canOverflow>(){}[0]
+    final val lengthAsShort // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix.lengthAsShort|{}lengthAsShort[0]
+        final fun <get-lengthAsShort>(): kotlin/Boolean // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix.lengthAsShort.<get-lengthAsShort>|<get-lengthAsShort>(){}[0]
+    final val sentinel // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix.sentinel|{}sentinel[0]
+        final fun <get-sentinel>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ValueLengthPrefix.sentinel.<get-sentinel>|<get-sentinel>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueMedFloat : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueMedFloat|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/ValueMedFloat.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueNullTerminated : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueNullTerminated|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/ValueNullTerminated.<init>|<init>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueScalar : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueScalar|null[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...) // com.splendo.kaluga.bytes.annotations/ValueScalar.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+
+    final val binaryExponent // com.splendo.kaluga.bytes.annotations/ValueScalar.binaryExponent|{}binaryExponent[0]
+        final fun <get-binaryExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ValueScalar.binaryExponent.<get-binaryExponent>|<get-binaryExponent>(){}[0]
+    final val decimalExponent // com.splendo.kaluga.bytes.annotations/ValueScalar.decimalExponent|{}decimalExponent[0]
+        final fun <get-decimalExponent>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ValueScalar.decimalExponent.<get-decimalExponent>|<get-decimalExponent>(){}[0]
+    final val multiplier // com.splendo.kaluga.bytes.annotations/ValueScalar.multiplier|{}multiplier[0]
+        final fun <get-multiplier>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ValueScalar.multiplier.<get-multiplier>|<get-multiplier>(){}[0]
+    final val offset // com.splendo.kaluga.bytes.annotations/ValueScalar.offset|{}offset[0]
+        final fun <get-offset>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/ValueScalar.offset.<get-offset>|<get-offset>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueSize : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueSize|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.annotations/Length) // com.splendo.kaluga.bytes.annotations/ValueSize.<init>|<init>(com.splendo.kaluga.bytes.annotations.Length){}[0]
+
+    final val size // com.splendo.kaluga.bytes.annotations/ValueSize.size|{}size[0]
+        final fun <get-size>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/ValueSize.size.<get-size>|<get-size>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/ValueUnsigned : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueUnsigned|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/ValueUnsigned.<init>|<init>(){}[0]
+}
+
+final enum class com.splendo.kaluga.bytes.annotations/Length : kotlin/Enum<com.splendo.kaluga.bytes.annotations/Length> { // com.splendo.kaluga.bytes.annotations/Length|null[0]
+    enum entry 16_BIT // com.splendo.kaluga.bytes.annotations/Length.16_BIT|null[0]
+    enum entry 24_BIT // com.splendo.kaluga.bytes.annotations/Length.24_BIT|null[0]
+    enum entry 32_BIT // com.splendo.kaluga.bytes.annotations/Length.32_BIT|null[0]
+    enum entry 40_BIT // com.splendo.kaluga.bytes.annotations/Length.40_BIT|null[0]
+    enum entry 48_BIT // com.splendo.kaluga.bytes.annotations/Length.48_BIT|null[0]
+    enum entry 64_BIT // com.splendo.kaluga.bytes.annotations/Length.64_BIT|null[0]
+    enum entry 8_BIT // com.splendo.kaluga.bytes.annotations/Length.8_BIT|null[0]
+
+    final val bytes // com.splendo.kaluga.bytes.annotations/Length.bytes|{}bytes[0]
+        final fun <get-bytes>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Length.bytes.<get-bytes>|<get-bytes>(){}[0]
+    final val entries // com.splendo.kaluga.bytes.annotations/Length.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.bytes.annotations/Length> // com.splendo.kaluga.bytes.annotations/Length.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/Length.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.bytes.annotations/Length> // com.splendo.kaluga.bytes.annotations/Length.values|values#static(){}[0]
+}

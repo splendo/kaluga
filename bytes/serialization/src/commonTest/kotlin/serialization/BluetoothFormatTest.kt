@@ -1,0 +1,3974 @@
+/*
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bytes.serialization
+
+import com.splendo.kaluga.bytes.annotations.Length
+import com.splendo.kaluga.bytes.annotations.ItemByteOrder
+import com.splendo.kaluga.bytes.annotations.KeyByteOrder
+import com.splendo.kaluga.bytes.annotations.ValueByteOrder
+import com.splendo.kaluga.bytes.annotations.ItemLengthPrefix
+import com.splendo.kaluga.bytes.annotations.KeyLengthPrefix
+import com.splendo.kaluga.bytes.annotations.ValueLengthPrefix
+import com.splendo.kaluga.bytes.annotations.ItemEncoded
+import com.splendo.kaluga.bytes.annotations.KeyEncoded
+import com.splendo.kaluga.bytes.annotations.ValueEncoded
+import com.splendo.kaluga.bytes.annotations.ItemNullTerminated
+import com.splendo.kaluga.bytes.annotations.KeyNullTerminated
+import com.splendo.kaluga.bytes.annotations.ValueNullTerminated
+import com.splendo.kaluga.bytes.annotations.ItemScalar
+import com.splendo.kaluga.bytes.annotations.KeyScalar
+import com.splendo.kaluga.bytes.annotations.ValueScalar
+import com.splendo.kaluga.bytes.annotations.ItemMedFloat
+import com.splendo.kaluga.bytes.annotations.KeyMedFloat
+import com.splendo.kaluga.bytes.annotations.ValueMedFloat
+import com.splendo.kaluga.bytes.annotations.ItemSize
+import com.splendo.kaluga.bytes.annotations.KeySize
+import com.splendo.kaluga.bytes.annotations.ValueSize
+import com.splendo.kaluga.bytes.annotations.Prefix
+import com.splendo.kaluga.bytes.annotations.Postfix
+import com.splendo.kaluga.bytes.annotations.ByOrdinal
+import com.splendo.kaluga.bytes.annotations.Reserved
+import com.splendo.kaluga.bytes.annotations.FlagIndex
+import com.splendo.kaluga.bytes.annotations.PresentWhenAllSet
+import com.splendo.kaluga.bytes.annotations.FlagWidth
+import com.splendo.kaluga.bytes.annotations.LengthPrefix
+import com.splendo.kaluga.bytes.annotations.Encoded
+import com.splendo.kaluga.bytes.annotations.NullTerminated
+import com.splendo.kaluga.bytes.annotations.Unsigned
+import com.splendo.kaluga.bytes.annotations.Scalar
+import com.splendo.kaluga.bytes.annotations.Range
+import com.splendo.kaluga.bytes.annotations.MedFloat
+import com.splendo.kaluga.bytes.annotations.Size
+import com.splendo.kaluga.bytes.annotations.Unsized
+import com.splendo.kaluga.bytes.annotations.NullIfEmpty
+import com.splendo.kaluga.bytes.annotations.SizePolymorphic
+import com.splendo.kaluga.bytes.annotations.Checksum
+import com.splendo.kaluga.bytes.annotations.SerializedByteValue
+import com.splendo.kaluga.bytes.annotations.ByteStuffed
+import com.splendo.kaluga.bytes.annotations.Terminal
+import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
+import com.splendo.kaluga.bytes.annotations.ByteStuffedSlip
+import com.splendo.kaluga.bytes.annotations.ByteStuffedCobs
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.integer.add
+import com.splendo.kaluga.bytes.medfloat.add
+import com.splendo.kaluga.bytes.strings.add
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
+import com.splendo.kaluga.bytes.buildByteArray
+import com.splendo.kaluga.bytes.toByteArray
+import com.splendo.kaluga.bytes.medfloat.toByteArray
+import com.splendo.kaluga.bytes.crc.CRC16
+import com.splendo.kaluga.bytes.medfloat.MedFloat16
+import com.splendo.kaluga.bytes.medfloat.MedFloat32
+import com.splendo.kaluga.bytes.integer.UInt24
+import com.splendo.kaluga.bytes.toHexString
+import com.splendo.kaluga.bytes.integer.toInt24
+import com.splendo.kaluga.bytes.integer.toInt40
+import com.splendo.kaluga.bytes.integer.toInt48
+import com.splendo.kaluga.bytes.integer.toUInt40
+import com.splendo.kaluga.bytes.integer.toUInt48
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Joule
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
+import kotlinx.serialization.serializer
+import kotlin.jvm.JvmInline
+import kotlin.math.pow
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.encodeToByteArray
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+
+class BluetoothFormatTest {
+
+    @Serializable
+    @Prefix([0x42, 0x23])
+    @Postfix([0x22])
+    data class Nested<T>(val nested: T)
+
+    @Serializable
+    enum class SomeEnum {
+        @SerializedByteValue(0x01)
+        A,
+
+        @SerializedByteValue(0x02)
+        B,
+    }
+
+    @Serializable
+    enum class SensorContact {
+        NotSupported,
+        NotDetected,
+        Detected,
+    }
+
+    @Serializable
+    @Prefix([0x22, 0x44])
+    @Postfix([0x33])
+    data object Object
+
+    @Serializable
+    @Prefix([0x11, 0x55])
+    @Postfix([0x66, 0xAA.toByte()])
+    sealed class SomeSealedClass {
+        @Serializable
+        @SerializedByteValue(0x01)
+        data class A(val a: Int) : SomeSealedClass()
+
+        @Serializable
+        @SerializedByteValue(0x02)
+        data class B(
+            @Scalar(decimalExponent = -2)
+            val b: Double,
+        ) : SomeSealedClass()
+    }
+
+    // A sealed hierarchy WITHOUT @SerializedByteValue, with subclasses that have a
+    // DIFFERENT number of properties. The fallback identifies each option by its
+    // subclass serialName encoded as a raw UTF-8 string (no length prefix).
+    @Serializable
+    sealed class UnmarkedSealed {
+        @Serializable
+        data class One(val a: Int) : UnmarkedSealed()
+
+        @Serializable
+        data class Three(val x: Byte, val y: Byte, val z: Byte) : UnmarkedSealed()
+    }
+
+    @Serializable
+    data class UnmarkedSealedContainer(val value: UnmarkedSealed)
+
+    @Serializable
+    @JvmInline
+    value class ValueContainer<T>(val value: T)
+
+    @Serializable
+    @JvmInline
+    value class NumberValueContainer<T>(@Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val value: T)
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    value class ValueContainerWithHeaderAndFooter(@Size(Length.`8_BIT`) val int: Int)
+
+    // Spike: a value class that IS a Kaluga ScientificValue and also carries BluetoothFormat annotations.
+    @Serializable
+    @JvmInline
+    value class EnergyExpended(
+        @Size(Length.`16_BIT`)
+        @Unsigned
+        override val value: Int,
+    ) : ScientificValue<PhysicalQuantity.Energy, Joule> {
+        override val unit: Joule get() = Joule
+    }
+
+    @Serializable
+    @JvmInline
+    value class RRInterval(
+        @Size(Length.`16_BIT`)
+        @Scalar(binaryExponent = 10)
+        val seconds: Double,
+    ) {
+        constructor(duration: Duration) : this(duration.toDouble(DurationUnit.SECONDS))
+    }
+
+    // CRC uses childByteOrder (MSB), so it is written high-byte-first.
+    // Body bytes are laid out sequentially (excludeStructure keeps the builder LSB/sequential).
+    // @Checksum uses the same algorithm as CRC16.compute (poly 0x8005, init 0x0000, reflectIn/Out=true).
+    @Serializable
+    @Prefix([0xAA.toByte(), 0x55.toByte()])
+    @Postfix([0x55.toByte()])
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    sealed interface BigEndianFrame
+
+    @Serializable
+    @SerializedByteValue(0x12, 0x00, 0x00)
+    data object EmptyVariant : BigEndianFrame
+
+    // An unannotated nested structure must accumulate in the parent's builder direction (LSB = sequential)
+    // even when the parent's childByteOrder = MSB.  Without the preferredBuilderByteOrder fix, the nested
+    // struct would inherit childByteOrder (MSB) as its byteOrder and reverse its own content.
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    sealed interface Frame
+
+    @Serializable
+    @SerializedByteValue(0x01, 0x00, 0x04)
+    data class Payload(
+        @Size(Length.`16_BIT`) @Unsigned val a: Int, // field 1 — must appear first in wire
+        @Size(Length.`16_BIT`) @Unsigned val b: Int, // field 2 — must appear second
+    ) : Frame
+
+    // childByteOrder (MSB) must propagate to enum ordinal encoding inside the structure.
+    @Serializable
+    @ByOrdinal(size = Length.`16_BIT`)
+    enum class Status { OFF, ON }
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class StatusFrame(val status: Status)
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface SizeDispatchedPayload
+
+    @Serializable
+    data class FourBytePayload(@Unsigned val value: UInt) : SizeDispatchedPayload // 4 bytes
+
+    @Serializable
+    data class NineBytePayload(@Unsigned val a: UInt, @Unsigned val b: UInt, val c: UByte) : SizeDispatchedPayload // 4 + 4 + 1 = 9 bytes
+
+    // ── Variable-size fallback ────────────────────────────────────────────────
+    // One fixed-size subtype + one variable-size catch-all.
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface MixedSizeSealed
+
+    @Serializable
+    data class FixedMixed(@Unsigned val value: UInt) : MixedSizeSealed // 4 bytes — matched first
+
+    @Serializable
+    data class VariableMixed(@Unsized val items: List<UByte>) : MixedSizeSealed // variable — catch-all
+
+    // ── Failure: two variable-size subtypes ───────────────────────────────────
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface VariableSizeSealed
+
+    @Serializable
+    data class VariableSizeSubtypeA(@NullTerminated val name: String) : VariableSizeSealed
+
+    @Serializable
+    data class VariableSizeSubtypeB(@Unsized val data: List<UByte>) : VariableSizeSealed
+
+    // Used in the ambiguous-size test — two subtypes with identical computed byte sizes.
+    @Serializable
+    @SizePolymorphic
+    sealed interface AmbiguousSizeSealed
+
+    @Serializable
+    data class AmbiguousTypeA(@Unsigned val value: UInt) : AmbiguousSizeSealed // 4 bytes
+
+    @Serializable
+    data class AmbiguousTypeB(@Unsigned val value: UInt) : AmbiguousSizeSealed // also 4 bytes
+
+    @Serializable
+    data class WithSiblingAfter(val payload: SizeDispatchedPayload, val trailing: UByte)
+
+    @Serializable
+    @Prefix([0xAA.toByte()])
+    @Postfix([0xBB.toByte()])
+    data class WrappedWithPrefixPostfix(val payload: SizeDispatchedPayload)
+
+    // 2-byte discriminators on a sealed class (e.g. LE command codes where high byte is always 0x00)
+    @Serializable
+    sealed interface TwoByteCmd
+
+    @Serializable
+    @SerializedByteValue(0x01, 0x00)
+    data class CmdA(@Size(Length.`8_BIT`) @Unsigned val param: Int) : TwoByteCmd
+
+    @Serializable
+    @SerializedByteValue(0x02, 0x00)
+    data class CmdB(@Size(Length.`16_BIT`) @Unsigned val param: Int) : TwoByteCmd
+
+    // 2-byte discriminators on an enum; distinguishes [0x01 0x00] from [0x00 0x01] (true multi-byte)
+    @Serializable
+    enum class OpCode {
+        @SerializedByteValue(0x00, 0x01)
+        CONNECT,
+
+        @SerializedByteValue(0x01, 0x00)
+        DISCONNECT,
+    }
+
+    // Mixing 1-byte and 2-byte @SerializedByteValue on the same sealed class must fail at descriptor build time
+    @Serializable
+    sealed interface BadCmd
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class Good(@Size(Length.`8_BIT`) @Unsigned val x: Int) : BadCmd
+
+    @Serializable
+    @SerializedByteValue(0x02, 0x00)
+    data class AlsoBad(@Size(Length.`8_BIT`) @Unsigned val x: Int) : BadCmd
+
+    // Default @ByOrdinal: encodes ordinal as 1-byte (ACCEPTED=0x00, REJECTED=0x01, …)
+    @Serializable
+    @ByOrdinal
+    enum class ResponseCode { ACCEPTED, REJECTED, INVALID_CRC, INVALID_STATE }
+
+    @Serializable
+    data class Packet(@Size(Length.`8_BIT`) @Unsigned val id: Int, val code: ResponseCode)
+
+    // offset = 1: first variant → 0x01, second → 0x02, …
+    @Serializable
+    @ByOrdinal(offset = 1)
+    enum class OffsetOrdinal { FIRST, SECOND, THIRD }
+
+    @Serializable
+    data class OffsetOrdinalPacket(val value: OffsetOrdinal)
+
+    // size = 16_BIT: ordinals encoded as 2-byte LE UShort (with default byteOrder)
+    @Serializable
+    @ByOrdinal(size = Length.`16_BIT`)
+    enum class State { NONE, INITIALIZING, IDLE, MEASUREMENT, ERROR }
+
+    @Serializable
+    data class StatePacket(val state: State)
+
+    // A per-variant @SerializedByteValue takes precedence over @ByOrdinal for that specific entry.
+    // Useful when one variant has a non-contiguous code while others are ordinal-based.
+    @Serializable
+    @ByOrdinal(offset = 1)
+    enum class OverrideOrdinal {
+        FIRST, // ordinal 0 + 1 = 0x01 (from @ByOrdinal)
+        SECOND,
+
+        // ordinal 1 + 1 = 0x02 (from @ByOrdinal)
+        @SerializedByteValue(0x04) // explicit override — skips 0x03
+        THIRD,
+    }
+
+    // @ByOrdinal enum used as a field inside a larger structure
+    @Serializable
+    @ByOrdinal
+    enum class TriStateOrdinal { FIRST, SECOND, THIRD }
+
+    @Serializable
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    enum class ChecksumEnum { A, B }
+
+    @Serializable
+    @Postfix([0x01])
+    enum class FlagEnum { A, B }
+
+    @Serializable
+    data class OrdinalFieldPacket(@Size(Length.`8_BIT`) @Unsigned val code: Int, val state: TriStateOrdinal)
+
+// @Reserved bytes must be included in the staticByteSize used by @SizePolymorphic dispatch.
+    // Short: 1 value byte + 2 reserved after = 3 bytes total.
+    // Long:  1 value byte + 4 reserved after = 5 bytes total.
+    @Serializable
+    @SizePolymorphic
+    sealed interface ReservedPayload
+
+    @Serializable
+    data class Short3(@Reserved(after = 2) @Size(Length.`8_BIT`) @Unsigned val value: Int) : ReservedPayload
+
+    @Serializable
+    data class Long5(@Reserved(after = 4) @Size(Length.`8_BIT`) @Unsigned val value: Int) : ReservedPayload
+
+    @Test
+    fun encodeScientificValueClass() {
+        // round-trips through BluetoothFormat as a 16-bit unsigned little-endian value...
+        validateRoundTrip(EnergyExpended(500), EnergyExpended.serializer(), byteArrayOf(0xF4.toByte(), 0x01))
+        // ...while still being a usable ScientificValue
+        assertEquals(500(Joule).compareTo(EnergyExpended(500)), 0, EnergyExpended(500).toString())
+    }
+
+    @Test
+    fun encodeBoolean() {
+        validateEncoding(true, byteArrayOf(0x01))
+        validateEncoding(false, byteArrayOf(0x00))
+
+        @Serializable
+        data class Container(
+            val fieldValue: Boolean,
+            @FlagIndex(0)
+            val flagValue: Boolean,
+            val nullableValue: Boolean?,
+            val inlineValue: ValueContainer<Boolean>,
+            val inlineNullableValue: ValueContainer<Boolean>?,
+        )
+
+        validateEncoding(Container(false, flagValue = true, nullableValue = null, ValueContainer(true), null), byteArrayOf(0b10001))
+        validateEncoding(Container(true, flagValue = false, nullableValue = false, ValueContainer(false), ValueContainer(true)), byteArrayOf(0b1001110))
+        validateEncoding(Container(true, flagValue = true, nullableValue = true, ValueContainer(true), ValueContainer(true)), byteArrayOf(0b1111111))
+    }
+
+    @Test
+    fun encodeEnumInFlags() {
+        // 3 cases -> ceil(log2(3)) = 2 flag bits, ordinal stored LSB-first at index 0.
+        @Serializable
+        data class OnlyContact(@FlagIndex(0) val contact: SensorContact)
+
+        validateEncoding(OnlyContact(SensorContact.NotSupported), byteArrayOf(0b00))
+        validateEncoding(OnlyContact(SensorContact.NotDetected), byteArrayOf(0b01))
+        validateEncoding(OnlyContact(SensorContact.Detected), byteArrayOf(0b10))
+
+        // Flags byte (the enum) followed by a body field.
+        @Serializable
+        data class Reading(@FlagIndex(0) val contact: SensorContact, @Size(Length.`8_BIT`) val rate: Byte)
+        validateEncoding(Reading(SensorContact.Detected, 42), byteArrayOf(0b10, 42))
+
+        // A nullable flag-enum: the presence bit sits at the index, the ordinal in the bits above it.
+        @Serializable
+        data class OptionalContact(@FlagIndex(0) val contact: SensorContact?)
+
+        validateEncoding(OptionalContact(null), byteArrayOf(0b000))
+        validateEncoding(OptionalContact(SensorContact.NotSupported), byteArrayOf(0b001))
+        validateEncoding(OptionalContact(SensorContact.Detected), byteArrayOf(0b101))
+    }
+
+    @Test
+    fun encodeNumericInFlags() {
+        // A sub-byte numeric subfield of a bit field: @FlagIndex + @FlagWidth and no @Size packs the value straight into
+        // the flag region, least-significant bit first (like an enum ordinal), rather than as body bytes.
+        @Serializable
+        data class Packed(@FlagIndex(0) @FlagWidth(bits = 4) val nibble: Int, @FlagIndex(4) @FlagWidth(bits = 12) val wide: Int)
+        // nibble = 5 -> bits 0..3 = 0b0101; wide = 0x123 -> bits 4..15. Two flag bytes: byte0 = 0x35, byte1 = 0x12.
+        validateEncoding(Packed(nibble = 5, wide = 0x123), byteArrayOf(0x35, 0x12))
+
+        // A single unsigned 4-bit value occupies one flags byte (the high nibble stays zero).
+        @Serializable
+        data class Nibble(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        validateEncoding(Nibble(0xA), byteArrayOf(0x0A))
+
+        // A signed sub-byte value round-trips through two's-complement sign extension: -3 in 4 bits = 0b1101.
+        @Serializable
+        data class Signed(@FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        validateEncoding(Signed(-3), byteArrayOf(0x0D))
+        validateEncoding(Signed(7), byteArrayOf(0x07))
+    }
+
+    @Test
+    fun rejectsNumericTooLargeForFlagWidth() {
+        // 16 needs 5 bits; an unsigned 4-bit flag field holds 0..15, so encoding must fail rather than truncate.
+        @Serializable
+        data class TooBig(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        assertFailsWith<IllegalArgumentException> { BluetoothFormat.encodeToByteArray(TooBig.serializer(), TooBig(16)) }
+    }
+
+    @Test
+    fun encodeByte() {
+        validateEncoding(42.toByte(), byteArrayOf(42.toByte()))
+
+        @Serializable
+        data class Container(
+            val defaultLength: Byte,
+            @Size(Length.`8_BIT`) val `8bit`: Byte,
+            @Size(Length.`16_BIT`) val `16bit`: UByte,
+            @Unsigned val unsigned: UByte,
+            val nullable: Byte?,
+            val nullableUnsigned: UByte?,
+            val inlineValue: ValueContainer<Byte>,
+            val nullableInlineValue: ValueContainer<Byte>?,
+            val inlineUnsignedValue: ValueContainer<UByte>,
+            val nullableInlineUnsignedValue: ValueContainer<UByte>?,
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = 42,
+                `8bit` = 23,
+                `16bit` = 250.toUByte(),
+                unsigned = 123u,
+                nullable = null,
+                nullableUnsigned = null,
+                inlineValue = ValueContainer(4),
+                nullableInlineValue = ValueContainer(10),
+                inlineUnsignedValue = ValueContainer(23u),
+                nullableInlineUnsignedValue = null,
+            ),
+            buildByteArray {
+                add(false)
+                add(false)
+                add(true) // nullableInlineValue
+                add(false) // nullableInlineUnsignedValue
+                add(byte = 42)
+                add(byte = 23)
+                add(short = 250)
+                add(byte = 123)
+                add(byte = 4)
+                add(byte = 10)
+                add(uByte = 23u)
+            },
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = -80,
+                `8bit` = -45,
+                `16bit` = 230.toUByte(),
+                unsigned = 24u,
+                nullable = -20,
+                nullableUnsigned = 10u,
+                inlineValue = ValueContainer(-8),
+                nullableInlineValue = null,
+                inlineUnsignedValue = ValueContainer(99u),
+                nullableInlineUnsignedValue = ValueContainer(77u),
+            ),
+            buildByteArray {
+                add(true)
+                add(true)
+                add(false)
+                add(true)
+                add(byte = -80)
+                add(byte = -45)
+                add(uShort = 230u)
+                add(uByte = 24u)
+                add(byte = -20)
+                add(uByte = 10u)
+                add(byte = -8)
+                add(uByte = 99u)
+                add(uByte = 77u)
+            },
+        )
+    }
+
+    @Test
+    fun encodeShort() {
+        validateEncoding(42.toShort(), 42.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+        @Serializable
+        data class Container(
+            val defaultLength: Short,
+            @Size(Length.`8_BIT`) val `8bit`: Short,
+            @Size(Length.`16_BIT`) val `16bit`: Short,
+            @Size(Length.`24_BIT`) val `24bit`: UShort,
+            @Size(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Short,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Short,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val variableSizeRange: Short,
+            @Unsigned val unsigned: UShort,
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Short,
+            val nullable: Short?,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val nullableVariableSizing: Short?,
+            val inlineValue: NumberValueContainer<Short>,
+            val nullableInlineValue: NumberValueContainer<Short>?,
+            val inlineUnsignedValue: NumberValueContainer<UShort>,
+            val nullableInlineUnsignedValue: NumberValueContainer<UShort>?,
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = 42,
+                `8bit` = 112,
+                `16bit` = 512,
+                `24bit` = 16777.toUShort(),
+                scalar = 500,
+                medFloat16 = 123,
+                variableSizeRange = 567,
+                unsigned = 1234.toUShort(),
+                mostSignificant = 567,
+                nullable = null,
+                nullableVariableSizing = null,
+                inlineValue = NumberValueContainer(60),
+                nullableInlineValue = NumberValueContainer(70),
+                inlineUnsignedValue = NumberValueContainer(600u),
+                nullableInlineUnsignedValue = null,
+            ),
+            buildByteArray {
+                add(true) // variableSizeRange flag
+                add(false) // nullable flag
+                add(false) // nullableVariableSizing flag
+                add(false)
+                add(false) // inlineValue sizing
+                add(true) // nullableInlineValue
+                add(false)
+                add(true) // inlineUnsignedValue
+                add(false) // nullableInlineUnsignedValue
+                add(false)
+                add(short = 42)
+                add(byte = 112)
+                add(short = 512)
+                add(int24 = 16777.toInt24())
+                add(byte = 5)
+                add(MedFloat16(123.0))
+                add(short = 567)
+                add(short = 1234)
+                add(short = 567, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(byte = 60)
+                add(byte = 70)
+                add(uShort = 600u)
+            },
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = -80,
+                `8bit` = -37,
+                `16bit` = -8,
+                `24bit` = 16.toUShort(),
+                scalar = -700,
+                medFloat16 = -23,
+                variableSizeRange = -30,
+                unsigned = 2345.toUShort(),
+                mostSignificant = -123,
+                nullable = -34,
+                nullableVariableSizing = -200,
+                inlineValue = NumberValueContainer(-300),
+                nullableInlineValue = null,
+                inlineUnsignedValue = NumberValueContainer(5u),
+                nullableInlineUnsignedValue = NumberValueContainer(6u),
+            ),
+            buildByteArray {
+                add(false) // variableSizeRange flag
+                add(true) // nullable flag
+                add(true) // nullableVariableSizing flag
+                add(true)
+                add(true) // inlineValue sizing
+                add(false) // nullableInlineValue
+                add(false)
+                add(false) // inlineUnsignedValue
+                add(true) // nullableInlineUnsignedValue
+                add(false)
+                add(short = -80)
+                add(byte = -37)
+                add(short = -8)
+                add(int24 = 16.toInt24())
+                add(byte = -7)
+                add(MedFloat16(-23.0))
+                add(byte = -30)
+                add(uShort = 2345u)
+                add(short = -123, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = -34)
+                add(short = -200)
+                add(short = -300)
+                add(uByte = 5u)
+                add(uByte = 6u)
+            },
+        )
+    }
+
+    @Test
+    fun encodeInteger() {
+        validateEncoding(42, 42.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+        @Serializable
+        data class Container(
+            val defaultLength: Int,
+            @Size(Length.`8_BIT`) val `8bit`: Int,
+            @Size(Length.`16_BIT`) val `16bit`: Int,
+            @Size(Length.`24_BIT`) val `24bit`: Int,
+            @Size(Length.`32_BIT`) val `32bit`: Int,
+            @Size(Length.`64_BIT`) val `64bit`: UInt,
+            @Size(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Int,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Int,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Int,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) val variableSizeLowRange: Int,
+            @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val variableSizeHighRange: Int,
+            @Unsigned val unsigned: UInt,
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Int,
+            val nullable: Int?,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val nullableVariableSizing: Int?,
+            @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val inlineValue: NumberValueContainer<Int>,
+            @Size(Length.`24_BIT`) val nullableInlineValue: NumberValueContainer<Int>?,
+            val inlineUnsignedValue: NumberValueContainer<UInt>,
+            @Size(Length.`24_BIT`) val nullableInlineUnsignedValue: NumberValueContainer<UInt>?,
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = 42,
+                `8bit` = 112,
+                `16bit` = 512,
+                `24bit` = 16777,
+                `32bit` = 0x7ABCDEFF,
+                `64bit` = UInt.MAX_VALUE - 12u,
+                scalar = 500,
+                medFloat16 = 123,
+                medFloat32 = 1234567,
+                variableSizeLowRange = 123,
+                variableSizeHighRange = 1234567,
+                unsigned = 0x12345678u,
+                mostSignificant = 0x12345678,
+                nullable = null,
+                nullableVariableSizing = null,
+                inlineValue = NumberValueContainer(800),
+                nullableInlineValue = NumberValueContainer(900),
+                inlineUnsignedValue = NumberValueContainer(2345u),
+                nullableInlineUnsignedValue = null,
+            ),
+            buildByteArray {
+                add(false) // variableSizeLowRange flags
+                add(true) // variableSizeHighRange flags
+                add(false)
+                add(false) // Nullable
+                add(false) // nullableVariableSizing
+                add(false)
+                add(false)
+                add(true) // inlineValue sizing
+                add(false)
+                add(true) // nullableInlineValue
+                add(true)
+                add(false)
+                add(true) // inlineUnsignedValue
+                add(false)
+                add(false)
+                add(false)
+                add(int = 42)
+                add(byte = 112)
+                add(short = 512)
+                add(16777.toInt24())
+                add(0x7ABCDEFF)
+                add((UInt.MAX_VALUE - 12u).toULong())
+                add(byte = 5)
+                add(MedFloat16(123.0))
+                add(MedFloat32(1234567.0))
+                add(short = 123)
+                add(1234567.toInt24())
+                add(0x12345678u)
+                add(0x12345678u, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 800)
+                add(short = 900)
+                add(uShort = 2345u)
+            },
+        )
+        validateEncoding(
+            Container(
+                defaultLength = -80,
+                `8bit` = -20,
+                `16bit` = -5,
+                `24bit` = -33,
+                `32bit` = -2000,
+                `64bit` = 1234567u,
+                scalar = -700,
+                medFloat16 = -45,
+                medFloat32 = -78,
+                variableSizeLowRange = -2000000,
+                variableSizeHighRange = -9000000,
+                unsigned = 56u,
+                mostSignificant = -67,
+                nullable = -78,
+                nullableVariableSizing = -10000000,
+                inlineValue = NumberValueContainer(-15000000),
+                nullableInlineValue = null,
+                inlineUnsignedValue = NumberValueContainer(250u),
+                nullableInlineUnsignedValue = NumberValueContainer(8000000u),
+            ),
+            buildByteArray {
+                add(true) // variableSizeLowRange flags
+                add(false) // variableSizeHighRange flags
+                add(true)
+                add(true) // Nullable
+                add(true) // nullableVariableSizing
+                add(true)
+                add(true)
+                add(true) // inlineValue sizing
+                add(true)
+                add(false) // nullableInlineValue
+                add(false)
+                add(false)
+                add(false) // inlineUnsignedValue sizing
+                add(true) // nullableInlineUnsignedValue
+                add(false)
+                add(true)
+                add(int = -80)
+                add(byte = -20)
+                add(short = -5)
+                add((-33).toInt24())
+                add(-2000)
+                add(1234567.toULong())
+                add(byte = -7)
+                add(MedFloat16(-45.0))
+                add(MedFloat32(-78.0))
+                add(-2000000)
+                add(-9000000)
+                add(56u)
+                add(-67, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(-78)
+                add(-10000000)
+                add(-15000000)
+                add(uByte = 250u)
+                add(uInt24 = UInt24(8000000u))
+            },
+        )
+    }
+
+    @Test
+    fun encodeLong() {
+        validateEncoding(42L, 42L.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+        @Serializable
+        data class Container(
+            val defaultLength: Long,
+            @Size(Length.`8_BIT`) val `8bit`: Long,
+            @Size(Length.`16_BIT`) val `16bit`: Long,
+            @Size(Length.`24_BIT`) val `24bit`: Long,
+            @Size(Length.`32_BIT`) val `32bit`: Long,
+            @Size(Length.`64_BIT`) val `64bit`: Long,
+            @Size(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Long,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Long,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Long,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) val variableSizeLowRange: Long,
+            @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val variableSizeHighRange: Long,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val variableFullRange: Long,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) @MedFloat val variableMedFloat: Long,
+            @Unsigned val unsigned: ULong,
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Long,
+            val nullable: Long?,
+            @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val nullableVariableSizing: Long?,
+            @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val inlineValue: ValueContainer<Long>,
+            @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val nullableInlineValue: ValueContainer<Long>?,
+            val unsignedInlineValue: ValueContainer<ULong>,
+            val nullableUnsignedInlineValue: ValueContainer<ULong>?,
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = 42,
+                `8bit` = 112,
+                `16bit` = 512,
+                `24bit` = 16777,
+                `32bit` = 0x7ABCDEFF,
+                `64bit` = (UInt.MAX_VALUE - 12u).toLong(),
+                scalar = 500,
+                medFloat16 = 123,
+                medFloat32 = 1234567,
+                variableSizeLowRange = 123,
+                variableSizeHighRange = 1234567,
+                variableFullRange = 1234567890123456789,
+                variableMedFloat = 30000000000,
+                unsigned = 0x12345678u,
+                mostSignificant = 0x12345678,
+                nullable = null,
+                nullableVariableSizing = null,
+                inlineValue = ValueContainer(800),
+                nullableInlineValue = ValueContainer(3000000000),
+                unsignedInlineValue = ValueContainer(2345u),
+                nullableUnsignedInlineValue = null,
+            ),
+            buildByteArray {
+                add(false) // variableSizeLowRange flag
+                add(true) // variableSizeHighRange flags
+                add(false)
+                add(false) // variableFullRange flags
+                add(false)
+                add(true)
+                add(true) // variableMedFloat
+                add(false) // nullable
+                add(false) // nullableVariableSizing
+                add(false)
+                add(false)
+                add(false) // inlineValue
+                add(true) // nullableInlineValue
+                add(true)
+                add(false)
+                add(long = 42)
+                add(byte = 112)
+                add(short = 512)
+                add(16777.toInt24())
+                add(0x7ABCDEFF)
+                add((UInt.MAX_VALUE - 12u).toLong())
+                add(byte = 5)
+                add(MedFloat16(123.0))
+                add(MedFloat32(1234567.0))
+                add(short = 123)
+                add(1234567.toInt24())
+                add(1234567890123456789)
+                add(MedFloat32(30000000000.0))
+                add(uLong = 0x12345678u)
+                add(long = 0x12345678, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(800)
+                add(3000000000L)
+                add(uLong = 2345u)
+            },
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = -80,
+                `8bit` = -20,
+                `16bit` = -3,
+                `24bit` = -19,
+                `32bit` = -21,
+                `64bit` = -23,
+                scalar = -700,
+                medFloat16 = -45,
+                medFloat32 = -56,
+                variableSizeLowRange = -2000000,
+                variableSizeHighRange = -9000000,
+                variableFullRange = -2,
+                variableMedFloat = -7000,
+                unsigned = 77u,
+                mostSignificant = -4,
+                nullable = -22,
+                nullableVariableSizing = -7000000,
+                inlineValue = ValueContainer(-8000000000),
+                nullableInlineValue = null,
+                unsignedInlineValue = ValueContainer(1234567890123u),
+                nullableUnsignedInlineValue = ValueContainer(1234567890123456789u),
+            ),
+            buildByteArray {
+                add(true) // variableSizeLowRange flag
+                add(false) // variableSizeHighRange flags
+                add(true)
+                add(false) // variableFullRange flags
+                add(false)
+                add(false)
+                add(false) // variableMedFloat
+                add(true) // nullable
+                add(true) // nullableVariableSizing
+                add(true)
+                add(false)
+                add(true) // inlineValue
+                add(false) // nullableInlineValue
+                add(false)
+                add(true) // nullableUnsignedInlineValue
+                add(long = -80)
+                add(byte = -20)
+                add(short = -3)
+                add((-19).toInt24())
+                add(-21)
+                add(-23L)
+                add(byte = -7)
+                add(MedFloat16(-45.0))
+                add(MedFloat32(-56.0))
+                add(int = -2000000)
+                add(-9000000)
+                add(byte = -2)
+                add(MedFloat16(-7000.0))
+                add(uLong = 77u)
+                add(long = -4, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(long = -22)
+                add((-7000000).toInt24())
+                add(-8000000000L)
+                add(1234567890123u)
+                add(1234567890123456789u)
+            },
+        )
+    }
+
+    @Test
+    fun encode40And48Bit() {
+        @Serializable
+        data class Container(
+            @Size(Length.`40_BIT`) val `40bit`: Long,
+            @Size(Length.`48_BIT`) val `48bit`: Long,
+            @Size(Length.`40_BIT`) @Unsigned val unsigned40: ULong,
+            @Size(Length.`48_BIT`) @Unsigned val unsigned48: ULong,
+            @Size(Length.`32_BIT`) @Size(Length.`40_BIT`) @Size(Length.`48_BIT`) val variableSizing: Long,
+        )
+
+        // variableSizing 0x123456789A overflows 32 bits, so the flexible sizing picks 40-bit (index 1 of {32,40,48}).
+        validateEncoding(
+            Container(
+                `40bit` = 0x123456789A,
+                `48bit` = -42,
+                unsigned40 = 0xFFFFFFFFFFuL,
+                unsigned48 = 0xAABBCCDDEEFFuL,
+                variableSizing = 0x123456789A,
+            ),
+            buildByteArray {
+                add(true) // variableSizing length bits (0b01 -> 40-bit)
+                add(false)
+                add(0x123456789A.toInt40())
+                add((-42L).toInt48())
+                add(0xFFFFFFFFFFuL.toUInt40())
+                add(0xAABBCCDDEEFFuL.toUInt48())
+                add(0x123456789A.toInt40())
+            },
+        )
+
+        // negative values exercise sign extension; variableSizing -2 now fits 32-bit (index 0 -> 0b00).
+        validateEncoding(
+            Container(
+                `40bit` = -549755813888, // Int40.MIN_VALUE
+                `48bit` = 140737488355327, // Int48.MAX_VALUE
+                unsigned40 = 42uL,
+                unsigned48 = 0uL,
+                variableSizing = -2,
+            ),
+            buildByteArray {
+                add(false) // variableSizing length bits (0b00 -> 32-bit)
+                add(false)
+                add((-549755813888L).toInt40())
+                add(140737488355327L.toInt48())
+                add(42uL.toUInt40())
+                add(0uL.toUInt48())
+                add(int = -2)
+            },
+        )
+    }
+
+    @Test
+    fun encodePresentWhenAllSet() {
+        @Serializable
+        data class Container(
+            @Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?,
+            @Size(Length.`8_BIT`) @FlagIndex(1) val b: Byte?,
+            // Present on the wire exactly when both bit 0 and bit 1 (a's and b's presence bits) are set; owns no bit.
+            @Size(Length.`8_BIT`) @PresentWhenAllSet(0, 1) val c: Byte?,
+        )
+
+        // a, b present -> bits 0 and 1 set (0b11), so c is present too
+        validateEncoding(Container(a = 10, b = 20, c = 30), byteArrayOf(0b11, 10, 20, 30))
+        // a absent -> bit 0 clear, so c is necessarily absent (only b present)
+        validateEncoding(Container(a = null, b = 20, c = null), byteArrayOf(0b10, 20))
+        // b absent -> bit 1 clear, so c is necessarily absent (only a present)
+        validateEncoding(Container(a = 10, b = null, c = null), byteArrayOf(0b01, 10))
+        // nothing present
+        validateEncoding(Container(a = null, b = null, c = null), byteArrayOf(0b00))
+    }
+
+    @Test
+    fun encodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlags() {
+        @Serializable
+        data class Container(
+            @Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?,
+            @Size(Length.`8_BIT`) @FlagIndex(1) val b: Byte?,
+            @Size(Length.`8_BIT`) @PresentWhenAllSet(0, 1) val c: Byte?,
+        )
+
+        // `c` owns no flag bit: its presence is *derived* from bits 0 and 1, so a value whose `c` disagrees with those
+        // bits cannot round-trip. These are still valid instances; we just pin the (lossy) wire behaviour.
+
+        // c set while its gating bits are clear: c's byte is written, but on decode bits 0/1 are clear so c reads back
+        // as null — the value is silently lost (and its stray body byte is ignored).
+        val cWithoutGate = Container(a = null, b = null, c = 30)
+        val encoded = BluetoothFormat.encodeToByteArray(Container.serializer(), cWithoutGate)
+        assertTrue(encoded.contentEquals(byteArrayOf(0b00, 30)), encoded.toHexString(separator = " "))
+        assertEquals(Container(a = null, b = null, c = null), BluetoothFormat.decodeFromByteArray(Container.serializer(), encoded))
+
+        // c null while its gating bits are set: decode expects c's byte but none was written, so decoding fails outright.
+        val gateWithoutC = Container(a = 10, b = 20, c = null)
+        val truncated = BluetoothFormat.encodeToByteArray(Container.serializer(), gateWithoutC)
+        assertTrue(truncated.contentEquals(byteArrayOf(0b11, 10, 20)), truncated.toHexString(separator = " "))
+        assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> {
+            BluetoothFormat.decodeFromByteArray(Container.serializer(), truncated)
+        }
+    }
+
+    @Test
+    fun encodeFloat() {
+        validateEncoding(42.0f, 42.0f.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+        @Serializable
+        data class Container(
+            val defaultLength: Float,
+            @Size(Length.`32_BIT`) val `32bit`: Float,
+            @Size(Length.`64_BIT`) val `64bit`: Float,
+            @Size(Length.`8_BIT`) @Scalar(multiplier = 3, decimalExponent = -5, binaryExponent = 2, offset = 10) val scalar: Float,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Scalar(decimalExponent = 4) val flexibleScalar: Float,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Float,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Float,
+            val nullable: Float?,
+        )
+
+        validateEncoding(
+            Container(
+                1234.56f.as32Bit(),
+                567.89f.as32Bit(),
+                0.125f,
+                ((3.0 - 10.0) / (3 * 10.0.pow(-5) * 2.0.pow(2))).toFloat(),
+                0.025f,
+                123.0f,
+                1234567.0f,
+                null,
+            ),
+            buildByteArray {
+                add(true) // flexibleScalar flag
+                add(false) // nullable flag
+                add(1234.56f)
+                add(567.89f)
+                add(0.125f.toDouble())
+                add(byte = 3)
+                add(short = 250)
+                add(MedFloat16(123.0))
+                add(MedFloat32(1234567.0))
+            },
+        )
+
+        validateEncoding(
+            Container(
+                (-12.34f).as32Bit(),
+                (-234.56f).as32Bit(),
+                8.0f,
+                ((6.0 - 10.0) / (3 * 10.0.pow(-5) * 2.0.pow(2))).toFloat(),
+                0.0024f,
+                10.0f,
+                0.5f,
+                0.01f.as32Bit(),
+            ),
+            buildByteArray {
+                add(false) // flexibleScalar flag
+                add(true) // nullable flag
+                add(-12.34f)
+                add(-234.56f)
+                add(8.0)
+                add(byte = 6)
+                add(byte = 24)
+                add(MedFloat16(10.0))
+                add(MedFloat32(0.5))
+                add(0.01f)
+            },
+        )
+    }
+
+    @Test
+    fun encodeDouble() {
+        validateEncoding(42.0, 42.0.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+        @Serializable
+        data class Container(
+            val defaultLength: Double,
+            @Size(Length.`32_BIT`) val `32bit`: Double,
+            @Size(Length.`64_BIT`) val `64bit`: Double,
+            @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val variableSizing: Double,
+            @Size(Length.`8_BIT`) @Scalar(multiplier = 5, decimalExponent = 2, binaryExponent = 3, offset = 50) val scalar: Double,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Scalar(decimalExponent = 4) val flexibleScalar: Double,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Double,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Double,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) @MedFloat val flexibleMedFloat: Double,
+            val nullable: Double?,
+        )
+
+        validateEncoding(
+            Container(
+                1234.56,
+                567.9f.as32Bit().toDouble(),
+                0.124,
+                variableSizing = 800.0,
+                ((3.0 - 50.0) / (5 * 10.0.pow(2) * 2.0.pow(3))),
+                0.025,
+                123.0,
+                1234567.0,
+                0.123,
+                null,
+            ),
+            buildByteArray {
+                add(false) // variableSizing
+                add(true) // flexibleScalar flags
+                add(false) // flexibleMedFloat
+                add(false) // nullable flag
+                add(1234.56)
+                add(567.9f)
+                add(0.124)
+                add(800.0f)
+                add(byte = 3)
+                add(short = 250)
+                add(MedFloat16(123.0))
+                add(MedFloat32(1234567.0))
+                add(MedFloat16(0.123))
+            },
+        )
+
+        validateEncoding(
+            Container(
+                -12.34,
+                (-234.56f).as32Bit().toDouble(),
+                8.0,
+                7e-100,
+                ((6.0 - 50.0) / (5 * 10.0.pow(2) * 2.0.pow(3))),
+                0.0025,
+                10.0,
+                0.5,
+                -8e-10,
+                0.01,
+            ),
+            buildByteArray {
+                add(true) // variableSizing)
+                add(false) // flexibleScalar flag
+                add(true) // flexibleMedFloat
+                add(true) // nullable flag
+                add(-12.34)
+                add(-234.56f)
+                add(8.0)
+                add(7e-100)
+                add(byte = 6)
+                add(byte = 25)
+                add(MedFloat16(10.0))
+                add(MedFloat32(0.5))
+                add(MedFloat32(-8e-10))
+                add(0.01)
+            },
+        )
+    }
+
+    @Test
+    fun encodeRange() {
+        // 8-bit: 0x00 = min, 0xFF = max
+        @Serializable
+        data class EightBit(@Range(0.0, 100.0) @Size(Length.`8_BIT`) val percent: Double)
+
+        validateEncoding(EightBit(0.0), buildByteArray { add(0x00.toByte()) })
+        validateEncoding(EightBit(100.0), buildByteArray { add(0xFF.toByte()) })
+
+        // Intermediate: round((75 / 100) × 255) = round(191.25) = 191
+        val encoded8 = BluetoothFormat.encodeToByteArray(EightBit.serializer(), EightBit(75.0))
+        assertEquals(191.toByte(), encoded8[0])
+        // Round-trip: 191 / 255 × 100 ≈ 74.9%
+        val decoded8 = BluetoothFormat.decodeFromByteArray(EightBit.serializer(), encoded8)
+        assertTrue(decoded8.percent in 74.9..75.1, "expected ~75 %, got ${decoded8.percent}")
+
+        // 16-bit: 0x0000 = min, 0xFFFF = max
+        @Serializable
+        data class SixteenBit(@Range(0.0, 100.0) @Size(Length.`16_BIT`) val percent: Double)
+
+        validateEncoding(SixteenBit(0.0), buildByteArray { add(uShort = 0u) })
+        validateEncoding(SixteenBit(100.0), buildByteArray { add(uShort = 65535u) })
+
+        // Body field before the range field; verifies byte layout is [rangeByte][other]
+        @Serializable
+        data class WithHeader(val header: Byte, @Range(0.0, 1.0) @Size(Length.`8_BIT`) val fraction: Double)
+
+        validateEncoding(
+            WithHeader(0x42, 1.0),
+            buildByteArray {
+                add(0x42.toByte())
+                add(0xFF.toByte())
+            },
+        )
+
+        // Custom min/max range (temperature −40 °C … +85 °C encoded as unsigned byte)
+        @Serializable
+        data class Temperature(@Range(-40.0, 85.0) @Size(Length.`8_BIT`) val celsius: Double)
+
+        validateEncoding(Temperature(-40.0), buildByteArray { add(0x00.toByte()) })
+        validateEncoding(Temperature(85.0), buildByteArray { add(0xFF.toByte()) })
+    }
+
+    @Test
+    fun encodeChar() {
+        validateEncoding('a', buildByteArray { add(char = 'a') })
+
+        @Serializable
+        data class Container(
+            val default: Char,
+            @Encoded(Encoding.UTF_8) val utf8: Char,
+            @Encoded(Encoding.UTF_16) val utf16: Char,
+            @Encoded(Encoding.ASCII) val ascii: Char,
+            val nullable: Char?,
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) @Encoded(Encoding.UTF_16) val utf16MostSignificant: Char,
+            @Encoded(Encoding.UTF_16) val nullableUTF16: Char?,
+        )
+
+        validateEncoding(
+            Container(
+                'a',
+                'b',
+                'c',
+                'd',
+                'e',
+                'f',
+                'g',
+            ),
+            buildByteArray {
+                add(true) // nullable flag
+                add(true) // nullableUTF16
+                add('a')
+                add('b')
+                add('c', Encoding.UTF_16)
+                add('d', Encoding.ASCII)
+                add('e')
+                add('f', Encoding.UTF_16, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add('g', Encoding.UTF_16)
+            },
+        )
+    }
+
+    @Test
+    fun encodeString() {
+        // validateEncoding("Hello world", buildByteArray { add("Hello world") })
+
+        @Serializable
+        data class Container(
+            val default: String,
+            @Encoded(Encoding.UTF_8) val utf8: String,
+            @Encoded(Encoding.UTF_16) val utf16: String,
+            @Encoded(Encoding.ASCII) val ascii: String,
+            val nullable: String?,
+            @Encoded(Encoding.UTF_16) val nullableUTF16: String?,
+            @NullTerminated val nullTerminated: String,
+            @LengthPrefix(lengthAsShort = false, canOverflow = true) val lengthPrefix: String,
+            @Unsized val unsized: String,
+        )
+
+        validateEncoding(
+            Container(
+                "Sentence A",
+                "Sentence B",
+                "Sentence C",
+                "Sentence D",
+                "Sentence E",
+                "Sentence F",
+                "Sentence G",
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
+                "Sentence I",
+            ),
+            buildByteArray {
+                add(true)
+                add(true)
+                add("Sentence A")
+                add("Sentence B")
+                add("Sentence C", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("Sentence D", StringEncodingSettings(encoding = Encoding.ASCII))
+                add("Sentence E")
+                add("Sentence F", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("Sentence G", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add(
+                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
+                    StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()),
+                )
+                add("Sentence I", StringEncodingSettings(endMarking = StringEncodingSettings.NoMarking))
+            },
+        )
+
+        @Serializable
+        data class InvalidByteOrderChange(@com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val content: String)
+
+        assertFailsWith<InvalidByteOrderException> {
+            BluetoothFormat.encodeToByteArray(InvalidByteOrderChange.serializer(), InvalidByteOrderChange("Invalid"))
+        }
+
+        @Serializable
+        data class ContentContainsNull(@NullTerminated val content: String)
+
+        assertFailsWith<IllegalArgumentException> {
+            BluetoothFormat.encodeToByteArray(ContentContainsNull.serializer(), ContentContainsNull("Content\u0000NullTerminus"))
+        }
+
+        @Serializable
+        data class ContentAfterUnsized(@Unsized val string: String, val otherContent: Byte)
+
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized("StringContent", 0x01))
+        }
+
+        // A plain Boolean (no @FlagIndex/@FlagWidth) has no flag slot, so it is encoded into the body via
+        // addBit rather than addAction. Placing one after an @Unsized String must still be rejected: there is
+        // no way to know where the unsized data ends, so any trailing body data is undecodable.
+        @Serializable
+        data class BooleanAfterUnsized(@Unsized val string: String, val flag: Boolean)
+
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(BooleanAfterUnsized.serializer(), BooleanAfterUnsized("StringContent", true))
+        }
+    }
+
+    @Test
+    fun encodeList() {
+        @Serializable
+        data class Item(val valueA: Byte, val valueB: Byte, val valueC: Byte)
+
+        validateEncoding(
+            listOf(
+                Item(0xA0.toByte(), 0xA1.toByte(), 0xA2.toByte()),
+                Item(0xB0.toByte(), 0xB1.toByte(), 0xB2.toByte()),
+                Item(0xC0.toByte(), 0xC1.toByte(), 0xC2.toByte()),
+            ),
+            ListSerializer(Item.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add(0xA0.toByte())
+                add(0xA1.toByte())
+                add(0xA2.toByte())
+                add(0xB0.toByte())
+                add(0xB1.toByte())
+                add(0xB2.toByte())
+                add(0xC0.toByte())
+                add(0xC1.toByte())
+                add(0xC2.toByte())
+            },
+        )
+
+        @Serializable
+        data class ListContainer(
+            val default: List<Item>,
+            @Size(Length.`16_BIT`) val shortSized: List<Item>,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val flexibleSized: List<Item>,
+            @LengthPrefix(canOverflow = true) val lengthPrefix: List<Item>,
+            @NullIfEmpty val nullIfEmpty: List<Item>,
+            @NullTerminated val nullTerminated: List<Item>,
+            @Unsized val unsized: List<Item>,
+        )
+
+        validateEncoding(
+            ListContainer(
+                MutableList(10) { Item(it.toByte(), (it + 10).toByte(), (it + 20).toByte()) },
+                MutableList(500) { Item(it.toByte(), (it + 30).toByte(), (it + 40).toByte()) },
+                MutableList(40) { Item(it.toByte(), (it - 30).toByte(), (it - 40).toByte()) },
+                MutableList(33) { Item(it.toByte(), (it - 10).toByte(), (it - 20).toByte()) },
+                MutableList(5) { Item(it.toByte(), (it - 50).toByte(), (it + 50).toByte()) },
+                listOf(Item(0x01, 0x00, 0x03), Item(0x04, 0x05, 0x00)),
+                listOf(Item(0x06, 0x07, 0x08)),
+            ),
+            buildByteArray {
+                add(false) // flexibleSized
+                add(true) // nullIfEmpty
+                add(uByte = 10u)
+                repeat(10) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 10).toByte())
+                    add(byte = (it + 20).toByte())
+                }
+                add(uShort = 500u)
+                repeat(500) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 30).toByte())
+                    add(byte = (it + 40).toByte())
+                }
+                add(uByte = 40u)
+                repeat(40) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 30).toByte())
+                    add(byte = (it - 40).toByte())
+                }
+                add(uByte = 33u)
+                repeat(33) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 10).toByte())
+                    add(byte = (it - 20).toByte())
+                }
+                add(uByte = 5u)
+                repeat(5) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 50).toByte())
+                    add(byte = (it + 50).toByte())
+                }
+                add(byte = 0x01)
+                add(byte = 0x00)
+                add(byte = 0x03)
+                add(byte = 0x04)
+                add(byte = 0x05)
+                add(byte = 0x00)
+                add(byte = 0x00)
+                add(byte = 0x06)
+                add(byte = 0x07)
+                add(byte = 0x08)
+            },
+        )
+
+        validateEncoding(
+            ListContainer(
+                MutableList(8) { Item(it.toByte(), (it + 10).toByte(), (it + 20).toByte()) },
+                MutableList(2) { Item(it.toByte(), (it + 30).toByte(), (it + 40).toByte()) },
+                MutableList(1000) { Item(it.toByte(), (it - 30).toByte(), (it - 40).toByte()) },
+                MutableList(800) { Item(it.toByte(), (it - 10).toByte(), (it - 20).toByte()) },
+                emptyList(),
+                listOf(Item(0x01, 0x02, 0x03)),
+                emptyList(),
+            ),
+            buildByteArray {
+                add(true) // flexibleSized
+                add(false) // nullIfEmpty
+                add(uByte = 8u)
+                repeat(8) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 10).toByte())
+                    add(byte = (it + 20).toByte())
+                }
+                add(uShort = 2u)
+                repeat(2) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 30).toByte())
+                    add(byte = (it + 40).toByte())
+                }
+                add(uShort = 1000u)
+                repeat(1000) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 30).toByte())
+                    add(byte = (it - 40).toByte())
+                }
+                add(0xFF.toByte())
+                add(uShort = 800u)
+                repeat(800) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 10).toByte())
+                    add(byte = (it - 20).toByte())
+                }
+                add(byte = 0x01)
+                add(byte = 0x02)
+                add(byte = 0x03)
+                add(byte = 0x00)
+            },
+        )
+
+        @Serializable
+        data class NullTerminatedList(@NullTerminated val list: List<Byte>)
+
+        assertFailsWith<UnexpectedTerminator> {
+            BluetoothFormat.encodeToByteArray(NullTerminatedList.serializer(), NullTerminatedList(listOf(0x00.toByte(), 0x01.toByte())))
+        }
+
+        @Serializable
+        data class ContentAfterUnsized(@Unsized val list: List<Byte>, val otherContent: Byte)
+
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(listOf(0x01, 0x02, 0x03), 0x01))
+        }
+    }
+
+    @Test
+    fun encodeNumericList() {
+        validateEncoding(
+            listOf(1, 2, 3),
+            ListSerializer(Int.serializer()),
+            buildByteArray {
+                add(byte = 3)
+                add(1)
+                add(2)
+                add(3)
+            },
+        )
+        @Serializable
+        data class NumericListContainer(
+            @ItemSize(Length.`8_BIT`)
+            val intList: List<Int>,
+            @ItemSize(Length.`8_BIT`)
+            @ItemSize(Length.`16_BIT`)
+            val variableSizedIntList: List<Int>,
+            val nullableList: List<Int?>,
+            @NullIfEmpty val nullIfEmptyList: List<Int>,
+            @ItemSize(Length.`8_BIT`) @ItemScalar(decimalExponent = 4) val scalarList: List<Double>,
+            @ItemSize(Length.`16_BIT`) @ItemMedFloat val medFloatList: List<Double>,
+            @ItemByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: List<Short>,
+            val unsignedList: List<UByte>,
+            val inlineList: List<NumberValueContainer<Int>>,
+        )
+
+        validateEncoding(
+            NumericListContainer(
+                listOf(1, 2, 3),
+                listOf(4, 300, -12, 8000),
+                listOf(5, null, 6),
+                emptyList(),
+                listOf(0.0001, 0.0002, 0.0004),
+                listOf(1.5, 2.5, 3.5, 4.5),
+                listOf(100, 200, 300),
+                listOf(5u, 7u, 9u, 11u),
+                listOf(12, 13, 14, 600).map { NumberValueContainer(it) },
+
+            ),
+            buildByteArray {
+                add(false) // nullIfEmptyList
+                // intList
+                add(uByte = 3u)
+                add(byte = 1)
+                add(byte = 2)
+                add(byte = 3)
+                // variableSizedIntList
+                add(uByte = 4u)
+                add(false)
+                add(byte = 4)
+                add(true)
+                add(short = 300)
+                add(false)
+                add(byte = -12)
+                add(true)
+                add(short = 8000)
+                // nullableList
+                add(uByte = 3u)
+                add(true)
+                add(5)
+                add(false)
+                add(byte = 0x01)
+                add(6)
+                // scalar list
+                add(uByte = 3u)
+                add(byte = 1)
+                add(byte = 2)
+                add(byte = 4)
+                // medFloatList
+                add(uByte = 4u)
+                add(MedFloat16(1.5))
+                add(MedFloat16(2.5))
+                add(MedFloat16(3.5))
+                add(MedFloat16(4.5))
+                // mostSignificant
+                add(uByte = 3u)
+                add(short = 100, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 200, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 300, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                // unsignedList
+                add(uByte = 4u)
+                add(uByte = 5u)
+                add(uByte = 7u)
+                add(uByte = 9u)
+                add(uByte = 11u)
+                // inlineList
+                add(uByte = 4u)
+                add(false)
+                add(byte = 12)
+                add(false)
+                add(byte = 13)
+                add(false)
+                add(byte = 14)
+                add(true)
+                add(short = 600)
+            },
+        )
+    }
+
+    @Test
+    fun encodeStringList() {
+        validateEncoding(
+            listOf("A", "B", "C"),
+            ListSerializer(String.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add("A")
+                add("B")
+                add("C")
+            },
+        )
+        @Serializable
+        data class StringListContainer(
+            @ItemEncoded(Encoding.UTF_8)
+            val utf8List: List<String>,
+            @ItemEncoded(Encoding.UTF_16)
+            val utf16List: List<String>,
+            @ItemEncoded(Encoding.ASCII)
+            val asciiList: List<String>,
+            @ItemLengthPrefix(canOverflow = true)
+            val lengthPrefixList: List<String>,
+            @ItemNullTerminated
+            val nullTerminatedList: List<String>,
+            val nullableList: List<String?>,
+        )
+
+        validateEncoding(
+            StringListContainer(
+                listOf("A", "B", "C", "D"),
+                listOf("E", "F", "G", "H"),
+                listOf("I", "J", "K", "L"),
+                listOf("M", "N", MutableList(500) { "O" }.joinToString(), "P"),
+                listOf("Q", "R", "S", "T"),
+                listOf("U", "V", null, "X"),
+            ),
+            buildByteArray {
+                add(uByte = 4u)
+                add("A")
+                add("B")
+                add("C")
+                add("D")
+                add(uByte = 4u)
+                add("E", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("F", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("G", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("H", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
+                add(uByte = 4u)
+                add("I", settings = StringEncodingSettings(encoding = Encoding.ASCII))
+                add("J", settings = StringEncodingSettings(encoding = Encoding.ASCII))
+                add("K", settings = StringEncodingSettings(encoding = Encoding.ASCII))
+                add("L", settings = StringEncodingSettings(encoding = Encoding.ASCII))
+                add(uByte = 4u)
+                add("M", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add("N", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add(MutableList(500) { "O" }.joinToString(), settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add("P", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add(uByte = 4u)
+                add("Q", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("R", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("S", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("T", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add(uByte = 4u)
+                add(true)
+                add("U")
+                add(true)
+                add("V")
+                add(false)
+                add(byte = 0x01)
+                add("X")
+            },
+        )
+    }
+
+    @Test
+    fun encodeFlagIndexedLengthList() {
+        @Serializable
+        data class Item(val a: Byte, val b: Byte)
+
+        // 16-bit count in flag header (@LengthPrefix(lengthAsShort=true) + @FlagIndex(0)):
+        //   wire layout: [0-1]=count(UShort LE in flag header) [2]=headerByte [3..]=items×2B
+        // The flag header holds the list count; the body begins with headerByte, then item data.
+        @Serializable
+        data class ContainerShort(val headerByte: Byte, @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>)
+
+        validateEncoding(
+            ContainerShort(0x42, listOf(Item(0x0A, 0x0B), Item(0x0C, 0x0D), Item(0x0E, 0x0F))),
+            buildByteArray {
+                // flag header: 16 bits encoding count=3, LSB-first → 0x03 0x00
+                add(uShort = 3u)
+                // body: headerByte
+                add(0x42.toByte())
+                // items
+                add(0x0A.toByte())
+                add(0x0B.toByte())
+                add(0x0C.toByte())
+                add(0x0D.toByte())
+                add(0x0E.toByte())
+                add(0x0F.toByte())
+            },
+        )
+
+        // Empty list: count=0 in flag header, body field still present, no item bytes
+        validateEncoding(
+            ContainerShort(0x99.toByte(), emptyList()),
+            buildByteArray {
+                add(uShort = 0u) // count = 0
+                add(0x99.toByte()) // headerByte
+            },
+        )
+
+        // Large count (>255) to exercise the full 16-bit range
+        val largeList = MutableList(300) { Item(it.toByte(), (it + 1).toByte()) }
+        val largeEncoded = buildByteArray {
+            add(uShort = 300u) // 0x2C 0x01
+            add(0x01.toByte()) // headerByte
+            largeList.forEach {
+                add(it.a)
+                add(it.b)
+            }
+        }
+        validateEncoding(ContainerShort(0x01, largeList), largeEncoded)
+
+        // 8-bit count in flag header (@LengthPrefix default + @FlagIndex(0)):
+        //   wire layout: [0]=count(UByte in flag header) [1]=extra [2..]=items×2B
+        @Serializable
+        data class ContainerByte(val extra: Byte, @LengthPrefix @FlagIndex(0) val items: List<Item>)
+
+        validateEncoding(
+            ContainerByte(0x55, listOf(Item(0x01, 0x02), Item(0x03, 0x04))),
+            buildByteArray {
+                // flag header: 8 bits encoding count=2
+                add(uByte = 2u)
+                // body: extra
+                add(0x55.toByte())
+                // items
+                add(0x01.toByte())
+                add(0x02.toByte())
+                add(0x03.toByte())
+                add(0x04.toByte())
+            },
+        )
+
+        // Multiple flag-consuming fields alongside the flag-indexed list:
+        //   contactPresent is a nullable Bool at bit 16; items count occupies bits 0-15
+        @Serializable
+        data class ContainerWithSiblingFlag(@FlagIndex(16) val contactPresent: Boolean?, @LengthPrefix(lengthAsShort = true) @FlagIndex(0) val items: List<Item>)
+
+        validateEncoding(
+            ContainerWithSiblingFlag(true, listOf(Item(0xAB.toByte(), 0xCD.toByte()))),
+            buildByteArray {
+                // flag header: 3 bytes (bits 0-23)
+                // bits 0-15: count=1 → 0x01, 0x00
+                // bit 16: nullable present=true → set; bit 17: value=true → set
+                // byte0=0x01, byte1=0x00, byte2=0b00000011=0x03
+                add(uByte = 1u)
+                add(uByte = 0u)
+                add(0b00000011.toByte())
+                // items
+                add(0xAB.toByte())
+                add(0xCD.toByte())
+            },
+        )
+    }
+
+    @Test
+    fun encodeMap() {
+        @Serializable
+        data class Key(val keyValue: UShort)
+
+        @Serializable
+        data class Value(val value: Byte)
+
+        validateEncoding(
+            mapOf(
+                Key(0xA0.toUShort()) to Value(0xA1.toByte()),
+                Key(0xB0.toUShort()) to Value(0xB1.toByte()),
+                Key(0xC0.toUShort()) to Value(0xC1.toByte()),
+            ),
+            MapSerializer(Key.serializer(), Value.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add(0xA0.toUShort())
+                add(0xA1.toByte())
+                add(0xB0.toUShort())
+                add(0xB1.toByte())
+                add(0xC0.toUShort())
+                add(0xC1.toByte())
+            },
+        )
+
+        @Serializable
+        data class MapContainer(
+            val default: Map<Key, Value>,
+            @Size(Length.`16_BIT`) val shortSized: Map<Key, Value>,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val flexibleSized: Map<Key, Value>,
+            @LengthPrefix(canOverflow = true) val lengthPrefix: Map<Key, Value>,
+            @NullIfEmpty val nullIfEmpty: Map<Key, Value>,
+            @NullTerminated val nullTerminated: Map<Key, Value>,
+            @Unsized val unsized: Map<Key, Value>,
+        )
+
+        validateEncoding(
+            MapContainer(
+                MutableList(10) { Key(it.toUShort()) to Value((it + 10).toByte()) }.toMap(),
+                MutableList(500) { Key(it.toUShort()) to Value((it + 30).toByte()) }.toMap(),
+                MutableList(40) { Key(it.toUShort()) to Value((it - 30).toByte()) }.toMap(),
+                MutableList(33) { Key(it.toUShort()) to Value((it - 10).toByte()) }.toMap(),
+                MutableList(5) { Key(it.toUShort()) to Value((it - 50).toByte()) }.toMap(),
+                mapOf(Key(0x01u) to Value(0x00), Key(0x02u) to Value(0x03)),
+                mapOf(Key(0x06u) to Value(0x07), Key(0x08u) to Value(0x09)),
+            ),
+            buildByteArray {
+                add(false) // flexibleSized
+                add(true) // nullIfEmpty
+                add(uByte = 10u)
+                repeat(10) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 10).toByte())
+                }
+                add(uShort = 500u)
+                repeat(500) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 30).toByte())
+                }
+                add(uByte = 40u)
+                repeat(40) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 30).toByte())
+                }
+                add(uByte = 33u)
+                repeat(33) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 10).toByte())
+                }
+                add(uByte = 5u)
+                repeat(5) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 50).toByte())
+                }
+                add(uShort = 0x01u)
+                add(byte = 0x00)
+                add(uShort = 0x02u)
+                add(byte = 0x03)
+                add(byte = 0x00)
+                add(uShort = 0x06u)
+                add(byte = 0x07)
+                add(uShort = 0x08u)
+                add(byte = 0x09)
+            },
+        )
+
+        validateEncoding(
+            MapContainer(
+                MutableList(8) { Key(it.toUShort()) to Value((it + 10).toByte()) }.toMap(),
+                MutableList(2) { Key(it.toUShort()) to Value((it + 30).toByte()) }.toMap(),
+                MutableList(1000) { Key(it.toUShort()) to Value((it - 30).toByte()) }.toMap(),
+                MutableList(800) { Key(it.toUShort()) to Value((it - 10).toByte()) }.toMap(),
+                emptyMap(),
+                mapOf(Key(0x01u) to Value(0x02), Key(0x03u) to Value(0x04)),
+                emptyMap(),
+            ),
+            buildByteArray {
+                add(true) // flexibleSized
+                add(false) // nullIfEmpty
+                add(uByte = 8u)
+                repeat(8) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 10).toByte())
+                }
+                add(uShort = 2u)
+                repeat(2) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 30).toByte())
+                }
+                add(uShort = 1000u)
+                repeat(1000) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 30).toByte())
+                }
+                add(0xFF.toByte())
+                add(uShort = 800u)
+                repeat(800) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 10).toByte())
+                }
+                add(uShort = 0x01u)
+                add(byte = 0x02)
+                add(uShort = 0x03u)
+                add(byte = 0x04)
+                add(byte = 0x00)
+            },
+        )
+
+        @Serializable
+        data class NullTerminatedMap(@NullTerminated val map: Map<Byte, Byte>)
+
+        assertFailsWith<UnexpectedTerminator> {
+            BluetoothFormat.encodeToByteArray(NullTerminatedMap.serializer(), NullTerminatedMap(mapOf(0x00.toByte() to 0x01.toByte())))
+        }
+
+        @Serializable
+        data class ContentAfterUnsized(@Unsized val map: Map<Byte, Byte>, val otherContent: Byte)
+
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(mapOf(0x01.toByte() to 0x02.toByte(), 0x03.toByte() to 0x04.toByte()), 0x01))
+        }
+    }
+
+    @Test
+    fun encodeNumericMap() {
+        validateEncoding(
+            mapOf(1.toShort() to 2, 3.toShort() to 4),
+            MapSerializer(Short.serializer(), Int.serializer()),
+            buildByteArray {
+                add(uByte = 2u)
+                add(short = 1)
+                add(2)
+                add(short = 3)
+                add(4)
+            },
+        )
+        @Serializable
+        data class NumericMapContainer(
+            @KeySize(Length.`8_BIT`)
+            @ValueSize(Length.`24_BIT`)
+            val fixedMap: Map<Short, Int>,
+            @KeySize(Length.`8_BIT`)
+            @KeySize(Length.`16_BIT`)
+            @ValueSize(Length.`24_BIT`)
+            @ValueSize(Length.`32_BIT`)
+            val variableSizedMap: Map<Short, Int>,
+            val nullableMap: Map<Short?, Int?>,
+            @KeySize(Length.`8_BIT`) @KeyScalar(decimalExponent = 2)
+            @ValueSize(Length.`24_BIT`)
+            @ValueScalar(decimalExponent = 3)
+            val scalarMap: Map<Double, Double>,
+            @KeySize(Length.`16_BIT`) @KeyMedFloat
+            @ValueSize(Length.`32_BIT`)
+            @ValueMedFloat
+            val medFloatList: Map<Double, Double>,
+            @KeyByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+            @ValueByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+            val mostSignificant: Map<Short, Int>,
+            val unsignedMap: Map<UShort, UInt>,
+            val inlineMap: Map<NumberValueContainer<Short>, ValueContainer<Int>>,
+        )
+
+        validateEncoding(
+            NumericMapContainer(
+                mapOf(1.toShort() to 2, 3.toShort() to 4),
+                mapOf(5.toShort() to 5000000, 300.toShort() to 10000000),
+                mapOf(6.toShort() to 11, null to 12, 7.toShort() to null),
+                mapOf(0.25 to 0.125, 0.75 to 5.0),
+                mapOf(0.25 to 0.5, 5.0 to 7.0, 45.0 to 0.98),
+                mapOf((-10).toShort() to 999, 1000.toShort() to -54),
+                mapOf(20u.toUShort() to 777777u, 25u.toUShort() to 89898989u),
+                mapOf(NumberValueContainer(30.toShort()) to ValueContainer(12345), NumberValueContainer(400.toShort()) to ValueContainer(3456)),
+
+            ),
+            buildByteArray {
+                // fixedMap
+                add(uByte = 2u)
+                add(byte = 1)
+                add(2.toInt24())
+                add(byte = 3)
+                add(4.toInt24())
+                // variableSizedMap
+                add(uByte = 2u)
+                add(false)
+                add(byte = 5)
+                add(false)
+                add(5000000.toInt24())
+                add(true)
+                add(short = 300)
+                add(true)
+                add(10000000)
+                // nullableMap
+                add(uByte = 3u)
+                add(true)
+                add(short = 6)
+                add(true)
+                add(11)
+                add(byte = 0x00)
+                add(true)
+                add(12)
+                add(true)
+                add(short = 7)
+                add(false)
+                // scalarMap
+                add(uByte = 2u)
+                add(byte = 25)
+                add(125.toInt24())
+                add(byte = 75)
+                add(5000.toInt24())
+                add(uByte = 3u)
+                add(MedFloat16(0.25))
+                add(MedFloat32(0.5))
+                add(MedFloat16(5.0))
+                add(MedFloat32(7.0))
+                add(MedFloat16(45.0))
+                add(MedFloat32(0.98))
+                add(uByte = 2u)
+                add(short = -10, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(999, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 1000, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(-54, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(uByte = 2u)
+                add(uShort = 20u)
+                add(777777u)
+                add(uShort = 25u)
+                add(89898989u)
+                add(uByte = 2u)
+                add(false)
+                add(byte = 30)
+                add(12345)
+                add(true)
+                add(short = 400)
+                add(3456)
+            },
+        )
+    }
+
+    @Test
+    fun encodeStringMap() {
+        validateEncoding(
+            mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
+            MapSerializer(Char.serializer(), String.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add('A')
+                add("Alfa")
+                add('B')
+                add("Bravo")
+                add('C')
+                add("Charlie")
+            },
+        )
+        @Serializable
+        data class StringMapContainer(
+            @KeyEncoded(Encoding.UTF_8)
+            @ValueEncoded(Encoding.UTF_8)
+            val utf8Map: Map<Char, String>,
+            @KeyEncoded(Encoding.UTF_16)
+            @ValueEncoded(Encoding.UTF_16)
+            val utf16Map: Map<Char, String>,
+            @KeyEncoded(Encoding.ASCII)
+            @ValueEncoded(Encoding.ASCII)
+            val asciiMap: Map<Char, String>,
+            @KeyLengthPrefix(lengthAsShort = true)
+            @ValueLengthPrefix(canOverflow = true)
+            val lengthPrefixMap: Map<String, String>,
+            @KeyNullTerminated
+            @ValueNullTerminated
+            val nullTerminatedMap: Map<String, String>,
+            val nullableMap: Map<String?, String?>,
+        )
+
+        validateEncoding(
+            StringMapContainer(
+                mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
+                mapOf('D' to "Delta", 'E' to "Echo", 'F' to "Foxtrot"),
+                mapOf('G' to "Golf", 'H' to "Hotel", 'I' to "India"),
+                mapOf("Key" to "Value", "Long" to MutableList(1000) { "A" }.joinToString()),
+                mapOf("" to "Empty", "Empty" to ""),
+                mapOf("Key" to "Value", null to "Empty", "NoKey" to null),
+            ),
+            buildByteArray {
+                add(uByte = 3u)
+                add('A', Encoding.UTF_8)
+                add("Alfa", StringEncodingSettings(encoding = Encoding.UTF_8))
+                add('B', Encoding.UTF_8)
+                add("Bravo", StringEncodingSettings(encoding = Encoding.UTF_8))
+                add('C', Encoding.UTF_8)
+                add("Charlie", StringEncodingSettings(encoding = Encoding.UTF_8))
+                add(uByte = 3u)
+                add('D', Encoding.UTF_16)
+                add("Delta", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add('E', Encoding.UTF_16)
+                add("Echo", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add('F', Encoding.UTF_16)
+                add("Foxtrot", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add(uByte = 3u)
+                add('G', Encoding.ASCII)
+                add("Golf", StringEncodingSettings(encoding = Encoding.ASCII))
+                add('H', Encoding.ASCII)
+                add("Hotel", StringEncodingSettings(encoding = Encoding.ASCII))
+                add('I', Encoding.ASCII)
+                add("India", StringEncodingSettings(encoding = Encoding.ASCII))
+                add(uByte = 2u)
+                add("Key", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.ShortLength))
+                add("Value", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add("Long", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.ShortLength))
+                add(MutableList(1000) { "A" }.joinToString(), StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add(uByte = 2u)
+                add("", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Empty", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Empty", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add(uByte = 3u)
+                add(true)
+                add("Key")
+                add(true)
+                add("Value")
+                add(byte = 0x00)
+                add(true)
+                add("Empty")
+                add(true)
+                add("NoKey")
+                add(false)
+            },
+        )
+    }
+
+    @Test
+    fun encodeValueOnlyNullTerminatedMap() {
+        // Only the value is null-terminated; the key uses the default ByteLength prefix.
+        // This exercises valueAnnotations() mapping @ValueNullTerminated -> NullTerminated independently
+        // of @KeyNullTerminated (which the combined test in encodeStringMap masked).
+        @Serializable
+        data class ValueNullTerminatedMapContainer(
+            @ValueNullTerminated
+            val map: Map<String, String>,
+        )
+
+        validateEncoding(
+            ValueNullTerminatedMapContainer(
+                mapOf("Key" to "Value", "Other" to "Thing"),
+            ),
+            ValueNullTerminatedMapContainer.serializer(),
+            buildByteArray {
+                add(uByte = 2u)
+                add("Key") // default ByteLength prefix
+                add("Value", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Other") // default ByteLength prefix
+                add("Thing", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+            },
+        )
+
+        // Conversely, @KeyNullTerminated must NOT leak onto the value: key is null-terminated, value keeps default.
+        @Serializable
+        data class KeyNullTerminatedMapContainer(
+            @KeyNullTerminated
+            val map: Map<String, String>,
+        )
+
+        validateEncoding(
+            KeyNullTerminatedMapContainer(
+                mapOf("Key" to "Value", "Other" to "Thing"),
+            ),
+            KeyNullTerminatedMapContainer.serializer(),
+            buildByteArray {
+                add(uByte = 2u)
+                add("Key", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Value") // default ByteLength prefix
+                add("Other", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Thing") // default ByteLength prefix
+            },
+        )
+    }
+
+    @Test
+    fun encodeEnum() {
+        validateEncoding(SomeEnum.A, SomeEnum.serializer(), byteArrayOf(0x01))
+    }
+
+    // ── @ByOrdinal ────────────────────────────────────────────────────────────
+
+    @Test
+    fun byOrdinalZeroBased() {
+        validateEncoding(Packet(0x10, ResponseCode.ACCEPTED), byteArrayOf(0x10, 0x00))
+        validateEncoding(Packet(0x10, ResponseCode.INVALID_STATE), byteArrayOf(0x10, 0x03))
+    }
+
+    @Test
+    fun byOrdinalWithOffset() {
+        validateEncoding(OffsetOrdinalPacket(OffsetOrdinal.FIRST), byteArrayOf(0x01))
+        validateEncoding(OffsetOrdinalPacket(OffsetOrdinal.SECOND), byteArrayOf(0x02))
+        validateEncoding(OffsetOrdinalPacket(OffsetOrdinal.THIRD), byteArrayOf(0x03))
+    }
+
+    @Test
+    fun byOrdinalTwoByte() {
+        // NONE=0 → [0x00 0x00], IDLE=2 → [0x02 0x00] (LE)
+        validateEncoding(StatePacket(State.NONE), byteArrayOf(0x00, 0x00))
+        validateEncoding(StatePacket(State.IDLE), byteArrayOf(0x02, 0x00))
+        validateEncoding(StatePacket(State.ERROR), byteArrayOf(0x04, 0x00))
+    }
+
+    @Test
+    fun byOrdinalPerVariantOverride() {
+        @Serializable
+        data class Packet(val value: OverrideOrdinal)
+
+        validateEncoding(Packet(OverrideOrdinal.FIRST), byteArrayOf(0x01))
+        validateEncoding(Packet(OverrideOrdinal.SECOND), byteArrayOf(0x02))
+        validateEncoding(Packet(OverrideOrdinal.THIRD), byteArrayOf(0x04))
+    }
+
+    @Test
+    fun byOrdinalInDataClass() {
+        validateEncoding(OrdinalFieldPacket(0x0F, TriStateOrdinal.THIRD), byteArrayOf(0x0F, 0x02))
+    }
+
+    @Test
+    fun encodeObject() {
+        validateEncoding(Object, byteArrayOf(0x22, 0x44, 0x33))
+    }
+
+    @Test
+    fun encodeSealed() {
+        validateEncoding(SomeSealedClass.A(4), SomeSealedClass.serializer(), byteArrayOf(0x11, 0x55, 0x01, 0x04, 0x00, 0x00, 0x00, 0x66, 0xAA.toByte()))
+        validateEncoding(SomeSealedClass.B(600.0), SomeSealedClass.serializer(), byteArrayOf(0x11, 0x55, 0x02, 0x06, 0x00, 0x00, 0x00, 0x66, 0xAA.toByte()))
+    }
+
+    @Test
+    fun encodeUnmarkedSealed() {
+        // No @SerializedByteValue: each option is identified by its subclass serialName as a
+        // raw UTF-8 string (no length prefix), followed by the subclass body.
+        val oneName = UnmarkedSealed.One.serializer().descriptor.serialName
+            .encodeToByteArray()
+        val threeName = UnmarkedSealed.Three.serializer().descriptor.serialName
+            .encodeToByteArray()
+
+        validateEncoding(
+            UnmarkedSealedContainer(UnmarkedSealed.One(4)),
+            UnmarkedSealedContainer.serializer(),
+            buildByteArray {
+                add(oneName)
+                add(4)
+            },
+        )
+
+        validateEncoding(
+            UnmarkedSealedContainer(UnmarkedSealed.Three(1, 2, 3)),
+            UnmarkedSealedContainer.serializer(),
+            buildByteArray {
+                add(threeName)
+                add(byte = 1)
+                add(byte = 2)
+                add(byte = 3)
+            },
+        )
+    }
+
+    @Test
+    fun encodePolymorphic() {
+        @Serializable
+        abstract class Base
+
+        @Serializable
+        @SerializedByteValue(0x01)
+        data class A(val a: Int) : Base()
+
+        @Serializable
+        @SerializedByteValue(0x02)
+        data class B(@MedFloat val b: Double) : Base()
+
+        val module = SerializersModule {
+            polymorphic(Base::class) {
+                subclass(A::class)
+                subclass(B::class)
+            }
+        }
+
+        @Serializable
+        data class Container(val base: Base)
+
+        validateEncoding(Container(A(4)), Container.serializer(), byteArrayOf(0x01, 0x04, 0x00, 0x00, 0x00), BluetoothFormat { serializersModule = module })
+        validateEncoding(Container(B(600.0)), Container.serializer(), byteArrayOf(0x02) + MedFloat32(600.0).toByteArray(), BluetoothFormat { serializersModule = module })
+    }
+
+    // ── Multi-byte @SerializedByteValue ───────────────────────────────────────
+
+    @Test
+    fun multiByteSealedDiscriminator() {
+        val format = BluetoothFormat {
+            serializersModule = SerializersModule {
+                polymorphic(TwoByteCmd::class) {
+                    subclass(CmdA::class)
+                    subclass(CmdB::class)
+                }
+            }
+        }
+
+        validateRoundTrip(
+            CmdA(0x42),
+            TwoByteCmd.serializer(),
+            byteArrayOf(0x01, 0x00, 0x42),
+            format,
+        )
+        validateRoundTrip(
+            CmdB(0x0300),
+            TwoByteCmd.serializer(),
+            byteArrayOf(0x02, 0x00, 0x00, 0x03),
+            format,
+        )
+    }
+
+    @Test
+    fun multiByteEnumDiscriminator() {
+        @Serializable
+        data class Frame(val op: OpCode)
+
+        validateEncoding(Frame(OpCode.CONNECT), byteArrayOf(0x00, 0x01))
+        validateEncoding(Frame(OpCode.DISCONNECT), byteArrayOf(0x01, 0x00))
+    }
+
+    @Test
+    fun classNameDiscriminatorsSkipLengthValidation() {
+        // Class-name discriminators naturally have different byte lengths and must NOT trigger
+        // the length-consistency check (the decoder uses forward peek, not fixed-width reads).
+        // UnmarkedSealed already exercises this: One has a shorter name than Three.
+        val container = UnmarkedSealedContainer(UnmarkedSealed.One(42))
+        val bytes = BluetoothFormat.encodeToByteArray(container)
+        val decoded = BluetoothFormat.decodeFromByteArray(UnmarkedSealedContainer.serializer(), bytes)
+        assertEquals(container, decoded)
+    }
+
+    @Test
+    fun inconsistentDiscriminatorLengthsThrows() {
+        assertFailsWith<SerializationException> {
+            BluetoothFormat {
+                serializersModule = SerializersModule {
+                    polymorphic(BadCmd::class) {
+                        subclass(Good::class)
+                        subclass(AlsoBad::class)
+                    }
+                }
+            }.encodeToByteArray(BadCmd.serializer(), Good(1))
+        }
+    }
+
+    // ── @SizePolymorphic dispatch ─────────────────────────────────────────────
+    // The sealed class declares the dispatch mode; subtypes carry no size annotation.
+    // Sizes are computed automatically from field annotations at descriptor construction time.
+
+    @Test
+    fun sizeTagDispatch_fourBytePayload() {
+        // No type discriminator bytes — just the content; 4 bytes total.
+        // validateEncoding also verifies Nested<T> round-trips correctly: the sealed is the only
+        // field in Nested, so no sibling fires DataAfterUnconstrainedData, and Prefix/Postfix on
+        // Nested still work because they are written via build(), not addAction().
+        validateEncoding(
+            FourBytePayload(0x01020304u) as SizeDispatchedPayload,
+            BluetoothFormat.serializer<SizeDispatchedPayload>(),
+            byteArrayOf(0x04, 0x03, 0x02, 0x01),
+        )
+    }
+
+    @Test
+    fun sizeTagDispatch_nineBytePayload() {
+        validateEncoding(
+            NineBytePayload(0x01020304u, 0x05060708u, 0x09u) as SizeDispatchedPayload,
+            BluetoothFormat.serializer<SizeDispatchedPayload>(),
+            byteArrayOf(0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05, 0x09),
+        )
+    }
+
+    @Test
+    fun sizePolymorphic_failsWhenSubtypesHaveDuplicateSizes() {
+        // AmbiguousTypeA and AmbiguousTypeB both compute to 4 bytes — dispatch would be impossible.
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(
+                BluetoothFormat.serializer<AmbiguousSizeSealed>(),
+                AmbiguousTypeA(0u),
+            )
+        }
+    }
+
+    @Test
+    fun sizePolymorphic_fixedSubtypeMatchedBeforeFallback() {
+        // 4-byte payload → FixedMixed; variable remainder → VariableMixed (catch-all).
+        validateEncoding(
+            FixedMixed(0x01020304u) as MixedSizeSealed,
+            BluetoothFormat.serializer<MixedSizeSealed>(),
+            byteArrayOf(0x04, 0x03, 0x02, 0x01),
+        )
+    }
+
+    @Test
+    fun sizePolymorphic_fallbackDecodesVariablePayload() {
+        // 3 bytes don't match FixedMixed(4) → falls through to VariableMixed.
+        val bytes = byteArrayOf(0x0A, 0x0B, 0x0C)
+        val result = BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<MixedSizeSealed>(), bytes)
+        assertEquals(VariableMixed(listOf(0x0A.toUByte(), 0x0B.toUByte(), 0x0C.toUByte())), result)
+    }
+
+    @Test
+    fun sizePolymorphic_failsWithMultipleVariableSizeSubtypes() {
+        // Two variable-size subtypes — ambiguous, must be rejected at encode time.
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(
+                BluetoothFormat.serializer<VariableSizeSealed>(),
+                VariableSizeSubtypeA("hello"),
+            )
+        }
+    }
+
+    @Test
+    fun sizeTagDispatch_throwsOnUnrecognisedSize() {
+        // 6 bytes matches neither 4 nor 9.
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<SizeDispatchedPayload>(), ByteArray(6))
+        }
+    }
+
+    @Test
+    fun sizeTagDispatch_throwsDataAfterUnconstrainedWhenSiblingFollows() {
+        // A field AFTER the size-polymorphic sealed cannot have its length determined — encoding must fail.
+        // Fields BEFORE the sealed (or the sealed as the last/only field) are fine.
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(
+                BluetoothFormat.serializer<WithSiblingAfter>(),
+                WithSiblingAfter(FourBytePayload(0u), 0u),
+            )
+        }
+    }
+
+    @Test
+    fun sizeTagDispatch_allowsPrefixPostfixOnContainingClass() {
+        // Prefix/Postfix on the containing class are written in build(), not addAction(), so they
+        // are unaffected by the makeUnconstrained() that @SizePolymorphic sets on the parent builder.
+        val value = WrappedWithPrefixPostfix(FourBytePayload(0x01020304u))
+        val bytes = BluetoothFormat.encodeToByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), value)
+        assertTrue(bytes.contentEquals(byteArrayOf(0xAA.toByte(), 0x04, 0x03, 0x02, 0x01, 0xBB.toByte())), bytes.toHexString(separator = " "))
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), bytes))
+    }
+
+    @Test
+    fun encodeHeartRate() {
+        @Serializable
+        data class HeartRate(
+            @Size(Length.`8_BIT`)
+            @Size(Length.`16_BIT`)
+            @Unsigned
+            val heartRate: Int,
+            @FlagIndex(2)
+            val contactSupported: Boolean,
+            @FlagIndex(1)
+            val contactDetected: Boolean = !contactSupported,
+            @Unsigned
+            @Size(Length.`16_BIT`)
+            val energyExpended: Int? = null,
+            @NullIfEmpty
+            @Unsized
+            val rrIntervals: List<RRInterval> = emptyList(),
+        )
+
+        validateEncoding(
+            HeartRate(
+                heartRate = 85,
+                contactSupported = true,
+                contactDetected = false,
+                rrIntervals = emptyList(),
+            ),
+            byteArrayOf(0x04, 0x55),
+        )
+        validateEncoding(
+            HeartRate(
+                heartRate = 300,
+                contactSupported = true,
+                contactDetected = false,
+                energyExpended = 500,
+                rrIntervals = listOf(RRInterval(1.seconds), RRInterval(0.5.seconds)),
+            ),
+            byteArrayOf(0x1D, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x04, 0x00, 0x02),
+        )
+
+        validateEncoding(
+            listOf(
+                HeartRate(50, contactSupported = true, contactDetected = true),
+                HeartRate(500, contactSupported = true, contactDetected = false, rrIntervals = listOf(RRInterval(2.seconds), RRInterval(0.25.seconds))),
+            ),
+            ListSerializer(HeartRate.serializer()),
+            byteArrayOf(0x02, 0x06, 0x32, 0x15, 0xF4.toByte(), 0x01, 0x00, 0x08, 0x00, 0x01),
+        )
+    }
+
+    @Test
+    fun encodeWithChecksum() {
+        @Serializable
+        @Prefix([0x19])
+        @Postfix([0x45])
+        @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+        data class WithChecksum(val index: Int, val content: String)
+
+        validateEncoding(
+            WithChecksum(1234, "123456789"),
+            buildByteArray {
+                add(0x19.toByte())
+                val body = buildByteArray {
+                    add(1234)
+                    add("123456789")
+                }
+                add(body)
+                add(CRC16.compute(body).toUShort())
+                add(0x45.toByte())
+            },
+        )
+    }
+
+    @Test
+    fun encodeWithChecksumMostSignificantFirst() {
+        @Serializable
+        @Prefix([0x19])
+        @Postfix([0x45])
+        @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+        @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        data class WithChecksum(val index: Int, val content: String)
+
+        val value = WithChecksum(1234, "123456789")
+
+        // The checksum is computed over the body only (everything between the prefix and the checksum bytes).
+        // In MOST_SIGNIFICANT_FIRST order the body is laid out as built here.
+        val body = buildByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) {
+            add(1234)
+            add("123456789")
+        }
+        val expectedChecksum = CRC16.compute(body)
+
+        // The stored CRC is just another multi-byte numeric in the structure's byte order, so in
+        // MOST_SIGNIFICANT_FIRST it is written most-significant-byte first (hi, lo).
+        val crcBytes = expectedChecksum.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        val expectedBytes = buildByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) {
+            add(byteArrayOf(0x19))
+            add(body)
+            add(crcBytes)
+            add(byteArrayOf(0x45))
+        }
+
+        // Full round-trip with checksum validation enabled (default BluetoothFormat): encode then decode.
+        validateRoundTrip(value, WithChecksum.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun encodeValueClassWithChecksumAndHeaderFooter() {
+        val byteValue: Byte = 0x12
+        val value = ValueContainerWithHeaderAndFooter(byteValue.toInt())
+        val expectedChecksum = CRC16.compute(byteArrayOf(byteValue))
+        val expectedBytes = buildByteArray {
+            add(0x55.toByte())
+            add(byteValue)
+            add(expectedChecksum.toUShort())
+            add(0xAA.toByte())
+        }
+
+        validateRoundTrip(value, ValueContainerWithHeaderAndFooter.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun valueClassWithHeaderFooterRejectsWrongPrefix() {
+        assertFailsWith<InvalidPrefix> {
+            BluetoothFormat.decodeFromByteArray(
+                ValueContainerWithHeaderAndFooter.serializer(),
+                byteArrayOf(0x44, 0x12, 0x00, 0x00, 0xAA.toByte()), // 0x44 instead of expected 0x55
+            )
+        }
+    }
+
+    @Test
+    fun valueClassWithHeaderFooterRejectsWrongPostfix() {
+        val byteValue: Byte = 0x12
+        val crc = CRC16.compute(byteArrayOf(byteValue))
+        assertFailsWith<InvalidPostfix> {
+            BluetoothFormat.decodeFromByteArray(
+                ValueContainerWithHeaderAndFooter.serializer(),
+                buildByteArray {
+                    add(0x55.toByte())
+                    add(byteValue)
+                    add(crc.toUShort())
+                    add(0xBB.toByte()) // 0xBB instead of expected 0xAA
+                },
+            )
+        }
+    }
+
+    @Test
+    fun valueClassWithHeaderFooterRejectsWrongChecksum() {
+        assertFailsWith<InvalidChecksumException> {
+            BluetoothFormat.decodeFromByteArray(
+                ValueContainerWithHeaderAndFooter.serializer(),
+                byteArrayOf(0x55, 0x12, 0x00, 0x00, 0xAA.toByte()), // 0x0000 is not CRC16(0x12)
+            )
+        }
+    }
+
+    @Test
+    fun enumWithChecksumThrowsAtRegistryTime() {
+        @Serializable
+        data class Container(val value: ChecksumEnum)
+
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(ChecksumEnum.A))
+        }
+    }
+
+    @Test
+    fun flagPackedEnumWithPrefixThrowsAtRegistryTime() {
+        @Serializable
+        data class Container(@FlagIndex(0) val value: FlagEnum)
+
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
+        }
+    }
+
+    @Test
+    fun flagPackedEnumWithPostfixThrowsAtRegistryTime() {
+        @Serializable
+        data class Container(@FlagIndex(0) val value: FlagEnum)
+
+        assertFailsWith<SerializationException> {
+            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
+        }
+    }
+
+    @Test
+    fun encodeNullTerminatedAndOverflowMostSignificantFirst() {
+        @Serializable
+        @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        data class Container(@NullTerminated val nullTerminated: Map<String, String>, @LengthPrefix(lengthAsShort = false, canOverflow = true) val overflow: String)
+
+        val longString = MutableList(500) { "X" }.joinToString("")
+        val value = Container(
+            nullTerminated = mapOf("Key" to "Value", "Foo" to "Bar"),
+            overflow = longString,
+        )
+
+        // Mirror the encoder's MSB build order so the expected bytes match the encoded output exactly.
+        // @NullTerminated marks the *map* as null-terminated (single 0x00 sentinel after the last entry);
+        // the string keys/values keep their default length-prefix encoding.
+        val expected = buildByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) {
+            add("Key")
+            add("Value")
+            add("Foo")
+            add("Bar")
+            add(byte = 0x00)
+            // overflow string: length > 255 so the sentinel + 2-byte length is written
+            add(longString, StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+        }
+
+        validateRoundTrip(value, Container.serializer(), expected)
+    }
+
+    // ── @ByteOrder(excludeStructure = true) ──────────────────────────────────
+
+    @Test
+    fun byteOrderExcludeStructureEncodesSequentially() {
+        // Plain @ByteOrder(MSB) reverses the entire array; excludeStructure = true must NOT do that.
+        // Fields appear in declaration order; each multi-byte value defaults to big-endian (childByteOrder),
+        // but individual properties can still override back to LSB — childByteOrder is a default, not a lock.
+        @Serializable
+        @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+        data class Frame(
+            @Size(Length.`16_BIT`) @Unsigned val a: Int, // inherits childByteOrder → big-endian
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+            @Size(Length.`16_BIT`)
+            @Unsigned val b: Int, // explicit per-property LSB override
+            @Size(Length.`16_BIT`) @Unsigned val c: Int, // inherits childByteOrder → big-endian
+        )
+
+        // a=0x0102 → [01 02] (MSB), b=0x0304 → [04 03] (LSB override), c=0x0506 → [05 06] (MSB)
+        // Plain @ByteOrder(MSB) without excludeStructure would reverse the whole frame.
+        validateEncoding(
+            Frame(a = 0x0102, b = 0x0304, c = 0x0506),
+            byteArrayOf(0x01, 0x02, 0x04, 0x03, 0x05, 0x06),
+        )
+    }
+
+    @Test
+    fun byteOrderExcludeStructureWithChecksumEmitsCrcBigEndian() {
+        // Body (what CRC covers) = discriminator only = [0x12, 0x00, 0x00]
+        val body = byteArrayOf(0x12, 0x00, 0x00)
+        val crc = CRC16.compute(body)
+        // CRC emitted big-endian (childByteOrder = MSB): high byte first
+        val crcHi = ((crc shr 8) and 0xFFu).toByte()
+        val crcLo = (crc and 0xFFu).toByte()
+
+        val expected = byteArrayOf(0xAA.toByte(), 0x55.toByte()) + body + byteArrayOf(crcHi, crcLo, 0x55)
+        // Must use BigEndianFrame.serializer() so the sealed interface's @Prefix/@Checksum/@Postfix apply.
+        validateRoundTrip(EmptyVariant as BigEndianFrame, BigEndianFrame.serializer(), expected)
+    }
+
+    @Test
+    fun byteOrderExcludeStructureNestedInsideLsbParentAllowed() {
+        // With excludeStructure = true, byteOrder == preferredBuilderByteOrder (LSB from parent),
+        // so nesting inside an LSB structure must NOT throw InvalidByteOrderException.
+        // Unannotated nested structures also inherit the builder direction rather than childByteOrder.
+        @Serializable
+        @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+        data class BigEndianFields(@Size(Length.`16_BIT`) @Unsigned val value: Int)
+
+        @Serializable
+        data class Outer(val inner: BigEndianFields)
+
+        // value=1: big-endian → [00 01] inside the outer LSB structure; frame is sequential
+        validateEncoding(Outer(BigEndianFields(1)), byteArrayOf(0x00, 0x01))
+    }
+
+    @Test
+    fun byteOrderExcludeStructureUnannotatedNestedStructureInheritsBuilderDirection() {
+        // a=0x0102 → [01 02] first, b=0x0304 → [03 04] second.  Both big-endian, sequential order.
+        // If the unannotated Payload inherited MSB as byteOrder it would reverse: [03 04 01 02].
+        validateRoundTrip(
+            Payload(0x0102, 0x0304),
+            Frame.serializer(),
+            byteArrayOf(0x01, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04),
+        )
+    }
+
+    @Test
+    fun byteOrderExcludeStructureChildByteOrderPropagatesEnum() {
+        // ON = ordinal 1, big-endian 2 bytes → [00 01]
+        validateEncoding(StatusFrame(Status.ON), byteArrayOf(0x00, 0x01))
+    }
+
+    @Test
+    fun byteOrderExcludeStructureDoesNotChangeStringCheck() {
+        // For Strings, childByteOrder still governs char encoding — changing it is still disallowed
+        // inside a structure whose parent has a different childByteOrder.
+        @Serializable
+        data class InvalidStringByteOrder(@com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val text: String)
+
+        assertFailsWith<InvalidByteOrderException> {
+            BluetoothFormat.encodeToByteArray(InvalidStringByteOrder.serializer(), InvalidStringByteOrder("fail"))
+        }
+    }
+
+    // ── @Reserved ─────────────────────────────────────────────────────────────
+
+    @Test
+    fun reservedBytesCountedInStaticSize() {
+        validateEncoding(Short3(0x0A), byteArrayOf(0x0A, 0x00, 0x00))
+        validateEncoding(Long5(0x0B), byteArrayOf(0x0B, 0x00, 0x00, 0x00, 0x00))
+    }
+
+    @Test
+    fun reservedBytesAfter() {
+        // Two reserved bytes appended after the last field (trailing padding).
+        @Serializable
+        data class Packet(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Reserved(after = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+        validateEncoding(
+            Packet(0x01, 0x02),
+            byteArrayOf(
+                0x01, // a
+                0x02, // b
+                0x00,
+                0x00, // 2 reserved bytes after b
+            ),
+        )
+    }
+
+    @Test
+    fun reservedBytesBefore() {
+        // Two reserved bytes before the second field (mid-packet padding).
+        @Serializable
+        data class Packet(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Reserved(before = 2) @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+        validateEncoding(
+            Packet(0x01, 0x02),
+            byteArrayOf(
+                0x01, // a
+                0x00,
+                0x00, // 2 reserved bytes before b
+                0x02, // b
+            ),
+        )
+    }
+
+    @Test
+    fun reservedBytesBeforeAndAfter() {
+        // Reserved padding both before and after a single field:
+        //   [a (2B)] [reserved (2B)] [b (2B)] [reserved (2B)]
+        @Serializable
+        data class Packet(@Size(Length.`16_BIT`) @Unsigned val a: Int, @Reserved(before = 2, after = 2) @Size(Length.`16_BIT`) @Unsigned val b: Int)
+
+        validateEncoding(
+            Packet(a = 0x1600, b = 0x0258),
+            byteArrayOf(
+                0x00,
+                0x16, // a (LE)
+                0x00,
+                0x00, // 2 reserved before b
+                0x58,
+                0x02, // b (LE)
+                0x00,
+                0x00, // 2 reserved after b
+            ),
+        )
+    }
+
+    @Test
+    fun reservedBytesDecodeIgnoresContent() {
+        // On decode, non-zero reserved bytes are silently discarded — no exception.
+        @Serializable
+        data class Packet(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Reserved(before = 1, after = 1) @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+        val serializer = Packet.serializer()
+        val bytes = byteArrayOf(
+            0x0A, // a
+            0xFF.toByte(), // reserved before b — garbage, should be ignored
+            0x0B, // b
+            0xDE.toByte(), // reserved after b — garbage, should be ignored
+        )
+        assertEquals(Packet(0x0A, 0x0B), BluetoothFormat.decodeFromByteArray(serializer, bytes))
+    }
+
+    @Test
+    fun reservedBytesMultipleFields() {
+        // Reserved padding around each of several fields.
+        @Serializable
+        data class Packet(
+            @Reserved(after = 1) @Size(Length.`8_BIT`) @Unsigned val x: Int,
+            @Reserved(before = 1, after = 2) @Size(Length.`8_BIT`) @Unsigned val y: Int,
+            @Size(Length.`8_BIT`) @Unsigned val z: Int,
+        )
+
+        validateEncoding(
+            Packet(x = 0x01, y = 0x02, z = 0x03),
+            byteArrayOf(
+                0x01, // x
+                0x00, // 1 reserved after x
+                0x00, // 1 reserved before y
+                0x02, // y
+                0x00,
+                0x00, // 2 reserved after y
+                0x03, // z
+            ),
+        )
+    }
+
+    // CSafe framing: 0xF1 start flag, 0xF2 stop flag, body byte-stuffed with the default 0xF3/0x03 scheme.
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    data class CSafeFrame(@Size(Length.`8_BIT`) @Unsigned val command: Int, @Size(Length.`8_BIT`) @Unsigned val value: Int)
+
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    data class CSafePacket(@Unsized val content: List<Byte>)
+
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    @Checksum(8, 0x07u, 0x00u)
+    data class CSafeChecksummedFrame(@Size(Length.`8_BIT`) @Unsigned val command: Int, @Size(Length.`8_BIT`) @Unsigned val value: Int)
+
+    @Serializable
+    @ByteStuffed
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    data class BigEndianStuffed(@Size(Length.`8_BIT`) @Unsigned val value: Int)
+
+    // Big-endian field VALUES with a sequentially-accumulated (excludeStructure) frame — the combination
+    // real big-endian frames use. Stuffing checks only the accumulation direction, so it is allowed here.
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class BigEndianStuffedFrame(@Size(Length.`16_BIT`) @Unsigned val value: Int)
+
+    // A byte-stuffed string: the stuffing annotation is itself a 0x00-terminated marking (no @NullTerminated needed).
+    // The XOR scheme escapes 0x00 (here the UTF-16 high byte of each ASCII char) so it never collides with the terminator.
+    @Serializable
+    data class StuffedStringHolder(
+        @Encoded(Encoding.UTF_16)
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x00)
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A byte-stuffed list: the stuffing annotation implies a 0x00-terminated collection (no @NullTerminated needed).
+    // Items may contain the 0x00 terminator value; stuffing keeps it unambiguous.
+    @Serializable
+    data class StuffedListHolder(
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x00)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // The XOR scheme's own delimiter is the terminator (0x7C = '|'), which it escapes within the content.
+    @Serializable
+    data class TerminalStringHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    @Serializable
+    data class TerminalListHolder(
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A delimiter scheme's terminator is fixed by the scheme, so an accompanying @Terminal is rejected.
+    @Serializable
+    data class ConflictingTerminalHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C)
+        @Terminal(0x0A)
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // @Terminal without stuffing is a plain byte-terminated string; the content must not encode the terminator.
+    @Serializable
+    data class PlainTerminatedString(
+        @Encoded(Encoding.ASCII)
+        @Terminal(0x0A)
+        val line: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    @Serializable
+    data class PlainTerminatedList(
+        @Terminal(0x0A)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // COBS's 0x00 delimiter is definitional, so an accompanying @Terminal is rejected.
+    @Serializable
+    data class CobsTerminalHolder(
+        @ByteStuffedCobs
+        @Terminal(0x7E)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // CSafe has no delimiter of its own, so a String using it without @Terminal has no boundary to decode against.
+    @Serializable
+    data class CSafeStringWithoutTerminalHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffed
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // CSafe with a @Terminal drawn from the block it escapes (0xF0..0xF2, excluding the 0xF3 escape byte).
+    @Serializable
+    data class CSafeStringHolder(
+        @Encoded(Encoding.ASCII)
+        @ByteStuffed
+        @Terminal(0xF0.toByte())
+        val name: String,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // SLIP's terminator is its `end` byte, so a different one is chosen through `end` rather than @Terminal.
+    @Serializable
+    data class SlipCustomEndHolder(
+        @ByteStuffedSlip(end = 0x7E)
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // COBS eliminates 0x00, so it uses the default 0x00 terminator; content may contain 0x00.
+    @Serializable
+    data class CobsListHolder(
+        @ByteStuffedCobs
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // SLIP's delimiter is 0xC0, so the terminator defaults to 0xC0 (no @Terminal needed); 0xC0/0xDB in content are escaped.
+    @Serializable
+    data class SlipListHolder(
+        @ByteStuffedSlip
+        val values: List<Byte>,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    @Serializable
+    data class TwoBytes(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    // A value class carrying a stuffing annotation — the recommended way to attach wire modifiers to a model.
+    @Serializable
+    @JvmInline
+    @ByteStuffedCobs
+    value class StuffedValueClass(val value: TwoBytes)
+
+    // A value class wrapping a struct with a prefix/postfix/checksum frame — NO stuffing (isolation control).
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    @Checksum(8, 0x07u, 0x00u)
+    value class FramedStructValueClass(val value: TwoBytes)
+
+    // A value class carrying stuffing together with a prefix/postfix/checksum frame.
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    @Checksum(8, 0x07u, 0x00u)
+    @ByteStuffedCobs
+    value class FramedStuffedValueClass(val value: TwoBytes)
+
+    @Serializable
+    data class StuffedValueClassField(val child: StuffedValueClass, @Size(Length.`8_BIT`) @Unsigned val trailer: Int)
+
+    @Serializable
+    data class FramedStuffedValueClassField(val child: FramedStuffedValueClass, @Size(Length.`8_BIT`) @Unsigned val trailer: Int)
+
+    @Test
+    fun valueClassByteStuffing() {
+        // Body [0x00, 0x11] -> COBS [0x01, 0x02, 0x11].
+        validateRoundTrip(
+            StuffedValueClass(TwoBytes(a = 0x00, b = 0x11)),
+            StuffedValueClass.serializer(),
+            byteArrayOf(0x01, 0x02, 0x11),
+        )
+    }
+
+    @Test
+    fun valueClassByteStuffingAsField() {
+        // The stuffed value class as a nested field: COBS body [0x01, 0x02, 0x11], its 0x00 terminator, then the trailer.
+        validateRoundTrip(
+            StuffedValueClassField(StuffedValueClass(TwoBytes(a = 0x00, b = 0x11)), trailer = 0x09),
+            StuffedValueClassField.serializer(),
+            byteArrayOf(0x01, 0x02, 0x11, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun framedValueClassByteStuffingAsField() {
+        // A framed + stuffed value class as a nested field: body+checksum are COBS-stuffed inside the 0x55/0xAA frame,
+        // followed by the 0x00 terminator, then the parent's trailer.
+        val value = FramedStuffedValueClassField(FramedStuffedValueClass(TwoBytes(a = 0x00, b = 0x11)), trailer = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(FramedStuffedValueClassField.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStuffedValueClassField.serializer(), encoded))
+        assertEquals(0x55.toByte(), encoded.first())
+        assertEquals(0x09.toByte(), encoded.last())
+    }
+
+    @Test
+    fun framedStructValueClassControl() {
+        val value = FramedStructValueClass(TwoBytes(a = 0x00, b = 0x11))
+        val encoded = BluetoothFormat.encodeToByteArray(FramedStructValueClass.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStructValueClass.serializer(), encoded))
+    }
+
+    @Test
+    fun framedValueClassByteStuffing() {
+        // The checksum is computed over the unstuffed body, then body+checksum are COBS-stuffed inside the 0x55/0xAA frame.
+        val value = FramedStuffedValueClass(TwoBytes(a = 0x00, b = 0x11))
+        val encoded = BluetoothFormat.encodeToByteArray(FramedStuffedValueClass.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStuffedValueClass.serializer(), encoded))
+        assertEquals(0x55.toByte(), encoded.first())
+        assertEquals(0xAA.toByte(), encoded.last())
+        // The stuffed region must not contain a raw 0x00 (COBS eliminates it); a dropped stuffing would leave the 0x00 body byte.
+        assertTrue(encoded.drop(1).dropLast(1).none { it == 0x00.toByte() }, "stuffing dropped: ${encoded.toHexString(separator = " ")}")
+    }
+
+    @Test
+    fun cobsByteStuffing() {
+        // Items [0x11, 0x00, 0x22] -> COBS [0x02, 0x11, 0x02, 0x22], then the raw 0x00 terminator, then the trailer.
+        validateRoundTrip(
+            CobsListHolder(values = listOf(0x11, 0x00, 0x22), trailer = 0x09),
+            CobsListHolder.serializer(),
+            byteArrayOf(0x02, 0x11, 0x02, 0x22, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun slipByteStuffing() {
+        // Items [0xC0, 0x41, 0xDB]: END -> DB DC, ESC -> DB DD; then the raw 0xC0 END terminator, then the trailer.
+        validateRoundTrip(
+            SlipListHolder(values = listOf(0xC0.toByte(), 0x41, 0xDB.toByte()), trailer = 0x09),
+            SlipListHolder.serializer(),
+            byteArrayOf(0xDB.toByte(), 0xDC.toByte(), 0x41, 0xDB.toByte(), 0xDD.toByte(), 0xC0.toByte(), 0x09),
+        )
+    }
+
+    @Test
+    fun encodeByteStuffing() {
+        // A content byte in 0xF0..0xF3 is escaped as 0xF3 followed by its low two bits; the start (0xF1)
+        // and stop (0xF2) flags frame the stuffed region untouched.
+        validateRoundTrip(
+            CSafeFrame(command = 0xF1, value = 0x05),
+            CSafeFrame.serializer(),
+            byteArrayOf(0xF1.toByte(), 0xF3.toByte(), 0x01, 0x05, 0xF2.toByte()),
+        )
+
+        // A body free of escaped bytes is framed as-is.
+        validateRoundTrip(
+            CSafeFrame(command = 0x10, value = 0x20),
+            CSafeFrame.serializer(),
+            byteArrayOf(0xF1.toByte(), 0x10, 0x20, 0xF2.toByte()),
+        )
+
+        // Each of the four escaped values, including the escape byte 0xF3 itself.
+        validateRoundTrip(
+            CSafePacket(listOf(0xF0.toByte(), 0xF1.toByte(), 0xF2.toByte(), 0xF3.toByte(), 0x0A)),
+            CSafePacket.serializer(),
+            byteArrayOf(
+                0xF1.toByte(),
+                0xF3.toByte(), 0x00,
+                0xF3.toByte(), 0x01,
+                0xF3.toByte(), 0x02,
+                0xF3.toByte(), 0x03,
+                0x0A,
+                0xF2.toByte(),
+            ),
+        )
+    }
+
+    @Test
+    fun byteStuffingStuffsChecksum() {
+        // The checksum is computed over the unstuffed body and then itself stuffed, so the frame still
+        // round-trips and stays framed by the untouched start/stop flags.
+        val frame = CSafeChecksummedFrame(command = 0x02, value = 0x03)
+        val encoded = BluetoothFormat.encodeToByteArray(CSafeChecksummedFrame.serializer(), frame)
+        assertEquals(frame, BluetoothFormat.decodeFromByteArray(CSafeChecksummedFrame.serializer(), encoded))
+        assertEquals(0xF1.toByte(), encoded.first())
+        assertEquals(0xF2.toByte(), encoded.last())
+    }
+
+    @Test
+    fun byteStuffingNullTerminatedString() {
+        // "AB" in UTF-16 LE is 41 00 42 00; the 0x00 bytes are escaped (7D, 00^20=20), then the raw 0x00
+        // terminator, then the trailing field — proving the stuffed string is self-delimiting.
+        validateRoundTrip(
+            StuffedStringHolder(name = "AB", trailer = 0x09),
+            StuffedStringHolder.serializer(),
+            byteArrayOf(0x41, 0x7D, 0x20, 0x42, 0x7D, 0x20, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun byteStuffingNullTerminatedList() {
+        // Items [0x01, 0x00, 0x7D]: 0x00 -> 7D 20, 0x7D -> 7D 5D; then the raw 0x00 terminator and the trailer.
+        validateRoundTrip(
+            StuffedListHolder(values = listOf(0x01, 0x00, 0x7D), trailer = 0x09),
+            StuffedListHolder.serializer(),
+            byteArrayOf(0x01, 0x7D, 0x20, 0x7D, 0x5D, 0x00, 0x09),
+        )
+    }
+
+    @Test
+    fun byteStuffingCustomTerminator() {
+        // String terminated by 0x7C ('|'): "A|B" -> the '|' is escaped (7D, 7C^20=5C), then the raw 0x7C terminator.
+        validateRoundTrip(
+            TerminalStringHolder(name = "A|B", trailer = 0x09),
+            TerminalStringHolder.serializer(),
+            byteArrayOf(0x41, 0x7D, 0x5C, 0x42, 0x7C, 0x09),
+        )
+
+        // List terminated by 0x7C: items [0x01, 0x7C, 0x7D] -> 01, (7C->7D 5C), (7D->7D 5D), then 0x7C, then trailer.
+        validateRoundTrip(
+            TerminalListHolder(values = listOf(0x01, 0x7C, 0x7D), trailer = 0x09),
+            TerminalListHolder.serializer(),
+            byteArrayOf(0x01, 0x7D, 0x5C, 0x7D, 0x5D, 0x7C, 0x09),
+        )
+    }
+
+    @Test
+    fun delimiterSchemeRejectsExplicitTerminal() {
+        // A scheme with a fixed delimiter cannot have its terminator overridden via @Terminal.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(ConflictingTerminalHolder.serializer(), ConflictingTerminalHolder(name = "A", trailer = 0x09))
+        }
+    }
+
+    @Test
+    fun cobsRejectsExplicitTerminal() {
+        // COBS only ever eliminates 0x00, so 0x00 is the only byte that can unambiguously terminate it.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(CobsTerminalHolder.serializer(), CobsTerminalHolder(values = listOf(0x01), trailer = 0x09))
+        }
+    }
+
+    @Test
+    fun cSafeStringRequiresExplicitTerminal() {
+        // CSafe has no delimiter of its own, so a String using it must name a terminator it escapes.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(CSafeStringWithoutTerminalHolder.serializer(), CSafeStringWithoutTerminalHolder(name = "hi", trailer = 0x09))
+        }
+    }
+
+    @Test
+    fun cSafeStringWithEscapedTerminal() {
+        // 0xF0 is within CSafe's escaped block and is not the escape byte, so it can terminate the content.
+        // "A\u00F0B" in ASCII would be 41 F0 42; the 0xF0 is escaped to F3 F0 so the raw terminator stays unambiguous.
+        validateRoundTrip(
+            CSafeStringHolder(name = "A", trailer = 0x09),
+            CSafeStringHolder.serializer(),
+            byteArrayOf(0x41, 0xF0.toByte(), 0x09),
+        )
+    }
+
+    @Test
+    fun slipCustomDelimiterReplacesTerminator() {
+        // The documented alternative to @Terminal on SLIP: set `end`, so the scheme escapes the byte it terminates with.
+        // 0x7E -> DB DC (escaped end), 0x41 stays, then the raw 0x7E terminator.
+        validateRoundTrip(
+            SlipCustomEndHolder(values = listOf(0x7E, 0x41), trailer = 0x09),
+            SlipCustomEndHolder.serializer(),
+            byteArrayOf(0xDB.toByte(), 0xDC.toByte(), 0x41, 0x7E, 0x09),
+        )
+    }
+
+    @Test
+    fun plainByteTerminatorWithoutStuffing() {
+        // A newline-terminated ASCII field: "Hi" -> 48 69, then the raw 0x0A terminator, then the trailer.
+        validateRoundTrip(
+            PlainTerminatedString(line = "Hi", trailer = 0x09),
+            PlainTerminatedString.serializer(),
+            byteArrayOf(0x48, 0x69, 0x0A, 0x09),
+        )
+
+        // A 0x0A-terminated list of bytes (no item equals the terminator).
+        validateRoundTrip(
+            PlainTerminatedList(values = listOf(0x01, 0x02), trailer = 0x09),
+            PlainTerminatedList.serializer(),
+            byteArrayOf(0x01, 0x02, 0x0A, 0x09),
+        )
+
+        // Encoding fails if the content itself contains the terminator byte (no stuffing to protect it).
+        assertFailsWith<IllegalArgumentException> {
+            BluetoothFormat.encodeToByteArray(PlainTerminatedString.serializer(), PlainTerminatedString(line = "a\nb", trailer = 0x00))
+        }
+    }
+
+    @Test
+    fun byteStuffingWithBigEndianFieldValues() {
+        // value 0xF012 encodes big-endian as [0xF0, 0x12]; 0xF0 is stuffed to 0xF3 0x00, framed by F1/F2.
+        validateRoundTrip(
+            BigEndianStuffedFrame(0xF012),
+            BigEndianStuffedFrame.serializer(),
+            byteArrayOf(0xF1.toByte(), 0xF3.toByte(), 0x00, 0x12, 0xF2.toByte()),
+        )
+    }
+
+    @Test
+    fun byteStuffingRequiresLeastSignificantFirst() {
+        // Full-reversal MSB (accumulation direction) is rejected; big-endian field values via excludeStructure are not.
+        assertFailsWith<UnsupportedByteStuffing> {
+            BluetoothFormat.encodeToByteArray(BigEndianStuffed.serializer(), BigEndianStuffed(0x01))
+        }
+    }
+
+    // --- Nested byte-stuffed structures ---
+
+    @Serializable
+    data class StuffChild(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    // A nested stuffed structure inside a plain parent: the child's whole encoding is stuffed and bounded by the
+    // scheme's delimiter (0x7C), which is escaped within the stuffed bytes.
+    @Serializable
+    data class PlainParentStuffedChild(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: StuffChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // CSafe has no delimiter, so without @Terminal the nested stuffed structure is unsized and must be the last field.
+    @Serializable
+    data class UnsizedStuffedChildParent(@Size(Length.`8_BIT`) @Unsigned val head: Int, @ByteStuffed val child: StuffChild)
+
+    // Illegal: a field after an unsized (unterminated) nested stuffed structure has no boundary to decode against.
+    @Serializable
+    data class FieldAfterUnsizedStuffedChild(@ByteStuffed val child: StuffChild, @Size(Length.`8_BIT`) @Unsigned val trailer: Int)
+
+    @Serializable
+    @Checksum(8, 0x07u, 0x00u)
+    data class ChecksummedChild(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    @Serializable
+    data class ChecksummedStuffedChildParent(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: ChecksummedChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A nested stuffed structure's own @Prefix/@Postfix frame the stuffed region untouched, exactly as the root does.
+    @Serializable
+    @Prefix([0xAA.toByte()])
+    @Postfix([0xBB.toByte()])
+    data class FramedChild(@Size(Length.`8_BIT`) @Unsigned val a: Int, @Size(Length.`8_BIT`) @Unsigned val b: Int)
+
+    @Serializable
+    data class FramedStuffedChildParent(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: FramedChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // A stuffed root frame containing a stuffed child — the child's bytes are stuffed once per layer (double-stuffed).
+    @Serializable
+    @Prefix([0xF1.toByte()])
+    @Postfix([0xF2.toByte()])
+    @ByteStuffed
+    data class DoubleStuffedRoot(@Size(Length.`8_BIT`) @Unsigned val head: Int, @ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7C) val child: StuffChild)
+
+    // A stuffed structure that itself contains a stuffed list — each layer stuffs independently.
+    @Serializable
+    data class ListChild(@ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x00) val values: List<Byte>, @Size(Length.`8_BIT`) @Unsigned val tag: Int)
+
+    @Serializable
+    data class StructOverList(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7E, delimiter = 0x7C) val child: ListChild,
+        @Size(Length.`8_BIT`) @Unsigned val trailer: Int,
+    )
+
+    // Three levels of stuffed structures, each with a distinct scheme/delimiter.
+    @Serializable
+    data class Level3(@Size(Length.`8_BIT`) @Unsigned val v: Int)
+
+    @Serializable
+    data class Level2(@ByteStuffedXor(escapeByte = 0x7D, delimiter = 0x7A) val inner: Level3, @Size(Length.`8_BIT`) @Unsigned val t2: Int)
+
+    @Serializable
+    data class Level1(
+        @Size(Length.`8_BIT`) @Unsigned val head: Int,
+        @ByteStuffedXor(escapeByte = 0x7E, delimiter = 0x7C) val mid: Level2,
+        @Size(Length.`8_BIT`) @Unsigned val t1: Int,
+    )
+
+    @Test
+    fun nestedStuffedStructureInPlainParent() {
+        // child [0x7C, 0x05]: 0x7C -> 7D 5C, 0x05 stays; then the raw 0x7C terminator, framed by head and trailer.
+        validateRoundTrip(
+            PlainParentStuffedChild(head = 0x01, child = StuffChild(a = 0x7C, b = 0x05), trailer = 0x09),
+            PlainParentStuffedChild.serializer(),
+            byteArrayOf(0x01, 0x7D, 0x5C, 0x05, 0x7C, 0x09),
+        )
+    }
+
+    @Test
+    fun unsizedNestedStuffedStructure() {
+        // CSafe with no @Terminal: child [0xF1, 0x05] -> F3 01 05, no terminator; it is the last, unsized field.
+        validateRoundTrip(
+            UnsizedStuffedChildParent(head = 0x01, child = StuffChild(a = 0xF1, b = 0x05)),
+            UnsizedStuffedChildParent.serializer(),
+            byteArrayOf(0x01, 0xF3.toByte(), 0x01, 0x05),
+        )
+    }
+
+    @Test
+    fun fieldAfterUnsizedStuffedStructureFails() {
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BluetoothFormat.encodeToByteArray(
+                FieldAfterUnsizedStuffedChild.serializer(),
+                FieldAfterUnsizedStuffedChild(child = StuffChild(a = 0x01, b = 0x02), trailer = 0x09),
+            )
+        }
+    }
+
+    @Test
+    fun nestedStuffedStructureWithChecksum() {
+        // The child's CRC is computed over its logical body, then stuffed with it; the stuffed region still round-trips.
+        val value = ChecksummedStuffedChildParent(head = 0x01, child = ChecksummedChild(a = 0x7C, b = 0x03), trailer = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(ChecksummedStuffedChildParent.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ChecksummedStuffedChildParent.serializer(), encoded))
+    }
+
+    @Test
+    fun nestedStuffedStructureFramesPrefixAndPostfixUntouched() {
+        // As on the root, the child's @Prefix (0xAA) and @Postfix (0xBB) frame the stuffed region untouched: only the
+        // body [0x7C, 0x05] is stuffed (0x7C -> 7D 5C), then the raw 0x7C terminator, with 0xAA/0xBB outside it.
+        validateRoundTrip(
+            FramedStuffedChildParent(head = 0x01, child = FramedChild(a = 0x7C, b = 0x05), trailer = 0x09),
+            FramedStuffedChildParent.serializer(),
+            byteArrayOf(0x01, 0xAA.toByte(), 0x7D, 0x5C, 0x05, 0x7C, 0xBB.toByte(), 0x09),
+        )
+    }
+
+    @Test
+    fun stuffedChildInsideStuffedRootDoubleStuffs() {
+        val value = DoubleStuffedRoot(head = 0x10, child = StuffChild(a = 0xF1, b = 0x7C))
+        val encoded = BluetoothFormat.encodeToByteArray(DoubleStuffedRoot.serializer(), value)
+        assertEquals(0xF1.toByte(), encoded.first())
+        assertEquals(0xF2.toByte(), encoded.last())
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(DoubleStuffedRoot.serializer(), encoded))
+    }
+
+    @Test
+    fun stuffedStructureContainingStuffedList() {
+        val value = StructOverList(head = 0x01, child = ListChild(values = listOf(0x00, 0x7C, 0x11), tag = 0x22), trailer = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(StructOverList.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(StructOverList.serializer(), encoded))
+    }
+
+    @Test
+    fun threeLevelsOfStuffedStructures() {
+        val value = Level1(head = 0x01, mid = Level2(inner = Level3(v = 0x7A), t2 = 0x7C), t1 = 0x09)
+        val encoded = BluetoothFormat.encodeToByteArray(Level1.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(Level1.serializer(), encoded))
+    }
+
+    // ── encode/decode round-trip edge cases ──────────────────────────────────
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbStringFrame(@LengthPrefix val prefixed: String, @NullTerminated val terminated: String)
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbCollectionFrame(val items: List<Byte>, val pairs: Map<Byte, Byte>)
+
+    @Serializable
+    @Prefix([0x11])
+    @Postfix([0x22])
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    data class UnsizedWithChecksum(@Unsized val payload: List<Byte>)
+
+    @Serializable
+    @Prefix([0x11])
+    @Postfix([0x22])
+    @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+    data class SizePolymorphicWithChecksum(val payload: SizeDispatchedPayload)
+
+    @Serializable
+    data class UnownedGateContainer(@Size(Length.`8_BIT`) @FlagIndex(0) val a: Byte?, @Size(Length.`8_BIT`) @PresentWhenAllSet(10) val b: Byte?)
+
+    @Test
+    fun msbExcludeStructureLengthPrefixAndNullTerminatedStringRoundTrips() {
+        validateEncoding(
+            MsbStringFrame(prefixed = "AB", terminated = "CD"),
+            MsbStringFrame.serializer(),
+            byteArrayOf(0x02, 0x41, 0x42, 0x43, 0x44, 0x00),
+        )
+    }
+
+    @Test
+    fun msbExcludeStructureListAndMapPreserveItemOrder() {
+        validateEncoding(
+            MsbCollectionFrame(
+                items = listOf(1, 2, 3),
+                pairs = linkedMapOf(1.toByte() to 10.toByte(), 2.toByte() to 20.toByte(), 3.toByte() to 30.toByte()),
+            ),
+            MsbCollectionFrame.serializer(),
+            byteArrayOf(0x03, 0x01, 0x02, 0x03, 0x03, 0x01, 0x0A, 0x02, 0x14, 0x03, 0x1E),
+        )
+    }
+
+    @Test
+    fun unsizedPayloadWithChecksumRoundTrips() {
+        val body = byteArrayOf(0x01, 0x02, 0x03)
+        val expectedBytes = buildByteArray {
+            add(0x11.toByte())
+            add(body)
+            add(CRC16.compute(body).toUShort())
+            add(0x22.toByte())
+        }
+
+        validateEncoding(UnsizedWithChecksum(payload = listOf(0x01, 0x02, 0x03)), UnsizedWithChecksum.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun sizePolymorphicPayloadWithChecksumRoundTrips() {
+        val body = byteArrayOf(0x04, 0x03, 0x02, 0x01)
+        val expectedBytes = buildByteArray {
+            add(0x11.toByte())
+            add(body)
+            add(CRC16.compute(body).toUShort())
+            add(0x22.toByte())
+        }
+
+        validateEncoding(SizePolymorphicWithChecksum(FourBytePayload(0x01020304u)), SizePolymorphicWithChecksum.serializer(), expectedBytes)
+    }
+
+    @Test
+    fun presentWhenAllSetReferencingUnownedBitRoundTrips() {
+        // Bit 10 is owned by no field, so it is never set: `b` is always absent.
+        // The flags header must still be wide enough to contain it on both sides.
+        validateEncoding(
+            UnownedGateContainer(a = 5, b = null),
+            UnownedGateContainer.serializer(),
+            byteArrayOf(0x01, 0x00, 0x05),
+        )
+    }
+
+    // ── numeric width selection ──────────────────────────────────────────────
+
+    @Serializable
+    data class LongWideSelection8Bit(@Size(Length.`8_BIT`) @Size(Length.`64_BIT`) val v: Long)
+
+    @Serializable
+    data class LongWideSelection16Bit(@Size(Length.`16_BIT`) @Size(Length.`64_BIT`) val v: Long)
+
+    @Test
+    fun longEightAndSixtyFourBitSelectionRoundTrips() {
+        val value = LongWideSelection8Bit(v = 1L shl 32)
+        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
+    }
+
+    @Test
+    fun longSixteenAndSixtyFourBitSelectionRoundTrips() {
+        val value = LongWideSelection16Bit(v = 1L shl 32)
+        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection16Bit.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection16Bit.serializer(), encoded))
+    }
+
+    @Test
+    fun longNegativeOutOfIntRangeSelectionRoundTrips() {
+        val value = LongWideSelection8Bit(v = -(1L shl 40))
+        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
+    }
+
+    // ── @SizePolymorphic subtype sizing ──────────────────────────────────────
+
+    @Serializable
+    enum class PackedMode { OFF, LOW, MED, HIGH }
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface FlagEnumSizeVariant
+
+    // header(1) + body(2) = 3 bytes
+    @Serializable
+    data class FlagEnumPacked(@FlagIndex(0) val mode: PackedMode, @Size(Length.`16_BIT`) val x: Short) : FlagEnumSizeVariant
+
+    @Serializable
+    data class FlagEnumWide(@Size(Length.`8_BIT`) val x: Byte, @Size(Length.`8_BIT`) val y: Byte) : FlagEnumSizeVariant // 2 bytes
+
+    @Serializable
+    data class FlagEnumSizeHolder(val payload: FlagEnumSizeVariant)
+
+    @Serializable
+    @SizePolymorphic
+    sealed interface CharSizeVariant
+
+    @Serializable
+    data class CharSizeSmall(val c: Char) : CharSizeVariant // 1 byte
+
+    @Serializable
+    data class CharSizeLarge(val c: Char, @Size(Length.`8_BIT`) val x: Byte) : CharSizeVariant // 2 bytes
+
+    @Serializable
+    data class CharSizeHolder(val payload: CharSizeVariant)
+
+    @Test
+    fun flagPackedEnumInSizePolymorphicSubtypeDispatchesBySize() {
+        val value = FlagEnumSizeHolder(FlagEnumPacked(mode = PackedMode.HIGH, x = 300))
+        val encoded = BluetoothFormat.encodeToByteArray(FlagEnumSizeHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FlagEnumSizeHolder.serializer(), encoded))
+    }
+
+    @Test
+    fun charFieldGivesSizePolymorphicSubtypesDistinctFixedSizes() {
+        val value = CharSizeHolder(CharSizeSmall('A'))
+        val encoded = BluetoothFormat.encodeToByteArray(CharSizeHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(CharSizeHolder.serializer(), encoded))
+    }
+
+    // ── @Reserved around inline / unsigned / nullable properties ─────────────
+
+    @Serializable
+    data class ReservedAfterValueClass(@Reserved(after = 2) val wrapped: ValueContainer<Byte>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class ReservedAfterUnsigned(@Reserved(after = 2) val v: UByte, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class ReservedAfterNullable(@Reserved(after = 2) val v: Byte?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun reservedAfterOnValueClassPropertyWritesPadding() {
+        validateRoundTrip(
+            ReservedAfterValueClass(wrapped = ValueContainer(0x11), trailer = 0x22),
+            ReservedAfterValueClass.serializer(),
+            byteArrayOf(0x11, 0x00, 0x00, 0x22),
+        )
+    }
+
+    @Test
+    fun reservedAfterOnUnsignedPropertyWritesPadding() {
+        validateRoundTrip(
+            ReservedAfterUnsigned(v = 0x11u, trailer = 0x22),
+            ReservedAfterUnsigned.serializer(),
+            byteArrayOf(0x11, 0x00, 0x00, 0x22),
+        )
+    }
+
+    @Test
+    fun reservedAfterOnNullablePropertyWritesPaddingWhenPresent() {
+        validateRoundTrip(
+            ReservedAfterNullable(v = 0x11, trailer = 0x22),
+            ReservedAfterNullable.serializer(),
+            byteArrayOf(0x01, 0x11, 0x00, 0x00, 0x22),
+        )
+    }
+
+    @Test
+    fun reservedAfterOnNullablePropertySkipsPaddingWhenNull() {
+        val value = ReservedAfterNullable(v = null, trailer = 0x22)
+        val encoded = BluetoothFormat.encodeToByteArray(ReservedAfterNullable.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ReservedAfterNullable.serializer(), encoded))
+    }
+
+    // ── bit alignment of a nested structure after parent body Booleans ───────
+
+    @Serializable
+    data object EmptyMarker
+
+    @Serializable
+    data class EmptyNestedAfterBooleans(val flagA: Boolean, val flagB: Boolean, val marker: EmptyMarker, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NestedFlagHeader(@FlagIndex(0) val flag: Boolean)
+
+    @Serializable
+    data class NestedLeadingBoolean(val flag: Boolean)
+
+    @Serializable
+    data class ParentBooleansThenNestedFlagHeader(val boolA: Boolean, val boolB: Boolean, val nested: NestedFlagHeader, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class ParentBooleansThenNestedLeadingBoolean(val boolA: Boolean, val boolB: Boolean, val nested: NestedLeadingBoolean, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun emptyNestedStructureAfterBodyBooleansRoundTrips() {
+        val value = EmptyNestedAfterBooleans(flagA = true, flagB = false, marker = EmptyMarker, trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(EmptyNestedAfterBooleans.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(EmptyNestedAfterBooleans.serializer(), encoded))
+    }
+
+    @Test
+    fun nestedFlagHeaderAfterParentBooleansRoundTrips() {
+        val value = ParentBooleansThenNestedFlagHeader(boolA = true, boolB = false, nested = NestedFlagHeader(flag = true), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(ParentBooleansThenNestedFlagHeader.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ParentBooleansThenNestedFlagHeader.serializer(), encoded))
+    }
+
+    @Test
+    fun nestedLeadingBooleanAfterParentBooleansRoundTrips() {
+        val value = ParentBooleansThenNestedLeadingBoolean(boolA = true, boolB = false, nested = NestedLeadingBoolean(flag = true), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), encoded))
+    }
+
+    // ── value classes carrying a @Prefix/@Postfix frame ──────────────────────
+
+    @Serializable
+    enum class Mode3 { OFF, LOW, HIGH }
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x77])
+    @Postfix([0x88.toByte()])
+    value class FramedFlagValue(@FlagIndex(0) val mode: Mode3)
+
+    @Serializable
+    data class FramedFlagHolder(val wrapped: FramedFlagValue, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x66])
+    @Postfix([0x99.toByte()])
+    value class FramedWideSizeValue(@Size(Length.`8_BIT`) @Size(Length.`64_BIT`) val v: Long)
+
+    @Serializable
+    data class FramedWideSizeHolder(val wrapped: FramedWideSizeValue, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    @JvmInline
+    value class NullableWrapped(val v: Byte?)
+
+    @Serializable
+    data class NullableWrappedHolder(val wrapped: NullableWrapped, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    @JvmInline
+    @Prefix([0x55])
+    @Postfix([0xAA.toByte()])
+    value class NullableWrappedFramed(val v: Byte?)
+
+    @Serializable
+    data class NullableWrappedFramedHolder(val wrapped: NullableWrappedFramed, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun flagPackedValueInFramedValueClassRoundTrips() {
+        val value = FramedFlagHolder(wrapped = FramedFlagValue(Mode3.HIGH), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(FramedFlagHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedFlagHolder.serializer(), encoded))
+    }
+
+    @Test
+    fun wideSizeSelectionOnFramedValueClassPropertyRoundTrips() {
+        val small = FramedWideSizeHolder(wrapped = FramedWideSizeValue(5L), trailer = 0x2A)
+        val smallEncoded = BluetoothFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), small)
+        assertEquals(small, BluetoothFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), smallEncoded))
+
+        val large = FramedWideSizeHolder(wrapped = FramedWideSizeValue(1L shl 40), trailer = 0x2A)
+        val largeEncoded = BluetoothFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), large)
+        assertEquals(large, BluetoothFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), largeEncoded))
+    }
+
+    @Test
+    fun valueClassWrappingNullableRoundTrips() {
+        val present = NullableWrappedHolder(wrapped = NullableWrapped(0x11), trailer = 0x22)
+        val presentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedHolder.serializer(), present)
+        assertEquals(present, BluetoothFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), presentEncoded))
+
+        val absent = NullableWrappedHolder(wrapped = NullableWrapped(null), trailer = 0x22)
+        val absentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedHolder.serializer(), absent)
+        assertEquals(absent, BluetoothFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), absentEncoded))
+    }
+
+    @Test
+    fun framedValueClassWrappingNullableRoundTrips() {
+        val present = NullableWrappedFramedHolder(wrapped = NullableWrappedFramed(0x11), trailer = 0x22)
+        val presentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), present)
+        assertEquals(present, BluetoothFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), presentEncoded))
+
+        val absent = NullableWrappedFramedHolder(wrapped = NullableWrappedFramed(null), trailer = 0x22)
+        val absentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), absent)
+        assertEquals(absent, BluetoothFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), absentEncoded))
+    }
+
+    // ── counts and length prefixes ───────────────────────────────────────────
+
+    @Serializable
+    data class LongByteLengthString(@LengthPrefix val s: String, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class LongByteLengthListItem(val v: Byte)
+
+    @Serializable
+    data class LongByteLengthList(@LengthPrefix val items: List<LongByteLengthListItem>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableListItem(val v: Byte)
+
+    @Serializable
+    data class NullableListNoNullIfEmpty(val items: List<NullableListItem>?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun longByteLengthPrefixedStringRoundTrips() {
+        val value = LongByteLengthString(s = "x".repeat(200), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(LongByteLengthString.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongByteLengthString.serializer(), encoded))
+    }
+
+    @Test
+    fun longByteLengthPrefixedListRoundTrips() {
+        val value = LongByteLengthList(items = List(200) { LongByteLengthListItem(it.toByte()) }, trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(LongByteLengthList.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongByteLengthList.serializer(), encoded))
+    }
+
+    @Test
+    fun nullableListWithoutNullIfEmptyRoundTrips() {
+        val nullValue = NullableListNoNullIfEmpty(items = null, trailer = 0x2A)
+        val nullEncoded = BluetoothFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), nullValue)
+        assertEquals(nullValue, BluetoothFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), nullEncoded))
+
+        val emptyValue = NullableListNoNullIfEmpty(items = emptyList(), trailer = 0x2A)
+        val emptyEncoded = BluetoothFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), emptyValue)
+        assertEquals(emptyValue, BluetoothFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), emptyEncoded))
+    }
+
+    // ── list items that are themselves structures ────────────────────────────
+
+    @Serializable
+    data class NullableItemPoint(val x: Byte, val y: Byte)
+
+    @Serializable
+    data class NullableItemListHolder(val items: List<NullableItemPoint?>)
+
+    @Serializable
+    @Prefix([0x50])
+    @Postfix([0x60])
+    @Checksum(8, 0x07u, 0x00u)
+    data class FramedChecksumItem(val v: Byte)
+
+    @Serializable
+    data class FramedChecksumItemListHolder(val items: List<FramedChecksumItem>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Test
+    fun listOfNullableSerializableClassRoundTrips() {
+        val value = NullableItemListHolder(items = listOf(NullableItemPoint(0x01, 0x02), null))
+        val encoded = BluetoothFormat.encodeToByteArray(NullableItemListHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(NullableItemListHolder.serializer(), encoded))
+    }
+
+    @Test
+    fun itemLevelPrefixPostfixChecksumOnListItemRoundTrips() {
+        val value = FramedChecksumItemListHolder(items = listOf(FramedChecksumItem(0x11), FramedChecksumItem(0x22)), trailer = 0x2A)
+        val encoded = BluetoothFormat.encodeToByteArray(FramedChecksumItemListHolder.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedChecksumItemListHolder.serializer(), encoded))
+    }
+
+    // ── MOST_SIGNIFICANT_FIRST frames, with and without excludeStructure ─────
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbFloatFrame(val a: Float, val b: Double)
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    data class MsbOverflowListIncluded(@LengthPrefix(canOverflow = true) val items: List<Byte>)
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbOverflowListExcluded(@LengthPrefix(canOverflow = true) val items: List<Byte>)
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    data class MsbSizedListIncluded(@Size(Length.`16_BIT`) val items: List<Byte>)
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+    data class MsbSizedListExcluded(@Size(Length.`16_BIT`) val items: List<Byte>)
+
+    @Test
+    fun msbExcludeStructureFloatsUseBigEndianWireBytes() {
+        val value = MsbFloatFrame(a = 1.5f, b = 2.5)
+        val expected = byteArrayOf(0x3F, 0xC0.toByte(), 0x00, 0x00, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+        val encoded = BluetoothFormat.encodeToByteArray(MsbFloatFrame.serializer(), value)
+        assertTrue(encoded.contentEquals(expected), "Expected ${expected.toHexString(separator = " ")} but got ${encoded.toHexString(separator = " ")}")
+        val decoded = BluetoothFormat.decodeFromByteArray(MsbFloatFrame.serializer(), encoded)
+        assertEquals(value.a.as32Bit(), decoded.a)
+        assertEquals(value.b, decoded.b)
+    }
+
+    @Test
+    fun msbOverflowLengthPrefixedListStructureIncludedRoundTrips() {
+        val value = MsbOverflowListIncluded(items = List(300) { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbOverflowListIncluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbOverflowListIncluded.serializer(), encoded))
+    }
+
+    @Test
+    fun msbOverflowLengthPrefixedListStructureExcludedRoundTrips() {
+        val value = MsbOverflowListExcluded(items = List(300) { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbOverflowListExcluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbOverflowListExcluded.serializer(), encoded))
+    }
+
+    @Test
+    fun msbSixteenBitListCountStructureIncludedRoundTrips() {
+        val value = MsbSizedListIncluded(items = listOf(1, 2, 3, 4).map { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbSizedListIncluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbSizedListIncluded.serializer(), encoded))
+    }
+
+    @Test
+    fun msbSixteenBitListCountStructureExcludedRoundTrips() {
+        val value = MsbSizedListExcluded(items = listOf(1, 2, 3, 4).map { it.toByte() })
+        val encoded = BluetoothFormat.encodeToByteArray(MsbSizedListExcluded.serializer(), value)
+        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbSizedListExcluded.serializer(), encoded))
+    }
+
+    // ── nullable unsigned numbers keep their unsignedness ────────────────────
+
+    @Serializable
+    data class NullableSizedUByteNonNull(@Size(Length.`16_BIT`) val b: UByte, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableSizedUByte(@Size(Length.`16_BIT`) val b: UByte?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUIntNonNull(@Size(Length.`64_BIT`) val v: UInt, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUInt(@Size(Length.`64_BIT`) val v: UInt?, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUIntListNonNull(@ItemSize(Length.`64_BIT`) val items: List<UInt>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    @Serializable
+    data class NullableWideUIntList(@ItemSize(Length.`64_BIT`) val items: List<UInt?>, @Size(Length.`8_BIT`) val trailer: Byte)
+
+    // A nullable number differs from its non-null declaration only by the presence flag, so the value bytes
+    // that follow must be identical — in particular the widened value must not be sign-extended.
+    private fun <T, U> assertNullableMatchesNonNull(nonNull: T, nonNullSerializer: KSerializer<T>, nullable: U, nullableSerializer: KSerializer<U>) {
+        val nonNullEncoded = BluetoothFormat.encodeToByteArray(nonNullSerializer, nonNull)
+        val nullableEncoded = BluetoothFormat.encodeToByteArray(nullableSerializer, nullable)
+        val tail = nullableEncoded.copyOfRange(nullableEncoded.size - nonNullEncoded.size, nullableEncoded.size)
+        assertTrue(
+            tail.contentEquals(nonNullEncoded),
+            "non-null=${nonNullEncoded.toHexString(separator = " ")} nullable=${nullableEncoded.toHexString(separator = " ")}",
+        )
+        assertEquals(nullable, BluetoothFormat.decodeFromByteArray(nullableSerializer, nullableEncoded))
+    }
+
+    @Test
+    fun nullableSizedUByteMatchesNonNullWireBytes() = assertNullableMatchesNonNull(
+        NullableSizedUByteNonNull(b = 200u, trailer = 0x2A),
+        NullableSizedUByteNonNull.serializer(),
+        NullableSizedUByte(b = 200u, trailer = 0x2A),
+        NullableSizedUByte.serializer(),
+    )
+
+    @Test
+    fun nullableWideUIntMatchesNonNullWireBytes() = assertNullableMatchesNonNull(
+        NullableWideUIntNonNull(v = 3_000_000_000u, trailer = 0x2A),
+        NullableWideUIntNonNull.serializer(),
+        NullableWideUInt(v = 3_000_000_000u, trailer = 0x2A),
+        NullableWideUInt.serializer(),
+    )
+
+    @Test
+    fun nullableWideUIntListItemMatchesNonNullWireBytes() = assertNullableMatchesNonNull(
+        NullableWideUIntListNonNull(items = listOf(3_000_000_000u), trailer = 0x2A),
+        NullableWideUIntListNonNull.serializer(),
+        NullableWideUIntList(items = listOf(3_000_000_000u), trailer = 0x2A),
+        NullableWideUIntList.serializer(),
+    )
+
+    // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
+    // cannot legally be nested inside a LEAST_SIGNIFICANT_FIRST one (InvalidByteOrderException).
+    private fun <T> validateRoundTrip(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {
+        val bytes = format.encodeToByteArray(serializer, value)
+        assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
+        assertEquals(value, format.decodeFromByteArray(serializer, bytes))
+    }
+
+    @OptIn(InternalSerializationApi::class)
+    private inline fun <reified T : Any> validateEncoding(value: T, expectedValue: ByteArray) = validateEncoding(value, T::class.serializer(), expectedValue)
+
+    private fun <T> validateEncoding(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {
+        val bytes = format.encodeToByteArray(serializer, value)
+        assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
+
+        assertEquals(value, format.decodeFromByteArray(serializer, bytes))
+
+        val nestedSerializer = Nested.serializer(serializer)
+        val nested = Nested(value)
+        val nestedBytes = format.encodeToByteArray(nestedSerializer, nested)
+        assertTrue(nestedBytes.contentEquals(byteArrayOf(0x42, 0x23) + expectedValue + 0x22))
+
+        assertEquals(nested, format.decodeFromByteArray(nestedSerializer, nestedBytes))
+    }
+
+    // Kotlin/JS has no true 32-bit Float and does not canonicalize Float literals, so e.g. `1234.56f`
+    // keeps full double precision and would not equal the value decoded back from its 32-bit encoding.
+    // Round-tripping through the raw bits yields the genuine 32-bit value on every platform (a no-op on
+    // jvm/native/wasm), so the encode→decode round-trip assertions hold on js too.
+    private fun Float.as32Bit(): Float = Float.fromBits(toRawBits())
+}

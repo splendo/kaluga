@@ -1,0 +1,76 @@
+/*
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bytes.serialization
+
+import com.splendo.kaluga.bytes.annotations.Length
+import com.splendo.kaluga.bytes.annotations.LengthPrefix
+import com.splendo.kaluga.bytes.integer.Int24
+import com.splendo.kaluga.bytes.integer.Int40
+import com.splendo.kaluga.bytes.integer.Int48
+import com.splendo.kaluga.bytes.integer.UInt24
+import com.splendo.kaluga.bytes.integer.UInt40
+import com.splendo.kaluga.bytes.integer.UInt48
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
+
+internal fun Length.fits(number: Number, signed: Boolean) = when (this) {
+    // Widen through Long, never Int: a Long outside Int range would otherwise truncate to a value that
+    // wrongly looks like it fits (e.g. 1L shl 32 truncates to 0).
+    Length.`8_BIT` -> if (signed) {
+        number.toLong() in Byte.MIN_VALUE.toLong()..Byte.MAX_VALUE.toLong()
+    } else {
+        number.toLong().toULong() in UByte.MIN_VALUE.toULong()..UByte.MAX_VALUE.toULong()
+    }
+
+    Length.`16_BIT` -> if (signed) {
+        number.toLong() in Short.MIN_VALUE.toLong()..Short.MAX_VALUE.toLong()
+    } else {
+        number.toLong().toULong() in UShort.MIN_VALUE.toULong()..UShort.MAX_VALUE.toULong()
+    }
+
+    Length.`24_BIT` -> if (signed) {
+        number.toLong() in Int24.MIN_VALUE.value.toLong()..Int24.MAX_VALUE.value.toLong()
+    } else {
+        number.toLong().toULong() in UInt24.MIN_VALUE.value.toULong()..UInt24.MAX_VALUE.value.toULong()
+    }
+
+    Length.`32_BIT` -> if (signed) {
+        number.toLong() in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()
+    } else {
+        number.toLong().toULong() in UInt.MIN_VALUE.toULong()..UInt.MAX_VALUE.toULong()
+    }
+
+    Length.`40_BIT` -> if (signed) {
+        number.toLong() in Int40.MIN_VALUE.value..Int40.MAX_VALUE.value
+    } else {
+        number.toLong().toULong() in UInt40.MIN_VALUE.value..UInt40.MAX_VALUE.value
+    }
+
+    Length.`48_BIT` -> if (signed) {
+        number.toLong() in Int48.MIN_VALUE.value..Int48.MAX_VALUE.value
+    } else {
+        number.toLong().toULong() in UInt48.MIN_VALUE.value..UInt48.MAX_VALUE.value
+    }
+
+    Length.`64_BIT` -> true // Always fits as it is the max we support
+}
+
+internal fun LengthPrefix.asLengthPrefix() = when {
+    lengthAsShort -> StringEncodingSettings.LengthPrefix.ShortLength
+    canOverflow -> StringEncodingSettings.LengthPrefix.WithOverflow(sentinel)
+    else -> StringEncodingSettings.LengthPrefix.ByteLength
+}
