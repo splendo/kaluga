@@ -620,7 +620,7 @@ internal fun BinaryDescriptor.decodeDoubleElement(decoder: BinaryDescriptorDecod
 }
 
 internal fun BinaryDescriptor.decodeCharElement(decoder: BinaryDescriptorDecoder): Char = when (stringSettings?.encoding ?: Encoding.ASCII) {
-    Encoding.UTF_16 -> decoder.nextBytes(2).decodeUTF16Char(0, byteOrder)
+    Encoding.UTF_16 -> decoder.nextBytes(2).decodeUTF16Char(0, childByteOrder)
     Encoding.ASCII, Encoding.UTF_8 -> decoder.nextBytes(1).first().decodeAsciiChar()
 }
 

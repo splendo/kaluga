@@ -1003,6 +1003,20 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         validateEncoding(WideNaturalFixtures.UnsignedScalarThirtyTwoBit(UInt.MAX_VALUE.toDouble() / 2), buildByteArray { add(uInt = UInt.MAX_VALUE) })
     }
 
+    private object ExcludeStructureCharFixtures {
+        @Serializable
+        data class Container(
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+            @Encoded(Encoding.UTF_16)
+            val char: Char,
+        )
+    }
+
+    @Test
+    fun encodeUtf16CharWithExcludedStructure() {
+        validateEncoding(ExcludeStructureCharFixtures.Container('A'), byteArrayOf(0x00, 0x41))
+    }
+
     private object EncodeCharFixtures {
         @Serializable
         data class Container(
