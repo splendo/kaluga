@@ -50,6 +50,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateParameterName
 import com.splendo.kaluga.bluetooth.ksp.helpers.isNotifiable
+import com.splendo.kaluga.bluetooth.ksp.helpers.isNullable
 import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.optionalChainIfNullable
 import com.splendo.kaluga.bluetooth.ksp.helpers.withLetIfNull
@@ -119,7 +120,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(SERVICE, References.Bluetooth.Server.localService),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
 
                     )
@@ -133,7 +134,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                 listOfNotNull(
                     PropertySpec.builder(SERVICE, References.Bluetooth.Server.localService)
                         .initializer(SERVICE).build(),
-                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                         .addModifiers(KModifier.PRIVATE)
                         .initializer(FORMAT)
                         .build().takeIf { needsFormatter.needsFormatter },
@@ -167,7 +168,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             addParameter(delegateParameterName, delegateName)
             val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
             if (needsFormatter.needsFormatter) {
-                addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                addParameter(FORMAT, References.Bluetooth.Serialization.bytesFormat)
             }
             addCode(
                 CodeBlock.builder()
@@ -343,15 +344,24 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
-                        delegate(
-                            "$LAZY { %L }",
-                            CodeBlock.of(
-                                "%T($SERVICE.$INCLUDED_SERVICES.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
-                                serverName(typeDeclaration, type),
-                                References.Bluetooth.get,
+                        if (propertyDeclaration.isNullable) {
+                            delegate(
+                                "$LAZY { $SERVICE.$INCLUDED_SERVICES.%M(%T.$UUID)?.let·{ %T(it${serviceNeedsFormat.functionArgument}) } }",
+                                References.Bluetooth.getOrNull,
                                 serverName(typeDeclaration, GenerationType.Type.API),
-                            ),
-                        )
+                                serverName(typeDeclaration, type),
+                            )
+                        } else {
+                            delegate(
+                                "$LAZY { %L }",
+                                CodeBlock.of(
+                                    "%T($SERVICE.$INCLUDED_SERVICES.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
+                                    serverName(typeDeclaration, type),
+                                    References.Bluetooth.get,
+                                    serverName(typeDeclaration, GenerationType.Type.API),
+                                ),
+                            )
+                        }
                     }
 
                     GenerationType.Type.SIMULATOR -> {
@@ -383,16 +393,26 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     GenerationType.Type.BLUETOOTH -> {
                         val isNotifiable = typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isNotifiable }
                         val cast = if (isNotifiable) CodeBlock.of(" $AS %T", References.Bluetooth.Server.localCharacteristicNotifiable) else CodeBlock.of("")
-                        delegate(
-                            "$LAZY { %L }",
-                            CodeBlock.of(
-                                "%T($SERVICE.$CHARACTERISTICS.%M(%T.$UUID)%L${characteristicNeedsFormat.functionArgument})",
-                                serverName(typeDeclaration, type),
-                                References.Bluetooth.get,
+                        if (propertyDeclaration.isNullable) {
+                            delegate(
+                                "$LAZY { $SERVICE.$CHARACTERISTICS.%M(%T.$UUID)?.let·{ %T(it%L${characteristicNeedsFormat.functionArgument}) } }",
+                                References.Bluetooth.getOrNull,
                                 serverName(typeDeclaration, GenerationType.Type.API),
+                                serverName(typeDeclaration, type),
                                 cast,
-                            ),
-                        )
+                            )
+                        } else {
+                            delegate(
+                                "$LAZY { %L }",
+                                CodeBlock.of(
+                                    "%T($SERVICE.$CHARACTERISTICS.%M(%T.$UUID)%L${characteristicNeedsFormat.functionArgument})",
+                                    serverName(typeDeclaration, type),
+                                    References.Bluetooth.get,
+                                    serverName(typeDeclaration, GenerationType.Type.API),
+                                    cast,
+                                ),
+                            )
+                        }
                     }
 
                     GenerationType.Type.SIMULATOR -> {

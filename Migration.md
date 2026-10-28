@@ -177,7 +177,7 @@ The Luxon JS interop moved from `com.splendo.kaluga.base.externals` to
 The aggregate `com.splendo.kaluga:bluetooth` module (and the `Bluetooth` / `BluetoothBuilder` facade
 it provided) has been **removed**. Bluetooth is now three modules sharing a common core:
 
-- `com.splendo.kaluga.bluetooth:core` — shared attributes and the BluetoothFormat (de)serialization framework
+- `com.splendo.kaluga.bluetooth:core` — shared attributes and their (de)serialization through `BytesFormat`
 - `com.splendo.kaluga.bluetooth:client` — scanning for / connecting to BLE devices (depends on `core`)
 - `com.splendo.kaluga.bluetooth:server` — advertising / exposing GATT attributes (depends on `core`)
 

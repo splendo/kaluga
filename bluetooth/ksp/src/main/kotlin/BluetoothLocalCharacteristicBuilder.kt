@@ -35,7 +35,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
 import com.splendo.kaluga.bluetooth.ksp.helpers.ALL
 import com.splendo.kaluga.bluetooth.ksp.helpers.ALSO
 import com.splendo.kaluga.bluetooth.ksp.helpers.AS
-import com.splendo.kaluga.bluetooth.ksp.helpers.BLUETOOTH_FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHANGED
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
@@ -285,7 +284,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(CHARACTERISTIC, characteristicClass()),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
 
                     )
@@ -297,7 +296,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 listOfNotNull(
                     PropertySpec.builder(CHARACTERISTIC, characteristicClass())
                         .initializer(CHARACTERISTIC).build(),
-                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                         .addModifiers(KModifier.PRIVATE)
                         .initializer(FORMAT)
                         .build().takeIf { needsFormatter.needsFormatter },
@@ -320,7 +319,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     )
                     val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
                     if (needsFormatter.needsFormatter) {
-                        addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                        addParameter(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                     }
                     addCode(
                         CodeBlock.builder()
@@ -461,7 +460,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     "$DESERIALIZATION_STRATEGY = %L,",
                     propertyDeclaration.type.resolve().toTypeName().serializer(logger),
                 )
-                .addStatement("$BLUETOOTH_FORMAT = $FORMAT,")
+                .addStatement("$FORMAT = $FORMAT,")
                 .addStatement("$ON_FAILED_TO_WRITE = { $DEVICE, $EXCEPTION ->")
                 .indent()
                 .beginControlFlow("$WITH($delegateParameterName)")
@@ -839,7 +838,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         GenerationType.Type.SIMULATOR -> {
                             addCode(
                                 CodeBlock.builder()
-                                    .beginControlFlow("$RETURN _${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.$VALUE.$ALL")
+                                    .beginControlFlow("$RETURN $REMOTES.keys.$ALL")
                                     .addStatement(
                                         "$NOTIFY${
                                             propertyDeclaration.simpleName.asString().replaceFirstChar {
@@ -889,7 +888,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                     CodeBlock.builder()
                                         .add("$RETURN $REMOTES[$IDENTIFIER]?.$LET { (_, $MUTABLE_FLOW) ->\n")
                                         .indent()
-                                        .beginControlFlow("$IF (_${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.$VALUE.$CONTAINS($IDENTIFIER))")
+                                        .beginControlFlow("$IF ($MUTABLE_FLOW.$SUBSCRIPTION_COUNT.$VALUE > 0)")
                                         .addStatement("$MUTABLE_FLOW.$EMIT(${propertyDeclaration.simpleName.asString()})")
                                         .addStatement(TRUE)
                                         .nextControlFlow(ELSE)

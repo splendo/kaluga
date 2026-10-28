@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.example.feature.bluetooth.base
 
-import com.splendo.kaluga.bluetooth.serialization.FlagIndex
-import com.splendo.kaluga.bluetooth.serialization.Length
-import com.splendo.kaluga.bluetooth.serialization.NullIfEmpty
-import com.splendo.kaluga.bluetooth.serialization.Prefix
-import com.splendo.kaluga.bluetooth.serialization.Scalar
-import com.splendo.kaluga.bluetooth.serialization.SerializedByteValue
-import com.splendo.kaluga.bluetooth.serialization.Size
-import com.splendo.kaluga.bluetooth.serialization.Unsigned
-import com.splendo.kaluga.bluetooth.serialization.Unsized
+import com.splendo.kaluga.bytes.annotations.FlagIndex
+import com.splendo.kaluga.bytes.annotations.Length
+import com.splendo.kaluga.bytes.annotations.NullIfEmpty
+import com.splendo.kaluga.bytes.annotations.Prefix
+import com.splendo.kaluga.bytes.annotations.Scalar
+import com.splendo.kaluga.bytes.annotations.SerializedByteValue
+import com.splendo.kaluga.bytes.annotations.Size
+import com.splendo.kaluga.bytes.annotations.Unsigned
+import com.splendo.kaluga.bytes.annotations.Unsized
 import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline

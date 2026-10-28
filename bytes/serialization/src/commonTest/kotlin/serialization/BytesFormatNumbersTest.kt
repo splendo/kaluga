@@ -765,13 +765,17 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         // `c` owns no flag bit: its presence is *derived* from bits 0 and 1, so a value whose `c` disagrees with those
         // bits cannot round-trip. These are still valid instances; we just pin the (lossy) wire behaviour.
 
-        // c set while its gating bits are clear: c's byte is written, but on decode bits 0/1 are clear so c is absent
-        // and its stray body byte is left over, which decoding rejects.
+        // c set while its gating bits are clear: c's byte is written, but on decode bits 0/1 are clear so c reads back
+        // as null - the value is silently lost, and its stray body byte is ignored unless trailing bytes are rejected.
         val cWithoutGate = EncodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlagsFixtures.Container(a = null, b = null, c = 30)
         val encoded = BytesFormat.encodeToByteArray(EncodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlagsFixtures.Container.serializer(), cWithoutGate)
         assertTrue(encoded.contentEquals(byteArrayOf(0b00, 30)), encoded.toHexString(separator = " "))
+        assertEquals(
+            EncodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlagsFixtures.Container(a = null, b = null, c = null),
+            BytesFormat.decodeFromByteArray(EncodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlagsFixtures.Container.serializer(), encoded),
+        )
         assertFailsWith<UnexpectedBytesRemaining> {
-            BytesFormat.decodeFromByteArray(EncodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlagsFixtures.Container.serializer(), encoded)
+            BytesFormat { rejectTrailingBytes = true }.decodeFromByteArray(EncodePresentWhenAllSetIsLossyWhenInconsistentWithItsFlagsFixtures.Container.serializer(), encoded)
         }
 
         // c null while its gating bits are set: decode expects c's byte but none was written, so decoding fails outright.

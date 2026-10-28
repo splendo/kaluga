@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.logging.Logger
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
@@ -149,26 +149,24 @@ open class RemoteCharacteristic internal constructor(
      * Attempts to subscribe to the characteristic.
      * @param T the type of the value to be decoded from the [ByteArray] value of the characteristic.
      * @param deserializationStrategy the [DeserializationStrategy] to use to decode the [ByteArray] value of the characteristic.
-     * @param bluetoothFormat the [BluetoothFormat] to use to decode the [ByteArray] value of the characteristic.
+     * @param format the [BytesFormat] to use to decode the [ByteArray] value of the characteristic.
      * @param onUpdate called when the [T] value of the characteristic changes.
      * @return [SubscriptionResult.DidSubscribe] if subscription was successful, or [SubscriptionResult.FailedToSubscribe] if subscription failed.
      */
-    suspend fun <T> subscribe(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat, onUpdate: (T) -> Unit): SubscriptionResult =
-        subscribe {
-            onUpdate(
-                bluetoothFormat.decodeFromByteArray(deserializationStrategy, it),
-            )
-        }
+    suspend fun <T> subscribe(deserializationStrategy: DeserializationStrategy<T>, format: BytesFormat = BytesFormat, onUpdate: (T) -> Unit): SubscriptionResult = subscribe {
+        onUpdate(
+            format.decodeFromByteArray(deserializationStrategy, it),
+        )
+    }
 
     /**
      * Attempts to subscribe to the characteristic.
      * @param T the type of the value to be decoded from the [ByteArray] value of the characteristic.
-     * @param bluetoothFormat the [BluetoothFormat] to use to decode the [ByteArray] value of the characteristic.
+     * @param format the [BytesFormat] to use to decode the [ByteArray] value of the characteristic.
      * @param onUpdate called when the [T] value of the characteristic changes.
      * @return [SubscriptionResult.DidSubscribe] if subscription was successful, or [SubscriptionResult.FailedToSubscribe] if subscription failed.
      */
-    suspend inline fun <reified T> subscribe(bluetoothFormat: BluetoothFormat = BluetoothFormat, noinline onUpdate: (T) -> Unit) =
-        subscribe(bluetoothFormat.serializer<T>(), bluetoothFormat, onUpdate)
+    suspend inline fun <reified T> subscribe(format: BytesFormat = BytesFormat, noinline onUpdate: (T) -> Unit) = subscribe(format.serializer<T>(), format, onUpdate)
 
     /**
      * Enables notification or indication for this [RemoteCharacteristic].
@@ -403,55 +401,47 @@ open class RemoteCharacteristic internal constructor(
      * Attempts to write a value of [T] to the characteristic using the given [writeType] and suspends until the write completes.
      * @param T the type of the data object to write.
      * @param serializationStrategy the [SerializationStrategy] to use to serialize the value.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write.
      * @param writeType the [WriteType] to use
      * @return the [GattResponse.WriteResponse] received from the remote device.
      */
-    suspend fun <T> write(
-        serializationStrategy: SerializationStrategy<T>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        newValue: T,
-        writeType: WriteType,
-    ): GattResponse.WriteResponse = write(bluetoothFormat.encodeToByteArray(serializationStrategy, newValue), writeType)
+    suspend fun <T> write(serializationStrategy: SerializationStrategy<T>, format: BytesFormat = BytesFormat, newValue: T, writeType: WriteType): GattResponse.WriteResponse =
+        write(format.encodeToByteArray(serializationStrategy, newValue), writeType)
 
     /**
      * Attempts to write a value of [T] to the characteristic using the given [writeType] and suspends until the write completes.
      * @param T the type of the data object to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write.
      * @param writeType the [WriteType] to use
      * @return the [GattResponse.WriteResponse] received from the remote device.
      */
-    suspend inline fun <reified T> write(bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T, writeType: WriteType): GattResponse.WriteResponse =
-        write(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer<T>(), newValue), writeType)
+    suspend inline fun <reified T> write(format: BytesFormat = BytesFormat, newValue: T, writeType: WriteType): GattResponse.WriteResponse =
+        write(format.encodeToByteArray(format.serializer<T>(), newValue), writeType)
 
     /**
      * Creates and emits a [DeviceAction.Write.Characteristic] to write a given [T] using the given [writeType]
      * @param T the type of the data object to write.
      * @param serializationStrategy the [SerializationStrategy] to use to serialize the value.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write to the characteristic
      * @param writeType the [WriteType] to use
      * @return the [DeviceAction.Write.Characteristic] created
      */
-    fun <T> startWrite(
-        serializationStrategy: SerializationStrategy<T>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        newValue: T,
-        writeType: WriteType,
-    ): DeviceAction.Write.Characteristic = startWrite(bluetoothFormat.encodeToByteArray(serializationStrategy, newValue), writeType)
+    fun <T> startWrite(serializationStrategy: SerializationStrategy<T>, format: BytesFormat = BytesFormat, newValue: T, writeType: WriteType): DeviceAction.Write.Characteristic =
+        startWrite(format.encodeToByteArray(serializationStrategy, newValue), writeType)
 
     /**
      * Creates and emits a [DeviceAction.Write.Characteristic] to write a given [T] using the given [writeType]
      * @param T the type of the data object to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write to the characteristic
      * @param writeType the [WriteType] to use
      * @return the [DeviceAction.Write.Characteristic] created
      */
-    inline fun <reified T> startWrite(bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T, writeType: WriteType): DeviceAction.Write.Characteristic =
-        startWrite(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), newValue), writeType)
+    inline fun <reified T> startWrite(format: BytesFormat = BytesFormat, newValue: T, writeType: WriteType): DeviceAction.Write.Characteristic =
+        startWrite(format.encodeToByteArray(format.serializer(), newValue), writeType)
 
     private fun createWriteAction(newValue: ByteArray, writeType: WriteType?): DeviceAction.Write.Characteristic =
         DeviceAction.Write.Characteristic(newValue, this, writeType).apply {

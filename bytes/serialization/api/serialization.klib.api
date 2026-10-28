@@ -22,6 +22,9 @@ sealed class com.splendo.kaluga.bytes.serialization/BytesFormat : kotlinx.serial
     open fun <#A1: kotlin/Any?> encodeToByteArray(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlin/ByteArray // com.splendo.kaluga.bytes.serialization/BytesFormat.encodeToByteArray|encodeToByteArray(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
 
     final class Builder { // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder|null[0]
+        final var rejectTrailingBytes // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.rejectTrailingBytes|{}rejectTrailingBytes[0]
+            final fun <get-rejectTrailingBytes>(): kotlin/Boolean // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.rejectTrailingBytes.<get-rejectTrailingBytes>|<get-rejectTrailingBytes>(){}[0]
+            final fun <set-rejectTrailingBytes>(kotlin/Boolean) // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.rejectTrailingBytes.<set-rejectTrailingBytes>|<set-rejectTrailingBytes>(kotlin.Boolean){}[0]
         final var serializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule|{}serializersModule[0]
             final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
             final fun <set-serializersModule>(kotlinx.serialization.modules/SerializersModule) // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule.<set-serializersModule>|<set-serializersModule>(kotlinx.serialization.modules.SerializersModule){}[0]

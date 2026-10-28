@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import kotlinx.serialization.SerializationStrategy
 
 /**
@@ -52,24 +52,23 @@ sealed interface GattResponse {
              * @param value the value read
              * @param offset the offset of the ByteArray to read
              * @param serializationStrategy the [SerializationStrategy] used to encode [value]
-             * @param bluetoothFormat the [BluetoothFormat] to use for encoding [value]
+             * @param format the [BytesFormat] to use for encoding [value]
              * @throws kotlinx.serialization.SerializationException if [value] cannot be encoded using [serializationStrategy]
-             * @return a [GattResponse.ReadSuccess] response where [GattResponse.ReadSuccess.value] can be deserialized by [bluetoothFormat] using a [kotlinx.serialization.DeserializationStrategy] similar to [serializationStrategy]
+             * @return a [GattResponse.ReadSuccess] response where [GattResponse.ReadSuccess.value] can be deserialized by [format] using a [kotlinx.serialization.DeserializationStrategy] similar to [serializationStrategy]
              */
-            operator fun <T> invoke(value: T, offset: Int = 0, serializationStrategy: SerializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): ReadSuccess =
-                ReadSuccess(bluetoothFormat.encodeToByteArray(serializationStrategy, value).drop(offset).toByteArray())
+            operator fun <T> invoke(value: T, offset: Int = 0, serializationStrategy: SerializationStrategy<T>, format: BytesFormat = BytesFormat): ReadSuccess =
+                ReadSuccess(format.encodeToByteArray(serializationStrategy, value).drop(offset).toByteArray())
 
             /**
              * Generates a [GattResponse.ReadSuccess] response for a value [T]
              * @param T the type of the value read
              * @param value the value read
              * @param offset the offset of the ByteArray to read
-             * @param bluetoothFormat the [BluetoothFormat] to use for encoding [value]
+             * @param format the [BytesFormat] to use for encoding [value]
              * @throws kotlinx.serialization.SerializationException if [value] cannot be encoded
-             * @return a [GattResponse.ReadSuccess] response where [GattResponse.ReadSuccess.value] can be deserialized by [bluetoothFormat]
+             * @return a [GattResponse.ReadSuccess] response where [GattResponse.ReadSuccess.value] can be deserialized by [format]
              */
-            inline operator fun <reified T : Any> invoke(value: T, offset: Int = 0, bluetoothFormat: BluetoothFormat = BluetoothFormat) =
-                invoke(value, offset, bluetoothFormat.serializer<T>(), bluetoothFormat)
+            inline operator fun <reified T : Any> invoke(value: T, offset: Int = 0, format: BytesFormat = BytesFormat) = invoke(value, offset, format.serializer<T>(), format)
         }
 
         override fun equals(other: Any?): Boolean {

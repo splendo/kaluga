@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
 import kotlinx.serialization.DeserializationStrategy
@@ -47,12 +47,12 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
      * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the value
-     * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
+     * @param format the [BytesFormat] to use to deserialize the value
      * @throws FailedToReadException if the read fails
      * @return the value of type [T] received from the device
      */
-    suspend fun <T> read(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): T = when (val response = read()) {
-        is GattResponse.ReadSuccess -> bluetoothFormat.decodeFromByteArray(deserializationStrategy, response.value)
+    suspend fun <T> read(deserializationStrategy: DeserializationStrategy<T>, format: BytesFormat = BytesFormat): T = when (val response = read()) {
+        is GattResponse.ReadSuccess -> format.decodeFromByteArray(deserializationStrategy, response.value)
         is GattResponse.ReadError -> throw FailedToReadException(response)
     }
 
@@ -60,29 +60,28 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
      * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the value
-     * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
+     * @param format the [BytesFormat] to use to deserialize the value
      * @return the value of type [T] received from the device, or `null` if the request failed
      */
-    suspend fun <T> readOrNull(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat) =
-        runCatching { read(deserializationStrategy, bluetoothFormat) }.getOrNull()
+    suspend fun <T> readOrNull(deserializationStrategy: DeserializationStrategy<T>, format: BytesFormat = BytesFormat) =
+        runCatching { read(deserializationStrategy, format) }.getOrNull()
 
     /**
      * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
-     * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
+     * @param format the [BytesFormat] to use to deserialize the value
      * @throws FailedToReadException if the read fails
      * @return the value of type [T] received from the device
      */
-    suspend inline fun <reified T> read(bluetoothFormat: BluetoothFormat = BluetoothFormat): T = read(bluetoothFormat.serializer<T>(), bluetoothFormat)
+    suspend inline fun <reified T> read(format: BytesFormat = BytesFormat): T = read(format.serializer<T>(), format)
 
     /**
      * Requests a read of a value of [T] of the attribute from the device and suspends until the value is received.
      * @param T the type of the data object to read
-     * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the value
+     * @param format the [BytesFormat] to use to deserialize the value
      * @return the value of type [T] received from the device, or `null` if the request failed
      */
-    suspend inline fun <reified T> readOrNull(bluetoothFormat: BluetoothFormat = BluetoothFormat): T? =
-        runCatching<RemoteAttribute<ReadAction, WriteAction>, T> { read(bluetoothFormat) }.getOrNull()
+    suspend inline fun <reified T> readOrNull(format: BytesFormat = BytesFormat): T? = runCatching<RemoteAttribute<ReadAction, WriteAction>, T> { read(format) }.getOrNull()
 
     /**
      * Creates and emits a [ReadAction]
@@ -109,22 +108,22 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      * Attempts to write a value of [T] to the attribute on the device and suspends until the write completes.
      * @param T the type of the data object to write.
      * @param serializationStrategy the [SerializationStrategy] to use to serialize the value.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write.
      * @return the [GattResponse.WriteResponse] received from the remote device.
      */
-    suspend fun <T> write(serializationStrategy: SerializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T): GattResponse.WriteResponse =
-        write(bluetoothFormat.encodeToByteArray(serializationStrategy, newValue))
+    suspend fun <T> write(serializationStrategy: SerializationStrategy<T>, format: BytesFormat = BytesFormat, newValue: T): GattResponse.WriteResponse =
+        write(format.encodeToByteArray(serializationStrategy, newValue))
 
     /**
      * Attempts to write a value of [T] to the attribute on the device and suspends until the write completes.
      * @param T the type of the data object to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write.
      * @return the [GattResponse.WriteResponse] received from the remote device.
      */
-    suspend inline fun <reified T> write(bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T): GattResponse.WriteResponse =
-        write(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer<T>(), newValue))
+    suspend inline fun <reified T> write(format: BytesFormat = BytesFormat, newValue: T): GattResponse.WriteResponse =
+        write(format.encodeToByteArray(format.serializer<T>(), newValue))
 
     /**
      * Creates and emits a [WriteAction] to write a given [ByteArray]
@@ -143,22 +142,21 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      * Creates and emits a [WriteAction] to write a given [T]
      * @param T the type of the data object to write.
      * @param serializationStrategy the [SerializationStrategy] to use to serialize the value.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write to the attribute
      * @return the [WriteAction] created
      */
-    fun <T> startWrite(serializationStrategy: SerializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T) =
-        startWrite(bluetoothFormat.encodeToByteArray(serializationStrategy, newValue))
+    fun <T> startWrite(serializationStrategy: SerializationStrategy<T>, format: BytesFormat = BytesFormat, newValue: T) =
+        startWrite(format.encodeToByteArray(serializationStrategy, newValue))
 
     /**
      * Creates and emits a [WriteAction] to write a given [T]
      * @param T the type of the data object to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use to serialize the value.
+     * @param format the [BytesFormat] to use to serialize the value.
      * @param newValue the [T] to write to the attribute
      * @return the [WriteAction] created
      */
-    inline fun <reified T> startWrite(bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T) =
-        startWrite(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), newValue))
+    inline fun <reified T> startWrite(format: BytesFormat = BytesFormat, newValue: T) = startWrite(format.encodeToByteArray(format.serializer(), newValue))
 
     internal abstract fun createWriteAction(newValue: ByteArray): WriteAction
 

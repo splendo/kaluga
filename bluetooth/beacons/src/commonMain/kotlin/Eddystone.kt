@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
+import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.uuidFrom
-import com.splendo.kaluga.bytes.toHexString
 
 private fun List<Byte>.toHexString() = toByteArray().toHexString()
 

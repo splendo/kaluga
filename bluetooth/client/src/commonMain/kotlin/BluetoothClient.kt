@@ -34,7 +34,7 @@ import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -422,6 +422,22 @@ fun ConnectableDevice.discoveredServices() = filterDiscovering().mapNotNull { di
 }.distinctUntilChanged()
 
 /**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice] in a [Flow]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [discoveredServices] in that the resulting flow will emit `null` if no services have been discovered (yet).
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice], or `null` if not (yet) discovered.
+ */
+fun Flow<ConnectableDevice?>.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
+
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [discoveredServices] in that the resulting flow will emit `null` if no services have been discovered (yet).
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice], or `null` if not (yet) discovered.
+ */
+fun ConnectableDevice.discoveredServicesOrNull() = filterDiscovering().map { it?.services }.distinctUntilChanged()
+
+/**
  * Attempts to connect to the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * When this method completes, the devices should be in a [ConnectableDeviceState.Connected] state
  * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use if the [ConnectableDevice] disconnects after connecting. If `null` the default will be used.
@@ -440,10 +456,8 @@ suspend fun Flow<ConnectableDevice?>.connect(reconnectionSettings: ConnectionSet
  */
 suspend fun Flow<ConnectableDevice?>.disconnect() {
     transformLatest { device ->
-        device?.let {
-            it.disconnect()
-            emit(Unit)
-        }
+        device?.disconnect()
+        emit(Unit)
     }.first()
 }
 
@@ -604,12 +618,12 @@ fun Flow<RemoteCharacteristic?>.valueOrEmpty(): Flow<ByteArray> = distinctUntilC
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
  * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param format the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow]
  */
-fun <T> Flow<RemoteCharacteristic?>.value(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> =
+fun <T> Flow<RemoteCharacteristic?>.value(deserializationStrategy: DeserializationStrategy<T>, format: BytesFormat = BytesFormat): Flow<T> =
     distinctUntilChanged().flatMapLatest { characteristic ->
-        characteristic?.value(deserializationStrategy, bluetoothFormat) ?: emptyFlow()
+        characteristic?.value(deserializationStrategy, format) ?: emptyFlow()
     }
 
 /**
@@ -617,33 +631,31 @@ fun <T> Flow<RemoteCharacteristic?>.value(deserializationStrategy: Deserializati
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
  * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param format the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow] or `null` if data is unavailable
  */
-fun <T> Flow<RemoteCharacteristic?>.valueOrNull(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T?> =
+fun <T> Flow<RemoteCharacteristic?>.valueOrNull(deserializationStrategy: DeserializationStrategy<T>, format: BytesFormat = BytesFormat): Flow<T?> =
     distinctUntilChanged().flatMapLatest { characteristic ->
-        characteristic?.value(deserializationStrategy, bluetoothFormat) ?: flowOf(null)
+        characteristic?.value(deserializationStrategy, format) ?: flowOf(null)
     }
 
 /**
  * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic]
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param format the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow]
  */
-inline fun <reified T> Flow<RemoteCharacteristic?>.value(bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> =
-    value(bluetoothFormat.serializersModule.serializer(), bluetoothFormat)
+inline fun <reified T> Flow<RemoteCharacteristic?>.value(format: BytesFormat = BytesFormat): Flow<T> = value(format.serializersModule.serializer(), format)
 
 /**
  * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic]
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param format the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow]
  */
-inline fun <reified T> Flow<RemoteCharacteristic?>.valueOrNull(bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T?> =
-    valueOrNull(bluetoothFormat.serializersModule.serializer(), bluetoothFormat)
+inline fun <reified T> Flow<RemoteCharacteristic?>.valueOrNull(format: BytesFormat = BytesFormat): Flow<T?> = valueOrNull(format.serializersModule.serializer(), format)
 
 /**
  * Gets a ([Flow] of) the [ByteArray] value from a [RemoteCharacteristic]
@@ -669,18 +681,18 @@ fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
  * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param format the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic]
  */
-fun <T> RemoteCharacteristic.value(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> = value().map { value ->
-    bluetoothFormat.decodeFromByteArray(deserializationStrategy, value)
+fun <T> RemoteCharacteristic.value(deserializationStrategy: DeserializationStrategy<T>, format: BytesFormat = BytesFormat): Flow<T> = value().map { value ->
+    format.decodeFromByteArray(deserializationStrategy, value)
 }
 
 /**
  * Gets a ([Flow] of) [T] value from a [RemoteCharacteristic]
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
- * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @param format the [BytesFormat] to use to deserialize the [ByteArray] to [T]
  * @return the [Flow] of the [T] value of the [RemoteCharacteristic]
  */
-inline fun <reified T> RemoteCharacteristic.value(bluetoothFormat: BluetoothFormat = BluetoothFormat) = value(bluetoothFormat.serializer<T>(), bluetoothFormat)
+inline fun <reified T> RemoteCharacteristic.value(format: BytesFormat = BytesFormat) = value(format.serializer<T>(), format)

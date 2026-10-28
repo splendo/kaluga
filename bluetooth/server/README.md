@@ -67,4 +67,4 @@ notifiableCharacteristic.notifyAll(byteArrayOf())
 server.close() // server must be closed when done
 ```
 
-For (de)serializing the data exchanged with clients, see the `BluetoothFormat` documentation in [`core`](../core/).
+For (de)serializing the data exchanged with clients, see the `BytesFormat` documentation in [`core`](../core/).

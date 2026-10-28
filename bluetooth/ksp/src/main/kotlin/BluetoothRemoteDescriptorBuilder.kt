@@ -34,7 +34,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.IT
 import com.splendo.kaluga.bluetooth.ksp.helpers.LET
-import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.OR_NULL
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
@@ -87,9 +86,8 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(DESCRIPTOR, References.Bluetooth.remoteDescriptor),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
-
                     )
                     .build(),
             )
@@ -101,7 +99,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                 listOfNotNull(
                     PropertySpec.builder(DESCRIPTOR, References.Bluetooth.remoteDescriptor)
                         .initializer(DESCRIPTOR).build(),
-                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                    PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                         .addModifiers(KModifier.PRIVATE)
                         .initializer(FORMAT).build().takeIf { needsFormatter.needsFormatter },
                 ),
@@ -118,7 +116,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
                     )
                     .returns(className)
@@ -135,7 +133,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bytesFormat).takeIf { needsFormatter.needsFormatter },
                         ),
                     )
                     .returns(className.copy(nullable = true))

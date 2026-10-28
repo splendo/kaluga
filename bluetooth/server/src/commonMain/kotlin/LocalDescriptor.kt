@@ -20,8 +20,8 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
-import com.splendo.kaluga.bluetooth.serialization.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.serialization.BytesFormat
+import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 
@@ -68,18 +68,18 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
          * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [LocalCharacteristic.Permission.READ_ENCRYPTION_REQUIRED].
          * Otherwise will add [LocalCharacteristic.Permission.READABLE]
          * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+         * @param format the [BytesFormat] to use to encode the [T] to a [ByteArray]
          * @param onRead the function to call when reading from the descriptor.
          * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
          */
         fun <T> readableAlwaysSuccess(
             encrypted: Boolean = false,
             serializationStrategy: SerializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            format: BytesFormat = BytesFormat,
             onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
         ) {
             readable(encrypted) { device, offset ->
-                GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, bluetoothFormat)
+                GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, format)
             }
         }
 
@@ -109,7 +109,7 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
         fun <T> writable(
             encrypted: Boolean = false,
             deserializationStrategy: DeserializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            format: BytesFormat = BytesFormat,
             onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
             onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
         ) {
@@ -129,7 +129,7 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
                 }
                 valueToDeserialize?.let {
                     try {
-                        onWrite(device, bluetoothFormat.decodeFromByteArray(deserializationStrategy, it))
+                        onWrite(device, format.decodeFromByteArray(deserializationStrategy, it))
                     } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
                         GattResponse.WriteSuccess.Acknowledged
@@ -169,12 +169,12 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
         fun <T> writableAlwaysSuccess(
             encrypted: Boolean = false,
             deserializationStrategy: DeserializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            format: BytesFormat = BytesFormat,
             onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
         ) = writable(
             encrypted,
             deserializationStrategy,
-            bluetoothFormat,
+            format,
             { _, _ -> GattResponse.WriteSuccess.Acknowledged },
         ) { device, value ->
             onWrite(device, value)
@@ -259,15 +259,15 @@ expect interface LocalDescriptorWrapper {
  * @param T the type of the data being read
  * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [LocalCharacteristic.Permission.READ_ENCRYPTION_REQUIRED].
  * Otherwise will add [LocalCharacteristic.Permission.READABLE]
- * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+ * @param format the [BytesFormat] to use to encode the [T] to a [ByteArray]
  * @param onRead the function to call when reading from the descriptor.
  * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
  */
 inline fun <reified T : Any> LocalDescriptor.DSL.readableAlwaysSuccess(
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    format: BytesFormat = BytesFormat,
     noinline onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
-) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onRead)
+) = readableAlwaysSuccess(encrypted, format.serializer<T>(), format, onRead)
 
 /**
  * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
@@ -283,10 +283,10 @@ inline fun <reified T : Any> LocalDescriptor.DSL.readableAlwaysSuccess(
  */
 inline fun <reified T : Any> LocalDescriptor.DSL.writable(
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    format: BytesFormat = BytesFormat,
     noinline onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
     noinline onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
-) = writable(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
+) = writable(encrypted, format.serializer<T>(), format, onFailedToWrite, onWrite)
 
 /**
  * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and always responds with [GattResponse.WriteSuccess.Acknowledged]
@@ -300,6 +300,6 @@ inline fun <reified T : Any> LocalDescriptor.DSL.writable(
  */
 inline fun <reified T : Any> LocalDescriptor.DSL.writableAlwaysSuccess(
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    format: BytesFormat = BytesFormat,
     noinline onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
-) = writableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onWrite)
+) = writableAlwaysSuccess(encrypted, format.serializer<T>(), format, onWrite)
