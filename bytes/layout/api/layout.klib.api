@@ -601,7 +601,7 @@ sealed class com.splendo.kaluga.bytes.layout/NumericSettings { // com.splendo.ka
         final val max // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.max|{}max[0]
             final fun <get-max>(): kotlin/Double // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.max.<get-max>|<get-max>(){}[0]
         final val maxWireValue // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.maxWireValue|{}maxWireValue[0]
-            final fun <get-maxWireValue>(): kotlin/Long // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.maxWireValue.<get-maxWireValue>|<get-maxWireValue>(){}[0]
+            final fun <get-maxWireValue>(): kotlin/ULong // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.maxWireValue.<get-maxWireValue>|<get-maxWireValue>(){}[0]
         final val min // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.min|{}min[0]
             final fun <get-min>(): kotlin/Double // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.min.<get-min>|<get-min>(){}[0]
         final val supportedLengths // com.splendo.kaluga.bytes.layout/NumericSettings.RangeEncoded.supportedLengths|{}supportedLengths[0]

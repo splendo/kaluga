@@ -188,11 +188,12 @@ object NumericCodec {
     /** The unsigned wire value of a [NumericSettings.RangeEncoded]. */
     fun rangeToWire(settings: NumericSettings.RangeEncoded, value: Number): Double {
         val ratio = (value.toDouble() - settings.min) / (settings.max - settings.min)
-        return round(ratio * settings.maxWireValue)
+        return round(ratio * settings.maxWireValue.toDouble())
     }
 
     /** The value of a [NumericSettings.RangeEncoded] from its decoded wire value [raw]. */
-    fun rangeFromWire(settings: NumericSettings.RangeEncoded, raw: Long): Double = raw.toDouble() / settings.maxWireValue * (settings.max - settings.min) + settings.min
+    fun rangeFromWire(settings: NumericSettings.RangeEncoded, raw: Long): Double =
+        raw.toULong().toDouble() / settings.maxWireValue.toDouble() * (settings.max - settings.min) + settings.min
 
     /**
      * Reads a natural number of [length] from [bytes] at [offset]. Unsigned values are widened, so a Long is always

@@ -983,6 +983,9 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         data class RangeThirtyTwoBit(@Range(0.0, 1.0) @Size(Length.`32_BIT`) val fraction: Double)
 
         @Serializable
+        data class RangeSixtyFourBit(@Range(0.0, 1.0) @Size(Length.`64_BIT`) val fraction: Double)
+
+        @Serializable
         data class UnsignedScalarThirtyTwoBit(@Scalar(multiplier = 2) @Unsigned @Size(Length.`32_BIT`) val value: Double)
     }
 
@@ -990,6 +993,9 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
     fun encodeRangeAtFullWidth() {
         validateEncoding(WideNaturalFixtures.RangeThirtyTwoBit(0.0), buildByteArray { add(uInt = 0u) })
         validateEncoding(WideNaturalFixtures.RangeThirtyTwoBit(1.0), buildByteArray { add(uInt = UInt.MAX_VALUE) })
+        validateEncoding(WideNaturalFixtures.RangeSixtyFourBit(0.0), buildByteArray { add(uLong = 0u) })
+        validateEncoding(WideNaturalFixtures.RangeSixtyFourBit(0.5), buildByteArray { add(uLong = 1uL shl 63) })
+        validateEncoding(WideNaturalFixtures.RangeSixtyFourBit(1.0), buildByteArray { add(uLong = ULong.MAX_VALUE) })
     }
 
     @Test

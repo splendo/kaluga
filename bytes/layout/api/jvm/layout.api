@@ -300,7 +300,7 @@ public final class com/splendo/kaluga/bytes/layout/NumericSettings$RangeEncoded 
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getLength ()Lcom/splendo/kaluga/bytes/annotations/Length;
 	public final fun getMax ()D
-	public final fun getMaxWireValue ()J
+	public final fun getMaxWireValue-s-VKNKU ()J
 	public final fun getMin ()D
 	public fun getSupportedLengths ()Ljava/util/Set;
 	public fun hashCode ()I

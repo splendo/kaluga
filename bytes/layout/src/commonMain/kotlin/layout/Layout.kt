@@ -262,7 +262,7 @@ sealed class NumericSettings {
             validate(max > min) { "@Range max ($max) must be greater than min ($min)" }
         }
         val length: Length get() = supportedLengths.first()
-        val maxWireValue: Long get() = (1L shl (length.bytes * Byte.SIZE_BITS)) - 1L
+        val maxWireValue: ULong get() = ULong.MAX_VALUE shr (ULong.SIZE_BITS - length.bytes * Byte.SIZE_BITS)
     }
 }
 
