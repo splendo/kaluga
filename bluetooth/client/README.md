@@ -180,7 +180,9 @@ No inline styles are applied — every element gets a class derived from `cssCla
 | `kaluga-bluetooth-list-empty` | the placeholder shown before any device is added |
 | `kaluga-bluetooth-button` | the "Add Device" button |
 
-For example, to float it in the top-right corner:
+> **The overlay has no visual styling by default.** Kaluga applies `position: fixed` and `z-index: 1000` as inline styles so the overlay always renders above canvas-based renderers (such as **Compose for Web**) without any host-page CSS. All visual properties — colour, padding, border-radius, typography — are left entirely to the host page via the CSS classes below. To override `z-index`, use `!important` in your CSS rule.
+
+A complete example that floats the overlay in the top-right corner:
 
 ```css
 .kaluga-bluetooth-overlay {

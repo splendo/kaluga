@@ -30,9 +30,12 @@ kaluga {
                 implementation(project(":bytes:integer"))
                 implementation(project(":bytes:medfloat"))
                 implementation(project(":bytes:crc"))
+                implementation(project(":bytes:stuffing"))
+                implementation(project(":bytes:hash"))
                 implementation(project(":base:formatting"))
                 api(project(":service:service"))
                 api(libs.kotlinx.serialization.core)
+                api(libs.kotlinx.coroutines.core)
             }
             test {
                 implementation(project(":bluetooth:test-core", ""))

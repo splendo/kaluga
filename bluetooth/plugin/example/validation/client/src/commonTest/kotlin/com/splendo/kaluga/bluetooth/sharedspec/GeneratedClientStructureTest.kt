@@ -26,6 +26,8 @@ import com.splendo.kaluga.bluetooth.test.ConnectedMockClient
 import com.splendo.kaluga.bluetooth.test.characteristic
 import com.splendo.kaluga.bluetooth.test.connectedMockClient
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -60,7 +62,7 @@ class GeneratedClientStructureTest : BaseTest() {
 
                 val client = SharedDeviceClient.bluetooth(mock.client, mock.identifier)
 
-                val read = async { client.sharedService.sharedCharacteristic.readLevel() }
+                val read = async { client.filterNotNull().first().sharedService.sharedCharacteristic.readLevel() }
                 mock.pump()
                 val success = assertIs<SharedCharacteristicReadResponse.Success>(read.await())
                 assertEquals(42, success.response)
@@ -77,7 +79,7 @@ class GeneratedClientStructureTest : BaseTest() {
             try {
                 val client = SharedDeviceClient.bluetooth(mock.client, mock.identifier)
 
-                val write = async { client.sharedService.sharedCharacteristic.writeTarget(7) }
+                val write = async { client.filterNotNull().first().sharedService.sharedCharacteristic.writeTarget(7) }
                 mock.pump()
                 assertIs<GattResponse.WriteSuccess>(write.await())
                 // The mock recorded the written bytes on the characteristic wrapper.

@@ -56,5 +56,7 @@ include(":validation:external-api-client")
 include(":validation:external-api-server")
 include(":validation:external-api-simulator")
 include(":validation:external-api-mock")
+include(":validation:external-source-provider")
+include(":validation:external-source-consumer")
 
 includeBuild("../../../")

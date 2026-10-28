@@ -17,30 +17,35 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
+import com.splendo.kaluga.bytes.stuffing.DelimiterByteStuffingScheme
+import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.stuffing.NonDelimiterByteStuffingScheme
+import com.splendo.kaluga.bytes.strings.StringEncodingSettings
+import com.splendo.kaluga.bytes.strings.decodeAsciiChar
 import com.splendo.kaluga.bytes.decodeDouble
 import com.splendo.kaluga.bytes.decodeFloat
 import com.splendo.kaluga.bytes.decodeInt
-import com.splendo.kaluga.bytes.decodeLong
-import com.splendo.kaluga.bytes.decodeShort
-import com.splendo.kaluga.bytes.decodeUInt
-import com.splendo.kaluga.bytes.decodeULong
-import com.splendo.kaluga.bytes.decodeUShort
 import com.splendo.kaluga.bytes.integer.decodeInt24
 import com.splendo.kaluga.bytes.integer.decodeInt40
 import com.splendo.kaluga.bytes.integer.decodeInt48
+import com.splendo.kaluga.bytes.decodeLong
+import com.splendo.kaluga.bytes.medfloat.decodeMedFloat16
+import com.splendo.kaluga.bytes.medfloat.decodeMedFloat32
+import com.splendo.kaluga.bytes.decodeShort
+import com.splendo.kaluga.bytes.strings.decodeString
+import com.splendo.kaluga.bytes.decodeUInt
 import com.splendo.kaluga.bytes.integer.decodeUInt24
 import com.splendo.kaluga.bytes.integer.decodeUInt40
 import com.splendo.kaluga.bytes.integer.decodeUInt48
-import com.splendo.kaluga.bytes.medfloat.decodeMedFloat16
-import com.splendo.kaluga.bytes.medfloat.decodeMedFloat32
-import com.splendo.kaluga.bytes.strings.Encoding
-import com.splendo.kaluga.bytes.strings.StringEncodingSettings
-import com.splendo.kaluga.bytes.strings.decodeAsciiChar
-import com.splendo.kaluga.bytes.strings.decodeString
+import com.splendo.kaluga.bytes.decodeULong
+import com.splendo.kaluga.bytes.decodeUShort
 import com.splendo.kaluga.bytes.strings.decodeUTF16Char
 import com.splendo.kaluga.bytes.strings.decodeUTF8Char
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
@@ -57,12 +62,66 @@ internal class BluetoothBinaryDecoder(
     private val binaryDescriptor: BluetoothBinaryDescriptor,
     private val decoder: BluetoothBinaryDescriptorDecoder,
     override val serializersModule: SerializersModule,
+    // True only for the top-level frame. The root stuffed region spans the whole payload, so it is un-stuffed without a
+    // terminator; a nested region (default `false`) is un-stuffed up to its terminator.
+    private val isRootFrame: Boolean = false,
 ) : Decoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
-        is StructureKind.LIST -> BluetoothBinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
-        is StructureKind.MAP -> BluetoothBinaryCompositeDecoder.Map(binaryDescriptor, decoder, serializersModule)
-        else -> BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
+        is StructureKind.LIST -> stuffedCollection()?.let { (descriptor, subDecoder) ->
+            BluetoothBinaryCompositeDecoder.List(descriptor, subDecoder, serializersModule)
+        } ?: BluetoothBinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
+
+        is StructureKind.MAP -> stuffedCollection()?.let { (descriptor, subDecoder) ->
+            BluetoothBinaryCompositeDecoder.Map(descriptor, subDecoder, serializersModule)
+        } ?: BluetoothBinaryCompositeDecoder.Map(binaryDescriptor, decoder, serializersModule)
+
+        else -> stuffedStructure()?.let { subDecoder ->
+            // The prefix/postfix were consumed from the parent frame, so decode the un-stuffed body+checksum with a
+            // descriptor whose frame is stripped (checksum kept) — the sub-decoder must not expect them again.
+            val innerDescriptor = binaryDescriptor.copy(
+                structureSettings = binaryDescriptor.structureSettings.copy(prefix = null, postfix = null),
+            )
+            BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, subDecoder.beginStructure(innerDescriptor), serializersModule)
+        } ?: BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
+    }
+
+    // For a byte-stuffed structure, un-stuff its body + checksum into a fresh sub-decoder that then decodes it as a
+    // standalone structure. Any prefix/postfix frame the stuffed region untouched and are consumed here. A nested region
+    // is bounded by its terminator (delimiter or @Terminal) or, when unterminated, by the remaining payload minus the
+    // postfix; the root region spans the whole payload minus the postfix. Returns null when the structure is not stuffed.
+    private fun stuffedStructure(): BluetoothBinaryDescriptorDecoder? {
+        val settings = binaryDescriptor.structureSettings
+        val stuffing = settings.byteStuffing ?: return null
+        decoder.consumePrefix(binaryDescriptor)
+        val postfixSize = settings.postfix?.array?.size ?: 0
+        val bodyAndChecksum = when (val terminator = if (isRootFrame) null else settings.byteStuffingTerminator) {
+            null -> stuffing.unstuff(decoder.nextBytes(decoder.remainingPayloadBytes() - postfixSize))
+
+            else -> when (stuffing) {
+                is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
+                is NonDelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator()) { it == terminator }
+            }
+        }
+        decoder.consumePostfix(binaryDescriptor)
+        return RootBluetoothBinaryDescriptorDecoder(bodyAndChecksum, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum)
+    }
+
+    // For a byte-stuffed terminated collection, un-stuff the body up to (and consuming) the raw terminator byte
+    // into a fresh sub-decoder, and present the collection as Unmarked so it reads that body to the end.
+    private fun stuffedCollection(): Pair<BluetoothBinaryDescriptor, BluetoothBinaryDescriptorDecoder>? {
+        val settings = binaryDescriptor.collectionSettings ?: return null
+        val stuffing = settings.byteStuffing ?: return null
+        val body = when (stuffing) {
+            is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
+
+            is NonDelimiterByteStuffingScheme -> {
+                val terminalMarked = settings.lengthMarking as? BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked ?: return null
+                stuffing.unstuff(decoder.byteIterator()) { it == terminalMarked.terminator }
+            }
+        }
+        val unmarked = binaryDescriptor.copy(collectionSettings = settings.copy(lengthMarking = BluetoothBinaryDescriptor.CollectionSettings.Unmarked))
+        return unmarked to RootBluetoothBinaryDescriptorDecoder(body, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum)
     }
 
     override fun decodeBoolean(): Boolean = binaryDescriptor.decodeBoolean(decoder)
@@ -82,13 +141,94 @@ internal class BluetoothBinaryDecoder(
             }
         } else {
             // Otherwise the enum is an (unsized) identifier in the body; check for the first match.
-            binaryDescriptor.enumMap.firstNotNullOf { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
+            // Prefix/postfix only apply here — flag-packed enums have no body bytes to wrap.
+            decoder.consumePrefix(binaryDescriptor)
+            val result = binaryDescriptor.enumMap.firstNotNullOf { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
+            decoder.consumePostfix(binaryDescriptor)
+            result
         }
     }
 
     override fun decodeFloat(): Float = binaryDescriptor.decodeFloatElement(decoder)
 
-    override fun decodeInline(descriptor: SerialDescriptor): Decoder = this
+    override fun decodeInline(descriptor: SerialDescriptor): Decoder {
+        val settings = binaryDescriptor.structureSettings
+        if (settings.prefix == null && settings.postfix == null && settings.checksumAlgorithm == null) return this
+
+        decoder.consumePrefix(binaryDescriptor)
+
+        // A stuffed value class un-stuffs its body + checksum (bounded by the terminator, or the remaining payload when
+        // unterminated or at the root) and decodes the inner value from it — the same framing a nested stuffed structure uses.
+        val stuffing = settings.byteStuffing
+        if (stuffing != null) {
+            val postfixSize = settings.postfix?.array?.size ?: 0
+            val bodyAndChecksum = when (val terminator = if (isRootFrame) null else settings.byteStuffingTerminator) {
+                null -> stuffing.unstuff(decoder.nextBytes(decoder.remainingPayloadBytes() - postfixSize))
+
+                else -> when (stuffing) {
+                    is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
+                    is NonDelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator()) { it == terminator }
+                }
+            }
+            decoder.consumePostfix(binaryDescriptor)
+            // Decode the inner value from the un-stuffed body+checksum: prefix/postfix consumed, stuffing stripped, checksum kept.
+            val innerDescriptor = binaryDescriptor.copy(
+                structureSettings = settings.copy(prefix = null, postfix = null, byteStuffing = null, byteStuffingTerminator = null),
+            )
+            return BluetoothBinaryDecoder(
+                innerDescriptor,
+                RootBluetoothBinaryDescriptorDecoder(bodyAndChecksum, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum),
+                serializersModule,
+            )
+        }
+
+        val bodyStartOffset = decoder.currentOffset
+
+        // A value class wrapping a structure/collection decodes its content with the frame stripped (the prefix is
+        // consumed above and the footer by consumeFooter), so the inner beginStructure does not re-consume the boundary.
+        val bodyDescriptor = binaryDescriptor.copy(structureSettings = BluetoothBinaryDescriptor.StructureSettings(null, null, null))
+        val bodyDecoder = BluetoothBinaryDecoder(bodyDescriptor, decoder, serializersModule)
+
+        return object : Decoder by this {
+            private fun consumeFooter() {
+                decoder.validateChecksum(binaryDescriptor, decoder, bodyStartOffset)
+                decoder.consumePostfix(binaryDescriptor)
+            }
+            override fun decodeBoolean() = this@BluetoothBinaryDecoder.decodeBoolean().also { consumeFooter() }
+            override fun decodeByte() = this@BluetoothBinaryDecoder.decodeByte().also { consumeFooter() }
+            override fun decodeChar() = this@BluetoothBinaryDecoder.decodeChar().also { consumeFooter() }
+            override fun decodeShort() = this@BluetoothBinaryDecoder.decodeShort().also { consumeFooter() }
+            override fun decodeInt() = this@BluetoothBinaryDecoder.decodeInt().also { consumeFooter() }
+            override fun decodeLong() = this@BluetoothBinaryDecoder.decodeLong().also { consumeFooter() }
+            override fun decodeFloat() = this@BluetoothBinaryDecoder.decodeFloat().also { consumeFooter() }
+            override fun decodeDouble() = this@BluetoothBinaryDecoder.decodeDouble().also { consumeFooter() }
+            override fun decodeString() = this@BluetoothBinaryDecoder.decodeString().also { consumeFooter() }
+            override fun decodeEnum(enumDescriptor: SerialDescriptor) = this@BluetoothBinaryDecoder.decodeEnum(enumDescriptor).also { consumeFooter() }
+            override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T = deserializer.deserialize(this)
+
+            // The frame is on the wire even when the wrapped value is absent (the encoder writes it either way),
+            // so an absent value must still consume the footer. Route the nullable dispatch through this wrapper,
+            // since the delegate's default would call its own decodeNull and leave the postfix unread.
+            @ExperimentalSerializationApi
+            override fun <T : Any> decodeNullableSerializableValue(deserializer: DeserializationStrategy<T?>): T? = if (decodeNotNullMark()) {
+                decodeSerializableValue(deserializer)
+            } else {
+                decodeNull()
+            }
+
+            @ExperimentalSerializationApi
+            override fun decodeNull(): Nothing? = this@BluetoothBinaryDecoder.decodeNull().also { consumeFooter() }
+            override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
+                val inner = bodyDecoder.beginStructure(descriptor)
+                return object : CompositeDecoder by inner {
+                    override fun endStructure(descriptor: SerialDescriptor) {
+                        inner.endStructure(descriptor)
+                        consumeFooter()
+                    }
+                }
+            }
+        }
+    }
 
     override fun decodeInt(): Int = binaryDescriptor.decodeIntElement(decoder)
 
@@ -113,11 +253,21 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
 
         var currentIndex = 0
 
-        override fun decodeElementIndex(descriptor: SerialDescriptor): Int = if (currentIndex < binaryDescriptor.children.size) {
-            currentIndex++
-        } else {
-            DECODE_DONE
+        // Reserved padding belongs to the property's slot on the wire, so it is only present when the property
+        // itself is — matching the encoder, which writes neither for an absent nullable.
+        override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+            // Consume reservedAfter bytes for the element we just finished decoding.
+            if (currentIndex > 0) {
+                val prev = binaryDescriptor.children[currentIndex - 1]
+                if (prev.reservedAfter > 0 && prev.isPresent(decoder.flags)) decoder.nextBytes(prev.reservedAfter)
+            }
+            if (currentIndex >= binaryDescriptor.children.size) return DECODE_DONE
+            // Consume reservedBefore bytes for the element we are about to decode.
+            val child = binaryDescriptor.children[currentIndex]
+            if (child.reservedBefore > 0 && child.isPresent(decoder.flags)) decoder.nextBytes(child.reservedBefore)
+            return currentIndex++
         }
+
         override fun binaryDescriptorAtIndex(index: Int): BluetoothBinaryDescriptor = binaryDescriptor.children[index]
 
         override fun endStructure(descriptor: SerialDescriptor) {
@@ -140,16 +290,17 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
             when (val lengthMarking = collectionSettings.lengthMarking) {
                 is BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix -> {
                     // Length Prefix prefixes the length of the array
+                    // A one-byte count is unsigned: 128..255 must not read back as a negative Byte.
                     when (val endMarking = lengthMarking.endMarking) {
-                        is StringEncodingSettings.LengthPrefix.ByteLength -> decoder.nextBytes(1)[0].toInt()
+                        is StringEncodingSettings.LengthPrefix.ByteLength -> decoder.nextBytes(1)[0].toUByte().toInt()
 
-                        is StringEncodingSettings.LengthPrefix.ShortLength -> decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.byteOrder).toInt()
+                        is StringEncodingSettings.LengthPrefix.ShortLength -> decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.childByteOrder).toInt()
 
                         is StringEncodingSettings.LengthPrefix.WithOverflow -> {
                             if (decoder.peekNextIs(byteArrayOf(endMarking.sentinel), true)) {
-                                decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.byteOrder).toInt()
+                                decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.childByteOrder).toInt()
                             } else {
-                                decoder.nextBytes(1)[0].toInt()
+                                decoder.nextBytes(1)[0].toUByte().toInt()
                             }
                         }
                     }
@@ -160,24 +311,40 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
                     binaryDescriptor.decodeNaturalNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(lengthMarking.supportedLengths, false)).toInt()
                 }
 
+                is BluetoothBinaryDescriptor.CollectionSettings.FlagIndexedLength -> {
+                    // Count is packed in the parent's flag header at the collection's bitIndex,
+                    // least-significant bit first (mirrors the encoder).
+                    (0 until lengthMarking.bits).fold(0) { acc, bit ->
+                        if (decoder.flags[binaryDescriptor.bitIndex + bit]) acc or (1 shl bit) else acc
+                    }
+                }
+
                 // For NullTerminated or Unmarked, the length is unknown when decoding starts
                 is BluetoothBinaryDescriptor.CollectionSettings.Unmarked -> -1
 
-                is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> -1
+                is BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked -> -1
             }
         } else {
             0
         }
 
-        protected fun hasElementAtIndex(index: Int): Boolean = when {
-            expectedSize >= 0 -> index < expectedSize
-            collectionSettings.lengthMarking is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> !decoder.peekNextIs(byteArrayOf(0x00), true)
-            else -> !decoder.isEmpty()
+        protected fun hasElementAtIndex(index: Int): Boolean {
+            val lengthMarking = collectionSettings.lengthMarking
+            return when {
+                expectedSize >= 0 -> index < expectedSize
+                lengthMarking is BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked -> !decoder.peekNextIs(byteArrayOf(lengthMarking.terminator), true)
+                else -> !decoder.isEmpty()
+            }
         }
 
         override fun decoderAtIndex(index: Int): BluetoothBinaryDescriptorDecoder = decoders.getOrPut(index) {
             val elementDescriptor = binaryDescriptorAtIndex(index)
-            decoder.beginStructure(elementDescriptor, elementDescriptor.bitWidth)
+            // This decoder only reads the item's own flag bits. Any @Prefix/@Postfix/@Checksum the item type
+            // carries is consumed by the item's own decoder, so strip the frame here to avoid reading it twice.
+            val headerDescriptor = elementDescriptor.copy(
+                structureSettings = elementDescriptor.structureSettings.copy(prefix = null, postfix = null, checksumAlgorithm = null),
+            )
+            decoder.beginStructure(headerDescriptor, elementDescriptor.bitWidth)
         }
 
         override fun endStructure(descriptor: SerialDescriptor) {}
@@ -262,10 +429,23 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
     override fun decodeShortElement(descriptor: SerialDescriptor, index: Int): Short = binaryDescriptorAtIndex(index).decodeShortElement(decoderAtIndex(index))
 
     override fun decodeStringElement(descriptor: SerialDescriptor, index: Int): String = if (descriptor.kind is PolymorphicKind && index == 0) {
-        // For polymorphic classes the first element is its type string. Find its match in the polymorphicMap
-        binaryDescriptor.polymorphicMap.firstNotNullOf { (key, value) ->
-            val decoder = decoderAtIndex(index)
-            key.takeIf { decoder.peekNextIs(value.array, true) }
+        val sizeMap = binaryDescriptor.sizePolymorphicMap
+        val sizeFallback = binaryDescriptor.sizePolymorphicFallback
+        if (sizeMap.isNotEmpty() || sizeFallback != null) {
+            // Size-based dispatch: no prefix consumed; fixed sizes matched first, fallback used otherwise.
+            val remaining = decoderAtIndex(index).remainingPayloadBytes()
+            sizeMap[remaining]
+                ?: sizeFallback
+                ?: throw SerializationException(
+                    "No @SizePolymorphic subtype registered for size $remaining in ${descriptor.serialName}. " +
+                        "Expected one of ${sizeMap.keys}.",
+                )
+        } else {
+            // Byte-prefix-based dispatch: peek at the next bytes to match the subtype identifier.
+            binaryDescriptor.polymorphicMap.firstNotNullOf { (key, value) ->
+                val decoder = decoderAtIndex(index)
+                key.takeIf { decoder.peekNextIs(value.array, true) }
+            }
         }
     } else {
         binaryDescriptorAtIndex(index).decodeStringElement(decoderAtIndex(index))
@@ -308,16 +488,26 @@ internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: Blue
         }
     }
     val bytes = decoder.nextBytes(expectedLength.bytes)
+    // childByteOrder is the VALUE encoding direction the encoder used. For a primitive field it equals byteOrder;
+    // they differ for a collection's own count, whose descriptor accumulates in the enclosing structure's direction.
     // Because we deal with flexible sizing and unsigned elements, always return a Long so no data will be lost
     return when (expectedLength) {
         Length.`8_BIT` -> if (settings.signed) bytes[0].toLong() else bytes[0].toUByte().toUShort().toShort().toLong()
-        Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, byteOrder).toLong() else bytes.decodeUShort(0, byteOrder).toUInt().toLong()
-        Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, byteOrder).value.toLong() else bytes.decodeUInt24(0, byteOrder).value.toULong().toLong()
-        Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, byteOrder).toLong() else bytes.decodeUInt(0, byteOrder).toULong().toLong()
-        Length.`40_BIT` -> if (settings.signed) bytes.decodeInt40(0, byteOrder).value else bytes.decodeUInt40(0, byteOrder).value.toLong()
-        Length.`48_BIT` -> if (settings.signed) bytes.decodeInt48(0, byteOrder).value else bytes.decodeUInt48(0, byteOrder).value.toLong()
-        Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, byteOrder) else bytes.decodeULong(0, byteOrder).toLong()
+        Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, childByteOrder).toLong() else bytes.decodeUShort(0, childByteOrder).toUInt().toLong()
+        Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, childByteOrder).value.toLong() else bytes.decodeUInt24(0, childByteOrder).value.toULong().toLong()
+        Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, childByteOrder).toLong() else bytes.decodeUInt(0, childByteOrder).toULong().toLong()
+        Length.`40_BIT` -> if (settings.signed) bytes.decodeInt40(0, childByteOrder).value else bytes.decodeUInt40(0, childByteOrder).value.toLong()
+        Length.`48_BIT` -> if (settings.signed) bytes.decodeInt48(0, childByteOrder).value else bytes.decodeUInt48(0, childByteOrder).value.toLong()
+        Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, childByteOrder) else bytes.decodeULong(0, childByteOrder).toLong()
     }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeRangeNumericElement(
+    decoder: BluetoothBinaryDescriptorDecoder,
+    settings: BluetoothBinaryDescriptor.NumericSettings.RangeEncoded,
+): Double {
+    val rawValue = decodeNaturalNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, false))
+    return rawValue.toDouble() / settings.maxWireValue * (settings.max - settings.min) + settings.min
 }
 
 internal fun BluetoothBinaryDescriptor.decodeScalarNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.Scalar): Double {
@@ -343,8 +533,8 @@ internal fun BluetoothBinaryDescriptor.decodeDecimalNumericElement(decoder: Blue
     }
     val bytes = decoder.nextBytes(lengthToDecode.bytes)
     return when (lengthToDecode) {
-        Length.`32_BIT` -> bytes.decodeFloat(0, byteOrder).toDouble()
-        Length.`64_BIT` -> bytes.decodeDouble(0, byteOrder)
+        Length.`32_BIT` -> bytes.decodeFloat(0, childByteOrder).toDouble()
+        Length.`64_BIT` -> bytes.decodeDouble(0, childByteOrder)
         else -> throw IllegalArgumentException("Decimal only supports 32 and 64 bit decoding")
     }
 }
@@ -390,6 +580,8 @@ internal fun BluetoothBinaryDescriptor.decodeByteElement(decoder: BluetoothBinar
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toByte()
 
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toByte()
+
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toByte()
     }
 }
 
@@ -407,6 +599,8 @@ internal fun BluetoothBinaryDescriptor.decodeShortElement(decoder: BluetoothBina
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toShort()
 
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toShort()
+
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toShort()
     }
 }
 
@@ -424,6 +618,8 @@ internal fun BluetoothBinaryDescriptor.decodeIntElement(decoder: BluetoothBinary
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt()
 
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt()
+
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt()
     }
 }
 
@@ -433,6 +629,7 @@ internal fun BluetoothBinaryDescriptor.decodeLongElement(decoder: BluetoothBinar
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toLong()
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toLong()
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toLong()
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toLong()
     }
 }
 
@@ -442,6 +639,7 @@ internal fun BluetoothBinaryDescriptor.decodeFloatElement(decoder: BluetoothBina
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toFloat()
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toFloat()
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toFloat()
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toFloat()
     }
 }
 
@@ -451,6 +649,7 @@ internal fun BluetoothBinaryDescriptor.decodeDoubleElement(decoder: BluetoothBin
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings)
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings)
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings)
+        is BluetoothBinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings)
     }
 }
 

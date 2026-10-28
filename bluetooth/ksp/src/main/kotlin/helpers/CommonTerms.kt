@@ -88,6 +88,7 @@ const val DESERIALIZATION_STRATEGY = "deserializationStrategy"
 
 // Bluetooth
 const val BLUETOOTH = "bluetooth"
+const val BLUETOOTH_SNAPSHOT = "bluetoothSnapshot"
 const val IDENTIFIER = "identifier"
 const val SIMULATED = "simulated"
 const val MOCK = "mock"
