@@ -18,15 +18,16 @@ kaluga {
             main {
                 api(project(":bytes:annotations", ""))
                 api(project(":bytes:core", ""))
-                api(project(":bytes:integer", ""))
+                api(project(":bytes:layout", ""))
                 api(project(":bytes:medfloat", ""))
                 api(project(":bytes:strings", ""))
                 api(project(":bytes:stuffing", ""))
-                api(project(":bytes:crc", ""))
                 api(libs.kotlinx.serialization.core)
             }
             test {
                 implementation(project(":base:test", ""))
+                implementation(project(":bytes:crc", ""))
+                implementation(project(":bytes:integer", ""))
                 implementation(project(":scientific:scientific"))
             }
         }

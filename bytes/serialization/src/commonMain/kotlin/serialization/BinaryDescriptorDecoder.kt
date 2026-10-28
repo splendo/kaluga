@@ -22,29 +22,11 @@ import com.splendo.kaluga.bytes.buildByteArray
 import com.splendo.kaluga.bytes.decodeULong
 import com.splendo.kaluga.bytes.isBitSet
 import com.splendo.kaluga.bytes.toHexString
-import com.splendo.kaluga.bytes.crc.CRC
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encoding.Decoder
-
-/**
- * Exception thrown if the [ByteArray] provided to [BytesFormat] is smaller than expected
- */
-class ByteArrayEndedBeforeSerializationCompleted(override val message: String) : SerializationException()
-
-/**
- * Exception thrown if the [ByteArray] provided to [BytesFormat] is bigger then expected
- */
-class UnexpectedBytesRemaining(override val message: String) : SerializationException()
-
-/**
- * Exception thrown if the Prefix of a structure does not match [Prefix] value
- */
-class InvalidPrefix(override val message: String) : SerializationException()
-
-/**
- * Exception thrown if the Postfix of a structure does not match [Postfix] value
- */
-class InvalidPostfix(override val message: String) : SerializationException()
+import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.InvalidChecksumException
+import com.splendo.kaluga.bytes.layout.InvalidPostfix
+import com.splendo.kaluga.bytes.layout.InvalidPrefix
+import com.splendo.kaluga.bytes.layout.UnexpectedBytesRemaining
 
 internal interface BinaryDescriptorDecoder {
 
@@ -123,7 +105,8 @@ internal class RootBinaryDescriptorDecoder(private val byteArray: ByteArray, pri
     }
 
     private fun <T> ensureAvailable(size: Int, block: () -> T): T {
-        if (size + offset > byteArray.size) throw ByteArrayEndedBeforeSerializationCompleted("Not enough bytes remaining")
+        // A negative size is a frame too short for the footer it was asked to leave unread.
+        if (size < 0 || size + offset > byteArray.size) throw ByteArrayEndedBeforeSerializationCompleted("Not enough bytes remaining")
         return block()
     }
 
@@ -157,13 +140,6 @@ internal class RootBinaryDescriptorDecoder(private val byteArray: ByteArray, pri
     }
 }
 
-/**
- * Exception thrown if the Checksum does not match given [Checksum] algorithm.
- * This check can be disabled using [BytesFormat.validateChecksum]
- */
-class InvalidChecksumException(val expected: ULong, val actual: ULong) : SerializationException() {
-    override val message: String = "Checksum expected $expected but got $actual"
-}
 internal class StructureBinaryDescriptorDecoder(
     val descriptor: BinaryDescriptor,
     val rootDecoder: RootBinaryDescriptorDecoder,

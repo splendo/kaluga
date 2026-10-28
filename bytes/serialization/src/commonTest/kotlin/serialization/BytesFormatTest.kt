@@ -65,6 +65,12 @@ import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
 import com.splendo.kaluga.bytes.annotations.ByteStuffedSlip
 import com.splendo.kaluga.bytes.annotations.ByteStuffedCobs
 import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.InvalidByteOrderException
+import com.splendo.kaluga.bytes.layout.InvalidChecksumException
+import com.splendo.kaluga.bytes.layout.InvalidPostfix
+import com.splendo.kaluga.bytes.layout.InvalidPrefix
+import com.splendo.kaluga.bytes.layout.UnsupportedByteStuffing
 import com.splendo.kaluga.bytes.integer.add
 import com.splendo.kaluga.bytes.medfloat.add
 import com.splendo.kaluga.bytes.strings.add

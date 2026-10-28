@@ -19,12 +19,11 @@ package com.splendo.kaluga.bytes.serialization
 
 import com.splendo.kaluga.bytes.ByteArrayBuilder
 import com.splendo.kaluga.bytes.ByteOrder
-import com.splendo.kaluga.bytes.integer.add
-import com.splendo.kaluga.bytes.medfloat.add
-import com.splendo.kaluga.bytes.strings.add
 import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
 import com.splendo.kaluga.bytes.buildByteArray
 import com.splendo.kaluga.bytes.toByteArray
+import com.splendo.kaluga.bytes.annotations.Unsized
+import com.splendo.kaluga.bytes.layout.FrameSettings
 import kotlinx.serialization.SerializationException
 
 /**
@@ -56,7 +55,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BinaryDescr
     val flagBits: BooleanArray = BooleanArray(flagBitsSize.coerceAtLeast(0))
 
     /** The frame ([Prefix]/[Postfix]/[Checksum]) this builder is responsible for writing. */
-    protected open val structureSettings: BinaryDescriptor.StructureSettings get() = binaryDescriptor.structureSettings
+    protected open val structureSettings: FrameSettings get() = binaryDescriptor.structureSettings
 
     override val expectedSize: Int
         get() = totalBodySize +
@@ -197,7 +196,7 @@ internal class ItemBinaryBuilder(binaryDescriptor: BinaryDescriptor, onUnconstra
     // beginStructure, encodeInline or encodeEnum — so this builder contributes the item's flag bits and body
     // only, never a second copy of the frame. The descriptor itself keeps its settings: it is handed to that
     // encoder by [CollectionBinaryBuilder.setIndex].
-    override val structureSettings = binaryDescriptor.structureSettings.copy(prefix = null, postfix = null, checksumAlgorithm = null)
+    override val structureSettings = binaryDescriptor.structureSettings.copy(prefix = null, postfix = null, checksum = null)
 
     fun startsWithTerminator(value: ByteArray, order: ByteOrder, terminator: Byte): Boolean = when (order) {
         ByteOrder.LEAST_SIGNIFICANT_FIRST -> value.firstOrNull() == terminator
@@ -209,7 +208,7 @@ internal class ItemBinaryBuilder(binaryDescriptor: BinaryDescriptor, onUnconstra
  * Exception thrown when a terminator-marked collection has an item that starts with the terminator byte,
  * which would be indistinguishable from the end of the collection.
  */
-class UnexpectedTerminator(override val message: String) : SerializationException()
+typealias UnexpectedTerminator = com.splendo.kaluga.bytes.layout.UnexpectedTerminator
 
 /**
  * A [BinaryBuilder] to build data for a collection (List/Map) structure

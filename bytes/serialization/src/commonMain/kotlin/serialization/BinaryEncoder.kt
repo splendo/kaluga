@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.bytes.serialization
 
-import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.ByteOrder
-import com.splendo.kaluga.bytes.integer.add
 import com.splendo.kaluga.bytes.medfloat.add
 import com.splendo.kaluga.bytes.strings.add
 import com.splendo.kaluga.bytes.strings.Encoding
@@ -29,12 +27,11 @@ import com.splendo.kaluga.bytes.strings.byteArraySize
 import com.splendo.kaluga.bytes.isBitSet
 import com.splendo.kaluga.bytes.medfloat.MedFloat16
 import com.splendo.kaluga.bytes.medfloat.MedFloat32
-import com.splendo.kaluga.bytes.integer.toInt24
-import com.splendo.kaluga.bytes.integer.toUInt24
-import com.splendo.kaluga.bytes.integer.toInt40
-import com.splendo.kaluga.bytes.integer.toUInt40
-import com.splendo.kaluga.bytes.integer.toInt48
-import com.splendo.kaluga.bytes.integer.toUInt48
+import com.splendo.kaluga.bytes.annotations.Length
+import com.splendo.kaluga.bytes.layout.CollectionSettings
+import com.splendo.kaluga.bytes.layout.FrameSettings
+import com.splendo.kaluga.bytes.layout.NumericCodec
+import com.splendo.kaluga.bytes.layout.NumericSettings
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.PolymorphicKind
@@ -43,8 +40,6 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.SerializersModule
-import kotlin.math.pow
-import kotlin.math.round
 
 internal class BinaryEncoder(
     private val binaryDescriptor: BinaryDescriptor,
@@ -109,7 +104,7 @@ internal class BinaryEncoder(
     override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
         val collectionSettings =
             binaryDescriptor.collectionSettings
-                ?: BinaryDescriptor.CollectionSettings(BinaryDescriptor.CollectionSettings.NumericLength(setOf(Length.`8_BIT`)), false)
+                ?: CollectionSettings(CollectionSettings.NumericLength(setOf(Length.`8_BIT`)), false)
 
         if (binaryDescriptor.isNullable) {
             // Reaching here means the collection is not null, so it is only absent when [NullIfEmpty] turns an
@@ -120,23 +115,23 @@ internal class BinaryEncoder(
 
         // Encode length if necessary
         when (val lengthMarking = collectionSettings.lengthMarking) {
-            is BinaryDescriptor.CollectionSettings.LengthPrefix ->
+            is CollectionSettings.LengthPrefix ->
                 if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                     builder.addAction(lengthMarking.endMarking.expectedByteSize(collectionSize.toUInt())) {
                         add(binaryDescriptor.encodeCollectionSize(lengthMarking.endMarking, collectionSize.toUInt()))
                     }
                 }
 
-            is BinaryDescriptor.CollectionSettings.NumericLength ->
+            is CollectionSettings.NumericLength ->
                 if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                     builder.encodeNumericElement(
                         collectionSize,
                         binaryDescriptor,
-                        BinaryDescriptor.NumericSettings.Natural(lengthMarking.supportedLengths, false),
+                        NumericSettings.Natural(lengthMarking.supportedLengths, false),
                     )
                 }
 
-            is BinaryDescriptor.CollectionSettings.FlagIndexedLength -> {
+            is CollectionSettings.FlagIndexedLength -> {
                 // Pack the count into the parent's flag header at the collection's bitIndex,
                 // least-significant bit first (mirrors how flag-indexed integers and enum ordinals work).
                 val raw = collectionSize.toLong()
@@ -145,14 +140,14 @@ internal class BinaryEncoder(
                 }
             }
 
-            is BinaryDescriptor.CollectionSettings.Unmarked -> {}
+            is CollectionSettings.Unmarked -> {}
 
-            is BinaryDescriptor.CollectionSettings.TerminalMarked -> {}
+            is CollectionSettings.TerminalMarked -> {}
         }
 
         // The terminator byte for a null-marked collection (null when the collection is not terminator-marked); used
         // only for the non-stuffed start-with-terminator safety check, as stuffed collections escape it.
-        val terminator = (collectionSettings.lengthMarking as? BinaryDescriptor.CollectionSettings.TerminalMarked)?.terminator
+        val terminator = (collectionSettings.lengthMarking as? CollectionSettings.TerminalMarked)?.terminator
 
         var markUnconstrained = false
         val binaryBuilder = when (descriptor.kind) {
@@ -176,13 +171,13 @@ internal class BinaryEncoder(
 
                 // When done, mark end if necessary
                 when (val lengthMarking = collectionSettings.lengthMarking) {
-                    is BinaryDescriptor.CollectionSettings.TerminalMarked -> {
+                    is CollectionSettings.TerminalMarked -> {
                         if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                             builder.addAction(1) { add(lengthMarking.terminator) }
                         }
                     }
 
-                    is BinaryDescriptor.CollectionSettings.Unmarked -> {
+                    is CollectionSettings.Unmarked -> {
                         if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                             builder.makeUnconstrained()
                         }
@@ -249,7 +244,7 @@ internal class BinaryEncoder(
         // The underlying encoder uses a descriptor with cleared structureSettings so that encodeEnum and
         // other methods that read structureSettings do not double-apply the boundary inside the body.
         val classBuilder = ClassBinaryBuilder(binaryDescriptor) {}
-        val bodyDescriptor = binaryDescriptor.copy(structureSettings = BinaryDescriptor.StructureSettings(null, null, null))
+        val bodyDescriptor = binaryDescriptor.copy(structureSettings = FrameSettings(null, null, null))
         // A value class has no children, so it has no flag header of its own. Any bit its wrapped value needs
         // (nullability, @FlagIndex, @Size width selection) lives in the enclosing structure's header — the same
         // place as when the value class carries no frame, and the place the decoder reads it from. Only body
@@ -540,32 +535,18 @@ internal fun BinaryBuilder.encodeBooleanElement(value: Boolean, binaryDescriptor
     }
 }
 
-// Whether [this] is represented losslessly by a 32-bit float. Kotlin/JS has no true 32-bit Float, so
-// `toFloat()` does not round to 32-bit precision there and a naive `this == toFloat()` would always be
-// true — round-trip through the raw bits to obtain the genuine 32-bit value so the 32-bit-vs-64-bit
-// sizing decision (and thus the byte layout) is identical on every platform.
-private fun Number.fitsLosslesslyIn32BitFloat(): Boolean = toDouble() == Float.fromBits(toFloat().toRawBits()).toDouble()
-
-// Whether [value] fits in [bits] bits with the given signedness, so a flag-packed numeric can't silently truncate.
-private fun fitsInBits(value: Long, bits: Int, signed: Boolean): Boolean = when {
-    bits >= Long.SIZE_BITS -> true
-    signed -> value in -(1L shl (bits - 1)) until (1L shl (bits - 1))
-    else -> value in 0L until (1L shl bits)
-}
-
-internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor: BinaryDescriptor, settings: BinaryDescriptor.NumericSettings) {
+internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor: BinaryDescriptor, settings: NumericSettings) {
     when (settings) {
-        is BinaryDescriptor.NumericSettings.Natural -> if (settings.inFlagsBits != null) {
+        is NumericSettings.Natural -> settings.inFlagsBits?.let { bits ->
             // Sub-byte value packed straight into the flag region, least-significant bit first (like an enum ordinal).
-            val bits = settings.inFlagsBits
             val raw = value.toLong()
-            require(fitsInBits(raw, bits, settings.signed)) {
+            require(NumericCodec.fitsInBits(raw, bits, settings.signed)) {
                 "Value $raw does not fit in a ${if (settings.signed) "signed" else "unsigned"} $bits-bit flag field"
             }
             for (bit in 0 until bits) {
                 addFlag(binaryDescriptor.bitIndex + bit, (raw shr bit) and 1L == 1L)
             }
-        } else {
+        } ?: run {
             val supportedLengths = settings.supportedLengths
             // Grab desired length
             val lengthToAdd = when (supportedLengths.size) {
@@ -574,10 +555,7 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                 1 -> supportedLengths.first()
 
                 else -> {
-                    // Find smallest fitting match or take the last size
-                    val (lengthIndex, length) = supportedLengths.withIndex().firstOrNull { (_, length) ->
-                        length.fits(value, settings.signed)
-                    } ?: supportedLengths.withIndex().last()
+                    val (lengthIndex, length) = NumericCodec.selectLength(supportedLengths, value, settings.signed)
 
                     // Set the flags according to the picked size
                     val offset = if (binaryDescriptor.isNullable) 1 else 0
@@ -589,79 +567,24 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                 }
             }
             addAction(lengthToAdd.bytes) {
-                // Encode based on length
-                when (lengthToAdd) {
-                    Length.`8_BIT` -> if (settings.signed) add(value.toByte()) else add(value.toByte().toUByte())
-
-                    Length.`16_BIT` -> if (settings.signed) {
-                        add(
-                            value.toShort(),
-                            binaryDescriptor.childByteOrder,
-                        )
-                    } else {
-                        add(value.toShort().toUShort(), binaryDescriptor.childByteOrder)
-                    }
-
-                    Length.`24_BIT` -> if (settings.signed) {
-                        add(
-                            value.toInt().toInt24(),
-                            binaryDescriptor.childByteOrder,
-                        )
-                    } else {
-                        add(value.toInt().toUInt().toUInt24(), binaryDescriptor.childByteOrder)
-                    }
-
-                    Length.`32_BIT` -> if (settings.signed) add(value.toInt(), binaryDescriptor.childByteOrder) else add(value.toInt().toUInt(), binaryDescriptor.childByteOrder)
-
-                    Length.`40_BIT` -> if (settings.signed) {
-                        add(
-                            value.toLong().toInt40(),
-                            binaryDescriptor.childByteOrder,
-                        )
-                    } else {
-                        add(value.toLong().toULong().toUInt40(), binaryDescriptor.childByteOrder)
-                    }
-
-                    Length.`48_BIT` -> if (settings.signed) {
-                        add(
-                            value.toLong().toInt48(),
-                            binaryDescriptor.childByteOrder,
-                        )
-                    } else {
-                        add(value.toLong().toULong().toUInt48(), binaryDescriptor.childByteOrder)
-                    }
-
-                    Length.`64_BIT` -> if (settings.signed) add(value.toLong(), binaryDescriptor.childByteOrder) else add(value.toLong().toULong(), binaryDescriptor.childByteOrder)
-                }
+                add(bytes = ByteArray(lengthToAdd.bytes).also { NumericCodec.writeNatural(it, 0, value, lengthToAdd, settings.signed, binaryDescriptor.childByteOrder) })
             }
         }
 
-        is BinaryDescriptor.NumericSettings.RangeEncoded -> {
-            val ratio = (value.toDouble() - settings.min) / (settings.max - settings.min)
-            val wireValue = round(ratio * settings.maxWireValue)
-            encodeNumericElement(wireValue, binaryDescriptor, BinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, false))
+        is NumericSettings.RangeEncoded -> {
+            val wireValue = NumericCodec.rangeToWire(settings, value)
+            encodeNumericElement(wireValue, binaryDescriptor, NumericSettings.Natural(settings.supportedLengths, false))
         }
 
-        is BinaryDescriptor.NumericSettings.Scalar -> {
-            // Calculate scaled value and store it as a natural number. The scaled value is meant to be
-            // integral; round to the nearest integer rather than letting the downstream `toByte()`/etc.
-            // truncate it, so sub-ULP floating-point noise (which differs per platform — Kotlin/JS has no
-            // true 32-bit Float and `pow` can differ by a ULP) can't tip a boundary value to the wrong
-            // integer. Guarantees identical bytes on every platform.
-            val scaledValue = round(settings.multiplier * value.toDouble() * 10.0.pow(settings.decimalExponent) * 2.0.pow(settings.binaryExponent) + settings.offset)
-            encodeNumericElement(scaledValue, binaryDescriptor, BinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, settings.signed))
+        is NumericSettings.Scalar -> {
+            val scaledValue = NumericCodec.scalarToWire(settings, value)
+            encodeNumericElement(scaledValue, binaryDescriptor, NumericSettings.Natural(settings.supportedLengths, settings.signed))
         }
 
-        is BinaryDescriptor.NumericSettings.Decimal -> {
+        is NumericSettings.Decimal -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = binaryDescriptor.bitIndex + if (binaryDescriptor.isNullable) 1 else 0
-                if (value.fitsLosslesslyIn32BitFloat()) {
-                    addFlag(flagIndex, false)
-                    Length.`32_BIT`
-                } else {
-                    addFlag(flagIndex, true)
-                    Length.`64_BIT`
-                }
+                NumericCodec.decimalLength(value).also { addFlag(flagIndex, it == Length.`64_BIT`) }
             } else {
                 settings.supportedLengths.first()
             }
@@ -678,16 +601,10 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
             }
         }
 
-        is BinaryDescriptor.NumericSettings.MedFloat -> {
+        is NumericSettings.MedFloat -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = binaryDescriptor.bitIndex + if (binaryDescriptor.isNullable) 1 else 0
-                if (MedFloat16.canRepresent(value.toDouble())) {
-                    addFlag(flagIndex, false)
-                    Length.`16_BIT`
-                } else {
-                    addFlag(flagIndex, true)
-                    Length.`32_BIT`
-                }
+                NumericCodec.medFloatLength(value.toDouble()).also { addFlag(flagIndex, it == Length.`32_BIT`) }
             } else {
                 settings.supportedLengths.first()
             }
@@ -704,44 +621,44 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
 }
 
 private val BinaryDescriptor.isUnsigned: Boolean get() = when (numericSettings) {
-    is BinaryDescriptor.NumericSettings.Natural -> !numericSettings.signed
-    is BinaryDescriptor.NumericSettings.Scalar -> !numericSettings.signed
-    is BinaryDescriptor.NumericSettings.RangeEncoded -> false
-    is BinaryDescriptor.NumericSettings.Decimal -> false
-    is BinaryDescriptor.NumericSettings.MedFloat -> false
+    is NumericSettings.Natural -> !numericSettings.signed
+    is NumericSettings.Scalar -> !numericSettings.signed
+    is NumericSettings.RangeEncoded -> false
+    is NumericSettings.Decimal -> false
+    is NumericSettings.MedFloat -> false
     null -> false
 }
 
 internal fun BinaryBuilder.encodeByteElement(value: Byte, binaryDescriptor: BinaryDescriptor) = encodeNumericElement(
     if (binaryDescriptor.isUnsigned) value.toUByte().toShort() else value,
     binaryDescriptor,
-    binaryDescriptor.numericSettings ?: BinaryDescriptor.NumericSettings.Natural(setOf(Length.`8_BIT`), false),
+    binaryDescriptor.numericSettings ?: NumericSettings.Natural(setOf(Length.`8_BIT`), false),
 )
 internal fun BinaryBuilder.encodeShortElement(value: Short, binaryDescriptor: BinaryDescriptor) = encodeNumericElement(
     if (binaryDescriptor.isUnsigned) value.toUShort().toInt() else value,
     binaryDescriptor,
-    binaryDescriptor.numericSettings ?: BinaryDescriptor.NumericSettings.Natural(setOf(Length.`16_BIT`), false),
+    binaryDescriptor.numericSettings ?: NumericSettings.Natural(setOf(Length.`16_BIT`), false),
 )
 internal fun BinaryBuilder.encodeIntElement(value: Int, binaryDescriptor: BinaryDescriptor) = encodeNumericElement(
     if (binaryDescriptor.isUnsigned) value.toUInt().toLong() else value,
     binaryDescriptor,
-    binaryDescriptor.numericSettings ?: BinaryDescriptor.NumericSettings.Natural(setOf(Length.`32_BIT`), false),
+    binaryDescriptor.numericSettings ?: NumericSettings.Natural(setOf(Length.`32_BIT`), false),
 )
 internal fun BinaryBuilder.encodeLongElement(value: Long, binaryDescriptor: BinaryDescriptor) = encodeNumericElement(
     value,
     binaryDescriptor,
-    binaryDescriptor.numericSettings ?: BinaryDescriptor.NumericSettings.Natural(setOf(Length.`64_BIT`), false),
+    binaryDescriptor.numericSettings ?: NumericSettings.Natural(setOf(Length.`64_BIT`), false),
 )
 
 internal fun BinaryBuilder.encodeFloatElement(value: Float, binaryDescriptor: BinaryDescriptor) = encodeNumericElement(
     value,
     binaryDescriptor,
-    binaryDescriptor.numericSettings ?: BinaryDescriptor.NumericSettings.Decimal(setOf(Length.`32_BIT`)),
+    binaryDescriptor.numericSettings ?: NumericSettings.Decimal(setOf(Length.`32_BIT`)),
 )
 internal fun BinaryBuilder.encodeDoubleElement(value: Double, binaryDescriptor: BinaryDescriptor) = encodeNumericElement(
     value,
     binaryDescriptor,
-    binaryDescriptor.numericSettings ?: BinaryDescriptor.NumericSettings.Decimal(setOf(Length.`64_BIT`)),
+    binaryDescriptor.numericSettings ?: NumericSettings.Decimal(setOf(Length.`64_BIT`)),
 )
 
 internal fun BinaryBuilder.encodeStringElement(value: String, binaryDescriptor: BinaryDescriptor) {

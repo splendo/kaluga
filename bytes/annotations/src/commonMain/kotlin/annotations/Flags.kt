@@ -71,6 +71,7 @@ annotation class ByOrdinal(val offset: Int = 0, val size: Length = Length.`8_BIT
  *
  * Use this for wire profiles that include reserved or padding bytes that carry no information.
  * Unlike [@Postfix][Postfix], `@Reserved` does **not** validate the byte values on decode — any content is silently discarded.
+ * The padding belongs to the property's slot, so a nullable property that is absent has none.
  *
  * @property before number of reserved bytes immediately before this property in the wire format
  * @property after number of reserved bytes immediately after this property in the wire format
@@ -292,6 +293,7 @@ annotation class Unsized
  * Annotation added for serializing using BytesFormat
  *
  * When applied to a Collection, a null flag will be added and set to 0 if the list is empty (resulting in no length being encoded in the body).
+ * Without it, a nullable Collection that is empty is present: its flag is set and its count is encoded.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo

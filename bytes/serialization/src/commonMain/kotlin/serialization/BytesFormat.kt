@@ -20,6 +20,30 @@ package com.splendo.kaluga.bytes.serialization
 import com.splendo.kaluga.bytes.ByteArrayBuilder
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.buildByteArray
+import com.splendo.kaluga.bytes.annotations.ByteStuffed
+import com.splendo.kaluga.bytes.annotations.ByteStuffedCobs
+import com.splendo.kaluga.bytes.annotations.ByteStuffedSlip
+import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
+import com.splendo.kaluga.bytes.annotations.Checksum
+import com.splendo.kaluga.bytes.annotations.Encoded
+import com.splendo.kaluga.bytes.annotations.FlagIndex
+import com.splendo.kaluga.bytes.annotations.FlagWidth
+import com.splendo.kaluga.bytes.annotations.ItemSize
+import com.splendo.kaluga.bytes.annotations.KeyEncoded
+import com.splendo.kaluga.bytes.annotations.Length
+import com.splendo.kaluga.bytes.annotations.LengthPrefix
+import com.splendo.kaluga.bytes.annotations.MedFloat
+import com.splendo.kaluga.bytes.annotations.NullIfEmpty
+import com.splendo.kaluga.bytes.annotations.NullTerminated
+import com.splendo.kaluga.bytes.annotations.Postfix
+import com.splendo.kaluga.bytes.annotations.Prefix
+import com.splendo.kaluga.bytes.annotations.Scalar
+import com.splendo.kaluga.bytes.annotations.SerializedByteValue
+import com.splendo.kaluga.bytes.annotations.Size
+import com.splendo.kaluga.bytes.annotations.Unsigned
+import com.splendo.kaluga.bytes.annotations.Unsized
+import com.splendo.kaluga.bytes.annotations.ValueNullTerminated
+import com.splendo.kaluga.bytes.layout.UnsupportedByteStuffing
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
@@ -63,11 +87,13 @@ import kotlinx.serialization.serializer
  * - Use [Unsized] to mark a String or Collection as Unsized, meaning all remaining bytes (with the exception of any [Checksum] or [Postfix]) belong to this object.
  * Attempting to encode data after will lead to an exception.
  * - Use [NullIfEmpty] to mark a Collection as nullable if it is empty. When null its size will not be encoded.
+ * Without it, a nullable Collection that is empty is still present and its size is encoded.
  * - Use [SerializedByteValue] to change the byte identifier of an Enum or Polymorphic class. This replaces serializing its serial name as an unsized string.
  * - Use [ByteStuffed] (CSafe), [ByteStuffedXor] (PPP-style), [ByteStuffedSlip] (SLIP) or [ByteStuffedCobs] (COBS) to byte-stuff so a delimiter never
  * appears literally in the content (only for [com.splendo.kaluga.bytes.ByteOrder.LEAST_SIGNIFICANT_FIRST]). On the root structure it stuffs the body
  * and [Checksum] while leaving a [Prefix]/[Postfix] frame untouched (CSafe framing); on a String or Collection it is itself a terminated marking, stuffing
- * the content so the terminator stays unambiguous (`@ByteStuffedXor`/`@ByteStuffedCobs` for `0x00`, `@ByteStuffedSlip` for `0xC0`). Stuffing also
+ * the content so the terminator stays unambiguous (`@ByteStuffedXor`/`@ByteStuffedCobs` for `0x00`, `@ByteStuffedSlip` for `0xC0`). A delimiter scheme
+ * terminates with its own delimiter, so it rejects a `@Terminal`; [ByteStuffed] has none and needs one, drawn from the bytes it escapes. Stuffing also
  * applies to nested structures: a nested stuffed structure stuffs its body and [Checksum] (leaving any [Prefix]/[Postfix] frame untouched,
  * as on the root) and is bounded by its terminator (a delimiter scheme's delimiter, or an explicit `@Terminal`) or, when unterminated
  * (e.g. `@ByteStuffed` with no `@Terminal`), by being the last, unsized field. A stuffed structure nested inside another stuffed structure

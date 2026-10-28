@@ -6,69 +6,11 @@
 // - Show declarations: true
 
 // Library unique name: <com.splendo.kaluga.bytes:serialization>
-final class com.splendo.kaluga.bytes.serialization/ByteArrayEndedBeforeSerializationCompleted : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/ByteArrayEndedBeforeSerializationCompleted|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/ByteArrayEndedBeforeSerializationCompleted.<init>|<init>(kotlin.String){}[0]
-
-    final val message // com.splendo.kaluga.bytes.serialization/ByteArrayEndedBeforeSerializationCompleted.message|{}message[0]
-        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.serialization/ByteArrayEndedBeforeSerializationCompleted.message.<get-message>|<get-message>(){}[0]
-}
-
 final class com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData|null[0]
     constructor <init>(kotlin/String?) // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.<init>|<init>(kotlin.String?){}[0]
 
     final val message // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.message|{}message[0]
         final fun <get-message>(): kotlin/String? // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.message.<get-message>|<get-message>(){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/FlagIndexException : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/FlagIndexException|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/FlagIndexException.<init>|<init>(kotlin.String){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/InvalidByteOrderException : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/InvalidByteOrderException|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/InvalidByteOrderException.<init>|<init>(kotlin.String){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/InvalidChecksumException : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/InvalidChecksumException|null[0]
-    constructor <init>(kotlin/ULong, kotlin/ULong) // com.splendo.kaluga.bytes.serialization/InvalidChecksumException.<init>|<init>(kotlin.ULong;kotlin.ULong){}[0]
-
-    final val actual // com.splendo.kaluga.bytes.serialization/InvalidChecksumException.actual|{}actual[0]
-        final fun <get-actual>(): kotlin/ULong // com.splendo.kaluga.bytes.serialization/InvalidChecksumException.actual.<get-actual>|<get-actual>(){}[0]
-    final val expected // com.splendo.kaluga.bytes.serialization/InvalidChecksumException.expected|{}expected[0]
-        final fun <get-expected>(): kotlin/ULong // com.splendo.kaluga.bytes.serialization/InvalidChecksumException.expected.<get-expected>|<get-expected>(){}[0]
-    final val message // com.splendo.kaluga.bytes.serialization/InvalidChecksumException.message|{}message[0]
-        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.serialization/InvalidChecksumException.message.<get-message>|<get-message>(){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/InvalidPostfix : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/InvalidPostfix|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/InvalidPostfix.<init>|<init>(kotlin.String){}[0]
-
-    final val message // com.splendo.kaluga.bytes.serialization/InvalidPostfix.message|{}message[0]
-        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.serialization/InvalidPostfix.message.<get-message>|<get-message>(){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/InvalidPrefix : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/InvalidPrefix|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/InvalidPrefix.<init>|<init>(kotlin.String){}[0]
-
-    final val message // com.splendo.kaluga.bytes.serialization/InvalidPrefix.message|{}message[0]
-        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.serialization/InvalidPrefix.message.<get-message>|<get-message>(){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/UnexpectedBytesRemaining : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/UnexpectedBytesRemaining|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/UnexpectedBytesRemaining.<init>|<init>(kotlin.String){}[0]
-
-    final val message // com.splendo.kaluga.bytes.serialization/UnexpectedBytesRemaining.message|{}message[0]
-        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.serialization/UnexpectedBytesRemaining.message.<get-message>|<get-message>(){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/UnexpectedTerminator : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/UnexpectedTerminator|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/UnexpectedTerminator.<init>|<init>(kotlin.String){}[0]
-
-    final val message // com.splendo.kaluga.bytes.serialization/UnexpectedTerminator.message|{}message[0]
-        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.serialization/UnexpectedTerminator.message.<get-message>|<get-message>(){}[0]
-}
-
-final class com.splendo.kaluga.bytes.serialization/UnsupportedByteStuffing : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/UnsupportedByteStuffing|null[0]
-    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/UnsupportedByteStuffing.<init>|<init>(kotlin.String){}[0]
 }
 
 sealed class com.splendo.kaluga.bytes.serialization/BytesFormat : kotlinx.serialization/BinaryFormat { // com.splendo.kaluga.bytes.serialization/BytesFormat|null[0]
@@ -92,3 +34,5 @@ sealed class com.splendo.kaluga.bytes.serialization/BytesFormat : kotlinx.serial
         final fun invoke(com.splendo.kaluga.bytes.serialization/BytesFormat = ..., kotlin/Function1<com.splendo.kaluga.bytes.serialization/BytesFormat.Builder, kotlin/Unit>): com.splendo.kaluga.bytes.serialization/BytesFormat // com.splendo.kaluga.bytes.serialization/BytesFormat.Default.invoke|invoke(com.splendo.kaluga.bytes.serialization.BytesFormat;kotlin.Function1<com.splendo.kaluga.bytes.serialization.BytesFormat.Builder,kotlin.Unit>){}[0]
     }
 }
+
+final fun com.splendo.kaluga.bytes.serialization/layoutDumpOf(kotlinx.serialization.descriptors/SerialDescriptor, kotlinx.serialization.modules/SerializersModule = ...): kotlin/String // com.splendo.kaluga.bytes.serialization/layoutDumpOf|layoutDumpOf(kotlinx.serialization.descriptors.SerialDescriptor;kotlinx.serialization.modules.SerializersModule){}[0]

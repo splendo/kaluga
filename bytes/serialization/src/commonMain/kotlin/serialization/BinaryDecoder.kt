@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bytes.serialization
 
-import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
 import com.splendo.kaluga.bytes.stuffing.DelimiterByteStuffingScheme
@@ -27,23 +26,18 @@ import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.strings.decodeAsciiChar
 import com.splendo.kaluga.bytes.decodeDouble
 import com.splendo.kaluga.bytes.decodeFloat
-import com.splendo.kaluga.bytes.decodeInt
-import com.splendo.kaluga.bytes.integer.decodeInt24
-import com.splendo.kaluga.bytes.integer.decodeInt40
-import com.splendo.kaluga.bytes.integer.decodeInt48
-import com.splendo.kaluga.bytes.decodeLong
 import com.splendo.kaluga.bytes.medfloat.decodeMedFloat16
 import com.splendo.kaluga.bytes.medfloat.decodeMedFloat32
-import com.splendo.kaluga.bytes.decodeShort
 import com.splendo.kaluga.bytes.strings.decodeString
-import com.splendo.kaluga.bytes.decodeUInt
-import com.splendo.kaluga.bytes.integer.decodeUInt24
-import com.splendo.kaluga.bytes.integer.decodeUInt40
-import com.splendo.kaluga.bytes.integer.decodeUInt48
-import com.splendo.kaluga.bytes.decodeULong
 import com.splendo.kaluga.bytes.decodeUShort
 import com.splendo.kaluga.bytes.strings.decodeUTF16Char
 import com.splendo.kaluga.bytes.strings.decodeUTF8Char
+import com.splendo.kaluga.bytes.annotations.Length
+import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.CollectionSettings
+import com.splendo.kaluga.bytes.layout.FrameSettings
+import com.splendo.kaluga.bytes.layout.NumericCodec
+import com.splendo.kaluga.bytes.layout.NumericSettings
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
@@ -117,11 +111,11 @@ internal class BinaryDecoder(
             is DelimiterByteStuffingScheme -> stuffing.unstuff(decoder.byteIterator())
 
             is NonDelimiterByteStuffingScheme -> {
-                val terminalMarked = settings.lengthMarking as? BinaryDescriptor.CollectionSettings.TerminalMarked ?: return null
+                val terminalMarked = settings.lengthMarking as? CollectionSettings.TerminalMarked ?: return null
                 stuffing.unstuff(decoder.byteIterator()) { it == terminalMarked.terminator }
             }
         }
-        val unmarked = binaryDescriptor.copy(collectionSettings = settings.copy(lengthMarking = BinaryDescriptor.CollectionSettings.Unmarked))
+        val unmarked = binaryDescriptor.copy(collectionSettings = settings.copy(lengthMarking = CollectionSettings.Unmarked))
         return unmarked to RootBinaryDescriptorDecoder(body, ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum)
     }
 
@@ -187,7 +181,7 @@ internal class BinaryDecoder(
 
         // A value class wrapping a structure/collection decodes its content with the frame stripped (the prefix is
         // consumed above and the footer by consumeFooter), so the inner beginStructure does not re-consume the boundary.
-        val bodyDescriptor = binaryDescriptor.copy(structureSettings = BinaryDescriptor.StructureSettings(null, null, null))
+        val bodyDescriptor = binaryDescriptor.copy(structureSettings = FrameSettings(null, null, null))
         val bodyDecoder = BinaryDecoder(bodyDescriptor, decoder, serializersModule)
 
         return object : Decoder by this {
@@ -281,14 +275,14 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
         BinaryCompositeDecoder(binaryDescriptor, serializersModule) {
 
         private val decoders = mutableMapOf<Int, BinaryDescriptorDecoder>()
-        private val collectionSettings = binaryDescriptor.collectionSettings ?: BinaryDescriptor.CollectionSettings(
-            BinaryDescriptor.CollectionSettings.NumericLength(setOf(Length.`8_BIT`)),
+        private val collectionSettings = binaryDescriptor.collectionSettings ?: CollectionSettings(
+            CollectionSettings.NumericLength(setOf(Length.`8_BIT`)),
             false,
         )
         private val expectedSize = if (!binaryDescriptor.isNullable || !collectionSettings.nullIfEmpty || decoder.flags[binaryDescriptor.bitIndex]) {
             // When not null, we can check whether a size is known
             when (val lengthMarking = collectionSettings.lengthMarking) {
-                is BinaryDescriptor.CollectionSettings.LengthPrefix -> {
+                is CollectionSettings.LengthPrefix -> {
                     // Length Prefix prefixes the length of the array
                     // A one-byte count is unsigned: 128..255 must not read back as a negative Byte.
                     when (val endMarking = lengthMarking.endMarking) {
@@ -306,12 +300,12 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
                     }
                 }
 
-                is BinaryDescriptor.CollectionSettings.NumericLength -> {
+                is CollectionSettings.NumericLength -> {
                     // Numeric Length encoded the length
-                    binaryDescriptor.decodeNaturalNumericElement(decoder, BinaryDescriptor.NumericSettings.Natural(lengthMarking.supportedLengths, false)).toInt()
+                    binaryDescriptor.decodeNaturalNumericElement(decoder, NumericSettings.Natural(lengthMarking.supportedLengths, false)).toInt()
                 }
 
-                is BinaryDescriptor.CollectionSettings.FlagIndexedLength -> {
+                is CollectionSettings.FlagIndexedLength -> {
                     // Count is packed in the parent's flag header at the collection's bitIndex,
                     // least-significant bit first (mirrors the encoder).
                     (0 until lengthMarking.bits).fold(0) { acc, bit ->
@@ -320,9 +314,9 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
                 }
 
                 // For NullTerminated or Unmarked, the length is unknown when decoding starts
-                is BinaryDescriptor.CollectionSettings.Unmarked -> -1
+                is CollectionSettings.Unmarked -> -1
 
-                is BinaryDescriptor.CollectionSettings.TerminalMarked -> -1
+                is CollectionSettings.TerminalMarked -> -1
             }
         } else {
             0
@@ -332,7 +326,7 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
             val lengthMarking = collectionSettings.lengthMarking
             return when {
                 expectedSize >= 0 -> index < expectedSize
-                lengthMarking is BinaryDescriptor.CollectionSettings.TerminalMarked -> !decoder.peekNextIs(byteArrayOf(lengthMarking.terminator), true)
+                lengthMarking is CollectionSettings.TerminalMarked -> !decoder.peekNextIs(byteArrayOf(lengthMarking.terminator), true)
                 else -> !decoder.isEmpty()
             }
         }
@@ -342,7 +336,7 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
             // This decoder only reads the item's own flag bits. Any @Prefix/@Postfix/@Checksum the item type
             // carries is consumed by the item's own decoder, so strip the frame here to avoid reading it twice.
             val headerDescriptor = elementDescriptor.copy(
-                structureSettings = elementDescriptor.structureSettings.copy(prefix = null, postfix = null, checksumAlgorithm = null),
+                structureSettings = elementDescriptor.structureSettings.copy(prefix = null, postfix = null, checksum = null),
             )
             decoder.beginStructure(headerDescriptor, elementDescriptor.bitWidth)
         }
@@ -461,15 +455,11 @@ internal fun BinaryDescriptor.decodeBoolean(decoder: BinaryDescriptorDecoder): B
     }
 }
 
-internal fun BinaryDescriptor.decodeNaturalNumericElement(decoder: BinaryDescriptorDecoder, settings: BinaryDescriptor.NumericSettings.Natural): Long {
+internal fun BinaryDescriptor.decodeNaturalNumericElement(decoder: BinaryDescriptorDecoder, settings: NumericSettings.Natural): Long {
     settings.inFlagsBits?.let { bits ->
         // Value packed into the flag region, least-significant bit first (mirrors the encoder).
-        var raw = (0 until bits).fold(0L) { acc, bit -> if (decoder.flags[bitIndex + bit]) acc or (1L shl bit) else acc }
-        // Sign-extend a signed value whose top bit is set.
-        if (settings.signed && bits < Long.SIZE_BITS && (raw shr (bits - 1)) and 1L == 1L) {
-            raw = raw or (-1L shl bits)
-        }
-        return raw
+        val raw = (0 until bits).fold(0L) { acc, bit -> if (decoder.flags[bitIndex + bit]) acc or (1L shl bit) else acc }
+        return NumericCodec.signExtend(raw, bits, settings.signed)
     }
     val supportedLengths = settings.supportedLengths.toList()
     val expectedLength = when (supportedLengths.size) {
@@ -487,36 +477,22 @@ internal fun BinaryDescriptor.decodeNaturalNumericElement(decoder: BinaryDescrip
         }
     }
     val bytes = decoder.nextBytes(expectedLength.bytes)
-    // childByteOrder is the VALUE encoding direction the encoder used. For a primitive field it equals byteOrder;
+    // childByteOrder is the value encoding direction the encoder used. For a primitive field it equals byteOrder;
     // they differ for a collection's own count, whose descriptor accumulates in the enclosing structure's direction.
-    // Because we deal with flexible sizing and unsigned elements, always return a Long so no data will be lost
-    return when (expectedLength) {
-        Length.`8_BIT` -> if (settings.signed) bytes[0].toLong() else bytes[0].toUByte().toUShort().toShort().toLong()
-        Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, childByteOrder).toLong() else bytes.decodeUShort(0, childByteOrder).toUInt().toLong()
-        Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, childByteOrder).value.toLong() else bytes.decodeUInt24(0, childByteOrder).value.toULong().toLong()
-        Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, childByteOrder).toLong() else bytes.decodeUInt(0, childByteOrder).toULong().toLong()
-        Length.`40_BIT` -> if (settings.signed) bytes.decodeInt40(0, childByteOrder).value else bytes.decodeUInt40(0, childByteOrder).value.toLong()
-        Length.`48_BIT` -> if (settings.signed) bytes.decodeInt48(0, childByteOrder).value else bytes.decodeUInt48(0, childByteOrder).value.toLong()
-        Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, childByteOrder) else bytes.decodeULong(0, childByteOrder).toLong()
-    }
+    return NumericCodec.readNatural(bytes, 0, expectedLength, settings.signed, childByteOrder)
 }
 
-internal fun BinaryDescriptor.decodeRangeNumericElement(decoder: BinaryDescriptorDecoder, settings: BinaryDescriptor.NumericSettings.RangeEncoded): Double {
-    val rawValue = decodeNaturalNumericElement(decoder, BinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, false))
-    return rawValue.toDouble() / settings.maxWireValue * (settings.max - settings.min) + settings.min
+internal fun BinaryDescriptor.decodeRangeNumericElement(decoder: BinaryDescriptorDecoder, settings: NumericSettings.RangeEncoded): Double {
+    val rawValue = decodeNaturalNumericElement(decoder, NumericSettings.Natural(settings.supportedLengths, false))
+    return NumericCodec.rangeFromWire(settings, rawValue)
 }
 
-internal fun BinaryDescriptor.decodeScalarNumericElement(decoder: BinaryDescriptorDecoder, settings: BinaryDescriptor.NumericSettings.Scalar): Double {
-    val decoded = decodeNaturalNumericElement(decoder, BinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, settings.signed))
-    val double = if (settings.signed) {
-        decoded.toDouble()
-    } else {
-        decoded.toULong().toDouble()
-    }
-    return (double - settings.offset) / (settings.multiplier * 10.0.pow(settings.decimalExponent) * 2.0.pow(settings.binaryExponent))
+internal fun BinaryDescriptor.decodeScalarNumericElement(decoder: BinaryDescriptorDecoder, settings: NumericSettings.Scalar): Double {
+    val decoded = decodeNaturalNumericElement(decoder, NumericSettings.Natural(settings.supportedLengths, settings.signed))
+    return NumericCodec.scalarFromWire(settings, decoded)
 }
 
-internal fun BinaryDescriptor.decodeDecimalNumericElement(decoder: BinaryDescriptorDecoder, settings: BinaryDescriptor.NumericSettings.Decimal): Double {
+internal fun BinaryDescriptor.decodeDecimalNumericElement(decoder: BinaryDescriptorDecoder, settings: NumericSettings.Decimal): Double {
     val lengthToDecode = if (settings.supportedLengths.size > 1) {
         val flagIndex = bitIndex + if (isNullable) 1 else 0
         if (decoder.flags[flagIndex]) {
@@ -535,7 +511,7 @@ internal fun BinaryDescriptor.decodeDecimalNumericElement(decoder: BinaryDescrip
     }
 }
 
-internal fun BinaryDescriptor.decodeMedFloatNumericElement(decoder: BinaryDescriptorDecoder, settings: BinaryDescriptor.NumericSettings.MedFloat): Double {
+internal fun BinaryDescriptor.decodeMedFloatNumericElement(decoder: BinaryDescriptorDecoder, settings: NumericSettings.MedFloat): Double {
     val lengthToDecode = if (settings.supportedLengths.size > 1) {
         val flagIndex = bitIndex + if (isNullable) 1 else 0
         if (decoder.flags[flagIndex]) {
@@ -554,93 +530,93 @@ internal fun BinaryDescriptor.decodeMedFloatNumericElement(decoder: BinaryDescri
     }
 }
 
-internal fun BinaryDescriptor.numericSettingsOrNaturalDefault(defaultLength: Length) = numericSettings ?: BinaryDescriptor.NumericSettings.Natural(setOf(defaultLength), false)
-internal fun BinaryDescriptor.numericSettingsOrDecimalDefault(defaultLength: Length) = numericSettings ?: BinaryDescriptor.NumericSettings.Decimal(setOf(defaultLength))
+internal fun BinaryDescriptor.numericSettingsOrNaturalDefault(defaultLength: Length) = numericSettings ?: NumericSettings.Natural(setOf(defaultLength), false)
+internal fun BinaryDescriptor.numericSettingsOrDecimalDefault(defaultLength: Length) = numericSettings ?: NumericSettings.Decimal(setOf(defaultLength))
 
 internal fun BinaryDescriptor.decodeByteElement(decoder: BinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`8_BIT`).let { settings ->
     when (settings) {
-        is BinaryDescriptor.NumericSettings.Natural -> if (settings.signed) {
+        is NumericSettings.Natural -> if (settings.signed) {
             decodeNaturalNumericElement(decoder, settings).toByte()
         } else {
             // Convert over ULong to keep higher values
             decodeNaturalNumericElement(decoder, settings).toULong().toUInt().toByte()
         }
 
-        is BinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt().toByte()
+        is NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt().toByte()
 
-        is BinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toByte()
+        is NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toByte()
 
-        is BinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toByte()
+        is NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toByte()
 
-        is BinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toByte()
+        is NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toByte()
     }
 }
 
 internal fun BinaryDescriptor.decodeShortElement(decoder: BinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`16_BIT`).let { settings ->
     when (settings) {
-        is BinaryDescriptor.NumericSettings.Natural -> if (settings.signed) {
+        is NumericSettings.Natural -> if (settings.signed) {
             decodeNaturalNumericElement(decoder, settings).toShort()
         } else {
             // Convert over ULong to keep higher values
             decodeNaturalNumericElement(decoder, settings).toULong().toUShort().toShort()
         }
 
-        is BinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt().toShort()
+        is NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt().toShort()
 
-        is BinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toShort()
+        is NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toShort()
 
-        is BinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toShort()
+        is NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toShort()
 
-        is BinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toShort()
+        is NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt().toShort()
     }
 }
 
 internal fun BinaryDescriptor.decodeIntElement(decoder: BinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`32_BIT`).let { settings ->
     when (settings) {
-        is BinaryDescriptor.NumericSettings.Natural -> if (settings.signed) {
+        is NumericSettings.Natural -> if (settings.signed) {
             decodeNaturalNumericElement(decoder, settings).toInt()
         } else {
             // Convert over ULong to keep higher values
             decodeNaturalNumericElement(decoder, settings).toULong().toUInt().toInt()
         }
 
-        is BinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt()
+        is NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt()
 
-        is BinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt()
+        is NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt()
 
-        is BinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt()
+        is NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt()
 
-        is BinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt()
+        is NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toInt()
     }
 }
 
 internal fun BinaryDescriptor.decodeLongElement(decoder: BinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`64_BIT`).let { settings ->
     when (settings) {
-        is BinaryDescriptor.NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings)
-        is BinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toLong()
-        is BinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toLong()
-        is BinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toLong()
-        is BinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toLong()
+        is NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings)
+        is NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toLong()
+        is NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toLong()
+        is NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toLong()
+        is NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toLong()
     }
 }
 
 internal fun BinaryDescriptor.decodeFloatElement(decoder: BinaryDescriptorDecoder) = numericSettingsOrDecimalDefault(Length.`32_BIT`).let { settings ->
     when (settings) {
-        is BinaryDescriptor.NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings).toDouble().toFloat()
-        is BinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toFloat()
-        is BinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toFloat()
-        is BinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toFloat()
-        is BinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toFloat()
+        is NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings).toDouble().toFloat()
+        is NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toFloat()
+        is NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toFloat()
+        is NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toFloat()
+        is NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings).toFloat()
     }
 }
 
 internal fun BinaryDescriptor.decodeDoubleElement(decoder: BinaryDescriptorDecoder) = numericSettingsOrDecimalDefault(Length.`64_BIT`).let { settings ->
     when (settings) {
-        is BinaryDescriptor.NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings).toDouble()
-        is BinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings)
-        is BinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings)
-        is BinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings)
-        is BinaryDescriptor.NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings)
+        is NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings).toDouble()
+        is NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings)
+        is NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings)
+        is NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings)
+        is NumericSettings.RangeEncoded -> decodeRangeNumericElement(decoder, settings)
     }
 }
 

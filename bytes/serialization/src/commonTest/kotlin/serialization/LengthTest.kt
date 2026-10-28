@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bytes.serialization
 
 import com.splendo.kaluga.bytes.annotations.Length
+import com.splendo.kaluga.bytes.layout.fits
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
