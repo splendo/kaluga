@@ -64,6 +64,7 @@ enum class TypeKind {
  * - a [TypeKind.LIST] has one element (the item), a [TypeKind.MAP] two (key and value);
  * - a [TypeKind.ENUM] has one element per entry.
  */
+@InternalBytesApi
 interface TypeShape {
     val serialName: String
     val kind: TypeKind

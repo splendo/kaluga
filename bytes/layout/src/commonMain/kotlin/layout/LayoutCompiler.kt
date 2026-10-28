@@ -81,6 +81,7 @@ import com.splendo.kaluga.bytes.strings.toByteArray
  * Compilation is deterministic: the same shape always compiles to an equal layout with the same [FieldLayout.dump].
  * It does not cache; callers compiling the same type repeatedly should.
  */
+@InternalBytesApi
 object LayoutCompiler {
 
     private class DesiredFlagBitWidth(var width: Int) {

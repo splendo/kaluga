@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.serialization
 
+import com.splendo.kaluga.bytes.layout.InternalBytesApi
 import com.splendo.kaluga.bytes.layout.dump
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.modules.EmptySerializersModule
@@ -28,5 +29,6 @@ import kotlinx.serialization.modules.SerializersModule
  *
  * @throws kotlinx.serialization.SerializationException when the descriptor describes an invalid layout.
  */
+@InternalBytesApi
 fun layoutDumpOf(descriptor: SerialDescriptor, serializersModule: SerializersModule = EmptySerializersModule()): String =
     BinaryDescriptorRegistry.layout(descriptor, serializersModule).dump()

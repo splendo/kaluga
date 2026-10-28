@@ -52,6 +52,7 @@ import kotlin.math.round
 /**
  * Whether [number] can be encoded in this [Length] with the given signedness.
  */
+@InternalBytesApi
 fun Length.fits(number: Number, signed: Boolean): Boolean = when (this) {
     // Widen through Long, never Int: a Long outside Int range would otherwise truncate to a value that
     // wrongly looks like it fits (e.g. 1L shl 32 truncates to 0).
@@ -95,6 +96,7 @@ fun Length.fits(number: Number, signed: Boolean): Boolean = when (this) {
 }
 
 /** [fits] for an integral [number], without boxing it. */
+@InternalBytesApi
 fun Length.fits(number: Long, signed: Boolean): Boolean = when (this) {
     Length.`8_BIT` -> if (signed) number in Byte.MIN_VALUE.toLong()..Byte.MAX_VALUE.toLong() else number.toULong() <= UByte.MAX_VALUE.toULong()
     Length.`16_BIT` -> if (signed) number in Short.MIN_VALUE.toLong()..Short.MAX_VALUE.toLong() else number.toULong() <= UShort.MAX_VALUE.toULong()
@@ -109,6 +111,7 @@ fun Length.fits(number: Long, signed: Boolean): Boolean = when (this) {
  * The numeric math of the wire format. Every implementation of a layout must go through these functions to produce
  * the same bytes on every platform.
  */
+@InternalBytesApi
 object NumericCodec {
 
     /**

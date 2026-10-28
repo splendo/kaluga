@@ -33,3 +33,9 @@ kaluga {
         }
     }
 }
+
+kotlin {
+    sourceSets.all {
+        languageSettings.optIn("com.splendo.kaluga.bytes.layout.InternalBytesApi")
+    }
+}

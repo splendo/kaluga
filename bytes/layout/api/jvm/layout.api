@@ -178,6 +178,9 @@ public final class com/splendo/kaluga/bytes/layout/InconsistentDiscriminatorLeng
 	public fun <init> (Ljava/lang/String;)V
 }
 
+public abstract interface annotation class com/splendo/kaluga/bytes/layout/InternalBytesApi : java/lang/annotation/Annotation {
+}
+
 public final class com/splendo/kaluga/bytes/layout/InvalidByteOrderException : kotlinx/serialization/SerializationException {
 	public fun <init> (Ljava/lang/String;)V
 }

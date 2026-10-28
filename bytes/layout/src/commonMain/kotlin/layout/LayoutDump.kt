@@ -30,6 +30,7 @@ import com.splendo.kaluga.bytes.annotations.Length
  * Two layouts that encode identically dump identically, on every platform, so the dump can be compared across
  * independent compilations of the same type.
  */
+@InternalBytesApi
 fun FieldLayout.dump(): String = buildString { appendField(this@dump, 0) }
 
 private fun StringBuilder.appendField(field: FieldLayout, depth: Int) {

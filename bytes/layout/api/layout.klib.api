@@ -6,6 +6,10 @@
 // - Show declarations: true
 
 // Library unique name: <com.splendo.kaluga.bytes:layout>
+open annotation class com.splendo.kaluga.bytes.layout/InternalBytesApi : kotlin/Annotation { // com.splendo.kaluga.bytes.layout/InternalBytesApi|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.layout/InternalBytesApi.<init>|<init>(){}[0]
+}
+
 final enum class com.splendo.kaluga.bytes.layout/TypeKind : kotlin/Enum<com.splendo.kaluga.bytes.layout/TypeKind> { // com.splendo.kaluga.bytes.layout/TypeKind|null[0]
     enum entry BOOLEAN // com.splendo.kaluga.bytes.layout/TypeKind.BOOLEAN|null[0]
     enum entry BYTE // com.splendo.kaluga.bytes.layout/TypeKind.BYTE|null[0]
