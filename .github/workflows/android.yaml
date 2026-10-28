@@ -97,6 +97,9 @@ jobs:
 
       - name: run Android unit tests
         run: ./gradlew testDebugUnitTest testAndroidHostTest koverHtmlReport koverXmlReport
+
+      - name: run KSP processor tests
+        run: ./gradlew --stacktrace :bytes:ksp:test :bluetooth:ksp:test
       - name: add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v2
