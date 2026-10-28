@@ -16,6 +16,7 @@ kaluga {
     dependencies {
         common {
             main {
+                implementation(project(":base:core", ""))
                 api(project(":bytes:annotations", ""))
                 api(project(":bytes:core", ""))
                 api(project(":bytes:layout", ""))

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.serialization
 
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.layout.ByteArrayHolder
@@ -135,7 +136,7 @@ internal object BinaryDescriptorRegistry {
     }
 
     // Compiling is a pretty heavy operation so we store it in a cache.
-    private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, Compiled>()
+    private val cache = concurrentMutableMapOf<Pair<SerialDescriptor, SerializersModule>, Compiled>()
 
     private fun compiled(descriptor: SerialDescriptor, module: SerializersModule): Compiled = cache.getOrPut(descriptor to module) {
         Compiled(LayoutCompiler.compile(SerialDescriptorShape(descriptor, module)))
