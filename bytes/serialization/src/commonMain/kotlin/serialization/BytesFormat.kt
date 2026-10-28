@@ -114,7 +114,7 @@ sealed class BytesFormat(private val validateChecksum: Boolean, override val ser
      */
     class Builder internal constructor(from: BytesFormat) {
 
-        var validateChecksum: Boolean = true
+        var validateChecksum: Boolean = from.validateChecksum
         var serializersModule: SerializersModule = from.serializersModule
     }
 
