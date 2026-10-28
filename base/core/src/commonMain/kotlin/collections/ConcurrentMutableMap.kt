@@ -25,8 +25,9 @@ import kotlinx.atomicfu.locks.withLock
  * @param K the type of map keys. The map is invariant in its key type.
  * @param V the type of map values. The mutable map is invariant in its value type.
  */
-class ConcurrentMutableMap<K, V> internal constructor(private val internal: MutableMap<K, V> = mutableMapOf()) : MutableMap<K, V> {
-    private val lock = reentrantLock()
+class ConcurrentMutableMap<K, V> internal constructor(@PublishedApi internal val internal: MutableMap<K, V> = mutableMapOf()) : MutableMap<K, V> {
+    @PublishedApi
+    internal val lock = reentrantLock()
 
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>> get() = synchronized { entries }
     override val keys: MutableSet<K> get() = synchronized { keys }
@@ -40,6 +41,16 @@ class ConcurrentMutableMap<K, V> internal constructor(private val internal: Muta
     override fun put(key: K, value: V): V? = synchronized { put(key, value) }
     override fun putAll(from: Map<out K, V>) = synchronized { putAll(from) }
     override fun remove(key: K): V? = synchronized { remove(key) }
+
+    /**
+     * Returns the value for [key] if there is one, or else puts the result of [defaultValue] and returns it, under a
+     * single lock. Unlike the standard `getOrPut` extension, which looks up and inserts separately, [defaultValue] is
+     * called at most once per key even when several threads ask for it at the same time.
+     * @param key the key to get the value for.
+     * @param defaultValue computes the value to put if there is none for [key].
+     * @return the value for [key].
+     */
+    inline fun getOrPut(key: K, defaultValue: () -> V): V = lock.withLock { internal.getOrPut(key, defaultValue) }
     override fun equals(other: Any?): Boolean = when (other) {
         is ConcurrentMutableMap<*, *> -> synchronized {
             val inner = this

@@ -34,8 +34,16 @@ sealed interface com.splendo.kaluga.base.flow/SpecialFlowValue { // com.splendo.
 final class <#A: kotlin/Any?, #B: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMutableMap : kotlin.collections/MutableMap<#A, #B> { // com.splendo.kaluga.base.collections/ConcurrentMutableMap|null[0]
     final val entries // com.splendo.kaluga.base.collections/ConcurrentMutableMap.entries|{}entries[0]
         final fun <get-entries>(): kotlin.collections/MutableSet<kotlin.collections/MutableMap.MutableEntry<#A, #B>> // com.splendo.kaluga.base.collections/ConcurrentMutableMap.entries.<get-entries>|<get-entries>(){}[0]
+    final val internal // com.splendo.kaluga.base.collections/ConcurrentMutableMap.internal|{}internal[0]
+        final fun <get-internal>(): kotlin.collections/MutableMap<#A, #B> // com.splendo.kaluga.base.collections/ConcurrentMutableMap.internal.<get-internal>|<get-internal>(){}[0]
     final val keys // com.splendo.kaluga.base.collections/ConcurrentMutableMap.keys|{}keys[0]
         final fun <get-keys>(): kotlin.collections/MutableSet<#A> // com.splendo.kaluga.base.collections/ConcurrentMutableMap.keys.<get-keys>|<get-keys>(){}[0]
+    final val lock // com.splendo.kaluga.base.collections/ConcurrentMutableMap.lock|{}lock[0]
+        // Targets: [apple]
+        final fun <get-lock>(): kotlinx.atomicfu.locks/SynchronizedObject // com.splendo.kaluga.base.collections/ConcurrentMutableMap.lock.<get-lock>|<get-lock>(){}[0]
+
+        // Targets: [js, wasmJs]
+        final fun <get-lock>(): kotlinx.atomicfu.locks/ReentrantLock // com.splendo.kaluga.base.collections/ConcurrentMutableMap.lock.<get-lock>|<get-lock>(){}[0]
     final val size // com.splendo.kaluga.base.collections/ConcurrentMutableMap.size|{}size[0]
         final fun <get-size>(): kotlin/Int // com.splendo.kaluga.base.collections/ConcurrentMutableMap.size.<get-size>|<get-size>(){}[0]
     final val values // com.splendo.kaluga.base.collections/ConcurrentMutableMap.values|{}values[0]
@@ -53,6 +61,7 @@ final class <#A: kotlin/Any?, #B: kotlin/Any?> com.splendo.kaluga.base.collectio
     final fun putAll(kotlin.collections/Map<out #A, #B>) // com.splendo.kaluga.base.collections/ConcurrentMutableMap.putAll|putAll(kotlin.collections.Map<out|1:0,1:1>){}[0]
     final fun remove(#A): #B? // com.splendo.kaluga.base.collections/ConcurrentMutableMap.remove|remove(1:0){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.base.collections/ConcurrentMutableMap.toString|toString(){}[0]
+    final inline fun getOrPut(#A, kotlin/Function0<#B>): #B // com.splendo.kaluga.base.collections/ConcurrentMutableMap.getOrPut|getOrPut(1:0;kotlin.Function0<1:1>){}[0]
 }
 
 final class <#A: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMutableIterator : kotlin.collections/MutableIterator<#A> { // com.splendo.kaluga.base.collections/ConcurrentMutableIterator|null[0]
