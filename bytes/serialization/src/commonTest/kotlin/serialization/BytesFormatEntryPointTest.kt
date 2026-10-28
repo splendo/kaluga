@@ -48,9 +48,19 @@ class BytesFormatEntryPointTest {
     }
 
     @Test
-    fun rejectsBytesAfterTheRootValue() {
+    fun ignoresBytesAfterTheRootValueByDefault() {
+        assertEquals(Fixtures.Single(1), BytesFormat.decodeFromByteArray(Fixtures.Single.serializer(), byteArrayOf(0x01, 0x02)))
+    }
+
+    @Test
+    fun rejectsBytesAfterTheRootValueWhenAsked() {
+        val strict = BytesFormat { rejectTrailingBytes = true }
+        assertEquals(Fixtures.Single(1), strict.decodeFromByteArray(Fixtures.Single.serializer(), byteArrayOf(0x01)))
         assertFailsWith<UnexpectedBytesRemaining> {
-            BytesFormat.decodeFromByteArray(Fixtures.Single.serializer(), byteArrayOf(0x01, 0x02))
+            strict.decodeFromByteArray(Fixtures.Single.serializer(), byteArrayOf(0x01, 0x02))
+        }
+        assertFailsWith<UnexpectedBytesRemaining> {
+            BytesFormat(from = strict) {}.decodeFromByteArray(Fixtures.Single.serializer(), byteArrayOf(0x01, 0x02))
         }
     }
 }

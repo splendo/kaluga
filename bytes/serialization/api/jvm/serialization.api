@@ -1,14 +1,16 @@
 public abstract class com/splendo/kaluga/bytes/serialization/BytesFormat : kotlinx/serialization/BinaryFormat {
 	public static final field Default Lcom/splendo/kaluga/bytes/serialization/BytesFormat$Default;
-	public synthetic fun <init> (ZLkotlinx/serialization/modules/SerializersModule;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZLkotlinx/serialization/modules/SerializersModule;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun decodeFromByteArray (Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
 	public fun encodeToByteArray (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
 	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
 public final class com/splendo/kaluga/bytes/serialization/BytesFormat$Builder {
+	public final fun getRejectTrailingBytes ()Z
 	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 	public final fun getValidateChecksum ()Z
+	public final fun setRejectTrailingBytes (Z)V
 	public final fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
 	public final fun setValidateChecksum (Z)V
 }

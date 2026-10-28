@@ -104,18 +104,25 @@ import kotlinx.serialization.serializer
  * @property serializersModule Contains all serializers registered by format user for Contextual and Polymorphic serialization.
  * The same module should be exposed in the format's Encoder and Decoder.
  */
-sealed class BytesFormat(private val validateChecksum: Boolean, override val serializersModule: SerializersModule = EmptySerializersModule()) : BinaryFormat {
+sealed class BytesFormat(
+    private val validateChecksum: Boolean,
+    override val serializersModule: SerializersModule = EmptySerializersModule(),
+    private val rejectTrailingBytes: Boolean = false,
+) : BinaryFormat {
 
     /**
      * Builder for creating a [BytesFormat]
      * @property validateChecksum if `true` decoding any data marked with [Checksum] will automatically validate the checksum and throw an exception if they don't match.
      * @property serializersModule Contains all serializers registered by format user for Contextual and Polymorphic serialization.
      * The same module should be exposed in the format's Encoder and Decoder.
+     * @property rejectTrailingBytes if `true` decoding throws [com.splendo.kaluga.bytes.layout.UnexpectedBytesRemaining] when bytes are
+     * left after the root value. By default they are ignored, so a newer peer may append fields an older layout does not know.
      */
     class Builder internal constructor(from: BytesFormat) {
 
         var validateChecksum: Boolean = from.validateChecksum
         var serializersModule: SerializersModule = from.serializersModule
+        var rejectTrailingBytes: Boolean = from.rejectTrailingBytes
     }
 
     /**
@@ -213,7 +220,9 @@ sealed class BytesFormat(private val validateChecksum: Boolean, override val ser
         // encoding direction and may differ when @ByteOrder(order, excludeStructure = true) is in use.
         val rootDecoder = RootBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum)
         val value = deserializer.deserialize(BinaryDecoder(flag, rootDecoder, serializersModule, isRootFrame = true))
-        rootDecoder.endStructure()
+        if (rejectTrailingBytes) {
+            rootDecoder.endStructure()
+        }
         return value
     }
 
@@ -223,4 +232,4 @@ sealed class BytesFormat(private val validateChecksum: Boolean, override val ser
     inline fun <reified T> serializer(): KSerializer<T> = serializersModule.serializer()
 }
 
-private class BytesFormatImpl(builder: Builder) : BytesFormat(builder.validateChecksum, builder.serializersModule)
+private class BytesFormatImpl(builder: Builder) : BytesFormat(builder.validateChecksum, builder.serializersModule, builder.rejectTrailingBytes)
