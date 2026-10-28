@@ -71,6 +71,9 @@ jobs:
         run: ./gradlew -p bluetooth/plugin publishPlugins
 
       # The Bytes code generation plugin, likewise its own composite build.
+      - name: Publish Bytes plugin to Maven Central
+        run: ./gradlew -p bytes/plugin publishToMavenCentral
+
       - name: Publish Bytes plugin to the Gradle Plugin Portal
         if: ${{ github.event.inputs.release_type == 'release' }}
         env:
