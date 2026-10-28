@@ -1,0 +1,547 @@
+public final class com/splendo/kaluga/bytes/layout/ByteArrayEndedBeforeSerializationCompleted : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/ByteArrayHolder {
+	public static final synthetic fun box-impl ([B)Lcom/splendo/kaluga/bytes/layout/ByteArrayHolder;
+	public static fun constructor-impl ([B)[B
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl ([BLjava/lang/Object;)Z
+	public static final fun equals-impl0 ([B[B)Z
+	public final fun getArray ()[B
+	public fun hashCode ()I
+	public static fun hashCode-impl ([B)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl ([B)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()[B
+}
+
+public final class com/splendo/kaluga/bytes/layout/ChecksumSpec {
+	public synthetic fun <init> (IJJJZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2-s-VKNKU ()J
+	public final fun component3-s-VKNKU ()J
+	public final fun component4-s-VKNKU ()J
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public final fun copy-1WdNxsU (IJJJZZ)Lcom/splendo/kaluga/bytes/layout/ChecksumSpec;
+	public static synthetic fun copy-1WdNxsU$default (Lcom/splendo/kaluga/bytes/layout/ChecksumSpec;IJJJZZILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/ChecksumSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCrc ()Lcom/splendo/kaluga/bytes/crc/CRC;
+	public final fun getInit-s-VKNKU ()J
+	public final fun getPolynomial-s-VKNKU ()J
+	public final fun getReflectIn ()Z
+	public final fun getReflectOut ()Z
+	public final fun getWidth ()I
+	public final fun getXorOut-s-VKNKU ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/CollectionSettings {
+	public fun <init> (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking;ZLcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking;ZLcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking;
+	public final fun component2 ()Z
+	public final fun component3 ()Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;
+	public final fun copy (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking;ZLcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/CollectionSettings;Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking;ZLcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getByteStuffing ()Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;
+	public final fun getLengthMarking ()Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking;
+	public final fun getNullIfEmpty ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/CollectionSettings$FlagIndexedLength : com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$FlagIndexedLength;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$FlagIndexedLength;IILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$FlagIndexedLength;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBits ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
+}
+
+public final class com/splendo/kaluga/bytes/layout/CollectionSettings$LengthPrefix : com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
+	public fun <init> (Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;
+	public final fun copy (Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthPrefix;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthPrefix;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$LengthPrefix;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEndMarking ()Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/CollectionSettings$NumericLength : com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$NumericLength;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$NumericLength;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$NumericLength;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/CollectionSettings$TerminalMarked : com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
+	public fun <init> ()V
+	public fun <init> (B)V
+	public synthetic fun <init> (BILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()B
+	public final fun copy (B)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$TerminalMarked;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$TerminalMarked;BILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$TerminalMarked;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTerminator ()B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/CollectionSettings$Unmarked : com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/layout/CollectionSettings$Unmarked;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/FieldLayout {
+	public fun <init> (Ljava/lang/String;IIILcom/splendo/kaluga/bytes/ByteOrder;Lcom/splendo/kaluga/bytes/ByteOrder;ZLjava/util/List;IILcom/splendo/kaluga/bytes/layout/FrameSettings;Lcom/splendo/kaluga/bytes/layout/TypeLayout;)V
+	public synthetic fun <init> (Ljava/lang/String;IIILcom/splendo/kaluga/bytes/ByteOrder;Lcom/splendo/kaluga/bytes/ByteOrder;ZLjava/util/List;IILcom/splendo/kaluga/bytes/layout/FrameSettings;Lcom/splendo/kaluga/bytes/layout/TypeLayout;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()I
+	public final fun component11 ()Lcom/splendo/kaluga/bytes/layout/FrameSettings;
+	public final fun component12 ()Lcom/splendo/kaluga/bytes/layout/TypeLayout;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()Lcom/splendo/kaluga/bytes/ByteOrder;
+	public final fun component6 ()Lcom/splendo/kaluga/bytes/ByteOrder;
+	public final fun component7 ()Z
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()I
+	public final fun copy (Ljava/lang/String;IIILcom/splendo/kaluga/bytes/ByteOrder;Lcom/splendo/kaluga/bytes/ByteOrder;ZLjava/util/List;IILcom/splendo/kaluga/bytes/layout/FrameSettings;Lcom/splendo/kaluga/bytes/layout/TypeLayout;)Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/FieldLayout;Ljava/lang/String;IIILcom/splendo/kaluga/bytes/ByteOrder;Lcom/splendo/kaluga/bytes/ByteOrder;ZLjava/util/List;IILcom/splendo/kaluga/bytes/layout/FrameSettings;Lcom/splendo/kaluga/bytes/layout/TypeLayout;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBitIndex ()I
+	public final fun getBitWidth ()I
+	public final fun getByteOrder ()Lcom/splendo/kaluga/bytes/ByteOrder;
+	public final fun getFooterBytes ()I
+	public final fun getFrame ()Lcom/splendo/kaluga/bytes/layout/FrameSettings;
+	public final fun getHeaderBits ()I
+	public final fun getIndex ()I
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPresenceFlagIndices ()Ljava/util/List;
+	public final fun getReservedAfter ()I
+	public final fun getReservedBefore ()I
+	public final fun getStaticByteSize ()Ljava/lang/Integer;
+	public final fun getStaticFieldBytes ()Ljava/lang/Integer;
+	public final fun getType ()Lcom/splendo/kaluga/bytes/layout/TypeLayout;
+	public final fun getValueByteOrder ()Lcom/splendo/kaluga/bytes/ByteOrder;
+	public fun hashCode ()I
+	public final fun isNullable ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/FlagIndexException : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bytes/layout/FrameSettings {
+	public synthetic fun <init> ([B[BLcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;Ljava/lang/Byte;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> ([B[BLcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;Ljava/lang/Byte;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-fbEdnGo ()[B
+	public final fun component2-fbEdnGo ()[B
+	public final fun component3 ()Lcom/splendo/kaluga/bytes/layout/ChecksumSpec;
+	public final fun component4 ()Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;
+	public final fun component5 ()Ljava/lang/Byte;
+	public final fun copy-IFKWMgs ([B[BLcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;Ljava/lang/Byte;)Lcom/splendo/kaluga/bytes/layout/FrameSettings;
+	public static synthetic fun copy-IFKWMgs$default (Lcom/splendo/kaluga/bytes/layout/FrameSettings;[B[BLcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;Ljava/lang/Byte;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/FrameSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getByteStuffing ()Lcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;
+	public final fun getByteStuffingTerminator ()Ljava/lang/Byte;
+	public final fun getChecksum ()Lcom/splendo/kaluga/bytes/layout/ChecksumSpec;
+	public final fun getChecksumAlgorithm ()Lcom/splendo/kaluga/bytes/crc/CRC;
+	public final fun getPostfix-fbEdnGo ()[B
+	public final fun getPrefix-fbEdnGo ()[B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/InconsistentDiscriminatorLength : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/layout/InternalBytesApi : java/lang/annotation/Annotation {
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidByteOrderException : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidChecksumException : kotlinx/serialization/SerializationException {
+	public synthetic fun <init> (JJLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getActual-s-VKNKU ()J
+	public final fun getExpected-s-VKNKU ()J
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidEnumLayout : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidNumericSettings : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidPostfix : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidPrefix : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidSizePolymorphic : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bytes/layout/LayoutCompiler {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/layout/LayoutCompiler;
+	public final fun compile (Lcom/splendo/kaluga/bytes/layout/TypeShape;)Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+}
+
+public final class com/splendo/kaluga/bytes/layout/LayoutDumpKt {
+	public static final fun dump (Lcom/splendo/kaluga/bytes/layout/FieldLayout;)Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/NumericCodec {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/layout/NumericCodec;
+	public final fun decimalLength (Ljava/lang/Number;)Lcom/splendo/kaluga/bytes/annotations/Length;
+	public final fun fitsInBits (JIZ)Z
+	public final fun fitsLosslesslyIn32BitFloat (Ljava/lang/Number;)Z
+	public final fun medFloatLength (D)Lcom/splendo/kaluga/bytes/annotations/Length;
+	public final fun rangeFromWire (Lcom/splendo/kaluga/bytes/layout/NumericSettings$RangeEncoded;J)D
+	public final fun rangeToWire (Lcom/splendo/kaluga/bytes/layout/NumericSettings$RangeEncoded;Ljava/lang/Number;)D
+	public final fun readNatural ([BILcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/ByteOrder;)J
+	public final fun scalarFromWire (Lcom/splendo/kaluga/bytes/layout/NumericSettings$Scalar;J)D
+	public final fun scalarToWire (Lcom/splendo/kaluga/bytes/layout/NumericSettings$Scalar;Ljava/lang/Number;)D
+	public final fun selectLength (Ljava/util/Set;Ljava/lang/Number;Z)Lkotlin/collections/IndexedValue;
+	public final fun selectLengthIndex ([Lcom/splendo/kaluga/bytes/annotations/Length;DZ)I
+	public final fun selectLengthIndex ([Lcom/splendo/kaluga/bytes/annotations/Length;JZ)I
+	public final fun signExtend (JIZ)J
+	public final fun writeNatural ([BIDLcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public final fun writeNatural ([BIJLcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/ByteOrder;)V
+	public final fun writeNatural ([BILjava/lang/Number;Lcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/ByteOrder;)V
+}
+
+public final class com/splendo/kaluga/bytes/layout/NumericCodecKt {
+	public static final fun fits (Lcom/splendo/kaluga/bytes/annotations/Length;JZ)Z
+	public static final fun fits (Lcom/splendo/kaluga/bytes/annotations/Length;Ljava/lang/Number;Z)Z
+}
+
+public abstract class com/splendo/kaluga/bytes/layout/NumericSettings {
+	public abstract fun getSupportedLengths ()Ljava/util/Set;
+}
+
+public final class com/splendo/kaluga/bytes/layout/NumericSettings$Decimal : com/splendo/kaluga/bytes/layout/NumericSettings {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$Decimal;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/NumericSettings$Decimal;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$Decimal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/NumericSettings$MedFloat : com/splendo/kaluga/bytes/layout/NumericSettings {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$MedFloat;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/NumericSettings$MedFloat;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$MedFloat;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/NumericSettings$Natural : com/splendo/kaluga/bytes/layout/NumericSettings {
+	public fun <init> (Ljava/util/Set;ZLjava/lang/Integer;)V
+	public synthetic fun <init> (Ljava/util/Set;ZLjava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/util/Set;ZLjava/lang/Integer;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;Ljava/util/Set;ZLjava/lang/Integer;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInFlagsBits ()Ljava/lang/Integer;
+	public final fun getSigned ()Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/NumericSettings$RangeEncoded : com/splendo/kaluga/bytes/layout/NumericSettings {
+	public fun <init> (Ljava/util/Set;DD)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()D
+	public final fun component3 ()D
+	public final fun copy (Ljava/util/Set;DD)Lcom/splendo/kaluga/bytes/layout/NumericSettings$RangeEncoded;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/NumericSettings$RangeEncoded;Ljava/util/Set;DDILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$RangeEncoded;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLength ()Lcom/splendo/kaluga/bytes/annotations/Length;
+	public final fun getMax ()D
+	public final fun getMaxWireValue-s-VKNKU ()J
+	public final fun getMin ()D
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/NumericSettings$Scalar : com/splendo/kaluga/bytes/layout/NumericSettings {
+	public fun <init> (Ljava/util/Set;ZIIII)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Z
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun component6 ()I
+	public final fun copy (Ljava/util/Set;ZIIII)Lcom/splendo/kaluga/bytes/layout/NumericSettings$Scalar;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/NumericSettings$Scalar;Ljava/util/Set;ZIIIIILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/NumericSettings$Scalar;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBinaryExponent ()I
+	public final fun getDecimalExponent ()I
+	public final fun getMultiplier ()I
+	public final fun getOffset ()I
+	public final fun getSigned ()Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/StringSettings {
+	public fun <init> (Lcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$EndMarking;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+	public final fun component2 ()Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$EndMarking;
+	public final fun copy (Lcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$EndMarking;)Lcom/splendo/kaluga/bytes/layout/StringSettings;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/StringSettings;Lcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$EndMarking;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/StringSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEncoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+	public final fun getEndMarking ()Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$EndMarking;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeKind : java/lang/Enum {
+	public static final field BOOLEAN Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field BYTE Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field CHAR Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field CONTEXTUAL Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field DOUBLE Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field ENUM Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field FLOAT Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field INT Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field LIST Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field LONG Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field MAP Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field OPEN Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field SEALED Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field SHORT Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field STRING Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static final field STRUCTURE Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isNumeric ()Z
+	public final fun isPolymorphic ()Z
+	public final fun isStructure ()Z
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public static fun values ()[Lcom/splendo/kaluga/bytes/layout/TypeKind;
+}
+
+public abstract interface class com/splendo/kaluga/bytes/layout/TypeLayout {
+	public abstract fun getChildren ()Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Bool : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/layout/TypeLayout$Bool;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Character : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Lcom/splendo/kaluga/bytes/strings/Encoding;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+	public final fun copy (Lcom/splendo/kaluga/bytes/strings/Encoding;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Character;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Character;Lcom/splendo/kaluga/bytes/strings/Encoding;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Character;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getEncoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Contextual : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Contextual;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Contextual;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Contextual;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getElements ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Enumeration : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Ljava/util/Map;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/Map;Ljava/util/List;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Enumeration;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Enumeration;Ljava/util/Map;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Enumeration;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getEntries ()Ljava/util/List;
+	public final fun getValues ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$ListLayout : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Lcom/splendo/kaluga/bytes/layout/CollectionSettings;Lcom/splendo/kaluga/bytes/layout/FieldLayout;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/layout/CollectionSettings;
+	public final fun component2 ()Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public final fun copy (Lcom/splendo/kaluga/bytes/layout/CollectionSettings;Lcom/splendo/kaluga/bytes/layout/FieldLayout;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$ListLayout;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$ListLayout;Lcom/splendo/kaluga/bytes/layout/CollectionSettings;Lcom/splendo/kaluga/bytes/layout/FieldLayout;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$ListLayout;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getItem ()Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public final fun getSettings ()Lcom/splendo/kaluga/bytes/layout/CollectionSettings;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$MapLayout : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Lcom/splendo/kaluga/bytes/layout/CollectionSettings;Lcom/splendo/kaluga/bytes/layout/FieldLayout;Lcom/splendo/kaluga/bytes/layout/FieldLayout;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/layout/CollectionSettings;
+	public final fun component2 ()Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public final fun component3 ()Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public final fun copy (Lcom/splendo/kaluga/bytes/layout/CollectionSettings;Lcom/splendo/kaluga/bytes/layout/FieldLayout;Lcom/splendo/kaluga/bytes/layout/FieldLayout;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$MapLayout;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$MapLayout;Lcom/splendo/kaluga/bytes/layout/CollectionSettings;Lcom/splendo/kaluga/bytes/layout/FieldLayout;Lcom/splendo/kaluga/bytes/layout/FieldLayout;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$MapLayout;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getKey ()Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public final fun getSettings ()Lcom/splendo/kaluga/bytes/layout/CollectionSettings;
+	public final fun getValue ()Lcom/splendo/kaluga/bytes/layout/FieldLayout;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Numeric : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Lcom/splendo/kaluga/bytes/layout/NumericSettings;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/layout/NumericSettings;
+	public final fun copy (Lcom/splendo/kaluga/bytes/layout/NumericSettings;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Numeric;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Numeric;Lcom/splendo/kaluga/bytes/layout/NumericSettings;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Numeric;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getSettings ()Lcom/splendo/kaluga/bytes/layout/NumericSettings;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Open : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Ljava/util/Map;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/Map;Ljava/util/List;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Open;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Open;Ljava/util/Map;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Open;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getDiscriminators ()Ljava/util/Map;
+	public final fun getOptions ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Sealed : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getDiscriminators ()Ljava/util/Map;
+	public final fun getElements ()Ljava/util/List;
+	public final fun getSizeDispatch ()Ljava/util/Map;
+	public final fun getSizeFallback ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Structure : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Structure;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Structure;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Structure;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getFields ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Text : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Lcom/splendo/kaluga/bytes/layout/StringSettings;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/layout/StringSettings;
+	public final fun copy (Lcom/splendo/kaluga/bytes/layout/StringSettings;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Text;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Text;Lcom/splendo/kaluga/bytes/layout/StringSettings;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Text;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getSettings ()Lcom/splendo/kaluga/bytes/layout/StringSettings;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/bytes/layout/TypeShape {
+	public abstract fun element (I)Lcom/splendo/kaluga/bytes/layout/TypeShape;
+	public abstract fun elementAnnotations (I)Ljava/util/List;
+	public abstract fun elementName (I)Ljava/lang/String;
+	public abstract fun getAnnotations ()Ljava/util/List;
+	public abstract fun getElementsCount ()I
+	public abstract fun getKind ()Lcom/splendo/kaluga/bytes/layout/TypeKind;
+	public abstract fun getSerialName ()Ljava/lang/String;
+	public abstract fun isInline ()Z
+	public abstract fun isNullable ()Z
+	public abstract fun openSubtypes ()Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/bytes/layout/UnexpectedBytesRemaining : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/UnexpectedTerminator : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/UnsupportedByteStuffing : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bytes/layout/UnsupportedCharEncoding : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+

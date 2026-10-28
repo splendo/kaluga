@@ -126,6 +126,9 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [bytes/strings](bytes/strings/) | Encoding and decoding Chars and Strings to and from bytes | `com.splendo.kaluga.bytes:strings` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bytes/hash](bytes/hash/) | SHA-1 digests | `com.splendo.kaluga.bytes:hash` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bytes/crc](bytes/crc/) | Cyclic Redundancy Check (CRC) calculation | `com.splendo.kaluga.bytes:crc` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/annotations](bytes/annotations/) | Annotations describing a byte-packed wire layout | `com.splendo.kaluga.bytes:annotations` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/layout](bytes/layout/) | Compiling and validating byte-packed wire layouts | `com.splendo.kaluga.bytes:layout` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/serialization](bytes/serialization/) | `BytesFormat`, a Kotlin Serialization format for byte-packed wire layouts | `com.splendo.kaluga.bytes:serialization` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time/date-time](date-time/date-time/) | Dates, time zones and date formatting | `com.splendo.kaluga.date-time:date-time` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time/timer](date-time/timer/) | A RecurringTimer providing ticks at regular intervals | `com.splendo.kaluga.date-time:timer` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time-picker/date-time-picker](date-time-picker/date-time-picker/) | Showing a Date or Time Picker | `com.splendo.kaluga.date-time-picker:date-time-picker` | ✅ | ✅ |  |  |  |  |  |  |

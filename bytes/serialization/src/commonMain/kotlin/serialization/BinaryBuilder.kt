@@ -1,0 +1,315 @@
+/*
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.bytes.serialization
+
+import com.splendo.kaluga.bytes.ByteArrayBuilder
+import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
+import com.splendo.kaluga.bytes.buildByteArray
+import com.splendo.kaluga.bytes.toByteArray
+import com.splendo.kaluga.bytes.annotations.Unsized
+import com.splendo.kaluga.bytes.layout.FrameSettings
+import kotlinx.serialization.SerializationException
+
+/**
+ * Builder for creating a [ByteArray] from a [BinaryDescriptor]
+ */
+internal interface BinaryBuilder {
+
+    val expectedSize: Int
+
+    fun addFlag(index: Int, value: Boolean)
+    fun addBit(value: Boolean)
+    fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit)
+    fun makeUnconstrained()
+
+    fun ByteArrayBuilder.build()
+}
+
+/**
+ * Exception thrown if trying to add data after a collection of data marked with [Unsized].
+ * Since [Unsized] elements do not indicate an end point, there is no way to know when to stop decoding them.
+ */
+class DataAfterUnconstrainedData(override val message: String?) : SerializationException()
+
+/**
+ * A [BinaryBuilder] to build data for a single [BinaryDescriptor] structure
+ */
+internal abstract class StructureBinaryBuilder(val binaryDescriptor: BinaryDescriptor, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
+
+    val flagBits: BooleanArray = BooleanArray(flagBitsSize.coerceAtLeast(0))
+
+    /** The frame ([Prefix]/[Postfix]/[Checksum]) this builder is responsible for writing. */
+    protected open val structureSettings: FrameSettings get() = binaryDescriptor.structureSettings
+
+    override val expectedSize: Int
+        get() = totalBodySize +
+            (structureSettings.checksumAlgorithm?.byteWidth ?: 0) +
+            (structureSettings.prefix?.array?.size ?: 0) +
+            (structureSettings.postfix?.array?.size ?: 0)
+    private var currentBits: Int = flagBitsSize % Byte.SIZE_BITS
+    private var expectedBodySize: Int = flagBitsSize / Byte.SIZE_BITS
+
+    private val totalBodySize: Int get() = expectedBodySize +
+        if (currentBits > 0) 1 else 0
+    private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
+    private var isOfUnconstrainedSize: Boolean = false
+
+    override fun addFlag(index: Int, value: Boolean) {
+        // A negative index marks a property with no flag bit of its own (e.g. derived presence); nothing to write.
+        if (index >= 0) flagBits[index] = value
+    }
+
+    override fun addBit(value: Boolean) {
+        if (isOfUnconstrainedSize) {
+            throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
+        }
+        currentBits++
+        if (currentBits == Byte.SIZE_BITS) {
+            expectedBodySize++
+            currentBits = 0
+        }
+        actions += {
+            add(value)
+        }
+    }
+
+    override fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit) {
+        if (isOfUnconstrainedSize) {
+            throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
+        }
+        if (currentBits > 0) {
+            expectedBodySize++
+            // Emit the alignment padding here rather than only at the end of the body: an action that writes bits
+            // of its own (a nested structure's flag header, or its leading Booleans) would otherwise keep filling
+            // this partial byte, while the decoder starts every action on a fresh one.
+            val padding = Byte.SIZE_BITS - currentBits
+            currentBits = 0
+            actions += {
+                repeat(padding) { add(false) }
+            }
+        }
+        expectedBodySize += expectedSize
+        actions += action
+    }
+
+    override fun makeUnconstrained() {
+        onUnconstrained()
+        isOfUnconstrainedSize = true
+    }
+
+    override fun ByteArrayBuilder.build() {
+        if (byteOrder == binaryDescriptor.byteOrder) {
+            structureSettings.prefix?.let {
+                add(it.array)
+            }
+            buildBodyAndChecksum()
+            structureSettings.postfix?.let {
+                add(it.array)
+            }
+        } else if (expectedSize > 0) {
+            add(
+                buildByteArray(binaryDescriptor.byteOrder, expectedSize) {
+                    build()
+                },
+            )
+            // else: zero-size structure in a different-byte-order context contributes no bytes.
+        }
+    }
+
+    // The body (flag bits + fields) followed by any [Checksum], excluding the prefix/postfix frame. A byte-stuffed
+    // structure stuffs exactly this region, leaving the prefix/postfix frame untouched (as the root frame does).
+    fun ByteArrayBuilder.buildBodyAndChecksum() {
+        val crc = structureSettings.checksumAlgorithm
+        if (crc != null) {
+            // The body is the flag bits + remaining body. This is also the part used for checksum verification
+            val body = buildByteArray(binaryDescriptor.byteOrder, totalBodySize) {
+                buildBody()
+            }
+            add(body)
+            // CRC is emitted in childByteOrder — the same byte order used for all field values.
+            // When @ByteOrder(order, excludeStructure = true) is used, byteOrder (builder direction)
+            // and childByteOrder (field encoding) differ; the CRC correctly follows field encoding.
+            val crcBytes = crc.compute(body).toByteArray(binaryDescriptor.childByteOrder)
+            add(
+                when (binaryDescriptor.childByteOrder) {
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(crcBytes.size - crc.byteWidth, crcBytes.size)
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> crcBytes.copyOfRange(0, crc.byteWidth)
+                },
+            )
+        } else {
+            buildBody()
+        }
+    }
+
+    private fun ByteArrayBuilder.buildBody() {
+        flagBits.forEach {
+            add(it)
+        }
+        actions.forEach { apply(it) }
+        if (currentBits > 0) {
+            repeat(Byte.SIZE_BITS - currentBits) {
+                add(false)
+            }
+        }
+    }
+}
+
+/**
+ * A [StructureBinaryBuilder] to build data for a single class
+ */
+internal class ClassBinaryBuilder(binaryDescriptor: BinaryDescriptor, onUnconstrained: () -> Unit) :
+    StructureBinaryBuilder(
+        binaryDescriptor,
+        // Same width the decoder reads: wide enough for every child's own bits AND for any bit a child only derives
+        // its presence from — a [PresentWhenAllSet] index that no property owns still has to fit in the header.
+        binaryDescriptor.flagBitSize,
+        onUnconstrained,
+    )
+
+/**
+ * A [StructureBinaryBuilder] to build data for an item in a collection.
+ * Unlike [ClassBinaryBuilder], this assumes its flag width from the parent rather than the children, as each item will have its individual flag bytes.
+ */
+internal class ItemBinaryBuilder(binaryDescriptor: BinaryDescriptor, onUnconstrained: () -> Unit) :
+    StructureBinaryBuilder(
+        binaryDescriptor,
+        (binaryDescriptor.bitIndex + binaryDescriptor.bitWidth),
+        onUnconstrained,
+    ) {
+    // The item's own encoder already writes any @Prefix/@Postfix/@Checksum the item type carries — through
+    // beginStructure, encodeInline or encodeEnum — so this builder contributes the item's flag bits and body
+    // only, never a second copy of the frame. The descriptor itself keeps its settings: it is handed to that
+    // encoder by [CollectionBinaryBuilder.setIndex].
+    override val structureSettings = binaryDescriptor.structureSettings.copy(prefix = null, postfix = null, checksum = null)
+
+    fun startsWithTerminator(value: ByteArray, order: ByteOrder, terminator: Byte): Boolean = when (order) {
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> value.firstOrNull() == terminator
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> value.lastOrNull() == terminator
+    }
+}
+
+/**
+ * Exception thrown when a terminator-marked collection has an item that starts with the terminator byte,
+ * which would be indistinguishable from the end of the collection.
+ */
+typealias UnexpectedTerminator = com.splendo.kaluga.bytes.layout.UnexpectedTerminator
+
+/**
+ * A [BinaryBuilder] to build data for a collection (List/Map) structure
+ */
+internal abstract class CollectionBinaryBuilder(
+    private val byteOrder: ByteOrder,
+    private val classBuilders: List<ItemBinaryBuilder>,
+    private val terminator: Byte?,
+    private val byteStuffing: ByteStuffingScheme? = null,
+) : BinaryBuilder {
+    private var currentIndex = 0
+    val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
+
+    override val expectedSize: Int get() = classBuilders.sumOf { it.expectedSize }
+
+    fun setIndex(index: Int): BinaryDescriptor {
+        currentIndex = index
+        return currentClassBuilder.binaryDescriptor
+    }
+
+    override fun addBit(value: Boolean) {
+        currentClassBuilder.addBit(value)
+    }
+
+    override fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit) {
+        currentClassBuilder.addAction(expectedSize, action)
+    }
+
+    override fun addFlag(index: Int, value: Boolean) {
+        currentClassBuilder.addFlag(index, value)
+    }
+
+    override fun makeUnconstrained() {
+        currentClassBuilder.makeUnconstrained()
+    }
+
+    override fun ByteArrayBuilder.build() {
+        val stuffing = byteStuffing
+        if (stuffing != null) {
+            // Stuff the whole collection body (LSB-only); the raw 0x00 terminator is appended separately by the
+            // encoder. Because 0x00 is escaped, an item may legitimately start with it, so no start-with-null check.
+            val body = buildByteArray(this@CollectionBinaryBuilder.byteOrder, maxOf(expectedSize, 1)) {
+                classBuilders.forEach { with(it) { build() } }
+            }
+            add(stuffing.stuff(body))
+        } else if (byteOrder == this@CollectionBinaryBuilder.byteOrder) {
+            classBuilders.forEachIndexed { index, classBuilder ->
+                if (terminator != null && classBuilder.binaryDescriptor.fieldIndex == 0) {
+                    val value = buildByteArray(expectedSize = classBuilder.expectedSize) {
+                        with(classBuilder) {
+                            build()
+                        }
+                    }
+                    if (classBuilder.startsWithTerminator(value, byteOrder, terminator)) {
+                        throw UnexpectedTerminator("The element at $index starts with the terminator byte in a terminated List")
+                    }
+                    add(value)
+                } else {
+                    with(classBuilder) {
+                        build()
+                    }
+                }
+            }
+        } else {
+            add(
+                with(this@CollectionBinaryBuilder) {
+                    buildByteArray(byteOrder, expectedSize) {
+                        build()
+                    }
+                },
+            )
+        }
+    }
+}
+
+/**
+ * A [CollectionBinaryBuilder] for a List
+ */
+internal class ListBinaryBuilder(binaryDescriptor: BinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
+    CollectionBinaryBuilder(
+        // The accumulation direction, not childByteOrder: items are laid out in the same direction as the enclosing
+        // structure. Under @ByteOrder(order, excludeStructure = true) only the item VALUES follow childByteOrder.
+        binaryDescriptor.byteOrder,
+        MutableList(size) {
+            ItemBinaryBuilder(binaryDescriptor.children.first(), onUnconstrained)
+        },
+        terminator,
+        binaryDescriptor.collectionSettings?.byteStuffing,
+    )
+
+/**
+ * A [CollectionBinaryBuilder] for a Map
+ */
+internal class MapBinaryBuilder(binaryDescriptor: BinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
+    CollectionBinaryBuilder(
+        // See [ListBinaryBuilder]: entries accumulate in the enclosing structure's direction.
+        binaryDescriptor.byteOrder,
+        MutableList(size * 2) {
+            val index = it % 2
+            ItemBinaryBuilder(binaryDescriptor.children[index], onUnconstrained)
+        },
+        terminator,
+        binaryDescriptor.collectionSettings?.byteStuffing,
+    )

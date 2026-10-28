@@ -73,4 +73,25 @@ class ConcurrentMutableMapTest : BaseTest() {
         assertEquals(10000, map.size)
         dispatchers.forEach { it.close() }
     }
+
+    @Test
+    fun testGetOrPutComputesOnce() = testRunBlocking {
+        val dispatchers = List(10) { singleThreadDispatcher("Thread $it") }
+        val map = concurrentMutableMapOf<Int, String>()
+        val computed = concurrentMutableListOf<Int>()
+        val jobs = dispatchers.map { dispatcher ->
+            launch(coroutineContext + dispatcher) {
+                repeat(1000) { key ->
+                    map.getOrPut(key) {
+                        computed.add(key)
+                        "$key"
+                    }
+                }
+            }
+        }
+        jobs.joinAll()
+        assertEquals(1000, map.size)
+        assertEquals(1000, computed.size)
+        dispatchers.forEach { it.close() }
+    }
 }
