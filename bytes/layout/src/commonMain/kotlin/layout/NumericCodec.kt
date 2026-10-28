@@ -212,7 +212,8 @@ object NumericCodec {
      * Writes [value] as a natural number of [length] into [bytes] at [offset]. Out-of-range values are truncated to
      * [length] the way `Number.toByte()`/`toShort()`/`toInt()`/`toLong()` truncate them, except that 24, 40 and 48 bit
      * signed values must fit (their constructors reject anything else). A floating point [value] (the wire value of a
-     * scalar or range encoding) is converted with the saturating `Double.toInt()`/`toLong()`.
+     * scalar or range encoding) is converted with the saturating `Double.toInt()`/`toLong()`, or `toUInt()`/`toULong()`
+     * when unsigned.
      */
     fun writeNatural(bytes: ByteArray, offset: Int, value: Number, length: Length, signed: Boolean, byteOrder: ByteOrder) {
         if (value is Double || value is Float) {
@@ -229,7 +230,11 @@ object NumericCodec {
 
     /** [writeNatural] for a floating point [value]. */
     fun writeNatural(bytes: ByteArray, offset: Int, value: Double, length: Length, signed: Boolean, byteOrder: ByteOrder) {
-        writeNatural(bytes, offset, value.toInt(), value.toLong(), length, signed, byteOrder)
+        if (signed) {
+            writeNatural(bytes, offset, value.toInt(), value.toLong(), length, true, byteOrder)
+        } else {
+            writeNatural(bytes, offset, value.toUInt().toInt(), value.toULong().toLong(), length, false, byteOrder)
+        }
     }
 
     private fun writeNatural(bytes: ByteArray, offset: Int, asInt: Int, asLong: Long, length: Length, signed: Boolean, byteOrder: ByteOrder) {

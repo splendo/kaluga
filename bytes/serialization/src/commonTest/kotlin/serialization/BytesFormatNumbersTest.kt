@@ -978,6 +978,25 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         validateEncoding(EncodeRangeFixtures.Temperature(85.0), buildByteArray { add(0xFF.toByte()) })
     }
 
+    private object WideNaturalFixtures {
+        @Serializable
+        data class RangeThirtyTwoBit(@Range(0.0, 1.0) @Size(Length.`32_BIT`) val fraction: Double)
+
+        @Serializable
+        data class UnsignedScalarThirtyTwoBit(@Scalar(multiplier = 2) @Unsigned @Size(Length.`32_BIT`) val value: Double)
+    }
+
+    @Test
+    fun encodeRangeAtFullWidth() {
+        validateEncoding(WideNaturalFixtures.RangeThirtyTwoBit(0.0), buildByteArray { add(uInt = 0u) })
+        validateEncoding(WideNaturalFixtures.RangeThirtyTwoBit(1.0), buildByteArray { add(uInt = UInt.MAX_VALUE) })
+    }
+
+    @Test
+    fun encodeUnsignedScalarAboveIntRange() {
+        validateEncoding(WideNaturalFixtures.UnsignedScalarThirtyTwoBit(UInt.MAX_VALUE.toDouble() / 2), buildByteArray { add(uInt = UInt.MAX_VALUE) })
+    }
+
     private object EncodeCharFixtures {
         @Serializable
         data class Container(
