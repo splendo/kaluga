@@ -33,6 +33,7 @@ import com.splendo.kaluga.bytes.decodeUShort
 import com.splendo.kaluga.bytes.strings.decodeUTF16Char
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.UnsupportedCharEncoding
 import com.splendo.kaluga.bytes.layout.CollectionSettings
 import com.splendo.kaluga.bytes.layout.FrameSettings
 import com.splendo.kaluga.bytes.layout.NumericCodec
@@ -621,7 +622,8 @@ internal fun BinaryDescriptor.decodeDoubleElement(decoder: BinaryDescriptorDecod
 
 internal fun BinaryDescriptor.decodeCharElement(decoder: BinaryDescriptorDecoder): Char = when (stringSettings?.encoding ?: Encoding.ASCII) {
     Encoding.UTF_16 -> decoder.nextBytes(2).decodeUTF16Char(0, childByteOrder)
-    Encoding.ASCII, Encoding.UTF_8 -> decoder.nextBytes(1).first().decodeAsciiChar()
+    Encoding.ASCII -> decoder.nextBytes(1).first().decodeAsciiChar()
+    Encoding.UTF_8 -> throw UnsupportedCharEncoding("A Char has a fixed size, so it cannot be UTF-8")
 }
 
 internal fun BinaryDescriptor.decodeStringElement(decoder: BinaryDescriptorDecoder): String {

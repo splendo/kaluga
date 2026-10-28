@@ -29,6 +29,7 @@ import com.splendo.kaluga.bytes.medfloat.MedFloat16
 import com.splendo.kaluga.bytes.medfloat.MedFloat32
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.layout.CollectionSettings
+import com.splendo.kaluga.bytes.layout.UnsupportedCharEncoding
 import com.splendo.kaluga.bytes.layout.FrameSettings
 import com.splendo.kaluga.bytes.layout.NumericCodec
 import com.splendo.kaluga.bytes.layout.NumericSettings
@@ -674,5 +675,8 @@ internal fun BinaryBuilder.encodeStringElement(value: String, binaryDescriptor: 
 }
 internal fun BinaryBuilder.encodeCharElement(value: Char, binaryDescriptor: BinaryDescriptor) {
     val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.ASCII
+    if (encoding == Encoding.UTF_8) {
+        throw UnsupportedCharEncoding("A Char has a fixed size, so it cannot be UTF-8")
+    }
     addAction(encoding.byteSize) { add(value, encoding, binaryDescriptor.childByteOrder) }
 }

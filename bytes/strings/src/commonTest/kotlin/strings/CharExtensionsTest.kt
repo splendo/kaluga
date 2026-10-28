@@ -78,4 +78,11 @@ class CharExtensionsTest {
         assertFailsWith<IllegalArgumentException> { Encoding.UTF_8.copyCharIntoByteArray('é', ByteArray(1), byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST) }
         assertFailsWith<IllegalArgumentException> { Encoding.ASCII.copyCharIntoByteArray('é', ByteArray(1), byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST) }
     }
+
+    @Test
+    fun decodeAsciiCharRejectsNonAsciiBytes() {
+        assertEquals('\u007F', 0x7F.toByte().decodeAsciiChar())
+        val error = assertFailsWith<IllegalArgumentException> { 0xC3.toByte().decodeAsciiChar() }
+        assertEquals("Non-ASCII byte: 0xc3", error.message)
+    }
 }

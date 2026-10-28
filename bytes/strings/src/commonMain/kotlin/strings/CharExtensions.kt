@@ -226,8 +226,13 @@ private fun continuationBits(byte: Int): Int {
 
 /**
  * Decodes a [Char] from a [Byte] assuming ASCII encoding.
+ * @throws IllegalArgumentException if the byte is not ASCII, i.e. not in `0x00..0x7F`.
  */
-fun Byte.decodeAsciiChar() = Char(toInt())
+fun Byte.decodeAsciiChar(): Char = if (this < 0) {
+    throw IllegalArgumentException("Non-ASCII byte: 0x${toUByte().toString(16)}")
+} else {
+    Char(toInt())
+}
 
 /**
  * Decodes a [Char] at [octetIndex] from a [ByteArray] assuming ASCII encoding.
