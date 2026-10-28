@@ -1,6 +1,6 @@
 # Bytes
 
-Working with binary data: `ByteArray` utilities and byte orders, 24-, 40- and 48-bit integers, IEEE 11073 medical floats, byte stuffing, string codecs, SHA-1 and CRC.
+Working with binary data: `ByteArray` utilities and byte orders, 24-, 40- and 48-bit integers, IEEE 11073 medical floats, byte stuffing, string codecs, SHA-1, CRC and a serialization format for byte-packed wire layouts.
 
 This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containing the following modules:
 
@@ -13,3 +13,6 @@ This is a feature group of [Kaluga](https://github.com/splendo/kaluga), containi
 | [strings](strings/) | Encoding and decoding Chars and Strings to and from bytes | `com.splendo.kaluga.bytes:strings` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [hash](hash/) | SHA-1 digests | `com.splendo.kaluga.bytes:hash` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [crc](crc/) | Cyclic Redundancy Check (CRC) calculation | `com.splendo.kaluga.bytes:crc` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [annotations](annotations/) | Annotations describing a byte-packed wire layout | `com.splendo.kaluga.bytes:annotations` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [layout](layout/) | Compiling and validating byte-packed wire layouts | `com.splendo.kaluga.bytes:layout` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [serialization](serialization/) | `BytesFormat`, a Kotlin Serialization format for byte-packed wire layouts | `com.splendo.kaluga.bytes:serialization` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
