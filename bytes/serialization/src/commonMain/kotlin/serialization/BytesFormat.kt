@@ -29,7 +29,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 
 /**
- * A [BinaryFormat] used for encoding and decoding structures to a Binary Data usable for Bluetooth communication.
+ * A [BinaryFormat] used for encoding and decoding structures to a compact binary wire format.
  *
  * By default this will serialize as follows:
  *
@@ -78,36 +78,36 @@ import kotlinx.serialization.serializer
  * @property serializersModule Contains all serializers registered by format user for Contextual and Polymorphic serialization.
  * The same module should be exposed in the format's Encoder and Decoder.
  */
-sealed class BluetoothFormat(private val validateChecksum: Boolean, override val serializersModule: SerializersModule = EmptySerializersModule()) : BinaryFormat {
+sealed class BytesFormat(private val validateChecksum: Boolean, override val serializersModule: SerializersModule = EmptySerializersModule()) : BinaryFormat {
 
     /**
-     * Builder for creating a [BluetoothFormat]
+     * Builder for creating a [BytesFormat]
      * @property validateChecksum if `true` decoding any data marked with [Checksum] will automatically validate the checksum and throw an exception if they don't match.
      * @property serializersModule Contains all serializers registered by format user for Contextual and Polymorphic serialization.
      * The same module should be exposed in the format's Encoder and Decoder.
      */
-    class Builder internal constructor(from: BluetoothFormat) {
+    class Builder internal constructor(from: BytesFormat) {
 
         var validateChecksum: Boolean = true
         var serializersModule: SerializersModule = from.serializersModule
     }
 
     /**
-     * Default [BluetoothFormat]
+     * Default [BytesFormat]
      */
-    companion object Default : BluetoothFormat(true) {
-        operator fun invoke(from: BluetoothFormat = this, builder: Builder.() -> Unit): BluetoothFormat {
+    companion object Default : BytesFormat(true) {
+        operator fun invoke(from: BytesFormat = this, builder: Builder.() -> Unit): BytesFormat {
             val b = Builder(
                 from,
             ).apply(builder)
-            return BluetoothFormatImpl(
+            return BytesFormatImpl(
                 b,
             )
         }
     }
 
     override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
-        val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(serializer.descriptor, serializersModule)
+        val flag = BinaryDescriptorRegistry.binaryDescriptor(serializer.descriptor, serializersModule)
         val builder = object : BinaryBuilder {
             val flags = BooleanArray(maxOf(flag.bitIndex + flag.bitWidth, 0))
 
@@ -170,7 +170,7 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
         }
         // The root frame owns its byte stuffing: the encoder stuffs the body + checksum (leaving prefix/postfix untouched),
         // length-delimited by the whole payload, so no terminator is appended.
-        val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule, isRootFrame = true)
+        val encoder = BinaryEncoder(flag, builder, serializersModule, isRootFrame = true)
         serializer.serialize(encoder, value)
 
         return buildByteArray(flag.byteOrder, builder.expectedSize) {
@@ -181,19 +181,19 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
     }
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
-        val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
+        val flag = BinaryDescriptorRegistry.binaryDescriptor(deserializer.descriptor, serializersModule)
         // Use flag.byteOrder (builder/accumulation direction) for the root decoder so it reads the byte
         // array in the same direction it was written — not flag.childByteOrder, which is the field VALUE
         // encoding direction and may differ when @ByteOrder(order, excludeStructure = true) is in use.
-        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule, isRootFrame = true)
+        val decoder = BinaryDecoder(flag, RootBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule, isRootFrame = true)
 
         return deserializer.deserialize(decoder)
     }
 
     /**
-     * Returns a [KSerializer] for the given type [T] used by this [BluetoothFormat].
+     * Returns a [KSerializer] for the given type [T] used by this [BytesFormat].
      */
     inline fun <reified T> serializer(): KSerializer<T> = serializersModule.serializer()
 }
 
-private class BluetoothFormatImpl(builder: Builder) : BluetoothFormat(builder.validateChecksum, builder.serializersModule)
+private class BytesFormatImpl(builder: Builder) : BytesFormat(builder.validateChecksum, builder.serializersModule)

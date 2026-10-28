@@ -1,26 +1,26 @@
-public abstract class com/splendo/kaluga/bytes/serialization/BluetoothFormat : kotlinx/serialization/BinaryFormat {
-	public static final field Default Lcom/splendo/kaluga/bytes/serialization/BluetoothFormat$Default;
+public final class com/splendo/kaluga/bytes/serialization/ByteArrayEndedBeforeSerializationCompleted : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/bytes/serialization/BytesFormat : kotlinx/serialization/BinaryFormat {
+	public static final field Default Lcom/splendo/kaluga/bytes/serialization/BytesFormat$Default;
 	public synthetic fun <init> (ZLkotlinx/serialization/modules/SerializersModule;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun decodeFromByteArray (Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
 	public fun encodeToByteArray (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
 	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
-public final class com/splendo/kaluga/bytes/serialization/BluetoothFormat$Builder {
+public final class com/splendo/kaluga/bytes/serialization/BytesFormat$Builder {
 	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 	public final fun getValidateChecksum ()Z
 	public final fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
 	public final fun setValidateChecksum (Z)V
 }
 
-public final class com/splendo/kaluga/bytes/serialization/BluetoothFormat$Default : com/splendo/kaluga/bytes/serialization/BluetoothFormat {
-	public final fun invoke (Lcom/splendo/kaluga/bytes/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/bytes/serialization/BluetoothFormat;
-	public static synthetic fun invoke$default (Lcom/splendo/kaluga/bytes/serialization/BluetoothFormat$Default;Lcom/splendo/kaluga/bytes/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/serialization/BluetoothFormat;
-}
-
-public final class com/splendo/kaluga/bytes/serialization/ByteArrayEndedBeforeSerializationCompleted : kotlinx/serialization/SerializationException {
-	public fun <init> (Ljava/lang/String;)V
-	public fun getMessage ()Ljava/lang/String;
+public final class com/splendo/kaluga/bytes/serialization/BytesFormat$Default : com/splendo/kaluga/bytes/serialization/BytesFormat {
+	public final fun invoke (Lcom/splendo/kaluga/bytes/serialization/BytesFormat;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/bytes/serialization/BytesFormat;
+	public static synthetic fun invoke$default (Lcom/splendo/kaluga/bytes/serialization/BytesFormat$Default;Lcom/splendo/kaluga/bytes/serialization/BytesFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/serialization/BytesFormat;
 }
 
 public final class com/splendo/kaluga/bytes/serialization/DataAfterUnconstrainedData : kotlinx/serialization/SerializationException {

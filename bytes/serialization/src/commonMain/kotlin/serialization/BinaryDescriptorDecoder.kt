@@ -27,12 +27,12 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encoding.Decoder
 
 /**
- * Exception thrown if the [ByteArray] provided to [BluetoothFormat] is smaller than expected
+ * Exception thrown if the [ByteArray] provided to [BytesFormat] is smaller than expected
  */
 class ByteArrayEndedBeforeSerializationCompleted(override val message: String) : SerializationException()
 
 /**
- * Exception thrown if the [ByteArray] provided to [BluetoothFormat] is bigger then expected
+ * Exception thrown if the [ByteArray] provided to [BytesFormat] is bigger then expected
  */
 class UnexpectedBytesRemaining(override val message: String) : SerializationException()
 
@@ -46,7 +46,7 @@ class InvalidPrefix(override val message: String) : SerializationException()
  */
 class InvalidPostfix(override val message: String) : SerializationException()
 
-internal interface BluetoothBinaryDescriptorDecoder {
+internal interface BinaryDescriptorDecoder {
 
     val flags: BooleanArray
     val currentOffset: Int
@@ -54,7 +54,7 @@ internal interface BluetoothBinaryDescriptorDecoder {
 
     fun subArrayFrom(offset: Int): ByteArray
 
-    fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int = binaryDescriptor.flagBitSize): BluetoothBinaryDescriptorDecoder
+    fun beginStructure(binaryDescriptor: BinaryDescriptor, flagBitSize: Int = binaryDescriptor.flagBitSize): BinaryDescriptorDecoder
     fun endStructure()
 
     fun isEmpty(): Boolean
@@ -64,8 +64,8 @@ internal interface BluetoothBinaryDescriptorDecoder {
     fun nextBytes(size: Int): ByteArray
 }
 
-internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder, override val validateChecksum: Boolean) :
-    BluetoothBinaryDescriptorDecoder {
+internal class RootBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder, override val validateChecksum: Boolean) :
+    BinaryDescriptorDecoder {
 
     override val flags: BooleanArray = BooleanArray(0)
     private var offset = 0
@@ -127,8 +127,8 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
         return block()
     }
 
-    override fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int): BluetoothBinaryDescriptorDecoder = beginStructure(binaryDescriptor, 0, flagBitSize)
-    fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, parentFooterSize: Int, flagBitSize: Int): StructureBluetoothBinaryDescriptorDecoder {
+    override fun beginStructure(binaryDescriptor: BinaryDescriptor, flagBitSize: Int): BinaryDescriptorDecoder = beginStructure(binaryDescriptor, 0, flagBitSize)
+    fun beginStructure(binaryDescriptor: BinaryDescriptor, parentFooterSize: Int, flagBitSize: Int): StructureBinaryDescriptorDecoder {
         // Whenever we start a new structure, we start a new flag byte
         consumeBit()
 
@@ -142,7 +142,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
             isNextBitSet()
         }
 
-        return StructureBluetoothBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, parentFooterSize)
+        return StructureBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, parentFooterSize)
     }
 
     override fun endStructure() {
@@ -159,18 +159,18 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
 
 /**
  * Exception thrown if the Checksum does not match given [Checksum] algorithm.
- * This check can be disabled using [BluetoothFormat.validateChecksum]
+ * This check can be disabled using [BytesFormat.validateChecksum]
  */
 class InvalidChecksumException(val expected: ULong, val actual: ULong) : SerializationException() {
     override val message: String = "Checksum expected $expected but got $actual"
 }
-internal class StructureBluetoothBinaryDescriptorDecoder(
-    val descriptor: BluetoothBinaryDescriptor,
-    val rootDecoder: RootBluetoothBinaryDescriptorDecoder,
+internal class StructureBinaryDescriptorDecoder(
+    val descriptor: BinaryDescriptor,
+    val rootDecoder: RootBinaryDescriptorDecoder,
     override val flags: BooleanArray,
     private val startingOffset: Int,
     parentFooterSize: Int,
-) : BluetoothBinaryDescriptorDecoder {
+) : BinaryDescriptorDecoder {
     // Bytes trailing this structure's body that belong to the frame rather than its fields. The [Checksum] counts
     // towards it just like the [Postfix]: an @Unsized field must stop before it, and @SizePolymorphic dispatch
     // must not include it in the payload size it dispatches on.
@@ -190,7 +190,7 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     override fun isNextBitSet(): Boolean = rootDecoder.isNextBitSet()
     override fun nextBytes(size: Int): ByteArray = rootDecoder.nextBytes(size)
 
-    override fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int): BluetoothBinaryDescriptorDecoder =
+    override fun beginStructure(binaryDescriptor: BinaryDescriptor, flagBitSize: Int): BinaryDescriptorDecoder =
         rootDecoder.beginStructure(binaryDescriptor, footerSize, flagBitSize)
     override fun endStructure() {
         // Consume and validate checksum if available
@@ -200,15 +200,15 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
 }
 
 /**
- * Reads bytes one at a time via [BluetoothBinaryDescriptorDecoder.nextBytes] until the decoder [is empty][BluetoothBinaryDescriptorDecoder.isEmpty].
+ * Reads bytes one at a time via [BinaryDescriptorDecoder.nextBytes] until the decoder [is empty][BinaryDescriptorDecoder.isEmpty].
  * Used to feed a byte-stuffed region to [com.splendo.kaluga.bytes.stuffing.DelimiterByteStuffingScheme.unstuff].
  */
-internal fun BluetoothBinaryDescriptorDecoder.byteIterator(): Iterator<Byte> = object : Iterator<Byte> {
+internal fun BinaryDescriptorDecoder.byteIterator(): Iterator<Byte> = object : Iterator<Byte> {
     override fun hasNext(): Boolean = !isEmpty()
     override fun next(): Byte = nextBytes(1)[0]
 }
 
-internal fun BluetoothBinaryDescriptorDecoder.consumePrefix(descriptor: BluetoothBinaryDescriptor) {
+internal fun BinaryDescriptorDecoder.consumePrefix(descriptor: BinaryDescriptor) {
     descriptor.structureSettings.prefix?.let { prefixBytes ->
         val actual = nextBytes(prefixBytes.array.size)
         if (!actual.contentEquals(prefixBytes.array)) {
@@ -217,7 +217,7 @@ internal fun BluetoothBinaryDescriptorDecoder.consumePrefix(descriptor: Bluetoot
     }
 }
 
-internal fun BluetoothBinaryDescriptorDecoder.consumePostfix(descriptor: BluetoothBinaryDescriptor) {
+internal fun BinaryDescriptorDecoder.consumePostfix(descriptor: BinaryDescriptor) {
     descriptor.structureSettings.postfix?.let { postfixBytes ->
         val actual = nextBytes(postfixBytes.array.size)
         if (!actual.contentEquals(postfixBytes.array)) {
@@ -226,7 +226,7 @@ internal fun BluetoothBinaryDescriptorDecoder.consumePostfix(descriptor: Bluetoo
     }
 }
 
-internal fun BluetoothBinaryDescriptorDecoder.validateChecksum(descriptor: BluetoothBinaryDescriptor, rootDecoder: BluetoothBinaryDescriptorDecoder, startingOffset: Int) {
+internal fun BinaryDescriptorDecoder.validateChecksum(descriptor: BinaryDescriptor, rootDecoder: BinaryDescriptorDecoder, startingOffset: Int) {
     // Validation can be disabled
     descriptor.structureSettings.checksumAlgorithm?.let { crc ->
         if (validateChecksum) {

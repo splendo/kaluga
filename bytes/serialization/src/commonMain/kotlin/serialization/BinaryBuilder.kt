@@ -28,7 +28,7 @@ import com.splendo.kaluga.bytes.toByteArray
 import kotlinx.serialization.SerializationException
 
 /**
- * Builder for creating a [ByteArray] from a [BluetoothBinaryDescriptor]
+ * Builder for creating a [ByteArray] from a [BinaryDescriptor]
  */
 internal interface BinaryBuilder {
 
@@ -49,14 +49,14 @@ internal interface BinaryBuilder {
 class DataAfterUnconstrainedData(override val message: String?) : SerializationException()
 
 /**
- * A [BinaryBuilder] to build data for a single [BluetoothBinaryDescriptor] structure
+ * A [BinaryBuilder] to build data for a single [BinaryDescriptor] structure
  */
-internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBinaryDescriptor, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
+internal abstract class StructureBinaryBuilder(val binaryDescriptor: BinaryDescriptor, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
 
     val flagBits: BooleanArray = BooleanArray(flagBitsSize.coerceAtLeast(0))
 
     /** The frame ([Prefix]/[Postfix]/[Checksum]) this builder is responsible for writing. */
-    protected open val structureSettings: BluetoothBinaryDescriptor.StructureSettings get() = binaryDescriptor.structureSettings
+    protected open val structureSettings: BinaryDescriptor.StructureSettings get() = binaryDescriptor.structureSettings
 
     override val expectedSize: Int
         get() = totalBodySize +
@@ -174,7 +174,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
 /**
  * A [StructureBinaryBuilder] to build data for a single class
  */
-internal class ClassBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, onUnconstrained: () -> Unit) :
+internal class ClassBinaryBuilder(binaryDescriptor: BinaryDescriptor, onUnconstrained: () -> Unit) :
     StructureBinaryBuilder(
         binaryDescriptor,
         // Same width the decoder reads: wide enough for every child's own bits AND for any bit a child only derives
@@ -187,7 +187,7 @@ internal class ClassBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, o
  * A [StructureBinaryBuilder] to build data for an item in a collection.
  * Unlike [ClassBinaryBuilder], this assumes its flag width from the parent rather than the children, as each item will have its individual flag bytes.
  */
-internal class ItemBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, onUnconstrained: () -> Unit) :
+internal class ItemBinaryBuilder(binaryDescriptor: BinaryDescriptor, onUnconstrained: () -> Unit) :
     StructureBinaryBuilder(
         binaryDescriptor,
         (binaryDescriptor.bitIndex + binaryDescriptor.bitWidth),
@@ -225,7 +225,7 @@ internal abstract class CollectionBinaryBuilder(
 
     override val expectedSize: Int get() = classBuilders.sumOf { it.expectedSize }
 
-    fun setIndex(index: Int): BluetoothBinaryDescriptor {
+    fun setIndex(index: Int): BinaryDescriptor {
         currentIndex = index
         return currentClassBuilder.binaryDescriptor
     }
@@ -288,7 +288,7 @@ internal abstract class CollectionBinaryBuilder(
 /**
  * A [CollectionBinaryBuilder] for a List
  */
-internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
+internal class ListBinaryBuilder(binaryDescriptor: BinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         // The accumulation direction, not childByteOrder: items are laid out in the same direction as the enclosing
         // structure. Under @ByteOrder(order, excludeStructure = true) only the item VALUES follow childByteOrder.
@@ -303,7 +303,7 @@ internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, si
 /**
  * A [CollectionBinaryBuilder] for a Map
  */
-internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
+internal class MapBinaryBuilder(binaryDescriptor: BinaryDescriptor, size: Int, terminator: Byte?, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         // See [ListBinaryBuilder]: entries accumulate in the enclosing structure's direction.
         binaryDescriptor.byteOrder,

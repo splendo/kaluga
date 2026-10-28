@@ -71,24 +71,24 @@ final class com.splendo.kaluga.bytes.serialization/UnsupportedByteStuffing : kot
     constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.serialization/UnsupportedByteStuffing.<init>|<init>(kotlin.String){}[0]
 }
 
-sealed class com.splendo.kaluga.bytes.serialization/BluetoothFormat : kotlinx.serialization/BinaryFormat { // com.splendo.kaluga.bytes.serialization/BluetoothFormat|null[0]
-    open val serializersModule // com.splendo.kaluga.bytes.serialization/BluetoothFormat.serializersModule|{}serializersModule[0]
-        open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BluetoothFormat.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+sealed class com.splendo.kaluga.bytes.serialization/BytesFormat : kotlinx.serialization/BinaryFormat { // com.splendo.kaluga.bytes.serialization/BytesFormat|null[0]
+    open val serializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.serializersModule|{}serializersModule[0]
+        open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
 
-    final inline fun <#A1: reified kotlin/Any?> serializer(): kotlinx.serialization/KSerializer<#A1> // com.splendo.kaluga.bytes.serialization/BluetoothFormat.serializer|serializer(){0§<kotlin.Any?>}[0]
-    open fun <#A1: kotlin/Any?> decodeFromByteArray(kotlinx.serialization/DeserializationStrategy<#A1>, kotlin/ByteArray): #A1 // com.splendo.kaluga.bytes.serialization/BluetoothFormat.decodeFromByteArray|decodeFromByteArray(kotlinx.serialization.DeserializationStrategy<0:0>;kotlin.ByteArray){0§<kotlin.Any?>}[0]
-    open fun <#A1: kotlin/Any?> encodeToByteArray(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlin/ByteArray // com.splendo.kaluga.bytes.serialization/BluetoothFormat.encodeToByteArray|encodeToByteArray(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
+    final inline fun <#A1: reified kotlin/Any?> serializer(): kotlinx.serialization/KSerializer<#A1> // com.splendo.kaluga.bytes.serialization/BytesFormat.serializer|serializer(){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> decodeFromByteArray(kotlinx.serialization/DeserializationStrategy<#A1>, kotlin/ByteArray): #A1 // com.splendo.kaluga.bytes.serialization/BytesFormat.decodeFromByteArray|decodeFromByteArray(kotlinx.serialization.DeserializationStrategy<0:0>;kotlin.ByteArray){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> encodeToByteArray(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlin/ByteArray // com.splendo.kaluga.bytes.serialization/BytesFormat.encodeToByteArray|encodeToByteArray(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
 
-    final class Builder { // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder|null[0]
-        final var serializersModule // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder.serializersModule|{}serializersModule[0]
-            final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
-            final fun <set-serializersModule>(kotlinx.serialization.modules/SerializersModule) // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder.serializersModule.<set-serializersModule>|<set-serializersModule>(kotlinx.serialization.modules.SerializersModule){}[0]
-        final var validateChecksum // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder.validateChecksum|{}validateChecksum[0]
-            final fun <get-validateChecksum>(): kotlin/Boolean // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder.validateChecksum.<get-validateChecksum>|<get-validateChecksum>(){}[0]
-            final fun <set-validateChecksum>(kotlin/Boolean) // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder.validateChecksum.<set-validateChecksum>|<set-validateChecksum>(kotlin.Boolean){}[0]
+    final class Builder { // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder|null[0]
+        final var serializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule|{}serializersModule[0]
+            final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+            final fun <set-serializersModule>(kotlinx.serialization.modules/SerializersModule) // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.serializersModule.<set-serializersModule>|<set-serializersModule>(kotlinx.serialization.modules.SerializersModule){}[0]
+        final var validateChecksum // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.validateChecksum|{}validateChecksum[0]
+            final fun <get-validateChecksum>(): kotlin/Boolean // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.validateChecksum.<get-validateChecksum>|<get-validateChecksum>(){}[0]
+            final fun <set-validateChecksum>(kotlin/Boolean) // com.splendo.kaluga.bytes.serialization/BytesFormat.Builder.validateChecksum.<set-validateChecksum>|<set-validateChecksum>(kotlin.Boolean){}[0]
     }
 
-    final object Default : com.splendo.kaluga.bytes.serialization/BluetoothFormat { // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Default|null[0]
-        final fun invoke(com.splendo.kaluga.bytes.serialization/BluetoothFormat = ..., kotlin/Function1<com.splendo.kaluga.bytes.serialization/BluetoothFormat.Builder, kotlin/Unit>): com.splendo.kaluga.bytes.serialization/BluetoothFormat // com.splendo.kaluga.bytes.serialization/BluetoothFormat.Default.invoke|invoke(com.splendo.kaluga.bytes.serialization.BluetoothFormat;kotlin.Function1<com.splendo.kaluga.bytes.serialization.BluetoothFormat.Builder,kotlin.Unit>){}[0]
+    final object Default : com.splendo.kaluga.bytes.serialization/BytesFormat { // com.splendo.kaluga.bytes.serialization/BytesFormat.Default|null[0]
+        final fun invoke(com.splendo.kaluga.bytes.serialization/BytesFormat = ..., kotlin/Function1<com.splendo.kaluga.bytes.serialization/BytesFormat.Builder, kotlin/Unit>): com.splendo.kaluga.bytes.serialization/BytesFormat // com.splendo.kaluga.bytes.serialization/BytesFormat.Default.invoke|invoke(com.splendo.kaluga.bytes.serialization.BytesFormat;kotlin.Function1<com.splendo.kaluga.bytes.serialization.BytesFormat.Builder,kotlin.Unit>){}[0]
     }
 }

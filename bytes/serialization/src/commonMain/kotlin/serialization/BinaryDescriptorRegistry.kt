@@ -87,7 +87,7 @@ import kotlinx.serialization.descriptors.getPolymorphicDescriptors
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.jvm.JvmInline
 
-internal data class BluetoothBinaryDescriptor(
+internal data class BinaryDescriptor(
     val fieldName: String,
     val fieldIndex: Int,
     val bitIndex: Int,
@@ -101,7 +101,7 @@ internal data class BluetoothBinaryDescriptor(
     val enumMap: Map<Int, ByteArrayHolder>,
     val polymorphicMap: Map<String, ByteArrayHolder>,
     val structureSettings: StructureSettings,
-    val children: List<BluetoothBinaryDescriptor>,
+    val children: List<BinaryDescriptor>,
     // The flag bits (owned by other properties) whose conjunction determines this property's presence; empty for a
     // property that owns its presence bit at [bitIndex] (or is not nullable).
     val presenceFlagIndices: List<Int> = emptyList(),
@@ -250,7 +250,7 @@ internal data class BluetoothBinaryDescriptor(
 
         /**
          * The collection count is packed into [bits] bits of the parent structure's flag header,
-         * starting at the collection property's own [BluetoothBinaryDescriptor.bitIndex].
+         * starting at the collection property's own [BinaryDescriptor.bitIndex].
          * Produced when [@LengthPrefix][LengthPrefix] and [@FlagIndex][FlagIndex] are combined on
          * a List or Map: [bits] is 8 for [ByteLength][StringEncodingSettings.LengthPrefix.ByteLength]
          * and 16 for [ShortLength][StringEncodingSettings.LengthPrefix.ShortLength].
@@ -291,7 +291,7 @@ class UnsupportedByteStuffing(message: String) : SerializationException(message)
 
 // Stuffing operates on the frame's accumulation direction, which must be least-significant-first (a full MSB reversal
 // would reorder the stuffed bytes). `@ByteOrder(MSB, excludeStructure = true)` keeps the builder LSB and is allowed.
-internal fun BluetoothBinaryDescriptor.requireLeastSignificantFirstForStuffing() {
+internal fun BinaryDescriptor.requireLeastSignificantFirstForStuffing() {
     if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
         throw UnsupportedByteStuffing("@ByteStuffed is only supported for LEAST_SIGNIFICANT_FIRST byte order")
     }
@@ -312,7 +312,7 @@ class FlagIndexException(message: String) : SerializationException(message)
  */
 class InvalidByteOrderException(message: String) : SerializationException(message)
 
-internal object BluetoothBinaryDescriptorRegistry {
+internal object BinaryDescriptorRegistry {
 
     private class DesiredFlagBitWidth(var width: Int) {
         fun raise(value: Int) {
@@ -321,9 +321,9 @@ internal object BluetoothBinaryDescriptorRegistry {
     }
 
     // This is a pretty heavy method so we store it in a cache.
-    private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, BluetoothBinaryDescriptor>()
+    private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, BinaryDescriptor>()
 
-    internal fun bluetoothBinaryDescriptor(descriptor: SerialDescriptor, module: SerializersModule): BluetoothBinaryDescriptor = cache.getOrPut(descriptor to module) {
+    internal fun binaryDescriptor(descriptor: SerialDescriptor, module: SerializersModule): BinaryDescriptor = cache.getOrPut(descriptor to module) {
         // Seed the root preferred orders from the type's own @ByteOrder: preferredByteOrder is the field
         // encoding direction, preferredBuilderByteOrder the accumulation direction. The latter stays LSB when
         // excludeStructure = true so the frame is still built sequentially.
@@ -360,7 +360,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         preferredBuilderByteOrder: ByteOrder = preferredByteOrder,
         serializersModule: SerializersModule,
         reserveIndices: (Set<Int>) -> Unit,
-    ): BluetoothBinaryDescriptor = if (descriptor.isInline) {
+    ): BinaryDescriptor = if (descriptor.isInline) {
         // Inline methods should forward their descriptors until they find their actual (non-inline) root.
         val inlineDescriptor = descriptor.getElementDescriptor(0)
         val annotations = descriptor.annotations + fieldAnnotations + descriptor.getElementAnnotations(0)
@@ -507,7 +507,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         // Notify parent of flag indices to be used
         reserveIndices((0..<width).map { bitIndex + it }.toSet())
 
-        BluetoothBinaryDescriptor(
+        BinaryDescriptor(
             fieldName,
             fieldIndex,
             bitIndex,
@@ -539,7 +539,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         serializersModule: SerializersModule,
         bitIndex: Int,
         preferredBuilderByteOrder: ByteOrder = byteOrder,
-    ): List<BluetoothBinaryDescriptor> {
+    ): List<BinaryDescriptor> {
         var nextBit = 0
         val reservedSubIndices = mutableSetOf<Int>()
         // A regular structure has as many descriptors as it has children.
@@ -578,7 +578,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         byteOrder: ByteOrder,
         serializersModule: SerializersModule,
         preferredBuilderByteOrder: ByteOrder = byteOrder,
-    ): List<BluetoothBinaryDescriptor> {
+    ): List<BinaryDescriptor> {
         val itemDescriptor = descriptor.getElementDescriptor(0)
         val reservedSubIndices = mutableSetOf<Int>()
         // For list elements, there is only one child descriptor, that does not reuse its parents flag header.
@@ -608,7 +608,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         byteOrder: ByteOrder,
         serializersModule: SerializersModule,
         preferredBuilderByteOrder: ByteOrder = byteOrder,
-    ): List<BluetoothBinaryDescriptor> {
+    ): List<BinaryDescriptor> {
         val keyDescriptor = descriptor.getElementDescriptor(0)
         val valueDescriptor = descriptor.getElementDescriptor(1)
 
@@ -657,7 +657,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         byteOrder: ByteOrder,
         bitIndex: Int,
         preferredBuilderByteOrder: ByteOrder = byteOrder,
-    ): List<BluetoothBinaryDescriptor> = serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
+    ): List<BinaryDescriptor> = serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
         // For Open Polymorphic classes, all its declared options in serializersModule need to be considered
         val reservedSubIndices = mutableSetOf<Int>()
         getDescriptor(
@@ -733,7 +733,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         desiredFlagBitWidth: DesiredFlagBitWidth,
         annotations: List<Annotation>,
         inFlagsBits: Int?,
-    ): BluetoothBinaryDescriptor.NumericSettings? = when (descriptor.kind) {
+    ): BinaryDescriptor.NumericSettings? = when (descriptor.kind) {
         PrimitiveKind.INT,
         PrimitiveKind.BYTE,
         PrimitiveKind.SHORT,
@@ -744,21 +744,21 @@ internal object BluetoothBinaryDescriptorRegistry {
             desiredFlagBitWidth.raise(supportedLengths.sizingWidth())
             if (annotations.filterIsInstance<Range>().isNotEmpty()) {
                 val range = annotations.filterIsInstance<Range>().first()
-                BluetoothBinaryDescriptor.NumericSettings.RangeEncoded(supportedLengths, range.min, range.max)
+                BinaryDescriptor.NumericSettings.RangeEncoded(supportedLengths, range.min, range.max)
             } else if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
-                BluetoothBinaryDescriptor.NumericSettings.MedFloat(supportedLengths)
+                BinaryDescriptor.NumericSettings.MedFloat(supportedLengths)
             } else if (annotations.filterIsInstance<Scalar>().isNotEmpty()) {
                 val scalar = annotations.filterIsInstance<Scalar>().first()
                 val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
-                BluetoothBinaryDescriptor.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
+                BinaryDescriptor.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
             } else if (descriptor.kind == PrimitiveKind.DOUBLE || descriptor.kind == PrimitiveKind.FLOAT) {
-                BluetoothBinaryDescriptor.NumericSettings.Decimal(supportedLengths)
+                BinaryDescriptor.NumericSettings.Decimal(supportedLengths)
             } else {
                 val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
                 if (inFlagsBits != null) {
-                    BluetoothBinaryDescriptor.NumericSettings.Natural(emptySet(), isSigned, inFlagsBits = inFlagsBits)
+                    BinaryDescriptor.NumericSettings.Natural(emptySet(), isSigned, inFlagsBits = inFlagsBits)
                 } else {
-                    BluetoothBinaryDescriptor.NumericSettings.Natural(supportedLengths, isSigned)
+                    BinaryDescriptor.NumericSettings.Natural(supportedLengths, isSigned)
                 }
             }
         }
@@ -766,7 +766,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         else -> null
     }
 
-    private fun stringSettings(descriptor: SerialDescriptor, annotations: List<Annotation>, supportedLengths: Set<Length>): BluetoothBinaryDescriptor.StringSettings? {
+    private fun stringSettings(descriptor: SerialDescriptor, annotations: List<Annotation>, supportedLengths: Set<Length>): BinaryDescriptor.StringSettings? {
         val byteStuffing = annotations.byteStuffingScheme()
         val terminal = annotations.terminalByte()
         val stringSettings = when (descriptor.kind) {
@@ -796,33 +796,33 @@ internal object BluetoothBinaryDescriptorRegistry {
                             }
                         }
 
-                        BluetoothBinaryDescriptor.StringSettings(encoding, endMarking)
+                        BinaryDescriptor.StringSettings(encoding, endMarking)
                     }
 
                     // @Terminal without stuffing is a plain byte-terminated string: the content must not encode the terminator.
-                    terminal != null -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.Terminated(terminal))
+                    terminal != null -> BinaryDescriptor.StringSettings(encoding, StringEncodingSettings.Terminated(terminal))
 
-                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NullTerminated)
+                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NullTerminated)
 
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
-                        BluetoothBinaryDescriptor.StringSettings(
+                        BinaryDescriptor.StringSettings(
                             encoding,
                             lengthPrefix.asLengthPrefix(),
                         )
                     }
 
                     supportedLengths.size == 1 -> {
-                        BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.FixedLength(supportedLengths.first().bytes))
+                        BinaryDescriptor.StringSettings(encoding, StringEncodingSettings.FixedLength(supportedLengths.first().bytes))
                     }
 
-                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NoMarking)
+                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> BinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NoMarking)
 
-                    else -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.LengthPrefix.ByteLength)
+                    else -> BinaryDescriptor.StringSettings(encoding, StringEncodingSettings.LengthPrefix.ByteLength)
                 }
             }
 
-            PrimitiveKind.CHAR -> BluetoothBinaryDescriptor.StringSettings(
+            PrimitiveKind.CHAR -> BinaryDescriptor.StringSettings(
                 annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.UTF_8,
                 StringEncodingSettings.NoMarking,
                 isSingleChar = true,
@@ -838,7 +838,7 @@ internal object BluetoothBinaryDescriptorRegistry {
         annotations: List<Annotation>,
         desiredFlagBitWidth: DesiredFlagBitWidth,
         supportedLengths: Set<Length>,
-    ): BluetoothBinaryDescriptor.CollectionSettings? {
+    ): BinaryDescriptor.CollectionSettings? {
         val collectionSettings = when (descriptor.kind) {
             is StructureKind.LIST,
             is StructureKind.MAP,
@@ -869,13 +869,13 @@ internal object BluetoothBinaryDescriptorRegistry {
                             }
                         }
 
-                        BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked(delimiter)
+                        BinaryDescriptor.CollectionSettings.TerminalMarked(delimiter)
                     }
 
                     // @Terminal without stuffing is a plain byte-terminated collection (no item may start with the terminator).
-                    terminal != null -> BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked(terminal)
+                    terminal != null -> BinaryDescriptor.CollectionSettings.TerminalMarked(terminal)
 
-                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.TerminalMarked()
+                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BinaryDescriptor.CollectionSettings.TerminalMarked()
 
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
@@ -885,22 +885,22 @@ internal object BluetoothBinaryDescriptorRegistry {
                             // ByteLength (default) and 16 for ShortLength; WithOverflow falls back to 16.
                             val bits = if (lengthPrefix.lengthAsShort || lengthPrefix.canOverflow) Short.SIZE_BITS else Byte.SIZE_BITS
                             desiredFlagBitWidth.raise(bits)
-                            BluetoothBinaryDescriptor.CollectionSettings.FlagIndexedLength(bits)
+                            BinaryDescriptor.CollectionSettings.FlagIndexedLength(bits)
                         } else {
-                            BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix(
+                            BinaryDescriptor.CollectionSettings.LengthPrefix(
                                 lengthPrefix.asLengthPrefix(),
                             )
                         }
                     }
 
-                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.Unmarked
+                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> BinaryDescriptor.CollectionSettings.Unmarked
 
                     else -> {
                         desiredFlagBitWidth.raise(supportedLengths.sizingWidth())
-                        BluetoothBinaryDescriptor.CollectionSettings.NumericLength(supportedLengths)
+                        BinaryDescriptor.CollectionSettings.NumericLength(supportedLengths)
                     }
                 }
-                BluetoothBinaryDescriptor.CollectionSettings(
+                BinaryDescriptor.CollectionSettings(
                     lengthMarking,
                     annotations.filterIsInstance<NullIfEmpty>().isNotEmpty(),
                     byteStuffing,
@@ -1008,7 +1008,7 @@ internal object BluetoothBinaryDescriptorRegistry {
 
         for (index in 0..<sealedDescriptor.elementsCount) {
             val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
-            val optionBinaryDescriptor = bluetoothBinaryDescriptor(optionDescriptor, serializersModule)
+            val optionBinaryDescriptor = binaryDescriptor(optionDescriptor, serializersModule)
             val size = optionBinaryDescriptor.staticByteSize()
             if (size == null) {
                 if (fallback != null) {
@@ -1041,7 +1041,7 @@ internal object BluetoothBinaryDescriptorRegistry {
      * Computes the total static byte size of this descriptor (flag header + body + prefix + postfix + checksum).
      * Returns null if any field has a variable or unknowable size.
      */
-    private fun BluetoothBinaryDescriptor.staticByteSize(): Int? {
+    private fun BinaryDescriptor.staticByteSize(): Int? {
         val flagHeaderBytes = (flagBitSize + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS
         var bodyBytes = 0
         for (child in children) {
@@ -1053,7 +1053,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             (structureSettings.checksumAlgorithm?.byteWidth ?: 0)
     }
 
-    private fun BluetoothBinaryDescriptor.staticChildBodyBytes(): Int? {
+    private fun BinaryDescriptor.staticChildBodyBytes(): Int? {
         val reserved = reservedBefore + reservedAfter
 
         // Purely flag-packed fields (boolean, flag-indexed enum, sub-byte numeric) contribute 0 body bytes,
@@ -1071,7 +1071,7 @@ internal object BluetoothBinaryDescriptorRegistry {
 
         return when {
             numericSettings != null -> when (val s = numericSettings) {
-                is BluetoothBinaryDescriptor.NumericSettings.Natural ->
+                is BinaryDescriptor.NumericSettings.Natural ->
                     if (s.inFlagsBits != null) {
                         0
                     } else {
@@ -1111,11 +1111,11 @@ internal object BluetoothBinaryDescriptorRegistry {
     }
 
     /** True when a field's entire encoding lives in the flag header and contributes no body bytes. */
-    private fun BluetoothBinaryDescriptor.isPurelyFlagPacked(): Boolean {
+    private fun BinaryDescriptor.isPurelyFlagPacked(): Boolean {
         if (bitIndex < 0 || bitWidth <= 0) return false
         // Sub-byte integer packed into flags via @FlagIndex + @FlagWidth
-        if (numericSettings is BluetoothBinaryDescriptor.NumericSettings.Natural &&
-            (numericSettings as BluetoothBinaryDescriptor.NumericSettings.Natural).inFlagsBits != null
+        if (numericSettings is BinaryDescriptor.NumericSettings.Natural &&
+            (numericSettings as BinaryDescriptor.NumericSettings.Natural).inFlagsBits != null
         ) {
             return true
         }
@@ -1128,9 +1128,9 @@ internal object BluetoothBinaryDescriptorRegistry {
         return false
     }
 
-    private fun blockSettings(annotations: List<Annotation>): BluetoothBinaryDescriptor.StructureSettings {
+    private fun blockSettings(annotations: List<Annotation>): BinaryDescriptor.StructureSettings {
         val byteStuffing = annotations.byteStuffingScheme()
-        return BluetoothBinaryDescriptor.StructureSettings(
+        return BinaryDescriptor.StructureSettings(
             annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
             annotations.filterIsInstance<Postfix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
             annotations.filterIsInstance<Checksum>().firstOrNull()?.let { checksum ->

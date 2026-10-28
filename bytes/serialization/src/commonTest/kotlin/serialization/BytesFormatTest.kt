@@ -109,7 +109,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-class BluetoothFormatTest {
+class BytesFormatTest {
 
     @Serializable
     @Prefix([0x42, 0x23])
@@ -183,7 +183,7 @@ class BluetoothFormatTest {
     @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
     value class ValueContainerWithHeaderAndFooter(@Size(Length.`8_BIT`) val int: Int)
 
-    // Spike: a value class that IS a Kaluga ScientificValue and also carries BluetoothFormat annotations.
+    // Spike: a value class that IS a Kaluga ScientificValue and also carries BytesFormat annotations.
     @Serializable
     @JvmInline
     value class EnergyExpended(
@@ -397,7 +397,7 @@ class BluetoothFormatTest {
 
     @Test
     fun encodeScientificValueClass() {
-        // round-trips through BluetoothFormat as a 16-bit unsigned little-endian value...
+        // round-trips through BytesFormat as a 16-bit unsigned little-endian value...
         validateRoundTrip(EnergyExpended(500), EnergyExpended.serializer(), byteArrayOf(0xF4.toByte(), 0x01))
         // ...while still being a usable ScientificValue
         assertEquals(500(Joule).compareTo(EnergyExpended(500)), 0, EnergyExpended(500).toString())
@@ -473,7 +473,7 @@ class BluetoothFormatTest {
         // 16 needs 5 bits; an unsigned 4-bit flag field holds 0..15, so encoding must fail rather than truncate.
         @Serializable
         data class TooBig(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
-        assertFailsWith<IllegalArgumentException> { BluetoothFormat.encodeToByteArray(TooBig.serializer(), TooBig(16)) }
+        assertFailsWith<IllegalArgumentException> { BytesFormat.encodeToByteArray(TooBig.serializer(), TooBig(16)) }
     }
 
     @Test
@@ -1053,16 +1053,16 @@ class BluetoothFormatTest {
         // c set while its gating bits are clear: c's byte is written, but on decode bits 0/1 are clear so c reads back
         // as null — the value is silently lost (and its stray body byte is ignored).
         val cWithoutGate = Container(a = null, b = null, c = 30)
-        val encoded = BluetoothFormat.encodeToByteArray(Container.serializer(), cWithoutGate)
+        val encoded = BytesFormat.encodeToByteArray(Container.serializer(), cWithoutGate)
         assertTrue(encoded.contentEquals(byteArrayOf(0b00, 30)), encoded.toHexString(separator = " "))
-        assertEquals(Container(a = null, b = null, c = null), BluetoothFormat.decodeFromByteArray(Container.serializer(), encoded))
+        assertEquals(Container(a = null, b = null, c = null), BytesFormat.decodeFromByteArray(Container.serializer(), encoded))
 
         // c null while its gating bits are set: decode expects c's byte but none was written, so decoding fails outright.
         val gateWithoutC = Container(a = 10, b = 20, c = null)
-        val truncated = BluetoothFormat.encodeToByteArray(Container.serializer(), gateWithoutC)
+        val truncated = BytesFormat.encodeToByteArray(Container.serializer(), gateWithoutC)
         assertTrue(truncated.contentEquals(byteArrayOf(0b11, 10, 20)), truncated.toHexString(separator = " "))
         assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> {
-            BluetoothFormat.decodeFromByteArray(Container.serializer(), truncated)
+            BytesFormat.decodeFromByteArray(Container.serializer(), truncated)
         }
     }
 
@@ -1222,10 +1222,10 @@ class BluetoothFormatTest {
         validateEncoding(EightBit(100.0), buildByteArray { add(0xFF.toByte()) })
 
         // Intermediate: round((75 / 100) × 255) = round(191.25) = 191
-        val encoded8 = BluetoothFormat.encodeToByteArray(EightBit.serializer(), EightBit(75.0))
+        val encoded8 = BytesFormat.encodeToByteArray(EightBit.serializer(), EightBit(75.0))
         assertEquals(191.toByte(), encoded8[0])
         // Round-trip: 191 / 255 × 100 ≈ 74.9%
-        val decoded8 = BluetoothFormat.decodeFromByteArray(EightBit.serializer(), encoded8)
+        val decoded8 = BytesFormat.decodeFromByteArray(EightBit.serializer(), encoded8)
         assertTrue(decoded8.percent in 74.9..75.1, "expected ~75 %, got ${decoded8.percent}")
 
         // 16-bit: 0x0000 = min, 0xFFFF = max
@@ -1345,21 +1345,21 @@ class BluetoothFormatTest {
         data class InvalidByteOrderChange(@com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val content: String)
 
         assertFailsWith<InvalidByteOrderException> {
-            BluetoothFormat.encodeToByteArray(InvalidByteOrderChange.serializer(), InvalidByteOrderChange("Invalid"))
+            BytesFormat.encodeToByteArray(InvalidByteOrderChange.serializer(), InvalidByteOrderChange("Invalid"))
         }
 
         @Serializable
         data class ContentContainsNull(@NullTerminated val content: String)
 
         assertFailsWith<IllegalArgumentException> {
-            BluetoothFormat.encodeToByteArray(ContentContainsNull.serializer(), ContentContainsNull("Content\u0000NullTerminus"))
+            BytesFormat.encodeToByteArray(ContentContainsNull.serializer(), ContentContainsNull("Content\u0000NullTerminus"))
         }
 
         @Serializable
         data class ContentAfterUnsized(@Unsized val string: String, val otherContent: Byte)
 
         assertFailsWith<DataAfterUnconstrainedData> {
-            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized("StringContent", 0x01))
+            BytesFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized("StringContent", 0x01))
         }
 
         // A plain Boolean (no @FlagIndex/@FlagWidth) has no flag slot, so it is encoded into the body via
@@ -1369,7 +1369,7 @@ class BluetoothFormatTest {
         data class BooleanAfterUnsized(@Unsized val string: String, val flag: Boolean)
 
         assertFailsWith<DataAfterUnconstrainedData> {
-            BluetoothFormat.encodeToByteArray(BooleanAfterUnsized.serializer(), BooleanAfterUnsized("StringContent", true))
+            BytesFormat.encodeToByteArray(BooleanAfterUnsized.serializer(), BooleanAfterUnsized("StringContent", true))
         }
     }
 
@@ -1515,14 +1515,14 @@ class BluetoothFormatTest {
         data class NullTerminatedList(@NullTerminated val list: List<Byte>)
 
         assertFailsWith<UnexpectedTerminator> {
-            BluetoothFormat.encodeToByteArray(NullTerminatedList.serializer(), NullTerminatedList(listOf(0x00.toByte(), 0x01.toByte())))
+            BytesFormat.encodeToByteArray(NullTerminatedList.serializer(), NullTerminatedList(listOf(0x00.toByte(), 0x01.toByte())))
         }
 
         @Serializable
         data class ContentAfterUnsized(@Unsized val list: List<Byte>, val otherContent: Byte)
 
         assertFailsWith<DataAfterUnconstrainedData> {
-            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(listOf(0x01, 0x02, 0x03), 0x01))
+            BytesFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(listOf(0x01, 0x02, 0x03), 0x01))
         }
     }
 
@@ -1925,14 +1925,14 @@ class BluetoothFormatTest {
         data class NullTerminatedMap(@NullTerminated val map: Map<Byte, Byte>)
 
         assertFailsWith<UnexpectedTerminator> {
-            BluetoothFormat.encodeToByteArray(NullTerminatedMap.serializer(), NullTerminatedMap(mapOf(0x00.toByte() to 0x01.toByte())))
+            BytesFormat.encodeToByteArray(NullTerminatedMap.serializer(), NullTerminatedMap(mapOf(0x00.toByte() to 0x01.toByte())))
         }
 
         @Serializable
         data class ContentAfterUnsized(@Unsized val map: Map<Byte, Byte>, val otherContent: Byte)
 
         assertFailsWith<DataAfterUnconstrainedData> {
-            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(mapOf(0x01.toByte() to 0x02.toByte(), 0x03.toByte() to 0x04.toByte()), 0x01))
+            BytesFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(mapOf(0x01.toByte() to 0x02.toByte(), 0x03.toByte() to 0x04.toByte()), 0x01))
         }
     }
 
@@ -2295,15 +2295,15 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(val base: Base)
 
-        validateEncoding(Container(A(4)), Container.serializer(), byteArrayOf(0x01, 0x04, 0x00, 0x00, 0x00), BluetoothFormat { serializersModule = module })
-        validateEncoding(Container(B(600.0)), Container.serializer(), byteArrayOf(0x02) + MedFloat32(600.0).toByteArray(), BluetoothFormat { serializersModule = module })
+        validateEncoding(Container(A(4)), Container.serializer(), byteArrayOf(0x01, 0x04, 0x00, 0x00, 0x00), BytesFormat { serializersModule = module })
+        validateEncoding(Container(B(600.0)), Container.serializer(), byteArrayOf(0x02) + MedFloat32(600.0).toByteArray(), BytesFormat { serializersModule = module })
     }
 
     // ── Multi-byte @SerializedByteValue ───────────────────────────────────────
 
     @Test
     fun multiByteSealedDiscriminator() {
-        val format = BluetoothFormat {
+        val format = BytesFormat {
             serializersModule = SerializersModule {
                 polymorphic(TwoByteCmd::class) {
                     subclass(CmdA::class)
@@ -2341,15 +2341,15 @@ class BluetoothFormatTest {
         // the length-consistency check (the decoder uses forward peek, not fixed-width reads).
         // UnmarkedSealed already exercises this: One has a shorter name than Three.
         val container = UnmarkedSealedContainer(UnmarkedSealed.One(42))
-        val bytes = BluetoothFormat.encodeToByteArray(container)
-        val decoded = BluetoothFormat.decodeFromByteArray(UnmarkedSealedContainer.serializer(), bytes)
+        val bytes = BytesFormat.encodeToByteArray(container)
+        val decoded = BytesFormat.decodeFromByteArray(UnmarkedSealedContainer.serializer(), bytes)
         assertEquals(container, decoded)
     }
 
     @Test
     fun inconsistentDiscriminatorLengthsThrows() {
         assertFailsWith<SerializationException> {
-            BluetoothFormat {
+            BytesFormat {
                 serializersModule = SerializersModule {
                     polymorphic(BadCmd::class) {
                         subclass(Good::class)
@@ -2372,7 +2372,7 @@ class BluetoothFormatTest {
         // Nested still work because they are written via build(), not addAction().
         validateEncoding(
             FourBytePayload(0x01020304u) as SizeDispatchedPayload,
-            BluetoothFormat.serializer<SizeDispatchedPayload>(),
+            BytesFormat.serializer<SizeDispatchedPayload>(),
             byteArrayOf(0x04, 0x03, 0x02, 0x01),
         )
     }
@@ -2381,7 +2381,7 @@ class BluetoothFormatTest {
     fun sizeTagDispatch_nineBytePayload() {
         validateEncoding(
             NineBytePayload(0x01020304u, 0x05060708u, 0x09u) as SizeDispatchedPayload,
-            BluetoothFormat.serializer<SizeDispatchedPayload>(),
+            BytesFormat.serializer<SizeDispatchedPayload>(),
             byteArrayOf(0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05, 0x09),
         )
     }
@@ -2390,8 +2390,8 @@ class BluetoothFormatTest {
     fun sizePolymorphic_failsWhenSubtypesHaveDuplicateSizes() {
         // AmbiguousTypeA and AmbiguousTypeB both compute to 4 bytes — dispatch would be impossible.
         assertFailsWith<SerializationException> {
-            BluetoothFormat.encodeToByteArray(
-                BluetoothFormat.serializer<AmbiguousSizeSealed>(),
+            BytesFormat.encodeToByteArray(
+                BytesFormat.serializer<AmbiguousSizeSealed>(),
                 AmbiguousTypeA(0u),
             )
         }
@@ -2402,7 +2402,7 @@ class BluetoothFormatTest {
         // 4-byte payload → FixedMixed; variable remainder → VariableMixed (catch-all).
         validateEncoding(
             FixedMixed(0x01020304u) as MixedSizeSealed,
-            BluetoothFormat.serializer<MixedSizeSealed>(),
+            BytesFormat.serializer<MixedSizeSealed>(),
             byteArrayOf(0x04, 0x03, 0x02, 0x01),
         )
     }
@@ -2411,7 +2411,7 @@ class BluetoothFormatTest {
     fun sizePolymorphic_fallbackDecodesVariablePayload() {
         // 3 bytes don't match FixedMixed(4) → falls through to VariableMixed.
         val bytes = byteArrayOf(0x0A, 0x0B, 0x0C)
-        val result = BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<MixedSizeSealed>(), bytes)
+        val result = BytesFormat.decodeFromByteArray(BytesFormat.serializer<MixedSizeSealed>(), bytes)
         assertEquals(VariableMixed(listOf(0x0A.toUByte(), 0x0B.toUByte(), 0x0C.toUByte())), result)
     }
 
@@ -2419,8 +2419,8 @@ class BluetoothFormatTest {
     fun sizePolymorphic_failsWithMultipleVariableSizeSubtypes() {
         // Two variable-size subtypes — ambiguous, must be rejected at encode time.
         assertFailsWith<SerializationException> {
-            BluetoothFormat.encodeToByteArray(
-                BluetoothFormat.serializer<VariableSizeSealed>(),
+            BytesFormat.encodeToByteArray(
+                BytesFormat.serializer<VariableSizeSealed>(),
                 VariableSizeSubtypeA("hello"),
             )
         }
@@ -2430,7 +2430,7 @@ class BluetoothFormatTest {
     fun sizeTagDispatch_throwsOnUnrecognisedSize() {
         // 6 bytes matches neither 4 nor 9.
         assertFailsWith<SerializationException> {
-            BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<SizeDispatchedPayload>(), ByteArray(6))
+            BytesFormat.decodeFromByteArray(BytesFormat.serializer<SizeDispatchedPayload>(), ByteArray(6))
         }
     }
 
@@ -2439,8 +2439,8 @@ class BluetoothFormatTest {
         // A field AFTER the size-polymorphic sealed cannot have its length determined — encoding must fail.
         // Fields BEFORE the sealed (or the sealed as the last/only field) are fine.
         assertFailsWith<DataAfterUnconstrainedData> {
-            BluetoothFormat.encodeToByteArray(
-                BluetoothFormat.serializer<WithSiblingAfter>(),
+            BytesFormat.encodeToByteArray(
+                BytesFormat.serializer<WithSiblingAfter>(),
                 WithSiblingAfter(FourBytePayload(0u), 0u),
             )
         }
@@ -2451,9 +2451,9 @@ class BluetoothFormatTest {
         // Prefix/Postfix on the containing class are written in build(), not addAction(), so they
         // are unaffected by the makeUnconstrained() that @SizePolymorphic sets on the parent builder.
         val value = WrappedWithPrefixPostfix(FourBytePayload(0x01020304u))
-        val bytes = BluetoothFormat.encodeToByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), value)
+        val bytes = BytesFormat.encodeToByteArray(BytesFormat.serializer<WrappedWithPrefixPostfix>(), value)
         assertTrue(bytes.contentEquals(byteArrayOf(0xAA.toByte(), 0x04, 0x03, 0x02, 0x01, 0xBB.toByte())), bytes.toHexString(separator = " "))
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(BluetoothFormat.serializer<WrappedWithPrefixPostfix>(), bytes))
+        assertEquals(value, BytesFormat.decodeFromByteArray(BytesFormat.serializer<WrappedWithPrefixPostfix>(), bytes))
     }
 
     @Test
@@ -2558,7 +2558,7 @@ class BluetoothFormatTest {
             add(byteArrayOf(0x45))
         }
 
-        // Full round-trip with checksum validation enabled (default BluetoothFormat): encode then decode.
+        // Full round-trip with checksum validation enabled (default BytesFormat): encode then decode.
         validateRoundTrip(value, WithChecksum.serializer(), expectedBytes)
     }
 
@@ -2580,7 +2580,7 @@ class BluetoothFormatTest {
     @Test
     fun valueClassWithHeaderFooterRejectsWrongPrefix() {
         assertFailsWith<InvalidPrefix> {
-            BluetoothFormat.decodeFromByteArray(
+            BytesFormat.decodeFromByteArray(
                 ValueContainerWithHeaderAndFooter.serializer(),
                 byteArrayOf(0x44, 0x12, 0x00, 0x00, 0xAA.toByte()), // 0x44 instead of expected 0x55
             )
@@ -2592,7 +2592,7 @@ class BluetoothFormatTest {
         val byteValue: Byte = 0x12
         val crc = CRC16.compute(byteArrayOf(byteValue))
         assertFailsWith<InvalidPostfix> {
-            BluetoothFormat.decodeFromByteArray(
+            BytesFormat.decodeFromByteArray(
                 ValueContainerWithHeaderAndFooter.serializer(),
                 buildByteArray {
                     add(0x55.toByte())
@@ -2607,7 +2607,7 @@ class BluetoothFormatTest {
     @Test
     fun valueClassWithHeaderFooterRejectsWrongChecksum() {
         assertFailsWith<InvalidChecksumException> {
-            BluetoothFormat.decodeFromByteArray(
+            BytesFormat.decodeFromByteArray(
                 ValueContainerWithHeaderAndFooter.serializer(),
                 byteArrayOf(0x55, 0x12, 0x00, 0x00, 0xAA.toByte()), // 0x0000 is not CRC16(0x12)
             )
@@ -2620,7 +2620,7 @@ class BluetoothFormatTest {
         data class Container(val value: ChecksumEnum)
 
         assertFailsWith<SerializationException> {
-            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(ChecksumEnum.A))
+            BytesFormat.encodeToByteArray(Container.serializer(), Container(ChecksumEnum.A))
         }
     }
 
@@ -2630,7 +2630,7 @@ class BluetoothFormatTest {
         data class Container(@FlagIndex(0) val value: FlagEnum)
 
         assertFailsWith<SerializationException> {
-            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
+            BytesFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
         }
     }
 
@@ -2640,7 +2640,7 @@ class BluetoothFormatTest {
         data class Container(@FlagIndex(0) val value: FlagEnum)
 
         assertFailsWith<SerializationException> {
-            BluetoothFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
+            BytesFormat.encodeToByteArray(Container.serializer(), Container(FlagEnum.A))
         }
     }
 
@@ -2752,7 +2752,7 @@ class BluetoothFormatTest {
         data class InvalidStringByteOrder(@com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val text: String)
 
         assertFailsWith<InvalidByteOrderException> {
-            BluetoothFormat.encodeToByteArray(InvalidStringByteOrder.serializer(), InvalidStringByteOrder("fail"))
+            BytesFormat.encodeToByteArray(InvalidStringByteOrder.serializer(), InvalidStringByteOrder("fail"))
         }
     }
 
@@ -2833,7 +2833,7 @@ class BluetoothFormatTest {
             0x0B, // b
             0xDE.toByte(), // reserved after b — garbage, should be ignored
         )
-        assertEquals(Packet(0x0A, 0x0B), BluetoothFormat.decodeFromByteArray(serializer, bytes))
+        assertEquals(Packet(0x0A, 0x0B), BytesFormat.decodeFromByteArray(serializer, bytes))
     }
 
     @Test
@@ -3064,8 +3064,8 @@ class BluetoothFormatTest {
         // A framed + stuffed value class as a nested field: body+checksum are COBS-stuffed inside the 0x55/0xAA frame,
         // followed by the 0x00 terminator, then the parent's trailer.
         val value = FramedStuffedValueClassField(FramedStuffedValueClass(TwoBytes(a = 0x00, b = 0x11)), trailer = 0x09)
-        val encoded = BluetoothFormat.encodeToByteArray(FramedStuffedValueClassField.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStuffedValueClassField.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(FramedStuffedValueClassField.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(FramedStuffedValueClassField.serializer(), encoded))
         assertEquals(0x55.toByte(), encoded.first())
         assertEquals(0x09.toByte(), encoded.last())
     }
@@ -3073,16 +3073,16 @@ class BluetoothFormatTest {
     @Test
     fun framedStructValueClassControl() {
         val value = FramedStructValueClass(TwoBytes(a = 0x00, b = 0x11))
-        val encoded = BluetoothFormat.encodeToByteArray(FramedStructValueClass.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStructValueClass.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(FramedStructValueClass.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(FramedStructValueClass.serializer(), encoded))
     }
 
     @Test
     fun framedValueClassByteStuffing() {
         // The checksum is computed over the unstuffed body, then body+checksum are COBS-stuffed inside the 0x55/0xAA frame.
         val value = FramedStuffedValueClass(TwoBytes(a = 0x00, b = 0x11))
-        val encoded = BluetoothFormat.encodeToByteArray(FramedStuffedValueClass.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedStuffedValueClass.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(FramedStuffedValueClass.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(FramedStuffedValueClass.serializer(), encoded))
         assertEquals(0x55.toByte(), encoded.first())
         assertEquals(0xAA.toByte(), encoded.last())
         // The stuffed region must not contain a raw 0x00 (COBS eliminates it); a dropped stuffing would leave the 0x00 body byte.
@@ -3147,8 +3147,8 @@ class BluetoothFormatTest {
         // The checksum is computed over the unstuffed body and then itself stuffed, so the frame still
         // round-trips and stays framed by the untouched start/stop flags.
         val frame = CSafeChecksummedFrame(command = 0x02, value = 0x03)
-        val encoded = BluetoothFormat.encodeToByteArray(CSafeChecksummedFrame.serializer(), frame)
-        assertEquals(frame, BluetoothFormat.decodeFromByteArray(CSafeChecksummedFrame.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(CSafeChecksummedFrame.serializer(), frame)
+        assertEquals(frame, BytesFormat.decodeFromByteArray(CSafeChecksummedFrame.serializer(), encoded))
         assertEquals(0xF1.toByte(), encoded.first())
         assertEquals(0xF2.toByte(), encoded.last())
     }
@@ -3195,7 +3195,7 @@ class BluetoothFormatTest {
     fun delimiterSchemeRejectsExplicitTerminal() {
         // A scheme with a fixed delimiter cannot have its terminator overridden via @Terminal.
         assertFailsWith<UnsupportedByteStuffing> {
-            BluetoothFormat.encodeToByteArray(ConflictingTerminalHolder.serializer(), ConflictingTerminalHolder(name = "A", trailer = 0x09))
+            BytesFormat.encodeToByteArray(ConflictingTerminalHolder.serializer(), ConflictingTerminalHolder(name = "A", trailer = 0x09))
         }
     }
 
@@ -3203,7 +3203,7 @@ class BluetoothFormatTest {
     fun cobsRejectsExplicitTerminal() {
         // COBS only ever eliminates 0x00, so 0x00 is the only byte that can unambiguously terminate it.
         assertFailsWith<UnsupportedByteStuffing> {
-            BluetoothFormat.encodeToByteArray(CobsTerminalHolder.serializer(), CobsTerminalHolder(values = listOf(0x01), trailer = 0x09))
+            BytesFormat.encodeToByteArray(CobsTerminalHolder.serializer(), CobsTerminalHolder(values = listOf(0x01), trailer = 0x09))
         }
     }
 
@@ -3211,7 +3211,7 @@ class BluetoothFormatTest {
     fun cSafeStringRequiresExplicitTerminal() {
         // CSafe has no delimiter of its own, so a String using it must name a terminator it escapes.
         assertFailsWith<UnsupportedByteStuffing> {
-            BluetoothFormat.encodeToByteArray(CSafeStringWithoutTerminalHolder.serializer(), CSafeStringWithoutTerminalHolder(name = "hi", trailer = 0x09))
+            BytesFormat.encodeToByteArray(CSafeStringWithoutTerminalHolder.serializer(), CSafeStringWithoutTerminalHolder(name = "hi", trailer = 0x09))
         }
     }
 
@@ -3255,7 +3255,7 @@ class BluetoothFormatTest {
 
         // Encoding fails if the content itself contains the terminator byte (no stuffing to protect it).
         assertFailsWith<IllegalArgumentException> {
-            BluetoothFormat.encodeToByteArray(PlainTerminatedString.serializer(), PlainTerminatedString(line = "a\nb", trailer = 0x00))
+            BytesFormat.encodeToByteArray(PlainTerminatedString.serializer(), PlainTerminatedString(line = "a\nb", trailer = 0x00))
         }
     }
 
@@ -3273,7 +3273,7 @@ class BluetoothFormatTest {
     fun byteStuffingRequiresLeastSignificantFirst() {
         // Full-reversal MSB (accumulation direction) is rejected; big-endian field values via excludeStructure are not.
         assertFailsWith<UnsupportedByteStuffing> {
-            BluetoothFormat.encodeToByteArray(BigEndianStuffed.serializer(), BigEndianStuffed(0x01))
+            BytesFormat.encodeToByteArray(BigEndianStuffed.serializer(), BigEndianStuffed(0x01))
         }
     }
 
@@ -3378,7 +3378,7 @@ class BluetoothFormatTest {
     @Test
     fun fieldAfterUnsizedStuffedStructureFails() {
         assertFailsWith<DataAfterUnconstrainedData> {
-            BluetoothFormat.encodeToByteArray(
+            BytesFormat.encodeToByteArray(
                 FieldAfterUnsizedStuffedChild.serializer(),
                 FieldAfterUnsizedStuffedChild(child = StuffChild(a = 0x01, b = 0x02), trailer = 0x09),
             )
@@ -3389,8 +3389,8 @@ class BluetoothFormatTest {
     fun nestedStuffedStructureWithChecksum() {
         // The child's CRC is computed over its logical body, then stuffed with it; the stuffed region still round-trips.
         val value = ChecksummedStuffedChildParent(head = 0x01, child = ChecksummedChild(a = 0x7C, b = 0x03), trailer = 0x09)
-        val encoded = BluetoothFormat.encodeToByteArray(ChecksummedStuffedChildParent.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(ChecksummedStuffedChildParent.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(ChecksummedStuffedChildParent.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(ChecksummedStuffedChildParent.serializer(), encoded))
     }
 
     @Test
@@ -3407,24 +3407,24 @@ class BluetoothFormatTest {
     @Test
     fun stuffedChildInsideStuffedRootDoubleStuffs() {
         val value = DoubleStuffedRoot(head = 0x10, child = StuffChild(a = 0xF1, b = 0x7C))
-        val encoded = BluetoothFormat.encodeToByteArray(DoubleStuffedRoot.serializer(), value)
+        val encoded = BytesFormat.encodeToByteArray(DoubleStuffedRoot.serializer(), value)
         assertEquals(0xF1.toByte(), encoded.first())
         assertEquals(0xF2.toByte(), encoded.last())
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(DoubleStuffedRoot.serializer(), encoded))
+        assertEquals(value, BytesFormat.decodeFromByteArray(DoubleStuffedRoot.serializer(), encoded))
     }
 
     @Test
     fun stuffedStructureContainingStuffedList() {
         val value = StructOverList(head = 0x01, child = ListChild(values = listOf(0x00, 0x7C, 0x11), tag = 0x22), trailer = 0x09)
-        val encoded = BluetoothFormat.encodeToByteArray(StructOverList.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(StructOverList.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(StructOverList.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(StructOverList.serializer(), encoded))
     }
 
     @Test
     fun threeLevelsOfStuffedStructures() {
         val value = Level1(head = 0x01, mid = Level2(inner = Level3(v = 0x7A), t2 = 0x7C), t1 = 0x09)
-        val encoded = BluetoothFormat.encodeToByteArray(Level1.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(Level1.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(Level1.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(Level1.serializer(), encoded))
     }
 
     // ── encode/decode round-trip edge cases ──────────────────────────────────
@@ -3521,22 +3521,22 @@ class BluetoothFormatTest {
     @Test
     fun longEightAndSixtyFourBitSelectionRoundTrips() {
         val value = LongWideSelection8Bit(v = 1L shl 32)
-        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
     }
 
     @Test
     fun longSixteenAndSixtyFourBitSelectionRoundTrips() {
         val value = LongWideSelection16Bit(v = 1L shl 32)
-        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection16Bit.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection16Bit.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(LongWideSelection16Bit.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(LongWideSelection16Bit.serializer(), encoded))
     }
 
     @Test
     fun longNegativeOutOfIntRangeSelectionRoundTrips() {
         val value = LongWideSelection8Bit(v = -(1L shl 40))
-        val encoded = BluetoothFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(LongWideSelection8Bit.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(LongWideSelection8Bit.serializer(), encoded))
     }
 
     // ── @SizePolymorphic subtype sizing ──────────────────────────────────────
@@ -3574,15 +3574,15 @@ class BluetoothFormatTest {
     @Test
     fun flagPackedEnumInSizePolymorphicSubtypeDispatchesBySize() {
         val value = FlagEnumSizeHolder(FlagEnumPacked(mode = PackedMode.HIGH, x = 300))
-        val encoded = BluetoothFormat.encodeToByteArray(FlagEnumSizeHolder.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(FlagEnumSizeHolder.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(FlagEnumSizeHolder.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(FlagEnumSizeHolder.serializer(), encoded))
     }
 
     @Test
     fun charFieldGivesSizePolymorphicSubtypesDistinctFixedSizes() {
         val value = CharSizeHolder(CharSizeSmall('A'))
-        val encoded = BluetoothFormat.encodeToByteArray(CharSizeHolder.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(CharSizeHolder.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(CharSizeHolder.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(CharSizeHolder.serializer(), encoded))
     }
 
     // ── @Reserved around inline / unsigned / nullable properties ─────────────
@@ -3626,8 +3626,8 @@ class BluetoothFormatTest {
     @Test
     fun reservedAfterOnNullablePropertySkipsPaddingWhenNull() {
         val value = ReservedAfterNullable(v = null, trailer = 0x22)
-        val encoded = BluetoothFormat.encodeToByteArray(ReservedAfterNullable.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(ReservedAfterNullable.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(ReservedAfterNullable.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(ReservedAfterNullable.serializer(), encoded))
     }
 
     // ── bit alignment of a nested structure after parent body Booleans ───────
@@ -3653,22 +3653,22 @@ class BluetoothFormatTest {
     @Test
     fun emptyNestedStructureAfterBodyBooleansRoundTrips() {
         val value = EmptyNestedAfterBooleans(flagA = true, flagB = false, marker = EmptyMarker, trailer = 0x2A)
-        val encoded = BluetoothFormat.encodeToByteArray(EmptyNestedAfterBooleans.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(EmptyNestedAfterBooleans.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(EmptyNestedAfterBooleans.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(EmptyNestedAfterBooleans.serializer(), encoded))
     }
 
     @Test
     fun nestedFlagHeaderAfterParentBooleansRoundTrips() {
         val value = ParentBooleansThenNestedFlagHeader(boolA = true, boolB = false, nested = NestedFlagHeader(flag = true), trailer = 0x2A)
-        val encoded = BluetoothFormat.encodeToByteArray(ParentBooleansThenNestedFlagHeader.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(ParentBooleansThenNestedFlagHeader.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(ParentBooleansThenNestedFlagHeader.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(ParentBooleansThenNestedFlagHeader.serializer(), encoded))
     }
 
     @Test
     fun nestedLeadingBooleanAfterParentBooleansRoundTrips() {
         val value = ParentBooleansThenNestedLeadingBoolean(boolA = true, boolB = false, nested = NestedLeadingBoolean(flag = true), trailer = 0x2A)
-        val encoded = BluetoothFormat.encodeToByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(ParentBooleansThenNestedLeadingBoolean.serializer(), encoded))
     }
 
     // ── value classes carrying a @Prefix/@Postfix frame ──────────────────────
@@ -3713,41 +3713,41 @@ class BluetoothFormatTest {
     @Test
     fun flagPackedValueInFramedValueClassRoundTrips() {
         val value = FramedFlagHolder(wrapped = FramedFlagValue(Mode3.HIGH), trailer = 0x2A)
-        val encoded = BluetoothFormat.encodeToByteArray(FramedFlagHolder.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedFlagHolder.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(FramedFlagHolder.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(FramedFlagHolder.serializer(), encoded))
     }
 
     @Test
     fun wideSizeSelectionOnFramedValueClassPropertyRoundTrips() {
         val small = FramedWideSizeHolder(wrapped = FramedWideSizeValue(5L), trailer = 0x2A)
-        val smallEncoded = BluetoothFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), small)
-        assertEquals(small, BluetoothFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), smallEncoded))
+        val smallEncoded = BytesFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), small)
+        assertEquals(small, BytesFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), smallEncoded))
 
         val large = FramedWideSizeHolder(wrapped = FramedWideSizeValue(1L shl 40), trailer = 0x2A)
-        val largeEncoded = BluetoothFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), large)
-        assertEquals(large, BluetoothFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), largeEncoded))
+        val largeEncoded = BytesFormat.encodeToByteArray(FramedWideSizeHolder.serializer(), large)
+        assertEquals(large, BytesFormat.decodeFromByteArray(FramedWideSizeHolder.serializer(), largeEncoded))
     }
 
     @Test
     fun valueClassWrappingNullableRoundTrips() {
         val present = NullableWrappedHolder(wrapped = NullableWrapped(0x11), trailer = 0x22)
-        val presentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedHolder.serializer(), present)
-        assertEquals(present, BluetoothFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), presentEncoded))
+        val presentEncoded = BytesFormat.encodeToByteArray(NullableWrappedHolder.serializer(), present)
+        assertEquals(present, BytesFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), presentEncoded))
 
         val absent = NullableWrappedHolder(wrapped = NullableWrapped(null), trailer = 0x22)
-        val absentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedHolder.serializer(), absent)
-        assertEquals(absent, BluetoothFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), absentEncoded))
+        val absentEncoded = BytesFormat.encodeToByteArray(NullableWrappedHolder.serializer(), absent)
+        assertEquals(absent, BytesFormat.decodeFromByteArray(NullableWrappedHolder.serializer(), absentEncoded))
     }
 
     @Test
     fun framedValueClassWrappingNullableRoundTrips() {
         val present = NullableWrappedFramedHolder(wrapped = NullableWrappedFramed(0x11), trailer = 0x22)
-        val presentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), present)
-        assertEquals(present, BluetoothFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), presentEncoded))
+        val presentEncoded = BytesFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), present)
+        assertEquals(present, BytesFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), presentEncoded))
 
         val absent = NullableWrappedFramedHolder(wrapped = NullableWrappedFramed(null), trailer = 0x22)
-        val absentEncoded = BluetoothFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), absent)
-        assertEquals(absent, BluetoothFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), absentEncoded))
+        val absentEncoded = BytesFormat.encodeToByteArray(NullableWrappedFramedHolder.serializer(), absent)
+        assertEquals(absent, BytesFormat.decodeFromByteArray(NullableWrappedFramedHolder.serializer(), absentEncoded))
     }
 
     // ── counts and length prefixes ───────────────────────────────────────────
@@ -3770,26 +3770,26 @@ class BluetoothFormatTest {
     @Test
     fun longByteLengthPrefixedStringRoundTrips() {
         val value = LongByteLengthString(s = "x".repeat(200), trailer = 0x2A)
-        val encoded = BluetoothFormat.encodeToByteArray(LongByteLengthString.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongByteLengthString.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(LongByteLengthString.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(LongByteLengthString.serializer(), encoded))
     }
 
     @Test
     fun longByteLengthPrefixedListRoundTrips() {
         val value = LongByteLengthList(items = List(200) { LongByteLengthListItem(it.toByte()) }, trailer = 0x2A)
-        val encoded = BluetoothFormat.encodeToByteArray(LongByteLengthList.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(LongByteLengthList.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(LongByteLengthList.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(LongByteLengthList.serializer(), encoded))
     }
 
     @Test
     fun nullableListWithoutNullIfEmptyRoundTrips() {
         val nullValue = NullableListNoNullIfEmpty(items = null, trailer = 0x2A)
-        val nullEncoded = BluetoothFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), nullValue)
-        assertEquals(nullValue, BluetoothFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), nullEncoded))
+        val nullEncoded = BytesFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), nullValue)
+        assertEquals(nullValue, BytesFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), nullEncoded))
 
         val emptyValue = NullableListNoNullIfEmpty(items = emptyList(), trailer = 0x2A)
-        val emptyEncoded = BluetoothFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), emptyValue)
-        assertEquals(emptyValue, BluetoothFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), emptyEncoded))
+        val emptyEncoded = BytesFormat.encodeToByteArray(NullableListNoNullIfEmpty.serializer(), emptyValue)
+        assertEquals(emptyValue, BytesFormat.decodeFromByteArray(NullableListNoNullIfEmpty.serializer(), emptyEncoded))
     }
 
     // ── list items that are themselves structures ────────────────────────────
@@ -3812,15 +3812,15 @@ class BluetoothFormatTest {
     @Test
     fun listOfNullableSerializableClassRoundTrips() {
         val value = NullableItemListHolder(items = listOf(NullableItemPoint(0x01, 0x02), null))
-        val encoded = BluetoothFormat.encodeToByteArray(NullableItemListHolder.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(NullableItemListHolder.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(NullableItemListHolder.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(NullableItemListHolder.serializer(), encoded))
     }
 
     @Test
     fun itemLevelPrefixPostfixChecksumOnListItemRoundTrips() {
         val value = FramedChecksumItemListHolder(items = listOf(FramedChecksumItem(0x11), FramedChecksumItem(0x22)), trailer = 0x2A)
-        val encoded = BluetoothFormat.encodeToByteArray(FramedChecksumItemListHolder.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(FramedChecksumItemListHolder.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(FramedChecksumItemListHolder.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(FramedChecksumItemListHolder.serializer(), encoded))
     }
 
     // ── MOST_SIGNIFICANT_FIRST frames, with and without excludeStructure ─────
@@ -3849,9 +3849,9 @@ class BluetoothFormatTest {
     fun msbExcludeStructureFloatsUseBigEndianWireBytes() {
         val value = MsbFloatFrame(a = 1.5f, b = 2.5)
         val expected = byteArrayOf(0x3F, 0xC0.toByte(), 0x00, 0x00, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-        val encoded = BluetoothFormat.encodeToByteArray(MsbFloatFrame.serializer(), value)
+        val encoded = BytesFormat.encodeToByteArray(MsbFloatFrame.serializer(), value)
         assertTrue(encoded.contentEquals(expected), "Expected ${expected.toHexString(separator = " ")} but got ${encoded.toHexString(separator = " ")}")
-        val decoded = BluetoothFormat.decodeFromByteArray(MsbFloatFrame.serializer(), encoded)
+        val decoded = BytesFormat.decodeFromByteArray(MsbFloatFrame.serializer(), encoded)
         assertEquals(value.a.as32Bit(), decoded.a)
         assertEquals(value.b, decoded.b)
     }
@@ -3859,29 +3859,29 @@ class BluetoothFormatTest {
     @Test
     fun msbOverflowLengthPrefixedListStructureIncludedRoundTrips() {
         val value = MsbOverflowListIncluded(items = List(300) { it.toByte() })
-        val encoded = BluetoothFormat.encodeToByteArray(MsbOverflowListIncluded.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbOverflowListIncluded.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(MsbOverflowListIncluded.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(MsbOverflowListIncluded.serializer(), encoded))
     }
 
     @Test
     fun msbOverflowLengthPrefixedListStructureExcludedRoundTrips() {
         val value = MsbOverflowListExcluded(items = List(300) { it.toByte() })
-        val encoded = BluetoothFormat.encodeToByteArray(MsbOverflowListExcluded.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbOverflowListExcluded.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(MsbOverflowListExcluded.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(MsbOverflowListExcluded.serializer(), encoded))
     }
 
     @Test
     fun msbSixteenBitListCountStructureIncludedRoundTrips() {
         val value = MsbSizedListIncluded(items = listOf(1, 2, 3, 4).map { it.toByte() })
-        val encoded = BluetoothFormat.encodeToByteArray(MsbSizedListIncluded.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbSizedListIncluded.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(MsbSizedListIncluded.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(MsbSizedListIncluded.serializer(), encoded))
     }
 
     @Test
     fun msbSixteenBitListCountStructureExcludedRoundTrips() {
         val value = MsbSizedListExcluded(items = listOf(1, 2, 3, 4).map { it.toByte() })
-        val encoded = BluetoothFormat.encodeToByteArray(MsbSizedListExcluded.serializer(), value)
-        assertEquals(value, BluetoothFormat.decodeFromByteArray(MsbSizedListExcluded.serializer(), encoded))
+        val encoded = BytesFormat.encodeToByteArray(MsbSizedListExcluded.serializer(), value)
+        assertEquals(value, BytesFormat.decodeFromByteArray(MsbSizedListExcluded.serializer(), encoded))
     }
 
     // ── nullable unsigned numbers keep their unsignedness ────────────────────
@@ -3907,14 +3907,14 @@ class BluetoothFormatTest {
     // A nullable number differs from its non-null declaration only by the presence flag, so the value bytes
     // that follow must be identical — in particular the widened value must not be sign-extended.
     private fun <T, U> assertNullableMatchesNonNull(nonNull: T, nonNullSerializer: KSerializer<T>, nullable: U, nullableSerializer: KSerializer<U>) {
-        val nonNullEncoded = BluetoothFormat.encodeToByteArray(nonNullSerializer, nonNull)
-        val nullableEncoded = BluetoothFormat.encodeToByteArray(nullableSerializer, nullable)
+        val nonNullEncoded = BytesFormat.encodeToByteArray(nonNullSerializer, nonNull)
+        val nullableEncoded = BytesFormat.encodeToByteArray(nullableSerializer, nullable)
         val tail = nullableEncoded.copyOfRange(nullableEncoded.size - nonNullEncoded.size, nullableEncoded.size)
         assertTrue(
             tail.contentEquals(nonNullEncoded),
             "non-null=${nonNullEncoded.toHexString(separator = " ")} nullable=${nullableEncoded.toHexString(separator = " ")}",
         )
-        assertEquals(nullable, BluetoothFormat.decodeFromByteArray(nullableSerializer, nullableEncoded))
+        assertEquals(nullable, BytesFormat.decodeFromByteArray(nullableSerializer, nullableEncoded))
     }
 
     @Test
@@ -3943,7 +3943,7 @@ class BluetoothFormatTest {
 
     // Like validateEncoding but without the LSB Nested<T> wrapper, since a MOST_SIGNIFICANT_FIRST structure
     // cannot legally be nested inside a LEAST_SIGNIFICANT_FIRST one (InvalidByteOrderException).
-    private fun <T> validateRoundTrip(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {
+    private fun <T> validateRoundTrip(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BytesFormat = BytesFormat) {
         val bytes = format.encodeToByteArray(serializer, value)
         assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
         assertEquals(value, format.decodeFromByteArray(serializer, bytes))
@@ -3952,7 +3952,7 @@ class BluetoothFormatTest {
     @OptIn(InternalSerializationApi::class)
     private inline fun <reified T : Any> validateEncoding(value: T, expectedValue: ByteArray) = validateEncoding(value, T::class.serializer(), expectedValue)
 
-    private fun <T> validateEncoding(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {
+    private fun <T> validateEncoding(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BytesFormat = BytesFormat) {
         val bytes = format.encodeToByteArray(serializer, value)
         assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
 

@@ -24,7 +24,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied, the encoded object will be prefixed by [value]
  * @property value the [ByteArray] to add as a Prefix
@@ -35,7 +35,7 @@ import kotlinx.serialization.SerialInfo
 annotation class Prefix(val value: ByteArray)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied, the encoded object will be postfixed by [value]
  * @property value the [ByteArray] to add as a Postfix
@@ -46,7 +46,7 @@ annotation class Prefix(val value: ByteArray)
 annotation class Postfix(val value: ByteArray)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a [Serializable] enum class, variants are encoded by their ordinal plus [offset], using [size]
  * bytes in the byte order of the enclosing structure.
@@ -64,12 +64,12 @@ annotation class Postfix(val value: ByteArray)
 annotation class ByOrdinal(val offset: Int = 0, val size: Length = Length.`8_BIT`)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a property, [before] reserved (padding) bytes are silently skipped before decoding this
  * property and zero-filled bytes are written before encoding it; [after] bytes are skipped/written after it.
  *
- * Use this for Bluetooth profiles that include reserved or padding bytes that carry no information.
+ * Use this for wire profiles that include reserved or padding bytes that carry no information.
  * Unlike [@Postfix][Postfix], `@Reserved` does **not** validate the byte values on decode — any content is silently discarded.
  *
  * @property before number of reserved bytes immediately before this property in the wire format
@@ -81,7 +81,7 @@ annotation class ByOrdinal(val offset: Int = 0, val size: Length = Length.`8_BIT
 annotation class Reserved(val before: Int = 0, val after: Int = 0)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied, the position of the header flag(s) to be used for storing headers will be set to [index].
  * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
@@ -102,7 +102,7 @@ annotation class Reserved(val before: Int = 0, val after: Int = 0)
 annotation class FlagIndex(val index: Int)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Marks a nullable property whose presence is *derived* from the flag bits at [indices] rather than from a dedicated
  * flag bit of its own: it is present on the wire exactly when all of those bits are set, and reserves no flag bit
@@ -117,7 +117,7 @@ annotation class FlagIndex(val index: Int)
 annotation class PresentWhenAllSet(vararg val indices: Int)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied, the width of the flags to be used by this element will be at minimum [bits] bits
  *
@@ -129,7 +129,7 @@ annotation class PresentWhenAllSet(vararg val indices: Int)
 annotation class FlagWidth(val bits: Int = 1)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied, the [com.splendo.kaluga.bytes.ByteOrder] in which this element is encoded is set to [order].
  * When applied to a class or collection, a [InvalidByteOrderException] may be thrown if the byte order changed.
@@ -146,7 +146,7 @@ annotation class FlagWidth(val bits: Int = 1)
 annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, val excludeStructure: Boolean = false)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a String, a [StringEncodingSettings.LengthPrefix] will be used as the [StringEncodingSettings.endMarking].
  * Similar encoding will be used to add a length to a List/Map.
@@ -170,7 +170,7 @@ annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FI
 annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflow: Boolean = false, val sentinel: Byte = 0xFF.toByte())
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a [String] or [Char], [encoding] will be used for encoding each char.
  *
@@ -182,7 +182,7 @@ annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflo
 annotation class Encoded(val encoding: Encoding = Encoding.UTF_8)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a String or Collection, they will be marked with `0x00` to indicate completion.
  * Will throw an exception if:
@@ -196,7 +196,7 @@ annotation class Encoded(val encoding: Encoding = Encoding.UTF_8)
 annotation class NullTerminated
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a numeric value, will encode as an unsigned value.
  */
@@ -206,7 +206,7 @@ annotation class NullTerminated
 annotation class Unsigned
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a numeric value, will calculate an integer using (`value * [multiplier] * 2.pow([binaryExponent]) * 10.pow([decimalExponent]) + [offset])`)
  *
@@ -223,7 +223,7 @@ annotation class Unsigned
 annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, val binaryExponent: Int = 0, val offset: Int = 0)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a numeric (Float or Double) field, encodes the value as a proportional mapping
  * across the full unsigned range of the wire integer:
@@ -247,7 +247,7 @@ annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, v
 annotation class Range(val min: Double = 0.0, val max: Double = 1.0)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.bytes.medfloat.MedFloat16] or [com.splendo.kaluga.bytes.medfloat.MedFloat32], depending on [Size]
  * Can only add [Length.`16_BIT`] or [Length.`32_BIT`] using [Size].
@@ -261,7 +261,7 @@ annotation class Range(val min: Double = 0.0, val max: Double = 1.0)
 annotation class MedFloat
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a numeric value this will set [length] as the length to be encoded.
  * When applied to Double or Float, [length] must be either [Length.`32_BIT`] or [Length.`64_BIT`].
@@ -278,7 +278,7 @@ annotation class MedFloat
 annotation class Size(val length: Length)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a String or Collection, no end marking will be applied.
  * This will result in a [DataAfterUnconstrainedData] exception if data (besides checksum or postfix) is added after this element.
@@ -289,7 +289,7 @@ annotation class Size(val length: Length)
 annotation class Unsized
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a Collection, a null flag will be added and set to 0 if the list is empty (resulting in no length being encoded in the body).
  */
@@ -299,7 +299,7 @@ annotation class Unsized
 annotation class NullIfEmpty
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * When applied to a sealed polymorphic class, subtypes are identified by their remaining payload
  * byte count instead of a prefix byte identifier. The expected byte count for each subtype is
@@ -320,10 +320,10 @@ annotation class NullIfEmpty
 annotation class SizePolymorphic
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Adds a [com.splendo.kaluga.bytes.crc.CRC] value of size [width] to the end of the body (before any prefix)
- * If the decoded checksum does not match the calculated checksum of the body and [BluetoothFormat.validateChecksum] is `true` will result in a [InvalidChecksumException].
+ * If the decoded checksum does not match the calculated checksum of the body and BytesFormat.validateChecksum is `true` will result in a [InvalidChecksumException].
  *
  * @see [com.splendo.kaluga.bytes.crc.CRC.invoke]
  *
@@ -340,7 +340,7 @@ annotation class SizePolymorphic
 annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong, val xorOut: ULong = 0u, val reflectIn: Boolean = false, val reflectOut: Boolean = false)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Can be added to elements of an Enum or Polymorphic class. This replaces serializing using the encoded SerialName with [value].
  *
@@ -356,7 +356,7 @@ annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong
 annotation class SerializedByteValue(vararg val value: Byte)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Applies CSafe-style byte stuffing so a delimiter never appears literally in the content, using a
  * [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.CSafe] scheme. Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST].
@@ -380,7 +380,7 @@ annotation class SerializedByteValue(vararg val value: Byte)
 annotation class ByteStuffed(val escapeByte: Byte = 0xF3.toByte(), val mask: Byte = 0x03)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Terminates a String or Collection with [terminator] instead of the default `0x00`.
  *
@@ -402,7 +402,7 @@ annotation class ByteStuffed(val escapeByte: Byte = 0xF3.toByte(), val mask: Byt
 annotation class Terminal(val terminator: Byte)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Applies PPP/HDLC-style byte stuffing, using a [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.Xor] scheme. Only for
  * [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]; because the delimiter is explicit,
@@ -421,7 +421,7 @@ annotation class Terminal(val terminator: Byte)
 annotation class ByteStuffedXor(val escapeByte: Byte, val delimiter: Byte, val additionalEscapedBytes: ByteArray = [], val xorKey: Byte = 0x20)
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Applies SLIP-style byte stuffing (RFC 1055), using a [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.Slip] scheme.
  * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. Its delimiter is
@@ -439,7 +439,7 @@ annotation class ByteStuffedXor(val escapeByte: Byte, val delimiter: Byte, val a
 annotation class ByteStuffedSlip(val end: Byte = 0xC0.toByte(), val escapeByte: Byte = 0xDB.toByte(), val escapedEnd: Byte = 0xDC.toByte(), val escapedEsc: Byte = 0xDD.toByte())
 
 /**
- * Annotation added for serializing using [BluetoothFormat]
+ * Annotation added for serializing using BytesFormat
  *
  * Applies COBS byte stuffing (Consistent Overhead Byte Stuffing), using [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.Cobs].
  * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. COBS eliminates `0x00`
