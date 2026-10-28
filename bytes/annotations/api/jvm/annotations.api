@@ -30,6 +30,10 @@ public abstract interface annotation class com/splendo/kaluga/bytes/annotations/
 	public abstract fun xorKey ()B
 }
 
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/BytesLayout : java/lang/annotation/Annotation {
+	public abstract fun generate ()[Lcom/splendo/kaluga/bytes/annotations/Generate;
+}
+
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Checksum : java/lang/annotation/Annotation {
 	public abstract fun init ()J
 	public abstract fun polynomial ()J
@@ -49,6 +53,14 @@ public abstract interface annotation class com/splendo/kaluga/bytes/annotations/
 
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/FlagWidth : java/lang/annotation/Annotation {
 	public abstract fun bits ()I
+}
+
+public final class com/splendo/kaluga/bytes/annotations/Generate : java/lang/Enum {
+	public static final field DATA Lcom/splendo/kaluga/bytes/annotations/Generate;
+	public static final field VIEW Lcom/splendo/kaluga/bytes/annotations/Generate;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bytes/annotations/Generate;
+	public static fun values ()[Lcom/splendo/kaluga/bytes/annotations/Generate;
 }
 
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/ItemByteOrder : java/lang/annotation/Annotation {

@@ -32,6 +32,8 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
+import com.splendo.kaluga.bluetooth.ksp.helpers.commonSourceDirectories
+import com.splendo.kaluga.bluetooth.ksp.helpers.isWithin
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ksp.writeTo
@@ -41,7 +43,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
     private val codeGenerator = environment.codeGenerator
     private val logger = environment.logger
 
-    private val commonSources = environment.options["commonSource"].orEmpty().split(":")
+    private val commonSources = commonSourceDirectories(environment.options["commonSource"])
 
     private val options = Options(environment)
 
@@ -232,7 +234,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
 
         else -> {
             containingFile?.filePath?.let { filePath ->
-                commonSources.none { filePath.startsWith(it) }
+                commonSources.none { filePath.isWithin(it) }
             } ?: true
         }
     }

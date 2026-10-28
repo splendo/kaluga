@@ -102,13 +102,15 @@ class BluetoothPlugin : Plugin<Project> {
                 // Gradle needs an explicit producer dependency. Only the metadata pass (multi-target) or the single leaf
                 // pass writes a registered source dir, so depend on just that one. Depending on every KspAATask would
                 // force js/wasmJs/macos KSP to run on every formatKotlin/lintKotlin.
-                val generatingKspTaskName = if (isSinglePlatform) {
-                    "ksp${targets.first { it.name != "metadata" }.name.uppercaseFirstChar()}Main"
+                // A leaf's pass is named for its source set on the Android KMP library target, for its compilation otherwise.
+                val generatingKspTaskNames = if (isSinglePlatform) {
+                    val leaf = targets.first { it.name != "metadata" }.name.uppercaseFirstChar()
+                    setOf("ksp${leaf}Main", "kspKotlin$leaf")
                 } else {
-                    "kspCommonMainKotlinMetadata"
+                    setOf("kspCommonMainKotlinMetadata")
                 }
                 tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
-                    dependsOn(tasks.matching { it.name == generatingKspTaskName })
+                    dependsOn(tasks.matching { it.name in generatingKspTaskNames })
                 }
 
                 val bluetoothTargets = bluetoothExtension.target.get()
