@@ -129,6 +129,7 @@ internal class RootBinaryDescriptorDecoder(private val byteArray: ByteArray, pri
     }
 
     override fun endStructure() {
+        consumeBit()
         if (offset < byteArray.size) {
             throw UnexpectedBytesRemaining("There are ${byteArray.size - offset} bytes remaining after decoding")
         }

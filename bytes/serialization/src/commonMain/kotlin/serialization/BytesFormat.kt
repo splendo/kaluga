@@ -211,9 +211,10 @@ sealed class BytesFormat(private val validateChecksum: Boolean, override val ser
         // Use flag.byteOrder (builder/accumulation direction) for the root decoder so it reads the byte
         // array in the same direction it was written — not flag.childByteOrder, which is the field VALUE
         // encoding direction and may differ when @ByteOrder(order, excludeStructure = true) is in use.
-        val decoder = BinaryDecoder(flag, RootBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule, isRootFrame = true)
-
-        return deserializer.deserialize(decoder)
+        val rootDecoder = RootBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum)
+        val value = deserializer.deserialize(BinaryDecoder(flag, rootDecoder, serializersModule, isRootFrame = true))
+        rootDecoder.endStructure()
+        return value
     }
 
     /**

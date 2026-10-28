@@ -18,12 +18,14 @@
 package com.splendo.kaluga.bytes.serialization
 
 import com.splendo.kaluga.bytes.annotations.Checksum
+import com.splendo.kaluga.bytes.layout.UnexpectedBytesRemaining
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
- * Tests of [BytesFormat]'s own entry points, such as its builder, which a views backend does not have.
+ * Tests of [BytesFormat]'s own entry points, such as its builder and the root decode, which a views backend does not have.
  */
 class BytesFormatEntryPointTest {
 
@@ -31,6 +33,9 @@ class BytesFormatEntryPointTest {
         @Serializable
         @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
         data class Checksummed(val value: Byte)
+
+        @Serializable
+        data class Single(val value: Byte)
     }
 
     @Test
@@ -40,5 +45,12 @@ class BytesFormatEntryPointTest {
         val lenient = BytesFormat { validateChecksum = false }
         assertEquals(Fixtures.Checksummed(1), lenient.decodeFromByteArray(Fixtures.Checksummed.serializer(), bytes))
         assertEquals(Fixtures.Checksummed(1), BytesFormat(from = lenient) {}.decodeFromByteArray(Fixtures.Checksummed.serializer(), bytes))
+    }
+
+    @Test
+    fun rejectsBytesAfterTheRootValue() {
+        assertFailsWith<UnexpectedBytesRemaining> {
+            BytesFormat.decodeFromByteArray(Fixtures.Single.serializer(), byteArrayOf(0x01, 0x02))
+        }
     }
 }
