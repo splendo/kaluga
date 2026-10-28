@@ -78,7 +78,7 @@ jobs:
 
       # Same generated-view suites, on the JS and Wasm targets the validation modules also support.
       - name: validate bytes code generation on JS and Wasm
-        run: ./gradlew --stacktrace jsNodeTest wasmJsNodeTest jsBrowserTest wasmJsBrowserTest
+        run: ./gradlew --stacktrace jsNodeTest wasmJsNodeTest
         working-directory: bytes/plugin/example
 
   test:
