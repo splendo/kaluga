@@ -21,6 +21,26 @@ jobs:
         run: ./gradlew --stacktrace android:assembleDebug
         working-directory: example
 
+  plugins:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: ktLint plugins
+        run: ./gradlew lintKotlin
+        working-directory: plugins
+
+      - name: run plugin unit tests
+        run: ./gradlew --stacktrace test
+        working-directory: plugins
+
   bluetooth-plugin:
     runs-on: ubuntu-latest
     steps:
@@ -40,10 +60,6 @@ jobs:
         run: ./gradlew --stacktrace compileAndroidMain
         working-directory: bluetooth/plugin/example
 
-      - name: run plugin unit tests
-        run: ./gradlew --stacktrace :plugin:test
-        working-directory: bluetooth/plugin
-
   bytes-plugin:
     runs-on: ubuntu-latest
     steps:
@@ -58,17 +74,9 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
-      - name: ktLint plugin
-        run: ./gradlew lintKotlin
-        working-directory: bytes/plugin
-
       - name: ktLint example
         run: ./gradlew lintKotlin
         working-directory: bytes/plugin/example
-
-      - name: run bytes plugin unit tests
-        run: ./gradlew --stacktrace :plugin:test
-        working-directory: bytes/plugin
 
       # Validate that the Bytes code generation plugin produces code that compiles and passes its
       # round-trip tests on Android host.
@@ -98,8 +106,8 @@ jobs:
       - name: run Android unit tests
         run: ./gradlew testDebugUnitTest testAndroidHostTest koverHtmlReport koverXmlReport
 
-      - name: run KSP processor and plugin support tests
-        run: ./gradlew --stacktrace :bytes:ksp:test :bluetooth:ksp:test :ksp:processor-support:test :ksp:plugin-support:test
+      - name: run KSP processor tests
+        run: ./gradlew --stacktrace :bytes:ksp:test :bluetooth:ksp:test :ksp:processor-support:test
       - name: add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v2

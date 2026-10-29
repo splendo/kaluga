@@ -56,27 +56,16 @@ jobs:
       - name: Publish
         run: ./gradlew publishToMavenCentral
 
-      # The Bluetooth code generation plugin lives in its own composite build, so the publish above does not cover
-      # it. Maven Central carries every release type, so the plugin can be consumed as a regular dependency (e.g.
-      # by other Gradle plugins) at the same version as the rest of Kaluga.
-      - name: Publish Bluetooth plugin to Maven Central
-        run: ./gradlew -p bluetooth/plugin publishToMavenCentral
+      # The Gradle plugins and their plugin-support are a separate build, so the publish above does not cover them.
+      # Maven Central carries every release type, so the plugins can be consumed as regular dependencies (e.g. by
+      # other Gradle plugins) at the same version as the rest of Kaluga.
+      - name: Publish Gradle plugins to Maven Central
+        run: ./gradlew -p plugins publishToMavenCentral
 
       # Only release versions are pushed to the public Gradle Plugin Portal.
-      - name: Publish Bluetooth plugin to the Gradle Plugin Portal
+      - name: Publish Gradle plugins to the Gradle Plugin Portal
         if: ${{ github.event.inputs.release_type == 'release' }}
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
           GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
-        run: ./gradlew -p bluetooth/plugin publishPlugins
-
-      # The Bytes code generation plugin, likewise its own composite build.
-      - name: Publish Bytes plugin to Maven Central
-        run: ./gradlew -p bytes/plugin publishToMavenCentral
-
-      - name: Publish Bytes plugin to the Gradle Plugin Portal
-        if: ${{ github.event.inputs.release_type == 'release' }}
-        env:
-          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
-          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
-        run: ./gradlew -p bytes/plugin publishPlugins
+        run: ./gradlew -p plugins publishPlugins
