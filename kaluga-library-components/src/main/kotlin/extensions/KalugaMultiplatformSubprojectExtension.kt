@@ -457,18 +457,20 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     }
                 }
 
-                iosMain.configure {
-                    dependencies {
-                        multiplatformDependencies.ios.mainDependencies.forEach {
-                            it.execute(this)
+                if (iosTargets.isNotEmpty()) {
+                    iosMain.configure {
+                        dependencies {
+                            multiplatformDependencies.ios.mainDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
-                }
 
-                iosTest.configure {
-                    dependencies {
-                        multiplatformDependencies.ios.testDependencies.forEach {
-                            it.execute(this)
+                    iosTest.configure {
+                        dependencies {
+                            multiplatformDependencies.ios.testDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
                 }
