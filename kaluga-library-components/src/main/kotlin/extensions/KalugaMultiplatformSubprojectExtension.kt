@@ -336,9 +336,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     dependsOn(jvmAndroidMain)
                 }
 
-                // Mirror on the test side. The Android *unit* (host) test set is `androidHostTest`;
-                // `androidDeviceTest` is deliberately left out of this intermediate (it already
-                // depends on `commonTest` directly, and AGP 9.0 warns about cross-tree dependsOn).
+                // Mirror on the test side, covering the Android *unit* (host) test set only.
+                // `androidDeviceTest` stays out: the intermediate holds actuals that the two host
+                // runtimes share, while a device test may need an actual of its own (the emulator
+                // or handset answers questions like the running SDK level differently), and a
+                // module could not declare one if the shared version were already visible.
                 val jvmAndroidTest = sourceSets.maybeCreate("jvmAndroidTest")
                 sourceSets.matching { it.name == "commonTest" }.configureEach {
                     jvmAndroidTest.dependsOn(this)
@@ -427,9 +429,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
 
                 getByName("androidDeviceTest") {
-                    // dependsOn(commonTest) triggers a warning in AGP 9.0 ("different Source Set Trees")
-                    // but is required for androidDeviceTest to access expect/actual and commonTest utilities
-                    dependsOn(getByName("commonTest"))
                     dependencies {
                         androidDeviceTestDependencies.forEach {
                             implementation(it)
@@ -458,18 +457,20 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     }
                 }
 
-                iosMain.configure {
-                    dependencies {
-                        multiplatformDependencies.ios.mainDependencies.forEach {
-                            it.execute(this)
+                if (iosTargets.isNotEmpty()) {
+                    iosMain.configure {
+                        dependencies {
+                            multiplatformDependencies.ios.mainDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
-                }
 
-                iosTest.configure {
-                    dependencies {
-                        multiplatformDependencies.ios.testDependencies.forEach {
-                            it.execute(this)
+                    iosTest.configure {
+                        dependencies {
+                            multiplatformDependencies.ios.testDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
                 }
@@ -731,7 +732,12 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 release(versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt())
             }
         }
-        withDeviceTest {
+        // The builder form is required because the source set tree is fixed when the compilation is
+        // created: naming it `test` puts `androidDeviceTest` in the same tree as `commonTest`, so KGP
+        // creates that hierarchy edge itself instead of it having to be added by hand across trees.
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }.configure {
             animationsDisabled = true
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
