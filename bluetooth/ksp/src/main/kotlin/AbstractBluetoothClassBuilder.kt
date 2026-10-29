@@ -177,11 +177,11 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
     private fun TypeName?.orUnit(): TypeName = this ?: UNIT
 
     /**
-     * The top-level creator function (an extension on the API's `Companion`) for the given implementation type,
-     * or `null` if there is none. Generated alongside the implementation so it lives in the implementation module
+     * The top-level creator functions (extensions on the API's `Companion`) for the given implementation type.
+     * Generated alongside the implementation so they live in the implementation module
      * even when the API is generated separately (see [Options.generateApi]).
      */
-    open fun factoryFor(generationType: GenerationType): FunSpec? = null
+    open fun factoryFor(generationType: GenerationType): List<FunSpec> = emptyList()
 
     protected val hasNestedDevices: Boolean get() = declaration.declarations.any { it.isAnnotationPresent(Bluetooth::class) }
 
@@ -197,7 +197,7 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
     protected fun companionReceiver(apiType: GenerationType): ClassName = nameFor(declaration, apiType).nestedClass(companionName)
 
     fun generateExtensionFactories(generationType: GenerationType): List<FunSpec> = buildList {
-        factoryFor(generationType)?.let(::add)
+        addAll(factoryFor(generationType))
         declaration.declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>().forEach { nested ->
             val nestedBuilder = when (generationType.side) {
                 GenerationType.Side.CLIENT -> BluetoothClientBuilder(nested, options, logger)

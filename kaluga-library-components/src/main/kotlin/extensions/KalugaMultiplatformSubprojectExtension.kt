@@ -740,6 +740,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         }.configure {
             animationsDisabled = true
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            targetSdk {
+                release(versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt())
+            }
         }
 
         // TODO: base on a flag in kaluga configuration

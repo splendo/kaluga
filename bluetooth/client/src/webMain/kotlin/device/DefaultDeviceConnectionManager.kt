@@ -59,7 +59,7 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
         }
     }
 
-    actual override fun disconnect() {
+    actual override fun intentionalDisconnect() {
         webGattDisconnect(identifier)
         handleDisconnect()
     }

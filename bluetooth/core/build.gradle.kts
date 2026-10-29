@@ -30,6 +30,7 @@ kaluga {
                 implementation(project(":base:formatting"))
                 api(project(":service:service"))
                 api(libs.kotlinx.serialization.core)
+                api(libs.kotlinx.coroutines.core)
             }
             test {
                 implementation(project(":bluetooth:test-core", ""))

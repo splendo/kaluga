@@ -163,7 +163,7 @@ class MockDeviceConnectionManager(
 
     override suspend fun discoverServices(): Unit = discoverServicesMock.call()
 
-    override fun disconnect(): Unit = disconnectMock.call()
+    override fun intentionalDisconnect() = disconnectMock.call()
 
     override suspend fun requestReadRssi(): Unit = readRssiMock.call()
 

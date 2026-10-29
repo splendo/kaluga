@@ -22,6 +22,7 @@ import com.splendo.kaluga.plugin.helpers.jvmTarget
 import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
 import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.gradle.api.Action
@@ -37,6 +38,7 @@ import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
@@ -140,6 +142,13 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, p
                 project.plugins.hasPlugin(com.android.build.gradle.LibraryPlugin::class.java) -> {
                     // noop, android went in before evaluate
                 }
+
+                project.plugins.hasPlugin(KotlinPluginWrapper::class.java) -> configure(
+                    KotlinJvm(
+                        javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
+                        sourcesJar = true,
+                    ),
+                )
 
                 else -> {
                     project.logger.info(
