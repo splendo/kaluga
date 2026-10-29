@@ -21,25 +21,17 @@ import com.google.devtools.ksp.gradle.KspAATask
 import com.google.devtools.ksp.gradle.KspExtension
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
 import com.splendo.kaluga.bluetooth.plugin.gatt.GattGeneration
-import org.gradle.api.NamedDomainObjectContainer
+import com.splendo.kaluga.ksp.plugin.PluginProperties
+import com.splendo.kaluga.ksp.plugin.addKspProcessor
+import com.splendo.kaluga.ksp.plugin.registerKspCommonSources
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity
-import org.gradle.api.tasks.SourceTask
-import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
-import org.gradle.process.CommandLineArgumentProvider
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
-import java.util.Properties
+import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 
 /**
  * Gradle plugin (`com.splendo.kaluga.bluetooth.plugin`) that generates typed Bluetooth clients and servers from
@@ -58,24 +50,13 @@ class BluetoothPlugin : Plugin<Project> {
 
         val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
-        val generatedKspDir = layout.buildDirectory.dir("generated/ksp/metadata/commonMain/kotlin")
         val defaultGeneratedBluetoothDir = layout.buildDirectory.dir(GENERATED_DIR)
 
+        registerKspCommonSources()
         extensions.configure<KotlinMultiplatformExtension> {
             sourceSets.commonMain {
-                kotlin.srcDir(generatedKspDir)
                 kotlin.srcDir(defaultGeneratedBluetoothDir)
             }
-        }
-
-        // The KSP-generated sources are registered as a commonMain source directory, so kotlinter's tasks read from the
-        // KSP output directory. Those files are produced output (already formatted by KotlinPoet), not hand-written code,
-        // so exclude them from the kotlinter source: they should be neither linted nor reformatted. The producer
-        // dependency kotlinter needs on that generated dir is wired in afterEvaluate, once the generating KSP task is
-        // known, so only that task runs on format/lint rather than every per-target KSP task.
-        val generatedRoot = layout.buildDirectory.dir("generated").get().asFile.absolutePath
-        tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
-            (this as? SourceTask)?.exclude { it.file.absolutePath.startsWith(generatedRoot) }
         }
 
         afterEvaluate {
@@ -84,35 +65,6 @@ class BluetoothPlugin : Plugin<Project> {
                 it.outputDirectory?.let(::file) ?: defaultGeneratedBluetoothDir.get().asFile
             }
             extensions.configure<KotlinMultiplatformExtension> {
-                project.dependencies.add(
-                    "kspCommonMainMetadata",
-                    "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion",
-                )
-                targets.configureEach {
-                    if (name !in listOf("metadata")) {
-                        project.dependencies.add(
-                            "ksp${name.uppercaseFirstChar()}",
-                            "com.splendo.kaluga.bluetooth:ksp:$kalugaVersion",
-                        )
-                    }
-                }
-                val isSinglePlatform = targets.count { it.name != "metadata" } == 1
-
-                // kotlinter reads the KSP output registered as a commonMain source dir; that dir is a task output, so
-                // Gradle needs an explicit producer dependency. Only the metadata pass (multi-target) or the single leaf
-                // pass writes a registered source dir, so depend on just that one. Depending on every KspAATask would
-                // force js/wasmJs/macos KSP to run on every formatKotlin/lintKotlin.
-                // A leaf's pass is named for its source set on the Android KMP library target, for its compilation otherwise.
-                val generatingKspTaskNames = if (isSinglePlatform) {
-                    val leaf = targets.first { it.name != "metadata" }.name.uppercaseFirstChar()
-                    setOf("ksp${leaf}Main", "kspKotlin$leaf")
-                } else {
-                    setOf("kspCommonMainKotlinMetadata")
-                }
-                tasks.matching { it.name.startsWith("formatKotlin") || it.name.startsWith("lintKotlin") }.configureEach {
-                    dependsOn(tasks.matching { it.name in generatingKspTaskNames })
-                }
-
                 val bluetoothTargets = bluetoothExtension.target.get()
                 val implementations = bluetoothExtension.implementFor.get()
                 val concreteImplementation = ImplementFor.BLUETOOTH in implementations
@@ -145,30 +97,15 @@ class BluetoothPlugin : Plugin<Project> {
                         }
                     }
                 }
-
-                val annotationSourceFiles = bluetoothExtension.annotationSourceDirectories.get().map { file(it) }
-                tasks.withType<KspAATask>().configureEach {
-                    if (!isSinglePlatform && name != "kspCommonMainKotlinMetadata") {
-                        dependsOn("kspCommonMainKotlinMetadata")
-                    }
-                    kspConfig.sourceRoots.from(annotationSourceFiles)
-                }
-                this@run.extensions.configure<KspExtension> {
-                    // The annotationSource directories hold shared @Bluetooth definitions whose generation is owned by
-                    // the metadata (or single leaf) pass. Include them in commonSource so the per-target passes recognise
-                    // them as common and skip regenerating them (which would emit duplicate js/wasmJs/etc. output).
-                    arg(
-                        CommonSourceArgumentProvider(
-                            this@run.files(sourceSets.commonMain.get().kotlin.sourceDirectories, annotationSourceFiles),
-                        ),
-                    )
-                    arg("isSingleTarget", "$isSinglePlatform")
-                }
-
-                if (isSinglePlatform) {
-                    this@run.forceSingleTargetCommonProcessing(sourceSets, targets.first { it.name != "metadata" })
-                }
             }
+            val annotationSourceFiles = bluetoothExtension.annotationSourceDirectories.get().map { file(it) }
+            tasks.withType<KspAATask>().configureEach {
+                kspConfig.sourceRoots.from(annotationSourceFiles)
+            }
+            // The annotationSource directories hold shared @Bluetooth definitions whose generation is owned by the
+            // metadata (or single leaf) pass. Include them in commonSource so the per-target passes recognise them as
+            // common and skip regenerating them (which would emit duplicate js/wasmJs/etc. output).
+            addKspProcessor("com.splendo.kaluga.bluetooth:ksp:$kalugaVersion", annotationSourceFiles)
             if (xmlGeneration != null) {
                 val outputDir = checkNotNull(generatedSourceDir)
                 val packageName = xmlGeneration.packageName ?: bluetoothExtension.generatedPackage ?: DEFAULT_GENERATED_PACKAGE
@@ -195,73 +132,10 @@ class BluetoothPlugin : Plugin<Project> {
     }
 }
 
-/**
- * Workaround for KSP's lack of common-source processing in a single-target KMP project (see
- * https://github.com/google/ksp/issues/1525). With one leaf target the `commonMain` metadata compile is named
- * `compileKotlinMetadata`, which KSP unconditionally skips, so no KSP task ever processes `commonMain` and the
- * generated API is never produced. KSP also fails to wire the leaf target's own KSP task for the new
- * Android KMP library target (empty source roots / processor classpath / a disabling `onlyIf`).
- *
- * To make generation work anyway, drive the single leaf target's KSP task directly over the common sources and
- * relocate its output into `commonMain` so common code (and hand-written consumers) can reference the generated API.
- * This is deliberately fragile — it reaches into KSP's task internals — and is only used when the project has a
- * single leaf target; the multi-target path uses the normal `kspCommonMainKotlinMetadata` pass. Currently shaped for
- * the Android leaf (the only single-target case Kaluga produces); a no-op if the leaf's KSP task is absent.
- */
-private fun Project.forceSingleTargetCommonProcessing(sourceSets: NamedDomainObjectContainer<KotlinSourceSet>, leaf: KotlinTarget) {
-    val leafMain = "${leaf.name}Main"
-    val kspTaskName = "ksp${leafMain.uppercaseFirstChar()}"
-    if (kspTaskName !in tasks.names) return
-
-    // KSP leaves the leaf's own resolvable processor classpath empty for this target, so build a resolvable view
-    // here. Reuse the processor dependency the plugin already declared on the leaf target's KSP configuration
-    // (`ksp<Target>`) rather than re-stating the coordinate, so the version follows the rest of the plugin.
-    val processorClasspath = configurations.detachedConfiguration(
-        *configurations.getByName("ksp${leaf.name.uppercaseFirstChar()}").allDependencies.toTypedArray(),
-    )
-    val leafGenDir = layout.buildDirectory.dir("generated/ksp/${leaf.name}/$leafMain/kotlin")
-    val commonRoots = sourceSets.getByName("commonMain").kotlin.srcDirs.filterNot { it.path.contains("generated/ksp") }
-
-    val kspTask = tasks.named(kspTaskName, KspAATask::class.java).get()
-    kspTask.kspConfig.sourceRoots.from(commonRoots)
-    kspTask.kspConfig.commonSourceRoots.from(commonRoots)
-    kspTask.kspConfig.processorClasspath.from(processorClasspath)
-    kspTask.kspClasspath.from(processorClasspath)
-    kspTask.setOnlyIf { true }
-
-    val leafKotlin = sourceSets.getByName(leafMain).kotlin
-    leafKotlin.setSrcDirs(leafKotlin.srcDirs.filterNot { it.path.contains("generated/ksp/${leaf.name}/$leafMain") })
-    sourceSets.getByName("commonMain").kotlin.srcDir(leafGenDir)
-    tasks.named("compile${leafMain.uppercaseFirstChar()}").configure { dependsOn(kspTask) }
-}
-
-/**
- * Passes the common source directories to the processor as the `commonSource` option. The directories are declared as
- * a relative-path-sensitive input so the KSP task stays cacheable and relocatable across machines/checkout locations,
- * while the option value handed to the processor remains an absolute path (it is matched against absolute file paths).
- */
-internal class CommonSourceArgumentProvider(
-    @get:InputFiles
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    val commonSources: FileCollection,
-) : CommandLineArgumentProvider {
-    override fun asArguments(): Iterable<String> = listOf("commonSource=${commonSources.files.joinToString(separator = ":") { it.absolutePath }}")
-}
-
 object BluetoothPluginVersion {
-    private val properties: Properties by lazy {
-        BluetoothPluginVersion::class.java
-            .classLoader
-            .getResourceAsStream("bluetooth.properties")
-            ?.use { Properties().apply { load(it) } }
-            ?: error("Bluetooth plugin properties not found")
-    }
+    private val properties = PluginProperties(BluetoothPluginVersion::class.java, "bluetooth.properties")
 
-    val kalugaVersion: String by lazy {
-        properties.getProperty("kalugaVersion") ?: error("kalugaVersion not found in bluetooth.properties")
-    }
+    val kalugaVersion: String by lazy { properties["kalugaVersion"] }
 
-    val coroutinesVersion: String by lazy {
-        properties.getProperty("coroutinesVersion") ?: error("coroutinesVersion not found in bluetooth.properties")
-    }
+    val coroutinesVersion: String by lazy { properties["coroutinesVersion"] }
 }

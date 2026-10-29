@@ -8,6 +8,7 @@ kaluga {
 
 dependencies {
     implementation(project(":bluetooth:annotations"))
+    implementation(project(":ksp:processor-support"))
     testImplementation(kotlin("test-junit5"))
 }
 

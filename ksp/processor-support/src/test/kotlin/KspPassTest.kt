@@ -15,16 +15,14 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.ksp
+package com.splendo.kaluga.ksp.processor
 
-import com.splendo.kaluga.bluetooth.ksp.helpers.commonSourceDirectories
-import com.splendo.kaluga.bluetooth.ksp.helpers.isWithin
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CommonSourcesTest {
+class KspPassTest {
 
     @Test
     fun `matches only paths inside a common source directory`() {
@@ -36,8 +34,16 @@ class CommonSourcesTest {
 
     @Test
     fun `reads no directories from a missing or empty option`() {
-        assertEquals(emptyList(), commonSourceDirectories(null))
-        assertEquals(emptyList(), commonSourceDirectories(""))
-        assertEquals(listOf("/a", "/b"), commonSourceDirectories("/a::/b"))
+        assertEquals(emptyList(), KspPass.commonSourceDirectories(null))
+        assertEquals(emptyList(), KspPass.commonSourceDirectories(""))
+        assertEquals(listOf("/a", "/b"), KspPass.commonSourceDirectories("/a::/b"))
+    }
+
+    @Test
+    fun `leaves only sources outside the common source directories to a per-target pass`() {
+        val pass = KspPass(commonSources = listOf("/project/src/commonMain/kotlin"))
+        assertEquals(false, pass.isOutsideCommonSources("/project/src/commonMain/kotlin/Layouts.kt"))
+        assertEquals(true, pass.isOutsideCommonSources("/project/src/commonMain/kotlinx/Layouts.kt"))
+        assertEquals(true, pass.isOutsideCommonSources("/project/src/jvmMain/kotlin/Layouts.kt"))
     }
 }

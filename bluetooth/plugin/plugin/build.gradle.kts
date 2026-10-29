@@ -1,8 +1,7 @@
-import com.palantir.gradle.gitversion.VersionDetails
+import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.vanniktech.maven.publish.GradlePlugin
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.SourcesJar
-import org.gradle.internal.extensions.core.extra
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -12,7 +11,7 @@ plugins {
     alias(libs.plugins.plugin.publish)
     alias(libs.plugins.vanniktech.maven.publish)
     alias(libs.plugins.kotlinter)
-    alias(libs.plugins.palantir.git.version)
+    id("com.palantir.git-version")
 }
 
 repositories {
@@ -78,6 +77,7 @@ kotlin {
 dependencies {
     implementation(libs.kotlin.gradle)
     implementation(libs.google.devtools.ksp.gradle)
+    implementation(project(":support"))
     implementation(libs.kotlinpoet)
     testImplementation(kotlin("test-junit5"))
 }
@@ -114,53 +114,3 @@ tasks.named<Jar>("jar") {
     dependsOn(generatePluginVersion)
     from(layout.buildDirectory.dir("generated/resources/main"))
 }
-
-internal fun calculateVersion(
-    version: String,
-    releaseType: String,
-    branchName: String?,
-    gitHash: String?,
-    buildNumber: String?,
-): String {
-    var appendix = when (releaseType) {
-        "release" -> ""
-        "-branch-alpha" -> branchName?.let { branch ->
-            val sanitizedBranch = branch.substringAfterLast('/')
-                .replace(' ', '-')
-                .replace('_', '-')
-                .filter { it.isLetterOrDigit() || it == '-' }
-                .split('-')
-                .filterNot { it.all(Char::isDigit) } // filter out purely numerics such as issue numbers
-                .joinToString("-")
-            "-$sanitizedBranch-alpha"
-        } ?: error("Trying to append a branch name to the version, but no branch is present.")
-        "-commit-alpha" -> "-$gitHash-alpha"
-        else -> "-alpha"
-    }
-
-    if (appendix.isNotEmpty() && buildNumber != null) {
-        appendix += ".$buildNumber"
-    }
-
-    return "$version$appendix"
-}
-
-val kalugaVersion: String
-    get() {
-        val releaseTypeProvider = providers.gradleProperty("releaseType")
-        val releaseType = releaseTypeProvider.getOrElse("alpha")
-
-        val versionDetails: groovy.lang.Closure<VersionDetails> by project.extra
-        val details = versionDetails()
-        val buildNumberProvider = providers.environmentVariable("GITHUB_RUN_NUMBER")
-
-        val version = libs.versions.kaluga.get()
-
-        return calculateVersion(
-            version = version,
-            releaseType = releaseType,
-            branchName = details.branchName,
-            gitHash = details.gitHash,
-            buildNumber = buildNumberProvider.orNull,
-        )
-    }

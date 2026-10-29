@@ -66,20 +66,6 @@ class BytesPluginTest {
     }
 
     @Test
-    fun `processes the common sources in the pass of a single target`() {
-        val single = project { jvm() }
-        assertEquals("true", single.kspArguments["isSingleTarget"])
-        assertTrue("kspCommonMainKotlinMetadata" !in single.tasks.getByName("kspKotlinJvm").dependsOn.map { it.toString() })
-
-        // With several targets, the metadata pass generates the common code before any target's pass.
-        val several = project {
-            jvm()
-            js { nodejs() }
-        }
-        assertTrue("kspCommonMainKotlinMetadata" in several.tasks.getByName("kspKotlinJvm").dependsOn.map { it.toString() })
-    }
-
-    @Test
     fun `rejects generating nothing`() {
         val failure = assertFailsWith<ProjectConfigurationException> { project(bytes = { generate.set(emptySet()) }) { jvm() } }
         assertTrue(generateSequence<Throwable>(failure) { it.cause }.any { "must include Generate.DATA and/or Generate.VIEW" in it.message.orEmpty() }, failure.toString())

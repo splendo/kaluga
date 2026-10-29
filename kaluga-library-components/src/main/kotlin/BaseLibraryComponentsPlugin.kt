@@ -21,6 +21,7 @@ import com.splendo.kaluga.plugin.extensions.BaseKalugaSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.ComposeKalugaAndroidSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.DatabindingKalugaAndroidSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KSPSubprojectExtension
+import com.splendo.kaluga.plugin.extensions.KalugaJvmSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaMultiplatformSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaRootExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
@@ -110,10 +111,17 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
                 val multiplatformExtension = extensions.findByType(KotlinMultiplatformExtension::class)!!
                 extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, androidxVersionCatalog, project.objects)
             }
+
             subExtensionClass == KSPSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 extensions.create<KSPSubprojectExtension>(EXTENSION_NAME, versionCatalog, androidxVersionCatalog, project.objects)
             }
+
+            subExtensionClass == KalugaJvmSubprojectExtension::class -> {
+                pluginManager.addSubprojectExtensionPlugins(extensions)
+                extensions.create<KalugaJvmSubprojectExtension>(EXTENSION_NAME, versionCatalog, androidxVersionCatalog, project.objects)
+            }
+
             else -> {
                 error("Unknown project project applied plugin: ${project.name} subExtensionClass: ${subExtensionClass.simpleName}")
             }

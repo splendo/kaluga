@@ -16,7 +16,7 @@ pluginManagement {
         mavenCentral()
     }
 
-    includeBuild("..")
+    includeBuild("../../../plugins")
     includeBuild("../../../kaluga-library-components")
 }
 

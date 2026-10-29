@@ -18,13 +18,11 @@
 package com.splendo.kaluga.bytes.ksp
 
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
-import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.splendo.kaluga.bytes.annotations.Generate
+import com.splendo.kaluga.ksp.processor.KspPass
 
 /**
- * @property commonSources the `commonMain` source directories, passed by the Gradle plugin as the `commonSource` arg.
- * @property isSingleTarget whether the consuming project has a single (non-metadata) target.
- * @property isMultiplatformPass whether this KSP pass processes more than one platform, i.e. the common metadata pass.
+ * @property pass which declarations this KSP pass generates code for.
  * @property skipUnsupportedViews whether a layout using a feature VIEW generation does not support yet gets no view
  * and a warning, instead of failing the build; the `skipUnsupportedViews` arg.
  * @property registryPrefix what the names of the generated registry objects start with, unique per module and source
@@ -32,32 +30,16 @@ import com.splendo.kaluga.bytes.annotations.Generate
  */
 data class Options(
     val defaultGenerate: Set<Generate>,
-    val commonSources: List<String> = emptyList(),
-    val isSingleTarget: Boolean = false,
-    val isMultiplatformPass: Boolean = false,
+    val pass: KspPass = KspPass(),
     val skipUnsupportedViews: Boolean = false,
     val registryPrefix: String = DEFAULT_REGISTRY_PREFIX,
 ) {
     constructor(environment: SymbolProcessorEnvironment) : this(
         parseGenerate(environment.options["generate"]),
-        environment.options["commonSource"].orEmpty().split(":").filter { it.isNotBlank() },
-        environment.options["isSingleTarget"] == "true",
-        environment.platforms.size > 1,
+        KspPass(environment),
         environment.options["skipUnsupportedViews"] == "true",
         environment.options["registryPrefix"]?.takeIf { it.isNotBlank() } ?: DEFAULT_REGISTRY_PREFIX,
     )
-
-    /**
-     * Whether this pass owns generation for [declaration]. Common declarations are generated once by the metadata pass
-     * (or the single leaf pass); a per-target pass skips them so it does not emit a duplicate of every generated type.
-     */
-    fun includeInGeneration(declaration: KSClassDeclaration): Boolean = when {
-        isSingleTarget || isMultiplatformPass -> true
-        else -> declaration.containingFile?.filePath?.let(::isOutside) ?: true
-    }
-
-    /** Whether the source file at [path] lies outside every common source directory. */
-    internal fun isOutside(path: String): Boolean = commonSources.none { path.isWithin(it) }
 
     companion object {
         const val DEFAULT_REGISTRY_PREFIX = "Generated"
@@ -76,10 +58,4 @@ data class Options(
             return generate
         }
     }
-}
-
-// Whether this path is [directory] or a file under it, matching whole path segments only.
-private fun String.isWithin(directory: String): Boolean {
-    val root = directory.trimEnd('/', '\\')
-    return this == root || startsWith("$root/") || startsWith("$root\\")
 }

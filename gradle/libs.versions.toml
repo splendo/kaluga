@@ -94,6 +94,8 @@ kaluga-keyboard = { module = "com.splendo.kaluga.keyboard:keyboard", version.ref
 kaluga-keyboard-compose = { module = "com.splendo.kaluga.keyboard:compose", version.ref = "kaluga" }
 kaluga-keyboard-testutils = { module = "com.splendo.kaluga.keyboard:test", version.ref = "kaluga" }
 kaluga-koin-testutils = { module = "com.splendo.kaluga.architecture:test-koin", version.ref = "kaluga" }
+kaluga-ksp-plugin-support = { module = "com.splendo.kaluga.ksp:plugin-support", version.ref = "kaluga" }
+kaluga-ksp-processor-support = { module = "com.splendo.kaluga.ksp:processor-support", version.ref = "kaluga" }
 kaluga-lifecycle = { module = "com.splendo.kaluga.lifecycle:lifecycle", version.ref = "kaluga" }
 kaluga-lifecycle-compose = { module = "com.splendo.kaluga.lifecycle:compose", version.ref = "kaluga" }
 kaluga-lifecycle-testutils = { module = "com.splendo.kaluga.lifecycle:test", version.ref = "kaluga" }
