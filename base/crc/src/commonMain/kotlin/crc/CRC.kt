@@ -246,11 +246,14 @@ interface CRC {
 
         private val msbMask: ULong = 1UL shl (width - 1)
 
-        override fun compute(data: ByteArray): ULong {
+        override fun compute(data: ByteArray): ULong = compute(data, 0, data.size)
+
+        override fun compute(data: ByteArray, from: Int, to: Int): ULong {
+            require(from in 0..to && to <= data.size) { "Range [$from, $to) is not within an array of ${data.size} bytes" }
             var crc = init and crcMask
 
-            for (byte in data) {
-                var current = byte.toULong() and 0xFFu
+            for (index in from until to) {
+                var current = data[index].toULong() and 0xFFu
 
                 if (reflectIn) {
                     current = current.reverseBits(8)
@@ -317,4 +320,10 @@ interface CRC {
      * @return the CRC of the given data.
      */
     fun compute(data: ByteArray): ULong
+
+    /**
+     * Computes the CRC of `data[from, to)`.
+     * @throws IllegalArgumentException when `[from, to)` is not a range of [data].
+     */
+    fun compute(data: ByteArray, from: Int, to: Int): ULong = compute(data.copyOfRange(from, to))
 }

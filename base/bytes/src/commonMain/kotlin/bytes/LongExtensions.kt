@@ -13,8 +13,13 @@ fun ByteArray.decodeLong(octetIndex: Int, byteOrder: ByteOrder): Long {
             "Cannot convert ByteArray to Long. The byte with index ${octetIndex + offset} is not available in ByteArray."
         }
     }
-    return drop(octetIndex).take(Long.SIZE_BYTES).foldIndexed(0L) { index, acc, byte ->
-        acc or ((byte.toLong() and 0xFF) shl byteOrder.shift(index, Long.SIZE_BITS))
+    return run {
+        var acc = 0L
+        for (index in 0..<Long.SIZE_BYTES) {
+            val byte = this[octetIndex + index]
+            acc = acc or ((byte.toLong() and 0xFF) shl byteOrder.shift(index, Long.SIZE_BITS))
+        }
+        acc
     }
 }
 

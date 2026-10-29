@@ -150,5 +150,7 @@ class CRCTest {
     private fun CRC.assertChecksum(expected: ULong) {
         val checksum = compute(data)
         assertEquals(expected, checksum)
+        val framed = byteArrayOf(0x7E) + data + 0x7F
+        assertEquals(expected, compute(framed, 1, framed.size - 1))
     }
 }

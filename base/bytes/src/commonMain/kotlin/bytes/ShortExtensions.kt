@@ -30,8 +30,13 @@ fun ByteArray.decodeShort(octetIndex: Int, byteOrder: ByteOrder): Short {
             "Cannot convert ByteArray to Short. The byte with index ${octetIndex + offset} is not available in ByteArray."
         }
     }
-    return drop(octetIndex).take(Short.SIZE_BYTES).foldIndexed(0.toShort()) { index, acc, byte ->
-        acc or ((byte.toShort() and 0xFF) shl byteOrder.shift(index, Short.SIZE_BITS))
+    return run {
+        var acc = 0.toShort()
+        for (index in 0..<Short.SIZE_BYTES) {
+            val byte = this[octetIndex + index]
+            acc = acc or ((byte.toShort() and 0xFF) shl byteOrder.shift(index, Short.SIZE_BITS))
+        }
+        acc
     }
 }
 
