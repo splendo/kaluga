@@ -92,7 +92,7 @@ tasks.withType<KotlinCompile>().configureEach {
     }
 }
 
-val generatePluginVersion by tasks.registering {
+val generatePluginVersion = tasks.register("generatePluginVersion") {
     val outputDir = layout.buildDirectory.dir("generated/resources/main")
     val outputFile = outputDir.map { it.file("bluetooth.properties") }
     val version = kalugaVersion
