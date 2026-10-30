@@ -1059,6 +1059,21 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         )
     }
 
+    private object Latin1CharFixtures {
+        @Serializable
+        data class Container(@Encoded(Encoding.ISO_8859_1) val char: Char)
+    }
+
+    @Test
+    fun encodeLatin1Char() {
+        for (value in 0..0xFF) {
+            validateEncoding(Latin1CharFixtures.Container(value.toChar()), byteArrayOf(value.toByte()))
+        }
+        assertFailsWith<IllegalArgumentException> {
+            BytesFormat.encodeToByteArray(Latin1CharFixtures.Container.serializer(), Latin1CharFixtures.Container('€'))
+        }
+    }
+
     private object Utf8CharFixtures {
         @Serializable
         data class Container(val char: Char)

@@ -113,6 +113,26 @@ class BytesFormatStringsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         }
     }
 
+    private object Latin1StringFixtures {
+        @Serializable
+        data class Container(
+            @Encoded(Encoding.ISO_8859_1) val prefixed: String,
+            @Encoded(Encoding.ISO_8859_1) @NullTerminated val terminated: String,
+            @Encoded(Encoding.ISO_8859_1) @Size(Length.`16_BIT`) val fixed: String,
+        )
+    }
+
+    @Test
+    fun encodeLatin1String() {
+        validateEncoding(
+            Latin1StringFixtures.Container("café", "ñ", "ÿ"),
+            byteArrayOf(0x04, 0x63, 0x61, 0x66, 0xE9.toByte(), 0xF1.toByte(), 0x00, 0xFF.toByte(), 0x00),
+        )
+        assertFailsWith<IllegalArgumentException> {
+            BytesFormat.encodeToByteArray(Latin1StringFixtures.Container.serializer(), Latin1StringFixtures.Container("€", "", ""))
+        }
+    }
+
     private object MsbExcludeStructureLengthPrefixAndNullTerminatedStringRoundTripsFixtures {
         @Serializable
         @com.splendo.kaluga.bytes.annotations.ByteOrder(com.splendo.kaluga.bytes.ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
