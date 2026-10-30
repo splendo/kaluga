@@ -221,6 +221,42 @@ class LayoutDeclarationTest {
     }
 
     @Test
+    fun `generates a layout used by other layouts once`() {
+        val compilation = BytesCompilation(
+            layoutSource(
+                """
+                @BytesLayout
+                interface BatteryLevel {
+                    @Size(Length.`8_BIT`) @Unsigned val level: Int
+                }
+
+                @BytesLayout
+                interface DeviceInformation {
+                    val batteryLevel: BatteryLevel
+                }
+
+                @BytesLayout
+                interface ChargerStatus {
+                    val charging: Boolean
+                    val battery: BatteryLevel
+                }
+                """,
+            ),
+            generate = "DATA,VIEW",
+        )
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        val declaring = compilation.generatedFiles.filter { Regex("""class BatteryLevel\w*""").containsMatchIn(it.readText()) }.map { it.name }
+        assertEquals(listOf("BatteryLevelData.kt", "BatteryLevelView.kt"), declaring.sorted())
+        listOf("DeviceInformation", "ChargerStatus").forEach { parent ->
+            val data = compilation.generatedFile("${parent}Data.kt")
+            assertTrue("@Serializable(with = BatteryLevelData.InterfaceSerializer::class) BatteryLevel" in data, data)
+            val view = compilation.generatedFile("${parent}View.kt")
+            assertTrue("BatteryLevelSlice(b, " in view, view)
+        }
+    }
+
+    @Test
     fun `refers to layouts of a common source set from a per-target pass`() {
         val workingDir = Files.createTempDirectory("bytes-ksp").toFile()
         val compilation = BytesCompilation(

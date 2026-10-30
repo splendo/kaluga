@@ -84,6 +84,12 @@ abstract class FramingSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
     }
 
     @Test
+    fun topLevelLayoutInOtherLayouts() {
+        validateEncoding(DeviceInformationData(BatteryLevelData(0x64), 0x0102), byteArrayOf(0x64, 0x02, 0x01))
+        validateEncoding(ChargerStatusData(true, BatteryLevelData(0x32)), byteArrayOf(0x01, 0x32))
+    }
+
+    @Test
     fun reservedBytesCountedInStaticSize() {
         validateEncoding(Short3Data(0x0A), byteArrayOf(0x0A, 0x00, 0x00))
         validateEncoding(Long5Data(0x0B), byteArrayOf(0x0B, 0x00, 0x00, 0x00, 0x00))
