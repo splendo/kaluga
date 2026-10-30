@@ -58,6 +58,18 @@ class ViewStringsTest {
     }
 
     @Test
+    fun readsLatin1Strings() {
+        val allChars = CharArray(256) { it.toChar() }.concatToString()
+        roundTrip(allChars, StringEncodingSettings(StringEncodingSettings.LengthPrefix.ShortLength, Encoding.ISO_8859_1))
+        roundTrip(allChars, StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.ISO_8859_1))
+        roundTrip(allChars.drop(1), StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.ISO_8859_1))
+        roundTrip("ÿé", StringEncodingSettings(StringEncodingSettings.FixedLength(4), Encoding.ISO_8859_1))
+        roundTrip(allChars, StringEncodingSettings(StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Cobs), Encoding.ISO_8859_1))
+        val prefixed = StringEncodingSettings(StringEncodingSettings.LengthPrefix.ByteLength, Encoding.ISO_8859_1)
+        assertFailsWith<IllegalArgumentException> { ViewStrings.write(ByteArray(2), 0, 2, "€", prefixed, lsb) }
+    }
+
+    @Test
     fun checksStringsTheWayTheyAreRead() {
         val cutOff = StringEncodingSettings(StringEncodingSettings.FixedLength(1))
         val bytes = byteArrayOf(0xC3.toByte(), 0xA9.toByte())
