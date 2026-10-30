@@ -21,7 +21,7 @@ dependencies {
 ```
 
 ## Usage
-An `Encoding` (`UTF_8`, `UTF_16` or `ASCII`) determines how characters are encoded. `StringEncodingSettings` combines an `Encoding` with an `EndMarking` that determines how the end of a String is marked, such as a length prefix (`LengthPrefix`), a terminating byte (`NullTerminated`, `Terminated`), a byte-stuffed region (`ByteStuffed`), a fixed number of characters padded with null characters (`FixedLength`) or no marking at all (`NoMarking`).
+An `Encoding` (`UTF_8`, `UTF_16`, `ASCII` or `ISO_8859_1`, i.e. Latin-1) determines how characters are encoded. `StringEncodingSettings` combines an `Encoding` with an `EndMarking` that determines how the end of a String is marked, such as a length prefix (`LengthPrefix`), a terminating byte (`NullTerminated`, `Terminated`), a byte-stuffed region (`ByteStuffed`), a fixed number of characters padded with null characters (`FixedLength`) or no marking at all (`NoMarking`).
 
 ```kotlin
 val settings = StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_8)
@@ -29,7 +29,7 @@ val bytes = "Hello".toByteArray(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST)
 val decoded = bytes.decodeString(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST)
 ```
 
-A `Char` takes `Encoding.byteSizeOf(char)` bytes: one for `ASCII`, two for `UTF_16` and one to three for `UTF_8`. Encoding a non-ASCII character with `ASCII` throws.
+A `Char` takes `Encoding.byteSizeOf(char)` bytes: one for `ASCII` and `ISO_8859_1`, two for `UTF_16` and one to three for `UTF_8`. Encoding a non-ASCII character with `ASCII`, or a character above `U+00FF` with `ISO_8859_1`, throws. Every byte decodes as `ISO_8859_1`, to the character with that code.
 
 ```kotlin
 val bytes = Encoding.UTF_8.encodeChar('é', ByteOrder.LEAST_SIGNIFICANT_FIRST) // C3 A9
