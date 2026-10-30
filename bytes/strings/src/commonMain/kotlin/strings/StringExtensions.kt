@@ -21,6 +21,7 @@ import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.copyIntoByteArray
 import com.splendo.kaluga.bytes.decodeUShort
 import com.splendo.kaluga.bytes.strings.Encoding.ASCII
+import com.splendo.kaluga.bytes.strings.Encoding.ISO_8859_1
 import com.splendo.kaluga.bytes.strings.Encoding.UTF_16
 import com.splendo.kaluga.bytes.strings.Encoding.UTF_8
 import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
@@ -36,6 +37,7 @@ fun Encoding.encodeString(string: String, byteOrder: ByteOrder) = when (this) {
     UTF_8 -> string.toUTF8(byteOrder)
     UTF_16 -> string.toUTF16(byteOrder)
     ASCII -> string.toAscii(byteOrder)
+    ISO_8859_1 -> string.toLatin1(byteOrder)
 }
 
 /**
@@ -51,6 +53,7 @@ fun Encoding.copyEncodedStringIntoArray(string: String, array: ByteArray, offset
     UTF_8 -> string.copyUTF8IntoArray(array, offset, byteOrder)
     UTF_16 -> string.copyUTF16IntoArray(array, offset, byteOrder)
     ASCII -> string.copyAsciiIntoArray(array, offset, byteOrder)
+    ISO_8859_1 -> string.copyLatin1IntoArray(array, offset, byteOrder)
 }
 
 /**
@@ -62,6 +65,7 @@ fun Encoding.byteSizeOf(string: String): Int = when (this) {
     UTF_8 -> string.utf8Size
     UTF_16 -> string.utf16Size
     ASCII -> string.asciiSize
+    ISO_8859_1 -> string.latin1Size
 }
 
 /**
@@ -567,16 +571,17 @@ val String.asciiSize: Int get() = length
  */
 fun String.toAscii(byteOrder: ByteOrder): ByteArray = copyAsciiIntoArray(ByteArray(asciiSize), byteOrder = byteOrder)
 
-fun String.copyAsciiIntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
-    val byteLength = asciiSize
-    require(array.size >= offset + byteLength) { "Cannot copy into ByteArray. Must be at least ${offset + byteLength} long" }
+fun String.copyAsciiIntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray = copySingleByteIntoArray(array, offset, byteOrder, Char::toAscii)
+
+private inline fun String.copySingleByteIntoArray(array: ByteArray, offset: Int, byteOrder: ByteOrder, encode: (Char) -> Byte): ByteArray {
+    require(array.size >= offset + length) { "Cannot copy into ByteArray. Must be at least ${offset + length} long" }
     forEachIndexed { index, character ->
         val index = when (byteOrder) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> length - index - 1
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> index
         }
 
-        array[offset + index] = character.toAscii()
+        array[offset + index] = encode(character)
     }
     return array
 }
@@ -591,6 +596,36 @@ fun String.toAsciiOrNull(byteOrder: ByteOrder): ByteArray? = try {
 } catch (_: IllegalArgumentException) {
     null
 }
+
+/**
+ * Returns the number of [Byte]s required to encode a [String] using ISO/IEC 8859-1 (Latin-1).
+ */
+val String.latin1Size: Int get() = length
+
+/**
+ * Encodes a [String] to a [ByteArray] using ISO/IEC 8859-1 (Latin-1).
+ * @param byteOrder the [ByteOrder] to use.
+ * @throws [IllegalArgumentException] if the string contains a character above `U+00FF`. Use [String.toLatin1OrNull] to get a non-throwing variant
+ * @return The encoded [ByteArray]
+ */
+fun String.toLatin1(byteOrder: ByteOrder): ByteArray = copyLatin1IntoArray(ByteArray(latin1Size), byteOrder = byteOrder)
+
+/**
+ * Encodes a [String] using ISO/IEC 8859-1 (Latin-1) and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] to use.
+ * @throws [IllegalArgumentException] if the string contains a character above `U+00FF`, or if [array] is not large enough to hold [latin1Size] bytes at the [offset].
+ * @return The encoded [ByteArray]
+ */
+fun String.copyLatin1IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray = copySingleByteIntoArray(array, offset, byteOrder, Char::toLatin1)
+
+/**
+ * Encodes a [String] to a [ByteArray] using ISO/IEC 8859-1 (Latin-1) or `null` if the string contains a character above `U+00FF`.
+ * @param byteOrder the [ByteOrder] to use.
+ * @return the [ByteArray] representing the [String] in Latin-1 if it can be represented in Latin-1, `null` otherwise.
+ */
+fun String.toLatin1OrNull(byteOrder: ByteOrder): ByteArray? = if (all { it.code <= 0xFF }) toLatin1(byteOrder) else null
 
 /**
  * Decodes a [ByteArray] ordered Least Significant first into a String using [StringEncodingSettings]
@@ -711,6 +746,8 @@ private fun Iterator<Byte>.decodeCharacters(encoding: Encoding, trimTrailingNull
             }
 
             ASCII -> result.append(next().decodeAsciiChar())
+
+            ISO_8859_1 -> result.append(next().decodeLatin1Char())
         }
     }
     if (trimTrailingNulls) {

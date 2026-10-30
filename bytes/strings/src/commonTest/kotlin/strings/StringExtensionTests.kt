@@ -574,6 +574,48 @@ class StringExtensionTests {
         assertFailsWith<IllegalArgumentException> { StringEncodingSettings.ByteStuffed.Explicit(ByteStuffingScheme.CSafe(), 0xF3.toByte()) }
     }
 
+    @Test
+    fun latin1RoundTripsEveryByte() {
+        val allBytes = ByteArray(256) { it.toByte() }
+        val allChars = CharArray(256) { it.toChar() }.concatToString()
+        val settings = StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.ISO_8859_1)
+        allChars.encodeDecode(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST, allBytes)
+        allChars.encodeDecode(settings, ByteOrder.MOST_SIGNIFICANT_FIRST, allBytes.reversedArray())
+        assertEquals(allChars, allBytes.decodeCharacters(0, allBytes.size, Encoding.ISO_8859_1))
+
+        val endMarkings = listOf(
+            StringEncodingSettings.LengthPrefix.ShortLength,
+            StringEncodingSettings.LengthPrefix.WithOverflow(),
+            StringEncodingSettings.FixedLength(256),
+            StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Cobs),
+        )
+        for (endMarking in endMarkings) {
+            for (order in ByteOrder.entries) {
+                val markedSettings = StringEncodingSettings(endMarking, Encoding.ISO_8859_1)
+                val encoded = allChars.toByteArray(markedSettings, order)
+                assertEquals(allChars.byteArraySize(markedSettings), encoded.size, "$endMarking $order")
+                assertEquals(allChars, encoded.decodeString(markedSettings, order), "$endMarking $order")
+            }
+        }
+        "été".encodeDecode(
+            StringEncodingSettings(StringEncodingSettings.LengthPrefix.ByteLength, Encoding.ISO_8859_1),
+            ByteOrder.LEAST_SIGNIFICANT_FIRST,
+            byteArrayOf(0x03, 0xE9.toByte(), 0x74, 0xE9.toByte()),
+        )
+        val withoutNull = allChars.drop(1)
+        val nullTerminated = StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.ISO_8859_1)
+        assertEquals(withoutNull, withoutNull.toByteArray(nullTerminated, ByteOrder.LEAST_SIGNIFICANT_FIRST).decodeString(nullTerminated, ByteOrder.LEAST_SIGNIFICANT_FIRST))
+    }
+
+    @Test
+    fun latin1RejectsCharsAboveFF() {
+        val settings = StringEncodingSettings(StringEncodingSettings.LengthPrefix.ByteLength, Encoding.ISO_8859_1)
+        val error = assertFailsWith<IllegalArgumentException> { "café €".toByteArray(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST) }
+        assertEquals("Non-Latin-1 character: '€' (0x20ac)", error.message)
+        assertEquals(null, "€".toLatin1OrNull(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+        assertContentEquals(byteArrayOf(0xFF.toByte()), "ÿ".toLatin1OrNull(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+    }
+
     private fun String.encodeDecode(settings: StringEncodingSettings, order: ByteOrder, expectedBytes: ByteArray, expectedString: String = this) {
         val actual = toByteArray(settings, order)
         assertContentEquals(expectedBytes, actual)

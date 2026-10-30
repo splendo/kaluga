@@ -24,6 +24,7 @@ import com.splendo.kaluga.bytes.strings.Encoding
 import com.splendo.kaluga.bytes.stuffing.NonDelimiterByteStuffingScheme
 import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.strings.decodeAsciiChar
+import com.splendo.kaluga.bytes.strings.decodeLatin1Char
 import com.splendo.kaluga.bytes.decodeDouble
 import com.splendo.kaluga.bytes.decodeFloat
 import com.splendo.kaluga.bytes.medfloat.decodeMedFloat16
@@ -622,6 +623,7 @@ internal fun BinaryDescriptor.decodeDoubleElement(decoder: BinaryDescriptorDecod
 internal fun BinaryDescriptor.decodeCharElement(decoder: BinaryDescriptorDecoder): Char = when (stringSettings?.encoding ?: Encoding.ASCII) {
     Encoding.UTF_16 -> decoder.nextBytes(2).decodeUTF16Char(0, childByteOrder)
     Encoding.ASCII, Encoding.UTF_8 -> decoder.nextBytes(1).first().decodeAsciiChar()
+    Encoding.ISO_8859_1 -> decoder.nextBytes(1).first().decodeLatin1Char()
 }
 
 internal fun BinaryDescriptor.decodeStringElement(decoder: BinaryDescriptorDecoder): String {
