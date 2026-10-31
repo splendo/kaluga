@@ -326,7 +326,7 @@ class LayoutDeclarationTest {
             interface Texts {
                 val text: CharSequence
             }
-            """ to "layouts from another module are not supported yet",
+            """ to "kotlin.CharSequence is an interface but not a @BytesLayout",
         )
         cases.forEach { (source, message) ->
             val compilation = BytesCompilation(layoutSource(source))

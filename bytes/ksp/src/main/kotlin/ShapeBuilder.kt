@@ -146,13 +146,6 @@ internal class ShapeBuilder(private val layouts: LayoutIndex, private val materi
 
             Modifier.VALUE in declaration.modifiers || Modifier.INLINE in declaration.modifiers -> valueClassShape(declaration.requireSerializable(origin), type, origin)
 
-            // @BytesLayout is not retained in compiled code, so a layout of another module looks like any interface.
-            declaration.classKind == ClassKind.INTERFACE && declaration.containingFile == null -> throw LayoutDeclarationException(
-                "$qualifiedName is an interface of another module; layouts from another module are not supported yet, " +
-                    "and any other interface would be serialized polymorphically, which generated layouts do not support",
-                origin,
-            )
-
             declaration.classKind == ClassKind.INTERFACE -> throw LayoutDeclarationException(
                 "$qualifiedName is an interface but not a @BytesLayout; open polymorphism is not supported by generated layouts",
                 origin,

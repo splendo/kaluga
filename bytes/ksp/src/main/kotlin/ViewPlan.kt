@@ -224,13 +224,33 @@ internal class FieldPlan(
  * One compiled layout of [layout] in a particular context: its own root layout, or the layout it gets nested in a
  * parent whose field annotations or byte order change its encoding. Contexts that compile to the same layout share
  * one [layoutName] object and one [sliceName] class.
+ *
+ * The generated code of another module's layout is internal to it, so a foreign [layout] gets its contexts generated
+ * again for every [owner], the layout of this module holding it, nested in the owner's own layout object as
+ * [nestedName].
  */
-internal class ViewContext(val layout: Layout, val field: FieldLayout, val fingerprint: String, val index: Int) {
+internal class ViewContext(
+    val layout: Layout,
+    val field: FieldLayout,
+    val fingerprint: String,
+    val index: Int,
+    val owner: Layout? = null,
+    private val nestedName: String? = null,
+) {
 
-    private val baseName: String = layout.viewClassName.simpleName.removeSuffix("View")
+    private val suffix: String = if (index == 0) "" else "$index"
 
-    val layoutName: ClassName = ClassName(layout.viewClassName.packageName, baseName + (if (layout.isSealed) "Sealed" else "Layout") + if (index == 0) "" else "$index")
-    val sliceName: ClassName = ClassName(layout.viewClassName.packageName, baseName + "Slice" + if (index == 0) "" else "$index")
+    private fun name(kind: String): ClassName = if (owner == null) {
+        ClassName(layout.viewClassName.packageName, layout.viewClassName.simpleName.removeSuffix("View") + kind + suffix)
+    } else {
+        ClassName(owner.viewClassName.packageName, owner.viewClassName.simpleName.removeSuffix("View") + "Layout", nestedName!! + kind + suffix)
+    }
+
+    val layoutName: ClassName = name(if (layout.isSealed) "Sealed" else "Layout")
+    val sliceName: ClassName = name("Slice")
+
+    /** Another context of the same layout, for the same owner. */
+    fun sibling(field: FieldLayout, fingerprint: String, index: Int): ViewContext = ViewContext(layout, field, fingerprint, index, owner, nestedName)
 
     /** The planned frame of a structure, or why it cannot be planned; set by [ViewPlanner]. */
     var plan: Result<ViewPlan>? = null

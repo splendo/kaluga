@@ -122,6 +122,13 @@ Configurations using unsupported features generate a KSP error "VIEW not yet sup
 
 ## Source sets and modules
 
-Each KSP pass indexes every `@BytesLayout` it sees, so a layout in `jvmMain` can use one in `commonMain`; the pass generates only its own source set's layouts, the common ones coming from the metadata pass. VIEW does not support nesting such a layout in a way that changes its encoding, which would need a context the common pass did not generate. `@BytesLayout` is not retained in compiled code, so layouts from another module are not supported yet and are reported as such. KSP does not process test or other intermediate source sets, so `@BytesLayout` interfaces there generate nothing.
+Each KSP pass indexes every `@BytesLayout` it sees, so a layout in `jvmMain` can use one in `commonMain`; the pass generates only its own source set's layouts, the common ones coming from the metadata pass. VIEW does not support nesting such a layout in a way that changes its encoding, which would need a context the common pass did not generate. KSP does not process test or other intermediate source sets, so `@BytesLayout` interfaces there generate nothing.
+
+`@BytesLayout` is kept in compiled code, so a layout can also hold a layout of a module it depends on, `Y`. The processor reads `Y`'s properties and their annotations from the compiled interface, in declaration order, and lays it out like a layout of its own module:
+
+- DATA refers to the `YData.InterfaceSerializer` the other module generated, so a DATA layout can only hold `Y` when that module generated DATA for it
+- VIEW cannot use the other module's `YLayout`, which is internal to it, nor construct its `YSlice`, so each layout `X` holding `Y` gets accessors of its own: `XLayout` nests a `YLayout` object and a `YSlice` class for every context `X` uses `Y` in, whatever the other module generated. Code of the holding module casts to `XLayout.YSlice` to write through it; to other modules it is a read-only `Y`
+- A sealed `Y` works the same way, its subtypes nested next to it
+- Any other interface of another module is open polymorphism, which generated layouts do not support
 
 When a layout uses a type another processor generates in a later round, every layout waits for that round, so each is processed with the whole index.
