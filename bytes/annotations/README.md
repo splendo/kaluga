@@ -95,6 +95,7 @@ Control how lists and maps are prefixed, terminated and their items/keys/values 
 - `@Unsized` — Consume remaining bytes.
 - `@NullIfEmpty` — Encode an empty list as null instead of encoding a zero count. Without it a nullable empty list is present, with a zero count.
 - `@NullTerminated` — Terminate with 0x00 instead of a length prefix.
+- `@Count(count)` — Always exactly `count` items (entries for a map), with no length prefix or terminator, so the collection can sit anywhere in a structure; with fixed-size items its size is fixed too. Encoding another number of items throws `UnexpectedItemCount`. Cannot be combined with another end marking, `@Size` or `@NullIfEmpty`.
 - `@ByteStuffed` / `@ByteStuffedXor` / `@ByteStuffedSlip` / `@ByteStuffedCobs` — Byte-stuff the collection content.
 - `@Terminal(terminator)` — Terminate with a custom byte, under the same rules as for strings.
 - `@ItemSize(...)` — Fixed size for each item.

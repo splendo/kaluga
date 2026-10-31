@@ -102,7 +102,7 @@ Byte stuffing cannot read in place. For byte-stuffed layouts:
 
 Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, sealed layouts and properties, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
 
-Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. Lists are read in place: `FixedStrideList` when all items are the same size, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
+Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. A `@Count` collection of fixed-size items has a setter that rewrites its items in place and, like the constructors, refuses another number of items. Lists are read in place: `FixedStrideList` when all items are the same size, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
 
 ## Unsupported VIEW features
 
