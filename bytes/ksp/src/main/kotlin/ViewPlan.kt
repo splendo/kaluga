@@ -314,6 +314,9 @@ internal sealed class Count {
 
     /** The items run to the end of the body. */
     data object Unmarked : Count()
+
+    /** Always [count] items, with nothing written before or after them. */
+    data class Fixed(val count: Int) : Count()
 }
 
 /**

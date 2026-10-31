@@ -20,6 +20,7 @@ package com.splendo.kaluga.bytes.view
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.UnexpectedItemCount
 import com.splendo.kaluga.bytes.layout.UnexpectedTerminator
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -111,5 +112,12 @@ class ViewCollectionsTest {
     fun rejectsAnItemStartingWithTheTerminator() {
         assertFailsWith<UnexpectedTerminator> { ViewCollections.checkNotTerminator(byteArrayOf(0, 1), 0, 2, 0x00, 0) }
         ViewCollections.checkNotTerminator(byteArrayOf(1, 0), 0, 2, 0x00, 0)
+    }
+
+    @Test
+    fun rejectsAnotherNumberOfItemsThanTheFixedCount() {
+        ViewCollections.checkCount(3, 3, "block")
+        val error = assertFailsWith<UnexpectedItemCount> { ViewCollections.checkCount(2, 3, "block") }
+        assertEquals("'block' must have exactly 3 items, but has 2", error.message)
     }
 }

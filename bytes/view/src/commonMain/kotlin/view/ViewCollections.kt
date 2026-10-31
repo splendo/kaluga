@@ -22,6 +22,7 @@ import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.decodeUShort
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.UnexpectedItemCount
 import com.splendo.kaluga.bytes.layout.UnexpectedTerminator
 
 /** The end of an item frame starting at `s`, as the generated item accessors compute it. */
@@ -127,6 +128,11 @@ object ViewCollections {
             marking.copyEncodedSizeInto(b, count.toUInt(), order, pos)
         }
         return size
+    }
+
+    /** Throws [UnexpectedItemCount] as `BytesFormat` does when the collection [name] has [size] items instead of its fixed [count]. */
+    fun checkCount(size: Int, count: Int, name: String) {
+        if (size != count) throw UnexpectedItemCount(name, count, size)
     }
 
     /**

@@ -91,6 +91,7 @@ public final class com/splendo/kaluga/bytes/view/ViewChecksum {
 public final class com/splendo/kaluga/bytes/view/ViewCollections {
 	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewCollections;
 	public static final field UNBOUNDED I
+	public final fun checkCount (IILjava/lang/String;)V
 	public final fun checkNotTerminator ([BIIBI)V
 	public final fun end ([BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemEnd;)I
 	public static synthetic fun end$default (Lcom/splendo/kaluga/bytes/view/ViewCollections;[BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemEnd;ILjava/lang/Object;)I
