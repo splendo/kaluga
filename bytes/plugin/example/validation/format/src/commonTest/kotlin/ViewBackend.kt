@@ -23,7 +23,7 @@ import com.splendo.kaluga.bytes.toHexString
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlin.test.assertEquals
+import kotlin.test.assertContentEquals
 import kotlin.test.fail
 
 /**
@@ -65,11 +65,20 @@ class ViewBackend(private val options: BackendOptions = BackendOptions()) : Byte
             val entry = view(serializer.descriptor)
             entry.toData(entry.view(bytes, options.validateChecksum))
         }
-        runCatching { data.decode(serializer, bytes) }.getOrNull()?.let { expected ->
-            assertEquals(expected, decoded, "The view decodes ${bytes.toHexString(separator = " ")} differently from BytesFormat")
-        }
+
         @Suppress("UNCHECKED_CAST")
-        return decoded as T
+        val value = decoded as T
+        runCatching { data.decode(serializer, bytes) }.getOrNull()?.let { expected ->
+            // DATA classes compare arrays by reference, so values holding one are compared by what they encode to.
+            if (expected != value) {
+                assertContentEquals(
+                    data.encode(serializer, expected),
+                    data.encode(serializer, value),
+                    "The view decodes ${bytes.toHexString(separator = " ")} differently from BytesFormat",
+                )
+            }
+        }
+        return value
     }
 
     private fun nestedContent(descriptor: SerialDescriptor): SerialDescriptor? = descriptor.takeIf { it.serialName == NESTED_SERIAL_NAME }?.getElementDescriptor(0)
