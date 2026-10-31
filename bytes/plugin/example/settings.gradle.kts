@@ -42,6 +42,7 @@ rootProject.name = "kaluga-bytes-plugin-example"
 // Codegen validation fixtures, one per plugin capability.
 include(":validation:core")
 include(":validation:format")
+include(":validation:parts")
 
 // Named explicitly: named after its directory, the checkout would clash with the plugin build when both share a name.
 includeBuild("../../../") {

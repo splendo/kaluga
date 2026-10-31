@@ -34,6 +34,10 @@ import com.splendo.kaluga.bytes.layout.InvalidPrefix
 import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bytes.toByteArray
 import com.splendo.kaluga.bytes.crc.CRC16
+import com.splendo.kaluga.bytes.example.parts.BatteryChargeData
+import com.splendo.kaluga.bytes.example.parts.SensorEventSwipeData
+import com.splendo.kaluga.bytes.example.parts.SensorEventTapData
+import com.splendo.kaluga.bytes.example.parts.SensorReadingData
 import com.splendo.kaluga.bytes.strings.add
 import kotlin.jvm.JvmInline
 import kotlin.test.Test
@@ -87,6 +91,29 @@ abstract class FramingSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
     fun topLevelLayoutInOtherLayouts() {
         validateEncoding(DeviceInformationData(BatteryLevelData(0x64), 0x0102), byteArrayOf(0x64, 0x02, 0x01))
         validateEncoding(ChargerStatusData(true, BatteryLevelData(0x32)), byteArrayOf(0x01, 0x32))
+    }
+
+    @Test
+    fun layoutsOfAnotherModuleInOtherLayouts() {
+        // The width of a reading's value is picked by the first bit of its own flag header.
+        val reading = SensorReadingData(channel = 1, value = 0x12, calibrated = true)
+        val wide = SensorReadingData(channel = 2, value = 0x1234, calibrated = false)
+        validateEncoding(
+            PartsDeviceData(BatteryChargeData(0x64), 0x0102, reading, listOf(wide), null),
+            byteArrayOf(0x00, 0x64, 0x02, 0x01, 0x00, 0x01, 0x12, 0x01, 0x01, 0x01, 0x02, 0x34, 0x12, 0x00),
+        )
+        validateEncoding(
+            PartsDeviceData(BatteryChargeData(0x64), 0x0102, wide, emptyList(), SensorEventTapData(3)),
+            byteArrayOf(0x01, 0x64, 0x02, 0x01, 0x01, 0x02, 0x34, 0x12, 0x00, 0x00, 0x10, 0x01, 0x03),
+        )
+        validateEncoding(
+            PartsDeviceData(BatteryChargeData(0x64), 0x0102, reading, listOf(reading, wide), SensorEventSwipeData(wide)),
+            byteArrayOf(
+                0x01, 0x64, 0x02, 0x01, 0x00, 0x01, 0x12, 0x01, 0x02, 0x00, 0x01, 0x12, 0x01, 0x01, 0x02, 0x34, 0x12, 0x00,
+                0x10, 0x02, 0x01, 0x02, 0x34, 0x12, 0x00,
+            ),
+        )
+        validateEncoding(BigEndianPartsReadingData(wide), byteArrayOf(0x01, 0x02, 0x12, 0x34, 0x00))
     }
 
     @Test

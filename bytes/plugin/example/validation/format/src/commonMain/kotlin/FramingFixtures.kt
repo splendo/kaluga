@@ -34,6 +34,9 @@ import com.splendo.kaluga.bytes.annotations.SizePolymorphic
 import com.splendo.kaluga.bytes.annotations.Unsigned
 import com.splendo.kaluga.bytes.annotations.Unsized
 import com.splendo.kaluga.bytes.crc.CRC16
+import com.splendo.kaluga.bytes.example.parts.BatteryCharge
+import com.splendo.kaluga.bytes.example.parts.SensorEvent
+import com.splendo.kaluga.bytes.example.parts.SensorReading
 import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 
@@ -104,6 +107,26 @@ interface DeviceInformation {
 interface ChargerStatus {
     val charging: Boolean
     val battery: BatteryLevel
+}
+
+// Layouts holding the parts of :validation:parts, another module.
+@BytesLayout
+interface PartsDevice {
+    val charge: BatteryCharge
+
+    @Size(Length.`16_BIT`)
+    @Unsigned
+    val firmware: Int
+    val reading: SensorReading
+    val readings: List<SensorReading>
+    val event: SensorEvent?
+}
+
+// Nesting changes how the part encodes, so it gets a context of its own.
+@BytesLayout
+@com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+interface BigEndianPartsReading {
+    val reading: SensorReading
 }
 
 // @Reserved bytes must be included in the staticByteSize used by @SizePolymorphic dispatch.
