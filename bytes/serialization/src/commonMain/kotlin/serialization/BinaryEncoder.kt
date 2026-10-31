@@ -32,6 +32,7 @@ import com.splendo.kaluga.bytes.layout.CollectionSettings
 import com.splendo.kaluga.bytes.layout.FrameSettings
 import com.splendo.kaluga.bytes.layout.NumericCodec
 import com.splendo.kaluga.bytes.layout.NumericSettings
+import com.splendo.kaluga.bytes.layout.UnexpectedItemCount
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.PolymorphicKind
@@ -138,6 +139,10 @@ internal class BinaryEncoder(
                 for (bit in 0 until lengthMarking.bits) {
                     builder.addFlag(binaryDescriptor.bitIndex + bit, (raw shr bit) and 1L == 1L)
                 }
+            }
+
+            is CollectionSettings.FixedCount -> if (collectionSize != lengthMarking.count) {
+                throw UnexpectedItemCount(binaryDescriptor.fieldName, lengthMarking.count, collectionSize)
             }
 
             is CollectionSettings.Unmarked -> {}

@@ -313,6 +313,8 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
                     }
                 }
 
+                is CollectionSettings.FixedCount -> lengthMarking.count
+
                 // For NullTerminated or Unmarked, the length is unknown when decoding starts
                 is CollectionSettings.Unmarked -> -1
 

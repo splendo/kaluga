@@ -304,6 +304,8 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             is CollectionSettings.TerminalMarked -> settings.byteStuffing?.let { Count.Stuffed(it, marking.terminator) } ?: Count.Terminated(marking.terminator)
 
             is CollectionSettings.Unmarked -> Count.Unmarked
+
+            is CollectionSettings.FixedCount -> unsupported("collections with a fixed @Count", node)
         }
         val roles = if (value.kind == ValueType.Collection.Kind.MAP) listOf("Key", "Value") else listOf("Item")
         val frames = items.mapIndexed { index, item ->

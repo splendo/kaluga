@@ -114,6 +114,7 @@ private fun CollectionSettings.describe(): String {
         is CollectionSettings.Unmarked -> "unmarked"
         is CollectionSettings.NumericLength -> "count(${marking.supportedLengths.describe()})"
         is CollectionSettings.FlagIndexedLength -> "flagCount(${marking.bits})"
+        is CollectionSettings.FixedCount -> "fixedCount(${marking.count})"
     }
     return buildString {
         append(marking)

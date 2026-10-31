@@ -305,11 +305,32 @@ annotation class NullIfEmpty
 /**
  * Annotation added for serializing using BytesFormat
  *
+ * When applied to a Collection (a List, Set, Map, array, or primitive array such as a [ByteArray]), it is encoded as
+ * exactly [count] items (entries for a Map) with no length prefix and no terminator, so it can sit anywhere in a
+ * structure. When every item has a fixed size the collection has one too, and so does a structure holding it.
+ *
+ * Encoding a collection of another size throws [UnexpectedItemCount]; decoding reads exactly [count] items. A nullable
+ * Collection keeps its presence flag and encodes nothing when `null`.
+ *
+ * It cannot be combined with [LengthPrefix], [Unsized], [NullTerminated], [Terminal], [Size], [NullIfEmpty] or byte
+ * stuffing, as those mark the end of the collection another way, and [count] must not be negative.
+ *
+ * @property count the number of items the collection always has.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Count(val count: Int)
+
+/**
+ * Annotation added for serializing using BytesFormat
+ *
  * When applied to a sealed polymorphic class, subtypes are identified by their remaining payload
  * byte count instead of a prefix byte identifier. The expected byte count for each subtype is
  * computed automatically from its field annotations — no manual size declaration is required.
  *
- * All subtypes must have statically-known sizes (fixed-width numerics and nested structures only).
+ * All subtypes must have statically-known sizes (fixed-width numerics, nested structures and [Count] collections of
+ * fixed-size items only).
  * A subtype with variable-size fields (unsized strings, collections, nullable body fields, etc.)
  * causes a [SerializationException] at descriptor construction time.
  *

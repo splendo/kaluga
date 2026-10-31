@@ -305,6 +305,16 @@ data class CollectionSettings(val lengthMarking: LengthMarking, val nullIfEmpty:
             validate(bits in 1..32) { "FlagIndexedLength bit width must be 1..32, was $bits" }
         }
     }
+
+    /**
+     * The collection always has [count] items (entries for a map), so neither a count nor a terminator is written.
+     * Encoding another number of items throws [UnexpectedItemCount].
+     */
+    data class FixedCount(val count: Int) : LengthMarking() {
+        init {
+            if (count < 0) throw InvalidCountLayout("A @Count must not be negative, was $count")
+        }
+    }
 }
 
 private inline fun validate(condition: Boolean, message: () -> String) {
