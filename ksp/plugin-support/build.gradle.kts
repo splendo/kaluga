@@ -4,7 +4,7 @@ import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.SourcesJar
 
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+    `embedded-kotlin`
     alias(libs.plugins.dokka)
     alias(libs.plugins.vanniktech.maven.publish)
     alias(libs.plugins.kotlinter)
