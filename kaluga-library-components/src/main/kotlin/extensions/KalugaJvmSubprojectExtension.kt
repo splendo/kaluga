@@ -25,18 +25,13 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
-import javax.inject.Inject
 
-open class KalugaJvmSubprojectExtension protected constructor(
+abstract class KalugaJvmSubprojectExtension protected constructor(
     versionCatalog: VersionCatalog,
     androidxVersionCatalog: VersionCatalog,
     namespacePostfix: String?,
     objects: ObjectFactory,
 ) : BaseKalugaSubprojectExtension(versionCatalog, androidxVersionCatalog, namespacePostfix, objects) {
-
-    @Inject
-    constructor(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, objects: ObjectFactory) :
-        this(versionCatalog, androidxVersionCatalog, null, objects)
 
     override var namespace: String? = null
 
