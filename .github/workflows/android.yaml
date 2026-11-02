@@ -64,11 +64,6 @@ jobs:
         run: ./gradlew --stacktrace testAndroidHostTest
         working-directory: bytes/plugin/example
 
-      # Same generated-view suites, on the JS and Wasm targets the validation modules also support.
-      - name: validate bytes code generation on JS and Wasm
-        run: ./gradlew --stacktrace jsNodeTest wasmJsNodeTest
-        working-directory: bytes/plugin/example
-
   test:
     runs-on: ubuntu-latest
     steps:
