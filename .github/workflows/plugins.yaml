@@ -1,0 +1,40 @@
+name: Gradle plugins and KSP processors
+on: pull_request
+
+jobs:
+  plugins:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: ktLint plugins
+        run: ./gradlew lintKotlin
+        working-directory: plugins
+
+      - name: run plugin unit tests
+        run: ./gradlew --stacktrace test
+        working-directory: plugins
+
+  processors:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: run KSP processor tests
+        run: ./gradlew --stacktrace :bytes:ksp:test :bluetooth:ksp:test :ksp:processor-support:test
