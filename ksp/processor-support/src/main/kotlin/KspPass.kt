@@ -47,7 +47,7 @@ data class KspPass(val commonSources: List<String> = emptyList(), val isSingleTa
     }
 
     /** Whether the source file at [path] lies outside every common source directory. */
-    fun isOutsideCommonSources(path: String): Boolean = commonSources.none { path.isWithin(it) }
+    internal fun isOutsideCommonSources(path: String): Boolean = commonSources.none { path.isWithin(it) }
 
     companion object {
         const val COMMON_SOURCE_OPTION = "commonSource"
@@ -59,7 +59,7 @@ data class KspPass(val commonSources: List<String> = emptyList(), val isSingleTa
 }
 
 /** Whether this path is [directory] itself or lies inside it, so a sibling such as `kotlinx` next to `kotlin` does not count. */
-fun String.isWithin(directory: String): Boolean {
+internal fun String.isWithin(directory: String): Boolean {
     val root = directory.trimEnd('/', '\\')
     return this == root || startsWith("$root/") || startsWith("$root\\")
 }
