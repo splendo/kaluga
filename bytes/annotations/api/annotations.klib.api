@@ -63,6 +63,13 @@ open annotation class com.splendo.kaluga.bytes.annotations/ByteStuffedXor : kotl
         final fun <get-xorKey>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/ByteStuffedXor.xorKey.<get-xorKey>|<get-xorKey>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bytes.annotations/BytesLayout : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/BytesLayout|null[0]
+    constructor <init>(kotlin/Array<com.splendo.kaluga.bytes.annotations/Generate> = ...) // com.splendo.kaluga.bytes.annotations/BytesLayout.<init>|<init>(kotlin.Array<com.splendo.kaluga.bytes.annotations.Generate>){}[0]
+
+    final val generate // com.splendo.kaluga.bytes.annotations/BytesLayout.generate|{}generate[0]
+        final fun <get-generate>(): kotlin/Array<com.splendo.kaluga.bytes.annotations/Generate> // com.splendo.kaluga.bytes.annotations/BytesLayout.generate.<get-generate>|<get-generate>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bytes.annotations/Checksum : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Checksum|null[0]
     constructor <init>(kotlin/Int, kotlin/ULong, kotlin/ULong, kotlin/ULong = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // com.splendo.kaluga.bytes.annotations/Checksum.<init>|<init>(kotlin.Int;kotlin.ULong;kotlin.ULong;kotlin.ULong;kotlin.Boolean;kotlin.Boolean){}[0]
 
@@ -378,6 +385,17 @@ open annotation class com.splendo.kaluga.bytes.annotations/ValueSize : kotlin/An
 
 open annotation class com.splendo.kaluga.bytes.annotations/ValueUnsigned : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/ValueUnsigned|null[0]
     constructor <init>() // com.splendo.kaluga.bytes.annotations/ValueUnsigned.<init>|<init>(){}[0]
+}
+
+final enum class com.splendo.kaluga.bytes.annotations/Generate : kotlin/Enum<com.splendo.kaluga.bytes.annotations/Generate> { // com.splendo.kaluga.bytes.annotations/Generate|null[0]
+    enum entry DATA // com.splendo.kaluga.bytes.annotations/Generate.DATA|null[0]
+    enum entry VIEW // com.splendo.kaluga.bytes.annotations/Generate.VIEW|null[0]
+
+    final val entries // com.splendo.kaluga.bytes.annotations/Generate.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.bytes.annotations/Generate> // com.splendo.kaluga.bytes.annotations/Generate.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.bytes.annotations/Generate // com.splendo.kaluga.bytes.annotations/Generate.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.bytes.annotations/Generate> // com.splendo.kaluga.bytes.annotations/Generate.values|values#static(){}[0]
 }
 
 final enum class com.splendo.kaluga.bytes.annotations/Length : kotlin/Enum<com.splendo.kaluga.bytes.annotations/Length> { // com.splendo.kaluga.bytes.annotations/Length|null[0]

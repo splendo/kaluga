@@ -26,6 +26,8 @@ import kotlinx.serialization.modules.SerializersModule
 /**
  * The [dump][com.splendo.kaluga.bytes.layout.dump] of the layout [BytesFormat] uses for [descriptor].
  *
+ * The bytes KSP processor computes the same dump at compile time for every DATA class it generates (`XData.LAYOUT_DUMP`);
+ * comparing the two checks that the generated class encodes exactly as the processor planned.
  *
  * @throws kotlinx.serialization.SerializationException when the descriptor describes an invalid layout.
  */

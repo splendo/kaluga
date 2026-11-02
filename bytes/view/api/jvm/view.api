@@ -1,0 +1,143 @@
+public final class com/splendo/kaluga/bytes/view/FixedStrideList : kotlin/collections/AbstractList {
+	public static final field Companion Lcom/splendo/kaluga/bytes/view/FixedStrideList$Companion;
+	public fun get (I)Ljava/lang/Object;
+	public fun getSize ()I
+	public final fun set (ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/bytes/view/FixedStrideList$Companion {
+	public final fun of ([BIIIILcom/splendo/kaluga/bytes/view/ItemRead;Lcom/splendo/kaluga/bytes/view/ItemWrite;Lcom/splendo/kaluga/bytes/view/ViewParent;Z)Lcom/splendo/kaluga/bytes/view/FixedStrideList;
+	public static synthetic fun of$default (Lcom/splendo/kaluga/bytes/view/FixedStrideList$Companion;[BIIIILcom/splendo/kaluga/bytes/view/ItemRead;Lcom/splendo/kaluga/bytes/view/ItemWrite;Lcom/splendo/kaluga/bytes/view/ViewParent;ZILjava/lang/Object;)Lcom/splendo/kaluga/bytes/view/FixedStrideList;
+}
+
+public abstract interface class com/splendo/kaluga/bytes/view/ItemEnd {
+	public abstract fun end ([BII)I
+}
+
+public abstract interface class com/splendo/kaluga/bytes/view/ItemRead {
+	public abstract fun read ([BII)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/bytes/view/ItemVisit {
+	public abstract fun visit (II)V
+}
+
+public abstract interface class com/splendo/kaluga/bytes/view/ItemWrite {
+	public abstract fun write ([BIILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bytes/view/ScannedList : kotlin/collections/AbstractList {
+	public fun get (I)Ljava/lang/Object;
+	public fun getSize ()I
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewBatch : com/splendo/kaluga/bytes/view/ViewParent {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewBatch;
+	public fun changed ()V
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewBytes {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewBytes;
+	public final fun alignBits (I)I
+	public final fun bit ([BIII)Z
+	public final fun bits ([BIIII)J
+	public final fun checkRange (III)V
+	public final fun checkWrapRange ([BII)V
+	public final fun clear ([BII)V
+	public final fun entry (Ljava/util/List;ILjava/lang/String;)Ljava/lang/Enum;
+	public final fun hex ([BII)Ljava/lang/String;
+	public final fun matchIndex ([BI[[BI)I
+	public final fun matches ([BI[BI)Z
+	public final fun mirror ([BII)V
+	public final fun packedNatural ([BIIIZI)J
+	public final fun rangeEquals ([BII[BII)Z
+	public final fun rangeHashCode ([BII)I
+	public final fun readChar ([BILcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/ByteOrder;I)C
+	public final fun readDouble ([BILcom/splendo/kaluga/bytes/ByteOrder;I)D
+	public final fun readFloat ([BILcom/splendo/kaluga/bytes/ByteOrder;I)F
+	public final fun readMedFloat16 ([BII)D
+	public final fun readMedFloat32 ([BII)D
+	public final fun readNatural ([BILcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/ByteOrder;I)J
+	public final fun readSigned ([BIILcom/splendo/kaluga/bytes/ByteOrder;I)J
+	public final fun readUnsigned ([BIILcom/splendo/kaluga/bytes/ByteOrder;I)J
+	public final fun s8 ([BII)I
+	public final fun selectedLength ([Lcom/splendo/kaluga/bytes/annotations/Length;I)Lcom/splendo/kaluga/bytes/annotations/Length;
+	public final fun setBit ([BIIZI)V
+	public final fun setBits ([BIIIJI)V
+	public final fun setPackedNatural ([BIIIJZI)V
+	public final fun u8 ([BII)I
+	public final fun write ([BI[BI)V
+	public final fun writeChar ([BICLcom/splendo/kaluga/bytes/strings/Encoding;Lcom/splendo/kaluga/bytes/ByteOrder;I)V
+	public final fun writeDouble ([BIDLcom/splendo/kaluga/bytes/ByteOrder;I)V
+	public final fun writeFloat ([BIFLcom/splendo/kaluga/bytes/ByteOrder;I)V
+	public final fun writeMedFloat16 ([BIDI)V
+	public final fun writeMedFloat32 ([BIDI)V
+	public final fun writeNatural ([BIDLcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/ByteOrder;I)V
+	public final fun writeNatural ([BIJLcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/ByteOrder;I)V
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewChecksum {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewChecksum;
+	public final fun check ([BIILcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/ByteOrder;II)V
+	public static synthetic fun check$default (Lcom/splendo/kaluga/bytes/view/ViewChecksum;[BIILcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/ByteOrder;IIILjava/lang/Object;)V
+	public final fun checkPostfix ([BI[BI)V
+	public final fun checkPrefix ([BI[BI)V
+	public final fun compute-lY-8dp8 ([BIILcom/splendo/kaluga/bytes/layout/ChecksumSpec;)J
+	public final fun read-zW1G1bI ([BILcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/ByteOrder;I)J
+	public final fun update ([BIILcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/ByteOrder;II)V
+	public static synthetic fun update$default (Lcom/splendo/kaluga/bytes/view/ViewChecksum;[BIILcom/splendo/kaluga/bytes/layout/ChecksumSpec;Lcom/splendo/kaluga/bytes/ByteOrder;IIILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewCollections {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewCollections;
+	public static final field UNBOUNDED I
+	public final fun checkNotTerminator ([BIIBI)V
+	public final fun end ([BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemEnd;)I
+	public static synthetic fun end$default (Lcom/splendo/kaluga/bytes/view/ViewCollections;[BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemEnd;ILjava/lang/Object;)I
+	public final fun endDown ([BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemEnd;)I
+	public static synthetic fun endDown$default (Lcom/splendo/kaluga/bytes/view/ViewCollections;[BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemEnd;ILjava/lang/Object;)I
+	public final fun forEach ([BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemEnd;ZLcom/splendo/kaluga/bytes/view/ItemVisit;)V
+	public final fun lengthPrefixCount ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Lcom/splendo/kaluga/bytes/ByteOrder;)I
+	public final fun lengthPrefixCountDown ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Lcom/splendo/kaluga/bytes/ByteOrder;)I
+	public final fun lengthPrefixSize ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;)I
+	public final fun lengthPrefixSizeDown ([BILcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;)I
+	public final fun list ([BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemRead;Z)Ljava/util/List;
+	public static synthetic fun list$default (Lcom/splendo/kaluga/bytes/view/ViewCollections;[BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemRead;ZILjava/lang/Object;)Ljava/util/List;
+	public final fun map ([BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemRead;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemRead;Z)Ljava/util/Map;
+	public static synthetic fun map$default (Lcom/splendo/kaluga/bytes/view/ViewCollections;[BIIILjava/lang/Byte;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemRead;Lcom/splendo/kaluga/bytes/view/ItemEnd;Lcom/splendo/kaluga/bytes/view/ItemRead;ZILjava/lang/Object;)Ljava/util/Map;
+	public final fun writeLengthPrefix ([BIIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Lcom/splendo/kaluga/bytes/ByteOrder;)I
+	public final fun writeLengthPrefixDown ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Lcom/splendo/kaluga/bytes/ByteOrder;)I
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewContents {
+	public fun <init> ()V
+	public final fun add ([B)V
+	public final fun take ()[B
+}
+
+public abstract interface class com/splendo/kaluga/bytes/view/ViewParent {
+	public abstract fun changed ()V
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewStrings {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewStrings;
+	public final fun check ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings;)V
+	public final fun read ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings;)Ljava/lang/String;
+	public final fun readDown ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings;)Ljava/lang/String;
+	public final fun size ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings;)I
+	public final fun sizeDown ([BIILcom/splendo/kaluga/bytes/strings/StringEncodingSettings;)I
+	public final fun sizeOf (Ljava/lang/String;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings;)I
+	public final fun write ([BIILjava/lang/String;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings;Lcom/splendo/kaluga/bytes/ByteOrder;)V
+	public final fun writeDown ([BILjava/lang/String;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings;Lcom/splendo/kaluga/bytes/ByteOrder;)V
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewStuffing {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewStuffing;
+	public final fun end ([BIILcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;B)I
+	public final fun fromWire ([BIILcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;)[B
+	public final fun sizeOf ([BLcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;)I
+	public final fun toWire ([BIILcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;)[B
+	public final fun unstuff ([BIILcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;B)[B
+	public final fun write ([BII[BLcom/splendo/kaluga/bytes/stuffing/ByteStuffingScheme;B)I
+}
+

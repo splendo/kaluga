@@ -8,4 +8,9 @@ kaluga {
 
 dependencies {
     implementation(project(":bluetooth:annotations"))
+    testImplementation(kotlin("test-junit5"))
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

@@ -4,7 +4,7 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-Runtime byte serialization using `BytesFormat`, a Kotlin Serialization [`BinaryFormat`](https://kotlinlang.org/docs/serialization.html#binary-format) that reads the [layout annotations](../annotations/) to encode and decode compact binary wire formats.
+Runtime byte serialization using `BytesFormat`, a Kotlin Serialization [`BinaryFormat`](https://kotlinlang.org/docs/serialization.html#binary-format) that reads the [`@BytesLayout` annotations](../annotations/) to encode and decode compact binary wire formats.
 
 ## Installing
 
@@ -24,7 +24,7 @@ dependencies {
 
 ## Basic usage
 
-Mark a `@Serializable` data class with the annotations of the [annotations](../annotations/) module to describe its wire format.
+Mark a `@Serializable` data class with the annotations of the [annotations](../annotations/) module to describe its wire format. (`@BytesLayout` itself only applies to the interfaces the [bytes code generator](../ksp/) generates from; a hand-written `@Serializable` class carries the layout annotations directly.)
 
 ```kotlin
 @Serializable

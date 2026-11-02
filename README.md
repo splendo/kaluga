@@ -129,6 +129,9 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [bytes/annotations](bytes/annotations/) | Annotations describing a byte-packed wire layout | `com.splendo.kaluga.bytes:annotations` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bytes/layout](bytes/layout/) | Compiling and validating byte-packed wire layouts | `com.splendo.kaluga.bytes:layout` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [bytes/serialization](bytes/serialization/) | `BytesFormat`, a Kotlin Serialization format for byte-packed wire layouts | `com.splendo.kaluga.bytes:serialization` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/view](bytes/view/) | Runtime support for the zero-copy views generated from `@BytesLayout` interfaces | `com.splendo.kaluga.bytes:view` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [bytes/ksp](bytes/ksp/) | KSP processor that generates data classes and zero-copy views from `@BytesLayout` interfaces (build-time) | `com.splendo.kaluga.bytes:ksp` |  |  | ✅ |  |  |  |  |  |
+| [bytes/plugin](bytes/plugin/) | Gradle plugin wiring up the bytes code generation (build-time) | `com.splendo.kaluga.bytes.plugin` |  |  | ✅ |  |  |  |  |  |
 | [date-time/date-time](date-time/date-time/) | Dates, time zones and date formatting | `com.splendo.kaluga.date-time:date-time` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time/timer](date-time/timer/) | A RecurringTimer providing ticks at regular intervals | `com.splendo.kaluga.date-time:timer` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [date-time-picker/date-time-picker](date-time-picker/date-time-picker/) | Showing a Date or Time Picker | `com.splendo.kaluga.date-time-picker:date-time-picker` | ✅ | ✅ |  |  |  |  |  |  |

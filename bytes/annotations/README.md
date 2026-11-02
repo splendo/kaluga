@@ -4,7 +4,7 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-Annotations that describe a byte-packed wire layout. [serialization](../serialization/) reads them at runtime to encode and decode a `@Serializable` class.
+The `@BytesLayout` annotation and supporting annotations that describe a byte-packed wire layout. [serialization](../serialization/) reads these annotations at runtime to encode and decode a `@Serializable` class; the [bytes code generator](../ksp/) (applied by the [`com.splendo.kaluga.bytes.plugin`](../plugin/) Gradle plugin) reads them at compile time to generate data classes and zero-copy views.
 
 ## Installing
 
@@ -20,6 +20,29 @@ dependencies {
     // ...
     implementation("com.splendo.kaluga.bytes:annotations:$kalugaVersion")
 }
+```
+
+## The `@BytesLayout` annotation
+
+Mark an interface with `@BytesLayout` to describe a byte-packed wire layout. The [bytes code generator](../ksp/) generates implementations from it:
+
+```kotlin
+@BytesLayout
+interface HeartRate {
+    @Size(Length.`8_BIT`)
+    @Unsigned
+    val bpm: Int
+}
+```
+
+By default, both a `@Serializable` data class and a zero-copy view are generated. Override this per-interface:
+
+```kotlin
+@BytesLayout(generate = [Generate.DATA])
+interface DataOnly { /* ... */ }
+
+@BytesLayout(generate = [Generate.VIEW])
+interface ViewOnly { /* ... */ }
 ```
 
 ## Annotations by purpose

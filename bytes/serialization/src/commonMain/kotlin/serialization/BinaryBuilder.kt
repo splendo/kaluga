@@ -206,7 +206,7 @@ internal class ItemBinaryBuilder(binaryDescriptor: BinaryDescriptor, onUnconstra
 
 /**
  * Exception thrown when a terminator-marked collection has an item that starts with the terminator byte,
- * which would be indistinguishable from the end of the collection.
+ * which would be indistinguishable from the end of the collection. Shared with the generated views.
  */
 typealias UnexpectedTerminator = com.splendo.kaluga.bytes.layout.UnexpectedTerminator
 

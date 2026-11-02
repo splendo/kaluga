@@ -4,7 +4,7 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-The layout compilation and validation for byte-packed wire formats. [serialization](../serialization/) uses it to describe and validate the layout of a `@Serializable` class.
+The core layout compilation and validation framework for byte-packed wire formats. Used internally by [serialization](../serialization/) (at runtime) and the [bytes code generator](../ksp/) (at compile time) to describe and validate layouts.
 
 ## Installing
 
@@ -24,16 +24,17 @@ dependencies {
 
 ## Overview
 
-The layout compiler turns a type and its layout annotations into a validated wire layout, which the encoder and decoder then follow. It bridges the gap between the developer-facing annotations and the low-level byte encoding/decoding logic.
+The bytes layout framework converts interface descriptions into executable wire format specifications. It bridges the gap between the developer-facing `@BytesLayout` annotations and the low-level byte encoding/decoding logic.
 
 ## Key components
 
 `TypeShape`, `LayoutCompiler`, the layout dumps and `NumericCodec` are marked `@InternalBytesApi`, an opt-in marker
-this module defines: the bytes modules call them, and they may change in any release. Opt in with `@OptIn(InternalBytesApi::class)` only to inspect a layout, for instance through its dump.
+this module defines: the bytes modules and the code the [bytes plugin](../plugin/) generates call them, and they may change in any
+release. Opt in with `@OptIn(InternalBytesApi::class)` only to inspect a layout, for instance through its dump.
 
 ### TypeShape
 
-`TypeShape` describes the structure of a type: its properties, their encoding annotations, sizes, and constraints. The compiler reads only this interface, not a `SerialDescriptor`; [serialization](../serialization/) builds one recursively from a `SerialDescriptor`.
+`TypeShape` describes the structure of a type: its properties, their encoding annotations, sizes, and constraints. Built recursively from a `SerialDescriptor` at runtime, or from KSP-resolved source symbols at compile time, so both routes compile to the same layout.
 
 ### LayoutCompiler
 
@@ -54,7 +55,9 @@ this module defines: the bytes modules call them, and they may change in any rel
 - Byte-stuffing schemes
 - Validation rules for encoding/decoding
 
-`BytesFormat` reads the layout at runtime to encode and decode `@Serializable` classes.
+The layout is read by:
+- `BytesFormat` (at runtime, to encode/decode `@Serializable` classes)
+- The [bytes code generator](../ksp/) (at compile time, to generate data classes and zero-copy views, and in the views' runtime helpers)
 
 ### Layout dumps
 
@@ -65,7 +68,7 @@ this module defines: the bytes modules call them, and they may change in any rel
 - Size/padding information
 - Discriminator and size-dispatch details for sealed and enum types
 
-[serialization](../serialization/) exposes the same thing from a `SerialDescriptor` as `layoutDumpOf(descriptor)`. Useful for debugging layout mismatches and understanding how annotated fields map to wire bytes.
+[serialization](../serialization/) exposes the same thing from a `SerialDescriptor` as `layoutDumpOf(descriptor)`, and the [bytes code generator](../ksp/) compares its compile-time dump against it to catch generator/runtime drift. Useful for debugging layout mismatches and understanding how annotated fields map to wire bytes.
 
 ### NumericCodec
 
