@@ -100,7 +100,7 @@ val generatePluginVersion = tasks.register("generatePluginVersion") {
 
     inputs.property("kalugaVersion", version)
     inputs.property("coroutinesVersion", coroutinesVersion)
-    outputs.file(outputFile)
+    outputs.dir(outputDir)
 
     doLast {
         val file = outputFile.get().asFile
@@ -110,7 +110,7 @@ val generatePluginVersion = tasks.register("generatePluginVersion") {
     }
 }
 
-tasks.named<Jar>("jar") {
-    dependsOn(generatePluginVersion)
-    from(layout.buildDirectory.dir("generated/resources/main"))
+// A resource, so the plugin's tests read the versions as the published jar does.
+sourceSets.main {
+    resources.srcDir(generatePluginVersion)
 }
