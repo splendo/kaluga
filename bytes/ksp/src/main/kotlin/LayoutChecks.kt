@@ -89,5 +89,6 @@ internal object LayoutChecks {
     private fun CollectionSettings.LengthMarking.writesBody(): Boolean = when (this) {
         is CollectionSettings.NumericLength, is CollectionSettings.LengthPrefix, is CollectionSettings.TerminalMarked -> true
         is CollectionSettings.Unmarked, is CollectionSettings.FlagIndexedLength -> false
+        is CollectionSettings.FixedCount -> count > 0
     }
 }

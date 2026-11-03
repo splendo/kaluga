@@ -1041,6 +1041,162 @@ class ViewGenerationTest {
         assertTrue("internal object InnerLayout1 {" in inner && "ByteOrder.MOST_SIGNIFICANT_FIRST" in inner, inner)
     }
 
+    @Test
+    fun `reads and writes fixed counts like BytesFormat`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            interface Point {
+                val x: Byte
+                val y: Byte
+            }
+
+            @BytesLayout
+            interface Sample {
+                @FlagIndex(0) val active: Boolean
+                @Count(4) val first: ByteArray
+                val id: Byte
+                @Count(2) val middle: List<UShort>
+                @Count(2) val points: List<Point>
+                @Count(3) val last: ByteArray
+            }
+
+            @BytesLayout
+            interface Raw {
+                @Count(3) val a: ByteArray
+                val b: Byte
+                @Count(2) val c: List<UShort>
+            }
+
+            @BytesLayout
+            interface Varying {
+                @Count(2) @ItemNullTerminated val names: List<String>
+                @Count(2) val maybe: List<Byte>?
+                @Count(2) val pairs: Map<Byte, Short>
+                @Count(0) val none: List<Int>
+                val after: Byte
+            }
+
+            @BytesLayout
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+            interface Mirrored {
+                val a: Short
+                @Count(2) val values: List<Short>
+                @Count(3) val raw: ByteArray
+                val b: Byte
+            }
+
+            @BytesLayout
+            @SizePolymorphic
+            sealed interface Block
+
+            @BytesLayout
+            interface Coefficients : Block {
+                @Count(21) val registers: ByteArray
+            }
+
+            @BytesLayout
+            interface Calibration : Block {
+                val index: Byte
+                @Count(36) val values: ByteArray
+            }
+            """,
+        )
+        val check = SourceFile.kotlin(
+            "Check.kt",
+            """
+            package test
+
+            import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+            import com.splendo.kaluga.bytes.layout.UnexpectedItemCount
+            import com.splendo.kaluga.bytes.serialization.BytesFormat
+            import com.splendo.kaluga.bytes.view.FixedStrideList
+
+            fun check(): List<String> = buildList {
+                val points = listOf(PointData(1, 2), PointData(3, 4))
+                val sample = SampleData(true, byteArrayOf(1, 2, 3, 4), 5, listOf(0x0102u, 0xFFFFu), points, byteArrayOf(7, 8, 9))
+                val expected = BytesFormat.encodeToByteArray(SampleData.serializer(), sample)
+                val view = SampleView.encode(sample)
+                if (!view.bytes.contentEquals(expected)) add("encode " + view.bytes.toList() + " != " + expected.toList())
+                if (SampleView.SIZE_BYTES != expected.size) add("size " + SampleView.SIZE_BYTES)
+                if (!SampleView(true, byteArrayOf(1, 2, 3, 4), 5, listOf(0x0102u, 0xFFFFu), points, byteArrayOf(7, 8, 9)).contentEquals(view)) add("invoke")
+                val read = SampleView.wrap(expected)
+                if (!read.active || !read.first.contentEquals(sample.first) || read.id != sample.id || read.middle != sample.middle ||
+                    read.points.map { PointData.from(it) } != points || !read.last.contentEquals(sample.last)
+                ) {
+                    add("getters " + read.toData())
+                }
+
+                view.first = byteArrayOf(4, 3, 2, 1)
+                view.middle = listOf(7u, 8u)
+                view.points = listOf(PointData(9, 9), PointData(8, 8))
+                view.last = byteArrayOf(0, 0, 1)
+                (view.middle as FixedStrideList<UShort>)[1] = 0x1234u
+                val changed = SampleData(true, byteArrayOf(4, 3, 2, 1), 5, listOf(7u, 0x1234u), listOf(PointData(9, 9), PointData(8, 8)), byteArrayOf(0, 0, 1))
+                val changedBytes = BytesFormat.encodeToByteArray(SampleData.serializer(), changed)
+                if (!view.bytes.contentEquals(changedBytes)) add("setters " + view.bytes.toList() + " != " + changedBytes.toList())
+
+                if (runCatching { view.first = byteArrayOf(1, 2, 3) }.exceptionOrNull() !is UnexpectedItemCount) add("setter count")
+                if (runCatching { view.middle = listOf(1u, 2u, 3u) }.exceptionOrNull() !is UnexpectedItemCount) add("setter list count")
+                if (!view.bytes.contentEquals(changedBytes)) add("refused setter wrote " + view.bytes.toList())
+                if (runCatching { SampleView.encode(sample.copy(last = byteArrayOf(1))) }.exceptionOrNull() !is UnexpectedItemCount) add("encode count")
+                if (runCatching { SampleView(true, ByteArray(5), 5, listOf(1u, 2u), points, ByteArray(3)) }.exceptionOrNull() !is UnexpectedItemCount) add("invoke count")
+                val raw = BytesFormat.encodeToByteArray(RawData.serializer(), RawData(byteArrayOf(1, 2, 3), 4, listOf(5u, 6u)))
+                for (size in raw.indices) {
+                    if (runCatching { RawView.wrap(raw.copyOf(size)) }.exceptionOrNull() !is ByteArrayEndedBeforeSerializationCompleted) add("short " + size)
+                }
+
+                for (maybe in listOf(null, listOf<Byte>(1, 2))) {
+                    val data = VaryingData(listOf("ab", ""), maybe, mapOf(1.toByte() to 0x0203.toShort(), 4.toByte() to 0x0506.toShort()), emptyList(), 9)
+                    val bytes = BytesFormat.encodeToByteArray(VaryingData.serializer(), data)
+                    val varying = VaryingView.encode(data)
+                    if (!varying.bytes.contentEquals(bytes)) add("encode varying " + varying.bytes.toList() + " != " + bytes.toList())
+                    if (VaryingView.wrap(bytes).toData() != data) add("decode varying " + VaryingView(bytes).toData())
+                    varying.pairs = mapOf(7.toByte() to 8.toShort(), 9.toByte() to 10.toShort())
+                    val pairs = BytesFormat.encodeToByteArray(VaryingData.serializer(), data.copy(pairs = mapOf(7.toByte() to 8.toShort(), 9.toByte() to 10.toShort())))
+                    if (!varying.bytes.contentEquals(pairs)) add("set pairs " + varying.bytes.toList() + " != " + pairs.toList())
+                    if (runCatching { VaryingView.encode(data.copy(names = listOf("a"))) }.exceptionOrNull() !is UnexpectedItemCount) add("varying count")
+                    if (runCatching { VaryingView.encode(data.copy(maybe = emptyList())) }.exceptionOrNull() !is UnexpectedItemCount) add("nullable count")
+                }
+
+                val mirrored = MirroredData(0x0102, listOf(0x0304, 0x0506), byteArrayOf(7, 8, 9), 10)
+                val mirroredBytes = BytesFormat.encodeToByteArray(MirroredData.serializer(), mirrored)
+                val mirroredView = MirroredView.encode(mirrored)
+                if (!mirroredView.bytes.contentEquals(mirroredBytes)) add("encode mirrored " + mirroredView.bytes.toList() + " != " + mirroredBytes.toList())
+                val mirroredRead = MirroredView.wrap(mirroredBytes)
+                if (mirroredRead.values != mirrored.values || !mirroredRead.raw.contentEquals(mirrored.raw) || mirroredRead.b != mirrored.b) add("decode mirrored")
+                mirroredView.values = listOf(0x0708, 0x090A)
+                mirroredView.raw = byteArrayOf(1, 2, 3)
+                val mirroredChanged = BytesFormat.encodeToByteArray(MirroredData.serializer(), mirrored.copy(values = listOf(0x0708, 0x090A), raw = byteArrayOf(1, 2, 3)))
+                if (!mirroredView.bytes.contentEquals(mirroredChanged)) add("set mirrored " + mirroredView.bytes.toList() + " != " + mirroredChanged.toList())
+
+                val registers = ByteArray(21) { it.toByte() }
+                val calibration = CalibrationData(5, ByteArray(36) { (it * 3).toByte() })
+                for (block in listOf<BlockData>(CoefficientsData(registers), calibration)) {
+                    val bytes = BytesFormat.encodeToByteArray(BlockData.serializer(), block)
+                    val frame = BlockFrame.encode(block as Block)
+                    if (!frame.bytes.contentEquals(bytes)) add("encode block " + frame.bytes.toList() + " != " + bytes.toList())
+                    when (val decoded = BlockFrame(bytes).toData()) {
+                        is CoefficientsData -> if (!decoded.registers.contentEquals(registers)) add("decode coefficients")
+                        is CalibrationData -> if (decoded.index != calibration.index || !decoded.values.contentEquals(calibration.values)) add("decode calibration")
+                    }
+                }
+            }
+            """.trimIndent(),
+        )
+        val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        val data = compilation.generatedFile("SampleData.kt")
+        assertTrue("@Count(count = 4)" in data && "@Count(count = 3)" in data, data)
+        val generated = compilation.generatedFile("SampleView.kt")
+        assertTrue("override var first: ByteArray" in generated && "override var points: List<Point>" in generated, generated)
+        val varying = compilation.generatedFile("VaryingView.kt")
+        assertTrue("override val names: List<String>" in varying && "override val maybe: List<Byte>?" in varying && "override var pairs: Map<Byte, Short>" in varying, varying)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems.take(10))
+    }
+
     private companion object {
         val GOLDEN = """
             // Generated by the Kaluga bytes KSP processor from test.Status. Do not edit.

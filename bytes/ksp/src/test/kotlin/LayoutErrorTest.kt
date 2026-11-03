@@ -421,6 +421,42 @@ class LayoutErrorTest {
         """,
     )
 
+    @Test
+    fun `rejects a negative count`() = assertLayoutError(
+        "test.NegativeCount",
+        "must not be negative",
+        """
+        @BytesLayout
+        interface NegativeCount {
+            @Count(-1) val values: ByteArray
+        }
+        """,
+    )
+
+    @Test
+    fun `rejects a count with another end marking`() = assertLayoutError(
+        "test.PrefixedCount",
+        "cannot be combined with @LengthPrefix",
+        """
+        @BytesLayout
+        interface PrefixedCount {
+            @Count(2) @LengthPrefix val values: List<Byte>
+        }
+        """,
+    )
+
+    @Test
+    fun `rejects a count on a value that is not a collection`() = assertLayoutError(
+        "test.CountedNumber",
+        "only applies to a collection",
+        """
+        @BytesLayout
+        interface CountedNumber {
+            @Count(2) val value: Int
+        }
+        """,
+    )
+
     private fun assertLayoutError(declaration: String, expected: String, source: String, modes: List<String> = listOf("DATA", "VIEW")) = modes.forEach { generate ->
         val compilation = BytesCompilation(layoutSource(source), generate = generate)
         assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, compilation.result.exitCode, "$generate: ${compilation.result.messages}")

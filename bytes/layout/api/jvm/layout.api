@@ -55,6 +55,17 @@ public final class com/splendo/kaluga/bytes/layout/CollectionSettings {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/bytes/layout/CollectionSettings$FixedCount : com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$FixedCount;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/CollectionSettings$FixedCount;IILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/CollectionSettings$FixedCount;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCount ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/bytes/layout/CollectionSettings$FlagIndexedLength : com/splendo/kaluga/bytes/layout/CollectionSettings$LengthMarking {
 	public fun <init> (I)V
 	public final fun component1 ()I
@@ -190,6 +201,10 @@ public final class com/splendo/kaluga/bytes/layout/InvalidChecksumException : ko
 	public final fun getActual-s-VKNKU ()J
 	public final fun getExpected-s-VKNKU ()J
 	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/InvalidCountLayout : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
 }
 
 public final class com/splendo/kaluga/bytes/layout/InvalidEnumLayout : kotlinx/serialization/SerializationException {
@@ -530,6 +545,14 @@ public abstract interface class com/splendo/kaluga/bytes/layout/TypeShape {
 public final class com/splendo/kaluga/bytes/layout/UnexpectedBytesRemaining : kotlinx/serialization/SerializationException {
 	public fun <init> (Ljava/lang/String;)V
 	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bytes/layout/UnexpectedItemCount : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;II)V
+	public final fun getCount ()I
+	public fun getMessage ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSize ()I
 }
 
 public final class com/splendo/kaluga/bytes/layout/UnexpectedTerminator : kotlinx/serialization/SerializationException {

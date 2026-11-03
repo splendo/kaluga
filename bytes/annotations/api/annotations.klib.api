@@ -87,6 +87,13 @@ open annotation class com.splendo.kaluga.bytes.annotations/Checksum : kotlin/Ann
         final fun <get-xorOut>(): kotlin/ULong // com.splendo.kaluga.bytes.annotations/Checksum.xorOut.<get-xorOut>|<get-xorOut>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bytes.annotations/Count : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Count|null[0]
+    constructor <init>(kotlin/Int) // com.splendo.kaluga.bytes.annotations/Count.<init>|<init>(kotlin.Int){}[0]
+
+    final val count // com.splendo.kaluga.bytes.annotations/Count.count|{}count[0]
+        final fun <get-count>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Count.count.<get-count>|<get-count>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bytes.annotations/Encoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Encoded|null[0]
     constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.annotations/Encoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
 

@@ -43,6 +43,10 @@ public abstract interface annotation class com/splendo/kaluga/bytes/annotations/
 	public abstract fun xorOut ()J
 }
 
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Count : java/lang/annotation/Annotation {
+	public abstract fun count ()I
+}
+
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Encoded : java/lang/annotation/Annotation {
 	public abstract fun encoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
 }

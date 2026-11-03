@@ -29,6 +29,7 @@ import com.splendo.kaluga.bytes.annotations.ByteStuffedCobs
 import com.splendo.kaluga.bytes.annotations.ByteStuffedSlip
 import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
 import com.splendo.kaluga.bytes.annotations.Checksum
+import com.splendo.kaluga.bytes.annotations.Count
 import com.splendo.kaluga.bytes.annotations.Encoded
 import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
@@ -176,6 +177,9 @@ object LayoutCompiler {
         val annotations = shape.annotations + fieldAnnotations
         val desiredFlagBitWidth = DesiredFlagBitWidth(0)
         val kind = shape.kind
+        if (kind != TypeKind.LIST && kind != TypeKind.MAP && annotations.any { it is Count }) {
+            throw InvalidCountLayout("@Count only applies to a collection, but '$fieldName' is ${shape.serialName}")
+        }
 
         // A property whose presence is derived from other flag bits owns no bit of its own.
         val presenceFlagIndices = annotations.filterIsInstance<PresentWhenAllSet>().firstOrNull()?.indices?.toList().orEmpty()
@@ -575,7 +579,24 @@ object LayoutCompiler {
             -> {
                 val byteStuffing = annotations.byteStuffingScheme()
                 val terminal = annotations.terminalByte()
+                val count = annotations.filterIsInstance<Count>().firstOrNull()
                 val lengthMarking = when {
+                    count != null -> {
+                        val conflicts = listOfNotNull(
+                            "@LengthPrefix".takeIf { annotations.any { it is LengthPrefix } },
+                            "@Unsized".takeIf { annotations.any { it is Unsized } },
+                            "@NullTerminated".takeIf { annotations.any { it is NullTerminated } },
+                            "@Terminal".takeIf { terminal != null },
+                            "@Size".takeIf { annotations.any { it is Size } },
+                            "@NullIfEmpty".takeIf { annotations.any { it is NullIfEmpty } },
+                            "byte stuffing".takeIf { byteStuffing != null },
+                        )
+                        if (conflicts.isNotEmpty()) {
+                            throw InvalidCountLayout("@Count(${count.count}) already fixes where a collection ends, so it cannot be combined with ${conflicts.joinToString()}")
+                        }
+                        CollectionSettings.FixedCount(count.count)
+                    }
+
                     // Byte stuffing implies a terminated (TerminalMarked) collection, so @NullTerminated is not required.
                     byteStuffing != null -> {
                         val delimiter = when (byteStuffing) {
@@ -906,7 +927,9 @@ internal fun FieldLayout.staticChildBodyBytes(): Int? {
 
         type is TypeLayout.Character -> type.encoding.byteSize
 
-        type is TypeLayout.ListLayout || type is TypeLayout.MapLayout -> null
+        type is TypeLayout.ListLayout -> type.settings.fixedCountBytes(type.children)
+
+        type is TypeLayout.MapLayout -> type.settings.fixedCountBytes(type.children)
 
         type is TypeLayout.Enumeration && type.values.isNotEmpty() -> {
             // Non-flag-packed enum: prefix + value bytes + postfix.
@@ -927,6 +950,25 @@ internal fun FieldLayout.staticChildBodyBytes(): Int? {
 
         else -> 0
     }?.plus(reserved)
+}
+
+// Only a @Count collection has a size of its own: it writes nothing but [count] runs of its item frames (key and value
+// frames for a map).
+private fun CollectionSettings.fixedCountBytes(items: List<FieldLayout>): Int? {
+    val count = (lengthMarking as? CollectionSettings.FixedCount)?.count ?: return null
+    if (count == 0) return 0
+    var entryBytes = 0
+    for (item in items) entryBytes += item.staticItemFrameBytes() ?: return null
+    return count * entryBytes
+}
+
+// An item frame is the item's own flag bits, then its body, padded to a byte. A Boolean item is left out as its body
+// bit is not padded per item.
+private fun FieldLayout.staticItemFrameBytes(): Int? {
+    if (isNullable || type is TypeLayout.Bool) return null
+    val body = staticChildBodyBytes() ?: return null
+    val headerBits = (bitIndex + bitWidth).coerceAtLeast(0)
+    return (headerBits + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS + body
 }
 
 /** True when a field's entire encoding lives in the flag header and contributes no body bytes. */

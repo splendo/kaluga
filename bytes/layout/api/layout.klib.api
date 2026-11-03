@@ -304,6 +304,19 @@ final class com.splendo.kaluga.bytes.layout/CollectionSettings { // com.splendo.
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/CollectionSettings.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/CollectionSettings.toString|toString(){}[0]
 
+    final class FixedCount : com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking { // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount|null[0]
+        constructor <init>(kotlin/Int) // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.<init>|<init>(kotlin.Int){}[0]
+
+        final val count // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.count|{}count[0]
+            final fun <get-count>(): kotlin/Int // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.count.<get-count>|<get-count>(){}[0]
+
+        final fun component1(): kotlin/Int // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.component1|component1(){}[0]
+        final fun copy(kotlin/Int = ...): com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.copy|copy(kotlin.Int){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.toString|toString(){}[0]
+    }
+
     final class FlagIndexedLength : com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking { // com.splendo.kaluga.bytes.layout/CollectionSettings.FlagIndexedLength|null[0]
         constructor <init>(kotlin/Int) // com.splendo.kaluga.bytes.layout/CollectionSettings.FlagIndexedLength.<init>|<init>(kotlin.Int){}[0]
 
@@ -469,6 +482,10 @@ final class com.splendo.kaluga.bytes.layout/InvalidChecksumException : kotlinx.s
         final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.layout/InvalidChecksumException.message.<get-message>|<get-message>(){}[0]
 }
 
+final class com.splendo.kaluga.bytes.layout/InvalidCountLayout : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidCountLayout|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/InvalidCountLayout.<init>|<init>(kotlin.String){}[0]
+}
+
 final class com.splendo.kaluga.bytes.layout/InvalidEnumLayout : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidEnumLayout|null[0]
     constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/InvalidEnumLayout.<init>|<init>(kotlin.String){}[0]
 }
@@ -516,6 +533,19 @@ final class com.splendo.kaluga.bytes.layout/UnexpectedBytesRemaining : kotlinx.s
 
     final val message // com.splendo.kaluga.bytes.layout/UnexpectedBytesRemaining.message|{}message[0]
         final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.layout/UnexpectedBytesRemaining.message.<get-message>|<get-message>(){}[0]
+}
+
+final class com.splendo.kaluga.bytes.layout/UnexpectedItemCount : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/UnexpectedItemCount|null[0]
+    constructor <init>(kotlin/String, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Int){}[0]
+
+    final val count // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.count|{}count[0]
+        final fun <get-count>(): kotlin/Int // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.count.<get-count>|<get-count>(){}[0]
+    final val message // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.message.<get-message>|<get-message>(){}[0]
+    final val name // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.name.<get-name>|<get-name>(){}[0]
+    final val size // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.splendo.kaluga.bytes.layout/UnexpectedItemCount.size.<get-size>|<get-size>(){}[0]
 }
 
 final class com.splendo.kaluga.bytes.layout/UnexpectedTerminator : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/UnexpectedTerminator|null[0]

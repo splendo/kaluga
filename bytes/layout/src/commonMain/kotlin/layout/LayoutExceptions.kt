@@ -62,6 +62,19 @@ class InvalidNumericSettings(message: String) : SerializationException(message)
 class UnsupportedCharEncoding(message: String) : SerializationException(message)
 
 /**
+ * Thrown when a `@Count` cannot apply: a negative count, a property that is not a collection, or a collection that
+ * also marks its end another way.
+ */
+class InvalidCountLayout(message: String) : SerializationException(message)
+
+/**
+ * Exception thrown when the collection [name], fixed at [count] items by `@Count`, is encoded with [size] items.
+ */
+class UnexpectedItemCount(val name: String, val count: Int, val size: Int) : SerializationException() {
+    override val message: String = "'$name' must have exactly $count items, but has $size"
+}
+
+/**
  * Exception thrown if the [ByteArray] being decoded is smaller than its layout requires.
  */
 class ByteArrayEndedBeforeSerializationCompleted(override val message: String) : SerializationException()

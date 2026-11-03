@@ -304,6 +304,8 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             is CollectionSettings.TerminalMarked -> settings.byteStuffing?.let { Count.Stuffed(it, marking.terminator) } ?: Count.Terminated(marking.terminator)
 
             is CollectionSettings.Unmarked -> Count.Unmarked
+
+            is CollectionSettings.FixedCount -> Count.Fixed(marking.count)
         }
         val roles = if (value.kind == ValueType.Collection.Kind.MAP) listOf("Key", "Value") else listOf("Item")
         val frames = items.mapIndexed { index, item ->
@@ -357,12 +359,22 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
 
         is Access.Nested -> access.context.plan!!.getOrThrow().staticSize?.times(Byte.SIZE_BITS)
 
-        is Access.Collection, is Access.Sealed -> null
+        is Access.Collection -> fixedCountBits(access)
+
+        is Access.Sealed -> null
 
         is Access.Framed -> contentBits(access.inner)?.let { inner ->
             val frame = (access.prefix?.size ?: 0) + (access.checksum?.crc?.byteWidth ?: 0) + (access.postfix?.size ?: 0)
             (frame + if (access.inner is Access.BodyBit) 1 else inner / Byte.SIZE_BITS) * Byte.SIZE_BITS
         }
+    }
+
+    private fun fixedCountBits(access: Access.Collection): Int? {
+        val count = (access.count as? Count.Fixed)?.count ?: return null
+        if (count == 0) return 0
+        var entryBytes = 0
+        for (item in access.items) entryBytes += item.plan.staticSize ?: return null
+        return count * entryBytes * Byte.SIZE_BITS
     }
 
     private fun access(child: FieldLayout, value: ValueType, node: KSNode, headerStart: Int): Access {

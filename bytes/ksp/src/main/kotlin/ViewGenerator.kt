@@ -1617,6 +1617,11 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                     addStatement("val first = pos - %L", length.bytes)
                 }
 
+                is Count.Fixed -> {
+                    addStatement("val count = %L", count.count)
+                    addStatement("val first = pos")
+                }
+
                 else -> {
                     addStatement("val count = %T.UNBOUNDED", VIEW_COLLECTIONS)
                     addStatement("val first = pos")
@@ -1655,6 +1660,11 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
             is Count.Terminated, is Count.Unmarked -> {
                 addStatement("val count = %T.UNBOUNDED", VIEW_COLLECTIONS)
+                addStatement("val first = pos")
+            }
+
+            is Count.Fixed -> {
+                addStatement("val count = %L", count.count)
                 addStatement("val first = pos")
             }
 
@@ -1778,7 +1788,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         function.addStatement("val end = %L", end)
         val bits = if (mirrored) "(s - end) * 8" else "(end - s) * 8"
         // Without a count or terminator, an empty collection writes nothing and does not end a partly filled byte.
-        if (access.count is Count.Flag || access.count is Count.Unmarked) {
+        if (access.count is Count.Flag || access.count is Count.Unmarked || access.count is Count.Fixed) {
             function.addStatement("return if (end == pos) start else $bits")
         } else {
             function.addStatement("return $bits")
@@ -1854,6 +1864,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             }
 
             is Count.Flag -> walk.statement("%T.setBits(b, s, %L, %L, %L.toLong(), lim)", VIEW_BYTES, count.bitPos, count.bits, size)
+
+            is Count.Fixed -> walk.code(CodeBlock.of("%T.checkCount(%L, %L, %S)", VIEW_COLLECTIONS, size, count.count, field.name))
 
             is Count.Terminated, is Count.Unmarked -> Unit
 
@@ -2274,6 +2286,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
     /** Writes a property of a fixed size at [location]. */
     private fun write(field: FieldPlan, access: Access, location: Location, value: CodeBlock): List<CodeBlock> {
+        if (access is Access.Collection) return writeFixedCount(field, access, location, value)
         if (location.mirrored) return writeMirrored(field, access, location, value)
         val kind = field.value.leafKind
         val name = field.name
@@ -2339,6 +2352,30 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                     )
             }
         }
+    }
+
+    /**
+     * Rewrites a collection of a fixed count of fixed-size items in place, item frame after item frame; in a mirrored
+     * frame `writeValues` returns the lower end, so the same loop runs downwards.
+     */
+    private fun writeFixedCount(field: FieldPlan, access: Access.Collection, location: Location, value: CodeBlock): List<CodeBlock> {
+        val count = access.count as? Count.Fixed ?: error("A collection counted by ${access.count} is not written in place")
+        val items = access.items
+        val loop = if ((field.value as ValueType.Collection).kind == ValueType.Collection.Kind.MAP) {
+            CodeBlock.of(
+                "for ((key, entry) in %L) itemPos = %T.writeValues(b, %T.writeValues(b, itemPos, lim, key), lim, entry)",
+                value,
+                items[1].objectName,
+                items[0].objectName,
+            )
+        } else {
+            CodeBlock.of("for (item in %L) itemPos = %T.writeValues(b, itemPos, lim, item)", value, items.single().objectName)
+        }
+        return listOf(
+            CodeBlock.of("%T.checkCount(%L.size, %L, %S)", VIEW_COLLECTIONS, value, count.count, field.name),
+            CodeBlock.of("var itemPos = %L", location.pos),
+            loop,
+        )
     }
 
     private fun writeNumber(field: FieldPlan, access: Access.Number, kind: TypeKind, pos: CodeBlock, value: CodeBlock, bound: String = "lim"): CodeBlock {
