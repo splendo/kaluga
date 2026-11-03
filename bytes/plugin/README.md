@@ -22,7 +22,7 @@ For a layout interface `X`:
 - **DATA:** `XData` (a `@Serializable` data class), `XData.LAYOUT_DUMP`, `XData.from()`, and `XData.InterfaceSerializer`
 - **VIEW:** `XView` (a `@JvmInline value class`), `XLayout`, and for sealed roots `XFrame`
 
-The generated code produces exactly the same bytes as `BytesFormat` for the same values on every platform. See [`example/validation/format`](example/validation/format) for the `BytesFormat` test suite running on the generated DATA classes and views, and [`example/validation/core`](example/validation/core) for a minimal setup. Both run on the Android host, iOS, JS (Node and browser) and wasmJs; wasmJs browser tests need a headless Chrome.
+The generated code produces exactly the same bytes as `BytesFormat` for the same values on every platform. See [`example/validation/format`](example/validation/format) for the `BytesFormat` test suite running on the generated DATA classes and views, [`example/validation/parts`](example/validation/parts) for layouts that layouts of another module hold, and [`example/validation/core`](example/validation/core) for a minimal setup. The format and core suites run on the Android host, iOS, JS (Node and browser) and wasmJs; wasmJs browser tests need a headless Chrome.
 
 ## Applying the plugin
 

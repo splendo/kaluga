@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bytes.example.format
 
+import com.splendo.kaluga.bytes.example.parts.BatteryChargeData
+import com.splendo.kaluga.bytes.example.parts.SensorReadingData
 import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bytes.toHexString
 import kotlinx.serialization.KSerializer
@@ -83,6 +85,21 @@ class ViewSettersTest {
             outer.bytes,
         )
         assertEquals(0x0203, outer.inner.value)
+    }
+
+    @Test
+    fun writesThroughALayoutOfAnotherModule() {
+        val reading = SensorReadingData(channel = 1, value = 0x1234, calibrated = false)
+        val view = PartsDeviceView(BatteryChargeData(0x64), 0x0102, reading, listOf(reading), null)
+        view.charge = BatteryChargeData(0x10)
+        (view.reading as PartsDeviceLayout.SensorReadingSlice).channel = 9
+        (view.readings.single() as PartsDeviceLayout.SensorReadingSlice).calibrated = true
+        assertEncodes(
+            PartsDeviceData.serializer(),
+            PartsDeviceData(BatteryChargeData(0x10), 0x0102, reading.copy(channel = 9), listOf(reading.copy(calibrated = true)), null),
+            view.bytes,
+        )
+        assertEquals(9, view.reading.channel)
     }
 
     @Test

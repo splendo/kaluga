@@ -66,12 +66,24 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             .apply {
                 planner.plannedContexts(layout).forEach { context ->
                     val plan = context.plan!!.getOrThrow()
-                    addType(layoutObject(context, plan))
+                    val layoutObject = layoutObject(context, plan)
+                    addType(if (context.index == 0) layoutObject.toBuilder().addTypes(foreignTypes(layout)).build() else layoutObject)
                     addType(sliceType(context, plan))
                     plan.fields.mapNotNull { it.access as? Access.Collection }.flatMap { it.items }.forEach { addType(itemObject(it)) }
                 }
             }
             .build()
+    }
+
+    /** The contexts of the foreign layouts [owner] holds, which are nested in its layout object. */
+    private fun foreignTypes(owner: Layout): List<TypeSpec> = planner.foreignContexts(owner).flatMap { context ->
+        if (context.layout.isSealed) {
+            listOf(sealedObject(context, context.sealedPlan!!.getOrThrow()))
+        } else {
+            val plan = context.plan!!.getOrThrow()
+            listOf(layoutObject(context, plan), sliceType(context, plan)) +
+                plan.fields.mapNotNull { it.access as? Access.Collection }.flatMap { it.items }.map { itemObject(it) }
+        }
     }
 
     fun registry(packageName: String, layouts: List<Layout>, prefix: String): FileSpec {
@@ -647,7 +659,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val own = range("b", "s", CodeBlock.of("lim"))
         val contentEquals = bufferFunction("contentEquals").addParameter("other", ANY.copy(nullable = true)).returns(BOOLEAN)
         val comparison = CodeBlock.builder().beginControlFlow("when (other)")
-        if (context.index == 0) {
+        // The view of a foreign layout is its own module's.
+        if (context.index == 0 && !layout.isForeign) {
             val viewArguments = rootArguments(plan, "other.bytes")
             comparison.addStatement(
                 "is %T -> %T.rangeEquals(b, %L, other.bytes, %L)",

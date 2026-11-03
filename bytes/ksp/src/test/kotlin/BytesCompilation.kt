@@ -30,7 +30,11 @@ import org.jetbrains.kotlinx.serialization.compiler.extensions.SerializationComp
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-/** A KSP2 compilation of [sources] through [BytesSymbolProcessor], with the kotlinx serialization plugin applied. */
+/**
+ * A KSP2 compilation of [sources] through [BytesSymbolProcessor], with the kotlinx serialization plugin applied and
+ * [classpaths] added, such as another compilation's [JvmCompilationResult.outputDirectory] standing in for a module it
+ * depends on.
+ */
 @OptIn(ExperimentalCompilerApi::class)
 internal class BytesCompilation(
     vararg sources: SourceFile,
@@ -39,12 +43,14 @@ internal class BytesCompilation(
     options: Map<String, String> = emptyMap(),
     workingDir: File? = null,
     processors: List<SymbolProcessorProvider> = emptyList(),
+    classpaths: List<File> = emptyList(),
 ) {
 
     private val compilation = KotlinCompilation().apply {
         workingDir?.let { this.workingDir = it }
         this.sources = sources.toList()
         inheritClassPath = true
+        this.classpaths = classpaths
         messageOutputStream = ByteArrayOutputStream()
         compilerPluginRegistrars = listOf(SerializationComponentRegistrar())
         useKsp2()

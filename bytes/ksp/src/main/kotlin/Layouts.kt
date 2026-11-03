@@ -40,8 +40,11 @@ internal class LayoutDeclarationException(message: String, val node: KSNode?) : 
  * interface that the data classes of its sub-layouts implement next to their own interface. That sealed interface
  * deliberately does not extend the layout interface, so the user's sealed hierarchy keeps exactly the subtypes the
  * user declared and a `when` over it stays exhaustive.
+ *
+ * A foreign layout ([isForeign]) is compiled into another module: this one only reads it to lay out and view the
+ * layouts that hold it, and [generate] says what that module generated for it.
  */
-internal class Layout(val declaration: KSClassDeclaration, val generate: Set<Generate>, private val types: TypeExpander) {
+internal class Layout(val declaration: KSClassDeclaration, val generate: Set<Generate>, private val types: TypeExpander, val isForeign: Boolean = false) {
 
     val qualifiedName: String = declaration.qualifiedName!!.asString()
 

@@ -36,6 +36,6 @@ enum class Generate {
  * @property generate which implementations to generate for this interface. Defaults to the module-wide `bytes { }`
  *   DSL setting; set explicitly to override it for a single interface.
  */
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
 annotation class BytesLayout(val generate: Array<Generate> = [Generate.DATA, Generate.VIEW])

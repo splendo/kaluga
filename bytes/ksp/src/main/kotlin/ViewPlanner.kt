@@ -54,12 +54,25 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
     private val contexts = mutableMapOf<String, MutableList<ViewContext>>()
     private val planning = mutableSetOf<ViewContext>()
 
+    // The compiled roots of foreign layouts, from which every owner starts its own contexts of them.
+    private val foreignRoots = mutableMapOf<String, FieldLayout>()
+
+    // The names foreign layouts are nested as in each owner, by owner and then by nested name.
+    private val nestedNames = mutableMapOf<String, MutableMap<String, String>>()
+
+    // The layout of this module whose contexts are being planned, which owns the foreign contexts they need.
+    private var owner: Layout? = null
+
     // Whether the frame being planned is accumulated MOST_SIGNIFICANT_FIRST, which mirrors its item frames too.
     private var mirrored = false
 
     /** Registers the root context of [layout], compiled as [root]; call for every VIEW layout before planning any. */
     fun registerRoot(layout: Layout, root: FieldLayout) {
-        contexts.getOrPut(layout.qualifiedName) { mutableListOf() }.add(0, ViewContext(layout, root, root.contextFingerprint(), 0))
+        if (layout.isForeign) {
+            foreignRoots[layout.qualifiedName] = root
+        } else {
+            contexts.getOrPut(layout.qualifiedName) { mutableListOf() }.add(0, ViewContext(layout, root, root.contextFingerprint(), 0))
+        }
     }
 
     fun root(layout: Layout): ViewContext? = contexts[layout.qualifiedName]?.firstOrNull { it.index == 0 }
@@ -67,11 +80,56 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
     /** Every context of [layout] that planned successfully, the root first. */
     fun plannedContexts(layout: Layout): List<ViewContext> = contexts[layout.qualifiedName].orEmpty().filter { it.isPlanned }.sortedBy { it.index }
 
+    /** Every context of a foreign layout that planned successfully for [owner], in the order they were first needed. */
+    fun foreignContexts(owner: Layout): List<ViewContext> =
+        contexts.filterKeys { it.startsWith(foreignKeyPrefix(owner)) }.values.flatMap { known -> known.filter { it.isPlanned }.sortedBy { it.index } }
+
+    private fun foreignKeyPrefix(owner: Layout): String = "${owner.qualifiedName}>"
+
+    /** The contexts of [layout] known so far, for a foreign one those of the current owner, starting with its root. */
+    private fun known(layout: Layout, node: KSNode): MutableList<ViewContext> {
+        if (!layout.isForeign) {
+            if (root(layout) == null) throw LayoutDeclarationException("A VIEW layout uses the @BytesLayout ${layout.qualifiedName}, so it must generate VIEW too", node)
+            return contexts.getValue(layout.qualifiedName)
+        }
+        val owner = checkNotNull(owner) { "${layout.qualifiedName} is planned outside of a layout of this module" }
+        val root = foreignRoots[layout.qualifiedName] ?: throw LayoutDeclarationException("The @BytesLayout ${layout.qualifiedName} of another module is not a valid layout", node)
+        return contexts.getOrPut(foreignKeyPrefix(owner) + layout.qualifiedName) {
+            mutableListOf(ViewContext(layout, root, root.contextFingerprint(), 0, owner, nestedName(owner, layout)))
+        }
+    }
+
+    /**
+     * The name [layout] is nested as in [owner]: its flattened simple names, or, when another foreign layout there
+     * has the same ones, prefixed by its package too.
+     */
+    private fun nestedName(owner: Layout, layout: Layout): String {
+        val names = nestedNames.getOrPut(owner.qualifiedName) { mutableMapOf() }
+        val simple = layout.viewClassName.simpleName.removeSuffix("View")
+        val name = if (names[simple].let { it == null || it == layout.qualifiedName }) {
+            simple
+        } else {
+            layout.interfaceClassName.packageName.split('.').joinToString("") { it.capitalized() } + simple
+        }
+        names[name] = layout.qualifiedName
+        return name
+    }
+
+    private fun <T> owning(context: ViewContext, block: () -> T): T {
+        val outer = owner
+        owner = context.owner ?: context.layout
+        try {
+            return block()
+        } finally {
+            owner = outer
+        }
+    }
+
     fun plan(context: ViewContext): Result<ViewPlan> {
         context.plan?.let { return it }
         if (!planning.add(context)) return Result.failure(UnsupportedViewFeature("recursive layouts", context.layout.declaration))
         val result = try {
-            Result.success(planFrame(context))
+            Result.success(owning(context) { planFrame(context) })
         } catch (e: UnsupportedViewFeature) {
             Result.failure(e)
         } catch (e: LayoutDeclarationException) {
@@ -90,7 +148,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         context.sealedPlan?.let { return it }
         if (!planning.add(context)) return Result.failure(UnsupportedViewFeature("recursive layouts", context.layout.declaration))
         val result = try {
-            Result.success(planSealedFrame(context))
+            Result.success(owning(context) { planSealedFrame(context) })
         } catch (e: UnsupportedViewFeature) {
             Result.failure(e)
         } catch (e: LayoutDeclarationException) {
@@ -122,11 +180,10 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
     }
 
     private fun sealedContextFor(layout: Layout, field: FieldLayout, node: KSNode): ViewContext {
-        val root = root(layout) ?: throw LayoutDeclarationException("A VIEW layout uses the @BytesLayout ${layout.qualifiedName}, so it must generate VIEW too", node)
-        planSealed(root).exceptionOrNull()?.let { throw it }
+        val known = known(layout, node)
+        planSealed(known.first()).exceptionOrNull()?.let { throw it }
         val fingerprint = field.contextFingerprint()
-        val known = contexts.getValue(layout.qualifiedName)
-        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: ViewContext(layout, field, fingerprint, known.size).also { known += it }
+        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: known.first().sibling(field, fingerprint, known.size).also { known += it }
         planSealed(context).exceptionOrNull()?.let { throw it }
         return context
     }
@@ -134,11 +191,10 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
     private fun contextFor(layout: Layout, field: FieldLayout, node: KSNode): ViewContext {
         // BytesFormat only stuffs the root frame it encodes.
         if (field.frame.byteStuffing != null) unsupported("byte stuffing on a nested layout", node)
-        val root = root(layout) ?: throw LayoutDeclarationException("A VIEW layout uses the @BytesLayout ${layout.qualifiedName}, so it must generate VIEW too", node)
-        plan(root).exceptionOrNull()?.let { throw it }
+        val known = known(layout, node)
+        plan(known.first()).exceptionOrNull()?.let { throw it }
         val fingerprint = field.contextFingerprint()
-        val known = contexts.getValue(layout.qualifiedName)
-        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: ViewContext(layout, field, fingerprint, known.size).also { known += it }
+        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: known.first().sibling(field, fingerprint, known.size).also { known += it }
         plan(context).exceptionOrNull()?.let { throw it }
         return context
     }
@@ -177,8 +233,8 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             val node = property.declaration
             if (property.name in RESERVED_VIEW_PROPERTY_NAMES) unsupported("a property named '${property.name}'", node)
             val value = valueType(property.type.makeNotNullable(), node)
-            val itemPrefix = context.layoutName.simpleName + property.name.capitalized()
-            val (plan, next) = planField(property.name, node, child, value, property.type.isMarkedNullable, headerStart, gates, cursor, itemPrefix, context.layoutName.packageName)
+            val itemPrefix = context.layoutName.peerClass(context.layoutName.simpleName + property.name.capitalized())
+            val (plan, next) = planField(property.name, node, child, value, property.type.isMarkedNullable, headerStart, gates, cursor, itemPrefix)
             cursor = next
             plan
         }
@@ -213,8 +269,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         headerStart: Int,
         gates: Set<Int>,
         from: Cursor,
-        itemPrefix: String,
-        packageName: String,
+        itemPrefix: ClassName,
     ): Pair<FieldPlan, Cursor> {
         var cursor = from
         val isCollection = value is ValueType.Collection
@@ -233,7 +288,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         // The encoder starts every nested frame, and every value class frame, on a fresh byte, as the decoder reads it.
         val start = if (value is ValueType.Nested || (value is ValueType.Wrapped && value.framed)) cursor.aligned() else cursor
         val access = if (value is ValueType.Collection) {
-            collectionAccess(child, value, typeNullable, node, headerStart, start, itemPrefix, packageName)
+            collectionAccess(child, value, typeNullable, node, headerStart, start, itemPrefix)
         } else {
             access(child, value, node, headerStart)
         }
@@ -268,8 +323,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         node: KSNode,
         headerStart: Int,
         start: Cursor,
-        itemPrefix: String,
-        packageName: String,
+        itemPrefix: ClassName,
     ): Access.Collection {
         val (settings, items) = when (val type = child.type) {
             is TypeLayout.ListLayout -> type.settings to listOf(type.item)
@@ -311,7 +365,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         val frames = items.mapIndexed { index, item ->
             val itemValue = if (index == 0) value.item else value.value!!
             val itemNullable = if (index == 0) value.itemNullable else value.valueNullable
-            itemFrame(ClassName(packageName, itemPrefix + roles[index]), roles[index].lowercase(), item, itemValue, itemNullable, node)
+            itemFrame(itemPrefix.peerClass(itemPrefix.simpleName + roles[index]), roles[index].lowercase(), item, itemValue, itemNullable, node)
         }
         // Items of a stuffed collection are read from an unstuffed copy, where a layout's setters would write in vain.
         if (settings.byteStuffing != null && frames.any { it.field.access is Access.Nested || it.field.access is Access.Sealed }) {
@@ -332,7 +386,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         if (value is ValueType.Collection) unsupported("collections of collections", node)
         // The item frame is only the item's flag bits and body: the item writes its own prefix, postfix and checksum.
         val headerBits = (item.bitIndex + item.bitWidth).coerceAtLeast(0)
-        val (field, end) = planField(role, node, item, value, nullable, 0, emptySet(), Cursor(null, headerBits), name.simpleName, name.packageName)
+        val (field, end) = planField(role, node, item, value, nullable, 0, emptySet(), Cursor(null, headerBits), name)
         if (mirrored) {
             // The encoder builds an item into its collection's builder only in the same order; otherwise into a separate array.
             if (item.byteOrder != ByteOrder.MOST_SIGNIFICANT_FIRST) unsupported("items of another byte order in a frame accumulated MOST_SIGNIFICANT_FIRST", node)

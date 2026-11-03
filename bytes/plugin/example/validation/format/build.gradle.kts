@@ -17,6 +17,7 @@ kaluga {
     dependencies {
         common {
             main {
+                implementation(project(":validation:parts", ""))
                 implementation("com.splendo.kaluga.scientific:scientific:${BytesPluginVersion.kalugaVersion}")
                 // The scientific units implement its Serializable, which the web compilations need on their classpath.
                 implementation("com.splendo.kaluga.base:core:${BytesPluginVersion.kalugaVersion}")

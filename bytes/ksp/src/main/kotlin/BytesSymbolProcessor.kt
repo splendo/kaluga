@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.ksp
 
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.getVisibility
 import com.google.devtools.ksp.processing.Dependencies
@@ -74,7 +75,8 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
         if (declarations.isEmpty()) return emptyList()
 
         val types = TypeExpander(resolver)
-        val layouts = withoutNameCollisions(declarations.map { declaration -> Layout(declaration, declaration.bytesLayoutGenerate(), types) })
+        val local = withoutNameCollisions(declarations.map { declaration -> Layout(declaration, declaration.bytesLayoutGenerate(), types) })
+        val layouts = local + foreignLayouts(resolver, local, types)
         val index = try {
             LayoutIndex(layouts, types)
         } catch (e: LayoutDeclarationException) {
@@ -83,7 +85,7 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
         }
         // Every layout this pass sees is indexed, so one can refer to a layout of another source set; only those this
         // pass owns are generated and reported on.
-        val owned = layouts.filter { options.pass.owns(it.declaration) }.toSet()
+        val owned = local.filter { options.pass.owns(it.declaration) }.toSet()
 
         val shapes = ShapeBuilder(index, AnnotationMaterializer())
         // Compiled once per layout, so a VIEW-only layout reports an invalid layout just like a DATA one.
@@ -128,6 +130,57 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
         return emptyList()
     }
 
+    /**
+     * The layouts of other modules that [local] use, directly or through each other: in property types, their type
+     * arguments and the properties of value classes, and the sealed hierarchies these belong to. A foreign layout
+     * generates DATA when its module generated its DATA class, which the DATA of this module's layouts then refers to;
+     * its VIEW is generated here, inside each layout of this module that holds it.
+     */
+    private fun foreignLayouts(resolver: Resolver, local: List<Layout>, types: TypeExpander): List<Layout> {
+        val known = local.mapTo(mutableSetOf()) { it.qualifiedName }
+        val found = mutableListOf<Layout>()
+        val queue = ArrayDeque(local)
+        fun visit(declaration: KSClassDeclaration) {
+            val name = declaration.qualifiedName?.asString() ?: return
+            if (name in known || declaration.containingFile != null || declaration.classKind != ClassKind.INTERFACE) return
+            if (declaration.annotations.none { it.qualifiedName() == bytesLayoutName }) return
+            known += name
+            val viewOnly = Layout(declaration, setOf(Generate.VIEW), types, isForeign = true)
+            val layout = if (resolver.getClassDeclarationByName(viewOnly.dataClassName.canonicalName) != null) {
+                Layout(declaration, setOf(Generate.DATA, Generate.VIEW), types, isForeign = true)
+            } else {
+                viewOnly
+            }
+            found += layout
+            queue += layout
+        }
+        fun visit(type: KSType) {
+            val expanded = types.expand(type)
+            val declaration = expanded.declaration as? KSClassDeclaration ?: return
+            visit(declaration)
+            expanded.arguments.forEach { argument -> argument.type?.resolve()?.let(::visit) }
+            if (Modifier.VALUE in declaration.modifiers || Modifier.INLINE in declaration.modifiers) {
+                val wrapped = declaration.primaryConstructor?.parameters?.singleOrNull()?.name
+                declaration.getDeclaredProperties().firstOrNull { it.simpleName == wrapped }?.let { visit(it.asMemberOf(expanded.makeNotNullable())) }
+            }
+        }
+        while (queue.isNotEmpty()) {
+            val layout = queue.removeFirst()
+            if (layout.isForeign) {
+                layout.declaration.superTypes.mapNotNull { it.resolve().declaration as? KSClassDeclaration }.filter { Modifier.SEALED in it.modifiers }.forEach(::visit)
+                if (layout.isSealed) layout.declaration.getSealedSubclasses().forEach(::visit)
+            }
+            // A layout that cannot be read is reported when it is compiled.
+            val properties = try {
+                layout.properties
+            } catch (_: LayoutDeclarationException) {
+                emptyList()
+            }
+            properties.forEach { visit(it.type) }
+        }
+        return found
+    }
+
     // Generated names flatten nesting, so Outer.Inner and OuterInner would both generate OuterInnerData.
     private fun withoutNameCollisions(layouts: List<Layout>): List<Layout> {
         val colliding = layouts.groupBy { it.dataClassName.canonicalName }.values.filter { it.size > 1 }.flatten().toSet()
@@ -150,14 +203,15 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
             Result.failure(e)
         }
         // The pass that owns a layout generated the contexts its own layouts give it; this one cannot add another.
-        val others = viewLayouts.filter { it !in owned }
+        val others = viewLayouts.filter { it !in owned && !it.isForeign }
         others.forEach { plan(it) }
-        val generatedContexts = others.flatMap { planner.plannedContexts(it) }.toMutableSet()
+        fun othersContexts() = others.flatMap { planner.plannedContexts(it) + planner.foreignContexts(it) }
+        val generatedContexts = othersContexts().toMutableSet()
         val viewed = viewLayouts.filter { it in owned }.filter { layout ->
             val result = plan(layout)
             when (val failure = result.exceptionOrNull()) {
                 null -> {
-                    val added = others.flatMap { planner.plannedContexts(it) }.filter { it !in generatedContexts }
+                    val added = othersContexts().filter { it !in generatedContexts }
                     generatedContexts += added
                     if (added.isNotEmpty()) {
                         logger.error(
@@ -220,7 +274,13 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
             }
             declaration?.let { index[it] }?.let { referenced ->
                 if (Generate.DATA !in referenced.generate) {
-                    throw LayoutDeclarationException("${layout.qualifiedName} generates DATA, so the @BytesLayout ${referenced.qualifiedName} it uses must generate DATA too", node)
+                    val message = if (referenced.isForeign) {
+                        "${layout.qualifiedName} generates DATA, so the @BytesLayout ${referenced.qualifiedName} of another module it uses must have generated " +
+                            "${referenced.dataClassName.simpleName} there"
+                    } else {
+                        "${layout.qualifiedName} generates DATA, so the @BytesLayout ${referenced.qualifiedName} it uses must generate DATA too"
+                    }
+                    throw LayoutDeclarationException(message, node)
                 }
             }
             if (declaration != null && index[declaration] == null && (Modifier.VALUE in declaration.modifiers || Modifier.INLINE in declaration.modifiers)) {
