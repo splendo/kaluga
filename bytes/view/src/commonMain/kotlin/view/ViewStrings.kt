@@ -74,7 +74,7 @@ object ViewStrings {
         val from = if (endMarking is StringEncodingSettings.LengthPrefix) pos + lengthPrefixSize(b, pos, endMarking) else pos
         val to = if (endMarking is StringEncodingSettings.WithTerminal) pos + size - 1 else pos + size
         when (settings.encoding) {
-            Encoding.ASCII -> Unit
+            Encoding.ASCII, Encoding.ISO_8859_1 -> Unit
 
             Encoding.UTF_16 -> if ((to - from) % 2 != 0) throw ByteArrayEndedBeforeSerializationCompleted("No byte at $to")
 

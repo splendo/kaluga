@@ -25,6 +25,7 @@ import com.splendo.kaluga.bytes.buildByteArray
 import com.splendo.kaluga.bytes.layout.InvalidByteOrderException
 import com.splendo.kaluga.bytes.serialization.DataAfterUnconstrainedData
 import com.splendo.kaluga.bytes.strings.add
+import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.serializer
@@ -68,6 +69,31 @@ abstract class StringsSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
 
         assertFailsWith<IllegalArgumentException> {
             createBackend().encode(EncodeStringFixturesContentContainsNullData.serializer(), EncodeStringFixturesContentContainsNullData("Content\u0000NullTerminus"))
+        }
+    }
+
+    @Test
+    fun encodeLatin1() {
+        fun latin1(endMarking: StringEncodingSettings.EndMarking) = StringEncodingSettings(endMarking, Encoding.ISO_8859_1)
+        validateEncoding(
+            Latin1FixturesContainerData("café", "ñ", "ÿ", "\u0000é", "Ü", 'ß', "\u00A0fin"),
+            buildByteArray {
+                add(true)
+                add("café", latin1(StringEncodingSettings.LengthPrefix.ByteLength))
+                add("ñ", latin1(StringEncodingSettings.NullTerminated))
+                add("ÿ", latin1(StringEncodingSettings.FixedLength(2)))
+                add("\u0000é", latin1(StringEncodingSettings.ByteStuffed.Delimited(ByteStuffingScheme.Cobs)))
+                add("Ü", latin1(StringEncodingSettings.LengthPrefix.ByteLength))
+                add('ß', Encoding.ISO_8859_1)
+                add("\u00A0fin", latin1(StringEncodingSettings.NoMarking))
+            },
+        )
+
+        assertFailsWith<IllegalArgumentException> {
+            createBackend().encode(Latin1FixturesContainerData.serializer(), Latin1FixturesContainerData("€", "", "", "", null, 'a', ""))
+        }
+        assertFailsWith<IllegalArgumentException> {
+            createBackend().encode(Latin1FixturesContainerData.serializer(), Latin1FixturesContainerData("", "", "", "", null, 'Ā', ""))
         }
     }
 

@@ -19,6 +19,7 @@ package com.splendo.kaluga.bytes.example.format
 
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.strings.Encoding
+import com.splendo.kaluga.bytes.annotations.ByteStuffedCobs
 import com.splendo.kaluga.bytes.annotations.BytesLayout
 import com.splendo.kaluga.bytes.annotations.Encoded
 import com.splendo.kaluga.bytes.annotations.Length
@@ -73,6 +74,36 @@ object EncodeStringFixtures {
     // no way to know where the unsized data ends, so any trailing body data is undecodable.
     @Serializable
     data class BooleanAfterUnsized(@Unsized val string: String, val flag: Boolean)
+}
+
+object Latin1Fixtures {
+    @BytesLayout
+    interface Container {
+        @Encoded(Encoding.ISO_8859_1)
+        val prefixed: String
+
+        @Encoded(Encoding.ISO_8859_1)
+        @NullTerminated
+        val terminated: String
+
+        @Encoded(Encoding.ISO_8859_1)
+        @Size(Length.`16_BIT`)
+        val fixed: String
+
+        @Encoded(Encoding.ISO_8859_1)
+        @ByteStuffedCobs
+        val stuffed: String
+
+        @Encoded(Encoding.ISO_8859_1)
+        val nullable: String?
+
+        @Encoded(Encoding.ISO_8859_1)
+        val letter: Char
+
+        @Encoded(Encoding.ISO_8859_1)
+        @Unsized
+        val unsized: String
+    }
 }
 
 object MsbExcludeStructureLengthPrefixAndNullTerminatedStringRoundTripsFixtures {

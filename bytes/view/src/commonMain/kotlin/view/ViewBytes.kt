@@ -27,6 +27,7 @@ import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.copyIntoByteArray
 import com.splendo.kaluga.bytes.strings.copyUTF16IntoByteArray
 import com.splendo.kaluga.bytes.strings.decodeAsciiChar
+import com.splendo.kaluga.bytes.strings.decodeLatin1Char
 import com.splendo.kaluga.bytes.decodeDouble
 import com.splendo.kaluga.bytes.decodeFloat
 import com.splendo.kaluga.bytes.medfloat.decodeMedFloat16
@@ -35,6 +36,7 @@ import com.splendo.kaluga.bytes.strings.decodeUTF16Char
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bytes.layout.NumericCodec
 import com.splendo.kaluga.bytes.strings.toAscii
+import com.splendo.kaluga.bytes.strings.toLatin1
 import com.splendo.kaluga.bytes.toHexString
 import kotlinx.serialization.SerializationException
 
@@ -173,6 +175,7 @@ object ViewBytes {
         checkRange(pos, encoding.byteSize, lim)
         return when (encoding) {
             Encoding.ASCII, Encoding.UTF_8 -> b[pos].decodeAsciiChar()
+            Encoding.ISO_8859_1 -> b[pos].decodeLatin1Char()
             Encoding.UTF_16 -> b.decodeUTF16Char(pos, order)
         }
     }
@@ -182,6 +185,7 @@ object ViewBytes {
         checkRange(pos, encoding.byteSize, lim)
         when (encoding) {
             Encoding.ASCII, Encoding.UTF_8 -> b[pos] = value.toAscii()
+            Encoding.ISO_8859_1 -> b[pos] = value.toLatin1()
             Encoding.UTF_16 -> value.copyUTF16IntoByteArray(b, pos, order)
         }
     }

@@ -78,4 +78,27 @@ class CharExtensionsTest {
         assertFailsWith<IllegalArgumentException> { Encoding.UTF_8.copyCharIntoByteArray('é', ByteArray(1), byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST) }
         assertFailsWith<IllegalArgumentException> { Encoding.ASCII.copyCharIntoByteArray('é', ByteArray(1), byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST) }
     }
+
+    @Test
+    fun latin1CharRoundTripsEveryByte() {
+        for (value in 0..0xFF) {
+            val byte = value.toByte()
+            val char = byte.decodeLatin1Char()
+            assertEquals(value, char.code)
+            assertEquals(1, Encoding.ISO_8859_1.byteSizeOf(char))
+            for (order in ByteOrder.entries) {
+                assertContentEquals(byteArrayOf(byte), Encoding.ISO_8859_1.encodeChar(char, order), "U+${value.toString(16)} $order")
+            }
+        }
+        assertEquals('é', byteArrayOf(0x61, 0xE9.toByte()).decodeLatin1Char(1))
+    }
+
+    @Test
+    fun latin1RejectsCharsAboveFF() {
+        assertEquals(0xFF.toByte(), 'ÿ'.toLatin1OrNull())
+        assertEquals(null, 'Ā'.toLatin1OrNull())
+        val error = assertFailsWith<IllegalArgumentException> { 'Ā'.toLatin1() }
+        assertEquals("Non-Latin-1 character: 'Ā' (0x100)", error.message)
+        assertFailsWith<IllegalArgumentException> { Encoding.ISO_8859_1.copyCharIntoByteArray('€', ByteArray(1), byteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST) }
+    }
 }

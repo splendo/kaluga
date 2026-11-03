@@ -21,6 +21,7 @@ import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.copyIntoByteArray
 import com.splendo.kaluga.bytes.decodeUShort
 import com.splendo.kaluga.bytes.strings.Encoding.ASCII
+import com.splendo.kaluga.bytes.strings.Encoding.ISO_8859_1
 import com.splendo.kaluga.bytes.strings.Encoding.UTF_16
 import com.splendo.kaluga.bytes.strings.Encoding.UTF_8
 import com.splendo.kaluga.bytes.toByteArray
@@ -45,6 +46,11 @@ enum class Encoding(val byteSize: Int) {
      * ASCII encoding
      */
     ASCII(1),
+
+    /**
+     * ISO/IEC 8859-1 (Latin-1) character encoding. Every byte is the character with that code, so it encodes the characters `U+0000..U+00FF`.
+     */
+    ISO_8859_1(1),
 }
 
 /**
@@ -62,7 +68,7 @@ fun Encoding.byteSizeOf(char: Char): Int = when (this) {
 
     UTF_16 -> 2
 
-    ASCII -> 1
+    ASCII, ISO_8859_1 -> 1
 }
 
 /**
@@ -88,6 +94,7 @@ fun Encoding.copyCharIntoByteArray(char: Char, array: ByteArray, offset: Int = 0
         UTF_8 -> char.copyUTF8IntoArray(array, offset, size, byteOrder)
         UTF_16 -> char.copyUTF16IntoByteArray(array, offset, byteOrder)
         ASCII -> array[offset] = char.toAscii()
+        ISO_8859_1 -> array[offset] = char.toLatin1()
     }
     return array
 }
@@ -155,6 +162,23 @@ fun Char.toAsciiOrNull(): Byte? = try {
 } catch (_: IllegalArgumentException) {
     null
 }
+
+/**
+ * Encodes a [Char] to a [Byte] in ISO/IEC 8859-1 (Latin-1).
+ * @throws IllegalArgumentException if the character cannot be represented in Latin-1, i.e. is above `U+00FF`. Use [Char.toLatin1OrNull] to get a non-throwing variant
+ * @return the [Byte] representing the [Char] in Latin-1.
+ */
+fun Char.toLatin1(): Byte = if (code > 0xFF) {
+    throw IllegalArgumentException("Non-Latin-1 character: '$this' (0x${code.toString(16)})")
+} else {
+    code.toByte()
+}
+
+/**
+ * Encodes a [Char] to a [Byte] in ISO/IEC 8859-1 (Latin-1) or `null` if the character cannot be represented in Latin-1.
+ * @return the [Byte] representing the [Char] in Latin-1 if it can be represented in Latin-1, `null` otherwise.
+ */
+fun Char.toLatin1OrNull(): Byte? = if (code > 0xFF) null else code.toByte()
 
 /**
  * Decodes a [Char] from a [Byte] assuming UTF-8 encoding.
@@ -235,6 +259,18 @@ fun Byte.decodeAsciiChar() = Char(toInt())
  * @return the Char decoded from the [ByteArray] at [octetIndex].
  */
 fun ByteArray.decodeAsciiChar(octetIndex: Int) = get(octetIndex).decodeAsciiChar()
+
+/**
+ * Decodes a [Char] from a [Byte] assuming ISO/IEC 8859-1 (Latin-1) encoding. Every byte decodes, to the character with its unsigned value as code.
+ */
+fun Byte.decodeLatin1Char(): Char = (toInt() and 0xFF).toChar()
+
+/**
+ * Decodes a [Char] at [octetIndex] from a [ByteArray] assuming ISO/IEC 8859-1 (Latin-1) encoding.
+ * @param octetIndex the index of the octet to decode.
+ * @return the Char decoded from the [ByteArray] at [octetIndex].
+ */
+fun ByteArray.decodeLatin1Char(octetIndex: Int) = get(octetIndex).decodeLatin1Char()
 
 /**
  * Decodes a [Char] at [octetIndex] from a [ByteArray] assuming UTF-16 encoding.

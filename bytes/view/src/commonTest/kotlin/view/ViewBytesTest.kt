@@ -180,6 +180,17 @@ class ViewBytesTest {
     }
 
     @Test
+    fun readsAndWritesLatin1Chars() {
+        val bytes = ByteArray(1)
+        for (value in 0..0xFF) {
+            ViewBytes.writeChar(bytes, 0, value.toChar(), Encoding.ISO_8859_1, lsb, 1)
+            assertEquals(value.toByte(), bytes[0])
+            assertEquals(value.toChar(), ViewBytes.readChar(bytes, 0, Encoding.ISO_8859_1, msb, 1))
+        }
+        assertFailsWith<IllegalArgumentException> { ViewBytes.writeChar(bytes, 0, '\u0100', Encoding.ISO_8859_1, lsb, 1) }
+    }
+
+    @Test
     fun rejectsEnumOrdinalsOutOfRange() {
         assertEquals(ByteOrder.LEAST_SIGNIFICANT_FIRST, ViewBytes.entry(ByteOrder.entries, 1, "ByteOrder"))
         assertFailsWith<SerializationException> { ViewBytes.entry(ByteOrder.entries, 2, "ByteOrder") }
