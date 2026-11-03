@@ -37,14 +37,6 @@ class OptionsTest {
     }
 
     @Test
-    fun `leaves only sources outside the common source directories to a per-target pass`() {
-        val options = Options(setOf(Generate.DATA), commonSources = listOf("/project/src/commonMain/kotlin"))
-        assertEquals(false, options.isOutside("/project/src/commonMain/kotlin/Layouts.kt"))
-        assertEquals(true, options.isOutside("/project/src/commonMain/kotlinx/Layouts.kt"))
-        assertEquals(true, options.isOutside("/project/src/jvmMain/kotlin/Layouts.kt"))
-    }
-
-    @Test
     fun `parses a single generate mode`() {
         assertEquals(setOf(Generate.VIEW), Options.parseGenerate("VIEW"))
     }

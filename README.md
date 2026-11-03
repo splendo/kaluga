@@ -141,6 +141,8 @@ Modules are organized into feature groups; each group directory has its own `REA
 | [keyboard/keyboard](keyboard/keyboard/) | Showing and hiding the keyboard | `com.splendo.kaluga.keyboard:keyboard` | ✅ | ✅ |  |  |  |  |  |  |
 | [keyboard/compose](keyboard/compose/) | Compose extensions for keyboard | `com.splendo.kaluga.keyboard:compose` | ✅ |  |  |  |  |  |  |  |
 | [keyboard/test-utils](keyboard/test-utils/) | Test helpers for the keyboard module | `com.splendo.kaluga.keyboard:test` | ✅ | ✅ |  |  |  |  |  |  |
+| [ksp/plugin-support](ksp/plugin-support/) | KSP wiring shared by the Kaluga code generation Gradle plugins (build-time) | `com.splendo.kaluga.ksp:plugin-support` |  |  | ✅ |  |  |  |  |  |
+| [ksp/processor-support](ksp/processor-support/) | Common-source handling shared by the Kaluga KSP processors (build-time) | `com.splendo.kaluga.ksp:processor-support` |  |  | ✅ |  |  |  |  |  |
 | [lifecycle/lifecycle](lifecycle/lifecycle/) | Platform-host lifecycle bindings for service builders | `com.splendo.kaluga.lifecycle:lifecycle` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [lifecycle/compose](lifecycle/compose/) | Compose extensions for lifecycle | `com.splendo.kaluga.lifecycle:compose` | ✅ | ✅ |  |  | ✅ | ✅ |  |  |
 | [lifecycle/test-utils](lifecycle/test-utils/) | Test helpers for the lifecycle module | `com.splendo.kaluga.lifecycle:test` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |

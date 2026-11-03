@@ -63,6 +63,24 @@ jobs:
           name: web example build reports
           path: "example/**/build/reports"
 
+  bytes-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: validate bytes code generation
+        run: ./gradlew --stacktrace jsNodeTest wasmJsNodeTest
+        working-directory: bytes/plugin/example
+
   # The per-run workspace cache is only useful within this run; delete it so it doesn't
   # pile up against the repo's 10GB cache quota.
   cleanup-caches:

@@ -110,10 +110,12 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
                 val multiplatformExtension = extensions.findByType(KotlinMultiplatformExtension::class)!!
                 extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, androidxVersionCatalog, project.objects)
             }
+
             subExtensionClass == KSPSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 extensions.create<KSPSubprojectExtension>(EXTENSION_NAME, versionCatalog, androidxVersionCatalog, project.objects)
             }
+
             else -> {
                 error("Unknown project project applied plugin: ${project.name} subExtensionClass: ${subExtensionClass.simpleName}")
             }

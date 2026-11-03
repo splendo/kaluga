@@ -83,7 +83,7 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
         }
         // Every layout this pass sees is indexed, so one can refer to a layout of another source set; only those this
         // pass owns are generated and reported on.
-        val owned = layouts.filter { options.includeInGeneration(it.declaration) }.toSet()
+        val owned = layouts.filter { options.pass.owns(it.declaration) }.toSet()
 
         val shapes = ShapeBuilder(index, AnnotationMaterializer())
         // Compiled once per layout, so a VIEW-only layout reports an invalid layout just like a DATA one.

@@ -9,7 +9,7 @@ pluginManagement {
     }
 
     includeBuild("../kaluga-library-components")
-    includeBuild("../bluetooth/plugin")
+    includeBuild("../plugins")
     includeBuild("./embedding")
 }
 

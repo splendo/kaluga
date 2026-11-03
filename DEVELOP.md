@@ -105,6 +105,12 @@ Don't forget to remove this when you are done to go back to composite builds.
 ./gradlew publishToMavenLocal
 ```
 
+The Gradle plugins (`bluetooth/plugin`, `bytes/plugin`) and the `ksp/plugin-support` they depend on are a separate build in [`plugins`](plugins/), so publish them as well:
+
+```sh
+./gradlew -p plugins publishToMavenLocal
+```
+
 2. Upload and publish on Maven Central:
 
 ```sh

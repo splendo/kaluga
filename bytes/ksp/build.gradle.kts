@@ -9,6 +9,7 @@ kaluga {
 dependencies {
     implementation(project(":bytes:annotations"))
     implementation(project(":bytes:layout"))
+    implementation(project(":ksp:processor-support"))
     testImplementation(project(":bytes:view"))
     testImplementation(project(":bytes:serialization"))
     testImplementation(kotlin("test-junit5"))

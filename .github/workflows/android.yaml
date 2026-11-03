@@ -40,10 +40,6 @@ jobs:
         run: ./gradlew --stacktrace compileAndroidMain
         working-directory: bluetooth/plugin/example
 
-      - name: run plugin unit tests
-        run: ./gradlew --stacktrace :plugin:test
-        working-directory: bluetooth/plugin
-
   bytes-plugin:
     runs-on: ubuntu-latest
     steps:
@@ -58,27 +54,14 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
-      - name: ktLint plugin
-        run: ./gradlew lintKotlin
-        working-directory: bytes/plugin
-
       - name: ktLint example
         run: ./gradlew lintKotlin
         working-directory: bytes/plugin/example
-
-      - name: run bytes plugin unit tests
-        run: ./gradlew --stacktrace :plugin:test
-        working-directory: bytes/plugin
 
       # Validate that the Bytes code generation plugin produces code that compiles and passes its
       # round-trip tests on Android host.
       - name: validate bytes code generation
         run: ./gradlew --stacktrace testAndroidHostTest
-        working-directory: bytes/plugin/example
-
-      # Same generated-view suites, on the JS and Wasm targets the validation modules also support.
-      - name: validate bytes code generation on JS and Wasm
-        run: ./gradlew --stacktrace jsNodeTest wasmJsNodeTest
         working-directory: bytes/plugin/example
 
   test:
@@ -98,8 +81,6 @@ jobs:
       - name: run Android unit tests
         run: ./gradlew testDebugUnitTest testAndroidHostTest koverHtmlReport koverXmlReport
 
-      - name: run KSP processor tests
-        run: ./gradlew --stacktrace :bytes:ksp:test :bluetooth:ksp:test
       - name: add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v2

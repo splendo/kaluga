@@ -56,6 +56,7 @@ rootProject.name = "Kaluga"
 
 /* REMINDER (see header), files should be kept up to date with Gradle and the [.git/workflows] */
 
+include(":ksp:processor-support")
 include(":base:core")
 include(":base:i18n")
 include(":base:formatting")

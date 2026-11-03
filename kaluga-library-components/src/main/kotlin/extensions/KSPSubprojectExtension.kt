@@ -17,48 +17,29 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.splendo.kaluga.plugin.helpers.javaVersion
-import com.splendo.kaluga.plugin.helpers.jvmTarget
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
+import javax.inject.Inject
 
-open class KSPSubprojectExtension(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, objects: ObjectFactory) :
-    BaseKalugaSubprojectExtension(versionCatalog, androidxVersionCatalog, "ksp", objects) {
-
-    override var namespace: String? = null
-
-    override fun Project.setupSubproject() {}
+open class KSPSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, androidxVersionCatalog: VersionCatalog, objects: ObjectFactory) :
+    KalugaJvmSubprojectExtension(versionCatalog, androidxVersionCatalog, "ksp", objects) {
 
     override fun Project.configureSubproject() {
+        configureJvm(this)
         extensions.configure(KotlinJvmExtension::class) {
-            compilerOptions {
-                jvmTarget.set(versionCatalog.jvmTarget)
-            }
             sourceSets.all {
                 languageSettings {
                     optIn("com.google.devtools.ksp.KspExperimental")
                 }
             }
         }
-        extensions.configure(JavaPluginExtension::class) {
-            sourceCompatibility = versionCatalog.javaVersion
-            targetCompatibility = versionCatalog.javaVersion
-        }
         dependencies {
             add("implementation", "google-devtools-ksp-symbolProcessingAPI".asDependency())
             add("implementation", "kotlinpoet-ksp".asDependency())
         }
-    }
-
-    override fun Project.beforeEvaluated() {
-        configureSubproject()
-    }
-    override fun Project.afterProjectEvaluated() {
-        setupPublishingAfterEvaluation()
     }
 }
