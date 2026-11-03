@@ -83,6 +83,29 @@ interface StatusFrame {
     val status: Status
 }
 
+// Top-level layouts holding another top-level layout of the same module, the way the parts of a device are reused.
+@BytesLayout
+interface BatteryLevel {
+    @Size(Length.`8_BIT`)
+    @Unsigned
+    val level: Int
+}
+
+@BytesLayout
+interface DeviceInformation {
+    val batteryLevel: BatteryLevel
+
+    @Size(Length.`16_BIT`)
+    @Unsigned
+    val firmware: Int
+}
+
+@BytesLayout
+interface ChargerStatus {
+    val charging: Boolean
+    val battery: BatteryLevel
+}
+
 // @Reserved bytes must be included in the staticByteSize used by @SizePolymorphic dispatch.
 // Short: 1 value byte + 2 reserved after = 3 bytes total.
 // Long:  1 value byte + 4 reserved after = 5 bytes total.
