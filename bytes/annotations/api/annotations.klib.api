@@ -94,6 +94,13 @@ open annotation class com.splendo.kaluga.bytes.annotations/Count : kotlin/Annota
         final fun <get-count>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Count.count.<get-count>|<get-count>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bytes.annotations/DeltaCoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/DeltaCoded|null[0]
+    constructor <init>(com.splendo.kaluga.bytes.annotations/Length) // com.splendo.kaluga.bytes.annotations/DeltaCoded.<init>|<init>(com.splendo.kaluga.bytes.annotations.Length){}[0]
+
+    final val step // com.splendo.kaluga.bytes.annotations/DeltaCoded.step|{}step[0]
+        final fun <get-step>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/DeltaCoded.step.<get-step>|<get-step>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bytes.annotations/Discriminator : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Discriminator|null[0]
     constructor <init>() // com.splendo.kaluga.bytes.annotations/Discriminator.<init>|<init>(){}[0]
 }

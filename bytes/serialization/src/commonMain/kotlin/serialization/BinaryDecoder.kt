@@ -65,9 +65,13 @@ internal class BinaryDecoder(
 ) : Decoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
-        is StructureKind.LIST -> stuffedCollection()?.let { (descriptor, subDecoder) ->
-            BinaryCompositeDecoder.List(descriptor, subDecoder, serializersModule)
-        } ?: BinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
+        is StructureKind.LIST -> if (binaryDescriptor.isDeltaCoded) {
+            DeltaCodedDecoder(binaryDescriptor, decoder, serializersModule)
+        } else {
+            stuffedCollection()?.let { (descriptor, subDecoder) ->
+                BinaryCompositeDecoder.List(descriptor, subDecoder, serializersModule)
+            } ?: BinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
+        }
 
         is StructureKind.MAP -> stuffedCollection()?.let { (descriptor, subDecoder) ->
             BinaryCompositeDecoder.Map(descriptor, subDecoder, serializersModule)

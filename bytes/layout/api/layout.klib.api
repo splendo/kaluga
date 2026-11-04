@@ -308,10 +308,12 @@ final class com.splendo.kaluga.bytes.layout/ChecksumSpec { // com.splendo.kaluga
 }
 
 final class com.splendo.kaluga.bytes.layout/CollectionSettings { // com.splendo.kaluga.bytes.layout/CollectionSettings|null[0]
-    constructor <init>(com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking, kotlin/Boolean, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme? = ...) // com.splendo.kaluga.bytes.layout/CollectionSettings.<init>|<init>(com.splendo.kaluga.bytes.layout.CollectionSettings.LengthMarking;kotlin.Boolean;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme?){}[0]
+    constructor <init>(com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking, kotlin/Boolean, com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme? = ..., com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding? = ...) // com.splendo.kaluga.bytes.layout/CollectionSettings.<init>|<init>(com.splendo.kaluga.bytes.layout.CollectionSettings.LengthMarking;kotlin.Boolean;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme?;com.splendo.kaluga.bytes.layout.CollectionSettings.DeltaCoding?){}[0]
 
     final val byteStuffing // com.splendo.kaluga.bytes.layout/CollectionSettings.byteStuffing|{}byteStuffing[0]
         final fun <get-byteStuffing>(): com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme? // com.splendo.kaluga.bytes.layout/CollectionSettings.byteStuffing.<get-byteStuffing>|<get-byteStuffing>(){}[0]
+    final val deltaCoding // com.splendo.kaluga.bytes.layout/CollectionSettings.deltaCoding|{}deltaCoding[0]
+        final fun <get-deltaCoding>(): com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding? // com.splendo.kaluga.bytes.layout/CollectionSettings.deltaCoding.<get-deltaCoding>|<get-deltaCoding>(){}[0]
     final val lengthMarking // com.splendo.kaluga.bytes.layout/CollectionSettings.lengthMarking|{}lengthMarking[0]
         final fun <get-lengthMarking>(): com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking // com.splendo.kaluga.bytes.layout/CollectionSettings.lengthMarking.<get-lengthMarking>|<get-lengthMarking>(){}[0]
     final val nullIfEmpty // com.splendo.kaluga.bytes.layout/CollectionSettings.nullIfEmpty|{}nullIfEmpty[0]
@@ -320,10 +322,24 @@ final class com.splendo.kaluga.bytes.layout/CollectionSettings { // com.splendo.
     final fun component1(): com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking // com.splendo.kaluga.bytes.layout/CollectionSettings.component1|component1(){}[0]
     final fun component2(): kotlin/Boolean // com.splendo.kaluga.bytes.layout/CollectionSettings.component2|component2(){}[0]
     final fun component3(): com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme? // com.splendo.kaluga.bytes.layout/CollectionSettings.component3|component3(){}[0]
-    final fun copy(com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking = ..., kotlin/Boolean = ..., com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme? = ...): com.splendo.kaluga.bytes.layout/CollectionSettings // com.splendo.kaluga.bytes.layout/CollectionSettings.copy|copy(com.splendo.kaluga.bytes.layout.CollectionSettings.LengthMarking;kotlin.Boolean;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme?){}[0]
+    final fun component4(): com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding? // com.splendo.kaluga.bytes.layout/CollectionSettings.component4|component4(){}[0]
+    final fun copy(com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking = ..., kotlin/Boolean = ..., com.splendo.kaluga.bytes.stuffing/ByteStuffingScheme? = ..., com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding? = ...): com.splendo.kaluga.bytes.layout/CollectionSettings // com.splendo.kaluga.bytes.layout/CollectionSettings.copy|copy(com.splendo.kaluga.bytes.layout.CollectionSettings.LengthMarking;kotlin.Boolean;com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme?;com.splendo.kaluga.bytes.layout.CollectionSettings.DeltaCoding?){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.layout/CollectionSettings.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/CollectionSettings.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/CollectionSettings.toString|toString(){}[0]
+
+    final class DeltaCoding { // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding|null[0]
+        constructor <init>(com.splendo.kaluga.bytes.annotations/Length) // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.<init>|<init>(com.splendo.kaluga.bytes.annotations.Length){}[0]
+
+        final val step // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.step|{}step[0]
+            final fun <get-step>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.step.<get-step>|<get-step>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.bytes.annotations/Length = ...): com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.copy|copy(com.splendo.kaluga.bytes.annotations.Length){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/CollectionSettings.DeltaCoding.toString|toString(){}[0]
+    }
 
     final class FixedCount : com.splendo.kaluga.bytes.layout/CollectionSettings.LengthMarking { // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount|null[0]
         constructor <init>(kotlin/Int) // com.splendo.kaluga.bytes.layout/CollectionSettings.FixedCount.<init>|<init>(kotlin.Int){}[0]
@@ -505,6 +521,10 @@ final class com.splendo.kaluga.bytes.layout/InvalidChecksumException : kotlinx.s
 
 final class com.splendo.kaluga.bytes.layout/InvalidCountLayout : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidCountLayout|null[0]
     constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/InvalidCountLayout.<init>|<init>(kotlin.String){}[0]
+}
+
+final class com.splendo.kaluga.bytes.layout/InvalidDeltaCoding : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidDeltaCoding|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/InvalidDeltaCoding.<init>|<init>(kotlin.String){}[0]
 }
 
 final class com.splendo.kaluga.bytes.layout/InvalidEnumLayout : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidEnumLayout|null[0]
@@ -698,6 +718,13 @@ sealed class com.splendo.kaluga.bytes.layout/NumericSettings { // com.splendo.ka
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/NumericSettings.Scalar.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/NumericSettings.Scalar.toString|toString(){}[0]
     }
+}
+
+final object com.splendo.kaluga.bytes.layout/DeltaCodec { // com.splendo.kaluga.bytes.layout/DeltaCodec|null[0]
+    final fun count(kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes.annotations/Length): kotlin/Int // com.splendo.kaluga.bytes.layout/DeltaCodec.count|count(kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.annotations.Length){}[0]
+    final fun encode(kotlin/Int, kotlin/Long, kotlin/Long, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes.annotations/Length): kotlin/Long // com.splendo.kaluga.bytes.layout/DeltaCodec.encode|encode(kotlin.Int;kotlin.Long;kotlin.Long;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.annotations.Length){}[0]
+    final fun next(kotlin/Long, kotlin/Long, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean): kotlin/Long // com.splendo.kaluga.bytes.layout/DeltaCodec.next|next(kotlin.Long;kotlin.Long;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean){}[0]
+    final fun size(kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes.annotations/Length): kotlin/Int // com.splendo.kaluga.bytes.layout/DeltaCodec.size|size(kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.annotations.Length){}[0]
 }
 
 final object com.splendo.kaluga.bytes.layout/LayoutCompiler { // com.splendo.kaluga.bytes.layout/LayoutCompiler|null[0]
