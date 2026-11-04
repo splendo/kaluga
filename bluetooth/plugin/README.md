@@ -186,6 +186,14 @@ val view = measurement.readHeartRate().valueOrNull      // HeartRateView?
 measurement.writeHeartRate(HeartRateView(bpm = 72))     // writes view.bytes
 ```
 
+A view is a value class, so a `Flow` of views boxes each one it emits. To collect notifications without that, the
+client also has the undecoded notifications as `heartRateBytes`, and `collectHeartRate` wraps each one inside its
+inlined action:
+
+```kotlin
+measurement.collectHeartRate { view -> show(view.bpm) } // no allocation per notification
+```
+
 On the server the delegate is given a `HeartRateView` to write and answers reads with one. A write split over several
 offsets reaches it once `HeartRateView.wrap` accepts the bytes written so far, and one `wrap` rejects goes to
 `onFailedToWriteHeartRate`. A view the client reads or is notified of is not checked; call its `validate()` where a
