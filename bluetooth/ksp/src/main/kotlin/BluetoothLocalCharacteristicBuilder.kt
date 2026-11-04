@@ -32,6 +32,9 @@ import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.annotations.WritableSigned
 import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.AttributeValue
+import com.splendo.kaluga.bluetooth.ksp.helpers.DECODE
+import com.splendo.kaluga.bluetooth.ksp.helpers.attributeValue
 import com.splendo.kaluga.bluetooth.ksp.helpers.ALL
 import com.splendo.kaluga.bluetooth.ksp.helpers.ALSO
 import com.splendo.kaluga.bluetooth.ksp.helpers.AS
@@ -105,7 +108,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.optionalChainIfNullable
-import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.splendo.kaluga.bluetooth.ksp.helpers.subscribeMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.unsubscribeMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.withLetIfNull
@@ -123,7 +125,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
-import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclaration, private val characteristic: BluetoothCharacteristic, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
@@ -232,7 +233,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
         val writeMethod = propertyDeclaration.onWriteMethodName
         val onWriteFun = FunSpec.builder(writeMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
             .receiver(interfaceName)
-            .addParameter(propertyDeclaration.simpleName.asString(), propertyDeclaration.type.resolve().toTypeName())
+            .addParameter(propertyDeclaration.simpleName.asString(), propertyDeclaration.attributeValue(options).typeName)
             .apply {
                 if (propertyDeclaration.isByteArray) {
                     addParameter(OFFSET, INT)
@@ -277,7 +278,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
         val className = nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
         val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER)
         return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -317,7 +318,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         delegateParameterName,
                         interfaceName.nestedClass(DELEGATE),
                     )
-                    val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
+                    val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER_DSL)
                     if (needsFormatter.needsFormatter) {
                         addParameter(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                     }
@@ -331,7 +332,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                 var hasReadMethod = false
                                 var hasWriteMethod = false
                                 var hasNotifyMethods = false
-                                val constructorFormat = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER).functionArgument
+                                val constructorFormat = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER).functionArgument
                                 fun castingMethod(scope: String): CodeBlock {
                                     val scopeMethod = if (scope.isNotEmpty()) "$THIS@$scope" else THIS
                                     return if (isNotifiable()) {
@@ -380,6 +381,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                     } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
                                         val descriptorNeedsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(
                                             typeDeclaration,
+                                            options,
                                             NeedsFormatterHelper.Target.SERVER_DSL,
                                         )
                                         withLetIfNull(
@@ -456,11 +458,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 .indent()
                 .addStatement("$PROPERTIES = %L,", propertiesCode)
                 .addStatement("$ENCRYPTED = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
-                .addStatement(
-                    "$DESERIALIZATION_STRATEGY = %L,",
-                    propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                )
-                .addStatement("$FORMAT = $FORMAT,")
+                .add(propertyDeclaration.attributeValue(options).writableDecoding())
                 .addStatement("$ON_FAILED_TO_WRITE = { $DEVICE, $EXCEPTION ->")
                 .indent()
                 .beginControlFlow("$WITH($delegateParameterName)")
@@ -569,7 +567,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 if (notifiable != null) {
                     References.Kotlin.pair.parameterizedBy(
                         remote,
-                        References.KotlinX.Coroutines.Flow.mutableSharedFlow.parameterizedBy(notifiable.type.resolve().toTypeName()),
+                        References.KotlinX.Coroutines.Flow.mutableSharedFlow.parameterizedBy(notifiable.attributeValue(options).typeName),
                     )
                 } else {
                     remote
@@ -657,7 +655,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             .build()
 
     private fun generateGenerateRemoteMutableFlow(notifiable: KSPropertyDeclaration): CodeBlock = CodeBlock.builder()
-        .addStatement("$VAL $MUTABLE_FLOW = %T<%T>()", References.KotlinX.Coroutines.Flow.mutableSharedFlow, notifiable.type.resolve().toTypeName())
+        .addStatement("$VAL $MUTABLE_FLOW = %T<%T>()", References.KotlinX.Coroutines.Flow.mutableSharedFlow, notifiable.attributeValue(options).typeName)
         .beginControlFlow("$COROUTINE_SCOPE.%M", References.KotlinX.Coroutines.launch)
         .addStatement(
             "$MUTABLE_FLOW.$SUBSCRIPTION_COUNT.%M { $IT >= 1 }.%M()",
@@ -814,24 +812,22 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
         .build()
 
     private fun generateNotifyMethods(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): List<FunSpec> {
-        val resolvedType = propertyDeclaration.type.resolve()
+        val value = propertyDeclaration.attributeValue(options)
+        val name = CodeBlock.of("%N", propertyDeclaration.simpleName.asString())
         return listOf(
             FunSpec.builder("$NOTIFY_ALL${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}$CHANGED")
                 .addModifiers(KModifier.SUSPEND, *type.additionalModifiers.toTypedArray())
-                .addParameter(propertyDeclaration.simpleName.asString(), resolvedType.toTypeName())
+                .addParameter(propertyDeclaration.simpleName.asString(), value.typeName)
                 .returns(BOOLEAN)
                 .apply {
                     when (type) {
                         GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                         GenerationType.Type.BLUETOOTH -> {
-                            if (propertyDeclaration.isByteArray) {
-                                addStatement("$RETURN $CHARACTERISTIC.$NOTIFY_ALL(${propertyDeclaration.simpleName.asString()})")
+                            if (value is AttributeValue.Serialized) {
+                                addStatement("$RETURN $CHARACTERISTIC.$NOTIFY_ALL(%L, %L, $FORMAT)", name, value.serializer)
                             } else {
-                                addStatement(
-                                    "$RETURN $CHARACTERISTIC.$NOTIFY_ALL(${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)",
-                                    resolvedType.toTypeName().serializer(logger),
-                                )
+                                addStatement("$RETURN $CHARACTERISTIC.$NOTIFY_ALL(%L)", value.encode(name))
                             }
                         }
 
@@ -856,20 +852,17 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             FunSpec.builder("$NOTIFY${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}$CHANGED")
                 .addModifiers(KModifier.SUSPEND, *type.additionalModifiers.toTypedArray())
                 .addParameter(IDENTIFIER, References.Bluetooth.Device.identifier)
-                .addParameter(propertyDeclaration.simpleName.asString(), resolvedType.toTypeName())
+                .addParameter(propertyDeclaration.simpleName.asString(), value.typeName)
                 .returns(BOOLEAN)
                 .apply {
                     when (type) {
                         GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                         GenerationType.Type.BLUETOOTH -> {
-                            val notifyCode = if (propertyDeclaration.isByteArray) {
-                                CodeBlock.of("$CHARACTERISTIC.$NOTIFY($IT, ${propertyDeclaration.simpleName.asString()})")
+                            val notifyCode = if (value is AttributeValue.Serialized) {
+                                CodeBlock.of("$CHARACTERISTIC.$NOTIFY($IT, %L, %L, $FORMAT)", name, value.serializer)
                             } else {
-                                CodeBlock.of(
-                                    "$CHARACTERISTIC.$NOTIFY($IT, ${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)",
-                                    resolvedType.toTypeName().serializer(logger),
-                                )
+                                CodeBlock.of("$CHARACTERISTIC.$NOTIFY($IT, %L)", value.encode(name))
                             }
                             addCode(
                                 CodeBlock.builder()
@@ -945,6 +938,17 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 }
             }
             .build()
+
+    private fun AttributeValue.writableDecoding(): CodeBlock = when (this) {
+        is AttributeValue.View -> CodeBlock.of("$DECODE = { %L },\n", wrap(CodeBlock.of(IT)))
+
+        is AttributeValue.Serialized -> CodeBlock.builder()
+            .addStatement("$DESERIALIZATION_STRATEGY = %L,", serializer)
+            .addStatement("$FORMAT = $FORMAT,")
+            .build()
+
+        AttributeValue.Bytes -> error("A ByteArray is written with its offset, undecoded")
+    }
 
     fun isNotifiable() = declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isNotifiable }
     fun characteristicClass(): ClassName = if (isNotifiable()) {

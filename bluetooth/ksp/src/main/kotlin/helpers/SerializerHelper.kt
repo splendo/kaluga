@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.ksp.helpers
 
-import com.google.devtools.ksp.processing.KSPLogger
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.TypeName
 
-fun TypeName.serializer(logger: KSPLogger): CodeBlock = CodeBlock.of("$FORMAT.serializer<%T>()", this)
+fun TypeName.serializer(): CodeBlock = CodeBlock.of("$FORMAT.serializer<%T>()", this)

@@ -31,10 +31,11 @@ import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.annotations.WritableSigned
 import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.AttributeValue
+import com.splendo.kaluga.bluetooth.ksp.helpers.attributeValue
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTICS
 import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTORS
-import com.splendo.kaluga.bluetooth.ksp.helpers.ENCODE_TO_BYTE_ARRAY
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_SERVICE
@@ -49,7 +50,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
-import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isNotifiable
 import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
 import com.splendo.kaluga.bluetooth.ksp.helpers.isWritable
@@ -57,7 +57,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.orNullIfNullable
-import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -69,8 +68,6 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclaration, private val characteristic: BluetoothCharacteristic, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
@@ -95,7 +92,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
         val className = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
         val interfaceName = nameFor(declaration, GenerationType.CLIENT_API)
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options)
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -191,7 +188,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                                 ParameterSpec(
                                     "${onWrite.onWriteMethodName}$ACTION",
                                     LambdaTypeName.get(
-                                        parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                        parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.attributeValue(options).typeName)),
                                         returnType = References.Bluetooth.writeResponse,
                                     ).copy(suspending = true),
                                 )
@@ -199,7 +196,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                             notifiableProperty?.let { notifiable ->
                                 ParameterSpec(
                                     notifiable.simpleName.asString(),
-                                    References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.type.resolve().toTypeName()),
+                                    References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.attributeValue(options).typeName),
                                 )
                             },
                         ) + properties.mapNotNull { propertyDeclaration ->
@@ -233,7 +230,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                         PropertySpec.builder(
                             "${onWrite.onWriteMethodName}$ACTION",
                             LambdaTypeName.get(
-                                parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.attributeValue(options).typeName)),
                                 returnType = References.Bluetooth.writeResponse,
                             ).copy(suspending = true),
                         )
@@ -244,7 +241,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     notifiableProperty?.let { notifiable ->
                         PropertySpec.builder(
                             "_${notifiable.simpleName.asString()}",
-                            References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.type.resolve().toTypeName()),
+                            References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.attributeValue(options).typeName),
                         )
                             .addModifiers(KModifier.PRIVATE)
                             .initializer(notifiable.simpleName.asString())
@@ -368,7 +365,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
         writeMethod,
     ).addParameter(
         propertyDeclaration.simpleName.asString(),
-        propertyDeclaration.type.resolve().toClassName(),
+        propertyDeclaration.attributeValue(options).typeName,
     ).addModifiers(KModifier.SUSPEND, *type.additionalModifiers.toTypedArray()).returns(
         References.Bluetooth.writeResponse,
     ).apply {
@@ -376,14 +373,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
             GenerationType.Type.BLUETOOTH -> {
-                val valueArgument = if (propertyDeclaration.isByteArray) {
-                    CodeBlock.of(propertyDeclaration.simpleName.asString())
-                } else {
-                    CodeBlock.of(
-                        "$FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, ${propertyDeclaration.simpleName.asString()})",
-                        propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                    )
-                }
+                val valueArgument = propertyDeclaration.attributeValue(options).encode(CodeBlock.of("%N", propertyDeclaration.simpleName.asString()))
                 if (writeType != null) {
                     addStatement("$RETURN $CHARACTERISTIC.$WRITE(%L, %M)", valueArgument, writeType)
                 } else {
@@ -399,7 +389,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
 
     private fun generateNotifiableProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec = PropertySpec.builder(
         propertyDeclaration.simpleName.asString(),
-        References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.type.resolve().toTypeName()),
+        References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.attributeValue(options).typeName),
     ).addModifiers(
         *type.additionalModifiers.toTypedArray(),
     )
@@ -412,14 +402,17 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                         FunSpec.getterBuilder()
                             .apply {
                                 val member = References.Bluetooth.value
-                                if (propertyDeclaration.isByteArray) {
-                                    addStatement("$RETURN $CHARACTERISTIC.%M()", member)
-                                } else {
-                                    addStatement(
-                                        "$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)",
+                                when (val value = propertyDeclaration.attributeValue(options)) {
+                                    AttributeValue.Bytes -> addStatement("$RETURN $CHARACTERISTIC.%M()", member)
+
+                                    is AttributeValue.View -> addStatement(
+                                        "$RETURN $CHARACTERISTIC.%M().%M { %L }",
                                         member,
-                                        propertyDeclaration.type.resolve().toTypeName().serializer(logger),
+                                        References.KotlinX.Coroutines.Flow.map,
+                                        value.decode(CodeBlock.of(IT)),
                                     )
+
+                                    is AttributeValue.Serialized -> addStatement("$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)", member, value.serializer)
                                 }
                             }
                             .build(),
@@ -471,7 +464,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
 
     private fun generateDescriptorProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
         val propertyType = clientName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration)
-        val formatArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument
+        val formatArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, options).functionArgument
         return PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
             propertyType,
