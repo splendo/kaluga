@@ -147,6 +147,29 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             format: BytesFormat = BytesFormat,
             onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
             onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
+        ) = writable(properties, encrypted, { format.decodeFromByteArray(deserializationStrategy, it) }, onFailedToWrite, onWrite)
+
+        /**
+         * Makes this [LocalCharacteristic] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param T the type of the data being written
+         * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
+         * @param encrypted `true` if writing to the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param decode turns the [ByteArray] written so far into a [T]. It throws [ByteArrayEndedBeforeSerializationCompleted] while more of the value is still to be written,
+         * and any other [Exception] for a value it rejects
+         * @param onFailedToWrite the function to call when writing to the characteristic fails.
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the exception [decode] threw and should return a [GattResponse.WriteResponse]
+         * @param onWrite the function to call when writing to the characteristic.
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+         * If the data being written is split over multiple offsets, this will only be called once [decode] accepts the data written so far
+         */
+        fun <T> writable(
+            properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+            encrypted: Boolean = false,
+            decode: (ByteArray) -> T,
+            onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
         ) {
             val cache = mutableMapOf<ConnectedDevice, ByteArray>()
             writable(properties, encrypted) { device, value, offset ->
@@ -164,7 +187,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                 }
                 valueToDeserialize?.let {
                     try {
-                        onWrite(device, format.decodeFromByteArray(deserializationStrategy, it))
+                        onWrite(device, decode(it))
                     } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
                         GattResponse.WriteSuccess.Acknowledged
