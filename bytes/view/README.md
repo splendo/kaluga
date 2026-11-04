@@ -29,8 +29,8 @@ Views are zero-copy implementations of `@BytesLayout` interfaces that read and w
 ## Key components
 
 These helpers are marked `@InternalBytesApi` (from [layout](../layout/)): generated views opt in to them, and they follow
-the generated code rather than a compatibility promise. `FixedStrideList` and `ScannedList`, which list properties
-return, are public.
+the generated code rather than a compatibility promise. `FixedStrideList`, `ScannedList`, `DeltaCodedShortList` and
+`DeltaCodedIntList`, which list properties return, are public.
 
 ### ViewBytes
 
@@ -59,6 +59,13 @@ Read collection counts and walk item frames:
 - `FixedStrideList` — Fixed-size items (allocation-free iteration)
 - `ScannedList` — Variable-size items (scans forward to find boundaries)
 - Supports the same length-prefix options as strings
+
+### ViewDeltas
+
+Read, size and write `@DeltaCoded` lists, the first item and then the step to each next one:
+
+- `DeltaCodedShortList` and `DeltaCodedIntList` — The items of such a list as a `List<Short>` or `List<Int>`. `size` follows from the bytes; `forEachShort`/`forEachInt` and `copyInto` read every item in order without allocating or boxing; `get(i)` adds up the steps before item `i`, so it takes time in proportion to `i`
+- Checks that the bytes are a first item and whole steps, and that what it writes fits, as `BytesFormat` does
 
 ### ViewChecksum
 
