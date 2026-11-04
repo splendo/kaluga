@@ -30,6 +30,7 @@ import com.splendo.kaluga.bytes.annotations.ByteStuffedSlip
 import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
 import com.splendo.kaluga.bytes.annotations.Checksum
 import com.splendo.kaluga.bytes.annotations.Count
+import com.splendo.kaluga.bytes.annotations.DeltaCoded
 import com.splendo.kaluga.bytes.annotations.Discriminator
 import com.splendo.kaluga.bytes.annotations.Encoded
 import com.splendo.kaluga.bytes.annotations.Fallback
@@ -290,6 +291,8 @@ object LayoutCompiler {
             TypeKind.LIST -> listChildren(shape, annotations, valueByteOrder, byteOrder)
             else -> elementChildren(shape, valueByteOrder, bitIndex, byteOrder)
         }
+
+        collectionSettings?.deltaCoding?.let { checkDeltaCoded(fieldName, kind, isNullable, byteOrder, children, it) }
 
         if (kind == TypeKind.STRUCTURE && shape.annotations.any { it is LengthPrefix }) {
             throw InvalidSealedLayout("@LengthPrefix on '${shape.serialName}' only applies to a sealed class, whose subtypes it frames")
@@ -603,7 +606,24 @@ object LayoutCompiler {
                 val byteStuffing = annotations.byteStuffingScheme()
                 val terminal = annotations.terminalByte()
                 val count = annotations.filterIsInstance<Count>().firstOrNull()
+                val deltaCoded = annotations.filterIsInstance<DeltaCoded>().firstOrNull()
                 val lengthMarking = when {
+                    deltaCoded != null -> {
+                        val conflicts = listOfNotNull(
+                            "@Count".takeIf { count != null },
+                            "@LengthPrefix".takeIf { annotations.any { it is LengthPrefix } },
+                            "@NullTerminated".takeIf { annotations.any { it is NullTerminated } },
+                            "@Terminal".takeIf { terminal != null },
+                            "@Size".takeIf { annotations.any { it is Size } },
+                            "@NullIfEmpty".takeIf { annotations.any { it is NullIfEmpty } },
+                            "byte stuffing".takeIf { byteStuffing != null },
+                        )
+                        if (conflicts.isNotEmpty()) {
+                            throw InvalidDeltaCoding("@DeltaCoded runs to the end of what holds it, so it cannot be combined with ${conflicts.joinToString()}")
+                        }
+                        CollectionSettings.Unmarked
+                    }
+
                     count != null -> {
                         val conflicts = listOfNotNull(
                             "@LengthPrefix".takeIf { annotations.any { it is LengthPrefix } },
@@ -675,11 +695,36 @@ object LayoutCompiler {
                     lengthMarking,
                     annotations.filterIsInstance<NullIfEmpty>().isNotEmpty(),
                     byteStuffing,
+                    deltaCoded?.let { CollectionSettings.DeltaCoding(it.step) },
                 )
             }
 
             else -> null
         }
+
+    /**
+     * Rejects a `@DeltaCoded` property [name] the encoding cannot apply to: anything but a list whose items are
+     * integers of one size, at least as wide as a step, laid out least significant first.
+     */
+    private fun checkDeltaCoded(name: String, kind: TypeKind, isNullable: Boolean, byteOrder: ByteOrder, children: List<FieldLayout>, deltaCoding: CollectionSettings.DeltaCoding) {
+        if (kind != TypeKind.LIST) throw InvalidDeltaCoding("@DeltaCoded on '$name' only applies to a list of integers, not a map")
+        if (isNullable) throw InvalidDeltaCoding("@DeltaCoded '$name' cannot be nullable: it has no flag bit, and no bytes at all is an empty list")
+        if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
+            throw InvalidDeltaCoding(
+                "@DeltaCoded '$name' needs a list accumulated LEAST_SIGNIFICANT_FIRST; use @ItemByteOrder or @ByteOrder(excludeStructure = true) for big-endian items",
+            )
+        }
+        val item = children.single()
+        val settings = (item.type as? TypeLayout.Numeric)?.settings as? NumericSettings.Natural
+        val width = settings?.supportedLengths?.singleOrNull()
+        val framed = item.frame.prefix != null || item.frame.postfix != null || item.frame.checksum != null || item.frame.byteStuffing != null
+        if (width == null || settings.inFlagsBits != null || item.isNullable || framed) {
+            throw InvalidDeltaCoding("@DeltaCoded '$name' needs items that are integers of one @ItemSize, not nullable and without a frame of their own")
+        }
+        if (deltaCoding.step.bytes > width.bytes) {
+            throw InvalidDeltaCoding("@DeltaCoded '$name' has steps of ${deltaCoding.step.bytes} bytes, more than its items of ${width.bytes}")
+        }
+    }
 
     private fun LengthPrefix.asLengthPrefix() = when {
         lengthAsShort -> StringEncodingSettings.LengthPrefix.ShortLength

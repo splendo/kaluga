@@ -52,6 +52,12 @@ class InvalidSizePolymorphic(message: String) : SerializationException(message)
 class InvalidSealedLayout(message: String) : SerializationException(message)
 
 /**
+ * Thrown when `@DeltaCoded` cannot apply to a property, such as one that is not a list of integers of one size, or
+ * one combined with another end marking.
+ */
+class InvalidDeltaCoding(message: String) : SerializationException(message)
+
+/**
  * Thrown when an enum combines annotations that cannot apply to it, such as a checksum, or a prefix on a flag-packed enum.
  */
 class InvalidEnumLayout(message: String) : SerializationException(message)

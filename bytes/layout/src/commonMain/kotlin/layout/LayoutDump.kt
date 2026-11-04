@@ -123,6 +123,7 @@ private fun CollectionSettings.describe(): String {
         append(marking)
         if (nullIfEmpty) append(" nullIfEmpty")
         byteStuffing?.let { append(" stuffing=").append(it.describe()) }
+        deltaCoding?.let { append(" delta(step=").append(it.step.bytes * Byte.SIZE_BITS).append(')') }
     }
 }
 
