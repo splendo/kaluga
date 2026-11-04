@@ -279,7 +279,10 @@ internal class ViewContext(
  * The frame of a sealed layout: its prefix, then the subtype identified by its discriminator (or, when [sizeDispatch]
  * is set, by the number of bytes left), then its postfix.
  * @property sizeDispatch the index into [leaves] by payload size, when the subtype is picked by size.
- * @property fallback the index into [leaves] used when no size matches.
+ * @property fallback the index into [leaves] used when no size matches, or, without [sizeDispatch], when no
+ * discriminator does; that leaf starts at the discriminator, which its first field holds.
+ * @property checksumOrder the byte order of the checksum and of the length.
+ * @property lengthPrefix when set, a type-length-value record: the length after the discriminator bounds the leaf.
  */
 internal class SealedPlan(
     val prefix: ByteArray?,
@@ -290,8 +293,15 @@ internal class SealedPlan(
     val serialName: String,
     val checksum: ChecksumSpec?,
     val checksumOrder: ByteOrder,
+    val lengthPrefix: StringEncodingSettings.LengthPrefix? = null,
 ) {
     val footer: Int get() = (checksum?.crc?.byteWidth ?: 0) + (postfix?.size ?: 0)
+
+    /** The size of every discriminator. */
+    val discriminatorBytes: Int get() = leaves.firstNotNullOfOrNull { it.discriminator }?.size ?: 0
+
+    /** The bytes the length takes. */
+    val lengthBytes: Int get() = lengthPrefix?.expectedByteSize(0u) ?: 0
 }
 
 /** A subtype of a sealed frame, encoded as [context] after its [discriminator]. */

@@ -35,6 +35,7 @@ import com.google.devtools.ksp.symbol.Origin
 import com.google.devtools.ksp.symbol.Visibility
 import com.google.devtools.ksp.validate
 import com.splendo.kaluga.bytes.annotations.BytesLayout
+import com.splendo.kaluga.bytes.annotations.Fallback
 import com.splendo.kaluga.bytes.annotations.Generate
 import com.splendo.kaluga.bytes.layout.FieldLayout
 import com.splendo.kaluga.bytes.layout.LayoutCompiler
@@ -98,6 +99,9 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
                         "A @BytesLayout interface cannot have a @SerialName; its serial name is its qualified name ${layout.qualifiedName}",
                         layout.declaration,
                     )
+                }
+                if (layout.sealedParent == null && layout.declaration.annotations.any { it.qualifiedName() == Fallback::class.qualifiedName }) {
+                    throw LayoutDeclarationException("@Fallback on ${layout.qualifiedName} only applies to a subtype of a sealed @BytesLayout", layout.declaration)
                 }
                 if (Generate.DATA in layout.generate) checkDataReferences(layout, index)
                 val root = LayoutCompiler.compile(shapes.layoutShape(layout))

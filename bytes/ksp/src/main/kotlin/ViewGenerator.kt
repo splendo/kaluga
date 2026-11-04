@@ -1425,6 +1425,41 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                     .addStatement("return %T.getValue(bytes, from, %L)", root.layoutName, if (plan.footer == 0) CodeBlock.of("to") else CodeBlock.of("to - %L", plan.footer))
                     .build(),
             )
+        if (plan.lengthPrefix != null) {
+            val from = ParameterSpec.builder("from", INT).defaultValue("0").build()
+            val lim = CodeBlock.of(if (plan.footer == 0) "bytes.size" else "bytes.size - ${plan.footer}")
+            companion
+                .addFunction(
+                    FunSpec.builder("valueStart")
+                        .addKdoc("Where the bytes the length of the record at [from] counts start, after its discriminator and its length.")
+                        .addParameter("bytes", BYTE_ARRAY)
+                        .addParameter(from)
+                        .returns(INT)
+                        .addStatement("return from + %L", (plan.prefix?.size ?: 0) + plan.discriminatorBytes + plan.lengthBytes)
+                        .build(),
+                )
+                .addFunction(
+                    FunSpec.builder("valueEnd")
+                        .addKdoc("Where the bytes the length of the record at [from] counts end; throws when that is past the end of [bytes].")
+                        .addParameter("bytes", BYTE_ARRAY)
+                        .addParameter(from)
+                        .returns(INT)
+                        .addStatement(if (plan.footer == 0) "return end(bytes, from)" else "return end(bytes, from) - ${plan.footer}")
+                        .build(),
+                )
+                .addFunction(
+                    FunSpec.builder("end")
+                        .addKdoc(
+                            "Where the record at [from] ends, its frame included, so where a record after it starts. It reads only the length, whatever the " +
+                                "discriminator, so it steps over records of any type without reading them or allocating.",
+                        )
+                        .addParameter("bytes", BYTE_ARRAY)
+                        .addParameter(from)
+                        .returns(INT)
+                        .addStatement("return %T.end(bytes, from, %L)", root.layoutName, lim)
+                        .build(),
+                )
+        }
         return builder.addType(companion.build()).build()
     }
 
@@ -1437,26 +1472,51 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         plan.postfix?.let { builder.addProperty(byteArrayConstant(FRAME_POSTFIX, it)) }
         plan.checksum?.let { builder.addProperty(checksumConstant(FRAME_CHECKSUM, it)) }
         val crcWidth = plan.checksum?.crc?.byteWidth ?: 0
-        if (plan.sizeDispatch == null) {
+        val byDiscriminator = plan.sizeDispatch == null
+        // The leaves with a discriminator of their own, in the order of the discriminators table.
+        val discriminated = if (byDiscriminator) plan.leaves.indices.filter { it != plan.fallback } else emptyList()
+        if (byDiscriminator) {
             builder.addProperty(
                 PropertySpec.builder("discriminators", ARRAY.parameterizedBy(BYTE_ARRAY), KModifier.PRIVATE)
-                    .initializer("arrayOf(%L)", plan.leaves.map { it.discriminator!!.literal() }.joinToCode(", "))
+                    .initializer("arrayOf(%L)", discriminated.map { plan.leaves[it].discriminator!!.literal() }.joinToCode(", "))
                     .build(),
             )
         }
+        val record = plan.lengthPrefix
         val prefix = plan.prefix?.size ?: 0
         val start = at(prefix)
+        if (record != null) {
+            builder.addFunction(
+                bufferFunction("recordEnd").addModifiers(KModifier.PRIVATE).returns(INT)
+                    .addKdoc("Where the record at [s] ends: after the bytes its length counts, which must lie before [lim].")
+                    .addStatement("val value = s + %L", plan.discriminatorBytes + plan.lengthBytes)
+                    .addStatement(
+                        "val end = value + %T.lengthPrefixCount(b, s + %L, lim, %L, %L)",
+                        VIEW_COLLECTIONS,
+                        plan.discriminatorBytes,
+                        endMarking(record),
+                        order(plan.checksumOrder),
+                    )
+                    .addStatement("%T.checkRange(value, end - value, lim)", VIEW_BYTES)
+                    .addStatement("return end")
+                    .build(),
+            )
+        }
 
-        fun leafStart(index: Int): CodeBlock =
-            plan.leaves[index].discriminator?.takeIf { plan.sizeDispatch == null }?.let { CodeBlock.of("pos + %L", it.size) } ?: CodeBlock.of("pos")
+        // A fallback starts at the discriminator it holds; under a length, the other leaves start after it.
+        fun leafStart(index: Int): CodeBlock {
+            val discriminator = plan.leaves[index].discriminator?.takeIf { byDiscriminator } ?: return CodeBlock.of("pos")
+            return CodeBlock.of("pos + %L", discriminator.size + plan.lengthBytes)
+        }
 
         // The subtype at `pos`, as the decoder picks it: the first discriminator that matches, or the payload size.
         fun FunSpec.Builder.dispatch(branch: (Int) -> CodeBlock): FunSpec.Builder {
             addStatement("val pos = %L", start)
-            if (plan.sizeDispatch == null) {
-                beginControlFlow("return when (%T.matchIndex(b, pos, discriminators, lim))", VIEW_BYTES)
-                plan.leaves.indices.forEach { addStatement("%L -> %L", it, branch(it)) }
-                addStatement("else -> error(%S)", "No such discriminator")
+            if (byDiscriminator) {
+                if (record != null) addStatement("val end = recordEnd(b, pos, lim)")
+                beginControlFlow("return when (%T.%L(b, pos, discriminators, lim))", VIEW_BYTES, if (plan.fallback == null) "matchIndex" else "findIndex")
+                discriminated.forEachIndexed { entry, index -> addStatement("%L -> %L", entry, branch(index)) }
+                if (plan.fallback == null) addStatement("else -> error(%S)", "No such discriminator") else addStatement("else -> %L", branch(plan.fallback))
             } else {
                 addStatement("val remaining = lim - pos")
                 beginControlFlow("return when (remaining)")
@@ -1475,7 +1535,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             return this
         }
 
-        fun leafLimit(index: Int, pos: CodeBlock): CodeBlock = nestedLimit(Access.Nested(plan.leaves[index].context), pos)
+        fun leafLimit(index: Int, pos: CodeBlock): CodeBlock = if (record != null) CodeBlock.of("end") else nestedLimit(Access.Nested(plan.leaves[index].context), pos)
 
         builder.addFunction(
             bufferFunction("getValue").returns(layout.interfaceClassName)
@@ -1483,7 +1543,12 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 .dispatch { CodeBlock.of("%T(b, %L, %L, $PARENT)", plan.leaves[it].context.sliceName, leafStart(it), leafLimit(it, leafStart(it))) }
                 .build(),
         )
-        fun leafEnd(index: Int): CodeBlock = CodeBlock.of("%T.end(b, %L, %L)", plan.leaves[index].context.layoutName, leafStart(index), leafLimit(index, leafStart(index)))
+        // A record ends where its length says, whatever its leaf reads of it.
+        fun leafEnd(index: Int): CodeBlock = if (record != null) {
+            CodeBlock.of("end")
+        } else {
+            CodeBlock.of("%T.end(b, %L, %L)", plan.leaves[index].context.layoutName, leafStart(index), leafLimit(index, leafStart(index)))
+        }
         builder.addFunction(
             bufferFunction("validate").addParameter("checkChecksum", BOOLEAN)
                 .apply { plan.prefix?.let { addStatement("%T.checkPrefix(b, s, %N, lim + %L)", VIEW_CHECKSUM, FRAME_PREFIX, plan.footer) } }
@@ -1540,9 +1605,15 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         }
         builder.addFunction(
             bufferFunction("end").returns(INT)
-                .dispatch { index ->
-                    val leafEnd = CodeBlock.of("%T.end(b, %L, %L)", plan.leaves[index].context.layoutName, leafStart(index), leafLimit(index, leafStart(index)))
-                    if (plan.footer == 0) leafEnd else CodeBlock.of("%L + %L", leafEnd, plan.footer)
+                .apply {
+                    if (record != null) {
+                        addStatement(if (plan.footer == 0) "return recordEnd(b, %L, lim)" else "return recordEnd(b, %L, lim) + ${plan.footer}", start)
+                    } else {
+                        dispatch { index ->
+                            val leafEnd = CodeBlock.of("%T.end(b, %L, %L)", plan.leaves[index].context.layoutName, leafStart(index), leafLimit(index, leafStart(index)))
+                            if (plan.footer == 0) leafEnd else CodeBlock.of("%L + %L", leafEnd, plan.footer)
+                        }
+                    }
                 }
                 .build(),
         )
@@ -1552,7 +1623,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         if (stuffed) sizeOf.addParameter(contentsParameter())
         sizeOf.beginControlFlow("return %L + when (value)", prefix + plan.footer)
         plan.leaves.forEach { leaf ->
-            val discriminator = leaf.discriminator?.takeIf { plan.sizeDispatch == null }?.size ?: 0
+            val discriminator = leaf.discriminator?.takeIf { byDiscriminator }?.let { it.size + plan.lengthBytes } ?: 0
             sizeOf.addStatement("is %T -> %L + %T.sizeOf(value${contents(leaf)})", leaf.layout.interfaceClassName, discriminator, leaf.context.layoutName)
         }
         sizeOf.endControlFlow()
@@ -1569,8 +1640,32 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         write.beginControlFlow("val $BODY_END = when (value)")
         plan.leaves.forEachIndexed { index, leaf ->
             write.beginControlFlow("is %T ->", leaf.layout.interfaceClassName)
-            if (plan.sizeDispatch == null) write.addStatement("%T.write(b, pos, discriminators[%L], lim)", VIEW_BYTES, index)
-            write.addStatement("%T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
+            val entry = discriminated.indexOf(index)
+            if (entry >= 0) write.addStatement("%T.write(b, pos, discriminators[%L], lim)", VIEW_BYTES, entry)
+            val fallback = byDiscriminator && index == plan.fallback
+            if (record == null && !fallback) {
+                write.addStatement("%T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
+            } else {
+                write.addStatement("val end = %T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
+                if (fallback) {
+                    write.addStatement(
+                        "require(%T.findIndex(b, pos, discriminators, lim) < 0) { %S }",
+                        VIEW_BYTES,
+                        "@Fallback ${leaf.layout.qualifiedName} has the discriminator of another subtype, so it would decode as that",
+                    )
+                }
+                if (record != null) {
+                    write.addStatement(
+                        "%T.writeLengthPrefix(b, pos + %L, lim, end - pos - %L, %L, %L)",
+                        VIEW_COLLECTIONS,
+                        plan.discriminatorBytes,
+                        plan.discriminatorBytes + plan.lengthBytes,
+                        endMarking(record),
+                        order(plan.checksumOrder),
+                    )
+                }
+                write.addStatement("end")
+            }
             write.endControlFlow()
         }
         write.endControlFlow()

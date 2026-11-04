@@ -174,9 +174,23 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         }
         val bySize = type.sizeDispatch.isNotEmpty() || type.sizeFallback != null
         val sizeDispatch = if (bySize) type.sizeDispatch.mapValues { (_, name) -> leaves.indexOfFirst { it.layout.qualifiedName == name } } else null
-        val fallback = type.sizeFallback?.let { name -> leaves.indexOfFirst { it.layout.qualifiedName == name } }
-        if (!bySize && leaves.any { it.discriminator == null || it.discriminator.isEmpty() }) unsupported("sealed subtypes without a discriminator", layout.declaration)
-        return SealedPlan(field.frame.prefix?.array, field.frame.postfix?.array, leaves, sizeDispatch, fallback, layout.qualifiedName, field.frame.checksum, field.valueByteOrder)
+        val fallback = (type.sizeFallback ?: type.fallback)?.let { name -> leaves.indexOfFirst { it.layout.qualifiedName == name } }
+        if (!bySize && leaves.withIndex().any { (index, leaf) -> index != fallback && (leaf.discriminator == null || leaf.discriminator.isEmpty()) }) {
+            unsupported("sealed subtypes without a discriminator", layout.declaration)
+        }
+        val discriminatorSizes = leaves.mapNotNull { it.discriminator?.size }.distinct()
+        if (type.lengthPrefix != null && discriminatorSizes.size > 1) unsupported("type-length-value records with discriminators of several sizes", layout.declaration)
+        return SealedPlan(
+            field.frame.prefix?.array,
+            field.frame.postfix?.array,
+            leaves,
+            sizeDispatch,
+            fallback,
+            layout.qualifiedName,
+            field.frame.checksum,
+            field.valueByteOrder,
+            type.lengthPrefix,
+        )
     }
 
     private fun sealedContextFor(layout: Layout, field: FieldLayout, node: KSNode): ViewContext {
