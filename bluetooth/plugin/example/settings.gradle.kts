@@ -58,6 +58,7 @@ include(":validation:external-api-simulator")
 include(":validation:external-api-mock")
 include(":validation:external-source-provider")
 include(":validation:external-source-consumer")
+include(":validation:views")
 
 // Named explicitly: named after its directory, the checkout would clash with the plugin build when both share a name.
 includeBuild("../../../") {
