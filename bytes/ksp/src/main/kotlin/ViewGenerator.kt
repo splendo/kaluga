@@ -373,6 +373,16 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
     private fun FieldPlan.typeName(): TypeName = value.typeName.copy(nullable = nullable)
 
+    /** The type a getter returns: the declared type, or the list a delta-coded `List` reads as. */
+    private fun FieldPlan.readTypeName(): TypeName = (deltaCodedList() ?: value.typeName).copy(nullable = nullable)
+
+    /** The list a delta-coded `List` reads as, which reads its items in order without boxing them. */
+    private fun FieldPlan.deltaCodedList(): ClassName? {
+        val count = (access as? Access.Collection)?.count as? Count.Delta ?: return null
+        if ((value as ValueType.Collection).kind != ValueType.Collection.Kind.LIST) return null
+        return if (count.kind == TypeKind.SHORT) DELTA_CODED_SHORT_LIST else DELTA_CODED_INT_LIST
+    }
+
     /**
      * A property of a view or slice. A layout nested in it is given [parent] so it can report writes, and [afterSet]
      * runs after every write, both only when there is a checksum to keep up to date.
@@ -380,13 +390,14 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     private fun overrideProperty(field: FieldPlan, context: ViewContext, arguments: CodeBlock, parent: CodeBlock?, afterSet: CodeBlock?): PropertySpec {
         val name = field.name.capitalized()
         val getterArguments = if (parent != null && field.access.takesParent()) CodeBlock.of("%L, %L", arguments, parent) else arguments
-        return PropertySpec.builder(field.name, field.typeName(), KModifier.OVERRIDE)
+        val type = field.readTypeName()
+        return PropertySpec.builder(field.name, type, KModifier.OVERRIDE)
             .mutable(field.settable)
             .getter(FunSpec.getterBuilder().addStatement("return %T.get$name(%L)", context.layoutName, getterArguments).build())
             .apply {
                 if (field.settable) {
                     setter(
-                        FunSpec.setterBuilder().addParameter("value", field.typeName())
+                        FunSpec.setterBuilder().addParameter("value", type)
                             .addStatement("%T.set$name(%L, value)", context.layoutName, arguments)
                             .apply { afterSet?.let { addStatement("%L", it) } }
                             .build(),
@@ -498,7 +509,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
         plan.fields.forEach { field ->
             val name = field.name.capitalized()
-            val getter = bufferFunction("get$name").returns(field.typeName())
+            val getter = bufferFunction("get$name").returns(field.readTypeName())
             if (field.access.takesParent()) getter.addParameter(ParameterSpec.builder(PARENT, VIEW_PARENT.copy(nullable = true)).defaultValue("null").build())
             field.presence?.let { getter.addStatement("if (!(%L)) return null", frame.presence(it)) }
             val access = field.access
@@ -1228,8 +1239,15 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
                     is Access.Sealed -> addStatement("%T.validate(b, pos, %L, checkChecksum)", access.context.layoutName, sealedLimit(access))
 
-                    is Access.Collection -> forEachItem(field, access, plan.mirrored) { item, bytes, limit ->
-                        CodeBlock.of("%T.validate($bytes, item, $limit, checkChecksum)", item.objectName)
+                    is Access.Collection -> {
+                        val delta = access.count as? Count.Delta
+                        if (delta != null) {
+                            addStatement("%T.end(pos, lim, %L, %L)", VIEW_DELTAS, length(delta.width), length(delta.step))
+                        } else {
+                            forEachItem(field, access, plan.mirrored) { item, bytes, limit ->
+                                CodeBlock.of("%T.validate($bytes, item, $limit, checkChecksum)", item.objectName)
+                            }
+                        }
                     }
 
                     is Access.Framed -> {
@@ -1982,6 +2000,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 addStatement("val first = pos")
             }
 
+            is Count.Delta -> error("A delta-coded list has no item frames to count")
+
             // The items are read from an unstuffed copy, up to its end.
             is Count.Stuffed -> {
                 addStatement("val body = %T.unstuff(b, pos, lim, %N, %L)", VIEW_STUFFING, "${field.name}Stuffing", count.terminator.literal())
@@ -2001,6 +2021,20 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         field.presence?.let { getter.addStatement("if (!(%L)) return null", frame.presence(it)) }
         access.emptyBit?.let { getter.addStatement("if (!%T.bit(b, s, %L, lim)) return %L", VIEW_BYTES, it, emptyCollection(value)) }
         getter.addStatement("val pos = %L", frame.bytePos(field.start))
+        (access.count as? Count.Delta)?.let { delta ->
+            val list = CodeBlock.of(
+                "%T.%N(b, pos, lim, %L, %L, %L, %L)",
+                VIEW_DELTAS,
+                if (delta.kind == TypeKind.SHORT) "shorts" else "ints",
+                length(delta.width),
+                delta.signed,
+                length(delta.step),
+                order(delta.order),
+            )
+            val conversion = if (value.kind == ValueType.Collection.Kind.PRIMITIVE_ARRAY) collectionConversion(value) else ""
+            getter.addStatement("return %L%L", list, conversion)
+            return
+        }
         getter.collectionCount(field, access, frame.mirrored)
         val terminator = terminator(access)
         val items = access.items.first()
@@ -2082,6 +2116,12 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         function.addStatement("val pos = %L", pos)
         (access.count as? Count.Stuffed)?.let { count ->
             function.addStatement("return (%T.end(b, pos, lim, %N, %L) - s) * 8", VIEW_STUFFING, "${field.name}Stuffing", count.terminator.literal())
+            return
+        }
+        (access.count as? Count.Delta)?.let { delta ->
+            function.addStatement("val end = %T.end(pos, lim, %L, %L)", VIEW_DELTAS, length(delta.width), length(delta.step))
+            // An empty list writes nothing, so it does not end a partly filled byte either.
+            function.addStatement("return if (end == pos) start else (end - s) * 8")
             return
         }
         function.collectionCount(field, access, mirrored)
@@ -2183,6 +2223,12 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
             is Count.Terminated, is Count.Unmarked -> Unit
 
+            is Count.Delta -> {
+                walkDelta(walk, name, count, value)
+                if (conditions.isNotEmpty()) walk.end()
+                return
+            }
+
             is Count.Stuffed -> {
                 walk.align()
                 if (walk.dry) {
@@ -2251,8 +2297,36 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         if (conditions.isNotEmpty()) walk.end()
     }
 
+    /** Writes the items of a delta-coded list in order, the first one and then the step to each next one. */
+    private fun walkDelta(walk: Walk, name: String, delta: Count.Delta, value: CodeBlock) {
+        walk.align()
+        if (walk.dry) {
+            walk.advanceBytes(CodeBlock.of("%T.sizeOf(%L.size, %L, %L)", VIEW_DELTAS, value, length(delta.width), length(delta.step)))
+            return
+        }
+        walk.goRuntime()
+        walk.code(CodeBlock.of("var previousOf$name = 0L"))
+        walk.code(CodeBlock.of("var indexOf$name = 0"))
+        walk.begin("for (itemOf$name in %L)", value)
+        walk.code(CodeBlock.of("val valueOf$name = %L", toLong(delta.kind, CodeBlock.of("itemOf$name"), !delta.signed)))
+        walk.code(
+            CodeBlock.of(
+                "$BIT_CURSOR += %T.write(b, %L, lim, indexOf$name++, previousOf$name, valueOf$name, %L, %L, %L, %L) * 8",
+                VIEW_DELTAS,
+                walk.bytePos,
+                length(delta.width),
+                delta.signed,
+                length(delta.step),
+                order(delta.order),
+            ),
+        )
+        walk.code(CodeBlock.of("previousOf$name = valueOf$name"))
+        walk.end()
+    }
+
     private fun collectionData(field: FieldPlan, access: Access.Collection, get: CodeBlock): CodeBlock {
         val value = field.value as ValueType.Collection
+        if (access.count is Count.Delta) return if (value.kind == ValueType.Collection.Kind.LIST) CodeBlock.of("%L.toList()", get) else get
         fun convert(frame: ItemFrame, item: String): CodeBlock {
             (frame.field.access as? Access.Sealed)?.let { sealed ->
                 val type = sealed.context.layout.interfaceClassName
@@ -2913,6 +2987,9 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val INVALID_CHECKSUM = ClassName("com.splendo.kaluga.bytes.layout", "InvalidChecksumException")
         val SERIALIZATION_EXCEPTION = ClassName("kotlinx.serialization", "SerializationException")
         val FIXED_STRIDE_LIST = ClassName("com.splendo.kaluga.bytes.view", "FixedStrideList")
+        val VIEW_DELTAS = ClassName("com.splendo.kaluga.bytes.view", "ViewDeltas")
+        val DELTA_CODED_SHORT_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedShortList")
+        val DELTA_CODED_INT_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedIntList")
         val RUNTIME_EXCEPTION = ClassName("kotlin", "RuntimeException")
         val NO_SUCH_ELEMENT_EXCEPTION = ClassName("kotlin", "NoSuchElementException")
     }

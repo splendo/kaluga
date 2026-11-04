@@ -29,7 +29,7 @@ import com.splendo.kaluga.bytes.layout.TypeLayout
  * reports them as KSP errors instead:
  * - a root frame that is byte-stuffed but not accumulated least significant first;
  * - `DataAfterUnconstrainedData`: a property whose encoded size has no end marking (an `@Unsized` string or
- *   collection, a `@SizePolymorphic` value, a byte-stuffed structure without a terminator, or a structure ending in one) followed by a sibling that always writes body
+ *   collection, a `@DeltaCoded` list, a `@SizePolymorphic` value, a byte-stuffed structure without a terminator, or a structure ending in one) followed by a sibling that always writes body
  *   bytes, since a decoder could never tell where the first one ends. Only configurations that fail for every value
  *   are reported; a nullable or `@NullIfEmpty` unconstrained property is left to the runtime check, as it encodes fine
  *   while absent.
@@ -49,7 +49,12 @@ internal object LayoutChecks {
             type.fields.forEachIndexed { index, child ->
                 if (child.isAlwaysUnconstrained()) {
                     type.fields.drop(index + 1).firstOrNull { it.alwaysWritesBody() }?.let { follower ->
-                        violations += "'${follower.name}' follows '${child.name}' in '${field.name}', but '${child.name}' has no end marking, so no data can follow it"
+                        violations += if ((child.type as? TypeLayout.ListLayout)?.settings?.deltaCoding != null) {
+                            "'${follower.name}' follows '${child.name}' in '${field.name}', but '${child.name}' is @DeltaCoded, so it runs to the end of what holds it; " +
+                                "make it the last property, or hold it in a type-length-value record whose length bounds it"
+                        } else {
+                            "'${follower.name}' follows '${child.name}' in '${field.name}', but '${child.name}' has no end marking, so no data can follow it"
+                        }
                     }
                 }
             }
