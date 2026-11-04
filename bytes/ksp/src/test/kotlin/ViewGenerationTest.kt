@@ -1021,6 +1021,46 @@ class ViewGenerationTest {
     }
 
     @Test
+    fun `rejects a property named like a member of the view`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            interface Packet {
+                val bytes: ByteArray
+            }
+
+            @BytesLayout
+            interface Envelope {
+                val packet: Packet
+            }
+
+            @BytesLayout
+            interface Cursor {
+                val sliceStart: Int
+            }
+            """,
+        )
+        val compilation = BytesCompilation(layouts, generate = "VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, compilation.result.exitCode, compilation.result.messages)
+        val errors = compilation.kspErrors.joinToString("\n")
+        assertTrue(
+            "@BytesLayout test.Packet cannot generate a VIEW: its property 'bytes' would clash with the view's public `bytes` property, the array it reads and writes; " +
+                "rename the property or generate only DATA" in errors,
+            errors,
+        )
+        assertTrue("@BytesLayout test.Envelope cannot generate a VIEW: the property 'bytes' of test.Packet would clash" in errors, errors)
+        assertTrue("@BytesLayout test.Cursor cannot generate a VIEW: its property 'sliceStart' would clash with the slice's `sliceStart` property" in errors, errors)
+        assertTrue("not yet supported" !in errors, errors)
+
+        val skipping = BytesCompilation(layouts, generate = "DATA,VIEW", skipUnsupportedViews = true)
+        assertEquals(KotlinCompilation.ExitCode.OK, skipping.result.exitCode, skipping.result.messages)
+        val warnings = skipping.result.messages.lines().filter { it.startsWith("w: [ksp]") }
+        assertTrue(warnings.any { "test.Packet cannot generate a VIEW: its property 'bytes' would clash" in it && "; no view is generated" in it }, warnings.joinToString("\n"))
+        assertTrue(skipping.generatedFiles.none { it.name == "PacketView.kt" }, skipping.generatedFiles.toString())
+    }
+
+    @Test
     fun `rejects a layout using a feature VIEW does not support yet`() {
         val compilation = BytesCompilation(
             layoutSource(

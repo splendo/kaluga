@@ -113,6 +113,7 @@ Configurations using unsupported features generate a KSP error "VIEW not yet sup
 - Invalid layouts (ones `BytesFormat` would reject at first encoding) are compile errors
 - Layouts cannot be generic; declare a concrete sub-interface instead
 - Properties cannot declare default values, and none can be named `Companion`
+- A layout generating VIEW cannot have a property named `bytes`, which would clash with the view's public `bytes` property holding its array, nor `sliceBytes`, `sliceStart`, `sliceLimit` or `sliceParent`, the slice's own properties. This is reported like an unsupported feature, so `skipUnsupportedViews` skips the view instead
 - A layout interface cannot carry a `@SerialName`: its serial name is its qualified name, which sealed dispatch and the layout dump parity rely on
 - Nested layouts flatten into one generated name (`Outer.Inner` generates `OuterInnerData`), so two layouts that flatten to the same name are both reported
 - Type aliases are expanded as kotlinx sees them, nullability and type arguments included

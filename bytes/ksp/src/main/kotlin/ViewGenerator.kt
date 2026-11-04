@@ -2604,8 +2604,14 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     }
 }
 
-/** The names a generated view reserves for itself, which a layout property cannot use. */
-internal val RESERVED_VIEW_PROPERTY_NAMES = setOf("bytes", "sliceBytes", "sliceStart", "sliceLimit", "sliceParent")
+/** The names a generated view or slice declares itself, which a layout property cannot use, with the member each names. */
+internal val RESERVED_VIEW_PROPERTY_NAMES = mapOf(
+    "bytes" to "the view's public `bytes` property, the array it reads and writes",
+    "sliceBytes" to "the slice's `sliceBytes` property",
+    "sliceStart" to "the slice's `sliceStart` property",
+    "sliceLimit" to "the slice's `sliceLimit` property",
+    "sliceParent" to "the slice's `sliceParent` property",
+)
 
 internal fun String.capitalized(): String = replaceFirstChar { it.uppercaseChar() }
 
