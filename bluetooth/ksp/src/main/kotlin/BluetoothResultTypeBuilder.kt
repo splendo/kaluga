@@ -20,13 +20,11 @@ package com.splendo.kaluga.bluetooth.ksp
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.splendo.kaluga.bluetooth.ksp.helpers.DECODE_FROM_BYTE_ARRAY
 import com.splendo.kaluga.bluetooth.ksp.helpers.AS
-import com.splendo.kaluga.bluetooth.ksp.helpers.DROP
-import com.splendo.kaluga.bluetooth.ksp.helpers.ENCODE_TO_BYTE_ARRAY
+import com.splendo.kaluga.bluetooth.ksp.helpers.AttributeValue
+import com.splendo.kaluga.bluetooth.ksp.helpers.attributeValue
 import com.splendo.kaluga.bluetooth.ksp.helpers.ERROR
 import com.splendo.kaluga.bluetooth.ksp.helpers.FAILURE
-import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IS
 import com.splendo.kaluga.bluetooth.ksp.helpers.OR_NULL
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
@@ -37,20 +35,16 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RESPONSE
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SUCCESS
-import com.splendo.kaluga.bluetooth.ksp.helpers.TO_BYTE_ARRAY
 import com.splendo.kaluga.bluetooth.ksp.helpers.VAL
 import com.splendo.kaluga.bluetooth.ksp.helpers.VALUE
 import com.splendo.kaluga.bluetooth.ksp.helpers.WHEN
-import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
-import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothResultTypeBuilder(
     val classDeclaration: KSClassDeclaration,
@@ -66,7 +60,9 @@ internal class BluetoothResultTypeBuilder(
             }
     }
 
-    internal val hasCustomResult = !propertyDeclaration.isByteArray
+    private val value = propertyDeclaration.attributeValue(options)
+
+    internal val hasCustomResult = value != AttributeValue.Bytes
 
     val responseClassName: ClassName get() = if (hasCustomResult) {
         val className = NameHelper.nameFor(classDeclaration, if (options.generateClient) GenerationType.CLIENT_API else GenerationType.SERVER_API, options)
@@ -76,7 +72,7 @@ internal class BluetoothResultTypeBuilder(
     }
 
     fun generateType() = if (hasCustomResult) {
-        val valueType = propertyDeclaration.type.resolve().toTypeName()
+        val valueType = value.typeName
         val successClassName = responseClassName.nestedClass(SUCCESS)
         TypeSpec.classBuilder(responseClassName)
             .addModifiers(KModifier.SEALED)
@@ -149,11 +145,7 @@ internal class BluetoothResultTypeBuilder(
             CodeBlock.builder()
                 .beginControlFlow("$RETURN $WHEN ($VAL $readResult = $attributeName.$READ())")
                 .beginControlFlow("$IS %T ->", References.Bluetooth.readSuccess)
-                .addStatement(
-                    "%T.$SUCCESS($FORMAT.$DECODE_FROM_BYTE_ARRAY(%L, $readResult.$VALUE))",
-                    responseClassName,
-                    propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                )
+                .addStatement("%T.$SUCCESS(%L)", responseClassName, value.decode(CodeBlock.of("$readResult.$VALUE")))
                 .endControlFlow()
                 .beginControlFlow("$IS %T ->", References.Bluetooth.readError)
                 .addStatement("%T.$FAILURE($readResult)", responseClassName)
@@ -169,11 +161,7 @@ internal class BluetoothResultTypeBuilder(
         CodeBlock.builder()
             .beginControlFlow("$WHEN ($VAL $RESPONSE = %L)) {", addReadStatement)
             .beginControlFlow("$IS %T.$SUCCESS -> {", responseClassName)
-            .addStatement(
-                "%T($FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, $RESPONSE.$RESPONSE).$DROP($OFFSET).$TO_BYTE_ARRAY())",
-                References.Bluetooth.readSuccess,
-                propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-            )
+            .addStatement("%T(%L)", References.Bluetooth.readSuccess, value.encode(CodeBlock.of("$RESPONSE.$RESPONSE"), OFFSET))
             .endControlFlow()
             .beginControlFlow("$IS %T.$FAILURE -> {", responseClassName)
             .addStatement("$RESPONSE.$ERROR")

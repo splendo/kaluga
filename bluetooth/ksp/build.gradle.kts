@@ -10,6 +10,10 @@ dependencies {
     implementation(project(":bluetooth:annotations"))
     implementation(project(":ksp:processor-support"))
     testImplementation(kotlin("test-junit5"))
+    testImplementation(project(":bytes:annotations"))
+    testImplementation(project(":bytes:ksp"))
+    testImplementation(libs.kctfork.core)
+    testImplementation(libs.kctfork.ksp)
 }
 
 tasks.withType<Test>().configureEach {
