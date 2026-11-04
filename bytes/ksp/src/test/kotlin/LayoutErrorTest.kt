@@ -374,6 +374,40 @@ class LayoutErrorTest {
     )
 
     @Test
+    fun `rejects a signed number in fewer flag bits than a byte`() = assertLayoutError(
+        "test.Header",
+        "'mode' packs a signed number into 2 flag bits, so 2 reads back as -2 and values above 1 cannot be encoded; a field narrower than a byte must be unsigned: " +
+            "declare it as UByte or annotate it @Unsigned",
+        """
+        @BytesLayout
+        interface Header {
+            @FlagIndex(0)
+            @FlagWidth(2)
+            val mode: Byte
+        }
+        """,
+    )
+
+    @Test
+    fun `accepts unsigned numbers in fewer flag bits than a byte`() = listOf("DATA", "VIEW").forEach { generate ->
+        val compilation = BytesCompilation(
+            layoutSource(
+                """
+                @BytesLayout
+                interface Header {
+                    @FlagIndex(0) @FlagWidth(2) val mode: UByte
+                    @FlagIndex(2) @FlagWidth(3) @Unsigned val level: Int
+                    @FlagIndex(5) @FlagWidth(11) val offset: Short
+                    val step: Byte
+                }
+                """,
+            ),
+            generate = generate,
+        )
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, "$generate: ${compilation.result.messages}")
+    }
+
+    @Test
     fun `rejects a sealed parent that is not a layout`() = assertLayoutError(
         "test.Leaf",
         "@BytesLayout test.Leaf extends sealed test.Group, which is not a @BytesLayout. A layout's sealed super-interface is the layout it is dispatched from " +

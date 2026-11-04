@@ -63,8 +63,8 @@ abstract class NumbersSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
 
         validateEncoding(EncodeNumericInFlagsFixturesNibbleData(0xA), byteArrayOf(0x0A))
 
-        validateEncoding(EncodeNumericInFlagsFixturesSignedData(-3), byteArrayOf(0x0D))
-        validateEncoding(EncodeNumericInFlagsFixturesSignedData(7), byteArrayOf(0x07))
+        validateEncoding(EncodeNumericInFlagsFixturesSignedData(-3), byteArrayOf(0xFD.toByte(), 0x0F))
+        validateEncoding(EncodeNumericInFlagsFixturesSignedData(7), byteArrayOf(0x07, 0x00))
     }
 
     @Test

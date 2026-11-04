@@ -42,6 +42,7 @@ import com.splendo.kaluga.bytes.annotations.Range
 import com.splendo.kaluga.bytes.annotations.Scalar
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.Unsigned
+import com.splendo.kaluga.bytes.layout.InvalidNumericSettings
 import com.splendo.kaluga.bytes.annotations.Encoded
 import com.splendo.kaluga.bytes.annotations.KeyEncoded
 import com.splendo.kaluga.bytes.strings.Encoding
@@ -142,15 +143,15 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         // A sub-byte numeric subfield of a bit field: @FlagIndex + @FlagWidth and no @Size packs the value straight into
         // the flag region, least-significant bit first (like an enum ordinal), rather than as body bytes.
         @Serializable
-        data class Packed(@FlagIndex(0) @FlagWidth(bits = 4) val nibble: Int, @FlagIndex(4) @FlagWidth(bits = 12) val wide: Int)
+        data class Packed(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val nibble: Int, @FlagIndex(4) @FlagWidth(bits = 12) val wide: Int)
 
         // A single unsigned 4-bit value occupies one flags byte (the high nibble stays zero).
         @Serializable
         data class Nibble(@Unsigned @FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
 
-        // A signed sub-byte value round-trips through two's-complement sign extension: -3 in 4 bits = 0b1101.
+        // A signed value round-trips through two's-complement sign extension: -3 in 12 bits = 0xFFD.
         @Serializable
-        data class Signed(@FlagIndex(0) @FlagWidth(bits = 4) val value: Int)
+        data class Signed(@FlagIndex(0) @FlagWidth(bits = 12) val value: Int)
     }
 
     @Test
@@ -160,8 +161,28 @@ class BytesFormatNumbersTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
         validateEncoding(EncodeNumericInFlagsFixtures.Nibble(0xA), byteArrayOf(0x0A))
 
-        validateEncoding(EncodeNumericInFlagsFixtures.Signed(-3), byteArrayOf(0x0D))
-        validateEncoding(EncodeNumericInFlagsFixtures.Signed(7), byteArrayOf(0x07))
+        validateEncoding(EncodeNumericInFlagsFixtures.Signed(-3), byteArrayOf(0xFD.toByte(), 0x0F))
+        validateEncoding(EncodeNumericInFlagsFixtures.Signed(7), byteArrayOf(0x07, 0x00))
+    }
+
+    private object RejectsSignedNumericInFewerFlagBitsThanAByteFixtures {
+        @Serializable
+        data class Mode(@FlagIndex(0) @FlagWidth(bits = 2) val mode: Byte)
+    }
+
+    @Test
+    fun rejectsSignedNumericInFewerFlagBitsThanAByte() {
+        val error = assertFailsWith<InvalidNumericSettings> {
+            BytesFormat.encodeToByteArray(RejectsSignedNumericInFewerFlagBitsThanAByteFixtures.Mode.serializer(), RejectsSignedNumericInFewerFlagBitsThanAByteFixtures.Mode(1))
+        }
+        assertEquals(
+            "'mode' packs a signed number into 2 flag bits, so 2 reads back as -2 and values above 1 cannot be encoded; a field narrower than a byte must be unsigned: " +
+                "declare it as UByte or annotate it @Unsigned",
+            error.message,
+        )
+        assertFailsWith<InvalidNumericSettings> {
+            BytesFormat.decodeFromByteArray(RejectsSignedNumericInFewerFlagBitsThanAByteFixtures.Mode.serializer(), byteArrayOf(0x01))
+        }
     }
 
     private object RejectsNumericTooLargeForFlagWidthFixtures {

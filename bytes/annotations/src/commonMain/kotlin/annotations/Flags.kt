@@ -89,7 +89,8 @@ annotation class Reserved(val before: Int = 0, val after: Int = 0)
  * If applied to an enum, its ordinal is stored in the flags starting at [index], across enough bits for all its
  * cases (i.e. `ceil(log2(caseCount))`) unless a wider [FlagWidth] is given.
  * If applied to an integer with [@FlagWidth][FlagWidth] but no [@Size][Size], the integer value is packed
- * directly into the flag bits (sub-byte numeric subfield).
+ * directly into the flag bits (sub-byte numeric subfield). It is signed, in two's complement within its bits, unless its
+ * type is unsigned or it is [@Unsigned][Unsigned]. A signed one narrower than a byte is rejected as an invalid layout.
  * If applied to a List/Map together with [@LengthPrefix][LengthPrefix], the element count is packed into
  * the flag header bits starting at [index] (8 bits for byte-length, 16 bits for short-length).
  *

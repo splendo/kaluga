@@ -108,6 +108,7 @@ object EncodeNumericInFlagsFixtures {
     // the flag region, least-significant bit first (like an enum ordinal), rather than as body bytes.
     @BytesLayout
     interface Packed {
+        @Unsigned
         @FlagIndex(0)
         @FlagWidth(bits = 4)
         val nibble: Int
@@ -126,11 +127,12 @@ object EncodeNumericInFlagsFixtures {
         val value: Int
     }
 
-    // A signed sub-byte value round-trips through two's-complement sign extension: -3 in 4 bits = 0b1101.
+    // A signed value round-trips through two's-complement sign extension: -3 in 12 bits = 0xFFD. The code generator
+    // only accepts it from a byte up; a field narrower than a byte must be unsigned.
     @BytesLayout
     interface Signed {
         @FlagIndex(0)
-        @FlagWidth(bits = 4)
+        @FlagWidth(bits = 12)
         val value: Int
     }
 }

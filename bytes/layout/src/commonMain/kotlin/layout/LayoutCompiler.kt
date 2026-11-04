@@ -236,6 +236,9 @@ object LayoutCompiler {
             customIndex != null && !isNullable && annotations.filterIsInstance<Size>().isEmpty() &&
                 kind in setOf(TypeKind.BYTE, TypeKind.SHORT, TypeKind.INT, TypeKind.LONG)
         }
+        if (numericInFlagsBits != null && numericInFlagsBits < Byte.SIZE_BITS && annotations.none { it is Unsigned }) {
+            throw InvalidNumericSettings(signedFlagBitsMessage(fieldName, kind, numericInFlagsBits))
+        }
         val numericSettings = numericSettings(supportedLengths, kind, desiredFlagBitWidth, annotations, numericInFlagsBits)
         val stringSettings = stringSettings(kind, annotations, supportedLengths)
         val collectionSettings = collectionSettings(kind, annotations, desiredFlagBitWidth, supportedLengths)
@@ -477,6 +480,20 @@ object LayoutCompiler {
     private fun flagWidthForCases(cases: Int) = when {
         cases <= 1 -> 0
         else -> 32 - (cases - 1).countLeadingZeroBits()
+    }
+
+    // Below a byte no Kotlin type has the field's width, so a signed type there is mostly a `Byte` taken for its size,
+    // and two's complement would only show on the first value above the sign bit.
+    private fun signedFlagBitsMessage(fieldName: String, kind: TypeKind, bits: Int): String {
+        val firstNegative = 1L shl (bits - 1)
+        val unsignedType = when (kind) {
+            TypeKind.BYTE -> "UByte"
+            TypeKind.SHORT -> "UShort"
+            TypeKind.INT -> "UInt"
+            else -> "ULong"
+        }
+        return "'$fieldName' packs a signed number into $bits flag bits, so $firstNegative reads back as -$firstNegative and values above " +
+            "${firstNegative - 1} cannot be encoded; a field narrower than a byte must be unsigned: declare it as $unsignedType or annotate it @Unsigned"
     }
 
     private fun numericSettings(
