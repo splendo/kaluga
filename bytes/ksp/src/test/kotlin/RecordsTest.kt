@@ -101,6 +101,17 @@ class RecordsTest {
         }
 
         @BytesLayout
+        @LengthPrefix
+        @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST, excludeStructure = true)
+        sealed interface Strict {
+            @BytesLayout
+            @SerializedByteValue(0x01, 0x02)
+            interface A : Strict {
+                val a: Byte
+            }
+        }
+
+        @BytesLayout
         sealed interface Command {
             @BytesLayout
             @SerializedByteValue(0x01)
@@ -213,6 +224,25 @@ class RecordsTest {
                 val message = BytesFormat.encodeToByteArray(MessageData.serializer(), MessageValueData(0x0102))
                 if (!messageValue(0x0100u, byteArrayOf(1, 2), 0, 2).contentEquals(message)) add("framed record " + messageValue(0x0100u, byteArrayOf(1, 2), 0, 2).toList())
 
+                // The value of a record held apart from its type, viewed as a list of records gives it.
+                val wrap: (UByte, ByteArray, Int, Int) -> Reading = ReadingFrame.Companion::wrapValue
+                val held = byteArrayOf(9) + value + byteArrayOf(9)
+                val known = wrap(0x20u, held, 1, held.size - 1)
+                if ((known as Reading.Temperature).celsius != 16.toShort() || known.step != 2 || known != ReadingFrame.wrap(temperature).value) add("wrapValue " + known)
+                val unknownValue = ReadingFrame.wrapValue(0x99u, held, 1, held.size - 1) as Reading.Other
+                if (unknownValue.type != 0x99.toUByte() || unknownValue.step != 2 || unknownValue.value != listOf<Byte>(0x10, 0)) add("wrapValue unknown " + unknownValue)
+                if ((unknownValue as ReadingOtherSlice1).toData() != ReadingOtherData(2, 0x99u, listOf(0x10, 0)) || unknownValue != ReadingFrame.wrap(unknown).value) {
+                    add("wrapValue unknown data " + unknownValue)
+                }
+                if (unknownValue == ReadingFrame.wrapValue(0x98u, held, 1, held.size - 1)) add("wrapValue discriminator equality")
+                held[3] = 0x11
+                if (known.celsius != 0x11.toShort()) add("wrapValue in place " + known)
+                if (MessageFrame.wrapValue(0x0100u, byteArrayOf(1, 2)) != MessageFrame.wrap(message).value) add("wrapValue framed " + MessageFrame.wrapValue(0x0100u, byteArrayOf(1, 2)))
+                if ((MessageFrame.wrapValue(0x0300u, byteArrayOf(4)) as Message.Other).type != 0x0300.toUShort()) add("wrapValue framed fallback")
+                if (runCatching { StrictFrame.wrapValue(0x05u, byteArrayOf(1)) }.exceptionOrNull() !is NoSuchElementException) add("wrapValue without a fallback")
+                if (!StrictFrame.encodeRecord(0x05u, byteArrayOf(1)).contentEquals(byteArrayOf(0, 5, 1, 1))) add("encodeRecord without a fallback")
+                if ((StrictFrame.wrapValue(0x0102u, byteArrayOf(7)) as Strict.A).a != 7.toByte()) add("wrapValue without a fallback " + StrictFrame.wrapValue(0x0102u, byteArrayOf(7)))
+
                 for (command in listOf(CommandStartData(3), CommandUnsupportedData(7u, listOf(1, 2)))) {
                     val expected = BytesFormat.encodeToByteArray(CommandData.serializer(), command)
                     val frame = CommandFrame.encode(command)
@@ -271,6 +301,8 @@ class RecordsTest {
                 if (FramedFrame.wrap(ended).toData() != FramedEndedData(listOf(1, 2))) add("ended " + FramedFrame(ended))
                 val cut = byteArrayOf(0x11, 1, 7, 0x15)
                 if (runCatching { FollowedView.wrap(cut) }.exceptionOrNull() !is ByteArrayEndedBeforeSerializationCompleted) add("cut checksum")
+                if ((FramedFrame.wrapValue(0x10u, byteArrayOf(1, 2, 0x55)) as Framed.Ended).data != listOf<Byte>(1, 2)) add("ended value held apart")
+                if (runCatching { FramedFrame.wrapValue(0x11u, byteArrayOf()) }.exceptionOrNull() !is ByteArrayEndedBeforeSerializationCompleted) add("cut checksum held apart")
             }
             """.trimIndent(),
         )

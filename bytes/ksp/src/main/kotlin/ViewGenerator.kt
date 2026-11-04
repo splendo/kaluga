@@ -23,6 +23,7 @@ import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.annotations.Generate
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.layout.ChecksumSpec
+import com.splendo.kaluga.bytes.layout.NumericCodec
 import com.splendo.kaluga.bytes.layout.NumericSettings
 import com.splendo.kaluga.bytes.layout.TypeKind
 import com.squareup.kotlinpoet.ANY
@@ -1536,7 +1537,62 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 .addStatement("%T.checkWrapRange(value, from, to)", VIEW_BYTES)
                 .addStatement("return %T(recordSize(to - from)).also { writeRecord(it, 0, $DISCRIMINATOR, value, from, to) }", BYTE_ARRAY)
                 .build(),
+            FunSpec.builder("wrapValue")
+                .addKdoc(
+                    "A view of the value of a record of [discriminator] held in `[from, to)` of [bytes] apart from its type, read in place: the view of the " +
+                        "subtype [discriminator] names that a list of these records gives, or %L. Like a record of a list it is read as its " +
+                        "properties are, so only the range is checked here.",
+                    if (plan.fallback ==
+                        null
+                    ) {
+                        "for a discriminator no subtype has, a [NoSuchElementException]"
+                    } else {
+                        "for a discriminator no other subtype has, the `@Fallback` holding it"
+                    },
+                )
+                .addParameter(DISCRIMINATOR, type)
+                .addParameter("bytes", BYTE_ARRAY)
+                .addParameter(ParameterSpec.builder("from", INT).defaultValue("0").build())
+                .addParameter(ParameterSpec.builder("to", INT).defaultValue("bytes.size").build())
+                .returns(layout.interfaceClassName)
+                .addStatement("%T.checkWrapRange(bytes, from, to)", VIEW_BYTES)
+                .addStatement("return %T.wrapValue($DISCRIMINATOR, bytes, from, to)", root.layoutName)
+                .build(),
         )
+    }
+
+    /** The view of the value of a record held apart from its discriminator; see [recordFunctions]. */
+    private fun wrapValue(layout: Layout, plan: SealedPlan): FunSpec {
+        val discriminator = plan.recordDiscriminator!!
+        val access = discriminator.access as Access.Number
+        val settings = access.settings as NumericSettings.Natural
+        val length = (access.width as Width.Fixed).length
+        val function = FunSpec.builder("wrapValue")
+            .addParameter(DISCRIMINATOR, discriminator.typeName())
+            .addParameter("b", BYTE_ARRAY)
+            .addParameter("s", INT)
+            .addParameter("lim", INT)
+            .returns(layout.interfaceClassName)
+            .beginControlFlow("return when (%L)", toLong(discriminator.value.leafKind, unwrap(discriminator.value, CodeBlock.of(DISCRIMINATOR)), !settings.signed))
+
+        // As in a record of a list, the value counts the leaf's own checksum and postfix.
+        fun limit(index: Int): CodeBlock {
+            val footer = plan.leaves[index].context.plan!!.getOrThrow().footer
+            return if (footer == 0) CodeBlock.of("lim") else CodeBlock.of("bodyLimit(s, lim, %L)", footer)
+        }
+        // The first subtype with a discriminator wins, as in the dispatch over the bytes.
+        plan.leaves.indices.filter { it != plan.fallback }
+            .map { index -> NumericCodec.readNatural(plan.leaves[index].discriminator!!, 0, length, settings.signed, access.readOrder) to index }
+            .distinctBy { it.first }
+            .forEach { (number, index) ->
+                function.addStatement("%L -> %T(b, s, %L)", if (number == Long.MIN_VALUE) "Long.MIN_VALUE" else "${number}L", plan.leaves[index].context.sliceName, limit(index))
+            }
+        if (plan.fallback != null) {
+            function.addStatement("else -> %T(b, s, %L, null, $DISCRIMINATOR)", plan.leaves[plan.fallback].context.sliceName, limit(plan.fallback))
+        } else {
+            function.addStatement("else -> throw %T(%P)", NO_SUCH_ELEMENT_EXCEPTION, CodeBlock.of("No subtype of ${plan.serialName} has the discriminator \$$DISCRIMINATOR"))
+        }
+        return function.endControlFlow().build()
     }
 
     /** Writes a record from a discriminator and value bytes held apart; see [recordFunctions]. */
@@ -1823,7 +1879,10 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         write.addStatement(if (plan.footer == 0) "return $BODY_END" else "return $BODY_END + %L", plan.footer)
         builder.addFunction(write.build())
 
-        if (root && record != null) builder.addFunction(writeRecord(plan))
+        if (root && record != null) {
+            builder.addFunction(writeRecord(plan))
+            builder.addFunction(wrapValue(layout, plan))
+        }
 
         if (Generate.DATA in layout.generate) {
             val toData = FunSpec.builder("toData").addParameter("value", layout.interfaceClassName).returns(layout.dataClassName)
@@ -2855,6 +2914,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val SERIALIZATION_EXCEPTION = ClassName("kotlinx.serialization", "SerializationException")
         val FIXED_STRIDE_LIST = ClassName("com.splendo.kaluga.bytes.view", "FixedStrideList")
         val RUNTIME_EXCEPTION = ClassName("kotlin", "RuntimeException")
+        val NO_SUCH_ELEMENT_EXCEPTION = ClassName("kotlin", "NoSuchElementException")
     }
 }
 
