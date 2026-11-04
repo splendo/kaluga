@@ -109,7 +109,7 @@ val viewDecoded = HeartRateView.wrap(encoded)
 ```
 
 For a more complex example involving enums, sealed classes and nested structures, see [`example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt`](example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt).
-For a stream of type-length-value records, each a type, a length and that many bytes, read back to back with unknown types kept, see [`RecordFixtures.kt`](example/validation/format/src/commonMain/kotlin/RecordFixtures.kt).
+For a stream of type-length-value records, each a type, a length and that many bytes, read back to back with unknown types kept and their shared time step read, see [`RecordFixtures.kt`](example/validation/format/src/commonMain/kotlin/RecordFixtures.kt).
 
 ## SerialName note for sealed/enum class discriminators
 
