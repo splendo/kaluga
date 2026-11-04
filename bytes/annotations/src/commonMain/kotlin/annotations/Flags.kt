@@ -162,13 +162,20 @@ annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FI
  * places the count before unrelated body fields that precede the list data (e.g. a packet header
  * that has [count][2B] [otherField][4B] [anotherField][4B] [items…]).
  *
+ * **On a sealed class whose subtypes have a [@SerializedByteValue][SerializedByteValue]**: every value is written as
+ * a type-length-value record, its discriminator, then the number of bytes of the subtype that follow, then those
+ * bytes. The length bounds the subtype when decoding: bytes it has beyond its
+ * fields are skipped, an [@Unsized][Unsized] last property runs to its end, and a [@Fallback][Fallback] subtype
+ * reads any discriminator no other subtype has. The length is a byte, or a 16-bit number in the class's byte order
+ * with [lengthAsShort]; [canOverflow] does not apply.
+ *
  * @property lengthAsShort if `true` will use [StringEncodingSettings.LengthPrefix.ShortLength] (16-bit count)
  * @property canOverflow if `true` will use [StringEncodingSettings.LengthPrefix.WithOverflow] (also 16-bit when combined with [@FlagIndex][FlagIndex])
  * @property sentinel the [Byte] to use as the sentinel for [StringEncodingSettings.LengthPrefix.WithOverflow]
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
-@Target(AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflow: Boolean = false, val sentinel: Byte = 0xFF.toByte())
 
 /**
@@ -344,6 +351,25 @@ annotation class Count(val count: Int)
 @SerialInfo
 @Target(AnnotationTarget.CLASS)
 annotation class SizePolymorphic
+
+/**
+ * Annotation added for serializing using BytesFormat
+ *
+ * Marks the subtype of a sealed class that is decoded for any discriminator none of its other subtypes has, so a
+ * reader can skip a type it does not know and keep going. It has no [@SerializedByteValue][SerializedByteValue]:
+ * its first property holds the discriminator itself, a number of the discriminators' size, and an encoder writes
+ * that number where the discriminator goes. With [@LengthPrefix][LengthPrefix] on the sealed class the length follows
+ * it, and the remaining properties lay out the bytes the length counts, so an [@Unsized][Unsized] `ByteArray` holds
+ * them as they were. A fallback with a discriminator another subtype has is not encoded, as it would read back as
+ * that subtype.
+ *
+ * At most one subtype is a fallback. It cannot have a flag header, a [Prefix], a [Postfix] or a [Checksum], which
+ * would come before or around the discriminator; put such fields in a layout it holds after its first property.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS)
+annotation class Fallback
 
 /**
  * Annotation added for serializing using BytesFormat

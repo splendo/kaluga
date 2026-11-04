@@ -45,6 +45,7 @@ public final class com/splendo/kaluga/bytes/view/ViewBytes {
 	public final fun checkWrapRange ([BII)V
 	public final fun clear ([BII)V
 	public final fun entry (Ljava/util/List;ILjava/lang/String;)Ljava/lang/Enum;
+	public final fun findIndex ([BI[[BI)I
 	public final fun hex ([BII)Ljava/lang/String;
 	public final fun matchIndex ([BI[[BI)I
 	public final fun matches ([BI[BI)Z

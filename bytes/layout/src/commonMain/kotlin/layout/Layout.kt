@@ -168,9 +168,19 @@ sealed interface TypeLayout {
      * @property sizeDispatch when non-empty, the subtype is selected by remaining payload byte count instead of a byte prefix.
      * @property sizeFallback the subtype used when no [sizeDispatch] entry matches; allows one variable-size subtype.
      * @property elements the `type` and `value` elements; the latter is [Contextual] with the subtypes as its children.
+     * @property lengthPrefix when non-null, every subtype is a type-length-value record: its discriminator, then the
+     * number of bytes that follow in this marking, then the subtype, which those bytes bound.
+     * @property fallback the subtype decoded for a discriminator no other subtype has, which its first field holds.
+     * Under a [lengthPrefix] that field has the length bytes reserved after it.
      */
-    data class Sealed(val discriminators: Map<String, ByteArrayHolder>, val sizeDispatch: Map<Int, String>, val sizeFallback: String?, val elements: List<FieldLayout>) :
-        TypeLayout {
+    data class Sealed(
+        val discriminators: Map<String, ByteArrayHolder>,
+        val sizeDispatch: Map<Int, String>,
+        val sizeFallback: String?,
+        val elements: List<FieldLayout>,
+        val lengthPrefix: StringEncodingSettings.LengthPrefix? = null,
+        val fallback: String? = null,
+    ) : TypeLayout {
         override val children: List<FieldLayout> get() = elements
     }
 

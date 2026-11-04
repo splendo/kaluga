@@ -186,7 +186,7 @@ sealed interface com.splendo.kaluga.bytes.layout/TypeLayout { // com.splendo.kal
     }
 
     final class Sealed : com.splendo.kaluga.bytes.layout/TypeLayout { // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed|null[0]
-        constructor <init>(kotlin.collections/Map<kotlin/String, com.splendo.kaluga.bytes.layout/ByteArrayHolder>, kotlin.collections/Map<kotlin/Int, kotlin/String>, kotlin/String?, kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout>) // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.<init>|<init>(kotlin.collections.Map<kotlin.String,com.splendo.kaluga.bytes.layout.ByteArrayHolder>;kotlin.collections.Map<kotlin.Int,kotlin.String>;kotlin.String?;kotlin.collections.List<com.splendo.kaluga.bytes.layout.FieldLayout>){}[0]
+        constructor <init>(kotlin.collections/Map<kotlin/String, com.splendo.kaluga.bytes.layout/ByteArrayHolder>, kotlin.collections/Map<kotlin/Int, kotlin/String>, kotlin/String?, kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout>, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix? = ..., kotlin/String? = ...) // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.<init>|<init>(kotlin.collections.Map<kotlin.String,com.splendo.kaluga.bytes.layout.ByteArrayHolder>;kotlin.collections.Map<kotlin.Int,kotlin.String>;kotlin.String?;kotlin.collections.List<com.splendo.kaluga.bytes.layout.FieldLayout>;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix?;kotlin.String?){}[0]
 
         final val children // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.children|{}children[0]
             final fun <get-children>(): kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout> // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.children.<get-children>|<get-children>(){}[0]
@@ -194,6 +194,10 @@ sealed interface com.splendo.kaluga.bytes.layout/TypeLayout { // com.splendo.kal
             final fun <get-discriminators>(): kotlin.collections/Map<kotlin/String, com.splendo.kaluga.bytes.layout/ByteArrayHolder> // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.discriminators.<get-discriminators>|<get-discriminators>(){}[0]
         final val elements // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.elements|{}elements[0]
             final fun <get-elements>(): kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout> // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.elements.<get-elements>|<get-elements>(){}[0]
+        final val fallback // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.fallback|{}fallback[0]
+            final fun <get-fallback>(): kotlin/String? // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.fallback.<get-fallback>|<get-fallback>(){}[0]
+        final val lengthPrefix // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.lengthPrefix|{}lengthPrefix[0]
+            final fun <get-lengthPrefix>(): com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix? // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.lengthPrefix.<get-lengthPrefix>|<get-lengthPrefix>(){}[0]
         final val sizeDispatch // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.sizeDispatch|{}sizeDispatch[0]
             final fun <get-sizeDispatch>(): kotlin.collections/Map<kotlin/Int, kotlin/String> // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.sizeDispatch.<get-sizeDispatch>|<get-sizeDispatch>(){}[0]
         final val sizeFallback // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.sizeFallback|{}sizeFallback[0]
@@ -203,7 +207,9 @@ sealed interface com.splendo.kaluga.bytes.layout/TypeLayout { // com.splendo.kal
         final fun component2(): kotlin.collections/Map<kotlin/Int, kotlin/String> // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.component2|component2(){}[0]
         final fun component3(): kotlin/String? // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.component3|component3(){}[0]
         final fun component4(): kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout> // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.component4|component4(){}[0]
-        final fun copy(kotlin.collections/Map<kotlin/String, com.splendo.kaluga.bytes.layout/ByteArrayHolder> = ..., kotlin.collections/Map<kotlin/Int, kotlin/String> = ..., kotlin/String? = ..., kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout> = ...): com.splendo.kaluga.bytes.layout/TypeLayout.Sealed // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.copy|copy(kotlin.collections.Map<kotlin.String,com.splendo.kaluga.bytes.layout.ByteArrayHolder>;kotlin.collections.Map<kotlin.Int,kotlin.String>;kotlin.String?;kotlin.collections.List<com.splendo.kaluga.bytes.layout.FieldLayout>){}[0]
+        final fun component5(): com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix? // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.component5|component5(){}[0]
+        final fun component6(): kotlin/String? // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.component6|component6(){}[0]
+        final fun copy(kotlin.collections/Map<kotlin/String, com.splendo.kaluga.bytes.layout/ByteArrayHolder> = ..., kotlin.collections/Map<kotlin/Int, kotlin/String> = ..., kotlin/String? = ..., kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout> = ..., com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix? = ..., kotlin/String? = ...): com.splendo.kaluga.bytes.layout/TypeLayout.Sealed // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.copy|copy(kotlin.collections.Map<kotlin.String,com.splendo.kaluga.bytes.layout.ByteArrayHolder>;kotlin.collections.Map<kotlin.Int,kotlin.String>;kotlin.String?;kotlin.collections.List<com.splendo.kaluga.bytes.layout.FieldLayout>;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix?;kotlin.String?){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/TypeLayout.Sealed.toString|toString(){}[0]
@@ -506,6 +512,10 @@ final class com.splendo.kaluga.bytes.layout/InvalidPrefix : kotlinx.serializatio
 
     final val message // com.splendo.kaluga.bytes.layout/InvalidPrefix.message|{}message[0]
         final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.layout/InvalidPrefix.message.<get-message>|<get-message>(){}[0]
+}
+
+final class com.splendo.kaluga.bytes.layout/InvalidSealedLayout : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidSealedLayout|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/InvalidSealedLayout.<init>|<init>(kotlin.String){}[0]
 }
 
 final class com.splendo.kaluga.bytes.layout/InvalidSizePolymorphic : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidSizePolymorphic|null[0]

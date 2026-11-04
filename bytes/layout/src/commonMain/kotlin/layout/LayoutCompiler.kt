@@ -31,6 +31,7 @@ import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
 import com.splendo.kaluga.bytes.annotations.Checksum
 import com.splendo.kaluga.bytes.annotations.Count
 import com.splendo.kaluga.bytes.annotations.Encoded
+import com.splendo.kaluga.bytes.annotations.Fallback
 import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
 import com.splendo.kaluga.bytes.annotations.ItemByteOrder
@@ -289,6 +290,10 @@ object LayoutCompiler {
             else -> elementChildren(shape, valueByteOrder, bitIndex, byteOrder)
         }
 
+        if (kind == TypeKind.STRUCTURE && shape.annotations.any { it is LengthPrefix }) {
+            throw InvalidSealedLayout("@LengthPrefix on '${shape.serialName}' only applies to a sealed class, whose subtypes it frames")
+        }
+
         val type = when (kind) {
             TypeKind.BOOLEAN -> TypeLayout.Bool
             TypeKind.BYTE, TypeKind.SHORT, TypeKind.INT, TypeKind.LONG, TypeKind.FLOAT, TypeKind.DOUBLE -> TypeLayout.Numeric(numericSettings!!)
@@ -298,7 +303,7 @@ object LayoutCompiler {
             TypeKind.STRUCTURE -> TypeLayout.Structure(children)
             TypeKind.LIST -> TypeLayout.ListLayout(collectionSettings!!, children.single())
             TypeKind.MAP -> TypeLayout.MapLayout(collectionSettings!!, children[0], children[1])
-            TypeKind.SEALED -> TypeLayout.Sealed(polymorphicMap, sizePolymorphicMap, sizePolymorphicFallback, children)
+            TypeKind.SEALED -> sealedType(shape, byteOrder, polymorphicMap, sizePolymorphicMap, sizePolymorphicFallback, children)
             TypeKind.OPEN -> TypeLayout.Open(polymorphicMap, children)
             TypeKind.CONTEXTUAL -> TypeLayout.Contextual(children)
         }
@@ -751,7 +756,8 @@ object LayoutCompiler {
         val (map, anyUsesClassName) = when (shape.kind) {
             TypeKind.SEALED -> {
                 val sealedShape = shape.element(1)
-                buildEntries((0..<sealedShape.elementsCount).map { sealedShape.element(it) })
+                // A fallback has no discriminator of its own; its first field holds whichever one it was read for.
+                buildEntries((0..<sealedShape.elementsCount).map { sealedShape.element(it) }.filter { option -> option.annotations.none { it is Fallback } })
             }
 
             TypeKind.OPEN -> buildEntries(shape.openSubtypes())
@@ -760,6 +766,74 @@ object LayoutCompiler {
         }
         if (!anyUsesClassName) validateDiscriminatorLengths(shape.serialName, map.values)
         return map
+    }
+
+    /**
+     * The [TypeLayout.Sealed] of [shape], accumulated in [byteOrder]: with a class `@LengthPrefix` its subtypes are
+     * type-length-value records, and a `@Fallback` subtype reads every discriminator the others do not have. The
+     * fallback's first field is the discriminator, so under a length prefix the length bytes are reserved after it.
+     */
+    private fun sealedType(
+        shape: TypeShape,
+        byteOrder: ByteOrder,
+        discriminators: Map<String, ByteArrayHolder>,
+        sizeDispatch: Map<Int, String>,
+        sizeFallback: String?,
+        children: List<FieldLayout>,
+    ): TypeLayout.Sealed {
+        val sealedShape = shape.element(1)
+        val name = shape.serialName
+        val sizePolymorphic = shape.annotations.any { it is SizePolymorphic }
+        val lengthPrefix = shape.annotations.filterIsInstance<LengthPrefix>().firstOrNull()?.let { annotation ->
+            if (sizePolymorphic) throw InvalidSealedLayout("@LengthPrefix on '$name' needs subtypes told apart by a discriminator, not by @SizePolymorphic")
+            if (annotation.canOverflow) throw InvalidSealedLayout("@LengthPrefix on '$name' has a byte or 16-bit length; canOverflow does not apply to it")
+            if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
+                throw InvalidSealedLayout(
+                    "@LengthPrefix on '$name' needs a frame accumulated LEAST_SIGNIFICANT_FIRST; use @ByteOrder(excludeStructure = true) for big-endian values",
+                )
+            }
+            annotation.asLengthPrefix()
+        }
+        val fallbacks = (0..<sealedShape.elementsCount).map { sealedShape.element(it) }.filter { option -> option.annotations.any { it is Fallback } }
+        if (fallbacks.size > 1) throw InvalidSealedLayout("'$name' has more than one @Fallback subtype: ${fallbacks.joinToString { it.serialName }}")
+        val fallback = fallbacks.singleOrNull()
+        if (fallback == null) return TypeLayout.Sealed(discriminators, sizeDispatch, sizeFallback, children, lengthPrefix)
+
+        val fallbackName = fallback.serialName
+        if (sizePolymorphic) throw InvalidSealedLayout("@Fallback '$fallbackName' needs subtypes told apart by a discriminator, not by @SizePolymorphic")
+        if (fallback.annotations.any {
+                it is SerializedByteValue
+            }
+        ) {
+            throw InvalidSealedLayout("@Fallback '$fallbackName' reads the discriminators of other subtypes, so it has no @SerializedByteValue")
+        }
+        if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
+            throw InvalidSealedLayout("@Fallback '$fallbackName' needs a frame accumulated LEAST_SIGNIFICANT_FIRST; use @ByteOrder(excludeStructure = true) for big-endian values")
+        }
+        val width = discriminators.values.map { it.array.size }.distinct().singleOrNull()
+            ?: throw InvalidSealedLayout("@Fallback '$fallbackName' needs other subtypes of '$name' with discriminators of one size, which its first property holds")
+        val value = children[1]
+        val option = value.type.children.first { it.name == fallbackName }
+        val fields = (option.type as? TypeLayout.Structure)?.fields
+        val type = fields?.firstOrNull()
+        val numeric = (type?.type as? TypeLayout.Numeric)?.settings as? NumericSettings.Natural
+        if (type == null || numeric == null || numeric.inFlagsBits != null || numeric.supportedLengths.singleOrNull()?.bytes != width || type.isNullable) {
+            throw InvalidSealedLayout("The first property of @Fallback '$fallbackName' holds the discriminator, so it must be a number of $width byte(s)")
+        }
+        if (option.headerBits > 0 || option.frame.prefix != null || option.frame.postfix != null || option.frame.checksum != null || option.frame.byteStuffing != null) {
+            throw InvalidSealedLayout(
+                "@Fallback '$fallbackName' starts with the discriminator, so it cannot have flag bits, a prefix, a postfix, a checksum or byte stuffing; hold those in a layout after its first property",
+            )
+        }
+        if (type.reservedBefore > 0 || type.reservedAfter > 0) throw InvalidSealedLayout("The discriminator of @Fallback '$fallbackName' cannot have @Reserved bytes around it")
+        val framed = if (lengthPrefix == null) {
+            option
+        } else {
+            option.copy(type = TypeLayout.Structure(listOf(type.copy(reservedAfter = lengthPrefix.expectedByteSize(0u))) + fields.orEmpty().drop(1)))
+        }
+        val options = value.type.children.map { if (it.name == fallbackName) framed else it }
+        val valueField = value.copy(type = TypeLayout.Contextual(options))
+        return TypeLayout.Sealed(discriminators, sizeDispatch, sizeFallback, listOf(children[0], valueField), lengthPrefix, fallbackName)
     }
 
     /**

@@ -60,6 +60,11 @@ internal data class BinaryDescriptor(
     // Reserved (padding) bytes to silently skip/write around this property on the wire.
     val reservedBefore: Int = 0,
     val reservedAfter: Int = 0,
+    // When non-null, every subtype of this sealed type follows its discriminator as a length in this marking and the
+    // bytes that length counts.
+    val lengthPrefix: StringEncodingSettings.LengthPrefix? = null,
+    // The subtype read for a discriminator no other subtype has, which its first field holds.
+    val polymorphicFallback: String? = null,
 ) {
 
     /**
@@ -126,6 +131,8 @@ internal fun FieldLayout.toBinaryDescriptor(): BinaryDescriptor {
         sizePolymorphicFallback = (type as? TypeLayout.Sealed)?.sizeFallback,
         reservedBefore = reservedBefore,
         reservedAfter = reservedAfter,
+        lengthPrefix = (type as? TypeLayout.Sealed)?.lengthPrefix,
+        polymorphicFallback = (type as? TypeLayout.Sealed)?.fallback,
     )
 }
 

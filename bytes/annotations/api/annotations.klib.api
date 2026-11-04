@@ -101,6 +101,10 @@ open annotation class com.splendo.kaluga.bytes.annotations/Encoded : kotlin/Anno
         final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.annotations/Encoded.encoding.<get-encoding>|<get-encoding>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bytes.annotations/Fallback : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Fallback|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/Fallback.<init>|<init>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bytes.annotations/FlagIndex : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/FlagIndex|null[0]
     constructor <init>(kotlin/Int) // com.splendo.kaluga.bytes.annotations/FlagIndex.<init>|<init>(kotlin.Int){}[0]
 

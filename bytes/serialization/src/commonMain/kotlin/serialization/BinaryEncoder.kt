@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bytes.serialization
 
+import com.splendo.kaluga.bytes.ByteArrayBuilder
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.medfloat.add
 import com.splendo.kaluga.bytes.strings.add
@@ -473,10 +474,14 @@ private class BinaryCompositeEncoder(
     override fun <T> encodeSerializableElement(descriptor: SerialDescriptor, index: Int, serializer: SerializationStrategy<T>, value: T) = withReserved(index) {
         when (descriptor.kind) {
             is PolymorphicKind.SEALED -> {
-                val binaryDescriptor = getBinaryDescriptor(index).children.first { binaryDescriptor ->
+                val subtype = getBinaryDescriptor(index).children.first { binaryDescriptor ->
                     binaryDescriptor.fieldName == serializer.descriptor.serialName
                 }
-                BinaryEncoder(binaryDescriptor, builder, serializersModule).encodeSerializableValue(serializer, value)
+                if (binaryDescriptor.lengthPrefix != null || subtype.fieldName == binaryDescriptor.polymorphicFallback) {
+                    encodeRecord(subtype, serializer, value)
+                } else {
+                    BinaryEncoder(subtype, builder, serializersModule).encodeSerializableValue(serializer, value)
+                }
             }
 
             is PolymorphicKind.OPEN -> {
@@ -491,6 +496,34 @@ private class BinaryCompositeEncoder(
         }
     }
 
+    /**
+     * Encodes [subtype] apart, as its size is needed before it: a type-length-value record writes it after the
+     * length of it, and a fallback is checked for a discriminator another subtype has. The fallback's first field is
+     * the discriminator, followed by the bytes its layout reserves for the length.
+     */
+    private fun <T> encodeRecord(subtype: BinaryDescriptor, serializer: SerializationStrategy<T>, value: T) {
+        val record = RecordBinaryBuilder()
+        BinaryEncoder(subtype, record, serializersModule).encodeSerializableValue(serializer, value)
+        val bytes = if (record.expectedSize == 0) ByteArray(0) else buildByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST, record.expectedSize) { with(record) { build() } }
+        val lengthPrefix = binaryDescriptor.lengthPrefix
+        if (subtype.fieldName == binaryDescriptor.polymorphicFallback) {
+            val width = binaryDescriptor.polymorphicMap.values.first().array.size
+            binaryDescriptor.polymorphicMap.entries.firstOrNull { (_, discriminator) -> discriminator.array.contentEquals(bytes.copyOfRange(0, width)) }?.let { (name, _) ->
+                throw IllegalArgumentException("@Fallback ${subtype.fieldName} has the discriminator of $name, so it would decode as that")
+            }
+            lengthPrefix?.copyEncodedSizeInto(bytes, (bytes.size - width - lengthPrefix.expectedByteSize(0u)).toUInt(), binaryDescriptor.childByteOrder, width)
+            builder.addAction(bytes.size) { add(bytes) }
+            // Only a length bounds what an unsized last field of the subtype takes.
+            if (lengthPrefix == null && record.isUnconstrained) builder.makeUnconstrained()
+        } else {
+            val length = lengthPrefix!!.encodeSize(bytes.size.toUInt(), binaryDescriptor.childByteOrder)
+            builder.addAction(length.size + bytes.size) {
+                add(length)
+                add(bytes)
+            }
+        }
+    }
+
     override fun encodeShortElement(descriptor: SerialDescriptor, index: Int, value: Short) = withReserved(index) {
         builder.encodeShortElement(value, getBinaryDescriptor(index))
     }
@@ -501,6 +534,8 @@ private class BinaryCompositeEncoder(
                 // Size-polymorphic: the payload size is the implicit discriminator — nothing to write.
                 return
             }
+            // A fallback writes the discriminator it holds itself.
+            if (value == binaryDescriptor.polymorphicFallback) return
             // Byte-prefix-based: write the type identifier bytes.
             binaryDescriptor.polymorphicMap[value]?.array?.let {
                 builder.addAction(it.size) {
@@ -514,6 +549,32 @@ private class BinaryCompositeEncoder(
 
     override fun endStructure(descriptor: SerialDescriptor) {
         onFinishStructure()
+    }
+}
+
+/** Collects the bytes of one subtype, which only nests the structure it encodes. */
+private class RecordBinaryBuilder : BinaryBuilder {
+    private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
+    override var expectedSize: Int = 0
+        private set
+
+    override fun addFlag(index: Int, value: Boolean) = error("A subtype has no flag bits outside its own structure")
+    override fun addBit(value: Boolean) = error("A subtype has no bits outside its own structure")
+
+    override fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit) {
+        this.expectedSize += expectedSize
+        actions += action
+    }
+
+    var isUnconstrained: Boolean = false
+        private set
+
+    override fun makeUnconstrained() {
+        isUnconstrained = true
+    }
+
+    override fun ByteArrayBuilder.build() {
+        actions.forEach { it() }
     }
 }
 
