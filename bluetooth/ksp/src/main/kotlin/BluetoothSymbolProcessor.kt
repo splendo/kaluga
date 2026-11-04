@@ -204,6 +204,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
             )
             typesToAdd.forEach { generationType ->
                 builder.generateExtensionFactories(generationType).forEach { addFunction(it) }
+                builder.generateTopLevelFunctions(generationType).forEach { addFunction(it) }
             }
             generate(sourceFiles)
         }

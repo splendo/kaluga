@@ -33,7 +33,10 @@ import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
 import com.splendo.kaluga.bluetooth.ksp.helpers.AttributeValue
 import com.splendo.kaluga.bluetooth.ksp.helpers.attributeValue
+import com.splendo.kaluga.bluetooth.ksp.helpers.BYTES
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
+import com.splendo.kaluga.bluetooth.ksp.helpers.COLLECT
+import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION_PARAMETER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTICS
 import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTORS
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
@@ -58,6 +61,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.orNullIfNullable
 import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.BYTE_ARRAY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -68,6 +72,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.UNIT
 
 internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclaration, private val characteristic: BluetoothCharacteristic, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
@@ -303,6 +308,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     if (!hasNotifiableProperty) {
                         hasNotifiableProperty = true
                         addProperty(generateNotifiableProperty(propertyDeclaration, type))
+                        generateNotifiableBytesProperty(propertyDeclaration, type)?.let { addProperty(it) }
                         addProperty(generateIsNotifyingProperty(type))
                     } else {
                         logOnlyOneProperty(Notifiable::class, Indicatable::class)
@@ -435,6 +441,48 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 }
             }
         }.build()
+
+    /**
+     * The undecoded notifications of a [propertyDeclaration] read through a view, which [collectFunction] collects. The
+     * API derives it from the views; only the Bluetooth implementation has the bytes before they are wrapped.
+     */
+    private fun generateNotifiableBytesProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec? {
+        if (propertyDeclaration.attributeValue(options) !is AttributeValue.View) return null
+        val name = propertyDeclaration.simpleName.asString()
+        val getter = when (type) {
+            GenerationType.Type.API -> FunSpec.getterBuilder().addStatement("$RETURN %N.%M { $IT.bytes }", name, References.KotlinX.Coroutines.Flow.map).build()
+            GenerationType.Type.BLUETOOTH -> FunSpec.getterBuilder().addStatement("$RETURN $CHARACTERISTIC.%M()", References.Bluetooth.value).build()
+            GenerationType.Type.SIMULATOR, GenerationType.Type.MOCK -> return null
+        }
+        return PropertySpec.builder("$name$BYTES", References.KotlinX.Coroutines.Flow.flow.parameterizedBy(BYTE_ARRAY))
+            .apply { if (type == GenerationType.Type.BLUETOOTH) addModifiers(KModifier.OVERRIDE) }
+            .getter(getter)
+            .build()
+    }
+
+    override fun topLevelFunctions(generationType: GenerationType): List<FunSpec> = listOfNotNull(
+        declarations.filterIsInstance<KSPropertyDeclaration>().firstOrNull { it.isNotifiable }?.takeIf { generationType == GenerationType.CLIENT_API }?.let(::collectFunction),
+    )
+
+    /**
+     * Collects the notifications of a [notifiable] read through a view without boxing one per notification, which
+     * collecting its `Flow` of views does: the view is created inside the inlined action, from the undecoded bytes.
+     */
+    private fun collectFunction(notifiable: KSPropertyDeclaration): FunSpec? {
+        val view = notifiable.attributeValue(options) as? AttributeValue.View ?: return null
+        val name = notifiable.simpleName.asString()
+        return FunSpec.builder("$COLLECT${name.replaceFirstChar { it.uppercase() }}")
+            .addKdoc("Collects [%N] like `%N.collect(action)` does, without allocating a [%T] per notification.", name, name, view.typeName)
+            .addModifiers(KModifier.SUSPEND, KModifier.INLINE)
+            .receiver(nameFor(declaration, GenerationType.CLIENT_API))
+            .addParameter(
+                ParameterSpec.builder(ACTION_PARAMETER, LambdaTypeName.get(parameters = arrayOf(view.typeName), returnType = UNIT).copy(suspending = true))
+                    .addModifiers(KModifier.CROSSINLINE)
+                    .build(),
+            )
+            .addStatement("%N$BYTES.collect { $ACTION_PARAMETER(%L) }", name, view.decode(CodeBlock.of(IT)))
+            .build()
+    }
 
     private fun generateIsNotifyingProperty(type: GenerationType.Type): PropertySpec = PropertySpec.builder(
         "isNotifying",

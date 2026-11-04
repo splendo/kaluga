@@ -83,6 +83,32 @@ class LayoutValueTest {
     }
 
     @Test
+    fun `the client collects notifications of a view without boxing one per notification`() {
+        val compilation = BluetoothCompilation(definitions())
+        assertEquals(emptyList(), compilation.kspErrors)
+        val remote = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
+
+        assertContains(remote, "public val measurementBytes: Flow<ByteArray>\n        get() = measurement.map { it.bytes }")
+        assertContains(remote, "override val measurementBytes: Flow<ByteArray>\n        get() = characteristic.`value`()")
+        assertContains(
+            remote,
+            "public suspend inline fun RemoteMeasurementCharacteristic.collectMeasurement(crossinline action: suspend (MeasurementView) -> Unit) {\n" +
+                "    measurementBytes.collect { action(MeasurementView(it)) }\n}",
+        )
+        // The mock and the simulator derive the bytes from the views they are given.
+        assertFalse("override val measurementBytes: MutableSharedFlow" in remote, remote)
+        assertEquals(2, Regex("val measurementBytes").findAll(remote).count(), remote)
+    }
+
+    @Test
+    fun `values that are not views have no undecoded notifications`() {
+        val compilation = BluetoothCompilation(definitions(layout = "@BytesLayout(generate = [Generate.DATA])"))
+        val remote = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
+        assertFalse("measurementBytes" in remote, remote)
+        assertFalse("collectMeasurement" in remote, remote)
+    }
+
+    @Test
     fun `the server reads, writes and notifies a layout through its view`() {
         val compilation = BluetoothCompilation(definitions())
         assertEquals(emptyList(), compilation.kspErrors)

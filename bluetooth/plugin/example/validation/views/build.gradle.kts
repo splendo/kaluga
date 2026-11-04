@@ -25,3 +25,20 @@ bluetooth {
     target.set(setOf(BluetoothTarget.CLIENT, BluetoothTarget.SERVER))
     implementFor.set(setOf(ImplementFor.BLUETOOTH, ImplementFor.SIMULATOR, ImplementFor.MOCK))
 }
+
+// C1 only: without escape analysis every allocation is counted, whatever the JIT has warmed up.
+val androidHostAllocationTest = tasks.register<Test>("androidHostAllocationTest") {
+    description = "Checks what collecting the notifications of a view allocates."
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    val hostTest = tasks.named<Test>("testAndroidHostTest").get()
+    testClassesDirs = hostTest.testClassesDirs
+    classpath = hostTest.classpath
+    filter { includeTestsMatching("*AllocationTest") }
+    jvmArgs("-XX:TieredStopAtLevel=1")
+}
+
+tasks.withType<Test>().matching { it.name == "testAndroidHostTest" }.configureEach {
+    filter { excludeTestsMatching("*AllocationTest") }
+    dependsOn(androidHostAllocationTest)
+}
+tasks.matching { it.name == "allTests" }.configureEach { dependsOn(androidHostAllocationTest) }
