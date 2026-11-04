@@ -138,8 +138,13 @@ internal class LayoutIndex(layouts: List<Layout>, val types: TypeExpander) {
                 throw LayoutDeclarationException("@BytesLayout ${layout.qualifiedName} can extend at most one sealed interface", layout.declaration)
             }
             layout.sealedParent = sealedParents.firstOrNull()?.let { parent ->
+                // Taking a plain sealed parent as a mere grouping would turn a forgotten @BytesLayout into a layout
+                // encoded without its discriminator.
+                val parentName = parent.qualifiedName?.asString()
                 this[parent] ?: throw LayoutDeclarationException(
-                    "@BytesLayout ${layout.qualifiedName} extends sealed ${parent.qualifiedName?.asString()}, which must also be a @BytesLayout",
+                    "@BytesLayout ${layout.qualifiedName} extends sealed $parentName, which is not a @BytesLayout. A layout's sealed super-interface is the " +
+                        "layout it is dispatched from by discriminator or size: annotate $parentName with @BytesLayout, or, to only group layouts, " +
+                        "make it an interface that is not sealed",
                     layout.declaration,
                 )
             }

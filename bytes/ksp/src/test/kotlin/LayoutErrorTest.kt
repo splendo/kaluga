@@ -374,6 +374,42 @@ class LayoutErrorTest {
     )
 
     @Test
+    fun `rejects a sealed parent that is not a layout`() = assertLayoutError(
+        "test.Leaf",
+        "@BytesLayout test.Leaf extends sealed test.Group, which is not a @BytesLayout. A layout's sealed super-interface is the layout it is dispatched from " +
+            "by discriminator or size: annotate test.Group with @BytesLayout, or, to only group layouts, make it an interface that is not sealed",
+        """
+        sealed interface Group
+
+        @BytesLayout
+        interface Leaf : Group {
+            val value: Byte
+        }
+        """,
+    )
+
+    @Test
+    fun `accepts a plain interface grouping layouts`() = listOf("DATA", "VIEW").forEach { generate ->
+        val compilation = BytesCompilation(
+            layoutSource(
+                """
+                interface Group {
+                    val value: Byte
+                }
+
+                @BytesLayout
+                interface Leaf : Group {
+                    override val value: Byte
+                    val other: Byte
+                }
+                """,
+            ),
+            generate = generate,
+        )
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, "$generate: ${compilation.result.messages}")
+    }
+
+    @Test
     fun `rejects a DATA layout using a layout without DATA`() = assertLayoutError(
         "test.Outer",
         "the @BytesLayout test.Inner it uses must generate DATA too",
