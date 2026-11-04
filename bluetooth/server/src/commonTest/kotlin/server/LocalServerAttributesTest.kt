@@ -27,6 +27,7 @@ import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bluetooth.test.randomUUID
 import com.splendo.kaluga.bluetooth.test.server.MockConnectedDevice
@@ -151,6 +152,48 @@ class LocalServerAttributesTest : BaseTest() {
         val response = runBlocking { onWrite(service.characteristics.single(), MockConnectedDevice(), bytes, 0) }
         assertEquals(GattResponse.WriteSuccess.Acknowledged, response)
         assertEquals(listOf(42), decoded)
+    }
+
+    @Test
+    fun testWritableDecodesOnceTheWholeValueIsWritten() {
+        val fixture = Fixture()
+        val charUuid = randomUUID()
+        val decoded = mutableListOf<ByteArray>()
+        val failures = mutableListOf<Exception>()
+        val service = fixture.primary().apply {
+            characteristic(charUuid) {
+                writable(
+                    decode = { bytes ->
+                        when {
+                            bytes.size < 3 -> throw ByteArrayEndedBeforeSerializationCompleted("${bytes.size} of 3 bytes")
+                            bytes.size > 3 -> throw IllegalArgumentException("${bytes.size} bytes")
+                            else -> bytes
+                        }
+                    },
+                    onFailedToWrite = { _, exception ->
+                        failures.add(exception)
+                        GattResponse.ApplicationError(0x80)
+                    },
+                ) { _, value ->
+                    decoded.add(value)
+                    GattResponse.WriteSuccess.Acknowledged
+                }
+            }
+        }.build()
+
+        val characteristic = service.characteristics.single()
+        val device = MockConnectedDevice()
+        val onWrite = fixture.writes.getValue(charUuid)
+        runBlocking {
+            assertEquals(GattResponse.WriteSuccess.Acknowledged, onWrite(characteristic, device, byteArrayOf(1, 2), 0))
+            assertTrue(decoded.isEmpty())
+            assertEquals(GattResponse.WriteSuccess.Acknowledged, onWrite(characteristic, device, byteArrayOf(3), 2))
+            assertContentEquals(byteArrayOf(1, 2, 3), decoded.single())
+
+            assertEquals(GattResponse.InvalidOffset, onWrite(characteristic, device, byteArrayOf(4), 5))
+            assertEquals(GattResponse.ApplicationError(0x80), onWrite(characteristic, device, byteArrayOf(1, 2, 3, 4), 0))
+            assertIs<IllegalArgumentException>(failures.single())
+        }
     }
 
     @Test
