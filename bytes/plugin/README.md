@@ -111,6 +111,24 @@ val viewDecoded = HeartRateView.wrap(encoded)
 For a more complex example involving enums, sealed classes and nested structures, see [`example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt`](example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt).
 For a stream of type-length-value records, each a type, a length and that many bytes, read back to back with unknown types kept and their shared time step read, see [`RecordFixtures.kt`](example/validation/format/src/commonMain/kotlin/RecordFixtures.kt). For records whose samples are delta-coded, the first sample and then the step to each next one, see [`DeltaCodedFixtures.kt`](example/validation/format/src/commonMain/kotlin/DeltaCodedFixtures.kt).
 
+## Bluetooth values
+
+With the [Bluetooth plugin](../../bluetooth/plugin/) applied to the same module, a characteristic or descriptor value can
+be typed by a layout. When the layout generates a view, the generated client and server read, notify and write that
+view over the attribute's own bytes, and the value needs no `@Serializable` class:
+
+```kotlin
+@BluetoothCharacteristic("2a37")
+interface MeasurementCharacteristic {
+    @Readable
+    @Notifiable
+    val heartRate: HeartRate // read and notified as HeartRateView
+}
+```
+
+The Bluetooth processor reads the same `generate` option, so the module-wide default and each interface's own
+`generate` decide there too; see [values typed by a `@BytesLayout`](../../bluetooth/plugin/#values-typed-by-a-byteslayout).
+
 ## SerialName note for sealed/enum class discriminators
 
 When using sealed classes or enums without an explicit `@SerializedByteValue`, the discriminator is the interface's fully qualified name encoded as UTF-8. To use a class-name-based discriminator without restating the serialName, rename the interface to match, or use `@SerializedByteValue` to specify the byte sequence explicitly.
