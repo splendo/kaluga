@@ -82,7 +82,7 @@ Control numeric encoding options.
 Control how strings are terminated and encoded.
 
 - `@Encoded(Encoding.UTF_8 | ASCII | ...)` — Specify the character encoding (default UTF-8). A `Char` has a fixed size, so it takes ASCII (the default for a `Char`), ISO-8859-1 (Latin-1) or UTF-16; UTF-8 is rejected for it, so use a `String` for UTF-8 text.
-- `@LengthPrefix(lengthAsShort, canOverflow, sentinel)` — Prefix the string with a length byte (or short if `lengthAsShort = true`). Supports overflow detection if `canOverflow = true`.
+- `@LengthPrefix(lengthAsShort, canOverflow, sentinel)` — Prefix the string with a length byte (or short if `lengthAsShort = true`). Supports overflow detection if `canOverflow = true`. On a sealed class it makes records of the subtypes, see [Enums and polymorphism](#enums-and-polymorphism).
 - `@NullTerminated` — Terminate the string with a null byte (0x00) instead of a length prefix. The string must not contain null bytes.
 - `@Unsized` — Consume all remaining bytes (except checksum/postfix). No other field may follow.
 - `@ByteStuffed` / `@ByteStuffedXor` / `@ByteStuffedSlip` / `@ByteStuffedCobs` — Byte-stuff the string so a delimiter never appears literally in the content. The delimiter schemes (`Xor`, `Slip`, `Cobs`) terminate with their own delimiter; `@ByteStuffed` has none and needs a `@Terminal`.
@@ -124,6 +124,43 @@ Control how enum and sealed class variants are identified on the wire.
 - `@SerializedByteValue(vararg value: Byte)` — Use a specific byte sequence (instead of the serialName) to identify this variant. All variants must use the same byte length.
 - `@ByOrdinal(offset, size)` — Encode an enum by its ordinal (optionally offset and with a custom byte length). Variants can still override with `@SerializedByteValue`.
 - `@SizePolymorphic` — Identify sealed class subtypes by their payload size instead of a discriminator byte. Subtypes are fixed-width, except at most one variable-size subtype is allowed as a catch-all fallback for sizes matching no fixed subtype.
+- `@LengthPrefix(lengthAsShort)` on a sealed class — Write every subtype as a type-length-value record: its discriminator, then its length, then its bytes. The length counts the bytes after it, the subtype's whole frame; it is a byte, or 16 bits in the class's byte order with `lengthAsShort`. Decoding bounds the subtype by the length: bytes it has beyond its fields are skipped, so a later version may append fields, an `@Unsized` last property ends at the length, and fields may follow the record. Not with `@SizePolymorphic` or `canOverflow`.
+- `@Fallback` — The subtype of a sealed class decoded for a discriminator no other subtype has, so a reader keeps going past a type it does not know. Its first property holds the discriminator (a number of the discriminators' size) and is written where the discriminator goes, so the record is encoded back unchanged; with `@LengthPrefix` the length follows it and the remaining properties lay out the bytes it counts. At most one per sealed class; it has no `@SerializedByteValue`, no flag header, no `@Prefix`, `@Postfix` or `@Checksum`. Encoding one that holds the discriminator of another subtype throws.
+
+A stream of records, each a type, a length and that many bytes, back to back to the end of a message:
+
+```kotlin
+@BytesLayout
+@LengthPrefix
+sealed interface Record {
+    @BytesLayout
+    @SerializedByteValue(0x20)
+    interface Temperature : Record {
+        val celsius: Short
+    }
+
+    @BytesLayout
+    @SerializedByteValue(0x30)
+    interface Log : Record {
+        @Unsized val text: String
+    }
+
+    @BytesLayout
+    @Fallback
+    interface Unknown : Record {
+        val type: UByte
+        @Unsized val value: ByteArray
+    }
+}
+
+@BytesLayout
+interface Chunk {
+    val first: UInt
+    @Unsized val records: List<Record>
+}
+```
+
+Fields every type starts with, such as a time step whose size the flag header records, go in a plain interface each subtype extends; a subtype then lays out its own flag header and fields within the bytes its length counts.
 
 ### Byte stuffing
 

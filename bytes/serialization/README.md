@@ -97,6 +97,24 @@ In addition to `@SerializedByteValue` above:
 
 - `@ByOrdinal(offset, size)` — Encode enum ordinals by position instead of the serialName, with an optional offset and custom byte width. A per-variant `@SerializedByteValue` can still override this for that variant.
 - `@SizePolymorphic` — Identify sealed class subtypes by their payload byte count instead of a discriminator byte. Subtypes are fixed-width, except at most one variable-size subtype is allowed as a catch-all fallback for byte counts matching no fixed subtype.
+- `@LengthPrefix` on a sealed class — Write each subtype as a type-length-value record: its discriminator, then the number of bytes that follow (a byte, or 16 bits with `lengthAsShort`), then the subtype. Decoding bounds the subtype by that length, skipping bytes it does not read, so a list of records `@Unsized` runs back to back to the end of what holds it.
+- `@Fallback` — Mark the subtype decoded for any discriminator no other subtype has. Its first property holds the discriminator, so an unknown record is kept and encoded back unchanged.
+
+```kotlin
+@Serializable
+@LengthPrefix
+sealed interface Reading
+
+@Serializable
+@SerializedByteValue(0x20)
+data class Temperature(val celsius: Short) : Reading
+
+@Serializable
+@Fallback
+data class Other(val type: UByte, @Unsized val value: ByteArray) : Reading
+
+// Temperature(-5) encodes to 20 02 FB FF; 99 02 01 02 decodes to Other(0x99, [01, 02]).
+```
 
 ## Integration
 

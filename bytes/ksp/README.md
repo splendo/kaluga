@@ -63,6 +63,20 @@ A `@JvmInline value class` over a `ByteArray` for sealed layout `X`. The `value`
 - `XFrame.encode(x)` — Creates a frame from any `X` subtype
 - `XFrame.wrap(bytes, validateChecksum)` and `XFrame.wrapRange(bytes, from, to, validateChecksum)` — Wraps an array, dispatching to the correct subtype
 - Does not implement `X` directly; the sealed hierarchy preserves exactly the subtypes you declared
+- For a sealed layout with `@LengthPrefix`: `XFrame.valueStart(bytes, from)`, `XFrame.valueEnd(bytes, from)` and `XFrame.end(bytes, from)`, the bounds of the record at `from`, see [Type-length-value records](#type-length-value-records)
+
+### Type-length-value records
+
+A sealed layout with `@LengthPrefix` writes each subtype as a record: its `@SerializedByteValue` discriminator, its length, then the bytes the length counts, which hold the subtype's frame. A `@Fallback` subtype reads every discriminator the others do not have; its first property holds it, and the length bytes are reserved after that property. The [annotations](../annotations/) README has the rules and an example. DATA needs nothing new for them: the sealed DATA interface carries `@LengthPrefix` and the fallback's data class `@Fallback`, which is all `BytesFormat` reads.
+
+In a view:
+
+- **A typed view of the bytes**: a record property, list item or `XFrame.value` is the subtype's slice over exactly the bytes its length counts, read in place. An `@Unsized` last property ends there, and bytes beyond what the subtype reads, which a later version may have appended, are skipped, as `BytesFormat` skips them.
+- **Its type**: the class of the subtype, or, for a type no subtype has, the `@Fallback` subtype with the discriminator in its first property.
+- **Its bounds**: the end of a record is read from its length alone, so a list of records, `@Unsized` to the end of what holds it, steps over records of every type, known or not, without reading them. To walk records by hand, `XFrame.valueStart(bytes, from)` and `XFrame.valueEnd(bytes, from)` give the bytes a length counts and `XFrame.end(bytes, from)` where the next record starts; none of them allocates.
+- **Writing**: a record's length is written once its subtype is, and one that does not fit the length throws, as in `BytesFormat`.
+
+A record's subtype is an ordinary layout within its bytes, so it composes with the rest of the vocabulary: its own flag header, flag-packed fields and numbers of several `@Size`s are laid out from the start of those bytes, and the generated code computes where everything after a number of several sizes starts from the size its flag bits record. Fields every subtype starts with, such as a time step, go in a plain interface each subtype extends. The sealed layout itself still has no flag bits, cannot be `@SizePolymorphic`, and for VIEW its discriminators must all have the same size.
 
 ### <Prefix>BytesViews
 
@@ -100,7 +114,7 @@ Byte stuffing cannot read in place. For byte-stuffed layouts:
 
 ## Supported VIEW features
 
-Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, sealed layouts and properties, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
+Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
 
 Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. A `@Count` collection of fixed-size items has a setter that rewrites its items in place and, like the constructors, refuses another number of items. Lists are read in place: `FixedStrideList` when all items are the same size, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
 
