@@ -1951,6 +1951,14 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     private fun collectionData(field: FieldPlan, access: Access.Collection, get: CodeBlock): CodeBlock {
         val value = field.value as ValueType.Collection
         fun convert(frame: ItemFrame, item: String): CodeBlock {
+            (frame.field.access as? Access.Sealed)?.let { sealed ->
+                val type = sealed.context.layout.interfaceClassName
+                return if (frame.field.nullable) {
+                    CodeBlock.of("$item?.let { %T.toData(it) as %T }", sealed.context.layoutName, type)
+                } else {
+                    CodeBlock.of("%T.toData($item) as %T", sealed.context.layoutName, type)
+                }
+            }
             val nested = frame.field.access as? Access.Nested ?: return CodeBlock.of(item)
             return if (frame.field.nullable) {
                 CodeBlock.of(
