@@ -69,6 +69,12 @@ internal class BytesCompilation(
 
     /** The errors KSP reported. */
     val kspErrors: List<String> get() = result.messages.lines().filter { it.startsWith("e: [ksp]") }
+
+    /** The compiler's warnings on the generated sources. */
+    val generatedWarnings: List<String> get() {
+        val directories = setOf(compilation.kspSourcesDir.absolutePath, compilation.kspSourcesDir.canonicalPath)
+        return result.messages.lines().filter { line -> line.startsWith("w: ") && directories.any { it in line } }
+    }
 }
 
 /** A source file in package `test` with the imports every fixture here uses. */

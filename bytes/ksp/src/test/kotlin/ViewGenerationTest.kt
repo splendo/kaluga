@@ -943,6 +943,84 @@ class ViewGenerationTest {
     }
 
     @Test
+    fun `generates code the compiler has no warnings for`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            @Prefix([0x7E])
+            @Checksum(8, 0x07u, 0x00u)
+            sealed interface Shape {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface Dot : Shape {
+                    val x: Byte
+                }
+
+                @BytesLayout
+                sealed interface Curve : Shape {
+                    @BytesLayout
+                    @SerializedByteValue(0x02)
+                    interface Arc : Curve {
+                        val radius: Short?
+                    }
+
+                    @BytesLayout
+                    @SerializedByteValue(0x03)
+                    interface Wave : Curve {
+                        val samples: List<Byte>
+                    }
+                }
+            }
+
+            @BytesLayout
+            @SizePolymorphic
+            sealed interface Sized
+
+            @BytesLayout
+            interface Two : Sized {
+                val value: Short
+            }
+
+            @BytesLayout
+            interface Rest : Sized {
+                @Unsized val values: List<Byte>
+            }
+
+            @BytesLayout
+            @SizePolymorphic
+            sealed interface Exact
+
+            @BytesLayout
+            interface One : Exact {
+                val value: Byte
+            }
+
+            @BytesLayout
+            interface Four : Exact {
+                val value: Int
+            }
+
+            @BytesLayout
+            interface Drawing {
+                val shape: Shape
+                val maybe: Shape?
+                val shapes: List<Shape>
+                val sized: Sized
+            }
+
+            @BytesLayout
+            interface Measured {
+                val exact: Exact
+            }
+            """,
+        )
+        val compilation = BytesCompilation(layouts, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        assertEquals(emptyList(), compilation.generatedWarnings)
+    }
+
+    @Test
     fun `rejects a layout using a feature VIEW does not support yet`() {
         val compilation = BytesCompilation(
             layoutSource(

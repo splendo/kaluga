@@ -1555,7 +1555,6 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             val discriminator = leaf.discriminator?.takeIf { plan.sizeDispatch == null }?.size ?: 0
             sizeOf.addStatement("is %T -> %L + %T.sizeOf(value${contents(leaf)})", leaf.layout.interfaceClassName, discriminator, leaf.context.layoutName)
         }
-        sizeOf.addStatement("else -> throw %T(%P)", ILLEGAL_ARGUMENT_EXCEPTION, CodeBlock.of("\$value is not a subtype of ${plan.serialName} with a view"))
         sizeOf.endControlFlow()
         builder.addFunction(sizeOf.build())
 
@@ -1574,7 +1573,6 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             write.addStatement("%T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
             write.endControlFlow()
         }
-        write.addStatement("else -> throw %T(%P)", ILLEGAL_ARGUMENT_EXCEPTION, CodeBlock.of("\$value is not a subtype of ${plan.serialName} with a view"))
         write.endControlFlow()
         plan.checksum?.let {
             write.addStatement("%T.update(b, %L, $BODY_END, %N, %L, lim + %L)", VIEW_CHECKSUM, start, FRAME_CHECKSUM, order(plan.checksumOrder), plan.footer)
@@ -2601,7 +2599,6 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val CHECKSUM_SPEC = ClassName("com.splendo.kaluga.bytes.layout", "ChecksumSpec")
         val INVALID_CHECKSUM = ClassName("com.splendo.kaluga.bytes.layout", "InvalidChecksumException")
         val SERIALIZATION_EXCEPTION = ClassName("kotlinx.serialization", "SerializationException")
-        val ILLEGAL_ARGUMENT_EXCEPTION = ClassName("kotlin", "IllegalArgumentException")
         val FIXED_STRIDE_LIST = ClassName("com.splendo.kaluga.bytes.view", "FixedStrideList")
         val RUNTIME_EXCEPTION = ClassName("kotlin", "RuntimeException")
     }
