@@ -27,6 +27,7 @@ import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.annotations.Checksum
 import com.splendo.kaluga.bytes.annotations.Generate
+import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.annotations.Postfix
 import com.splendo.kaluga.bytes.annotations.Prefix
 import com.splendo.kaluga.bytes.layout.CollectionSettings
@@ -36,7 +37,15 @@ import com.splendo.kaluga.bytes.layout.NumericSettings
 import com.splendo.kaluga.bytes.layout.TypeKind
 import com.splendo.kaluga.bytes.layout.TypeLayout
 import com.splendo.kaluga.bytes.layout.dump
+import com.squareup.kotlinpoet.BYTE
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.LONG
+import com.squareup.kotlinpoet.SHORT
+import com.squareup.kotlinpoet.U_BYTE
+import com.squareup.kotlinpoet.U_INT
+import com.squareup.kotlinpoet.U_LONG
+import com.squareup.kotlinpoet.U_SHORT
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
@@ -180,6 +189,9 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         }
         val discriminatorSizes = leaves.mapNotNull { it.discriminator?.size }.distinct()
         if (type.lengthPrefix != null && discriminatorSizes.size > 1) unsupported("type-length-value records with discriminators of several sizes", layout.declaration)
+        val recordDiscriminator = type.lengthPrefix?.let {
+            fallback?.let { leaves[it].context.plan!!.getOrThrow().discriminator } ?: unsignedDiscriminator(discriminatorSizes.singleOrNull() ?: 0, field, layout)
+        }
         return SealedPlan(
             field.frame.prefix?.array,
             field.frame.postfix?.array,
@@ -190,7 +202,21 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             field.frame.checksum,
             field.valueByteOrder,
             type.lengthPrefix,
+            recordDiscriminator,
         )
+    }
+
+    /** The unsigned number of [size] bytes in the byte order of [field] that a discriminator of [layout] is given as. */
+    private fun unsignedDiscriminator(size: Int, field: FieldLayout, layout: Layout): FieldPlan {
+        val length = Length.entries.firstOrNull { it.bytes == size } ?: unsupported("type-length-value records with discriminators of $size bytes", layout.declaration)
+        val (unsigned, signed, kind) = when (length) {
+            Length.`8_BIT` -> Triple(U_BYTE, BYTE, TypeKind.BYTE)
+            Length.`16_BIT` -> Triple(U_SHORT, SHORT, TypeKind.SHORT)
+            Length.`24_BIT`, Length.`32_BIT` -> Triple(U_INT, INT, TypeKind.INT)
+            else -> Triple(U_LONG, LONG, TypeKind.LONG)
+        }
+        val value = ValueType.Unsigned(unsigned, ValueType.Primitive(signed, kind))
+        return discriminatorField("discriminator", layout.declaration, field, value, NumericSettings.Natural(setOf(length), false), field.valueByteOrder)
     }
 
     private fun sealedContextFor(layout: Layout, field: FieldLayout, node: KSNode): ViewContext {

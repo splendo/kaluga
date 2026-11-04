@@ -284,6 +284,8 @@ internal class ViewContext(
  * [ViewPlan.discriminator] holds.
  * @property checksumOrder the byte order of the checksum and of the length.
  * @property lengthPrefix when set, a type-length-value record: the length after the discriminator bounds the leaf.
+ * @property recordDiscriminator for a type-length-value record, the number a discriminator is given as apart from the
+ * bytes: the `@Discriminator` property of the fallback, or else an unsigned number of the discriminators' size.
  */
 internal class SealedPlan(
     val prefix: ByteArray?,
@@ -295,6 +297,7 @@ internal class SealedPlan(
     val checksum: ChecksumSpec?,
     val checksumOrder: ByteOrder,
     val lengthPrefix: StringEncodingSettings.LengthPrefix? = null,
+    val recordDiscriminator: FieldPlan? = null,
 ) {
     val footer: Int get() = (checksum?.crc?.byteWidth ?: 0) + (postfix?.size ?: 0)
 
@@ -303,6 +306,9 @@ internal class SealedPlan(
 
     /** The bytes the length takes. */
     val lengthBytes: Int get() = lengthPrefix?.expectedByteSize(0u) ?: 0
+
+    /** The bytes of a record besides its value: its prefix, discriminator, length and footer. */
+    val recordFrameBytes: Int get() = (prefix?.size ?: 0) + discriminatorBytes + lengthBytes + footer
 }
 
 /** A subtype of a sealed frame, encoded as [context] after its [discriminator]. */

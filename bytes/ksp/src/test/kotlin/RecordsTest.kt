@@ -195,6 +195,24 @@ class RecordsTest {
                     }
                 }
 
+                // A record written from its type and its value bytes held apart, of a known type or not.
+                val write: (ByteArray, Int, UByte, ByteArray, Int, Int) -> Int = ReadingFrame.Companion::writeRecord
+                val size: (Int) -> Int = ReadingFrame.Companion::recordSize
+                val temperature = BytesFormat.encodeToByteArray(ReadingData.serializer(), ReadingTemperatureData(2, 16))
+                val value = temperature.copyOfRange(2, temperature.size)
+                val target = ByteArray(10)
+                if (write(target, 3, 0x20u, byteArrayOf(9) + value, 1, value.size + 1) != 3 + temperature.size || !target.copyOfRange(3, 3 + temperature.size).contentEquals(temperature)) {
+                    add("writeRecord " + target.toList())
+                }
+                if (size(value.size) != temperature.size || !ReadingFrame.encodeRecord(0x20u, value).contentEquals(temperature)) add("encodeRecord " + ReadingFrame.encodeRecord(0x20u, value).toList())
+                val unknown = ReadingFrame.encodeRecord(0x99u, value)
+                if (BytesFormat.decodeFromByteArray(ReadingData.serializer(), unknown) != ReadingOtherData(2, 0x99u, listOf(0x10, 0))) add("unknown record " + unknown.toList())
+                if (runCatching { ReadingFrame.encodeRecord(0x20u, ByteArray(256)) }.exceptionOrNull() !is IllegalArgumentException) add("record value too long")
+                if (runCatching { ReadingFrame.writeRecord(ByteArray(5), 0, 0x20u, value) }.exceptionOrNull() !is ByteArrayEndedBeforeSerializationCompleted) add("record target too short")
+                val messageValue: (UShort, ByteArray, Int, Int) -> ByteArray = MessageFrame.Companion::encodeRecord
+                val message = BytesFormat.encodeToByteArray(MessageData.serializer(), MessageValueData(0x0102))
+                if (!messageValue(0x0100u, byteArrayOf(1, 2), 0, 2).contentEquals(message)) add("framed record " + messageValue(0x0100u, byteArrayOf(1, 2), 0, 2).toList())
+
                 for (command in listOf(CommandStartData(3), CommandUnsupportedData(7u, listOf(1, 2)))) {
                     val expected = BytesFormat.encodeToByteArray(CommandData.serializer(), command)
                     val frame = CommandFrame.encode(command)
