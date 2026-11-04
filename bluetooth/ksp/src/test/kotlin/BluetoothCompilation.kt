@@ -26,17 +26,24 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import com.tschuchort.compiletesting.useKsp2
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 /**
  * Runs [BluetoothSymbolProcessor] over [sources] with KSP2 and reads back what it generated. The Bluetooth runtime is
  * not on the JVM, so the generated code is not compiled here; the example build compiles it.
  */
 @OptIn(ExperimentalCompilerApi::class)
-internal class BluetoothCompilation(vararg sources: SourceFile, options: Map<String, String> = emptyMap(), processors: List<SymbolProcessorProvider> = emptyList()) {
+internal class BluetoothCompilation(
+    vararg sources: SourceFile,
+    options: Map<String, String> = emptyMap(),
+    processors: List<SymbolProcessorProvider> = emptyList(),
+    classpaths: List<File> = emptyList(),
+) {
 
     private val compilation = KotlinCompilation().apply {
         this.sources = sources.toList()
         inheritClassPath = true
+        this.classpaths = classpaths
         messageOutputStream = ByteArrayOutputStream()
         useKsp2()
         symbolProcessorProviders += BluetoothSymbolProcessorProvider()
