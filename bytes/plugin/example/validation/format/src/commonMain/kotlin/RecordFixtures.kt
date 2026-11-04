@@ -42,7 +42,10 @@ object RecordFixtures {
         val step: Int
     }
 
-    /** A record of a sensor stream: a type byte, a length byte, then the bytes the length counts. */
+    /**
+     * A record of a sensor stream: a type byte, a length byte, then the bytes the length counts, which start with the
+     * flag header and the time step of every type, known or not.
+     */
     @BytesLayout
     @LengthPrefix
     sealed interface Reading {
@@ -76,10 +79,12 @@ object RecordFixtures {
         @SerializedByteValue(0x40)
         interface Mark : Reading
 
-        /** A record of a type this reader does not know, kept as it is. */
+        /** A record of a type this reader does not know: its time step read like any other's, the rest kept as it is. */
         @BytesLayout
         @Fallback
-        interface Other : Reading {
+        interface Other :
+            Reading,
+            Timed {
             @Discriminator
             val type: UByte
 

@@ -40,8 +40,8 @@ abstract class RecordsSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
     private val runBytes = bytes(0x21, 0x06, 0x00, 0x02, 0x02, 0x01, 0xFF, 0xFF)
     private val note = RecordFixturesReadingNoteData(-70000, "hi")
     private val noteBytes = bytes(0x30, 0x07, 0x02, 0x90, 0xEE, 0xFE, 0xFF, 'h'.code, 'i'.code)
-    private val other = RecordFixturesReadingOtherData(0x99u, byteArrayOf(1, 2, 3))
-    private val otherBytes = bytes(0x99, 0x03, 0x01, 0x02, 0x03)
+    private val other = RecordFixturesReadingOtherData(300, 0x99u, byteArrayOf(1, 2, 3))
+    private val otherBytes = bytes(0x99, 0x06, 0x01, 0x2C, 0x01, 0x01, 0x02, 0x03)
     private val markBytes = bytes(0x40, 0x00)
 
     private val chunk = RecordFixturesChunkData(1u, true, 256u, listOf(temperature, run, note, RecordFixturesReadingMarkData, other))
@@ -73,8 +73,23 @@ abstract class RecordsSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
     fun keepsARecordOfATypeNoSubtypeHasInTheFallback() {
         val decoded = assertIs<RecordFixturesReadingOtherData>(validateRecord(other, reading, otherBytes))
         assertEquals(0x99u, decoded.type)
+        assertEquals(300, decoded.step)
         assertContentEquals(byteArrayOf(1, 2, 3), decoded.value)
-        validateRecord(RecordFixturesReadingOtherData(0x98u, ByteArray(0)), reading, bytes(0x98, 0x00))
+        validateRecord(RecordFixturesReadingOtherData(0, 0x98u, ByteArray(0)), reading, bytes(0x98, 0x02, 0x00, 0x00))
+    }
+
+    @Test
+    fun readsTheTimeStepOfARecordOfAnUnknownTypeAndWritesItBackAsItWas() {
+        val record = bytes(0x77, 0x06, 0x01, 0x2C, 0x01, 0xAA, 0xBB, 0xCC)
+        val chunk = bytes(0x00, 0x00, 0x00, 0x00, 0x00) + record + markBytes
+        val decoded = createBackend().decode(RecordFixturesChunkData.serializer(), chunk)
+        val unknown = assertIs<RecordFixturesReadingOtherData>(decoded.readings[0])
+        assertEquals(0x77u, unknown.type)
+        assertEquals(300, unknown.step)
+        assertContentEquals(bytes(0xAA, 0xBB, 0xCC), unknown.value)
+        assertContentEquals(chunk, createBackend().encode(RecordFixturesChunkData.serializer(), decoded))
+        // The flag header picks the size of the step, here 32 bits a writer chose although a byte holds it.
+        assertEquals(5, assertIs<RecordFixturesReadingOtherData>(createBackend().decode(reading, bytes(0x77, 0x06, 0x02, 0x05, 0x00, 0x00, 0x00, 0xAA))).step)
     }
 
     @Test
@@ -108,7 +123,7 @@ abstract class RecordsSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
     @Test
     fun rejectsALengthThatDoesNotFitAndAFallbackWithAKnownType() {
         assertFailsWith<IllegalArgumentException> { createBackend().encode(reading, RecordFixturesReadingNoteData(0, "x".repeat(254))) }
-        assertFailsWith<IllegalArgumentException> { createBackend().encode(reading, RecordFixturesReadingOtherData(0x20u, byteArrayOf(1))) }
+        assertFailsWith<IllegalArgumentException> { createBackend().encode(reading, RecordFixturesReadingOtherData(0, 0x20u, byteArrayOf(1))) }
     }
 
     @Test
@@ -172,6 +187,39 @@ class ViewRecordsTest : RecordsSuite(ViewBackend.Factory) {
         assertEquals("hi", (view.readings[2] as RecordFixtures.Reading.Note).text)
         assertEquals(-70000, (view.readings[2] as RecordFixtures.Reading.Note).step)
         assertEquals(0x99u, (view.readings[4] as RecordFixtures.Reading.Other).type)
+        assertEquals(300, (view.readings[4] as RecordFixtures.Reading.Other).step)
+    }
+
+    @Test
+    fun writesARecordFromATypeAndValueBytesHeldApart() {
+        val temperature = bytes(0x20, 0x05, 0x01, 0xE8, 0x03, 0xFB, 0xFF)
+        val target = ByteArray(10)
+        assertEquals(9, RecordFixturesReadingFrame.writeRecord(target, 2, 0x20u, bytes(0x00) + temperature.copyOfRange(2, 7), 1))
+        assertContentEquals(temperature, target.copyOfRange(2, 9))
+        assertEquals(temperature.size, RecordFixturesReadingFrame.recordSize(5))
+        val unknown = bytes(0x77, 0x06, 0x01, 0x2C, 0x01, 0xAA, 0xBB, 0xCC)
+        assertContentEquals(unknown, RecordFixturesReadingFrame.encodeRecord(0x77u, unknown, 2, unknown.size))
+        assertFailsWith<IllegalArgumentException> { RecordFixturesReadingFrame.encodeRecord(0x20u, ByteArray(256)) }
+        assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> { RecordFixturesReadingFrame.writeRecord(ByteArray(6), 0, 0x20u, temperature, 2) }
+        // A prefix, a 16-bit big-endian length and a checksum around the record.
+        val message = BytesFormatBackend().encode(RecordFixturesMessageData.serializer(), RecordFixturesMessageValueData(0x0102))
+        assertContentEquals(message, RecordFixturesMessageFrame.encodeRecord(0x0100u, bytes(0x01, 0x02)))
+    }
+
+    @Test
+    fun viewsTheValueOfARecordHeldApartFromItsType() {
+        val readings = RecordFixturesChunkView.wrap(chunkForViews).readings
+        val held = bytes(0xFF, 0x01, 0xE8, 0x03, 0xFB, 0xFF, 0xFF)
+        val temperature = assertIs<RecordFixtures.Reading.Temperature>(RecordFixturesReadingFrame.wrapValue(0x20u, held, 1, 6))
+        assertEquals(1000, temperature.step)
+        assertEquals(-5, temperature.celsius.toInt())
+        assertEquals(readings[0], temperature)
+        val unknown = assertIs<RecordFixtures.Reading.Other>(RecordFixturesReadingFrame.wrapValue(0x99u, bytes(0x01, 0x2C, 0x01, 0x01, 0x02, 0x03)))
+        assertEquals(0x99u, unknown.type)
+        assertEquals(300, unknown.step)
+        assertContentEquals(bytes(0x01, 0x02, 0x03), unknown.value)
+        assertEquals(readings[4], unknown)
+        assertEquals(0x0300u, assertIs<RecordFixtures.Message.Other>(RecordFixturesMessageFrame.wrapValue(0x0300u, bytes(0x04))).type)
     }
 
     @Test
@@ -186,7 +234,7 @@ class ViewRecordsTest : RecordsSuite(ViewBackend.Factory) {
             at = RecordFixturesReadingFrame.end(bytes, at)
         }
         assertEquals(listOf(0x20, 0x21, 0x30, 0x40, 0x99), types)
-        assertEquals(listOf(5, 6, 7, 0, 3), values)
+        assertEquals(listOf(5, 6, 7, 0, 6), values)
         assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> { RecordFixturesReadingFrame.end(bytes(0x20, 0x05, 0x00), 0) }
     }
 }
