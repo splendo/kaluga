@@ -30,3 +30,8 @@ actual interface DeviceWrapper {
  * Default implementation of [DeviceWrapper] for the JS family.
  */
 class WebDeviceWrapper(override val identifier: Identifier, override val name: String?) : DeviceWrapper
+
+/**
+ * A [DeviceWrapper] that can be implemented in common code.
+ */
+actual abstract class PortableDeviceWrapper actual constructor() : DeviceWrapper

@@ -38,6 +38,15 @@ expect interface DeviceWrapper {
 }
 
 /**
+ * A [DeviceWrapper] that can be implemented in common code.
+ *
+ * The platform [DeviceWrapper] interfaces add members only Kaluga's own platform connection managers use. This class
+ * provides those, so a wrapper for another transport only implements the common members. See
+ * [com.splendo.kaluga.bluetooth.PortableRemoteServiceWrapper].
+ */
+expect abstract class PortableDeviceWrapper() : DeviceWrapper
+
+/**
  * Properties of a Bluetooth Device
  */
 interface DeviceInfo {

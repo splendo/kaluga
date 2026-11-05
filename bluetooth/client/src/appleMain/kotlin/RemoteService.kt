@@ -59,3 +59,8 @@ class DefaultServiceWrapper(val service: CBService) : RemoteServiceWrapper {
         service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it, this) }
     }
 }
+
+/**
+ * A [RemoteServiceWrapper] that can be implemented in common code.
+ */
+actual abstract class PortableRemoteServiceWrapper actual constructor() : RemoteServiceWrapper

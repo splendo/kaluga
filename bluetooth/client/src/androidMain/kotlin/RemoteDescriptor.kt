@@ -53,3 +53,12 @@ class DefaultRemoteDescriptorWrapper(private val gattDescriptor: BluetoothGattDe
     override val characteristic: RemoteCharacteristicWrapper
         get() = DefaultRemoteCharacteristicWrapper(gattDescriptor.characteristic)
 }
+
+/**
+ * A [RemoteDescriptorWrapper] that can be implemented in common code. Only the platform connection manager needs the
+ * Android-only [permissions], which reports none.
+ */
+actual abstract class PortableRemoteDescriptorWrapper actual constructor() : RemoteDescriptorWrapper {
+
+    override val permissions: Int get() = 0
+}

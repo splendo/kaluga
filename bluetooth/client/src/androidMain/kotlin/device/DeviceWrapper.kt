@@ -117,3 +117,19 @@ class DefaultDeviceWrapper(private val device: BluetoothDevice) : DeviceWrapper 
         const val LOG_TAG = "DefaultDeviceWrapper"
     }
 }
+
+/**
+ * A [DeviceWrapper] that can be implemented in common code. Only the platform connection manager connects GATT and
+ * bonds through the wrapper, so this wrapper is never bonded and refuses those operations.
+ */
+actual abstract class PortableDeviceWrapper actual constructor() : DeviceWrapper {
+
+    override val bondState: DeviceWrapper.BondState get() = DeviceWrapper.BondState.NONE
+
+    override fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper =
+        throw UnsupportedOperationException("Not a platform device wrapper")
+
+    override fun removeBond(): Unit = throw UnsupportedOperationException("Not a platform device wrapper")
+
+    override fun createBond(): Unit = throw UnsupportedOperationException("Not a platform device wrapper")
+}

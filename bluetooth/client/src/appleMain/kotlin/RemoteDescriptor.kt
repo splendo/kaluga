@@ -106,3 +106,14 @@ internal val CBDescriptor.dataValue: NSData? get() {
         else -> value as? NSData
     }
 }
+
+/**
+ * A [RemoteDescriptorWrapper] that can be implemented in common code. Only the platform connection manager drives a
+ * [CBPeripheral] through the wrapper, so those operations are refused.
+ */
+actual abstract class PortableRemoteDescriptorWrapper actual constructor() : RemoteDescriptorWrapper {
+
+    override fun readValue(peripheral: CBPeripheral): Unit = throw UnsupportedOperationException("Not a platform descriptor wrapper")
+
+    override fun writeValue(value: NSData, peripheral: CBPeripheral): Unit = throw UnsupportedOperationException("Not a platform descriptor wrapper")
+}

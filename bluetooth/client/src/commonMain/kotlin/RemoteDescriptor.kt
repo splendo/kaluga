@@ -58,3 +58,12 @@ expect interface RemoteDescriptorWrapper {
      */
     val uuid: UUID
 }
+
+/**
+ * A [RemoteDescriptorWrapper] that can be implemented in common code.
+ *
+ * The platform [RemoteDescriptorWrapper] interfaces add members only Kaluga's own platform connection managers use.
+ * This class provides those, so a wrapper for another transport only implements the common members. See
+ * [PortableRemoteServiceWrapper].
+ */
+expect abstract class PortableRemoteDescriptorWrapper() : RemoteDescriptorWrapper

@@ -38,3 +38,8 @@ internal class WebServiceWrapper(service: WebService) : RemoteServiceWrapper {
     override val includedServices: List<RemoteServiceWrapper> = emptyList()
     override val characteristics: List<RemoteCharacteristicWrapper> = service.characteristics.map { WebCharacteristicWrapper(it, this) }
 }
+
+/**
+ * A [RemoteServiceWrapper] that can be implemented in common code.
+ */
+actual abstract class PortableRemoteServiceWrapper actual constructor() : RemoteServiceWrapper
