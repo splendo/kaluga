@@ -27,7 +27,7 @@ import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 
-class MockDeviceWrapper(override val name: String?, override val identifier: Identifier, override val bondState: DeviceWrapper.BondState, setupMocks: Boolean = true) :
+class AndroidMockDeviceWrapper(override val name: String?, override val identifier: Identifier, override val bondState: DeviceWrapper.BondState, setupMocks: Boolean = true) :
     DeviceWrapper {
 
     val gattWrappers = concurrentMutableListOf<MockBluetoothGattWrapper>()
@@ -50,5 +50,3 @@ class MockDeviceWrapper(override val name: String?, override val identifier: Ide
     override fun removeBond(): Unit = removeBondMock.call()
     override fun createBond(): Unit = createBondMock.call()
 }
-
-actual fun createDeviceWrapper(deviceName: String?, identifier: Identifier): DeviceWrapper = MockDeviceWrapper(deviceName, identifier, DeviceWrapper.BondState.NONE)

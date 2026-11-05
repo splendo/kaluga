@@ -18,12 +18,18 @@
 package com.splendo.kaluga.bluetooth.test
 
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
+import com.splendo.kaluga.bluetooth.device.PortableDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 
 expect fun randomIdentifier(): Identifier
 
-expect fun createDeviceWrapper(deviceName: String? = null, identifier: Identifier = randomIdentifier()): DeviceWrapper
+/**
+ * A [DeviceWrapper] carrying only a [name] and an [identifier], for devices driven by a mock connection manager.
+ */
+data class MockDeviceWrapper(override val name: String? = null, override val identifier: Identifier = randomIdentifier()) : PortableDeviceWrapper()
+
+fun createDeviceWrapper(deviceName: String? = null, identifier: Identifier = randomIdentifier()): DeviceWrapper = MockDeviceWrapper(deviceName, identifier)
 
 fun createServiceWrapper(builder: ServiceWrapperBuilder.() -> Unit): RemoteServiceWrapper = ServiceWrapperBuilder().apply(builder).build()
 

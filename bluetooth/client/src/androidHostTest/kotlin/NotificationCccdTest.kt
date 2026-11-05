@@ -27,11 +27,11 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.test.AndroidMockCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.test.AndroidMockDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.MockBluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.test.MockCharacteristic
-import com.splendo.kaluga.bluetooth.test.MockDeviceWrapper
-import com.splendo.kaluga.bluetooth.test.MockRemoteServiceWrapper
+import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapperImpl
+import com.splendo.kaluga.bluetooth.test.MockServiceWrapper
 import org.junit.Test
 
 class NotificationCccdTest : BaseTest() {
@@ -48,7 +48,7 @@ class NotificationCccdTest : BaseTest() {
      */
     @Test
     fun enableNotificationWritesCccd(): Unit = testBlockingAndCancelScope {
-        val deviceWrapper = MockDeviceWrapper(NAME, NAME, DeviceWrapper.BondState.NONE, setupMocks = false)
+        val deviceWrapper = AndroidMockDeviceWrapper(NAME, NAME, DeviceWrapper.BondState.NONE, setupMocks = false)
         val gatt = MockBluetoothGattWrapper(setupMocks = true)
         deviceWrapper.connectGattMock.on().doReturn(gatt)
 
@@ -56,9 +56,9 @@ class NotificationCccdTest : BaseTest() {
         manager.connect()
 
         val characteristic = MockCharacteristic(
-            AndroidMockCharacteristicWrapper(
+            MockCharacteristicWrapperImpl(
                 descriptorUUIDs = listOf(Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR),
-                service = MockRemoteServiceWrapper(),
+                service = MockServiceWrapper(),
                 properties = setOf(CharacteristicProperty.Notify),
             ),
         ) {}

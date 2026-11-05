@@ -18,9 +18,9 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.test.AndroidMockCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.test.MockCharacteristic
-import com.splendo.kaluga.bluetooth.test.MockRemoteServiceWrapper
+import com.splendo.kaluga.bluetooth.test.MockCharacteristicWrapperImpl
+import com.splendo.kaluga.bluetooth.test.MockServiceWrapper
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,7 +35,7 @@ class NotifyAllocationTest {
     private var received = 0
 
     private val characteristic = MockCharacteristic(
-        AndroidMockCharacteristicWrapper(service = MockRemoteServiceWrapper(), properties = setOf(CharacteristicProperty.Notify)),
+        MockCharacteristicWrapperImpl(service = MockServiceWrapper(), properties = setOf(CharacteristicProperty.Notify)),
     ) { (it.action as DeviceAction.Notification).complete(GattResponse.WriteSuccess.Acknowledged) }
 
     @Test
