@@ -33,6 +33,7 @@ import com.splendo.kaluga.bytes.layout.CollectionSettings
 import com.splendo.kaluga.bytes.layout.FrameSettings
 import com.splendo.kaluga.bytes.layout.NumericCodec
 import com.splendo.kaluga.bytes.layout.NumericSettings
+import com.splendo.kaluga.bytes.layout.TrailingAfterAbsent
 import com.splendo.kaluga.bytes.layout.UnexpectedItemCount
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
@@ -388,7 +389,7 @@ internal class BinaryEncoder(
     }
 
     override fun encodeNull() {
-        builder.addFlag(binaryDescriptor.bitIndex, false)
+        if (!binaryDescriptor.isTrailing) builder.addFlag(binaryDescriptor.bitIndex, false)
     }
 
     override fun encodeShort(value: Short) {
@@ -421,6 +422,9 @@ private class BinaryCompositeEncoder(
     private val discriminatorSink: BinaryBuilder? = null,
     private val getBinaryDescriptor: (Int) -> BinaryDescriptor,
 ) : CompositeEncoder {
+
+    // The last @Trailing property encoded as null: the value ends at the first one, so nothing may follow it.
+    private var absentTrailing: String? = null
 
     private fun builderAt(index: Int): BinaryBuilder = if (getBinaryDescriptor(index).isDiscriminator) checkNotNull(discriminatorSink) else builder
 
@@ -472,7 +476,14 @@ private class BinaryCompositeEncoder(
 
     @ExperimentalSerializationApi
     override fun <T : Any> encodeNullableSerializableElement(descriptor: SerialDescriptor, index: Int, serializer: SerializationStrategy<T>, value: T?) {
-        builder.addFlag(getBinaryDescriptor(index).bitIndex, value != null)
+        val element = getBinaryDescriptor(index)
+        if (!element.isTrailing) {
+            builder.addFlag(element.bitIndex, value != null)
+        } else if (value == null) {
+            absentTrailing = element.fieldName
+        } else {
+            absentTrailing?.let { throw TrailingAfterAbsent(element.fieldName, it) }
+        }
         value?.let {
             encodeSerializableElement(descriptor, index, serializer, value)
         }

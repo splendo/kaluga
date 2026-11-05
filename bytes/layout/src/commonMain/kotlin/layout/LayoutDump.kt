@@ -40,6 +40,7 @@ private fun StringBuilder.appendField(field: FieldLayout, depth: Int) {
     append(" order=").append(field.byteOrder.short()).append('/').append(field.valueByteOrder.short())
     if (field.bitIndex >= 0) append(" bits=").append(field.bitIndex).append('+').append(field.bitWidth)
     if (field.isNullable) append(" nullable")
+    if (field.isTrailing) append(" trailing")
     if (field.presenceFlagIndices.isNotEmpty()) append(" presentWhen=").append(field.presenceFlagIndices.joinToString(",", "[", "]"))
     if (field.reservedBefore != 0 || field.reservedAfter != 0) append(" reserved=").append(field.reservedBefore).append('/').append(field.reservedAfter)
     field.frame.prefix?.let { append(" prefix=").append(it.hex()) }

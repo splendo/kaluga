@@ -80,6 +80,21 @@ class UnsupportedCharEncoding(message: String) : SerializationException(message)
 class InvalidCountLayout(message: String) : SerializationException(message)
 
 /**
+ * Thrown when `@Trailing` cannot apply: a property after a trailing one that is not trailing itself, a trailing
+ * property that is not nullable or not written in whole bytes of the body, or a structure with a trailing tail where
+ * nothing bounds it, such as before another property or as the item of a collection.
+ */
+class InvalidTrailingLayout(message: String) : SerializationException(message)
+
+/**
+ * Exception thrown when the `@Trailing` property [name] is encoded while [absent], a trailing property before it, is
+ * `null`: the value ends at its first absent trailing property, so [name] would read back as [absent].
+ */
+class TrailingAfterAbsent(val name: String, val absent: String) : SerializationException() {
+    override val message: String = "@Trailing '$name' is set while '$absent' before it is null; a value ends at its first null @Trailing property"
+}
+
+/**
  * Exception thrown when the collection [name], fixed at [count] items by `@Count`, is encoded with [size] items.
  */
 class UnexpectedItemCount(val name: String, val count: Int, val size: Int) : SerializationException() {

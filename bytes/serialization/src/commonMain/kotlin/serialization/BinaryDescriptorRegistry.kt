@@ -68,6 +68,8 @@ internal data class BinaryDescriptor(
     // The `@Discriminator` field of a fallback: a number read from and written to the discriminator of its sealed
     // type, which takes no bytes in the fallback itself.
     val isDiscriminator: Boolean = false,
+    // A @Trailing property: present when the bytes of the value reach it, with no flag bit of its own.
+    val isTrailing: Boolean = false,
 ) {
 
     /**
@@ -83,6 +85,9 @@ internal data class BinaryDescriptor(
     } else {
         0
     }
+
+    /** Whether this property is present at [decoder]: a trailing one when bytes are left for it, any other by its flags. */
+    fun isPresent(decoder: BinaryDescriptorDecoder): Boolean = if (isTrailing) !decoder.isEmpty() else isPresent(decoder.flags)
 
     /** Whether this property is present given the decoded [flags]: derived from [presenceFlagIndices], else its own bit. */
     fun isPresent(flags: BooleanArray): Boolean = when {
@@ -141,6 +146,7 @@ internal fun FieldLayout.toBinaryDescriptor(): BinaryDescriptor {
         lengthPrefix = (type as? TypeLayout.Sealed)?.lengthPrefix,
         polymorphicFallback = (type as? TypeLayout.Sealed)?.fallback,
         isDiscriminator = type is TypeLayout.Discriminator,
+        isTrailing = isTrailing,
     )
 }
 

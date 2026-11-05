@@ -43,6 +43,8 @@ value class ByteArrayHolder(val array: ByteArray) {
  * @property bitWidth the number of flag header bits this property owns, starting at [bitIndex].
  * The first of them is the presence bit when [isNullable] and [presenceFlagIndices] is empty; the others select a
  * size, hold an enum ordinal, a flag-packed number or a collection count.
+ * @property isNullable whether the flag header says if the property is present: its presence bit, or
+ * [presenceFlagIndices]. A [isTrailing] property is nullable in its type but not here.
  * @property byteOrder the direction in which this property's frame is accumulated.
  * @property valueByteOrder the byte order of the values inside this property, which differs from [byteOrder] when the
  * type uses `@ByteOrder(excludeStructure = true)`.
@@ -52,6 +54,8 @@ value class ByteArrayHolder(val array: ByteArray) {
  * @property reservedAfter padding bytes after the property on the wire.
  * @property frame prefix, postfix, checksum and byte stuffing wrapped around the property's body.
  * @property type what is encoded.
+ * @property isTrailing whether the property is in the optional tail of its structure: present when the bytes of the
+ * value reach it, `null` when they end before it, with no flag bit of its own.
  */
 data class FieldLayout(
     val name: String,
@@ -66,6 +70,7 @@ data class FieldLayout(
     val reservedAfter: Int = 0,
     val frame: FrameSettings,
     val type: TypeLayout,
+    val isTrailing: Boolean = false,
 ) {
 
     /**
