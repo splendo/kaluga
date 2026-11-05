@@ -80,7 +80,7 @@ A sealed layout with `@LengthPrefix` writes each subtype as a record: its `@Seri
 
 In a view:
 
-- **A typed view of the bytes**: a record property, list item or `XFrame.value` is the subtype's slice over exactly the bytes its length counts, read in place. An `@Unsized` last property ends there, and bytes beyond what the subtype reads, which a later version may have appended, are skipped, as `BytesFormat` skips them.
+- **A typed view of the bytes**: a record property, list item or `XFrame.value` is the subtype's slice over exactly the bytes its length counts, read in place. An `@Unsized` last property and a `@Trailing` tail end there, before any footer of the subtype's own, and bytes beyond what the subtype reads, which a later version may have appended, are skipped, as `BytesFormat` skips them.
 - **Its type**: the class of the subtype, or, for a type no subtype has, the `@Fallback` subtype with the discriminator in its `@Discriminator` property. The discriminator is not in the bytes the slice covers, so the slice of a fallback, and only that slice, has one more field holding it, read from the frame when the frame dispatches to it; it is read-only, as writing it would change which subtype the record is.
 - **Its bounds**: the end of a record is read from its length alone, so a list of records, `@Unsized` to the end of what holds it, steps over records of every type, known or not, without reading them. To walk records by hand, `XFrame.valueStart(bytes, from)` and `XFrame.valueEnd(bytes, from)` give the bytes a length counts and `XFrame.end(bytes, from)` where the next record starts; none of them allocates.
 - **Writing**: a record's length is written once its subtype is, and one that does not fit the length throws, as in `BytesFormat`. A fallback writes its `@Discriminator` property to the discriminator, and throws when another subtype has it.
@@ -127,6 +127,19 @@ A second kind of delta frame is known and not supported yet: a reference value p
 - **Blocks and bit packing**: a block header with a bit width and a count is a different end marking from a fixed `step`, so it becomes an annotation of its own, such as ``@DeltaBlocks(width = Length.`8_BIT`, count = Length.`8_BIT`)``, used instead of `@DeltaCoded` and taking `channels` and `wrap` too. `CollectionSettings.DeltaCoding` gains the channels, the wrapping and the block header, with steps counted in bits, read least significant bit first like flag-packed numbers.
 - **Views**: the list API stays the same. The size of a blocked list is the sum of its block counts, found by stepping over the block headers once.
 
+### Optional tails
+
+A `@Trailing` property is present when the bytes of the value reach it; the [annotations](../annotations/#optional-tails) README has the rules and an example. DATA needs nothing new: the data class carries `@Trailing`, which `BytesFormat` reads.
+
+In a view:
+
+- **Reading**: the getter of a trailing property checks that where it starts lies before the end of the body and returns `null` when it does not, without reading anything past it; the getters before the tail are unchanged. The end of the body is the end of the array less the footer for an `XView`, `to` less the footer for `wrapRange`, the end of a record less its subtype's own footer for the subtype of a type-length-value record, and the end of the parent for a layout nested as its last property. A layout in the tail is bounded by the end of its parent too, so one the value ends inside of throws rather than reading what follows.
+- **Checking**: the constructor checks nothing, so a view a Bluetooth client creates over a shorter value reads its tail as `null`. `wrap` and `validate` accept a value that only lacks trailing properties, and throw `ByteArrayEndedBeforeSerializationCompleted`, as `BytesFormat` does, for one that ends inside a trailing property or before the tail.
+- **Writing**: `encode` and the constructor-like `invoke` write a `null` trailing property as nothing, and throw `TrailingAfterAbsent`, as `BytesFormat` does, for one that is not `null` after one that is. A trailing property has no setter, as a nullable property has none.
+- **Allocation**: a getter allocates nothing for an absent property. A present number is returned as the nullable type the property declares, so it is boxed as any nullable number is: nothing for an `Int` in the `Integer` cache, a box of the number otherwise.
+
+A tail in a frame accumulated `MOST_SIGNIFICANT_FIRST` is reported as not supported yet.
+
 ### <Prefix>BytesViews
 
 One internal object per package, listing every layout generated with both DATA and VIEW, keyed by DATA serial name, prefixed like `<Prefix>BytesLayouts`.
@@ -165,7 +178,7 @@ Byte stuffing cannot read in place. For byte-stuffed layouts:
 
 ## Supported VIEW features
 
-Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, delta-coded lists of `Short`, `Int` and `Long` items, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
+Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, delta-coded lists of `Short`, `Int` and `Long` items, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable, `@PresentWhenAllSet` and `@Trailing` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
 
 Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. A `@Count` collection of fixed-size items has a setter that rewrites its items in place and, like the constructors, refuses another number of items. Lists are read in place: `FixedStrideList` when all items are the same size, a `DeltaCodedShortList` or `DeltaCodedIntList` when `@DeltaCoded`, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
 

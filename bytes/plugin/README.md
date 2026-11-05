@@ -122,7 +122,7 @@ val edited = view.toMutable().apply { bpm = 90 }
 ```
 
 For a more complex example involving enums, sealed classes and nested structures, see [`example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt`](example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt).
-For a stream of type-length-value records, each a type, a length and that many bytes, read back to back with unknown types kept and their shared time step read, see [`RecordFixtures.kt`](example/validation/format/src/commonMain/kotlin/RecordFixtures.kt). For records whose samples are delta-coded, the first sample and then the step to each next one, see [`DeltaCodedFixtures.kt`](example/validation/format/src/commonMain/kotlin/DeltaCodedFixtures.kt).
+For a stream of type-length-value records, each a type, a length and that many bytes, read back to back with unknown types kept and their shared time step read, see [`RecordFixtures.kt`](example/validation/format/src/commonMain/kotlin/RecordFixtures.kt). For records whose samples are delta-coded, the first sample and then the step to each next one, see [`DeltaCodedFixtures.kt`](example/validation/format/src/commonMain/kotlin/DeltaCodedFixtures.kt). For values and records sent with or without the fields at their end, read with those fields `null` when they are left out, see [`TrailingFixtures.kt`](example/validation/format/src/commonMain/kotlin/TrailingFixtures.kt).
 
 ## Bluetooth values
 
