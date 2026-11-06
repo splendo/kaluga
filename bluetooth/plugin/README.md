@@ -194,6 +194,14 @@ inlined action:
 measurement.collectHeartRate { view -> show(view.bpm) } // no allocation per notification
 ```
 
+`heartRateBytes` is the one notification flow an implementation provides; `heartRate` is derived from it by the API, so
+the two cannot drift apart and `collectHeartRate` stays allocation-free over any implementation. The Bluetooth
+implementation hands out the characteristic's value flow, the mock is driven through its `heartRateBytes`
+`MutableSharedFlow`, and the simulator is still given a `Flow<HeartRateView>`, from which it derives the bytes while
+keeping `isNotifying` in step with its collector. A hand-written implementation overrides `heartRateBytes` only. One
+that delegates to another with `by` forwards `heartRate` to the delegate as well, so it has to override `heartRate` too
+if its `heartRateBytes` differ from the delegate's.
+
 On the server the delegate is given a `HeartRateView` to write and answers reads with one. A write split over several
 offsets reaches it once `HeartRateView.wrap` accepts the bytes written so far, and one `wrap` rejects goes to
 `onFailedToWriteHeartRate`. A view the client reads or is notified of is not checked; call its `validate()` where a
