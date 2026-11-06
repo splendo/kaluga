@@ -210,8 +210,12 @@ class ConnectableDeviceImpl(
                     is DeviceConnectionManager.Event.Disconnected,
                     -> deviceStateRepo.value
                 }
-                repo?.takeAndChangeState { state ->
-                    event.stateTransition(state)
+                when {
+                    repo != null -> repo.takeAndChangeState { state ->
+                        event.stateTransition(state)
+                    }
+
+                    event is DeviceConnectionManager.Event.AddAction -> event.action.completeUnavailable()
                 }
             }
         }
@@ -279,28 +283,47 @@ class ConnectableDeviceImpl(
         }
     }
 
-    private fun DeviceConnectionManager.Event.Disconnecting.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected) state.disconnecting else state.remain()
+    private fun DeviceConnectionManager.Event.Disconnecting.stateTransition(state: ConnectableDeviceState) = when (state) {
+        is ConnectableDeviceState.Connected -> {
+            // Disconnecting keeps no queue. The action in flight stays with the connection manager, which still
+            // delivers its completion or answers it at the disconnect.
+            if (state is ConnectableDeviceState.Connected.HandlingAction) {
+                state.nextActions.forEach { it.completeUnavailable() }
+            }
+            state.disconnecting
+        }
 
-    private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) = when (state) {
-        is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
-            is ConnectionSettings.ReconnectionSettings.Always if !isIntentional -> state.reconnect
+        else -> state.remain()
+    }
 
-            is ConnectionSettings.ReconnectionSettings.Always,
-            is ConnectionSettings.ReconnectionSettings.Never,
+    private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState): suspend () -> ConnectableDeviceState {
+        if (state is ConnectableDeviceState.Connected.HandlingAction) {
+            state.action.completeUnavailable()
+            state.nextActions.forEach { it.completeUnavailable() }
+        }
+        return when (state) {
+            is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
+                is ConnectionSettings.ReconnectionSettings.Always if !isIntentional -> state.reconnect
+
+                is ConnectionSettings.ReconnectionSettings.Always,
+                is ConnectionSettings.ReconnectionSettings.Never,
+                -> {
+                    onDisconnect()
+                    state.didDisconnect
+                }
+            }
+
+            is ConnectableDeviceState.Disconnected -> {
+                onDisconnect()
+                state.remain()
+            }
+
+            is ConnectableDeviceState.Connecting,
+            is ConnectableDeviceState.Disconnecting,
             -> {
                 onDisconnect()
                 state.didDisconnect
             }
-        }
-
-        is ConnectableDeviceState.Disconnected -> state.remain()
-
-        is ConnectableDeviceState.Connecting,
-        is ConnectableDeviceState.Disconnecting,
-        -> {
-            onDisconnect()
-            state.didDisconnect
         }
     }
 
@@ -319,13 +342,16 @@ class ConnectableDeviceImpl(
             state.addAction(action)
         }
 
+        // Only attributes of a completed discovery can issue actions, so here the action comes from a discovery that no
+        // longer holds (or is a stray MTU request); answering it beats leaving its response pending.
         is ConnectableDeviceState.Connected.NoServices,
         is ConnectableDeviceState.Connected.Discovering,
         is ConnectableDeviceState.Connecting,
         is ConnectableDeviceState.Disconnected,
         is ConnectableDeviceState.Disconnecting,
         -> {
-            state.remain() // TODO consider an optional buffer
+            action.completeUnavailable()
+            state.remain()
         }
     }
 

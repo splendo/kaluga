@@ -173,17 +173,32 @@ class MockDeviceConnectionManager(
 
     override suspend fun didStartPerformingAction(action: DeviceAction<*>): Unit = performActionMock.call(action)
 
+    /**
+     * Suspends until a [DeviceAction] is being performed
+     * @return the [DeviceAction] being performed
+     */
+    suspend fun awaitCurrentAction(): DeviceAction<*> {
+        while (true) {
+            currentAction?.let { return it }
+            delay(10)
+        }
+    }
+
+    /**
+     * Suspends until a [DeviceAction] is being performed, then disconnects the device as if the connection dropped while
+     * the action was pending.
+     * @return the [DeviceAction] that was pending
+     */
+    suspend fun disconnectWhilePerformingAction(): DeviceAction<*> = awaitCurrentAction().also { handleDisconnect() }
+
+    /**
+     * Completes a [DeviceAction.Notification] the way a platform callback would, whether or not it is still the action
+     * being performed; use it to replay a callback that arrives late.
+     */
+    fun completeNotificationAction(action: DeviceAction.Notification, response: GattResponse.WriteResponse) = action.handleNotificationStateChanged(response)
+
     suspend fun handleCurrentAction() {
-        lateinit var action: DeviceAction<*>
-        do {
-            val success = currentAction?.let {
-                action = it
-                true
-            } ?: run {
-                delay(100)
-                false
-            }
-        } while (!success)
+        val action = awaitCurrentAction()
         debug("Handle $action")
         when (action) {
             is DeviceAction.Read.Characteristic -> {

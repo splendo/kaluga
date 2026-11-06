@@ -40,12 +40,15 @@ sealed class DeviceAction<Response : GattResponse> {
         _response.complete(succeeded)
     }
 
-    internal fun fail() {
-        _response.cancel()
-    }
+    /**
+     * Completes [response] with the failure for a remote device that cannot be reached, unless it is already completed.
+     */
+    internal abstract fun completeUnavailable()
 
     /**
-     * A Deferred that will be completed with [Response] when [DeviceAction] has been handled by the [ConnectableDevice]
+     * A Deferred that will be completed with [Response] when [DeviceAction] has been handled by the [ConnectableDevice].
+     * It completes with [GattResponse.DeviceUnavailable] (or [GattResponse.MTUDeviceUnavailable]) when the device disconnects
+     * before the action was handled, and never fails exceptionally.
      * */
     val response: Deferred<Response> by ::_response
 
@@ -54,6 +57,8 @@ sealed class DeviceAction<Response : GattResponse> {
      * Returns a [GattResponse.ReadResponse]
      */
     sealed class Read : DeviceAction<GattResponse.ReadResponse>() {
+
+        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable)
 
         /**
          * A [DeviceAction.Read] on a [RemoteCharacteristic]
@@ -78,6 +83,8 @@ sealed class DeviceAction<Response : GattResponse> {
      * @property newValue the [ByteArray] to write
      */
     sealed class Write(val newValue: ByteArray) : DeviceAction<GattResponse.WriteResponse>() {
+
+        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable)
 
         /**
          * A [DeviceAction.Write] on a [RemoteCharacteristic]
@@ -106,6 +113,8 @@ sealed class DeviceAction<Response : GattResponse> {
      */
     sealed class Notification(val characteristic: RemoteCharacteristic) : DeviceAction<GattResponse.WriteResponse>() {
 
+        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable)
+
         /**
          * A [Notification] that starts notifying
          * @param characteristic the [RemoteCharacteristic] to notify
@@ -129,7 +138,10 @@ sealed class DeviceAction<Response : GattResponse> {
      * Returns a [GattResponse.MTUResponse]
      * @property mtu the [MTU] to request.
      */
-    data class RequestMtu(val mtu: MTU) : DeviceAction<GattResponse.MTUResponse>()
+    data class RequestMtu(val mtu: MTU) : DeviceAction<GattResponse.MTUResponse>() {
+
+        override fun completeUnavailable() = complete(GattResponse.MTUDeviceUnavailable(mtu))
+    }
 }
 
 /**
@@ -453,7 +465,6 @@ internal sealed class ConnectableDeviceStateImpl {
         abstract val reconnectionSettings: ConnectionSettings.ReconnectionSettings
 
         val reconnect = suspend {
-            // All services, characteristics and descriptors become invalidated after it disconnects
             Connecting(reconnectionSettings, deviceConnectionManager)
         }
 

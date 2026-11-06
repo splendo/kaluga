@@ -216,7 +216,8 @@ interface DeviceConnectionManager {
     fun startDisconnecting()
 
     /**
-     * Fires an [Event.Disconnected]
+     * Fires an [Event.Disconnected]. Every action pending on the connection completes with [GattResponse.DeviceUnavailable].
+     * @param onDisconnect the platform cleanup to run once the device has handled the event
      */
     fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null)
 
@@ -226,7 +227,8 @@ interface DeviceConnectionManager {
     fun requestMtu(mtu: MTU): DeviceAction.RequestMtu
 
     /**
-     * Resets all actions and disconnects the device
+     * Ends the current connection the way [handleDisconnect] does (the pending action answered with
+     * [GattResponse.DeviceUnavailable]) and disconnects the device
      */
     suspend fun reset()
 
@@ -344,19 +346,23 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     protected abstract fun intentionalDisconnect()
 
+    /**
+     * Fires an [DeviceConnectionManager.Event.Disconnected] after ending the current connection: the action being
+     * performed completes with [GattResponse.DeviceUnavailable].
+     * @param onDisconnect the platform cleanup to run once the device has handled the event
+     */
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
-        val currentAction = this.currentAction
-        currentAction?.fail()
-        val notifyingCharacteristics = this.notifyingCharacteristics
-        val clean = suspend {
-            disconnectingIntentionally = false
-            this.currentAction = null
-            notifyingCharacteristics.clear()
-            onDisconnect?.invoke()
-            Unit
-        }
         logger.stateLogger.stateChangeLogger.info { "Did Disconnect" }
-        emitEvent(DeviceConnectionManager.Event.Disconnected(disconnectingIntentionally, clean))
+        val isIntentional = disconnectingIntentionally
+        invalidateConnection()
+        emitEvent(DeviceConnectionManager.Event.Disconnected(isIntentional) { onDisconnect?.invoke() })
+    }
+
+    private fun invalidateConnection() {
+        disconnectingIntentionally = false
+        currentAction?.completeUnavailable()
+        currentAction = null
+        notifyingCharacteristics.clear()
     }
 
     override fun requestMtu(mtu: MTU): DeviceAction.RequestMtu {
@@ -378,13 +384,20 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         emitEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
+    /**
+     * Completes this action with [response]. A completion for an action whose response is already set (a disconnect
+     * answered it) is ignored, so a late platform callback never touches the action of a later connection.
+     */
     protected fun <R : GattResponse> DeviceAction<R>.handleActionCompleted(response: R) {
+        if (currentAction === this) {
+            currentAction = null
+        }
+        if (isAlreadyCompleted()) return
         handleActionCompleted(response, this)
-        currentAction = null
         when (response) {
             is GattResponse.Success -> logger.stateLogger.actionLogger.info { "Completed $this successfully" }
             is GattResponse.Error -> logger.stateLogger.actionLogger.error { "Failed to complete $this" }
-            is GattResponse.DeviceUnavailable -> logger.stateLogger.actionLogger.error { "Failed to start $this" }
+            is GattResponse.DeviceUnavailable, is GattResponse.Superseded -> logger.stateLogger.actionLogger.error { "Failed to start $this" }
             is GattResponse.MTUError -> logger.stateLogger.actionLogger.error { "Failed to update MTU. Set to $this" }
         }
         emitEvent(DeviceConnectionManager.Event.CompletedAction(this, response))
@@ -393,12 +406,20 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     protected open fun <R : GattResponse> handleActionCompleted(response: R, deviceAction: DeviceAction<R>) {}
 
     protected fun DeviceAction.Notification.handleNotificationStateChanged(response: GattResponse.WriteResponse) {
-        val uuid = characteristic.uuid.uuidString
-        when (this) {
-            is DeviceAction.Notification.Enable -> notifyingCharacteristics[uuid] = characteristic
-            is DeviceAction.Notification.Disable -> notifyingCharacteristics.remove(uuid)
+        if (!this.response.isCompleted) {
+            val uuid = characteristic.uuid.uuidString
+            when (this) {
+                is DeviceAction.Notification.Enable -> notifyingCharacteristics[uuid] = characteristic
+                is DeviceAction.Notification.Disable -> notifyingCharacteristics.remove(uuid)
+            }
         }
         handleActionCompleted(response)
+    }
+
+    private fun DeviceAction<*>.isAlreadyCompleted(): Boolean = response.isCompleted.also { isCompleted ->
+        if (isCompleted) {
+            logger.stateLogger.actionLogger.info { "Ignoring completion of $this: it was already answered" }
+        }
     }
 
     protected fun handleCharacteristicReadOrNotified(uuid: UUID, response: GattResponse.ReadResponse) {
@@ -459,8 +480,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     }
 
     override suspend fun reset() {
-        currentAction = null
-        notifyingCharacteristics.clear()
+        invalidateConnection()
         disconnect()
     }
 

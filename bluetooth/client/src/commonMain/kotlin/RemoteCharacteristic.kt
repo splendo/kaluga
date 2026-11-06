@@ -191,12 +191,12 @@ open class RemoteCharacteristic internal constructor(
      */
     fun startEnableNotification(): DeviceAction.Notification.Enable? {
         var enableAction: DeviceAction.Notification.Enable? = null
-        var actionToFail: DeviceAction.Notification? = null
+        var supersededAction: DeviceAction.Notification? = null
         var shouldHandleAction = false
         currentNotificationAction.update { currentNotificationAction ->
             when {
                 currentNotificationAction == null -> {
-                    actionToFail = null
+                    supersededAction = null
                     if (!_isNotifying.value) {
                         val action = DeviceAction.Notification.Enable(this)
                         enableAction = action
@@ -214,13 +214,13 @@ open class RemoteCharacteristic internal constructor(
                         val next = currentNotificationAction.next
                         if (next is DeviceAction.Notification.Enable) {
                             enableAction = currentNotificationAction.next
-                            actionToFail = null
+                            supersededAction = null
                             shouldHandleAction = false
                             currentNotificationAction
                         } else {
                             val nextToDisable = DeviceAction.Notification.Enable(this)
                             enableAction = nextToDisable
-                            actionToFail = currentNotificationAction.next
+                            supersededAction = currentNotificationAction.next
                             shouldHandleAction = false
                             NotificationActionQueue(current, nextToDisable)
                         }
@@ -229,13 +229,13 @@ open class RemoteCharacteristic internal constructor(
                     is DeviceAction.Notification.Enable -> {
                         enableAction = current
                         shouldHandleAction = false
-                        actionToFail = currentNotificationAction.next
+                        supersededAction = currentNotificationAction.next
                         NotificationActionQueue(current, null)
                     }
                 }
             }
         }
-        actionToFail?.fail()
+        supersededAction?.complete(GattResponse.Superseded)
         enableAction?.takeIf { shouldHandleAction }?.handle()
         return enableAction
     }
@@ -283,12 +283,12 @@ open class RemoteCharacteristic internal constructor(
      */
     fun startDisableNotification(): DeviceAction.Notification.Disable? {
         var disableAction: DeviceAction.Notification.Disable? = null
-        var actionToFail: DeviceAction.Notification? = null
+        var supersededAction: DeviceAction.Notification? = null
         var shouldHandleAction = false
         currentNotificationAction.update { currentNotificationAction ->
             when {
                 currentNotificationAction == null -> {
-                    actionToFail = null
+                    supersededAction = null
                     if (_isNotifying.value) {
                         val action = DeviceAction.Notification.Disable(this)
                         disableAction = action
@@ -306,13 +306,13 @@ open class RemoteCharacteristic internal constructor(
                         val next = currentNotificationAction.next
                         if (next is DeviceAction.Notification.Disable) {
                             disableAction = currentNotificationAction.next
-                            actionToFail = null
+                            supersededAction = null
                             shouldHandleAction = false
                             currentNotificationAction
                         } else {
                             val nextToDisable = DeviceAction.Notification.Disable(this)
                             disableAction = nextToDisable
-                            actionToFail = currentNotificationAction.next
+                            supersededAction = currentNotificationAction.next
                             shouldHandleAction = false
                             NotificationActionQueue(current, nextToDisable)
                         }
@@ -321,13 +321,13 @@ open class RemoteCharacteristic internal constructor(
                     is DeviceAction.Notification.Disable -> {
                         disableAction = current
                         shouldHandleAction = false
-                        actionToFail = currentNotificationAction.next
+                        supersededAction = currentNotificationAction.next
                         NotificationActionQueue(current, null)
                     }
                 }
             }
         }
-        actionToFail?.fail()
+        supersededAction?.complete(GattResponse.Superseded)
         disableAction?.takeIf { shouldHandleAction }?.handle()
         return disableAction
     }
