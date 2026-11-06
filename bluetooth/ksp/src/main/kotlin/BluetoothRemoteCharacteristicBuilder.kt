@@ -427,7 +427,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                         )
                     }
 
-                    GenerationType.Type.SIMULATOR -> getter(simulatorNotifyingGetter(CodeBlock.of("_%N", name)))
+                    GenerationType.Type.SIMULATOR -> getter(simulatorNotifyingGetter(CodeBlock.of("%N", "_$name")))
                 }
             }.build()
     }
@@ -448,7 +448,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     GenerationType.Type.BLUETOOTH -> getter(FunSpec.getterBuilder().addStatement("$RETURN $CHARACTERISTIC.%M()", References.Bluetooth.value).build())
 
                     GenerationType.Type.SIMULATOR -> getter(
-                        simulatorNotifyingGetter(CodeBlock.of("_%N.%M { %L }", name, References.KotlinX.Coroutines.Flow.map, value.encode(CodeBlock.of(IT)))),
+                        simulatorNotifyingGetter(CodeBlock.of("%N.%M { %L }", "_$name", References.KotlinX.Coroutines.Flow.map, value.encode(CodeBlock.of(IT)))),
                     )
                 }
             }
