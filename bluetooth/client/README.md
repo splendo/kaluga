@@ -76,7 +76,7 @@ From a `RemoteCharacteristic` or `RemoteDescriptor` data can be read or written 
 // Read
 when (val response = characteristic.read()) {
     is GattResponse.ReadSuccess -> println("Did Read ${response.value.toHexString()}")
-    is GattResponse.WriteError -> println("Failed with ${response.statusCode}")
+    is GattResponse.ReadError -> println("Failed with ${response.statusCode}")
 }
 
 // Write
@@ -126,6 +126,23 @@ val value = "".bind(device) {
     }
 }
 ```
+
+### Disconnecting
+Whether the disconnect was requested or the link dropped, everything pending on the connection and everything discovered on it settles the same way; nothing throws and nothing stays pending.
+
+- Pending actions answer with a typed failure. `read()` and `write()` return `GattResponse.DeviceUnavailable`, `subscribe {}` returns `FailedToSubscribe(GattResponse.DeviceUnavailable)`, `enableNotification()`, `disableNotification()` and `Subscription.unsubscribe()` return `GattResponse.DeviceUnavailable`, and `requestMtu` returns `GattResponse.MTUDeviceUnavailable`. This covers the action in flight, the actions queued behind it and actions issued while the device is not in a discovered state. A requested disconnect answers the queued actions as it starts; the action in flight still gets the device's answer if it arrives before the link closes.
+- Flows end. `value()` (and the notification flows of generated clients) complete normally, `isNotifying` becomes `false` and subscriptions are dropped.
+- Objects stay stale. A `RemoteService`, `RemoteCharacteristic` or `RemoteDescriptor` of the ended connection never becomes usable again; later calls on it answer with the same typed failures at once, without reaching the device. After reconnecting, `discoveredServices()` emits new objects.
+- `invalidated` tells you. Each of these objects has an `invalidated: Deferred<Unit>` completed when its connection ends (a `reset()` of the connection manager ends it too). Await it, or bound a collection with it:
+
+```kotlin
+launch {
+    characteristic.invalidated.await()
+    // rediscover
+}
+```
+
+A notification request that is replaced by the opposite request before it reached the device (a disable followed by an enable while a previous enable is still in flight) answers `GattResponse.Superseded`.
 
 ### Android
 When using automatic permissions by default only the relevant Bluetooth permissions are asked for, and not the location permission (unless the Android version is lower than 12 where it is always required). Make sure you include `android:usesPermissionFlags="neverForLocation"`, unless you do use Bluetooth to determine location, in which case you can use the `useLocation` flag in `BaseScanner.Settings`.
@@ -208,7 +225,7 @@ To align the behaviour across platforms the [CBCentralManagerScanOptionAllowDupl
 The client does not depend on the platform Bluetooth stack: `DefaultBluetoothClient`, the device state machines and the generated service implementations only talk to a `Scanner`, a `DeviceConnectionManager` and the attribute wrappers. Another transport (an emulator reached over a socket, an in-process fake, a bridge to a different Bluetooth library) plugs in at that seam, in common code:
 
 - `PortableRemoteServiceWrapper`, `PortableRemoteCharacteristicWrapper`, `PortableRemoteDescriptorWrapper` and `PortableDeviceWrapper` are the attribute and device wrappers to extend. The platform `RemoteServiceWrapper` (etc.) interfaces add members only Kaluga's own connection managers use; these classes implement them, so a subclass written in common code implements just the common members (`uuid`, `type`, `characteristics`, `properties`, ...).
-- `BaseDeviceConnectionManager` is the connection manager to extend. Implement `connect`, `intentionalDisconnect`, `discoverServices`, `didStartPerformingAction` and the pairing/RSSI requests against the transport, and report results through the protected `handle…` methods: `handleConnect`/`handleDisconnect`, `createService` + `handleDiscoverCompleted` after discovery, `handleCharacteristicReadOrNotified`/`handleCharacteristicWritten`/`handleDescriptorRead`/`handleDescriptorWritten`, `handleNotificationStateChanged` for a notification action and `handleCharacteristicNotified` for a pushed value, `handleNewMtu` and `handleNewRssi`.
+- `BaseDeviceConnectionManager` is the connection manager to extend. Implement `connect`, `intentionalDisconnect`, `discoverServices`, `didStartPerformingAction` and the pairing/RSSI requests against the transport, and report results through the protected `handle…` methods: `handleConnect`/`handleDisconnect`, `createService` + `handleDiscoverCompleted` after discovery, `handleCharacteristicReadOrNotified`/`handleCharacteristicWritten`/`handleDescriptorRead`/`handleDescriptorWritten`, `handleNotificationStateChanged` for a notification action and `handleCharacteristicNotified` for a pushed value, `handleNewMtu` and `handleNewRssi`. `handleDisconnect` is the one path for a lost or requested disconnect: it answers the pending action, invalidates the services created on the connection and fires the `Disconnected` event, so a transport reports nothing else. A completion reported for an action that was already answered (a callback arriving after the disconnect) is ignored.
 - A `Scanner` (or `BaseScanner`) emits `Scanner.Event.PermissionChanged`, `BluetoothEnabled`/`BluetoothDisabled` and `DeviceDiscovered` events. Each `DeviceDiscovered` carries a device creator; build it with `ConnectableDeviceImpl` and `DeviceInfoImpl` around your `PortableDeviceWrapper` and a `DeviceConnectionManager.Builder` creating your manager.
 - `DefaultBluetoothClient(coroutineContext) { context -> ScanningStateImplRepo(createScanner, contextForIdentifier, context) }` wires that scanner into a regular `BluetoothClient`, so everything built on the client, including generated clients, runs unchanged over the new transport. A `BaseBluetoothClientBuilder` returning it slots into code that is handed a builder.
 
