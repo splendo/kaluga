@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.views
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -36,11 +35,8 @@ class NotificationAllocationTest {
     private val bytes = HeartRateView(bpm = 72, energy = 300).bytes
     private val notifications: Flow<ByteArray> = flow { repeat(NOTIFICATIONS) { emit(bytes) } }
 
-    // The flows of the Bluetooth implementation, over notifications that need no Bluetooth stack.
-    private val characteristic = object : RemoteMeasurementCharacteristic by MockRemoteMeasurementCharacteristic() {
-        override val heartRateBytes: Flow<ByteArray> = notifications
-        override val heartRate: Flow<HeartRateView> = notifications.map { HeartRateView(it) }
-    }
+    // Notifications that need no Bluetooth stack, through the one flow an implementation provides.
+    private val characteristic = BytesOnlyMeasurement(notifications)
 
     private var sum = 0L
 
