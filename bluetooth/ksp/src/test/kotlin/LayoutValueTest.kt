@@ -69,14 +69,14 @@ class LayoutValueTest {
         assertContains(remote, "public val measurement: Flow<MeasurementView>")
         assertContains(remote, "public suspend fun readMeasurement(): MeasurementCharacteristicReadResponse")
         assertContains(remote, "public suspend fun writeMeasurement(measurement: MeasurementView): GattResponse.WriteResponse")
-        assertContains(remote, "get() = characteristic.`value`().map { MeasurementView(it) }")
+        assertContains(remote, "public val measurement: Flow<MeasurementView>\n        get() = measurementBytes.map { MeasurementView(it) }")
         assertContains(remote, "MeasurementCharacteristicReadResponse.Success(MeasurementView(readResult.value))")
         assertContains(remote, "characteristic.write(measurement.bytes, WithResponse)")
         // Nothing is serialized, so the client needs no BytesFormat.
         assertFalse("BytesFormat" in remote, remote)
         assertContains(remote, "suspend (measurement: MeasurementView) -> GattResponse.WriteResponse")
         assertContains(remote, "measurement: Flow<MeasurementView>,")
-        assertContains(remote, "override val measurement: MutableSharedFlow<MeasurementView> = MutableSharedFlow()")
+        assertContains(remote, "override val measurementBytes: MutableSharedFlow<ByteArray> = MutableSharedFlow()")
 
         val response = compilation.generatedFile("MeasurementCharacteristicReadResponse.kt")
         assertContains(response, "public val response: MeasurementView")
@@ -88,16 +88,32 @@ class LayoutValueTest {
         assertEquals(emptyList(), compilation.kspErrors)
         val remote = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
 
-        assertContains(remote, "public val measurementBytes: Flow<ByteArray>\n        get() = measurement.map { it.bytes }")
+        assertContains(remote, "public val measurementBytes: Flow<ByteArray>\n\n")
         assertContains(remote, "override val measurementBytes: Flow<ByteArray>\n        get() = characteristic.`value`()")
         assertContains(
             remote,
             "public suspend inline fun RemoteMeasurementCharacteristic.collectMeasurement(crossinline action: suspend (MeasurementView) -> Unit) {\n" +
                 "    measurementBytes.collect { action(MeasurementView(it)) }\n}",
         )
-        // The mock and the simulator derive the bytes from the views they are given.
-        assertFalse("override val measurementBytes: MutableSharedFlow" in remote, remote)
-        assertEquals(2, Regex("val measurementBytes").findAll(remote).count(), remote)
+    }
+
+    @Test
+    fun `the bytes of a view are the one flow an implementation provides`() {
+        val compilation = BluetoothCompilation(definitions())
+        assertEquals(emptyList(), compilation.kspErrors)
+        val remote = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
+
+        // Only the API declares the flow of views, wrapping the bytes; no implementation overrides it.
+        assertEquals(1, Regex("val measurement: Flow<MeasurementView>").findAll(remote).count(), remote)
+        assertFalse("override val measurement:" in remote, remote)
+        // The simulator is given views, and notes a collector on the bytes it derives from them.
+        assertContains(remote, "measurement: Flow<MeasurementView>,")
+        assertContains(
+            remote,
+            "override val measurementBytes: Flow<ByteArray>\n" +
+                "        get() = _measurement.map { it.bytes }.onStart { _isNotifying.value = true }.onCompletion { _isNotifying.value = false }",
+        )
+        assertEquals(1, Regex("_isNotifying\\.value = true").findAll(remote).count(), remote)
     }
 
     @Test
@@ -209,7 +225,8 @@ class LayoutValueTest {
         assertEquals(emptyList(), compilation.kspErrors)
         val remote = compilation.generatedFile("RemoteReadingCharacteristic.kt")
         assertContains(remote, "public val reading: Flow<ReadingFrame>")
-        assertContains(remote, "characteristic.`value`().map { ReadingFrame(it) }")
+        assertContains(remote, "get() = readingBytes.map { ReadingFrame(it) }")
+        assertContains(remote, "override val readingBytes: Flow<ByteArray>\n        get() = characteristic.`value`()")
     }
 
     @Test
