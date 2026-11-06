@@ -307,8 +307,8 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 if (propertyDeclaration.isNotifiable) {
                     if (!hasNotifiableProperty) {
                         hasNotifiableProperty = true
-                        addProperty(generateNotifiableProperty(propertyDeclaration, type))
                         generateNotifiableBytesProperty(propertyDeclaration, type)?.let { addProperty(it) }
+                        generateNotifiableProperty(propertyDeclaration, type)?.let { addProperty(it) }
                         addProperty(generateIsNotifyingProperty(type))
                     } else {
                         logOnlyOneProperty(Notifiable::class, Indicatable::class)
@@ -393,72 +393,77 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
         }
     }.build()
 
-    private fun generateNotifiableProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec = PropertySpec.builder(
-        propertyDeclaration.simpleName.asString(),
-        References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.attributeValue(options).typeName),
-    ).addModifiers(
-        *type.additionalModifiers.toTypedArray(),
-    )
-        .apply {
-            when (type) {
-                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
+    /**
+     * The notifications of [propertyDeclaration] as its value. A value read through a view is derived from the undecoded
+     * notifications of [generateNotifiableBytesProperty] by the API, so an implementation provides only those.
+     */
+    private fun generateNotifiableProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec? {
+        val value = propertyDeclaration.attributeValue(options)
+        val name = propertyDeclaration.simpleName.asString()
+        val builder = PropertySpec.builder(name, References.KotlinX.Coroutines.Flow.flow.parameterizedBy(value.typeName))
+        if (value is AttributeValue.View) {
+            if (type != GenerationType.Type.API) return null
+            return builder
+                .getter(FunSpec.getterBuilder().addStatement("$RETURN %N$BYTES.%M { %L }", name, References.KotlinX.Coroutines.Flow.map, value.decode(CodeBlock.of(IT))).build())
+                .build()
+        }
+        return builder.addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                when (type) {
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
-                GenerationType.Type.BLUETOOTH -> {
-                    getter(
-                        FunSpec.getterBuilder()
-                            .apply {
-                                val member = References.Bluetooth.value
-                                when (val value = propertyDeclaration.attributeValue(options)) {
-                                    AttributeValue.Bytes -> addStatement("$RETURN $CHARACTERISTIC.%M()", member)
-
-                                    is AttributeValue.View -> addStatement(
-                                        "$RETURN $CHARACTERISTIC.%M().%M { %L }",
-                                        member,
-                                        References.KotlinX.Coroutines.Flow.map,
-                                        value.decode(CodeBlock.of(IT)),
-                                    )
-
-                                    is AttributeValue.Serialized -> addStatement("$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)", member, value.serializer)
+                    GenerationType.Type.BLUETOOTH -> {
+                        getter(
+                            FunSpec.getterBuilder()
+                                .apply {
+                                    val member = References.Bluetooth.value
+                                    when (value) {
+                                        AttributeValue.Bytes -> addStatement("$RETURN $CHARACTERISTIC.%M()", member)
+                                        is AttributeValue.Serialized -> addStatement("$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)", member, value.serializer)
+                                        is AttributeValue.View -> error("A view is derived from the bytes")
+                                    }
                                 }
-                            }
-                            .build(),
-                    )
-                }
+                                .build(),
+                        )
+                    }
 
-                GenerationType.Type.SIMULATOR -> {
-                    // Expose the backing flow wrapped with onStart/onCompletion so _isNotifying
-                    // reflects whether there is an active collector.
-                    getter(
-                        FunSpec.getterBuilder()
-                            .addStatement(
-                                "$RETURN _%L.%M { _isNotifying.value = true }.%M { _isNotifying.value = false }",
-                                propertyDeclaration.simpleName.asString(),
-                                References.KotlinX.Coroutines.Flow.onStart,
-                                References.KotlinX.Coroutines.Flow.onCompletion,
-                            )
-                            .build(),
+                    GenerationType.Type.SIMULATOR -> getter(simulatorNotifyingGetter(CodeBlock.of("_%N", name)))
+                }
+            }.build()
+    }
+
+    /**
+     * The undecoded notifications of a [propertyDeclaration] read through a view: the one flow an implementation
+     * provides, which [generateNotifiableProperty] wraps and [collectFunction] collects without boxing.
+     */
+    private fun generateNotifiableBytesProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec? {
+        val value = propertyDeclaration.attributeValue(options) as? AttributeValue.View ?: return null
+        val name = propertyDeclaration.simpleName.asString()
+        return PropertySpec.builder("$name$BYTES", References.KotlinX.Coroutines.Flow.flow.parameterizedBy(BYTE_ARRAY))
+            .addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                when (type) {
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
+
+                    GenerationType.Type.BLUETOOTH -> getter(FunSpec.getterBuilder().addStatement("$RETURN $CHARACTERISTIC.%M()", References.Bluetooth.value).build())
+
+                    GenerationType.Type.SIMULATOR -> getter(
+                        simulatorNotifyingGetter(CodeBlock.of("_%N.%M { %L }", name, References.KotlinX.Coroutines.Flow.map, value.encode(CodeBlock.of(IT)))),
                     )
                 }
             }
-        }.build()
-
-    /**
-     * The undecoded notifications of a [propertyDeclaration] read through a view, which [collectFunction] collects. The
-     * API derives it from the views; only the Bluetooth implementation has the bytes before they are wrapped.
-     */
-    private fun generateNotifiableBytesProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec? {
-        if (propertyDeclaration.attributeValue(options) !is AttributeValue.View) return null
-        val name = propertyDeclaration.simpleName.asString()
-        val getter = when (type) {
-            GenerationType.Type.API -> FunSpec.getterBuilder().addStatement("$RETURN %N.%M { $IT.bytes }", name, References.KotlinX.Coroutines.Flow.map).build()
-            GenerationType.Type.BLUETOOTH -> FunSpec.getterBuilder().addStatement("$RETURN $CHARACTERISTIC.%M()", References.Bluetooth.value).build()
-            GenerationType.Type.SIMULATOR, GenerationType.Type.MOCK -> return null
-        }
-        return PropertySpec.builder("$name$BYTES", References.KotlinX.Coroutines.Flow.flow.parameterizedBy(BYTE_ARRAY))
-            .apply { if (type == GenerationType.Type.BLUETOOTH) addModifiers(KModifier.OVERRIDE) }
-            .getter(getter)
             .build()
     }
+
+    /** Hands out the simulator's [backing] flow, setting `_isNotifying` while it has a collector. */
+    private fun simulatorNotifyingGetter(backing: CodeBlock): FunSpec = FunSpec.getterBuilder()
+        .addStatement(
+            "$RETURN %L.%M { _isNotifying.value = true }.%M { _isNotifying.value = false }",
+            backing,
+            References.KotlinX.Coroutines.Flow.onStart,
+            References.KotlinX.Coroutines.Flow.onCompletion,
+        )
+        .build()
 
     override fun topLevelFunctions(generationType: GenerationType): List<FunSpec> = listOfNotNull(
         declarations.filterIsInstance<KSPropertyDeclaration>().firstOrNull { it.isNotifiable }?.takeIf { generationType == GenerationType.CLIENT_API }?.let(::collectFunction),
