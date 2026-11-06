@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.Logger
+import kotlinx.coroutines.Deferred
 
 /**
  * A [Descriptor] [RemoteAttribute] that is accessed remotely by a bluetooth client using [BluetoothClient]
@@ -40,6 +41,11 @@ open class RemoteDescriptor(
     Descriptor {
 
     override val uuid = wrapper.uuid
+
+    /**
+     * Completes with [RemoteService.invalidated] of the service this descriptor belongs to
+     */
+    override val invalidated: Deferred<Unit> = characteristic.invalidated
 
     override fun createReadAction(): DeviceAction.Read.Descriptor = DeviceAction.Read.Descriptor(this)
 

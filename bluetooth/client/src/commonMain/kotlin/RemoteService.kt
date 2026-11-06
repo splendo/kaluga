@@ -20,15 +20,27 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 
 /**
  * A [Service] that is accessed remotely by a bluetooth client using [BluetoothClient]
+ * @property invalidated completes once the connection this service was discovered on has ended, see the [invalidated]
+ * documentation
  */
 class RemoteService internal constructor(
     service: RemoteServiceWrapper,
     override val includedServices: List<RemoteService>,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     logger: ConnectionSettings.ConnectionLogger.ServiceLogger,
+    /**
+     * Completes once this service can no longer be used: the device disconnected or its connection manager was reset.
+     * A service never becomes usable again; a new discovery creates new objects. Await it to learn when the service is
+     * gone, or bound a collection with it. From then on every read, write and notification request on this service, its
+     * [characteristics] and their descriptors answers with [GattResponse.DeviceUnavailable], and
+     * [RemoteCharacteristic.isNotifying] is `false`.
+     */
+    val invalidated: Deferred<Unit>,
 ) : Service {
 
     /**
@@ -37,17 +49,21 @@ class RemoteService internal constructor(
      * @param includedServices the list of [com.splendo.kaluga.bluetooth.RemoteService] this service includes.
      * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
      * @param logger the [ContextualLogger] to use for logging.
+     * @param invalidated completes once the service can no longer be used. A service created outside a connection manager
+     * stays usable unless one is given.
      */
     constructor(
         service: RemoteServiceWrapper,
         includedServices: List<RemoteService>,
         emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
         logger: ContextualLogger,
+        invalidated: Deferred<Unit> = CompletableDeferred(),
     ) : this(
         service,
         includedServices,
         emitNewAction,
         ConnectionSettings.ConnectionLogger.ServiceLogger(logger),
+        invalidated,
     )
 
     override val uuid = service.uuid

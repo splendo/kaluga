@@ -659,7 +659,9 @@ inline fun <reified T> Flow<RemoteCharacteristic?>.valueOrNull(format: BytesForm
 
 /**
  * Gets a ([Flow] of) the [ByteArray] value from a [RemoteCharacteristic]
- * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected.
+ * The flow completes once the characteristic is [RemoteCharacteristic.invalidated] (the device disconnected), and
+ * completes without emitting when subscribing fails.
  * @return the [Flow] of the [ByteArray] value of the [RemoteCharacteristic]
  */
 fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
@@ -668,9 +670,11 @@ fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
         valueChannel.trySend(it)
     }
     subscriptionResponse.subscription?.let { subscription ->
+        val closeOnInvalidation = invalidated.invokeOnCompletion { valueChannel.close() }
         try {
             emitAll(valueChannel)
         } finally {
+            closeOnInvalidation.dispose()
             subscription.startUnsubscribe()
         }
     }

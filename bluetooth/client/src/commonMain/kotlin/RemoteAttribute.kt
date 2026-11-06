@@ -22,11 +22,15 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
+import kotlinx.coroutines.Deferred
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 
 /**
  * An [Attribute] for the Client side of a Bluetooth Low Energy connection.
+ *
+ * Reads and writes answer with [GattResponse.DeviceUnavailable] when the device disconnects while they are pending, and at
+ * once when the attribute is [invalidated]; they never fail exceptionally.
  * @param ReadAction the [DeviceAction.Read] associated with the attribute
  * @param WriteAction the [DeviceAction.Write] associated with the attribute
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
@@ -38,8 +42,14 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
 ) : Attribute {
 
     /**
+     * Completes once this attribute can no longer be used, see [RemoteService.invalidated].
+     */
+    abstract val invalidated: Deferred<Unit>
+
+    /**
      * Requests a read of the value of the attribute from the device and suspends until the value is received.
-     * @return the [GattResponse.ReadResponse] received from the device
+     * @return the [GattResponse.ReadResponse] received from the device, [GattResponse.DeviceUnavailable] if the device
+     * disconnected before it answered or the attribute is [invalidated]
      */
     suspend fun read(): GattResponse.ReadResponse = startRead().response.await()
 
@@ -85,22 +95,18 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
 
     /**
      * Creates and emits a [ReadAction]
-     * @return the [ReadAction] created
+     * @return the [ReadAction] created. Its response is already set when the attribute does not permit reads or is
+     * [invalidated]
      */
-    fun startRead(): ReadAction {
-        val action = createReadAction()
-        if (!action.response.isCompleted) {
-            addAction(action)
-        }
-        return action
-    }
+    fun startRead(): ReadAction = createReadAction().also(::addActionUnlessAnswered)
 
     internal abstract fun createReadAction(): ReadAction
 
     /**
      * Attempts to write a [ByteArray] to the attribute on the device and suspends until the write completes.
      * @param newValue the [ByteArray] to write.
-     * @return the [GattResponse.WriteResponse] received from the remote device.
+     * @return the [GattResponse.WriteResponse] received from the remote device, [GattResponse.DeviceUnavailable] if the
+     * device disconnected before it answered or the attribute is [invalidated]
      */
     suspend fun write(newValue: ByteArray): GattResponse.WriteResponse = startWrite(newValue).response.await()
 
@@ -128,15 +134,10 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     /**
      * Creates and emits a [WriteAction] to write a given [ByteArray]
      * @param newValue the [ByteArray] to write to the attribute
-     * @return the [WriteAction] created
+     * @return the [WriteAction] created. Its response is already set when the attribute does not permit writes or is
+     * [invalidated]
      */
-    fun startWrite(newValue: ByteArray): WriteAction {
-        val action = createWriteAction(newValue)
-        if (!action.response.isCompleted) {
-            addAction(action)
-        }
-        return action
-    }
+    fun startWrite(newValue: ByteArray): WriteAction = createWriteAction(newValue).also(::addActionUnlessAnswered)
 
     /**
      * Creates and emits a [WriteAction] to write a given [T]
@@ -159,6 +160,18 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     inline fun <reified T> startWrite(format: BytesFormat = BytesFormat, newValue: T) = startWrite(format.encodeToByteArray(format.serializer(), newValue))
 
     internal abstract fun createWriteAction(newValue: ByteArray): WriteAction
+
+    /**
+     * Emits [action] unless its response is already set by the attribute's properties, or by [invalidated]
+     */
+    protected fun addActionUnlessAnswered(action: DeviceAction<*>) {
+        if (invalidated.isCompleted) {
+            action.completeUnavailable()
+        }
+        if (!action.response.isCompleted) {
+            addAction(action)
+        }
+    }
 
     protected fun addAction(action: DeviceAction<*>) {
         logger.info { "Add action $action" }

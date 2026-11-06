@@ -26,15 +26,18 @@ import com.splendo.kaluga.logging.Logger
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import kotlinx.atomicfu.updateAndGet
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 
 /**
  * A [Characteristic] [RemoteAttribute] that is accessed remotely by a bluetooth client using [BluetoothClient]
+ *
+ * Once [invalidated] (the device disconnected) [isNotifying] is `false`, every subscription is dropped, the flows of
+ * [value] complete, and every notification request answers with [GattResponse.DeviceUnavailable].
  */
 open class RemoteCharacteristic internal constructor(
     val wrapper: RemoteCharacteristicWrapper,
@@ -107,38 +110,49 @@ open class RemoteCharacteristic internal constructor(
         /**
          * Unsubscribes from the remote device.
          * This will automatically stop notification if this is the last remaining subscription to the characteristic.
-         * @return the [GattResponse.WriteResponse] received by the unsubscribe action.
+         * @return the [GattResponse.WriteResponse] received by the unsubscribe action, [GattResponse.DeviceUnavailable] if
+         * the characteristic is [invalidated].
          */
         suspend fun unsubscribe(): GattResponse.WriteResponse = startUnsubscribe()?.response?.await() ?: GattResponse.WriteSuccess.Acknowledged
 
         internal fun startUnsubscribe() = onUnsubscribe()
     }
 
+    /**
+     * Completes with [RemoteService.invalidated] of the [service] this characteristic belongs to
+     */
+    override val invalidated: Deferred<Unit> = service.invalidated
+
     private val _isNotifying = MutableStateFlow(false)
     private val subscriptions = atomic(emptyList<Subscription>())
     private var lastKnownValue: ByteArray? = null
 
     /**
-     * If `true` this characteristic has been set to automatically provide updates to its value
+     * If `true` this characteristic has been set to automatically provide updates to its value. `false` once [invalidated].
      */
     val isNotifying: StateFlow<Boolean> = _isNotifying.asStateFlow()
 
     /**
      * Attempts to subscribe to the characteristic.
      * @param onUpdate called when the [ByteArray] value of the characteristic changes.
-     * @return [SubscriptionResult.DidSubscribe] if subscription was successful, or [SubscriptionResult.FailedToSubscribe] if subscription failed.
+     * @return [SubscriptionResult.DidSubscribe] if subscription was successful, or [SubscriptionResult.FailedToSubscribe] if subscription failed,
+     * with [GattResponse.DeviceUnavailable] if the device disconnected before it answered or the characteristic is [invalidated].
      */
     suspend fun subscribe(onUpdate: (ByteArray) -> Unit): SubscriptionResult = when (
         val enableNotification = enableNotification()
     ) {
-        is GattResponse.WriteSuccess -> Subscription(
-            onUpdate,
-        ) { unsubscribe(this) }.let { subscription ->
-            lastKnownValue?.let {
-                subscription.onUpdate(it)
+        is GattResponse.WriteSuccess -> if (invalidated.isCompleted) {
+            SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable)
+        } else {
+            Subscription(
+                onUpdate,
+            ) { unsubscribe(this) }.let { subscription ->
+                lastKnownValue?.let {
+                    subscription.onUpdate(it)
+                }
+                subscriptions.update { it + subscription }
+                SubscriptionResult.DidSubscribe(subscription)
             }
-            subscriptions.update { it + subscription }
-            SubscriptionResult.DidSubscribe(subscription)
         }
 
         is GattResponse.WriteError -> SubscriptionResult.FailedToSubscribe(enableNotification)
@@ -173,7 +187,9 @@ open class RemoteCharacteristic internal constructor(
      * Creates and puts [DeviceAction.Notification.Enable] into queue to be executed.
      * Sets [isNotifying] to `true` after action completed successfully.
      *
-     * @return [GattResponse.WriteResponse] indicating whether notification was enabled successfully.
+     * @return [GattResponse.WriteResponse] indicating whether notification was enabled successfully. [GattResponse.DeviceUnavailable]
+     * if the device disconnected before it answered or the characteristic is [invalidated], [GattResponse.Superseded] if a
+     * disable request replaced this one before it reached the device.
      * @see [startDisableNotification]
      * @see [isNotifying]
      */
@@ -185,11 +201,15 @@ open class RemoteCharacteristic internal constructor(
      * Creates and puts [DeviceAction.Notification.Enable] into queue to be executed.
      * Sets [isNotifying] to `true` after action completed successfully.
      *
-     * @return [DeviceAction.Notification.Enable] if action was added to the queue, or `null` if notification is already enabled.
+     * @return [DeviceAction.Notification.Enable] if action was added to the queue (already answered with
+     * [GattResponse.DeviceUnavailable] if the characteristic is [invalidated]), or `null` if notification is already enabled.
      * @see [startDisableNotification]
      * @see [isNotifying]
      */
     fun startEnableNotification(): DeviceAction.Notification.Enable? {
+        if (invalidated.isCompleted) {
+            return DeviceAction.Notification.Enable(this).apply { completeUnavailable() }
+        }
         var enableAction: DeviceAction.Notification.Enable? = null
         var supersededAction: DeviceAction.Notification? = null
         var shouldHandleAction = false
@@ -249,6 +269,7 @@ open class RemoteCharacteristic internal constructor(
     }
 
     private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? {
+        if (invalidated.isCompleted) return DeviceAction.Notification.Disable(this).apply { completeUnavailable() }
         var removed = false
         val remaining = subscriptions.updateAndGet { current ->
             removed = subscription in current
@@ -265,7 +286,9 @@ open class RemoteCharacteristic internal constructor(
     /**
      * Disables notification or indication for this [com.splendo.kaluga.bluetooth.RemoteCharacteristic]
      *
-     * @return [GattResponse.WriteResponse] indicating whether notification was disabled successfully
+     * @return [GattResponse.WriteResponse] indicating whether notification was disabled successfully. [GattResponse.DeviceUnavailable]
+     * if the device disconnected before it answered or the characteristic is [invalidated], [GattResponse.Superseded] if an
+     * enable request replaced this one before it reached the device.
      * @see [startEnableNotification]
      * @see [isNotifying]
      */
@@ -277,11 +300,15 @@ open class RemoteCharacteristic internal constructor(
      * Creates and puts [DeviceAction.Notification.Disable] into queue to be executed.
      * Sets [isNotifying] to `false` after action completed successfully.
      *
-     * @return [DeviceAction.Notification.Disable] if action was added to the queue, or `null` if notification is already disabled.
+     * @return [DeviceAction.Notification.Disable] if action was added to the queue (already answered with
+     * [GattResponse.DeviceUnavailable] if the characteristic is [invalidated]), or `null` if notification is already disabled.
      * @see [startEnableNotification]
      * @see [isNotifying]
      */
     fun startDisableNotification(): DeviceAction.Notification.Disable? {
+        if (invalidated.isCompleted) {
+            return DeviceAction.Notification.Disable(this).apply { completeUnavailable() }
+        }
         var disableAction: DeviceAction.Notification.Disable? = null
         var supersededAction: DeviceAction.Notification? = null
         var shouldHandleAction = false
@@ -337,11 +364,31 @@ open class RemoteCharacteristic internal constructor(
     }
     private val currentNotificationAction = atomic<NotificationActionQueue?>(null)
 
+    init {
+        invalidated.invokeOnCompletion { invalidate() }
+    }
+
+    private fun invalidate() {
+        subscriptions.value = emptyList()
+        lastKnownValue = null
+        // Taking the queue first keeps the completion handler in handle() from starting the next action.
+        currentNotificationAction.getAndSet(null)?.let { queue ->
+            queue.current.completeUnavailable()
+            queue.next?.completeUnavailable()
+        }
+        // Last, so an enable that succeeded concurrently cannot leave it true; see handle().
+        _isNotifying.value = false
+    }
+
     private fun DeviceAction.Notification.handle() {
         if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
             response.invokeOnCompletion { completedResponse ->
-                if (completedResponse == null && response.getCompleted() is GattResponse.WriteSuccess) {
-                    _isNotifying.update { this is DeviceAction.Notification.Enable }
+                if (completedResponse == null && response.getCompleted() is GattResponse.WriteSuccess && !invalidated.isCompleted) {
+                    _isNotifying.value = this is DeviceAction.Notification.Enable
+                    // invalidate() may have run between the check and the write.
+                    if (invalidated.isCompleted) {
+                        _isNotifying.value = false
+                    }
                 }
                 currentNotificationAction.updateAndGet { it?.next() }?.current?.handle()
             }
@@ -394,15 +441,10 @@ open class RemoteCharacteristic internal constructor(
      * Creates and emits a [DeviceAction.Write.Characteristic] using the given [writeType]
      * @param newValue the [ByteArray] to write
      * @param writeType the [WriteType] to use
-     * @return the [DeviceAction.Write.Characteristic] created
+     * @return the [DeviceAction.Write.Characteristic] created. Its response is already set when the characteristic does
+     * not permit [writeType] or is [invalidated]
      */
-    fun startWrite(newValue: ByteArray, writeType: WriteType): DeviceAction.Write.Characteristic {
-        val action = createWriteAction(newValue, writeType)
-        if (!action.response.isCompleted) {
-            addAction(action)
-        }
-        return action
-    }
+    fun startWrite(newValue: ByteArray, writeType: WriteType): DeviceAction.Write.Characteristic = createWriteAction(newValue, writeType).also(::addActionUnlessAnswered)
 
     /**
      * Attempts to write a value of [T] to the characteristic using the given [writeType] and suspends until the write completes.

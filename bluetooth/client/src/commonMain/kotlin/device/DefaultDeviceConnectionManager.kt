@@ -32,6 +32,7 @@ import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -216,7 +217,8 @@ interface DeviceConnectionManager {
     fun startDisconnecting()
 
     /**
-     * Fires an [Event.Disconnected]. Every action pending on the connection completes with [GattResponse.DeviceUnavailable].
+     * Fires an [Event.Disconnected]. Every action pending on the connection completes with [GattResponse.DeviceUnavailable]
+     * and the [RemoteService]s discovered on it are invalidated.
      * @param onDisconnect the platform cleanup to run once the device has handled the event
      */
     fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null)
@@ -227,7 +229,7 @@ interface DeviceConnectionManager {
     fun requestMtu(mtu: MTU): DeviceAction.RequestMtu
 
     /**
-     * Ends the current connection the way [handleDisconnect] does (the pending action answered with
+     * Ends the current connection the way [handleDisconnect] does (services invalidated, the pending action answered with
      * [GattResponse.DeviceUnavailable]) and disconnects the device
      */
     suspend fun reset()
@@ -261,6 +263,9 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     protected var currentAction: DeviceAction<*>? = null
     protected val notifyingCharacteristics = concurrentMutableMapOf<String, RemoteCharacteristic>()
+
+    // Shared by every RemoteService created on the current connection; see RemoteService.invalidated.
+    private var connectionInvalidated = CompletableDeferred<Unit>()
 
     private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
     override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()
@@ -332,11 +337,16 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     protected abstract suspend fun requestStartUnpairing(): PairingResult
 
+    /**
+     * Creates a [RemoteService] for a [RemoteServiceWrapper] discovered on the current connection.
+     * The service, its characteristics and their descriptors are invalidated by the next [handleDisconnect] or [reset].
+     */
     protected fun createService(wrapper: RemoteServiceWrapper): RemoteService = RemoteService(
         wrapper,
         wrapper.includedServices.map { createService(it) },
         ::emitEvent,
         logger.dataLogger[wrapper.uuid],
+        connectionInvalidated,
     )
 
     final override fun disconnect() {
@@ -347,8 +357,8 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     protected abstract fun intentionalDisconnect()
 
     /**
-     * Fires an [DeviceConnectionManager.Event.Disconnected] after ending the current connection: the action being
-     * performed completes with [GattResponse.DeviceUnavailable].
+     * Fires an [DeviceConnectionManager.Event.Disconnected] after ending the current connection: the services created for
+     * it are invalidated and the action being performed completes with [GattResponse.DeviceUnavailable].
      * @param onDisconnect the platform cleanup to run once the device has handled the event
      */
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
@@ -360,6 +370,10 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     private fun invalidateConnection() {
         disconnectingIntentionally = false
+        // Invalidate the characteristics before the current action: a notification action is answered by its
+        // characteristic's queue first, and a completed action does not restart that queue.
+        connectionInvalidated.complete(Unit)
+        connectionInvalidated = CompletableDeferred()
         currentAction?.completeUnavailable()
         currentAction = null
         notifyingCharacteristics.clear()
