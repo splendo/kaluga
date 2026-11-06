@@ -155,6 +155,14 @@ sealed interface GattResponse {
     }
 
     /**
+     * A [MTUError] given if the remote device could not be reached, so the request was never performed
+     * @property mtu the [MTU] that was requested
+     */
+    data class MTUDeviceUnavailable(override val mtu: MTU) : MTUError {
+        override val statusCode: Int = -1
+    }
+
+    /**
      * A [ReadResponse] that failed to read
      */
     sealed interface ReadError : ReadResponse
@@ -389,6 +397,14 @@ sealed interface GattResponse {
      * A [ReadError]/[WriteError] given if the remote device could not be reached
      */
     data object DeviceUnavailable : WriteError, ReadError {
+        override val statusCode: Int = -1
+    }
+
+    /**
+     * A [WriteError] given to a request that was replaced by the opposite request before it reached the remote device,
+     * such as a notification disable followed by a notification enable while a previous enable is still in flight.
+     */
+    data object Superseded : WriteError {
         override val statusCode: Int = -1
     }
 
