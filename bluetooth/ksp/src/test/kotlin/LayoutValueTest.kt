@@ -117,6 +117,41 @@ class LayoutValueTest {
     }
 
     @Test
+    fun `the simulator backs a notified property named like a keyword with a plain name`() {
+        // `value` is escaped as an identifier, so the backing field must be named as one, not "_" before the escape.
+        val compilation = BluetoothCompilation(
+            bluetoothSource(
+                """
+                @BytesLayout
+                interface Measurement {
+                    @Size(Length.`8_BIT`)
+                    @Unsigned
+                    val bpm: Int
+                }
+
+                @BluetoothCharacteristic("2a37")
+                interface MeasurementCharacteristic {
+                    @Notifiable
+                    val value: Measurement
+                }
+
+                @BluetoothCharacteristic("2a19")
+                interface LevelCharacteristic {
+                    @Notifiable
+                    val value: ByteArray
+                }
+                """,
+            ),
+        )
+        assertEquals(emptyList(), compilation.kspErrors)
+        val measurement = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
+        assertContains(measurement, "get() = _value.map { it.bytes }.onStart")
+        val level = compilation.generatedFile("RemoteLevelCharacteristic.kt")
+        assertContains(level, "get() = _value.onStart")
+        assertFalse("_`value`" in measurement + level, measurement + level)
+    }
+
+    @Test
     fun `values that are not views have no undecoded notifications`() {
         val compilation = BluetoothCompilation(definitions(layout = "@BytesLayout(generate = [Generate.DATA])"))
         val remote = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
