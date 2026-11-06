@@ -186,11 +186,14 @@ final class com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager
         final fun <get-willActionSucceed>(): kotlin/Boolean // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.willActionSucceed.<get-willActionSucceed>|<get-willActionSucceed>(){}[0]
         final fun <set-willActionSucceed>(kotlin/Boolean) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.willActionSucceed.<set-willActionSucceed>|<set-willActionSucceed>(kotlin.Boolean){}[0]
 
+    final fun completeNotificationAction(com.splendo.kaluga.bluetooth.device/DeviceAction.Notification, com.splendo.kaluga.bluetooth/GattResponse.WriteResponse) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.completeNotificationAction|completeNotificationAction(com.splendo.kaluga.bluetooth.device.DeviceAction.Notification;com.splendo.kaluga.bluetooth.GattResponse.WriteResponse){}[0]
     final fun connect() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.connect|connect(){}[0]
     final fun create(com.splendo.kaluga.bluetooth/RemoteServiceWrapper): com.splendo.kaluga.bluetooth/RemoteService // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.create|create(com.splendo.kaluga.bluetooth.RemoteServiceWrapper){}[0]
     final fun discover(kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteService>) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.discover|discover(kotlin.collections.List<com.splendo.kaluga.bluetooth.RemoteService>){}[0]
     final fun getCurrentState(): com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.State // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.getCurrentState|getCurrentState(){}[0]
     final fun handleNewRssi(kotlin/Int) // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.handleNewRssi|handleNewRssi(kotlin.Int){}[0]
+    final suspend fun awaitCurrentAction(): com.splendo.kaluga.bluetooth.device/DeviceAction<*> // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.awaitCurrentAction|awaitCurrentAction(){}[0]
+    final suspend fun disconnectWhilePerformingAction(): com.splendo.kaluga.bluetooth.device/DeviceAction<*> // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.disconnectWhilePerformingAction|disconnectWhilePerformingAction(){}[0]
     final suspend fun discoverServices() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.discoverServices|discoverServices(){}[0]
     final suspend fun handleCurrentAction() // com.splendo.kaluga.bluetooth.test.device/MockDeviceConnectionManager.handleCurrentAction|handleCurrentAction(){}[0]
 

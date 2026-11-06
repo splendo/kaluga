@@ -1083,8 +1083,12 @@ sealed interface com.splendo.kaluga.bluetooth.scanner/ScanningState : com.splend
 abstract class <#A: com.splendo.kaluga.bluetooth.device/DeviceAction.Read, #B: com.splendo.kaluga.bluetooth.device/DeviceAction.Write> com.splendo.kaluga.bluetooth/RemoteAttribute : com.splendo.kaluga.bluetooth/Attribute { // com.splendo.kaluga.bluetooth/RemoteAttribute|null[0]
     constructor <init>(kotlin/Function1<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.Event.AddAction, kotlin/Unit>, com.splendo.kaluga.logging/Logger) // com.splendo.kaluga.bluetooth/RemoteAttribute.<init>|<init>(kotlin.Function1<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager.Event.AddAction,kotlin.Unit>;com.splendo.kaluga.logging.Logger){}[0]
 
+    abstract val invalidated // com.splendo.kaluga.bluetooth/RemoteAttribute.invalidated|{}invalidated[0]
+        abstract fun <get-invalidated>(): kotlinx.coroutines/Deferred<kotlin/Unit> // com.splendo.kaluga.bluetooth/RemoteAttribute.invalidated.<get-invalidated>|<get-invalidated>(){}[0]
+
     final fun <#A1: kotlin/Any?> startWrite(kotlinx.serialization/SerializationStrategy<#A1>, com.splendo.kaluga.bytes.serialization/BytesFormat = ..., #A1): #B // com.splendo.kaluga.bluetooth/RemoteAttribute.startWrite|startWrite(kotlinx.serialization.SerializationStrategy<0:0>;com.splendo.kaluga.bytes.serialization.BytesFormat;0:0){0§<kotlin.Any?>}[0]
     final fun addAction(com.splendo.kaluga.bluetooth.device/DeviceAction<*>) // com.splendo.kaluga.bluetooth/RemoteAttribute.addAction|addAction(com.splendo.kaluga.bluetooth.device.DeviceAction<*>){}[0]
+    final fun addActionUnlessAnswered(com.splendo.kaluga.bluetooth.device/DeviceAction<*>) // com.splendo.kaluga.bluetooth/RemoteAttribute.addActionUnlessAnswered|addActionUnlessAnswered(com.splendo.kaluga.bluetooth.device.DeviceAction<*>){}[0]
     final fun startRead(): #A // com.splendo.kaluga.bluetooth/RemoteAttribute.startRead|startRead(){}[0]
     final fun startWrite(kotlin/ByteArray): #B // com.splendo.kaluga.bluetooth/RemoteAttribute.startWrite|startWrite(kotlin.ByteArray){}[0]
     final inline fun <#A1: reified kotlin/Any?> startWrite(com.splendo.kaluga.bytes.serialization/BytesFormat = ..., #A1): #B // com.splendo.kaluga.bluetooth/RemoteAttribute.startWrite|startWrite(com.splendo.kaluga.bytes.serialization.BytesFormat;0:0){0§<kotlin.Any?>}[0]
@@ -1677,12 +1681,14 @@ final class com.splendo.kaluga.bluetooth/DefaultBluetoothClient : com.splendo.ka
 }
 
 final class com.splendo.kaluga.bluetooth/RemoteService : com.splendo.kaluga.bluetooth/Service { // com.splendo.kaluga.bluetooth/RemoteService|null[0]
-    constructor <init>(com.splendo.kaluga.bluetooth/RemoteServiceWrapper, kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteService>, kotlin/Function1<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.Event.AddAction, kotlin/Unit>, com.splendo.kaluga.logging/ContextualLogger) // com.splendo.kaluga.bluetooth/RemoteService.<init>|<init>(com.splendo.kaluga.bluetooth.RemoteServiceWrapper;kotlin.collections.List<com.splendo.kaluga.bluetooth.RemoteService>;kotlin.Function1<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager.Event.AddAction,kotlin.Unit>;com.splendo.kaluga.logging.ContextualLogger){}[0]
+    constructor <init>(com.splendo.kaluga.bluetooth/RemoteServiceWrapper, kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteService>, kotlin/Function1<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.Event.AddAction, kotlin/Unit>, com.splendo.kaluga.logging/ContextualLogger, kotlinx.coroutines/Deferred<kotlin/Unit> = ...) // com.splendo.kaluga.bluetooth/RemoteService.<init>|<init>(com.splendo.kaluga.bluetooth.RemoteServiceWrapper;kotlin.collections.List<com.splendo.kaluga.bluetooth.RemoteService>;kotlin.Function1<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager.Event.AddAction,kotlin.Unit>;com.splendo.kaluga.logging.ContextualLogger;kotlinx.coroutines.Deferred<kotlin.Unit>){}[0]
 
     final val characteristics // com.splendo.kaluga.bluetooth/RemoteService.characteristics|{}characteristics[0]
         final fun <get-characteristics>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteCharacteristic> // com.splendo.kaluga.bluetooth/RemoteService.characteristics.<get-characteristics>|<get-characteristics>(){}[0]
     final val includedServices // com.splendo.kaluga.bluetooth/RemoteService.includedServices|{}includedServices[0]
         final fun <get-includedServices>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteService> // com.splendo.kaluga.bluetooth/RemoteService.includedServices.<get-includedServices>|<get-includedServices>(){}[0]
+    final val invalidated // com.splendo.kaluga.bluetooth/RemoteService.invalidated|{}invalidated[0]
+        final fun <get-invalidated>(): kotlinx.coroutines/Deferred<kotlin/Unit> // com.splendo.kaluga.bluetooth/RemoteService.invalidated.<get-invalidated>|<get-invalidated>(){}[0]
     final val type // com.splendo.kaluga.bluetooth/RemoteService.type|{}type[0]
         final fun <get-type>(): com.splendo.kaluga.bluetooth/Service.Type // com.splendo.kaluga.bluetooth/RemoteService.type.<get-type>|<get-type>(){}[0]
     final val uuid // com.splendo.kaluga.bluetooth/RemoteService.uuid|{}uuid[0]
@@ -1710,6 +1716,8 @@ open class com.splendo.kaluga.bluetooth/RemoteCharacteristic : com.splendo.kalug
         final fun <get-wrapper>(): com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper // com.splendo.kaluga.bluetooth/RemoteCharacteristic.wrapper.<get-wrapper>|<get-wrapper>(){}[0]
     open val descriptors // com.splendo.kaluga.bluetooth/RemoteCharacteristic.descriptors|{}descriptors[0]
         open fun <get-descriptors>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteDescriptor> // com.splendo.kaluga.bluetooth/RemoteCharacteristic.descriptors.<get-descriptors>|<get-descriptors>(){}[0]
+    open val invalidated // com.splendo.kaluga.bluetooth/RemoteCharacteristic.invalidated|{}invalidated[0]
+        open fun <get-invalidated>(): kotlinx.coroutines/Deferred<kotlin/Unit> // com.splendo.kaluga.bluetooth/RemoteCharacteristic.invalidated.<get-invalidated>|<get-invalidated>(){}[0]
     open val properties // com.splendo.kaluga.bluetooth/RemoteCharacteristic.properties|{}properties[0]
         open fun <get-properties>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth/CharacteristicProperty> // com.splendo.kaluga.bluetooth/RemoteCharacteristic.properties.<get-properties>|<get-properties>(){}[0]
     open val service // com.splendo.kaluga.bluetooth/RemoteCharacteristic.service|{}service[0]
@@ -1785,6 +1793,8 @@ open class com.splendo.kaluga.bluetooth/RemoteDescriptor : com.splendo.kaluga.bl
         final fun <get-wrapper>(): com.splendo.kaluga.bluetooth/RemoteDescriptorWrapper // com.splendo.kaluga.bluetooth/RemoteDescriptor.wrapper.<get-wrapper>|<get-wrapper>(){}[0]
     open val characteristic // com.splendo.kaluga.bluetooth/RemoteDescriptor.characteristic|{}characteristic[0]
         open fun <get-characteristic>(): com.splendo.kaluga.bluetooth/RemoteCharacteristic // com.splendo.kaluga.bluetooth/RemoteDescriptor.characteristic.<get-characteristic>|<get-characteristic>(){}[0]
+    open val invalidated // com.splendo.kaluga.bluetooth/RemoteDescriptor.invalidated|{}invalidated[0]
+        open fun <get-invalidated>(): kotlinx.coroutines/Deferred<kotlin/Unit> // com.splendo.kaluga.bluetooth/RemoteDescriptor.invalidated.<get-invalidated>|<get-invalidated>(){}[0]
     open val uuid // com.splendo.kaluga.bluetooth/RemoteDescriptor.uuid|{}uuid[0]
         // Targets: [apple]
         open fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/RemoteDescriptor.uuid.<get-uuid>|<get-uuid>(){}[0]
