@@ -57,12 +57,13 @@ class BytesPlugin : Plugin<Project> {
         afterEvaluate {
             extensions.configure<KotlinMultiplatformExtension> {
                 // What is generated is only known once KSP has read every interface, since each can override the
-                // module-wide default, so both runtimes are always there.
+                // module-wide default, so both runtimes are always there. They are api: the generated classes are the
+                // module's public API and expose the runtimes' types to its consumers.
                 sourceSets.commonMain {
                     dependencies {
-                        implementation("com.splendo.kaluga.bytes:annotations:$kalugaVersion")
-                        implementation("com.splendo.kaluga.bytes:serialization:$kalugaVersion")
-                        implementation("com.splendo.kaluga.bytes:view:$kalugaVersion")
+                        api("com.splendo.kaluga.bytes:annotations:$kalugaVersion")
+                        api("com.splendo.kaluga.bytes:serialization:$kalugaVersion")
+                        api("com.splendo.kaluga.bytes:view:$kalugaVersion")
                     }
                 }
             }
