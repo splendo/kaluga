@@ -243,7 +243,8 @@ open class RemoteCharacteristic internal constructor(
 
     internal fun notify(value: ByteArray) {
         lastKnownValue = value
-        subscriptions.forEach { it.onUpdate(value) }
+        // Called outside the lock, so that a subscriber may unsubscribe from its own update.
+        subscriptions.synchronized { toList() }.forEach { it.onUpdate(value) }
     }
 
     private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = subscriptions.synchronized {
