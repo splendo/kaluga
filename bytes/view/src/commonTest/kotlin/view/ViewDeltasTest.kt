@@ -49,6 +49,95 @@ class ViewDeltasTest {
         assertEquals(5, ViewDeltas.end(1, 5, short, byte))
     }
 
+    // 5000, 5001, 5000, 4999 and 5002, as Shorts and as Ints.
+    private fun lists(b: ByteArray): List<List<Number>> = listOf(
+        ViewDeltas.shorts(b, 0, b.size, short, true, byte, lsb),
+        ViewDeltas.ints(b, 0, b.size, short, true, byte, lsb),
+    )
+
+    private fun samples(): ByteArray = bytes(0x88, 0x13, 0x01, 0xFF, 0xFF, 0x03)
+
+    private fun List<Number>.expected(vararg values: Int): List<Number> = if (this is DeltaCodedShortList) values.map { it.toShort() } else values.toList()
+
+    @Test
+    fun keepsTheListContract() {
+        for (list in lists(samples())) {
+            val expected = list.expected(5000, 5001, 5000, 4999, 5002)
+            assertEquals(expected, list)
+            assertEquals(list, expected)
+            assertEquals(expected.hashCode(), list.hashCode())
+            assertEquals(expected.toString(), list.toString())
+
+            val items = list.listIterator()
+            val forward = mutableListOf<Number>()
+            while (items.hasNext()) {
+                assertEquals(forward.size, items.nextIndex())
+                forward += items.next()
+            }
+            assertEquals(expected, forward)
+            assertFailsWith<NoSuchElementException> { items.next() }
+            val backward = mutableListOf<Number>()
+            while (items.hasPrevious()) {
+                assertEquals(expected.size - backward.size - 1, items.previousIndex())
+                backward += items.previous()
+            }
+            assertEquals(expected.reversed(), backward)
+            assertFailsWith<NoSuchElementException> { items.previous() }
+
+            val fromTwo = list.listIterator(2)
+            assertEquals(expected[2], fromTwo.next())
+            assertEquals(expected[3], fromTwo.next())
+            assertEquals(expected[3], fromTwo.previous())
+            assertEquals(expected[2], fromTwo.previous())
+            assertEquals(expected[1], fromTwo.previous())
+            assertEquals(expected[1], fromTwo.next())
+            assertEquals(expected.last(), list.listIterator(list.size).previous())
+            assertFailsWith<IndexOutOfBoundsException> { list.listIterator(list.size + 1) }
+            assertFailsWith<IndexOutOfBoundsException> { list.listIterator(-1) }
+
+            val middle = list.subList(1, 4)
+            assertEquals(expected.subList(1, 4), middle)
+            assertEquals(middle, expected.subList(1, 4))
+            assertEquals(expected[3], middle[2])
+            assertEquals(expected.subList(2, 4), middle.listIterator(1).asSequence().toList())
+            assertEquals(expected.subList(2, 3), middle.subList(1, 2))
+            assertEquals(expected[1], middle.listIterator(1).previous())
+            assertFailsWith<IndexOutOfBoundsException> { middle[3] }
+            assertFailsWith<IndexOutOfBoundsException> { middle.subList(2, 4) }
+            assertFailsWith<IllegalArgumentException> { list.subList(3, 2) }
+            assertEquals(emptyList(), list.subList(5, 5))
+
+            assertEquals(2, list.lastIndexOf(expected[0]))
+            assertEquals(0, list.indexOf(expected[0]))
+            assertEquals(-1, list.lastIndexOf(list.expected(1)[0]))
+            assertEquals(1, middle.lastIndexOf(expected[0]))
+            assertEquals(-1, list.subList(3, 5).lastIndexOf(expected[0]))
+            assertEquals(expected.asReversed(), list.asReversed())
+        }
+    }
+
+    @Test
+    fun readsForwardFromTheItemBefore() {
+        // Overwriting the first item after the iteration passed it shows that every next item adds its step to the
+        // item before, rather than adding up the steps from the first item again.
+        fun overwritten(read: (List<Number>) -> Iterator<Number>, before: Int, after: Int) {
+            val b = samples()
+            for (list in lists(b)) {
+                b[0] = 0x88.toByte()
+                val items = read(list)
+                assertEquals(list.expected(before)[0], items.next())
+                b[0] = 0x00
+                assertEquals(list.expected(after)[0], items.next())
+            }
+        }
+        overwritten({ it.iterator() }, 5000, 5001)
+        overwritten({ it.listIterator() }, 5000, 5001)
+        overwritten({ it.listIterator(2) }, 5000, 4999)
+        overwritten({ it.subList(1, 4).iterator() }, 5001, 5000)
+        overwritten({ it.subList(1, 4).listIterator(1) }, 5000, 4999)
+        overwritten({ it.subList(1, 5).subList(1, 4).iterator() }, 5000, 4999)
+    }
+
     @Test
     fun wrapsAroundTheSizeOfAnItem() {
         assertEquals(listOf<Short>(32767, -32768, 32767), ViewDeltas.shorts(bytes(0xFF, 0x7F, 0x01, 0xFF), 0, 4, short, true, byte, lsb))

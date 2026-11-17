@@ -84,6 +84,10 @@ sealed class <#A: kotlin/Any?> com.splendo.kaluga.bytes.view/DeltaCodedList : ko
     final fun next(kotlin/Int, kotlin/Long): kotlin/Long // com.splendo.kaluga.bytes.view/DeltaCodedList.next|next(kotlin.Int;kotlin.Long){}[0]
     open fun get(kotlin/Int): #A // com.splendo.kaluga.bytes.view/DeltaCodedList.get|get(kotlin.Int){}[0]
     open fun iterator(): kotlin.collections/Iterator<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.iterator|iterator(){}[0]
+    open fun lastIndexOf(#A): kotlin/Int // com.splendo.kaluga.bytes.view/DeltaCodedList.lastIndexOf|lastIndexOf(1:0){}[0]
+    open fun listIterator(): kotlin.collections/ListIterator<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.listIterator|listIterator(){}[0]
+    open fun listIterator(kotlin/Int): kotlin.collections/ListIterator<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.listIterator|listIterator(kotlin.Int){}[0]
+    open fun subList(kotlin/Int, kotlin/Int): kotlin.collections/List<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.subList|subList(kotlin.Int;kotlin.Int){}[0]
 }
 
 final object com.splendo.kaluga.bytes.view/ViewBatch : com.splendo.kaluga.bytes.view/ViewParent { // com.splendo.kaluga.bytes.view/ViewBatch|null[0]
