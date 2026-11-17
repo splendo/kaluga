@@ -143,7 +143,7 @@ Control the overall structure of the encoded bytes.
 - `@Prefix(byteArray)` — Prepend these bytes (before any body fields).
 - `@Postfix(byteArray)` — Append these bytes (after any body fields, but after checksum).
 - `@Checksum(width, polynomial, init, xorOut, reflectIn, reflectOut)` — Compute a CRC over the body and append it (between body and postfix). On decode, validate if `BytesFormat.validateChecksum = true`.
-- `@Reserved(before, after)` — Skip/write padding bytes around this field. Unlike `@Postfix`, reserved bytes are not validated on decode — any content is silently discarded. An absent nullable field has no padding.
+- `@Reserved(before, after)` — Skip/write padding bytes around this field. Unlike `@Postfix`, reserved bytes are not validated on decode — any content is silently discarded. An absent nullable field has no padding. Padding after a field that runs to the end of what holds it, such as an `@Unsized` one, is data after it, which encoding refuses.
 - `@ByteOrder(ByteOrder.LEAST_SIGNIFICANT_FIRST | MOST_SIGNIFICANT_FIRST, excludeStructure)` — Specify byte order for this field or structure. When `excludeStructure = true` on a class, the byte order applies to field values but not the class's sequential accumulation direction.
 
 ### Enums and polymorphism

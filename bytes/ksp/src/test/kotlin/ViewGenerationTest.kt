@@ -1225,47 +1225,73 @@ class ViewGenerationTest {
             }
             """,
         )
-        val check = SourceFile.kotlin(
-            "Check.kt",
+        val check = refusalCheck(
+            "compare(SteppedData(listOf(16, 18, 15), 5), SteppedData.serializer(), true) { SteppedView.encode(it).bytes }",
+            "compare(SteppedData(emptyList(), 5), SteppedData.serializer(), true) { SteppedView.encode(it).bytes }",
+            "compare(SteppedData(listOf(16, 18, 15), 5), SteppedData.serializer(), true) { SteppedView(it.samples, it.extra).bytes }",
+            "compare(SteppedData(listOf(16, 18, 15), null), SteppedData.serializer(), false) { SteppedView.encode(it).bytes }",
+            "compare(TailData(listOf(1, 2), 5), TailData.serializer(), true) { TailView.encode(it).bytes }",
+            "compare(TailData(emptyList(), 5), TailData.serializer(), true) { TailView.encode(it).bytes }",
+            "compare(TailData(listOf(1, 2), null), TailData.serializer(), false) { TailView.encode(it).bytes }",
+            "compare(EmptiedData(listOf(1, 2), 5), EmptiedData.serializer(), true) { EmptiedView.encode(it).bytes }",
+            "compare(EmptiedData(emptyList(), 5), EmptiedData.serializer(), false) { EmptiedView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, listOf(2)), 5), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, emptyList()), 5), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, null), 5), OuterData.serializer(), false) { OuterView.encode(it).bytes }",
+            "compare(HolderData(MessageTextData(listOf(1)), 5), HolderData.serializer(), true) { HolderView.encode(it).bytes }",
+            "compare(HolderData(MessageTextData(listOf(1)), null), HolderData.serializer(), false) { HolderView.encode(it).bytes }",
+            "compare(HolderData(MessageLevelData(1), 5), HolderData.serializer(), false) { HolderView.encode(it).bytes }",
+        )
+        val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        assertEquals(emptyList(), compilation.generatedWarnings)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems)
+    }
+
+    @Test
+    fun `refuses reserved bytes after data of an unconstrained size like BytesFormat`() {
+        val layouts = layoutSource(
             """
-            package test
+            @BytesLayout
+            interface Inner {
+                val header: Byte
+                @Unsized val tail: List<Byte>?
+            }
 
-            import com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
-            import com.splendo.kaluga.bytes.serialization.BytesFormat
-            import kotlinx.serialization.KSerializer
+            @BytesLayout
+            interface Outer {
+                @Reserved(after = 2) val inner: Inner
+            }
 
-            fun <T> compare(data: T, serializer: KSerializer<T>, refused: Boolean, encode: (T) -> ByteArray): String? {
-                val expected = runCatching { BytesFormat.encodeToByteArray(serializer, data) }
-                val actual = runCatching { encode(data) }
-                val failure = expected.exceptionOrNull()
-                if ((failure is DataAfterUnconstrainedData) != refused) return "BytesFormat " + data + ": " + failure
-                val viewFailure = actual.exceptionOrNull()
-                return when {
-                    failure == null && viewFailure == null ->
-                        if (expected.getOrThrow().contentEquals(actual.getOrThrow())) null else "encode " + data + ": " + actual.getOrThrow().toList()
-                    failure != null && viewFailure != null && failure::class == viewFailure::class && failure.message == viewFailure.message -> null
-                    else -> "view " + data + ": " + viewFailure + " where BytesFormat throws " + failure
+            @BytesLayout
+            sealed interface Message {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface Text : Message {
+                    @Unsized val text: String
+                }
+
+                @BytesLayout
+                @SerializedByteValue(0x02)
+                interface Level : Message {
+                    val level: Byte
                 }
             }
 
-            fun check(): List<String> = listOfNotNull(
-                compare(SteppedData(listOf(16, 18, 15), 5), SteppedData.serializer(), true) { SteppedView.encode(it).bytes },
-                compare(SteppedData(emptyList(), 5), SteppedData.serializer(), true) { SteppedView.encode(it).bytes },
-                compare(SteppedData(listOf(16, 18, 15), 5), SteppedData.serializer(), true) { SteppedView(it.samples, it.extra).bytes },
-                compare(SteppedData(listOf(16, 18, 15), null), SteppedData.serializer(), false) { SteppedView.encode(it).bytes },
-                compare(TailData(listOf(1, 2), 5), TailData.serializer(), true) { TailView.encode(it).bytes },
-                compare(TailData(emptyList(), 5), TailData.serializer(), true) { TailView.encode(it).bytes },
-                compare(TailData(listOf(1, 2), null), TailData.serializer(), false) { TailView.encode(it).bytes },
-                compare(EmptiedData(listOf(1, 2), 5), EmptiedData.serializer(), true) { EmptiedView.encode(it).bytes },
-                compare(EmptiedData(emptyList(), 5), EmptiedData.serializer(), false) { EmptiedView.encode(it).bytes },
-                compare(OuterData(InnerData(1, listOf(2)), 5), OuterData.serializer(), true) { OuterView.encode(it).bytes },
-                compare(OuterData(InnerData(1, emptyList()), 5), OuterData.serializer(), true) { OuterView.encode(it).bytes },
-                compare(OuterData(InnerData(1, null), 5), OuterData.serializer(), false) { OuterView.encode(it).bytes },
-                compare(HolderData(MessageTextData(listOf(1)), 5), HolderData.serializer(), true) { HolderView.encode(it).bytes },
-                compare(HolderData(MessageTextData(listOf(1)), null), HolderData.serializer(), false) { HolderView.encode(it).bytes },
-                compare(HolderData(MessageLevelData(1), 5), HolderData.serializer(), false) { HolderView.encode(it).bytes },
-            )
-            """.trimIndent(),
+            @BytesLayout
+            interface Holder {
+                @Reserved(after = 1) val message: Message
+            }
+            """,
+        )
+        val check = refusalCheck(
+            "compare(OuterData(InnerData(1, listOf(2))), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, emptyList())), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, null)), OuterData.serializer(), false) { OuterView.encode(it).bytes }",
+            "compare(HolderData(MessageTextData(\"a\")), HolderData.serializer(), true) { HolderView.encode(it).bytes }",
+            "compare(HolderData(MessageLevelData(1)), HolderData.serializer(), false) { HolderView.encode(it).bytes }",
         )
         val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
 
@@ -1430,6 +1456,40 @@ class ViewGenerationTest {
         val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
         assertEquals(emptyList<Any?>(), problems.take(10))
     }
+
+    /**
+     * `Check.kt`, whose `check()` lists where the views differ from `BytesFormat` in the [comparisons]: calls to
+     * `compare(data, serializer, refused) { encode }`, which also checks that `BytesFormat` refuses the data when
+     * `refused` is set.
+     */
+    private fun refusalCheck(vararg comparisons: String): SourceFile = SourceFile.kotlin(
+        "Check.kt",
+        """
+        package test
+
+        import com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
+        import com.splendo.kaluga.bytes.serialization.BytesFormat
+        import kotlinx.serialization.KSerializer
+
+        fun <T> compare(data: T, serializer: KSerializer<T>, refused: Boolean, encode: (T) -> ByteArray): String? {
+            val expected = runCatching { BytesFormat.encodeToByteArray(serializer, data) }
+            val actual = runCatching { encode(data) }
+            val failure = expected.exceptionOrNull()
+            if ((failure is DataAfterUnconstrainedData) != refused) return "BytesFormat " + data + ": " + failure
+            val viewFailure = actual.exceptionOrNull()
+            return when {
+                failure == null && viewFailure == null ->
+                    if (expected.getOrThrow().contentEquals(actual.getOrThrow())) null else "encode " + data + ": " + actual.getOrThrow().toList()
+                failure != null && viewFailure != null && failure::class == viewFailure::class && failure.message == viewFailure.message -> null
+                else -> "view " + data + ": " + viewFailure + " where BytesFormat throws " + failure
+            }
+        }
+
+        fun check(): List<String> = listOfNotNull(
+        """.trimIndent() + comparisons.joinToString("") {
+            "\n    $it,"
+        } + "\n)\n",
+    )
 
     private companion object {
         val GOLDEN = """

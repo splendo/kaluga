@@ -304,6 +304,30 @@ class LayoutErrorTest {
     )
 
     @Test
+    fun `rejects reserved bytes after an unsized collection`() = assertLayoutError(
+        "test.ReservedAfterUnsized",
+        "reserves bytes after it, but it has no end marking, so no data can follow it",
+        """
+        @BytesLayout
+        interface ReservedAfterUnsized {
+            @Reserved(after = 1) @Unsized val items: List<Byte>
+        }
+        """,
+    )
+
+    @Test
+    fun `rejects reserved bytes after a delta-coded list`() = assertLayoutError(
+        "test.ReservedAfterDeltaCoded",
+        "reserves bytes after it, but it is @DeltaCoded, so it runs to the end of what holds it",
+        """
+        @BytesLayout
+        interface ReservedAfterDeltaCoded {
+            @Reserved(after = 2) @DeltaCoded(Length.`8_BIT`) val samples: List<Short>
+        }
+        """,
+    )
+
+    @Test
     fun `accepts data after an unsized collection that may be absent`() {
         val compilation = BytesCompilation(
             layoutSource(
