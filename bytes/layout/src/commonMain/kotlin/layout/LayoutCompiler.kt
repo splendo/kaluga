@@ -826,6 +826,9 @@ object LayoutCompiler {
             )
         }
         if (type.reservedBefore > 0 || type.reservedAfter > 0) throw InvalidSealedLayout("The discriminator of @Fallback '$fallbackName' cannot have @Reserved bytes around it")
+        if (type.frame.prefix != null || type.frame.postfix != null || type.frame.checksum != null || type.frame.byteStuffing != null) {
+            throw InvalidSealedLayout("The discriminator of @Fallback '$fallbackName' cannot have a prefix, a postfix, a checksum or byte stuffing around it")
+        }
         val framed = if (lengthPrefix == null) {
             option
         } else {

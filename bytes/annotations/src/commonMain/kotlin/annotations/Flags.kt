@@ -363,8 +363,9 @@ annotation class SizePolymorphic
  * them as they were. A fallback with a discriminator another subtype has is not encoded, as it would read back as
  * that subtype.
  *
- * At most one subtype is a fallback. It cannot have a flag header, a [Prefix], a [Postfix] or a [Checksum], which
- * would come before or around the discriminator; put such fields in a layout it holds after its first property.
+ * At most one subtype is a fallback. Neither it nor its first property can have a [Prefix], a [Postfix] or a
+ * [Checksum], and it has no flag header, as these would come before or around the discriminator; put such fields in a
+ * layout it holds after its first property.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo

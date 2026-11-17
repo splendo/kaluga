@@ -339,6 +339,28 @@ class RecordsTest {
             }
             """ to "cannot have flag bits, a prefix, a postfix, a checksum or byte stuffing",
             """
+            @Serializable
+            @JvmInline
+            @Prefix([0x7A])
+            value class Kind(val value: UByte)
+
+            @BytesLayout
+            sealed interface Framed {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface A : Framed {
+                    val a: Byte
+                }
+
+                @BytesLayout
+                @Fallback
+                interface B : Framed {
+                    val kind: Kind
+                    @Unsized val rest: List<Byte>
+                }
+            }
+            """ to "The discriminator of @Fallback 'test.Framed.B' cannot have a prefix, a postfix, a checksum or byte stuffing around it",
+            """
             @BytesLayout
             @Fallback
             interface Alone {

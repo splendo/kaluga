@@ -23,6 +23,7 @@ import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.annotations.LengthPrefix
+import com.splendo.kaluga.bytes.annotations.Prefix
 import com.splendo.kaluga.bytes.annotations.SerializedByteValue
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.SizePolymorphic
@@ -31,7 +32,9 @@ import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationComplete
 import com.splendo.kaluga.bytes.layout.InvalidSealedLayout
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -240,6 +243,22 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
     @Fallback
     data class FlaggedFallbackB(val type: Byte, val maybe: Byte?) : FlaggedFallback
 
+    @Serializable
+    @JvmInline
+    @Prefix([0x7A])
+    value class FramedKind(val value: UByte)
+
+    @Serializable
+    sealed interface FramedType
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class FramedTypeA(val a: Byte) : FramedType
+
+    @Serializable
+    @Fallback
+    data class FramedTypeB(val kind: FramedKind, @Unsized val rest: List<Byte>) : FramedType
+
     @Test
     fun rejectsRecordsAndFallbacksThatCannotApply() {
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(BySize.serializer(), SizeA(1)) }
@@ -248,6 +267,8 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(TwoFallbacks.serializer(), TwoFallbacksA(1)) }
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(WideType.serializer(), WideTypeA(1)) }
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(FlaggedFallback.serializer(), FlaggedFallbackA(1)) }
+        val framed = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(FramedType.serializer(), FramedTypeA(1)) }
+        assertContains(framed.message.orEmpty(), "cannot have a prefix, a postfix, a checksum or byte stuffing around it")
     }
 
     private fun bytes(vararg values: Int): ByteArray = ByteArray(values.size) { values[it].toByte() }
