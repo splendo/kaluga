@@ -84,7 +84,7 @@ Control how strings are terminated and encoded.
 - `@Encoded(Encoding.UTF_8 | ASCII | ...)` — Specify the character encoding (default UTF-8). A `Char` has a fixed size, so it takes ASCII (the default for a `Char`), ISO-8859-1 (Latin-1) or UTF-16; UTF-8 is rejected for it, so use a `String` for UTF-8 text.
 - `@LengthPrefix(lengthAsShort, canOverflow, sentinel)` — Prefix the string with a length byte (or short if `lengthAsShort = true`). Supports overflow detection if `canOverflow = true`. On a sealed class it makes records of the subtypes, see [Enums and polymorphism](#enums-and-polymorphism).
 - `@NullTerminated` — Terminate the string with a null byte (0x00) instead of a length prefix. The string must not contain null bytes.
-- `@Unsized` — Consume all remaining bytes (except checksum/postfix). No other field may follow.
+- `@Unsized` — Consume all remaining bytes (except checksum/postfix). No other field may follow, and no other item may follow an item of a collection that ends in one, unless that item is a type-length-value record.
 - `@ByteStuffed` / `@ByteStuffedXor` / `@ByteStuffedSlip` / `@ByteStuffedCobs` — Byte-stuff the string so a delimiter never appears literally in the content. The delimiter schemes (`Xor`, `Slip`, `Cobs`) terminate with their own delimiter; `@ByteStuffed` has none and needs a `@Terminal`.
 - `@Terminal(terminator)` — Terminate with a custom byte instead of 0x00. With `@ByteStuffed` it must be one of the bytes the scheme escapes (`0xF0..0xF2` by default); a delimiter scheme rejects it, so choose its terminator through the scheme (`@ByteStuffedXor(delimiter = ...)`, `@ByteStuffedSlip(end = ...)`). Without stuffing the content must not contain it.
 

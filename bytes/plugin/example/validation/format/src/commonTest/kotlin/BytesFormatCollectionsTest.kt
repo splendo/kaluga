@@ -55,6 +55,17 @@ abstract class CollectionsSuite(backendFactory: ByteLayoutBackendFactory) : Byte
     }
 
     @Test
+    fun encodeListRefusesAnItemAfterAnUnsizedItem() {
+        val backend = createBackend()
+        val serializer = EncodeListFixturesTailedItemsData.serializer()
+        fun tailed(header: Byte, vararg tail: Byte) = EncodeListFixturesTailedData(header, tail.toList())
+        val refused = assertFailsWith<DataAfterUnconstrainedData> { backend.encode(serializer, EncodeListFixturesTailedItemsData(listOf(tailed(1, 2), tailed(3, 4)))) }
+        assertEquals("Attempted to add an item after an item of an unconstrained size", refused.message)
+        assertFailsWith<DataAfterUnconstrainedData> { backend.encode(serializer, EncodeListFixturesTailedItemsData(listOf(tailed(1), tailed(3, 4)))) }
+        validateEncoding(EncodeListFixturesTailedItemsData(listOf(tailed(1, 2))), serializer, byteArrayOf(0x01, 0x01, 0x02))
+    }
+
+    @Test
     fun encodeList() {
         validateEncoding(
             EncodeListFixturesListContainerData(

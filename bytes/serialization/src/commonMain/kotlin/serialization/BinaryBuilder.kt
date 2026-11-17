@@ -221,10 +221,16 @@ internal abstract class CollectionBinaryBuilder(
 ) : BinaryBuilder {
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
+    private var itemEndedUnconstrained = false
 
     override val expectedSize: Int get() = classBuilders.sumOf { it.expectedSize }
 
     fun setIndex(index: Int): BinaryDescriptor {
+        // Every item has a builder of its own, so one that ended unconstrained does not refuse the next item itself,
+        // which the decoder would read as part of it. For a map, a key and its value are items too.
+        if (index != currentIndex && itemEndedUnconstrained) {
+            throw DataAfterUnconstrainedData("Attempted to add an item after an item of an unconstrained size")
+        }
         currentIndex = index
         return currentClassBuilder.binaryDescriptor
     }
@@ -242,6 +248,7 @@ internal abstract class CollectionBinaryBuilder(
     }
 
     override fun makeUnconstrained() {
+        itemEndedUnconstrained = true
         currentClassBuilder.makeUnconstrained()
     }
 

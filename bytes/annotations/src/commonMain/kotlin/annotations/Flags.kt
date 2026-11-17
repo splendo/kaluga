@@ -292,7 +292,8 @@ annotation class Size(val length: Length)
  * Annotation added for serializing using BytesFormat
  *
  * When applied to a String or Collection, no end marking will be applied.
- * This will result in a [DataAfterUnconstrainedData] exception if data (besides checksum or postfix) is added after this element.
+ * This will result in a [DataAfterUnconstrainedData] exception if data (besides checksum or postfix) is added after this element,
+ * including a next item after an item of a collection that ends in this element.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
