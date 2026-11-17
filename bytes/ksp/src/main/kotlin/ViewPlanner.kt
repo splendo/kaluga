@@ -170,7 +170,8 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         val subtypes = type.elements[1].type.children
         val leaves = subtypes.map { subtype ->
             val leaf = layouts.all.firstOrNull { it.qualifiedName == subtype.name } ?: throw LayoutDeclarationException("${subtype.name} is not a @BytesLayout", layout.declaration)
-            SealedLeaf(leaf, contextFor(leaf, subtype, leaf.declaration), type.discriminators[subtype.name]?.array)
+            val guard = if (subtype.name == type.fallback) FallbackGuard(leaf.qualifiedName, type.discriminators.values.map { it.array }) else null
+            SealedLeaf(leaf, contextFor(leaf, subtype, leaf.declaration, guard), type.discriminators[subtype.name]?.array)
         }
         val bySize = type.sizeDispatch.isNotEmpty() || type.sizeFallback != null
         val sizeDispatch = if (bySize) type.sizeDispatch.mapValues { (_, name) -> leaves.indexOfFirst { it.layout.qualifiedName == name } } else null
@@ -202,13 +203,14 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         return context
     }
 
-    private fun contextFor(layout: Layout, field: FieldLayout, node: KSNode): ViewContext {
+    private fun contextFor(layout: Layout, field: FieldLayout, node: KSNode, guard: FallbackGuard? = null): ViewContext {
         // BytesFormat only stuffs the root frame it encodes.
         if (field.frame.byteStuffing != null) unsupported("byte stuffing on a nested layout", node)
         val known = known(layout, node)
         plan(known.first()).exceptionOrNull()?.let { throw it }
-        val fingerprint = field.contextFingerprint()
-        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: known.first().sibling(field, fingerprint, known.size).also { known += it }
+        // A fallback refuses discriminators in its first property that the same layout elsewhere accepts.
+        val fingerprint = field.contextFingerprint() + guard?.fingerprint.orEmpty()
+        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: known.first().sibling(field, fingerprint, known.size, guard).also { known += it }
         plan(context).exceptionOrNull()?.let { throw it }
         return context
     }
@@ -253,7 +255,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             plan
         }
         if (mirrored) fields.forEach { checkMirrored(it) }
-        val plan = ViewPlan(prefix, postfix, headerStart, headerBits, fields, cursor, field.frame.checksum, field.valueByteOrder, mirrored, stuffing)
+        val plan = ViewPlan(prefix, postfix, headerStart, headerBits, fields, cursor, field.frame.checksum, field.valueByteOrder, mirrored, stuffing, context.guard)
         return plan
     }
 

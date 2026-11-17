@@ -175,6 +175,25 @@ class ViewRecordsTest : RecordsSuite(ViewBackend.Factory) {
     }
 
     @Test
+    fun refusesToSetTheTypeOfAFallbackToThatOfAnotherSubtype() {
+        val view = RecordFixturesChunkView.wrap(chunkForViews.copyOf())
+        val other = view.readings[4] as RecordFixturesReadingOtherSlice1
+        assertFailsWith<IllegalArgumentException> { other.type = 0x20u }
+        assertContentEquals(chunkForViews, view.bytes)
+        other.type = 0x98u
+        assertEquals(0x98u, (RecordFixturesChunkView.wrap(view.bytes).readings[4] as RecordFixtures.Reading.Other).type)
+
+        val message = RecordFixturesMessageFrame.encode(RecordFixturesMessageOtherData(0x0300u, listOf(4, 5)))
+        assertFailsWith<IllegalArgumentException> { (message.value as RecordFixturesMessageOtherSlice1).type = 0x0100u }
+        (message.value as RecordFixturesMessageOtherSlice1).type = 0x0001u
+        assertEquals(RecordFixturesMessageOtherData(0x0001u, listOf(4, 5)), RecordFixturesMessageFrame.wrap(message.bytes).toData())
+
+        val command = RecordFixturesCommandFrame.encode(RecordFixturesCommandUnsupportedData(7u, listOf(1, 2)))
+        assertFailsWith<IllegalArgumentException> { (command.value as RecordFixturesCommandUnsupportedSlice1).code = 0x01u }
+        assertContentEquals(bytes(0x07, 0x01, 0x02), command.bytes)
+    }
+
+    @Test
     fun walksRecordsByTheirLength() {
         val bytes = chunkForViews
         val types = mutableListOf<Int>()

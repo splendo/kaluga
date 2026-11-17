@@ -160,6 +160,8 @@ class RecordsTest {
                 if (read.toData() != chunk) add("decode chunk " + read.toData())
                 if (read.readings.size != readings.size || (read.readings[0] as Reading.Temperature).celsius != (-5).toShort()) add("list " + read.readings)
                 if ((read.readings[3] as Reading.Other).type != 0x99.toUByte()) add("fallback " + read.readings[3])
+                if (runCatching { (view.readings[3] as ReadingOtherSlice1).type = 0x20u }.exceptionOrNull() !is IllegalArgumentException) add("fallback set to a known type")
+                if (!view.bytes.contentEquals(bytes)) add("fallback set: " + view.bytes.toList())
 
                 // Records are walked by their length alone.
                 var at = 5

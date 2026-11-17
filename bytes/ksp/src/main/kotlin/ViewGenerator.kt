@@ -36,6 +36,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LONG_ARRAY
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -486,8 +487,11 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             }
             builder.addFunction(getter.build())
             if (field.settable) {
+                val guard = plan.guard?.takeIf { field === plan.fields.first() }
+                guard?.let { builder.addProperty(fallbackDiscriminators(field, it)) }
                 builder.addFunction(
                     bufferFunction("set$name").addParameter("value", field.typeName())
+                        .apply { guard?.let { addStatement("%L", refuseDiscriminator(field, it)) } }
                         .apply { write(field, field.access, frame.location(field), unwrap(field.value, CodeBlock.of("value"))).forEach { addStatement("%L", it) } }
                         .build(),
                 )
@@ -2169,6 +2173,31 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         } else {
             CodeBlock.of("(%L as %T).toData()", get, access.context.sliceName)
         }
+    }
+
+    /** The discriminators [guard] refuses, as the bits [field], the first property of a `@Fallback` frame, writes. */
+    private fun fallbackDiscriminators(field: FieldPlan, guard: FallbackGuard): PropertySpec {
+        val access = field.access as Access.Number
+        val values = guard.discriminators.map { discriminator ->
+            val bytes = if (access.writeOrder == ByteOrder.LEAST_SIGNIFICANT_FIRST) discriminator.reversed() else discriminator.toList()
+            bytes.fold(0L) { value, byte -> (value shl Byte.SIZE_BITS) or (byte.toLong() and 0xFF) }
+        }
+        return PropertySpec.builder("${field.name}Discriminators", LONG_ARRAY, KModifier.PRIVATE)
+            .initializer("longArrayOf(%L)", values.joinToString(", ") { if (it >= 0) "${it}L" else "0x${it.toULong().toString(16).uppercase()}uL.toLong()" })
+            .build()
+    }
+
+    /** Throws, as encoding the `@Fallback` frame would, when `value` set to [field] is the discriminator of another subtype. */
+    private fun refuseDiscriminator(field: FieldPlan, guard: FallbackGuard): CodeBlock {
+        val bits = ((field.access as Access.Number).width as Width.Fixed).length.bytes * Byte.SIZE_BITS
+        val wire = unwrap(field.value, CodeBlock.of("value"))
+        val written = if (bits >= Long.SIZE_BITS) CodeBlock.of("%L.toLong()", wire) else CodeBlock.of("(%L.toLong() and 0x%LL)", wire, ((1L shl bits) - 1).toString(16).uppercase())
+        return CodeBlock.of(
+            "require(%L !in %N) { %S }",
+            written,
+            "${field.name}Discriminators",
+            "@Fallback ${guard.fallback} has the discriminator of another subtype, so it would decode as that",
+        )
     }
 
     /** The limit a nested frame at [pos] reads up to: its own end when that is fixed, else its parent's minus its postfix. */
