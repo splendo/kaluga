@@ -364,6 +364,35 @@ class RecordsTest {
             """ to "The discriminator of @Fallback 'test.Framed.B' cannot have a prefix, a postfix, a checksum or byte stuffing around it",
             """
             @BytesLayout
+            @LengthPrefix
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+            sealed interface Mirrored {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface A : Mirrored {
+                    val a: Byte
+                }
+            }
+            """ to "@LengthPrefix on 'test.Mirrored' needs a frame accumulated LEAST_SIGNIFICANT_FIRST",
+            """
+            @BytesLayout
+            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+            sealed interface MirroredFallback {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface A : MirroredFallback {
+                    val a: Byte
+                }
+
+                @BytesLayout
+                @Fallback
+                interface B : MirroredFallback {
+                    val type: Byte
+                }
+            }
+            """ to "@Fallback 'test.MirroredFallback.B' needs a frame accumulated LEAST_SIGNIFICANT_FIRST",
+            """
+            @BytesLayout
             @Fallback
             interface Alone {
                 val type: UByte

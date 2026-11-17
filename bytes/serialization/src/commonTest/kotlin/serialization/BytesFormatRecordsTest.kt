@@ -259,6 +259,27 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
     @Fallback
     data class FramedTypeB(val kind: FramedKind, @Unsized val rest: List<Byte>) : FramedType
 
+    @Serializable
+    @LengthPrefix
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    sealed interface MirroredRecord
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class MirroredRecordA(val a: Byte) : MirroredRecord
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    sealed interface MirroredFallback
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class MirroredFallbackA(val a: Byte) : MirroredFallback
+
+    @Serializable
+    @Fallback
+    data class MirroredFallbackB(val type: Byte) : MirroredFallback
+
     @Test
     fun rejectsRecordsAndFallbacksThatCannotApply() {
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(BySize.serializer(), SizeA(1)) }
@@ -269,6 +290,13 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(FlaggedFallback.serializer(), FlaggedFallbackA(1)) }
         val framed = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(FramedType.serializer(), FramedTypeA(1)) }
         assertContains(framed.message.orEmpty(), "cannot have a prefix, a postfix, a checksum or byte stuffing around it")
+        val mirroredRecord = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(MirroredRecord.serializer(), MirroredRecordA(1)) }
+        assertContains(
+            mirroredRecord.message.orEmpty(),
+            "@LengthPrefix on '${MirroredRecord.serializer().descriptor.serialName}' needs a frame accumulated LEAST_SIGNIFICANT_FIRST",
+        )
+        val mirroredFallback = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(MirroredFallback.serializer(), MirroredFallbackA(1)) }
+        assertContains(mirroredFallback.message.orEmpty(), "needs a frame accumulated LEAST_SIGNIFICANT_FIRST")
     }
 
     private fun bytes(vararg values: Int): ByteArray = ByteArray(values.size) { values[it].toByte() }
