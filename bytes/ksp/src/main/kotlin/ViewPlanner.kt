@@ -360,19 +360,21 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         var cursor = from
         val isCollection = value is ValueType.Collection
         // A @NullIfEmpty collection compiles as nullable whatever its type; its flag bit then only says whether it is empty.
-        val nullable = if (isCollection) typeNullable else child.isNullable || child.presenceFlagIndices.isNotEmpty()
+        val nullable = if (isCollection) typeNullable else child.isNullable || child.presenceFlagIndices.isNotEmpty() || child.isTrailing
         // The padding of a nullable property is only on the wire while it is present, which the planned positions
         // around it do not follow yet.
         if (child.isNullable && (child.reservedBefore > 0 || child.reservedAfter > 0)) unsupported("@Reserved on a nullable property", node)
+        if (child.isTrailing && mirrored) unsupported("@Trailing properties in a frame accumulated MOST_SIGNIFICANT_FIRST", node)
         if (child.reservedBefore > 0) cursor = cursor.aligned().plus(child.reservedBefore * Byte.SIZE_BITS)
 
+        // The encoder starts every nested frame, and every value class frame, on a fresh byte, as the decoder reads it.
+        val start = if (value is ValueType.Nested || (value is ValueType.Wrapped && value.framed)) cursor.aligned() else cursor
         val presence = when {
+            child.isTrailing -> Presence.Reached(start)
             child.presenceFlagIndices.isNotEmpty() -> Presence.AllSet(child.presenceFlagIndices.map { headerStart + it })
             nullable -> Presence.Owned(headerStart + child.bitIndex)
             else -> null
         }
-        // The encoder starts every nested frame, and every value class frame, on a fresh byte, as the decoder reads it.
-        val start = if (value is ValueType.Nested || (value is ValueType.Wrapped && value.framed)) cursor.aligned() else cursor
         val access = if (value is ValueType.Collection) {
             collectionAccess(child, value, typeNullable, node, headerStart, start, itemPrefix)
         } else {
@@ -709,4 +711,4 @@ private fun unsupported(feature: String, node: KSNode?): Nothing = throw Unsuppo
  * layout nested in two places, or used as a root, is recognized as one context.
  */
 private fun FieldLayout.contextFingerprint(): String =
-    copy(name = "", index = 0, bitIndex = -1, bitWidth = 0, isNullable = false, presenceFlagIndices = emptyList(), reservedBefore = 0, reservedAfter = 0).dump()
+    copy(name = "", index = 0, bitIndex = -1, bitWidth = 0, isNullable = false, presenceFlagIndices = emptyList(), reservedBefore = 0, reservedAfter = 0, isTrailing = false).dump()

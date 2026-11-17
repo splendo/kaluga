@@ -932,6 +932,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         fun presence(presence: Presence): CodeBlock = when (presence) {
             is Presence.Owned -> CodeBlock.of("%T.bit(b, s, %L, lim)", VIEW_BYTES, presence.bitPos)
             is Presence.AllSet -> presence.bitPositions.map { CodeBlock.of("%T.bit(b, s, %L, lim)", VIEW_BYTES, it) }.joinToCode(" && ")
+            is Presence.Reached -> CodeBlock.of("%L < lim", bytePos(presence.start))
         }
 
         fun location(field: FieldPlan): Location =
@@ -1038,7 +1039,24 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     private fun walk(walk: Walk, plan: ViewPlan, names: Map<FieldPlan, String>) {
         // What makes the frame unconstrained so far, one list of conditions per property that can.
         val unconstrained = mutableListOf<List<CodeBlock>>()
+        var trailing: FieldPlan? = null
         plan.fields.forEach { field ->
+            // The value ends at its first null @Trailing property, as the encoder refuses to write one after it.
+            if (field.presence is Presence.Reached) {
+                trailing?.let { before ->
+                    walk.code(
+                        CodeBlock.of(
+                            "if (%N != null && %N == null) throw %T(%S, %S)",
+                            names.getValue(field),
+                            names.getValue(before),
+                            TRAILING_AFTER_ABSENT,
+                            field.name,
+                            before.name,
+                        ),
+                    )
+                }
+                trailing = field
+            }
             if (unconstrained.isNotEmpty()) {
                 writesBody(field, CodeBlock.of("%N", names.getValue(field)))?.let { walk.refuseDataAfter(unconstrained, it) }
             }
@@ -1478,7 +1496,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         plan.fields.filter { it.access.hasChecksums() }.forEach { field ->
             function.forPresent(field, frame) {
                 when (val access = field.access) {
-                    is Access.Nested -> addStatement("%T.updateChecksums(b, pos, %L)", access.context.layoutName, nestedLimit(access, CodeBlock.of("pos")))
+                    is Access.Nested -> addStatement("%T.updateChecksums(b, pos, %L)", access.context.layoutName, nestedLimit(access, CodeBlock.of("pos"), field.isTrailing))
 
                     is Access.Sealed -> addStatement("%T.updateChecksums(b, pos, %L)", access.context.layoutName, sealedLimit(access))
 
@@ -1526,7 +1544,11 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             val get = CodeBlock.of("get${field.name.capitalized()}(b, s, lim)")
             function.forPresent(field, frame) {
                 when (val access = field.access) {
-                    is Access.Nested -> addStatement("%T.validate(b, pos, %L, checkChecksum)", access.context.layoutName, nestedLimit(access, CodeBlock.of("pos")))
+                    is Access.Nested -> addStatement(
+                        "%T.validate(b, pos, %L, checkChecksum)",
+                        access.context.layoutName,
+                        nestedLimit(access, CodeBlock.of("pos"), field.isTrailing),
+                    )
 
                     is Access.Sealed -> addStatement("%T.validate(b, pos, %L, checkChecksum)", access.context.layoutName, sealedLimit(access))
 
@@ -2738,11 +2760,15 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         }
     }
 
-    /** The limit a nested frame at [pos] reads up to: its own end when that is fixed, else its parent's minus its postfix. */
-    private fun nestedLimit(access: Access.Nested, pos: CodeBlock): CodeBlock {
+    /**
+     * The limit a nested frame at [pos] reads up to: its own end when that is fixed, else its parent's minus its postfix.
+     * A [trailing] one may be cut short by the end of its parent, which then bounds it too.
+     */
+    private fun nestedLimit(access: Access.Nested, pos: CodeBlock, trailing: Boolean = false): CodeBlock {
         val plan = access.context.plan!!.getOrThrow()
         val size = plan.staticSize
         return when {
+            size != null && trailing -> CodeBlock.of("minOf(%L + %L, lim)", pos, size - plan.footer)
             size != null -> CodeBlock.of("%L + %L", pos, size - plan.footer)
             plan.footer == 0 -> CodeBlock.of("lim")
             else -> CodeBlock.of("lim - %L", plan.footer)
@@ -2792,7 +2818,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     }
 
     private fun read(field: FieldPlan, access: Access, location: Location): CodeBlock = when (access) {
-        is Access.Nested -> CodeBlock.of("%T(b, %L, %L, $PARENT)", access.context.sliceName, location.pos, nestedLimit(access, location.pos))
+        is Access.Nested -> CodeBlock.of("%T(b, %L, %L, $PARENT)", access.context.sliceName, location.pos, nestedLimit(access, location.pos, field.isTrailing))
 
         is Access.Sealed -> CodeBlock.of("%T.getValue(b, %L, %L, $PARENT)", access.context.layoutName, location.pos, sealedLimit(access))
 
@@ -3289,6 +3315,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val VIEW_BATCH = ClassName("com.splendo.kaluga.bytes.view", "ViewBatch")
         val CHECKSUM_SPEC = ClassName("com.splendo.kaluga.bytes.layout", "ChecksumSpec")
         val INVALID_CHECKSUM = ClassName("com.splendo.kaluga.bytes.layout", "InvalidChecksumException")
+        val TRAILING_AFTER_ABSENT = ClassName("com.splendo.kaluga.bytes.layout", "TrailingAfterAbsent")
         val SERIALIZATION_EXCEPTION = ClassName("kotlinx.serialization", "SerializationException")
         val FIXED_STRIDE_LIST = ClassName("com.splendo.kaluga.bytes.view", "FixedStrideList")
         val VIEW_DELTAS = ClassName("com.splendo.kaluga.bytes.view", "ViewDeltas")
