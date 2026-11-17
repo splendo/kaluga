@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
  */
 class LayoutValueTest {
 
-    private fun definitions(layout: String = "@BytesLayout", serializable: String = "") = bluetoothSource(
+    private fun definitions(layout: String = "@BytesLayout", type: String = "Measurement", more: String = "") = bluetoothSource(
         """
         $layout
         interface Measurement {
@@ -44,7 +44,7 @@ class LayoutValueTest {
             @Readable
             @Writable
             @Notifiable
-            val measurement: Measurement
+            val measurement: $type
 
             val label: LabelDescriptor
         }
@@ -53,10 +53,10 @@ class LayoutValueTest {
         interface LabelDescriptor {
             @Readable
             @Writable
-            val label: Measurement
+            val label: $type
         }
 
-        $serializable
+        $more
         """,
     )
 
@@ -262,6 +262,39 @@ class LayoutValueTest {
         assertContains(remote, "public val reading: Flow<ReadingFrame>")
         assertContains(remote, "get() = readingBytes.map { ReadingFrame(it) }")
         assertContains(remote, "override val readingBytes: Flow<ByteArray>\n        get() = characteristic.`value`()")
+    }
+
+    @Test
+    fun `an alias of a layout with a view is read through the view`() {
+        val compilation = BluetoothCompilation(definitions(type = "Pulse", more = "typealias Pulse = Heartbeat\ntypealias Heartbeat = Measurement"))
+        assertEquals(emptyList(), compilation.kspErrors)
+        val remote = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
+        assertContains(remote, "public val measurement: Flow<MeasurementView>\n        get() = measurementBytes.map { MeasurementView(it) }")
+        assertContains(remote, "public suspend fun writeMeasurement(measurement: MeasurementView): GattResponse.WriteResponse")
+        assertFalse("BytesFormat" in remote, remote)
+        assertContains(compilation.generatedFile("LocalLabelDescriptor.kt"), "decode = { MeasurementView.wrap(it) },")
+    }
+
+    @Test
+    fun `an alias of a layout generating only DATA is serialized through its interface serializer`() {
+        val compilation = BluetoothCompilation(definitions(layout = "@BytesLayout(generate = [Generate.DATA])", type = "Pulse", more = "typealias Pulse = Measurement"))
+        assertEquals(emptyList(), compilation.kspErrors)
+        val remote = compilation.generatedFile("RemoteMeasurementCharacteristic.kt")
+        assertContains(remote, "public val measurement: Flow<Measurement>")
+        assertContains(remote, "format.encodeToByteArray(MeasurementData.InterfaceSerializer, measurement)")
+    }
+
+    @Test
+    fun `a layout typed value cannot be nullable`() {
+        for (type in listOf("Measurement?", "Pulse?", "NullablePulse")) {
+            for (layout in listOf("@BytesLayout", "@BytesLayout(generate = [Generate.DATA])")) {
+                val compilation = BluetoothCompilation(definitions(layout = layout, type = type, more = "typealias Pulse = Measurement\ntypealias NullablePulse = Measurement?"))
+                val errors = compilation.kspErrors
+                val expected = "test.MeasurementCharacteristic.measurement is typed by the nullable layout test.Measurement"
+                assertEquals(1, errors.count { expected in it }, "$type, $layout: $errors")
+                assertTrue(errors.any { "test.LabelDescriptor.label is typed by the nullable layout test.Measurement" in it }, "$type, $layout: $errors")
+            }
+        }
     }
 
     @Test

@@ -214,6 +214,10 @@ DATA keeps its interface type and is serialized through its `XData.InterfaceSeri
 be read in place and is reported; generate only DATA for it. The processor cannot see a view that
 `skipUnsupportedViews` skipped, so such a layout has to say `generate = [Generate.DATA]` itself.
 
+A type alias of a layout is read as the layout itself. A layout-typed value cannot be nullable, as the layout is the
+attribute's bytes and they hold no null, so `val heartRate: HeartRate?` is reported. A read that fails already yields null
+as its `valueOrNull`, and a part of the value that may be absent belongs in the layout.
+
 ## Sharing definitions across modules
 
 To split the API and implementation across modules — for example a shared API module consumed by both a client app and

@@ -25,6 +25,7 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeAlias
 import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Origin
 import com.splendo.kaluga.bluetooth.ksp.Options
@@ -91,7 +92,7 @@ internal fun KSPropertyDeclaration.attributeValue(options: Options): AttributeVa
     val typeName = type.toTypeName()
     return when {
         typeName == BYTE_ARRAY -> AttributeValue.Bytes
-        else -> options.layoutViews.valueOf(type) ?: AttributeValue.Serialized(typeName, typeName.serializer())
+        else -> options.layoutViews.valueOf(this, type) ?: AttributeValue.Serialized(typeName, typeName.serializer())
     }
 }
 
@@ -101,17 +102,33 @@ internal fun KSPropertyDeclaration.attributeValue(options: Options): AttributeVa
  * The generated view is referred to by the name the bytes processor gives it rather than looked up, as it is
  * generated in the same KSP round as this processor's code. What a layout of this module generates is read from its
  * annotation, or else from [defaultGenerate], the `generate` option the bytes plugin passes to every processor of the
- * module. A layout compiled into another module generated whatever of it is on the classpath.
+ * module. A layout compiled into another module generated whatever of it is on the classpath. A type alias of a layout
+ * is that layout. A nullable layout-typed value is reported on its property.
  */
 class LayoutViews internal constructor(private val resolver: Resolver?, private val defaultGenerate: Set<String>, private val logger: KSPLogger?) {
 
     private val values = mutableMapOf<String, AttributeValue?>()
+    private val nullableProperties = mutableSetOf<String>()
 
-    internal fun valueOf(type: KSType): AttributeValue? {
-        val declaration = type.declaration as? KSClassDeclaration ?: return null
-        if (type.isMarkedNullable || declaration.classKind != ClassKind.INTERFACE) return null
+    internal fun valueOf(property: KSPropertyDeclaration, type: KSType): AttributeValue? {
+        val expanded = type.withoutAliases()
+        val declaration = expanded.declaration as? KSClassDeclaration ?: return null
+        if (declaration.classKind != ClassKind.INTERFACE) return null
         val annotation = declaration.annotations.firstOrNull { it.qualifiedName() == BYTES_LAYOUT } ?: return null
         val qualifiedName = declaration.qualifiedName?.asString() ?: return null
+        if (expanded.isMarkedNullable) {
+            val propertyName = property.qualifiedName?.asString() ?: property.simpleName.asString()
+            // Every builder of the property asks for its value, so it is reported once.
+            if (nullableProperties.add(propertyName)) {
+                logger?.error(
+                    "$propertyName is typed by the nullable layout $qualifiedName?, but a layout-typed value cannot be nullable: " +
+                        "the layout is the attribute's bytes, which hold no null. Type it as ${declaration.simpleName.asString()}; a read that " +
+                        "fails already yields null as its valueOrNull, and a part of the value that may be absent belongs in the layout itself",
+                    property,
+                )
+            }
+            return null
+        }
         return values.getOrPut(qualifiedName) {
             val interfaceName = declaration.toClassName()
             fun generated(suffix: String) = ClassName(interfaceName.packageName, interfaceName.simpleNames.joinToString("") + suffix)
@@ -151,6 +168,13 @@ class LayoutViews internal constructor(private val resolver: Resolver?, private 
     }
 
     private fun KSAnnotation.qualifiedName(): String? = annotationType.resolve().declaration.qualifiedName?.asString()
+
+    // The `?` of a use is on the alias, not on the type the alias names.
+    private tailrec fun KSType.withoutAliases(): KSType {
+        val alias = declaration as? KSTypeAlias ?: return this
+        val target = alias.type.resolve()
+        return (if (isMarkedNullable) target.makeNullable() else target).withoutAliases()
+    }
 
     companion object {
         /** The bytes plugin's option for what a layout generates without its own `generate`; the bytes processor's default without it. */
