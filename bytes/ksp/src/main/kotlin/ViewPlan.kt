@@ -242,9 +242,6 @@ internal class FieldPlan(
  * The generated code of another module's layout is internal to it, so a foreign [layout] gets its contexts generated
  * again for every [owner], the layout of this module holding it, nested in the owner's own layout object as
  * [nestedName].
- *
- * The `@Fallback` subtype of a sealed layout gets a context of its own, whose [guard] refuses the discriminators of the
- * other subtypes in its first property.
  */
 internal class ViewContext(
     val layout: Layout,
@@ -253,7 +250,6 @@ internal class ViewContext(
     val index: Int,
     val owner: Layout? = null,
     private val nestedName: String? = null,
-    val guard: FallbackGuard? = null,
 ) {
 
     private val suffix: String = if (index == 0) "" else "$index"
@@ -268,8 +264,7 @@ internal class ViewContext(
     val sliceName: ClassName = name("Slice")
 
     /** Another context of the same layout, for the same owner. */
-    fun sibling(field: FieldLayout, fingerprint: String, index: Int, guard: FallbackGuard? = null): ViewContext =
-        ViewContext(layout, field, fingerprint, index, owner, nestedName, guard)
+    fun sibling(field: FieldLayout, fingerprint: String, index: Int): ViewContext = ViewContext(layout, field, fingerprint, index, owner, nestedName)
 
     /** The planned frame of a structure, or why it cannot be planned; set by [ViewPlanner]. */
     var plan: Result<ViewPlan>? = null
@@ -285,7 +280,8 @@ internal class ViewContext(
  * is set, by the number of bytes left), then its postfix.
  * @property sizeDispatch the index into [leaves] by payload size, when the subtype is picked by size.
  * @property fallback the index into [leaves] used when no size matches, or, without [sizeDispatch], when no
- * discriminator does; that leaf starts at the discriminator, which its first field holds.
+ * discriminator does; that leaf is laid out after the discriminator like any other, which its context's
+ * [ViewPlan.discriminator] holds.
  * @property checksumOrder the byte order of the checksum and of the length.
  * @property lengthPrefix when set, a type-length-value record: the length after the discriminator bounds the leaf.
  */
@@ -309,14 +305,6 @@ internal class SealedPlan(
     val lengthBytes: Int get() = lengthPrefix?.expectedByteSize(0u) ?: 0
 }
 
-/**
- * What the `@Fallback` subtype [fallback] of a sealed frame must not hold in its first property: the [discriminators]
- * of the other subtypes, as it would read back as one of them.
- */
-internal class FallbackGuard(val fallback: String, val discriminators: List<ByteArray>) {
-    val fingerprint: String get() = "\nfallback refusing " + discriminators.joinToString { it.contentToString() }
-}
-
 /** A subtype of a sealed frame, encoded as [context] after its [discriminator]. */
 internal class SealedLeaf(val layout: Layout, val context: ViewContext, val discriminator: ByteArray?)
 
@@ -330,8 +318,10 @@ internal class SealedLeaf(val layout: Layout, val context: ViewContext, val disc
  * @property bodyEnd the cursor after the last property, following the decoder.
  * @property stuffing how a root frame stuffs everything between its prefix and postfix on the wire; the view holds
  * the frame unstuffed.
- * @property guard what the first property must not hold when this frame is the `@Fallback` subtype of a sealed frame.
  * @property staticSize the frame size in bytes when it does not depend on the content.
+ * @property discriminator the `@Discriminator` property of a fallback in its sealed context, which is not in [fields]
+ * as it takes no bytes of the frame: its slice holds the discriminator it was read for.
+ * @property discriminatorIndex the position of [discriminator] among the properties.
  */
 internal class ViewPlan(
     val prefix: ByteArray?,
@@ -344,7 +334,8 @@ internal class ViewPlan(
     val checksumOrder: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST,
     val mirrored: Boolean = false,
     val stuffing: ByteStuffingScheme? = null,
-    val guard: FallbackGuard? = null,
+    val discriminator: FieldPlan? = null,
+    val discriminatorIndex: Int = -1,
 ) {
     /** The bytes after the body: the checksum, then the postfix. */
     val footer: Int get() = (checksum?.crc?.byteWidth ?: 0) + (postfix?.size ?: 0)

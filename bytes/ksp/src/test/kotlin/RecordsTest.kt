@@ -59,8 +59,8 @@ class RecordsTest {
 
             @BytesLayout
             @Fallback
-            interface Other : Reading {
-                val type: UByte
+            interface Other : Reading, Timed {
+                @Discriminator val type: UByte
                 @Unsized val value: List<Byte>
             }
         }
@@ -95,7 +95,7 @@ class RecordsTest {
             @BytesLayout
             @Fallback
             interface Other : Message {
-                val type: UShort
+                @Discriminator val type: UShort
                 @Unsized val rest: List<Byte>
             }
         }
@@ -110,8 +110,9 @@ class RecordsTest {
 
             @BytesLayout
             @Fallback
+            @Prefix([0x55])
             interface Unsupported : Command {
-                val code: UByte
+                @Discriminator val code: UByte
                 @Unsized val arguments: List<Byte>
             }
         }
@@ -133,7 +134,7 @@ class RecordsTest {
                     ReadingTemperatureData(1000, -5),
                     ReadingNoteData(0, "hi"),
                     ReadingMarkData,
-                    ReadingOtherData(0x99u, listOf(1, 2, 3)),
+                    ReadingOtherData(70000, 0x99u, listOf(1, 2, 3)),
                     ReadingNoteData(-70000, ""),
                 )
                 for (reading in readings) {
@@ -159,9 +160,10 @@ class RecordsTest {
                 val read = ChunkView.wrap(bytes)
                 if (read.toData() != chunk) add("decode chunk " + read.toData())
                 if (read.readings.size != readings.size || (read.readings[0] as Reading.Temperature).celsius != (-5).toShort()) add("list " + read.readings)
-                if ((read.readings[3] as Reading.Other).type != 0x99.toUByte()) add("fallback " + read.readings[3])
-                if (runCatching { (view.readings[3] as ReadingOtherSlice1).type = 0x20u }.exceptionOrNull() !is IllegalArgumentException) add("fallback set to a known type")
-                if (!view.bytes.contentEquals(bytes)) add("fallback set: " + view.bytes.toList())
+                val other = read.readings[3] as Reading.Other
+                if (other.type != 0x99.toUByte() || other.step != 70000 || other.value != listOf<Byte>(1, 2, 3)) add("fallback " + other)
+                if (other != ChunkView.wrap(bytes).readings[3] || other.hashCode() != ChunkView.wrap(bytes).readings[3].hashCode()) add("fallback equality " + other)
+                if (other.toString() != "ReadingOtherSlice1(step=70000, type=153, value=[1, 2, 3])") add("fallback string " + other)
 
                 // Records are walked by their length alone.
                 var at = 5
@@ -179,7 +181,8 @@ class RecordsTest {
                 if (viewed.toData() != decoded || decoded.readings != listOf(ReadingTemperatureData(2, 16), ReadingMarkData)) add("trailing " + viewed.toData())
                 if (runCatching { ChunkView.wrap(byteArrayOf(0, 0, 0, 0, 0, 0x20, 2, 0, 2)) }.exceptionOrNull() !is ByteArrayEndedBeforeSerializationCompleted) add("short value")
                 if (runCatching { ChunkView.wrap(byteArrayOf(0, 0, 0, 0, 0, 0x40, 2, 0)) }.exceptionOrNull() !is ByteArrayEndedBeforeSerializationCompleted) add("short record")
-                if (runCatching { ReadingFrame.encode(ReadingOtherData(0x20u, emptyList())) }.exceptionOrNull() !is IllegalArgumentException) add("fallback with a known type")
+                if (runCatching { ReadingFrame.encode(ReadingOtherData(0, 0x20u, emptyList())) }.exceptionOrNull() !is IllegalArgumentException) add("fallback with a known type")
+                if (runCatching { CommandFrame.encode(CommandUnsupportedData(0x01u, emptyList())) }.exceptionOrNull() !is IllegalArgumentException) add("fallback with a known command")
                 if (runCatching { ReadingFrame.encode(ReadingNoteData(0, "x".repeat(254))) }.exceptionOrNull() !is IllegalArgumentException) add("length overflow")
 
                 for (message in listOf(MessageValueData(0x0102), MessageOtherData(0x0300u, listOf(4, 5)))) {
@@ -281,7 +284,7 @@ class RecordsTest {
 
         assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
         val dump = compilation.generatedFile("ReadingData.kt")
-        assertTrue("= length prefix8" in dump && "= discriminator * -> test.Reading.Other" in dump && "reserved=0/1" in dump, dump)
+        assertTrue("= length prefix8" in dump && "= discriminator * -> test.Reading.Other" in dump && "type: discriminator natural" in dump, dump)
         val problems = compilation.result.classLoader.loadClass("test.ParityKt").getMethod("check").invoke(null) as List<*>
         assertEquals(emptyList<Any?>(), problems)
     }
@@ -319,27 +322,62 @@ class RecordsTest {
                 @BytesLayout
                 @Fallback
                 interface B : Wide {
-                    val type: Short
+                    @Discriminator val type: Short
                 }
             }
-            """ to "The first property of @Fallback 'test.Wide.B' holds the discriminator, so it must be a number of 1 byte(s)",
+            """ to "The @Discriminator property 'type' of @Fallback 'test.Wide.B' holds the discriminator, so it must be a number of 1 byte(s)",
             """
             @BytesLayout
-            sealed interface Flagged {
+            sealed interface Unmarked {
                 @BytesLayout
                 @SerializedByteValue(0x01)
-                interface A : Flagged {
+                interface A : Unmarked {
                     val a: Byte
                 }
 
                 @BytesLayout
                 @Fallback
-                interface B : Flagged {
+                interface B : Unmarked {
                     val type: UByte
-                    @FlagIndex(0) val on: Boolean
                 }
             }
-            """ to "cannot have flag bits, a prefix, a postfix, a checksum or byte stuffing",
+            """ to "@Fallback 'test.Unmarked.B' needs exactly one @Discriminator property to hold the discriminator it was read for, but has none",
+            """
+            interface Typed {
+                @Discriminator val type: UByte
+            }
+
+            @BytesLayout
+            sealed interface Twice {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface A : Twice {
+                    val a: Byte
+                }
+
+                @BytesLayout
+                @Fallback
+                interface B : Twice, Typed {
+                    @Discriminator val again: UByte
+                }
+            }
+            """ to "@Fallback 'test.Twice.B' needs exactly one @Discriminator property to hold the discriminator it was read for, but has 'type', 'again'",
+            """
+            @BytesLayout
+            sealed interface Known {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface A : Known {
+                    @Discriminator val a: UByte
+                }
+            }
+            """ to "@Discriminator on a of test.Known.A only applies to a property of a @Fallback subtype",
+            """
+            @BytesLayout
+            interface Plain {
+                @Discriminator val a: UByte
+            }
+            """ to "@Discriminator on a of test.Plain only applies to a property of a @Fallback subtype",
             """
             @Serializable
             @JvmInline
@@ -357,11 +395,12 @@ class RecordsTest {
                 @BytesLayout
                 @Fallback
                 interface B : Framed {
-                    val kind: Kind
+                    @Discriminator val kind: Kind
                     @Unsized val rest: List<Byte>
                 }
             }
-            """ to "The discriminator of @Fallback 'test.Framed.B' cannot have a prefix, a postfix, a checksum or byte stuffing around it",
+            """ to
+                "The @Discriminator property 'kind' of @Fallback 'test.Framed.B' takes no bytes in it, so it cannot have a prefix, a postfix, a checksum or byte stuffing around it",
             """
             @BytesLayout
             @LengthPrefix
@@ -378,7 +417,7 @@ class RecordsTest {
             @BytesLayout
             @Fallback
             interface Alone {
-                val type: UByte
+                @Discriminator val type: UByte
             }
             """ to "@Fallback on test.Alone only applies to a subtype of a sealed @BytesLayout",
         )

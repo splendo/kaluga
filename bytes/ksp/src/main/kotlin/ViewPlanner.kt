@@ -170,8 +170,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         val subtypes = type.elements[1].type.children
         val leaves = subtypes.map { subtype ->
             val leaf = layouts.all.firstOrNull { it.qualifiedName == subtype.name } ?: throw LayoutDeclarationException("${subtype.name} is not a @BytesLayout", layout.declaration)
-            val guard = if (subtype.name == type.fallback) FallbackGuard(leaf.qualifiedName, type.discriminators.values.map { it.array }) else null
-            SealedLeaf(leaf, contextFor(leaf, subtype, leaf.declaration, guard), type.discriminators[subtype.name]?.array)
+            SealedLeaf(leaf, contextFor(leaf, subtype, leaf.declaration), type.discriminators[subtype.name]?.array)
         }
         val bySize = type.sizeDispatch.isNotEmpty() || type.sizeFallback != null
         val sizeDispatch = if (bySize) type.sizeDispatch.mapValues { (_, name) -> leaves.indexOfFirst { it.layout.qualifiedName == name } } else null
@@ -203,14 +202,13 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         return context
     }
 
-    private fun contextFor(layout: Layout, field: FieldLayout, node: KSNode, guard: FallbackGuard? = null): ViewContext {
+    private fun contextFor(layout: Layout, field: FieldLayout, node: KSNode): ViewContext {
         // BytesFormat only stuffs the root frame it encodes.
         if (field.frame.byteStuffing != null) unsupported("byte stuffing on a nested layout", node)
         val known = known(layout, node)
         plan(known.first()).exceptionOrNull()?.let { throw it }
-        // A fallback refuses discriminators in its first property that the same layout elsewhere accepts.
-        val fingerprint = field.contextFingerprint() + guard?.fingerprint.orEmpty()
-        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: known.first().sibling(field, fingerprint, known.size, guard).also { known += it }
+        val fingerprint = field.contextFingerprint()
+        val context = known.firstOrNull { it.fingerprint == fingerprint } ?: known.first().sibling(field, fingerprint, known.size).also { known += it }
         plan(context).exceptionOrNull()?.let { throw it }
         return context
     }
@@ -244,20 +242,35 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         val gates = children.flatMap { it.presenceFlagIndices }.toSet()
 
         var cursor = Cursor(null, headerStart + headerBits)
-        val fields = children.mapIndexed { index, child ->
+        var discriminator: FieldPlan? = null
+        var discriminatorIndex = -1
+        val fields = children.mapIndexedNotNull { index, child ->
             val property = properties[index]
             val node = property.declaration
             RESERVED_VIEW_PROPERTY_NAMES[property.name]?.let { member -> throw ReservedViewPropertyName(property.name, layout, member, node) }
             val value = valueType(property.type.makeNotNullable(), node)
+            val type = child.type
+            if (type is TypeLayout.Discriminator) {
+                if (value !is ValueType.Primitive && value !is ValueType.Unsigned) unsupported("a @Discriminator property of type ${value.typeName}", node)
+                discriminator = discriminatorField(property.name, node, child, value, type.settings, child.valueByteOrder)
+                discriminatorIndex = index
+                return@mapIndexedNotNull null
+            }
             val itemPrefix = context.layoutName.peerClass(context.layoutName.simpleName + property.name.capitalized())
             val (plan, next) = planField(property.name, node, child, value, property.type.isMarkedNullable, headerStart, gates, cursor, itemPrefix)
             cursor = next
             plan
         }
         if (mirrored) fields.forEach { checkMirrored(it) }
-        val plan = ViewPlan(prefix, postfix, headerStart, headerBits, fields, cursor, field.frame.checksum, field.valueByteOrder, mirrored, stuffing, context.guard)
-        return plan
+        return ViewPlan(prefix, postfix, headerStart, headerBits, fields, cursor, field.frame.checksum, field.valueByteOrder, mirrored, stuffing, discriminator, discriminatorIndex)
     }
+
+    /**
+     * A number read from and written to the discriminator of a sealed frame rather than a frame of its own, so it has no
+     * position in one.
+     */
+    fun discriminatorField(name: String, node: KSNode, field: FieldLayout, value: ValueType, settings: NumericSettings.Natural, order: ByteOrder): FieldPlan =
+        FieldPlan(name, node, field, value, false, Access.Number(Width.Fixed(settings.supportedLengths.single()), settings, order, order), null, Cursor(null, 0), null, false)
 
     /** What mirrored frames support so far: values at fixed or content-dependent sizes, no flag bits and no nested frames. */
     private fun checkMirrored(field: FieldPlan) {
@@ -504,7 +517,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
                 Access.Text(type.settings.encoding, endMarking, child.byteOrder)
             }
 
-            is TypeLayout.Discriminator -> unsupported("@Discriminator properties", node)
+            is TypeLayout.Discriminator -> error("A @Discriminator property is planned apart from the frame")
 
             is TypeLayout.ListLayout, is TypeLayout.MapLayout -> unsupported("collections", node)
 

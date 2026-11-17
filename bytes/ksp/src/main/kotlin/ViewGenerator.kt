@@ -36,7 +36,6 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.LONG_ARRAY
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -411,13 +410,20 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                     .addParameter(SLICE_START, INT)
                     .addParameter(SLICE_LIMIT, INT)
                     .addParameter(ParameterSpec.builder(SLICE_PARENT, VIEW_PARENT.copy(nullable = true)).defaultValue("null").build())
+                    .apply { plan.discriminator?.let { addParameter(SLICE_DISCRIMINATOR, it.typeName()) } }
                     .build(),
             )
             .addProperty(PropertySpec.builder(SLICE_BYTES, BYTE_ARRAY, KModifier.INTERNAL).initializer(SLICE_BYTES).build())
             .addProperty(PropertySpec.builder(SLICE_START, INT, KModifier.INTERNAL).initializer(SLICE_START).build())
             .addProperty(PropertySpec.builder(SLICE_LIMIT, INT, KModifier.INTERNAL).initializer(SLICE_LIMIT).build())
             .addProperty(PropertySpec.builder(SLICE_PARENT, VIEW_PARENT.copy(nullable = true), KModifier.INTERNAL).initializer(SLICE_PARENT).build())
+        val discriminator = plan.discriminator
+        if (discriminator != null) {
+            builder.addProperty(PropertySpec.builder(SLICE_DISCRIMINATOR, discriminator.typeName(), KModifier.INTERNAL).initializer(SLICE_DISCRIMINATOR).build())
+        }
         val arguments = CodeBlock.of("$SLICE_BYTES, $SLICE_START, $SLICE_LIMIT")
+        // The discriminator a fallback was read for is not in its bytes, so whatever reads all of it is given it too.
+        val all = if (discriminator == null) arguments else CodeBlock.of("%L, $SLICE_DISCRIMINATOR", arguments)
         val checksummed = plan.hasChecksums()
         // In an edit block (a ViewBatch parent) the checksums are updated once at the end instead.
         builder.addFunction(
@@ -433,28 +439,43 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 .addStatement(if (checksummed) "return if ($SLICE_PARENT === %T) $SLICE_PARENT else %T { changed() }" else "return $SLICE_PARENT", VIEW_BATCH, VIEW_PARENT)
                 .build(),
         )
-        plan.fields.forEach { builder.addProperty(overrideProperty(it, context, arguments, CodeBlock.of("childParent()"), CodeBlock.of("changed()"))) }
+        val properties = plan.fields.map { overrideProperty(it, context, arguments, CodeBlock.of("childParent()"), CodeBlock.of("changed()")) }.toMutableList()
+        if (discriminator != null) {
+            properties.add(
+                plan.discriminatorIndex,
+                PropertySpec.builder(discriminator.name, discriminator.typeName(), KModifier.OVERRIDE)
+                    .getter(FunSpec.getterBuilder().addStatement("return $SLICE_DISCRIMINATOR").build())
+                    .build(),
+            )
+        }
+        properties.forEach { builder.addProperty(it) }
         if (layout.isInternal) builder.addModifiers(KModifier.INTERNAL)
         if (Generate.DATA in layout.generate) {
             builder.addFunction(
                 FunSpec.builder("toData").addKdoc("Copies this view into a [%T].", layout.dataClassName).returns(layout.dataClassName)
-                    .addStatement("return %T.toData(%L)", context.layoutName, arguments)
+                    .addStatement("return %T.toData(%L)", context.layoutName, all)
                     .build(),
             )
         }
         builder.addFunction(
             FunSpec.builder("equals").addModifiers(KModifier.OVERRIDE).addParameter("other", ANY.copy(nullable = true)).returns(BOOLEAN)
-                .addStatement("return other is %T && %T.contentEquals(%L, other)", context.sliceName, context.layoutName, arguments)
+                .addStatement(
+                    "return other is %T && %T.contentEquals(%L, other%L)",
+                    context.sliceName,
+                    context.layoutName,
+                    arguments,
+                    if (discriminator == null) "" else ", $SLICE_DISCRIMINATOR",
+                )
                 .build(),
         )
         builder.addFunction(
             FunSpec.builder("hashCode").addModifiers(KModifier.OVERRIDE).returns(INT)
-                .addStatement("return %T.contentHashCode(%L)", context.layoutName, arguments)
+                .addStatement("return %T.contentHashCode(%L)", context.layoutName, all)
                 .build(),
         )
         builder.addFunction(
             FunSpec.builder("toString").addModifiers(KModifier.OVERRIDE).returns(STRING)
-                .addStatement("return %T.describe(%S, %L)", context.layoutName, context.sliceName.simpleName, arguments)
+                .addStatement("return %T.describe(%S, %L)", context.layoutName, context.sliceName.simpleName, all)
                 .build(),
         )
         return builder.build()
@@ -487,11 +508,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             }
             builder.addFunction(getter.build())
             if (field.settable) {
-                val guard = plan.guard?.takeIf { field === plan.fields.first() }
-                guard?.let { builder.addProperty(fallbackDiscriminators(field, it)) }
                 builder.addFunction(
                     bufferFunction("set$name").addParameter("value", field.typeName())
-                        .apply { guard?.let { addStatement("%L", refuseDiscriminator(field, it)) } }
                         .apply { write(field, field.access, frame.location(field), unwrap(field.value, CodeBlock.of("value"))).forEach { addStatement("%L", it) } }
                         .build(),
                 )
@@ -641,12 +659,19 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 .build(),
         )
 
+        val discriminator = plan.discriminator
+        fun FunSpec.Builder.discriminated(): FunSpec.Builder = apply { discriminator?.let { addParameter(DISCRIMINATOR, it.typeName()) } }
+
+        // The properties in declaration order, the discriminator a fallback was read for among them.
+        fun <T> inOrder(field: (FieldPlan) -> T, discriminated: (FieldPlan) -> T): List<T> =
+            plan.fields.map(field).toMutableList().apply { discriminator?.let { add(plan.discriminatorIndex, discriminated(it)) } }
         if (Generate.DATA in layout.generate) {
-            val toData = bufferFunction("toData").returns(layout.dataClassName)
+            val toData = bufferFunction("toData").discriminated().returns(layout.dataClassName)
             if (layout.properties.isEmpty()) {
                 toData.addStatement("return %T", layout.dataClassName)
             } else {
-                toData.addStatement("return %T(%L)", layout.dataClassName, plan.fields.map { CodeBlock.of("%N = %L", it.name, dataValue(it)) }.joinToCode(", "))
+                val values = inOrder({ CodeBlock.of("%N = %L", it.name, dataValue(it)) }, { CodeBlock.of("%N = $DISCRIMINATOR", it.name) })
+                toData.addStatement("return %T(%L)", layout.dataClassName, values.joinToCode(", "))
             }
             builder.addFunction(toData.build())
         }
@@ -661,7 +686,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             if (plan.mirrored) CodeBlock.of("%L, $start", end) else CodeBlock.of("$start, %L", end)
         }
         val own = range("b", "s", CodeBlock.of("lim"))
-        val contentEquals = bufferFunction("contentEquals").addParameter("other", ANY.copy(nullable = true)).returns(BOOLEAN)
+        val contentEquals = bufferFunction("contentEquals").addParameter("other", ANY.copy(nullable = true)).discriminated().returns(BOOLEAN)
         val comparison = CodeBlock.builder().beginControlFlow("when (other)")
         // The view of a foreign layout is its own module's.
         if (context.index == 0 && !layout.isForeign) {
@@ -675,8 +700,9 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             )
         }
         comparison.addStatement(
-            "is %T -> %T.rangeEquals(b, %L, other.$SLICE_BYTES, %L)",
+            "is %T -> %L%T.rangeEquals(b, %L, other.$SLICE_BYTES, %L)",
             context.sliceName,
+            if (discriminator == null) "" else "$DISCRIMINATOR == other.$SLICE_DISCRIMINATOR && ",
             VIEW_BYTES,
             own,
             range("other.$SLICE_BYTES", "other.$SLICE_START", CodeBlock.of("other.$SLICE_LIMIT")),
@@ -689,22 +715,30 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             contentEquals.beginControlFlow("return try").addCode(comparison.build()).nextControlFlow("catch (e: %T)", RUNTIME_EXCEPTION).addStatement("false").endControlFlow()
         }
         builder.addFunction(contentEquals.build())
-        val hash = bufferFunction("contentHashCode").returns(INT)
-        if (staticSize != null) {
-            hash.addStatement("return %T.rangeHashCode(b, %L)", VIEW_BYTES, own)
+        val hash = bufferFunction("contentHashCode").discriminated().returns(INT)
+        val hashOf = if (discriminator ==
+            null
+        ) {
+            CodeBlock.of("%T.rangeHashCode(b, %L)", VIEW_BYTES, own)
         } else {
-            hash.beginControlFlow("return try").addStatement("%T.rangeHashCode(b, %L)", VIEW_BYTES, own)
+            CodeBlock.of("31 * %T.rangeHashCode(b, %L) + $DISCRIMINATOR.hashCode()", VIEW_BYTES, own)
+        }
+        if (staticSize != null) {
+            hash.addStatement("return %L", hashOf)
+        } else {
+            hash.beginControlFlow("return try").addStatement("%L", hashOf)
                 .nextControlFlow("catch (e: %T)", RUNTIME_EXCEPTION).addStatement("0").endControlFlow()
         }
         builder.addFunction(hash.build())
 
         val description = CodeBlock.builder().add("name + %S", "(")
-        plan.fields.forEachIndexed { index, field ->
-            description.add(" + %S + get${field.name.capitalized()}(b, s, lim)", (if (index == 0) "" else ", ") + field.name + "=")
+        inOrder({ it.name to CodeBlock.of("get${it.name.capitalized()}(b, s, lim)") }, { it.name to CodeBlock.of(DISCRIMINATOR) }).forEachIndexed { index, (name, value) ->
+            description.add(" + %S + %L", (if (index == 0) "" else ", ") + name + "=", value)
         }
         description.add(" + %S", ")")
         builder.addFunction(
             bufferFunction("describe", "name")
+                .discriminated()
                 .returns(STRING)
                 .beginControlFlow("return try")
                 .addStatement("%L", description.build())
@@ -1507,11 +1541,12 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             )
         }
 
-        // A fallback starts at the discriminator it holds; under a length, the other leaves start after it.
+        // The fallback has the size every other discriminator has.
         fun leafStart(index: Int): CodeBlock {
-            val discriminator = plan.leaves[index].discriminator?.takeIf { byDiscriminator } ?: return CodeBlock.of("pos")
-            return CodeBlock.of("pos + %L", discriminator.size + plan.lengthBytes)
+            if (!byDiscriminator) return CodeBlock.of("pos")
+            return CodeBlock.of("pos + %L", (plan.leaves[index].discriminator?.size ?: plan.discriminatorBytes) + plan.lengthBytes)
         }
+        val fallbackDiscriminator = plan.fallback?.takeIf { byDiscriminator }?.let { plan.leaves[it].context.plan!!.getOrThrow().discriminator!! }
 
         // The subtype at `pos`, as the decoder picks it: the first discriminator that matches, or the payload size.
         fun FunSpec.Builder.dispatch(branch: (Int) -> CodeBlock): FunSpec.Builder {
@@ -1563,7 +1598,14 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         builder.addFunction(
             bufferFunction("getValue").returns(layout.interfaceClassName)
                 .addParameter(ParameterSpec.builder(PARENT, VIEW_PARENT.copy(nullable = true)).defaultValue("null").build())
-                .dispatch { CodeBlock.of("%T(b, %L, %L, $PARENT)", plan.leaves[it].context.sliceName, leafStart(it), leafLimit(it, leafStart(it))) }
+                .dispatch { index ->
+                    val leaf = CodeBlock.of("%T(b, %L, %L, $PARENT", plan.leaves[index].context.sliceName, leafStart(index), leafLimit(index, leafStart(index)))
+                    if (fallbackDiscriminator != null && index == plan.fallback) {
+                        CodeBlock.of("%L, %L)", leaf, read(fallbackDiscriminator, fallbackDiscriminator.access, Location(CodeBlock.of("pos"), null)))
+                    } else {
+                        CodeBlock.of("%L)", leaf)
+                    }
+                }
                 .build(),
         )
         // A record ends where its length says, whatever its leaf reads of it.
@@ -1646,7 +1688,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         if (stuffed) sizeOf.addParameter(contentsParameter())
         sizeOf.beginControlFlow("return %L + when (value)", prefix + plan.footer)
         plan.leaves.forEach { leaf ->
-            val discriminator = leaf.discriminator?.takeIf { byDiscriminator }?.let { it.size + plan.lengthBytes } ?: 0
+            val discriminator = if (byDiscriminator) (leaf.discriminator?.size ?: plan.discriminatorBytes) + plan.lengthBytes else 0
             sizeOf.addStatement("is %T -> %L + %T.sizeOf(value${contents(leaf)})", leaf.layout.interfaceClassName, discriminator, leaf.context.layoutName)
         }
         sizeOf.endControlFlow()
@@ -1669,14 +1711,17 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             if (record == null && !fallback) {
                 write.addStatement("%T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
             } else {
-                write.addStatement("val end = %T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
                 if (fallback) {
+                    val discriminator = fallbackDiscriminator!!
+                    write(discriminator, discriminator.access, Location(CodeBlock.of("pos"), null), unwrap(discriminator.value, CodeBlock.of("value.%N", discriminator.name)))
+                        .forEach { write.addStatement("%L", it) }
                     write.addStatement(
                         "require(%T.findIndex(b, pos, discriminators, lim) < 0) { %S }",
                         VIEW_BYTES,
                         "@Fallback ${leaf.layout.qualifiedName} has the discriminator of another subtype, so it would decode as that",
                     )
                 }
+                write.addStatement("val end = %T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
                 if (record != null) {
                     write.addStatement(
                         "%T.writeLengthPrefix(b, pos + %L, lim, end - pos - %L, %L, %L)",
@@ -2173,31 +2218,6 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         } else {
             CodeBlock.of("(%L as %T).toData()", get, access.context.sliceName)
         }
-    }
-
-    /** The discriminators [guard] refuses, as the bits [field], the first property of a `@Fallback` frame, writes. */
-    private fun fallbackDiscriminators(field: FieldPlan, guard: FallbackGuard): PropertySpec {
-        val access = field.access as Access.Number
-        val values = guard.discriminators.map { discriminator ->
-            val bytes = if (access.writeOrder == ByteOrder.LEAST_SIGNIFICANT_FIRST) discriminator.reversed() else discriminator.toList()
-            bytes.fold(0L) { value, byte -> (value shl Byte.SIZE_BITS) or (byte.toLong() and 0xFF) }
-        }
-        return PropertySpec.builder("${field.name}Discriminators", LONG_ARRAY, KModifier.PRIVATE)
-            .initializer("longArrayOf(%L)", values.joinToString(", ") { if (it >= 0) "${it}L" else "0x${it.toULong().toString(16).uppercase()}uL.toLong()" })
-            .build()
-    }
-
-    /** Throws, as encoding the `@Fallback` frame would, when `value` set to [field] is the discriminator of another subtype. */
-    private fun refuseDiscriminator(field: FieldPlan, guard: FallbackGuard): CodeBlock {
-        val bits = ((field.access as Access.Number).width as Width.Fixed).length.bytes * Byte.SIZE_BITS
-        val wire = unwrap(field.value, CodeBlock.of("value"))
-        val written = if (bits >= Long.SIZE_BITS) CodeBlock.of("%L.toLong()", wire) else CodeBlock.of("(%L.toLong() and 0x%LL)", wire, ((1L shl bits) - 1).toString(16).uppercase())
-        return CodeBlock.of(
-            "require(%L !in %N) { %S }",
-            written,
-            "${field.name}Discriminators",
-            "@Fallback ${guard.fallback} has the discriminator of another subtype, so it would decode as that",
-        )
     }
 
     /** The limit a nested frame at [pos] reads up to: its own end when that is fixed, else its parent's minus its postfix. */
@@ -2716,6 +2736,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         const val SLICE_BYTES = "sliceBytes"
         const val SLICE_START = "sliceStart"
         const val SLICE_LIMIT = "sliceLimit"
+        const val SLICE_DISCRIMINATOR = "sliceDiscriminator"
+        const val DISCRIMINATOR = "discriminator"
         const val BIT_CURSOR = "bitCursor"
         const val BODY_END = "bodyEnd"
         const val CONTENTS = "contents"
@@ -2762,6 +2784,7 @@ internal val RESERVED_VIEW_PROPERTY_NAMES = mapOf(
     "sliceStart" to "the slice's `sliceStart` property",
     "sliceLimit" to "the slice's `sliceLimit` property",
     "sliceParent" to "the slice's `sliceParent` property",
+    "sliceDiscriminator" to "the `sliceDiscriminator` property of the slice of a `@Fallback`",
 )
 
 internal fun String.capitalized(): String = replaceFirstChar { it.uppercaseChar() }
