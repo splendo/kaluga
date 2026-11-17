@@ -87,6 +87,12 @@ class UnexpectedItemCount(val name: String, val count: Int, val size: Int) : Ser
 }
 
 /**
+ * Exception thrown if trying to add data after data of an unconstrained size, such as an `@Unsized` collection.
+ * Since such data does not indicate an end point, there is no way to know when to stop decoding it.
+ */
+class DataAfterUnconstrainedData(override val message: String?) : SerializationException()
+
+/**
  * Exception thrown if the [ByteArray] being decoded is smaller than its layout requires.
  */
 class ByteArrayEndedBeforeSerializationCompleted(override val message: String) : SerializationException()

@@ -31,8 +31,8 @@ import com.splendo.kaluga.bytes.layout.TypeLayout
  * - `DataAfterUnconstrainedData`: a property whose encoded size has no end marking (an `@Unsized` string or
  *   collection, a `@DeltaCoded` list, a `@SizePolymorphic` value, a byte-stuffed structure without a terminator, or a structure ending in one) followed by a sibling that always writes body
  *   bytes, since a decoder could never tell where the first one ends. Only configurations that fail for every value
- *   are reported; a nullable or `@NullIfEmpty` unconstrained property is left to the runtime check, as it encodes fine
- *   while absent.
+ *   are reported; a nullable or `@NullIfEmpty` unconstrained property, or a nullable sibling, is left to the check
+ *   `BytesFormat` and the generated views make per value, as they encode fine while absent.
  */
 internal object LayoutChecks {
 

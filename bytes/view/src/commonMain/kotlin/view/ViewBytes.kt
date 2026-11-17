@@ -34,6 +34,7 @@ import com.splendo.kaluga.bytes.medfloat.decodeMedFloat16
 import com.splendo.kaluga.bytes.medfloat.decodeMedFloat32
 import com.splendo.kaluga.bytes.strings.decodeUTF16Char
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
 import com.splendo.kaluga.bytes.layout.NumericCodec
 import com.splendo.kaluga.bytes.strings.toAscii
 import com.splendo.kaluga.bytes.strings.toLatin1
@@ -67,6 +68,14 @@ object ViewBytes {
      */
     fun checkWrapRange(bytes: ByteArray, from: Int, to: Int) {
         require(from in 0..to && to <= bytes.size) { "Range [$from, $to) is not within an array of ${bytes.size} bytes" }
+    }
+
+    /**
+     * Throws [DataAfterUnconstrainedData] as `BytesFormat` does when [adding] data after data of an unconstrained
+     * size, whose end nothing marks.
+     */
+    fun checkNothingAfterUnconstrained(adding: Boolean) {
+        if (adding) throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
     }
 
     /** [bits] rounded up to a whole byte, where the encoder starts anything it writes as bytes. */

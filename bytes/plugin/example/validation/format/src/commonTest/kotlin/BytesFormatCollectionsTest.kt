@@ -32,6 +32,7 @@ import com.splendo.kaluga.bytes.integer.add
 import com.splendo.kaluga.bytes.medfloat.add
 import com.splendo.kaluga.bytes.strings.add
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -42,6 +43,16 @@ import kotlinx.serialization.serializer
  * The collection tests every backend runs; [BytesFormatCollectionsTest] adds the ones only `BytesFormat` can run.
  */
 abstract class CollectionsSuite(backendFactory: ByteLayoutBackendFactory) : BytesFormatTestBase(backendFactory) {
+
+    @Test
+    fun encodeListRefusesAPresentPropertyAfterUnsized() {
+        val backend = createBackend()
+        val serializer = EncodeListFixturesOptionalAfterUnsizedData.serializer()
+        val refused = assertFailsWith<DataAfterUnconstrainedData> { backend.encode(serializer, EncodeListFixturesOptionalAfterUnsizedData(listOf(1, 2), 3)) }
+        assertEquals("Attempted to add data after data of an unconstrained size", refused.message)
+        assertFailsWith<DataAfterUnconstrainedData> { backend.encode(serializer, EncodeListFixturesOptionalAfterUnsizedData(emptyList(), 3)) }
+        validateEncoding(EncodeListFixturesOptionalAfterUnsizedData(listOf(1, 2), null), serializer, byteArrayOf(0x00, 0x01, 0x02))
+    }
 
     @Test
     fun encodeList() {

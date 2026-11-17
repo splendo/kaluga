@@ -415,6 +415,13 @@ final class com.splendo.kaluga.bytes.layout/CollectionSettings { // com.splendo.
     }
 }
 
+final class com.splendo.kaluga.bytes.layout/DataAfterUnconstrainedData : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/DataAfterUnconstrainedData|null[0]
+    constructor <init>(kotlin/String?) // com.splendo.kaluga.bytes.layout/DataAfterUnconstrainedData.<init>|<init>(kotlin.String?){}[0]
+
+    final val message // com.splendo.kaluga.bytes.layout/DataAfterUnconstrainedData.message|{}message[0]
+        final fun <get-message>(): kotlin/String? // com.splendo.kaluga.bytes.layout/DataAfterUnconstrainedData.message.<get-message>|<get-message>(){}[0]
+}
+
 final class com.splendo.kaluga.bytes.layout/FieldLayout { // com.splendo.kaluga.bytes.layout/FieldLayout|null[0]
     constructor <init>(kotlin/String, kotlin/Int, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes/ByteOrder, com.splendo.kaluga.bytes/ByteOrder, kotlin/Boolean, kotlin.collections/List<kotlin/Int> = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.bytes.layout/FrameSettings, com.splendo.kaluga.bytes.layout/TypeLayout) // com.splendo.kaluga.bytes.layout/FieldLayout.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean;kotlin.collections.List<kotlin.Int>;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.FrameSettings;com.splendo.kaluga.bytes.layout.TypeLayout){}[0]
 

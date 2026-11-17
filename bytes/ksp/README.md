@@ -98,7 +98,7 @@ The sealed layout itself still has no flag bits, cannot be `@SizePolymorphic`, a
 
 ### Delta-coded lists
 
-A `@DeltaCoded(step)` list is its first item, then a signed `step` from each item to the next, added modulo 2 to the power of an item's size; the [annotations](../annotations/#delta-coded-lists) README has the rules. Like `@Unsized` it runs to the end of what holds it, so it is the last property of a value or of a type-length-value record, whose length bounds it while further records follow; a property after it is a compile error saying so. DATA needs nothing new: the data class carries `@DeltaCoded`, which `BytesFormat` reads.
+A `@DeltaCoded(step)` list is its first item, then a signed `step` from each item to the next, added modulo 2 to the power of an item's size; the [annotations](../annotations/#delta-coded-lists) README has the rules. Like `@Unsized` it runs to the end of what holds it, so it is the last property of a value or of a type-length-value record, whose length bounds it while further records follow; a property after it that is always written is a compile error saying so, and a view's `encode` throws `DataAfterUnconstrainedData` for one that may be absent, such as a nullable one, while it is present, as `BytesFormat` does. DATA needs nothing new: the data class carries `@DeltaCoded`, which `BytesFormat` reads.
 
 In a view:
 
@@ -164,7 +164,7 @@ Configurations using unsupported features generate a KSP error "VIEW not yet sup
 
 ## Layout constraints
 
-- Invalid layouts (ones `BytesFormat` would reject at first encoding) are compile errors
+- Invalid layouts (ones `BytesFormat` would reject at first encoding) are compile errors. Data after data of an unconstrained size, such as an `@Unsized` list, is one when it is written for every value; when the data before or after may be absent, a view's `encode` and constructor-like `invoke` throw `DataAfterUnconstrainedData` for the values `BytesFormat` throws it for
 - Layouts cannot be generic; declare a concrete sub-interface instead
 - A sealed super-interface of a layout must itself be a `@BytesLayout`: extending a sealed interface is how a layout becomes a subtype that its parent dispatches by discriminator or size, so a sealed parent without the annotation is most likely one where it was forgotten, and generating the layout on its own would encode it without its discriminator. To only group layouts, or to share properties between them, extend an interface that is not sealed
 - Properties cannot declare default values, and none can be named `Companion`

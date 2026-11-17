@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bytes.example.format
 
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
 import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.bytes.view.DeltaCodedIntList
 import com.splendo.kaluga.bytes.view.DeltaCodedShortList
@@ -108,6 +109,16 @@ abstract class DeltaCodedSuite(backendFactory: ByteLayoutBackendFactory) : Bytes
         assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> {
             backend.decode(DeltaCodedFixturesStreamData.serializer(), bytes(0x07, 0x00, 0x02, 0x01, 0x10) + batteryBytes)
         }
+    }
+
+    @Test
+    fun refusesAPresentPropertyAfterIt() {
+        val backend = createBackend()
+        val serializer = DeltaCodedFixturesMarkedData.serializer()
+        val refused = assertFailsWith<DataAfterUnconstrainedData> { backend.encode(serializer, DeltaCodedFixturesMarkedData(listOf(16, 18, 15), 5)) }
+        assertEquals("Attempted to add data after data of an unconstrained size", refused.message)
+        assertFailsWith<DataAfterUnconstrainedData> { backend.encode(serializer, DeltaCodedFixturesMarkedData(emptyList(), 5)) }
+        validateEncoding(DeltaCodedFixturesMarkedData(listOf(16, 18, 15), null), serializer, bytes(0x00, 0x10, 0x00, 0x02, 0xFD))
     }
 
     @Test
