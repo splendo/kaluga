@@ -87,6 +87,9 @@ class BytesFormatDeltaCodedTest : BytesFormatTestBase(BytesFormatBackend.Factory
     data class Mapped(@DeltaCoded(Length.`8_BIT`) val samples: Map<Short, Short>)
 
     @Serializable
+    data class Single(@DeltaCoded(Length.`8_BIT`) val sample: Int)
+
+    @Serializable
     data class Floats(@DeltaCoded(Length.`8_BIT`) val samples: List<Float>)
 
     @Serializable
@@ -167,6 +170,9 @@ class BytesFormatDeltaCodedTest : BytesFormatTestBase(BytesFormatBackend.Factory
         assertFailsWith<InvalidDeltaCoding> { BytesFormat.encodeToByteArray(Counted.serializer(), Counted(listOf(1, 2))) }
         assertFailsWith<InvalidDeltaCoding> { BytesFormat.encodeToByteArray(Optional.serializer(), Optional(null)) }
         assertFailsWith<InvalidDeltaCoding> { BytesFormat.encodeToByteArray(Mapped.serializer(), Mapped(emptyMap())) }
+        val single = assertFailsWith<InvalidDeltaCoding> { BytesFormat.encodeToByteArray(Single.serializer(), Single(5)) }
+        assertEquals("@DeltaCoded only applies to a list of integers, but 'sample' is kotlin.Int", single.message)
+        assertFailsWith<InvalidDeltaCoding> { BytesFormat.decodeFromByteArray(Single.serializer(), bytes(0x05, 0x00, 0x00, 0x00)) }
         assertFailsWith<InvalidDeltaCoding> { BytesFormat.encodeToByteArray(Floats.serializer(), Floats(emptyList())) }
         assertFailsWith<InvalidDeltaCoding> { BytesFormat.encodeToByteArray(WideSteps.serializer(), WideSteps(emptyList())) }
         assertFailsWith<InvalidDeltaCoding> { BytesFormat.encodeToByteArray(Mirrored.serializer(), Mirrored(emptyList())) }
