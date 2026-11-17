@@ -112,6 +112,19 @@ abstract class DeltaCodedSuite(backendFactory: ByteLayoutBackendFactory) : Bytes
     }
 
     @Test
+    fun startsOnTheByteAfterTheBitsBeforeIt() {
+        val flagged = DeltaCodedFixturesFlaggedData.serializer()
+        validateEncoding(DeltaCodedFixturesFlaggedData(true, listOf(16, 18, 15)), flagged, bytes(0x01, 0x10, 0x00, 0x02, 0xFD))
+        validateEncoding(DeltaCodedFixturesFlaggedData(true, emptyList()), flagged, bytes(0x01))
+        validateEncoding(DeltaCodedFixturesFlaggedData(false, emptyList()), flagged, bytes(0x00))
+        val tagged = DeltaCodedFixturesTaggedData.serializer()
+        validateEncoding(DeltaCodedFixturesTaggedData(null, listOf(16, 18, 15)), tagged, bytes(0x00, 0x10, 0x00, 0x02, 0xFD))
+        validateEncoding(DeltaCodedFixturesTaggedData(null, emptyList()), tagged, bytes(0x00))
+        validateEncoding(DeltaCodedFixturesTaggedData(7u, listOf(16)), tagged, bytes(0x01, 0x07, 0x10, 0x00))
+        validateEncoding(DeltaCodedFixturesTaggedData(7u, emptyList()), tagged, bytes(0x01, 0x07))
+    }
+
+    @Test
     fun refusesAPresentPropertyAfterIt() {
         val backend = createBackend()
         val serializer = DeltaCodedFixturesMarkedData.serializer()
