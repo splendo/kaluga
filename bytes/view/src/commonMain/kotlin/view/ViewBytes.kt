@@ -250,11 +250,16 @@ object ViewBytes {
      * The index of the first entry of [table] the bytes at [pos] match, as `BytesFormat` identifies an enum entry.
      * @throws NoSuchElementException when none matches.
      */
-    fun matchIndex(b: ByteArray, pos: Int, table: Array<ByteArray>, lim: Int): Int {
+    fun matchIndex(b: ByteArray, pos: Int, table: Array<ByteArray>, lim: Int): Int = findIndex(b, pos, table, lim).also {
+        if (it < 0) throw NoSuchElementException("No entry matches the bytes at $pos")
+    }
+
+    /** The index of the first entry of [table] that [matches] at [pos], or -1 when none does. */
+    fun findIndex(b: ByteArray, pos: Int, table: Array<ByteArray>, lim: Int): Int {
         for (index in table.indices) {
             if (matches(b, pos, table[index], lim)) return index
         }
-        throw NoSuchElementException("No entry matches the bytes at $pos")
+        return -1
     }
 
     /** Copies [pattern] to [pos]. */

@@ -27,6 +27,7 @@ import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.strings.StringEncodingSettings
 import com.splendo.kaluga.bytes.annotations.Checksum
 import com.splendo.kaluga.bytes.annotations.Generate
+import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.annotations.Postfix
 import com.splendo.kaluga.bytes.annotations.Prefix
 import com.splendo.kaluga.bytes.layout.CollectionSettings
@@ -36,7 +37,15 @@ import com.splendo.kaluga.bytes.layout.NumericSettings
 import com.splendo.kaluga.bytes.layout.TypeKind
 import com.splendo.kaluga.bytes.layout.TypeLayout
 import com.splendo.kaluga.bytes.layout.dump
+import com.squareup.kotlinpoet.BYTE
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.LONG
+import com.squareup.kotlinpoet.SHORT
+import com.squareup.kotlinpoet.U_BYTE
+import com.squareup.kotlinpoet.U_INT
+import com.squareup.kotlinpoet.U_LONG
+import com.squareup.kotlinpoet.U_SHORT
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
@@ -174,9 +183,40 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         }
         val bySize = type.sizeDispatch.isNotEmpty() || type.sizeFallback != null
         val sizeDispatch = if (bySize) type.sizeDispatch.mapValues { (_, name) -> leaves.indexOfFirst { it.layout.qualifiedName == name } } else null
-        val fallback = type.sizeFallback?.let { name -> leaves.indexOfFirst { it.layout.qualifiedName == name } }
-        if (!bySize && leaves.any { it.discriminator == null || it.discriminator.isEmpty() }) unsupported("sealed subtypes without a discriminator", layout.declaration)
-        return SealedPlan(field.frame.prefix?.array, field.frame.postfix?.array, leaves, sizeDispatch, fallback, layout.qualifiedName, field.frame.checksum, field.valueByteOrder)
+        val fallback = (type.sizeFallback ?: type.fallback)?.let { name -> leaves.indexOfFirst { it.layout.qualifiedName == name } }
+        if (!bySize && leaves.withIndex().any { (index, leaf) -> index != fallback && (leaf.discriminator == null || leaf.discriminator.isEmpty()) }) {
+            unsupported("sealed subtypes without a discriminator", layout.declaration)
+        }
+        val discriminatorSizes = leaves.mapNotNull { it.discriminator?.size }.distinct()
+        if (type.lengthPrefix != null && discriminatorSizes.size > 1) unsupported("type-length-value records with discriminators of several sizes", layout.declaration)
+        val recordDiscriminator = type.lengthPrefix?.let {
+            fallback?.let { leaves[it].context.plan!!.getOrThrow().discriminator } ?: unsignedDiscriminator(discriminatorSizes.singleOrNull() ?: 0, field, layout)
+        }
+        return SealedPlan(
+            field.frame.prefix?.array,
+            field.frame.postfix?.array,
+            leaves,
+            sizeDispatch,
+            fallback,
+            layout.qualifiedName,
+            field.frame.checksum,
+            field.valueByteOrder,
+            type.lengthPrefix,
+            recordDiscriminator,
+        )
+    }
+
+    /** The unsigned number of [size] bytes in the byte order of [field] that a discriminator of [layout] is given as. */
+    private fun unsignedDiscriminator(size: Int, field: FieldLayout, layout: Layout): FieldPlan {
+        val length = Length.entries.firstOrNull { it.bytes == size } ?: unsupported("type-length-value records with discriminators of $size bytes", layout.declaration)
+        val (unsigned, signed, kind) = when (length) {
+            Length.`8_BIT` -> Triple(U_BYTE, BYTE, TypeKind.BYTE)
+            Length.`16_BIT` -> Triple(U_SHORT, SHORT, TypeKind.SHORT)
+            Length.`24_BIT`, Length.`32_BIT` -> Triple(U_INT, INT, TypeKind.INT)
+            else -> Triple(U_LONG, LONG, TypeKind.LONG)
+        }
+        val value = ValueType.Unsigned(unsigned, ValueType.Primitive(signed, kind))
+        return discriminatorField("discriminator", layout.declaration, field, value, NumericSettings.Natural(setOf(length), false), field.valueByteOrder)
     }
 
     private fun sealedContextFor(layout: Layout, field: FieldLayout, node: KSNode): ViewContext {
@@ -228,20 +268,35 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         val gates = children.flatMap { it.presenceFlagIndices }.toSet()
 
         var cursor = Cursor(null, headerStart + headerBits)
-        val fields = children.mapIndexed { index, child ->
+        var discriminator: FieldPlan? = null
+        var discriminatorIndex = -1
+        val fields = children.mapIndexedNotNull { index, child ->
             val property = properties[index]
             val node = property.declaration
             RESERVED_VIEW_PROPERTY_NAMES[property.name]?.let { member -> throw ReservedViewPropertyName(property.name, layout, member, node) }
             val value = valueType(property.type.makeNotNullable(), node)
+            val type = child.type
+            if (type is TypeLayout.Discriminator) {
+                if (value !is ValueType.Primitive && value !is ValueType.Unsigned) unsupported("a @Discriminator property of type ${value.typeName}", node)
+                discriminator = discriminatorField(property.name, node, child, value, type.settings, child.valueByteOrder)
+                discriminatorIndex = index
+                return@mapIndexedNotNull null
+            }
             val itemPrefix = context.layoutName.peerClass(context.layoutName.simpleName + property.name.capitalized())
             val (plan, next) = planField(property.name, node, child, value, property.type.isMarkedNullable, headerStart, gates, cursor, itemPrefix)
             cursor = next
             plan
         }
         if (mirrored) fields.forEach { checkMirrored(it) }
-        val plan = ViewPlan(prefix, postfix, headerStart, headerBits, fields, cursor, field.frame.checksum, field.valueByteOrder, mirrored, stuffing)
-        return plan
+        return ViewPlan(prefix, postfix, headerStart, headerBits, fields, cursor, field.frame.checksum, field.valueByteOrder, mirrored, stuffing, discriminator, discriminatorIndex)
     }
+
+    /**
+     * A number read from and written to the discriminator of a sealed frame rather than a frame of its own, so it has no
+     * position in one.
+     */
+    fun discriminatorField(name: String, node: KSNode, field: FieldLayout, value: ValueType, settings: NumericSettings.Natural, order: ByteOrder): FieldPlan =
+        FieldPlan(name, node, field, value, false, Access.Number(Width.Fixed(settings.supportedLengths.single()), settings, order, order), null, Cursor(null, 0), null, false)
 
     /** What mirrored frames support so far: values at fixed or content-dependent sizes, no flag bits and no nested frames. */
     private fun checkMirrored(field: FieldPlan) {
@@ -487,6 +542,8 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
                 // A string is laid out in the frame's accumulation order, which a mirrored frame reads from the end.
                 Access.Text(type.settings.encoding, endMarking, child.byteOrder)
             }
+
+            is TypeLayout.Discriminator -> error("A @Discriminator property is planned apart from the frame")
 
             is TypeLayout.ListLayout, is TypeLayout.MapLayout -> unsupported("collections", node)
 

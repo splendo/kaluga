@@ -94,11 +94,19 @@ open annotation class com.splendo.kaluga.bytes.annotations/Count : kotlin/Annota
         final fun <get-count>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Count.count.<get-count>|<get-count>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bytes.annotations/Discriminator : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Discriminator|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/Discriminator.<init>|<init>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bytes.annotations/Encoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Encoded|null[0]
     constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.annotations/Encoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
 
     final val encoding // com.splendo.kaluga.bytes.annotations/Encoded.encoding|{}encoding[0]
         final fun <get-encoding>(): com.splendo.kaluga.bytes.strings/Encoding // com.splendo.kaluga.bytes.annotations/Encoded.encoding.<get-encoding>|<get-encoding>(){}[0]
+}
+
+open annotation class com.splendo.kaluga.bytes.annotations/Fallback : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Fallback|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/Fallback.<init>|<init>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bytes.annotations/FlagIndex : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/FlagIndex|null[0]

@@ -434,6 +434,12 @@ class ViewGenerationTest {
                 val maybe: Shape?
                 val sized: Sized
             }
+
+            @BytesLayout
+            interface Gallery {
+                val shapes: List<Shape>
+                val maybes: List<Shape?>
+            }
             """,
         )
         val check = SourceFile.kotlin(
@@ -460,6 +466,10 @@ class ViewGenerationTest {
                         if (DrawingView(bytes).toData() != decoded) add("decode " + data + ": " + DrawingView(bytes).toData() + " != " + decoded)
                     }
                 }
+                val gallery = GalleryData(shapes, listOf(null, shapes[1]))
+                val galleryBytes = BytesFormat.encodeToByteArray(GalleryData.serializer(), gallery)
+                if (!GalleryView.encode(gallery).bytes.contentEquals(galleryBytes)) add("encode " + gallery)
+                if (GalleryView.wrap(galleryBytes).toData() != gallery) add("decode " + GalleryView.wrap(galleryBytes).toData())
                 if ((ShapeFrame(byteArrayOf(0x7E, 0x01, 0x09, 0x7F)).value as Shape.Dot).x != 9.toByte()) add("dispatch")
                 if (runCatching { ShapeFrame(byteArrayOf(0x7E, 0x03, 0x09, 0x7F)).value }.exceptionOrNull() !is NoSuchElementException) add("unknown discriminator")
             }

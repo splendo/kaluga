@@ -279,7 +279,13 @@ internal class ViewContext(
  * The frame of a sealed layout: its prefix, then the subtype identified by its discriminator (or, when [sizeDispatch]
  * is set, by the number of bytes left), then its postfix.
  * @property sizeDispatch the index into [leaves] by payload size, when the subtype is picked by size.
- * @property fallback the index into [leaves] used when no size matches.
+ * @property fallback the index into [leaves] used when no size matches, or, without [sizeDispatch], when no
+ * discriminator does; that leaf is laid out after the discriminator like any other, which its context's
+ * [ViewPlan.discriminator] holds.
+ * @property checksumOrder the byte order of the checksum and of the length.
+ * @property lengthPrefix when set, a type-length-value record: the length after the discriminator bounds the leaf.
+ * @property recordDiscriminator for a type-length-value record, the number a discriminator is given as apart from the
+ * bytes: the `@Discriminator` property of the fallback, or else an unsigned number of the discriminators' size.
  */
 internal class SealedPlan(
     val prefix: ByteArray?,
@@ -290,8 +296,19 @@ internal class SealedPlan(
     val serialName: String,
     val checksum: ChecksumSpec?,
     val checksumOrder: ByteOrder,
+    val lengthPrefix: StringEncodingSettings.LengthPrefix? = null,
+    val recordDiscriminator: FieldPlan? = null,
 ) {
     val footer: Int get() = (checksum?.crc?.byteWidth ?: 0) + (postfix?.size ?: 0)
+
+    /** The size of every discriminator. */
+    val discriminatorBytes: Int get() = leaves.firstNotNullOfOrNull { it.discriminator }?.size ?: 0
+
+    /** The bytes the length takes. */
+    val lengthBytes: Int get() = lengthPrefix?.expectedByteSize(0u) ?: 0
+
+    /** The bytes of a record besides its value: its prefix, discriminator, length and footer. */
+    val recordFrameBytes: Int get() = (prefix?.size ?: 0) + discriminatorBytes + lengthBytes + footer
 }
 
 /** A subtype of a sealed frame, encoded as [context] after its [discriminator]. */
@@ -308,6 +325,9 @@ internal class SealedLeaf(val layout: Layout, val context: ViewContext, val disc
  * @property stuffing how a root frame stuffs everything between its prefix and postfix on the wire; the view holds
  * the frame unstuffed.
  * @property staticSize the frame size in bytes when it does not depend on the content.
+ * @property discriminator the `@Discriminator` property of a fallback in its sealed context, which is not in [fields]
+ * as it takes no bytes of the frame: its slice holds the discriminator it was read for.
+ * @property discriminatorIndex the position of [discriminator] among the properties.
  */
 internal class ViewPlan(
     val prefix: ByteArray?,
@@ -320,6 +340,8 @@ internal class ViewPlan(
     val checksumOrder: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST,
     val mirrored: Boolean = false,
     val stuffing: ByteStuffingScheme? = null,
+    val discriminator: FieldPlan? = null,
+    val discriminatorIndex: Int = -1,
 ) {
     /** The bytes after the body: the checksum, then the postfix. */
     val footer: Int get() = (checksum?.crc?.byteWidth ?: 0) + (postfix?.size ?: 0)
