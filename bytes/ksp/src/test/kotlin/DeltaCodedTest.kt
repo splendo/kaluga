@@ -208,6 +208,12 @@ class DeltaCodedTest {
             """ to "@DeltaCoded only applies to a list of integers, but 'sample' is kotlin.Int",
             """
             @BytesLayout
+            interface Distinct {
+                @DeltaCoded(Length.`8_BIT`) val samples: Set<Short>
+            }
+            """ to "@DeltaCoded only applies to a list of integers, but 'samples' is kotlin.collections.LinkedHashSet",
+            """
+            @BytesLayout
             interface Floats {
                 @DeltaCoded(Length.`8_BIT`) val samples: List<Float>
             }

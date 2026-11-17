@@ -305,7 +305,8 @@ annotation class Count(val count: Int)
  *
  * Encoding throws when an item does not fit the size of an item or the step to it does not fit [step], so a list is
  * never written truncated. It cannot be combined with another end marking or [NullIfEmpty], cannot be nullable, and
- * needs items that are integers of one size, in a frame accumulated least significant first.
+ * needs items that are integers of one size, in a frame accumulated least significant first. It does not apply to a
+ * Set, which would drop the items a step of 0 repeats.
  *
  * @property step the size of every step, at most the size of an item.
  */
