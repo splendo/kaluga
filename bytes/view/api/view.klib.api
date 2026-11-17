@@ -99,6 +99,7 @@ final object com.splendo.kaluga.bytes.view/ViewBytes { // com.splendo.kaluga.byt
     final fun alignBits(kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.alignBits|alignBits(kotlin.Int){}[0]
     final fun bit(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Boolean // com.splendo.kaluga.bytes.view/ViewBytes.bit|bit(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
     final fun bits(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Long // com.splendo.kaluga.bytes.view/ViewBytes.bits|bits(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+    final fun checkNoItemAfterUnconstrained(kotlin/Boolean) // com.splendo.kaluga.bytes.view/ViewBytes.checkNoItemAfterUnconstrained|checkNoItemAfterUnconstrained(kotlin.Boolean){}[0]
     final fun checkNothingAfterUnconstrained(kotlin/Boolean) // com.splendo.kaluga.bytes.view/ViewBytes.checkNothingAfterUnconstrained|checkNothingAfterUnconstrained(kotlin.Boolean){}[0]
     final fun checkRange(kotlin/Int, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkRange|checkRange(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
     final fun checkWrapRange(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkWrapRange|checkWrapRange(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]

@@ -87,6 +87,7 @@ public final class com/splendo/kaluga/bytes/view/ViewBytes {
 	public final fun alignBits (I)I
 	public final fun bit ([BIII)Z
 	public final fun bits ([BIIII)J
+	public final fun checkNoItemAfterUnconstrained (Z)V
 	public final fun checkNothingAfterUnconstrained (Z)V
 	public final fun checkRange (III)V
 	public final fun checkWrapRange ([BII)V

@@ -78,6 +78,14 @@ object ViewBytes {
         if (adding) throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
     }
 
+    /**
+     * Throws [DataAfterUnconstrainedData] as `BytesFormat` does when [adding] an item of a collection after an item
+     * of an unconstrained size, whose end nothing marks.
+     */
+    fun checkNoItemAfterUnconstrained(adding: Boolean) {
+        if (adding) throw DataAfterUnconstrainedData("Attempted to add an item after an item of an unconstrained size")
+    }
+
     /** [bits] rounded up to a whole byte, where the encoder starts anything it writes as bytes. */
     fun alignBits(bits: Int): Int = (bits + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS * Byte.SIZE_BITS
 

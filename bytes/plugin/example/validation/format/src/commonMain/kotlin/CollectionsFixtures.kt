@@ -97,6 +97,19 @@ object EncodeListFixtures {
         @Unsized val list: List<Byte>
         val otherContent: Byte?
     }
+
+    /** An item ending in an unsized tail, which runs to the end of what holds it. */
+    @BytesLayout
+    interface Tailed {
+        val header: Byte
+        @Unsized val tail: List<Byte>
+    }
+
+    /** Items that each run to the end of what holds them, so a list of them can only hold one. */
+    @BytesLayout
+    interface TailedItems {
+        val items: List<Tailed>
+    }
 }
 
 object EncodeNumericListFixtures {

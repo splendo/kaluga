@@ -50,6 +50,7 @@ import com.splendo.kaluga.bytes.annotations.NullIfEmpty
 import com.splendo.kaluga.bytes.annotations.NullTerminated
 import com.splendo.kaluga.bytes.annotations.Postfix
 import com.splendo.kaluga.bytes.annotations.Prefix
+import com.splendo.kaluga.bytes.annotations.SerializedByteValue
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.Unsized
 import com.splendo.kaluga.bytes.annotations.ValueByteOrder
@@ -59,11 +60,13 @@ import com.splendo.kaluga.bytes.annotations.ValueMedFloat
 import com.splendo.kaluga.bytes.annotations.ValueNullTerminated
 import com.splendo.kaluga.bytes.annotations.ValueScalar
 import com.splendo.kaluga.bytes.annotations.ValueSize
+import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class BytesFormatCollectionsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
@@ -1057,5 +1060,59 @@ class BytesFormatCollectionsTest : BytesFormatTestBase(BytesFormatBackend.Factor
     @Test
     fun msbSixteenBitListCountStructureExcludedRoundTrips() {
         validateRoundTrip(MsbListCountFixtures.MsbSizedListExcluded(items = listOf<Byte>(1, 2, 3, 4)), MsbListCountFixtures.MsbSizedListExcluded.serializer())
+    }
+
+    private object ItemAfterUnconstrainedItemFixtures {
+        @Serializable
+        data class Tailed(val header: Byte, @Unsized val tail: List<Byte>)
+
+        @Serializable
+        data class TailedList(val items: List<Tailed>)
+
+        @Serializable
+        data class TailedKeys(val entries: Map<Tailed, Byte>)
+
+        @Serializable
+        @LengthPrefix
+        sealed interface Record {
+            @Serializable
+            @SerializedByteValue(0x01)
+            data class Text(@Unsized val text: List<Byte>) : Record
+        }
+
+        @Serializable
+        data class Records(val records: List<Record>, val trailer: Byte)
+    }
+
+    @Test
+    fun encodeListRefusesAnItemAfterAnItemOfAnUnconstrainedSize() {
+        val serializer = ItemAfterUnconstrainedItemFixtures.TailedList.serializer()
+        fun tailed(header: Byte, vararg tail: Byte) = ItemAfterUnconstrainedItemFixtures.Tailed(header, tail.toList())
+        // What two such items used to encode as: the first item's tail takes the rest, so the second is never found.
+        assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> { BytesFormat.decodeFromByteArray(serializer, byteArrayOf(0x02, 0x01, 0x02, 0x03, 0x04)) }
+        val refused = assertFailsWith<DataAfterUnconstrainedData> {
+            BytesFormat.encodeToByteArray(serializer, ItemAfterUnconstrainedItemFixtures.TailedList(listOf(tailed(0x01, 0x02), tailed(0x03, 0x04))))
+        }
+        assertEquals("Attempted to add an item after an item of an unconstrained size", refused.message)
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BytesFormat.encodeToByteArray(serializer, ItemAfterUnconstrainedItemFixtures.TailedList(listOf(tailed(0x01), tailed(0x03, 0x04))))
+        }
+        validateRoundTrip(ItemAfterUnconstrainedItemFixtures.TailedList(listOf(tailed(0x01, 0x02))), serializer)
+
+        assertFailsWith<DataAfterUnconstrainedData> {
+            BytesFormat.encodeToByteArray(
+                ItemAfterUnconstrainedItemFixtures.TailedKeys.serializer(),
+                ItemAfterUnconstrainedItemFixtures.TailedKeys(mapOf(tailed(0x01, 0x02) to 0x03)),
+            )
+        }
+
+        // A record's length bounds it, so records follow one another.
+        validateRoundTrip(
+            ItemAfterUnconstrainedItemFixtures.Records(
+                listOf(ItemAfterUnconstrainedItemFixtures.Record.Text(listOf(0x01)), ItemAfterUnconstrainedItemFixtures.Record.Text(listOf(0x02, 0x03))),
+                0x2A,
+            ),
+            ItemAfterUnconstrainedItemFixtures.Records.serializer(),
+        )
     }
 }
