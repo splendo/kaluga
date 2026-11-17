@@ -63,6 +63,8 @@ Control how nullable fields and boolean flags are encoded in a packed flag heade
 
 - `@FlagIndex(index)` — Store a boolean (or the null-presence flag of a nullable field) at bit position `index` in the flag header.
 - `@FlagWidth(bits)` — Allocate `bits` bits for a flag (default 1). Used when an integer field is packed directly into flag bits.
+
+An integer with `@FlagIndex` and `@FlagWidth` but no `@Size` is packed straight into the flag bits. Like any number it is signed unless its type is unsigned (`UByte`, `UShort`, `UInt`, `ULong`) or it carries `@Unsigned`, and a signed one is two's complement within its bits: `BytesFormat` sign-extends it when decoding, so a 2-bit `Byte` reads `2` back as `-2`, and refuses to encode a value outside `-2..1`. A field narrower than a byte is hardly ever meant that way, so a layout with a signed one is rejected, by `BytesFormat` when it first encodes or decodes the type and by the [bytes code generator](../ksp/) at compile time; declare it with the unsigned type or `@Unsigned`, which holds `0..3` in 2 bits. From 8 bits up a signed type is accepted and keeps its sign.
 - `@PresentWhenAllSet(vararg indices: Int)` — A nullable field is present only when all listed flag bit positions are set. The field reserves no flag bit itself; the listed bits belong to other properties or flags.
 
 ### Numbers

@@ -231,7 +231,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         val fields = children.mapIndexed { index, child ->
             val property = properties[index]
             val node = property.declaration
-            if (property.name in RESERVED_VIEW_PROPERTY_NAMES) unsupported("a property named '${property.name}'", node)
+            RESERVED_VIEW_PROPERTY_NAMES[property.name]?.let { member -> throw ReservedViewPropertyName(property.name, layout, member, node) }
             val value = valueType(property.type.makeNotNullable(), node)
             val itemPrefix = context.layoutName.peerClass(context.layoutName.simpleName + property.name.capitalized())
             val (plan, next) = planField(property.name, node, child, value, property.type.isMarkedNullable, headerStart, gates, cursor, itemPrefix)

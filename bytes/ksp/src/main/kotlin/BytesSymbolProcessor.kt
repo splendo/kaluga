@@ -224,7 +224,7 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
                 }
 
                 is UnsupportedViewFeature -> {
-                    val message = "VIEW not yet supported for ${failure.feature} in @BytesLayout ${layout.qualifiedName}"
+                    val message = failure.report(layout)
                     if (options.skipUnsupportedViews) {
                         logger.warn("$message; no view is generated", failure.node ?: layout.declaration)
                     } else {

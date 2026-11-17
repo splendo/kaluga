@@ -41,10 +41,11 @@ class ViewSettersTest {
     @Test
     fun setsFlagPackedNumbers() {
         val view = EncodeNumericInFlagsFixturesPackedView.encode(EncodeNumericInFlagsFixturesPackedData(nibble = 5, wide = 0x123))
-        view.nibble = -2
-        view.wide = 0x7FF
-        assertEncodes(EncodeNumericInFlagsFixturesPackedData.serializer(), EncodeNumericInFlagsFixturesPackedData(nibble = -2, wide = 0x7FF), view.bytes)
-        assertEquals(-2, view.nibble)
+        view.nibble = 0xE
+        view.wide = -2
+        assertEncodes(EncodeNumericInFlagsFixturesPackedData.serializer(), EncodeNumericInFlagsFixturesPackedData(nibble = 0xE, wide = -2), view.bytes)
+        assertEquals(0xE, view.nibble)
+        assertEquals(-2, view.wide)
     }
 
     @Test

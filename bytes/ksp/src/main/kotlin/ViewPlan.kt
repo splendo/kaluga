@@ -34,7 +34,21 @@ import com.squareup.kotlinpoet.TypeName
  * A layout feature the VIEW generator does not implement yet. Reported as "VIEW not yet supported for [feature]": a KSP
  * error, or a warning that skips the view when the `skipUnsupportedViews` option is set.
  */
-internal class UnsupportedViewFeature(val feature: String, val node: KSNode?) : Exception(feature)
+internal open class UnsupportedViewFeature(val feature: String, val node: KSNode?) : Exception(feature) {
+    open fun report(layout: Layout): String = "VIEW not yet supported for $feature in @BytesLayout ${layout.qualifiedName}"
+}
+
+/**
+ * A property named like a member the generated view or slice declares itself. VIEW can never generate it, but it is
+ * reported like an unsupported feature, so `skipUnsupportedViews` still skips the view.
+ */
+internal class ReservedViewPropertyName(private val name: String, private val owner: Layout, private val member: String, node: KSNode?) :
+    UnsupportedViewFeature("a property named '$name'", node) {
+    override fun report(layout: Layout): String {
+        val property = if (owner == layout) "its property '$name'" else "the property '$name' of ${owner.qualifiedName}"
+        return "@BytesLayout ${layout.qualifiedName} cannot generate a VIEW: $property would clash with $member; rename the property or generate only DATA"
+    }
+}
 
 /**
  * How a Kotlin property type maps onto the primitive the wire format encodes, following the element structure

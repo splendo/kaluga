@@ -943,6 +943,124 @@ class ViewGenerationTest {
     }
 
     @Test
+    fun `generates code the compiler has no warnings for`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            @Prefix([0x7E])
+            @Checksum(8, 0x07u, 0x00u)
+            sealed interface Shape {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface Dot : Shape {
+                    val x: Byte
+                }
+
+                @BytesLayout
+                sealed interface Curve : Shape {
+                    @BytesLayout
+                    @SerializedByteValue(0x02)
+                    interface Arc : Curve {
+                        val radius: Short?
+                    }
+
+                    @BytesLayout
+                    @SerializedByteValue(0x03)
+                    interface Wave : Curve {
+                        val samples: List<Byte>
+                    }
+                }
+            }
+
+            @BytesLayout
+            @SizePolymorphic
+            sealed interface Sized
+
+            @BytesLayout
+            interface Two : Sized {
+                val value: Short
+            }
+
+            @BytesLayout
+            interface Rest : Sized {
+                @Unsized val values: List<Byte>
+            }
+
+            @BytesLayout
+            @SizePolymorphic
+            sealed interface Exact
+
+            @BytesLayout
+            interface One : Exact {
+                val value: Byte
+            }
+
+            @BytesLayout
+            interface Four : Exact {
+                val value: Int
+            }
+
+            @BytesLayout
+            interface Drawing {
+                val shape: Shape
+                val maybe: Shape?
+                val shapes: List<Shape>
+                val sized: Sized
+            }
+
+            @BytesLayout
+            interface Measured {
+                val exact: Exact
+            }
+            """,
+        )
+        val compilation = BytesCompilation(layouts, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        assertEquals(emptyList(), compilation.generatedWarnings)
+    }
+
+    @Test
+    fun `rejects a property named like a member of the view`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            interface Packet {
+                val bytes: ByteArray
+            }
+
+            @BytesLayout
+            interface Envelope {
+                val packet: Packet
+            }
+
+            @BytesLayout
+            interface Cursor {
+                val sliceStart: Int
+            }
+            """,
+        )
+        val compilation = BytesCompilation(layouts, generate = "VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, compilation.result.exitCode, compilation.result.messages)
+        val errors = compilation.kspErrors.joinToString("\n")
+        assertTrue(
+            "@BytesLayout test.Packet cannot generate a VIEW: its property 'bytes' would clash with the view's public `bytes` property, the array it reads and writes; " +
+                "rename the property or generate only DATA" in errors,
+            errors,
+        )
+        assertTrue("@BytesLayout test.Envelope cannot generate a VIEW: the property 'bytes' of test.Packet would clash" in errors, errors)
+        assertTrue("@BytesLayout test.Cursor cannot generate a VIEW: its property 'sliceStart' would clash with the slice's `sliceStart` property" in errors, errors)
+        assertTrue("not yet supported" !in errors, errors)
+
+        val skipping = BytesCompilation(layouts, generate = "DATA,VIEW", skipUnsupportedViews = true)
+        assertEquals(KotlinCompilation.ExitCode.OK, skipping.result.exitCode, skipping.result.messages)
+        val warnings = skipping.result.messages.lines().filter { it.startsWith("w: [ksp]") }
+        assertTrue(warnings.any { "test.Packet cannot generate a VIEW: its property 'bytes' would clash" in it && "; no view is generated" in it }, warnings.joinToString("\n"))
+        assertTrue(skipping.generatedFiles.none { it.name == "PacketView.kt" }, skipping.generatedFiles.toString())
+    }
+
+    @Test
     fun `rejects a layout using a feature VIEW does not support yet`() {
         val compilation = BytesCompilation(
             layoutSource(

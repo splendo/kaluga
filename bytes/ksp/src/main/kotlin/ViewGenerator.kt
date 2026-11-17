@@ -1555,7 +1555,6 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             val discriminator = leaf.discriminator?.takeIf { plan.sizeDispatch == null }?.size ?: 0
             sizeOf.addStatement("is %T -> %L + %T.sizeOf(value${contents(leaf)})", leaf.layout.interfaceClassName, discriminator, leaf.context.layoutName)
         }
-        sizeOf.addStatement("else -> throw %T(%P)", ILLEGAL_ARGUMENT_EXCEPTION, CodeBlock.of("\$value is not a subtype of ${plan.serialName} with a view"))
         sizeOf.endControlFlow()
         builder.addFunction(sizeOf.build())
 
@@ -1574,7 +1573,6 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             write.addStatement("%T.write(b, %L, lim, value${contents(leaf)})", leaf.context.layoutName, leafStart(index))
             write.endControlFlow()
         }
-        write.addStatement("else -> throw %T(%P)", ILLEGAL_ARGUMENT_EXCEPTION, CodeBlock.of("\$value is not a subtype of ${plan.serialName} with a view"))
         write.endControlFlow()
         plan.checksum?.let {
             write.addStatement("%T.update(b, %L, $BODY_END, %N, %L, lim + %L)", VIEW_CHECKSUM, start, FRAME_CHECKSUM, order(plan.checksumOrder), plan.footer)
@@ -2601,14 +2599,19 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val CHECKSUM_SPEC = ClassName("com.splendo.kaluga.bytes.layout", "ChecksumSpec")
         val INVALID_CHECKSUM = ClassName("com.splendo.kaluga.bytes.layout", "InvalidChecksumException")
         val SERIALIZATION_EXCEPTION = ClassName("kotlinx.serialization", "SerializationException")
-        val ILLEGAL_ARGUMENT_EXCEPTION = ClassName("kotlin", "IllegalArgumentException")
         val FIXED_STRIDE_LIST = ClassName("com.splendo.kaluga.bytes.view", "FixedStrideList")
         val RUNTIME_EXCEPTION = ClassName("kotlin", "RuntimeException")
     }
 }
 
-/** The names a generated view reserves for itself, which a layout property cannot use. */
-internal val RESERVED_VIEW_PROPERTY_NAMES = setOf("bytes", "sliceBytes", "sliceStart", "sliceLimit", "sliceParent")
+/** The names a generated view or slice declares itself, which a layout property cannot use, with the member each names. */
+internal val RESERVED_VIEW_PROPERTY_NAMES = mapOf(
+    "bytes" to "the view's public `bytes` property, the array it reads and writes",
+    "sliceBytes" to "the slice's `sliceBytes` property",
+    "sliceStart" to "the slice's `sliceStart` property",
+    "sliceLimit" to "the slice's `sliceLimit` property",
+    "sliceParent" to "the slice's `sliceParent` property",
+)
 
 internal fun String.capitalized(): String = replaceFirstChar { it.uppercaseChar() }
 
