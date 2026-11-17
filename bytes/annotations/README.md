@@ -134,7 +134,7 @@ sealed interface Packet {
 
 `@DeltaCoded` takes the items from the `List` or primitive array it annotates as they are, so the encoder never decides on its own between differences and items: a protocol that sends either has a record type for each. The sample count follows from the bytes, `1 + (bytes - first item) / step`. With an `Int` list, ``@ItemSize(Length.`16_BIT`)`` makes the first item 16 bits, and `@ItemUnsigned` makes it count from 0 to 65535, a step past 65535 wrapping to 0.
 
-It applies to a `List`, `ShortArray`, `IntArray` or other array of integers of one size whose items are not nullable, in a frame accumulated least significant first (big-endian items take `@ItemByteOrder` or `@ByteOrder(excludeStructure = true)`), and cannot be nullable or combined with another end marking or `@NullIfEmpty`. Generated views read `List<Short>` and `List<Int>` items as they go, see [ksp](../ksp/#delta-coded-lists).
+It applies to a `List`, `ShortArray`, `IntArray` or other array of integers of one size whose items are not nullable, not to a `Set`, which would drop the items a step of 0 repeats, in a frame accumulated least significant first (big-endian items take `@ItemByteOrder` or `@ByteOrder(excludeStructure = true)`), and cannot be nullable or combined with another end marking or `@NullIfEmpty`. Generated views read `List<Short>` and `List<Int>` items as they go, see [ksp](../ksp/#delta-coded-lists).
 
 ### Framing and structure
 

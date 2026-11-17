@@ -183,7 +183,8 @@ object LayoutCompiler {
         if (kind != TypeKind.LIST && kind != TypeKind.MAP && annotations.any { it is Count }) {
             throw InvalidCountLayout("@Count only applies to a collection, but '$fieldName' is ${shape.serialName}")
         }
-        if (kind != TypeKind.LIST && annotations.any { it is DeltaCoded }) {
+        // A set would drop the items a step of 0 repeats.
+        if ((kind != TypeKind.LIST || shape.serialName.removeSuffix("?") in SET_SERIAL_NAMES) && annotations.any { it is DeltaCoded }) {
             throw InvalidDeltaCoding("@DeltaCoded only applies to a list of integers, but '$fieldName' is ${shape.serialName}")
         }
 
@@ -1147,3 +1148,6 @@ private val TypeLayout.discriminators: Map<String, ByteArrayHolder> get() = when
     is TypeLayout.Open -> discriminators
     else -> emptyMap()
 }
+
+/** The serial names kotlinx gives the sets it serializes as lists. */
+private val SET_SERIAL_NAMES = setOf("kotlin.collections.LinkedHashSet", "kotlin.collections.HashSet")
