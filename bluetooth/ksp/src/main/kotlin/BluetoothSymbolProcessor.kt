@@ -31,6 +31,7 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothClientName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
+import com.splendo.kaluga.bluetooth.ksp.helpers.LayoutViews
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.ksp.processor.KspPass
 import com.squareup.kotlinpoet.ClassName
@@ -44,9 +45,12 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
 
     private val pass = KspPass(environment)
 
-    private val options = Options(environment)
+    private val environmentOptions = Options(environment)
+
+    private var options = environmentOptions
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        options = environmentOptions.copy(layoutViews = LayoutViews(resolver, environmentOptions.layoutGenerate, logger))
         for ((key, value) in environment.options.entries) {
             logger.warn("\t$key = $value")
         }
@@ -200,6 +204,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
             )
             typesToAdd.forEach { generationType ->
                 builder.generateExtensionFactories(generationType).forEach { addFunction(it) }
+                builder.generateTopLevelFunctions(generationType).forEach { addFunction(it) }
             }
             generate(sourceFiles)
         }

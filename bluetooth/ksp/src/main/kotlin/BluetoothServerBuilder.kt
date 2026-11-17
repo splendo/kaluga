@@ -125,8 +125,8 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
     ).apply {
         val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         val delegateParameter = delegateParameter(interfaceName)
-        val serverNeedsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER)
-        val delegateNeedsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
+        val serverNeedsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER)
+        val delegateNeedsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER_DSL)
         val returnType = nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
         receiver(companionReceiver(GenerationType.SERVER_API))
         returns(returnType)
@@ -251,7 +251,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
         val className = nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
         val interfaceName = nameFor(declaration, GenerationType.SERVER_API)
         val delegateName = interfaceName.nestedClass(DELEGATE)
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER)
         return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -299,7 +299,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                         delegateParameterName,
                         delegateName,
                     )
-                    val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
+                    val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER_DSL)
                     if (needsFormatter.needsFormatter) {
                         addParameter(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                     }
@@ -311,7 +311,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                                     when {
                                         typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class) -> {
                                             val delegateNeedsFormatter =
-                                                NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER_DSL)
+                                                NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, options, NeedsFormatterHelper.Target.SERVER_DSL)
                                             withLetIfNull(
                                                 "$delegateParameterName.${propertyDeclaration.delegateParameterName}",
                                                 property = propertyDeclaration,
@@ -467,7 +467,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
     }
 
     private fun generateServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
-        val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
+        val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, options, NeedsFormatterHelper.Target.SERVER)
         val name = propertyDeclaration.simpleName.asString()
         val serviceType = serverName(typeDeclaration, type)
         val apiType = serverName(typeDeclaration, GenerationType.Type.API)

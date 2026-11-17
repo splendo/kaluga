@@ -73,7 +73,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
         val className = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
         val interfaceName = nameFor(declaration, GenerationType.CLIENT_API)
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options)
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -256,7 +256,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
 
     private fun generateServiceOrCharacteristicProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
         val propertyType = clientName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration)
-        val formatArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument
+        val formatArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, options).functionArgument
         return PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
             propertyType,

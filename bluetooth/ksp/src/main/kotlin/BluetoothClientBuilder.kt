@@ -61,7 +61,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
 
     override fun factoryFor(generationType: GenerationType): List<FunSpec> = when (generationType) {
         GenerationType.CLIENT_BLUETOOTH -> {
-            val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+            val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options)
             val returnType = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
             listOf(generateBluetoothSnapshotFactory(needsFormatter, returnType), generateBluetoothFlowFactory(needsFormatter, returnType))
         }
@@ -149,7 +149,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
     }.build()
 
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options)
         val className = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
 
         return TypeSpec.classBuilder(className)
@@ -221,7 +221,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: 
 
     private fun generateServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
         val propertyType = clientName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration)
-        val needsFormatterArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument
+        val needsFormatterArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, options).functionArgument
         return PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
             propertyType,

@@ -42,3 +42,4 @@ Generation is configured through KSP options (`ksp { arg("name", "value") }`), w
 | `apiPackage` | package name | Package the generated API interfaces live in (defaults to `generatedPackage`). |
 | `commonSource` | `:`-separated source dirs | The common source directories holding the definitions; used in a multiplatform build to generate shared definitions once (in the metadata pass) instead of once per target. |
 | `isSingleTarget` | `true` / `false` | `true` for a single-target build; when `false` the processor uses `commonSource` to avoid generating common definitions per target. |
+| `generate` | `DATA`, `VIEW` (comma-separated) | The [bytes plugin](../../bytes/plugin/)'s module-wide default, which sets it; decides whether a value typed by a `@BytesLayout` without its own `generate` is read through the layout's view. Both when absent, as for the bytes processor. |

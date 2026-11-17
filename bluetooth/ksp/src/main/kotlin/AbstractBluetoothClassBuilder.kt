@@ -108,7 +108,7 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         //  - a leaf Flow → a MutableSharedFlow the test can drive (narrowing the API's read-only `Flow`).
         val constructorParameters = mutableListOf<ParameterSpec>()
         val overrideProperties = mutableListOf<PropertySpec>()
-        apiInterface.propertySpecs.forEach { property ->
+        apiInterface.propertySpecs.filter { KModifier.ABSTRACT in it.modifiers }.forEach { property ->
             val childMockType = nestedProperties[property.name]
             if (childMockType != null) {
                 constructorParameters += ParameterSpec.builder(property.name, childMockType)
@@ -207,70 +207,66 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         }
     }
 
+    /**
+     * Top-level functions generated next to the [generationType] of this declaration and of every declaration nested in
+     * it, for what a member cannot be, such as an inline function.
+     */
+    fun generateTopLevelFunctions(generationType: GenerationType): List<FunSpec> =
+        topLevelFunctions(generationType) + nestedBuilders(generationType.side).flatMap { it.generateTopLevelFunctions(generationType) }
+
+    protected open fun topLevelFunctions(generationType: GenerationType): List<FunSpec> = emptyList()
+
     protected fun generateNested(generationType: GenerationType): List<TypeSpec> = buildList {
-        val bluetoothDeclarations = declaration.declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>()
-        bluetoothDeclarations.forEach { bluetoothDeclaration ->
-            when (generationType.side) {
-                GenerationType.Side.CLIENT -> {
-                    add(BluetoothClientBuilder(bluetoothDeclaration, options, logger).generate(generationType))
-                }
-
-                GenerationType.Side.SERVER -> {
-                    add(BluetoothServerBuilder(bluetoothDeclaration, options, logger).generate(generationType))
+        nestedBuilders(generationType.side).forEach { builder ->
+            val hasResultType = builder is BluetoothRemoteCharacteristicBuilder ||
+                builder is BluetoothLocalCharacteristicBuilder ||
+                builder is BluetoothRemoteDescriptorBuilder ||
+                builder is BluetoothLocalDescriptorBuilder
+            if (hasResultType && generationType.type == GenerationType.Type.API && (generationType.side == GenerationType.Side.CLIENT || !options.generateClient)) {
+                BluetoothResultTypeBuilder.fromClassDeclaration(builder.declaration, options, logger)?.generateType()?.let {
+                    add(it)
                 }
             }
+            add(builder.generate(generationType))
         }
+    }
 
-        val serviceDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothService::class) }.filterIsInstance<KSClassDeclaration>()
-        serviceDeclarations.forEach { serviceDeclaration ->
+    private fun nestedBuilders(side: GenerationType.Side): List<AbstractBluetoothClassBuilder> = buildList {
+        val nested = declaration.declarations.filterIsInstance<KSClassDeclaration>()
+        nested.filter { it.isAnnotationPresent(Bluetooth::class) }.forEach { bluetoothDeclaration ->
+            add(
+                when (side) {
+                    GenerationType.Side.CLIENT -> BluetoothClientBuilder(bluetoothDeclaration, options, logger)
+                    GenerationType.Side.SERVER -> BluetoothServerBuilder(bluetoothDeclaration, options, logger)
+                },
+            )
+        }
+        nested.filter { it.isAnnotationPresent(BluetoothService::class) }.forEach { serviceDeclaration ->
             val service = serviceDeclaration.getAnnotationsByType(BluetoothService::class).first()
-            when (generationType.side) {
-                GenerationType.Side.CLIENT -> {
-                    add(BluetoothRemoteServiceBuilder(serviceDeclaration, service, options, logger).generate(generationType))
-                }
-
-                GenerationType.Side.SERVER -> {
-                    add(BluetoothLocalServiceBuilder(serviceDeclaration, service, options, logger).generate(generationType))
-                }
-            }
+            add(
+                when (side) {
+                    GenerationType.Side.CLIENT -> BluetoothRemoteServiceBuilder(serviceDeclaration, service, options, logger)
+                    GenerationType.Side.SERVER -> BluetoothLocalServiceBuilder(serviceDeclaration, service, options, logger)
+                },
+            )
         }
-
-        val characteristicDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothCharacteristic::class) }.filterIsInstance<KSClassDeclaration>()
-        characteristicDeclarations.forEach { characteristicDeclaration ->
+        nested.filter { it.isAnnotationPresent(BluetoothCharacteristic::class) }.forEach { characteristicDeclaration ->
             val characteristic = characteristicDeclaration.getAnnotationsByType(BluetoothCharacteristic::class).first()
-            if (generationType.type == GenerationType.Type.API && (generationType.side == GenerationType.Side.CLIENT || !options.generateClient)) {
-                BluetoothResultTypeBuilder.fromClassDeclaration(characteristicDeclaration, options, logger)?.generateType()?.let {
-                    add(it)
-                }
-            }
-            when (generationType.side) {
-                GenerationType.Side.CLIENT -> {
-                    add(BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristic, options, logger).generate(generationType))
-                }
-
-                GenerationType.Side.SERVER -> {
-                    add(BluetoothLocalCharacteristicBuilder(characteristicDeclaration, characteristic, options, logger).generate(generationType))
-                }
-            }
+            add(
+                when (side) {
+                    GenerationType.Side.CLIENT -> BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristic, options, logger)
+                    GenerationType.Side.SERVER -> BluetoothLocalCharacteristicBuilder(characteristicDeclaration, characteristic, options, logger)
+                },
+            )
         }
-
-        val descriptorDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothDescriptor::class) }.filterIsInstance<KSClassDeclaration>()
-        descriptorDeclarations.forEach { descriptorDeclaration ->
+        nested.filter { it.isAnnotationPresent(BluetoothDescriptor::class) }.forEach { descriptorDeclaration ->
             val descriptor = descriptorDeclaration.getAnnotationsByType(BluetoothDescriptor::class).first()
-            if (generationType.type == GenerationType.Type.API && (generationType.side == GenerationType.Side.CLIENT || !options.generateClient)) {
-                BluetoothResultTypeBuilder.fromClassDeclaration(descriptorDeclaration, options, logger)?.generateType()?.let {
-                    add(it)
-                }
-            }
-            when (generationType.side) {
-                GenerationType.Side.CLIENT -> {
-                    add(BluetoothRemoteDescriptorBuilder(descriptorDeclaration, descriptor, options, logger).generate(generationType))
-                }
-
-                GenerationType.Side.SERVER -> {
-                    add(BluetoothLocalDescriptorBuilder(descriptorDeclaration, descriptor, options, logger).generate(generationType))
-                }
-            }
+            add(
+                when (side) {
+                    GenerationType.Side.CLIENT -> BluetoothRemoteDescriptorBuilder(descriptorDeclaration, descriptor, options, logger)
+                    GenerationType.Side.SERVER -> BluetoothLocalDescriptorBuilder(descriptorDeclaration, descriptor, options, logger)
+                },
+            )
         }
     }
 
