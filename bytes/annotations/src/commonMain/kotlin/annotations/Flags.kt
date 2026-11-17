@@ -357,20 +357,36 @@ annotation class SizePolymorphic
  *
  * Marks the subtype of a sealed class that is decoded for any discriminator none of its other subtypes has, so a
  * reader can skip a type it does not know and keep going. It has no [@SerializedByteValue][SerializedByteValue]:
- * its first property holds the discriminator itself, a number of the discriminators' size, and an encoder writes
- * that number where the discriminator goes. With [@LengthPrefix][LengthPrefix] on the sealed class the length follows
- * it, and the remaining properties lay out the bytes the length counts, so an [@Unsized][Unsized] `ByteArray` holds
- * them as they were. A fallback with a discriminator another subtype has is not encoded, as it would read back as
- * that subtype.
+ * its [@Discriminator][Discriminator] property holds the discriminator it was read for, and an encoder writes that
+ * number where the discriminator goes. Its other properties are laid out after the discriminator (and the length, with
+ * [@LengthPrefix][LengthPrefix] on the sealed class) like those of any other subtype, so it may have a flag header,
+ * extend the interfaces that give the other subtypes their leading fields, and keep the rest of the bytes in an
+ * [@Unsized][Unsized] `ByteArray` as they were. A fallback with a discriminator another subtype has is not encoded, as
+ * it would read back as that subtype.
  *
- * At most one subtype is a fallback. Neither it nor its first property can have a [Prefix], a [Postfix] or a
- * [Checksum], and it has no flag header, as these would come before or around the discriminator; put such fields in a
- * layout it holds after its first property.
+ * At most one subtype is a fallback, and it has exactly one [@Discriminator][Discriminator] property. Encoded on its own
+ * rather than through the sealed class, the fallback lays that property out where it is declared, like any other, so it
+ * goes before an [@Unsized][Unsized] last property.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.CLASS)
 annotation class Fallback
+
+/**
+ * Annotation added for serializing using BytesFormat
+ *
+ * Marks the property of a [@Fallback][Fallback] subtype that holds the discriminator it was read for. It is not laid
+ * out in the subtype's bytes: it is read from, and written to, the discriminator of the sealed class, so it can be any
+ * property of the subtype, one inherited from a shared interface included. It is an integer of the size of the other
+ * subtypes' discriminators, read in its own byte order, and cannot be nullable or packed into the flag header. As it
+ * takes no bytes in the subtype, it cannot have [Reserved] bytes, or a [Prefix], a [Postfix] or a [Checksum] of a value
+ * class, around it either.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Discriminator
 
 /**
  * Annotation added for serializing using BytesFormat

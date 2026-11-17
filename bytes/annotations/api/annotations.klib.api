@@ -94,6 +94,10 @@ open annotation class com.splendo.kaluga.bytes.annotations/Count : kotlin/Annota
         final fun <get-count>(): kotlin/Int // com.splendo.kaluga.bytes.annotations/Count.count.<get-count>|<get-count>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bytes.annotations/Discriminator : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Discriminator|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/Discriminator.<init>|<init>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bytes.annotations/Encoded : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Encoded|null[0]
     constructor <init>(com.splendo.kaluga.bytes.strings/Encoding = ...) // com.splendo.kaluga.bytes.annotations/Encoded.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding){}[0]
 

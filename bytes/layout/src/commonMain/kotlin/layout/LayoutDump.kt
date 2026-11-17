@@ -81,6 +81,7 @@ private fun StringBuilder.appendDetail(depth: Int, detail: String) {
 private fun TypeLayout.describe(): String = when (this) {
     is TypeLayout.Bool -> "bool"
     is TypeLayout.Numeric -> settings.describe()
+    is TypeLayout.Discriminator -> "discriminator ${settings.describe()}"
     is TypeLayout.Text -> "string(${settings.encoding} ${settings.endMarking.describe()})"
     is TypeLayout.Character -> "char($encoding)"
     is TypeLayout.Enumeration -> "enum"

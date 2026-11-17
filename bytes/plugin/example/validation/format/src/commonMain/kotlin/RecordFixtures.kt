@@ -20,6 +20,7 @@ package com.splendo.kaluga.bytes.example.format
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.annotations.BytesLayout
 import com.splendo.kaluga.bytes.annotations.Checksum
+import com.splendo.kaluga.bytes.annotations.Discriminator
 import com.splendo.kaluga.bytes.annotations.Fallback
 import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
@@ -79,6 +80,7 @@ object RecordFixtures {
         @BytesLayout
         @Fallback
         interface Other : Reading {
+            @Discriminator
             val type: UByte
 
             @Unsized
@@ -157,6 +159,7 @@ object RecordFixtures {
         @BytesLayout
         @Fallback
         interface Other : Message {
+            @Discriminator
             val type: UShort
 
             @Unsized
@@ -176,6 +179,7 @@ object RecordFixtures {
         @BytesLayout
         @Fallback
         interface Unsupported : Command {
+            @Discriminator
             val code: UByte
 
             @Unsized

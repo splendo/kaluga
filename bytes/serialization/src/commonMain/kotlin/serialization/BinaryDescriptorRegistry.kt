@@ -63,8 +63,11 @@ internal data class BinaryDescriptor(
     // When non-null, every subtype of this sealed type follows its discriminator as a length in this marking and the
     // bytes that length counts.
     val lengthPrefix: StringEncodingSettings.LengthPrefix? = null,
-    // The subtype read for a discriminator no other subtype has, which its first field holds.
+    // The subtype read for a discriminator no other subtype has, which its child marked [isDiscriminator] holds.
     val polymorphicFallback: String? = null,
+    // The `@Discriminator` field of a fallback: a number read from and written to the discriminator of its sealed
+    // type, which takes no bytes in the fallback itself.
+    val isDiscriminator: Boolean = false,
 ) {
 
     /**
@@ -107,7 +110,11 @@ internal fun FieldLayout.toBinaryDescriptor(): BinaryDescriptor {
         byteOrder = byteOrder,
         childByteOrder = valueByteOrder,
         isNullable = isNullable,
-        numericSettings = (type as? TypeLayout.Numeric)?.settings,
+        numericSettings = when (type) {
+            is TypeLayout.Numeric -> type.settings
+            is TypeLayout.Discriminator -> type.settings
+            else -> null
+        },
         stringSettings = when (type) {
             is TypeLayout.Text -> type.settings
             is TypeLayout.Character -> StringSettings(type.encoding, StringEncodingSettings.NoMarking)
@@ -133,6 +140,7 @@ internal fun FieldLayout.toBinaryDescriptor(): BinaryDescriptor {
         reservedAfter = reservedAfter,
         lengthPrefix = (type as? TypeLayout.Sealed)?.lengthPrefix,
         polymorphicFallback = (type as? TypeLayout.Sealed)?.fallback,
+        isDiscriminator = type is TypeLayout.Discriminator,
     )
 }
 

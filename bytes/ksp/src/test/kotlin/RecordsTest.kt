@@ -376,23 +376,6 @@ class RecordsTest {
             """ to "@LengthPrefix on 'test.Mirrored' needs a frame accumulated LEAST_SIGNIFICANT_FIRST",
             """
             @BytesLayout
-            @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
-            sealed interface MirroredFallback {
-                @BytesLayout
-                @SerializedByteValue(0x01)
-                interface A : MirroredFallback {
-                    val a: Byte
-                }
-
-                @BytesLayout
-                @Fallback
-                interface B : MirroredFallback {
-                    val type: Byte
-                }
-            }
-            """ to "@Fallback 'test.MirroredFallback.B' needs a frame accumulated LEAST_SIGNIFICANT_FIRST",
-            """
-            @BytesLayout
             @Fallback
             interface Alone {
                 val type: UByte

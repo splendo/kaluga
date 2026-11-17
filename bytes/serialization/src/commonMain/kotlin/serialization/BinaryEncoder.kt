@@ -50,6 +50,8 @@ internal class BinaryEncoder(
     // True only for the top-level frame. The root stuffed region is bounded by the whole payload, so it is stuffed
     // without a terminator; a nested region (default `false`) appends its terminator so the parent can find its end.
     private val isRootFrame: Boolean = false,
+    // Where a @Fallback subtype writes its @Discriminator field, which goes where the discriminator of its sealed type goes.
+    private val discriminatorSink: BinaryBuilder? = null,
 ) : Encoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
@@ -98,6 +100,7 @@ internal class BinaryEncoder(
                     builder.makeUnconstrained()
                 }
             },
+            discriminatorSink = discriminatorSink,
         ) { index ->
             binaryDescriptor.children[index]
         }
@@ -414,8 +417,11 @@ private class BinaryCompositeEncoder(
     private val builder: BinaryBuilder,
     override val serializersModule: SerializersModule,
     private val onFinishStructure: () -> Unit,
+    private val discriminatorSink: BinaryBuilder? = null,
     private val getBinaryDescriptor: (Int) -> BinaryDescriptor,
 ) : CompositeEncoder {
+
+    private fun builderAt(index: Int): BinaryBuilder = if (getBinaryDescriptor(index).isDiscriminator) checkNotNull(discriminatorSink) else builder
 
     private fun BinaryBuilder.writeReservedBytes(count: Int) {
         if (count > 0) addAction(count) { add(bytes = ByteArray(count)) }
@@ -433,7 +439,7 @@ private class BinaryCompositeEncoder(
     }
 
     override fun encodeByteElement(descriptor: SerialDescriptor, index: Int, value: Byte) = withReserved(index) {
-        builder.encodeByteElement(value, getBinaryDescriptor(index))
+        builderAt(index).encodeByteElement(value, getBinaryDescriptor(index))
     }
 
     override fun encodeCharElement(descriptor: SerialDescriptor, index: Int, value: Char) = withReserved(index) {
@@ -452,15 +458,15 @@ private class BinaryCompositeEncoder(
         val desc = getBinaryDescriptor(index)
         builder.writeReservedBytes(desc.reservedBefore)
         // reservedAfter for inline elements is written by the nested encoder finishing
-        return BinaryEncoder(desc, builder, serializersModule)
+        return BinaryEncoder(desc, builderAt(index), serializersModule)
     }
 
     override fun encodeIntElement(descriptor: SerialDescriptor, index: Int, value: Int) = withReserved(index) {
-        builder.encodeIntElement(value, getBinaryDescriptor(index))
+        builderAt(index).encodeIntElement(value, getBinaryDescriptor(index))
     }
 
     override fun encodeLongElement(descriptor: SerialDescriptor, index: Int, value: Long) = withReserved(index) {
-        builder.encodeLongElement(value, getBinaryDescriptor(index))
+        builderAt(index).encodeLongElement(value, getBinaryDescriptor(index))
     }
 
     @ExperimentalSerializationApi
@@ -491,41 +497,39 @@ private class BinaryCompositeEncoder(
 
             else -> {
                 val binaryDescriptor = getBinaryDescriptor(index)
-                BinaryEncoder(binaryDescriptor, builder, serializersModule).encodeSerializableValue(serializer, value)
+                BinaryEncoder(binaryDescriptor, builderAt(index), serializersModule).encodeSerializableValue(serializer, value)
             }
         }
     }
 
     /**
      * Encodes [subtype] apart, as its size is needed before it: a type-length-value record writes it after the
-     * length of it, and a fallback is checked for a discriminator another subtype has. The fallback's first field is
-     * the discriminator, followed by the bytes its layout reserves for the length.
+     * length of it, and a fallback writes the discriminator its `@Discriminator` field holds before it, refusing one
+     * another subtype has.
      */
     private fun <T> encodeRecord(subtype: BinaryDescriptor, serializer: SerializationStrategy<T>, value: T) {
         val record = RecordBinaryBuilder()
-        BinaryEncoder(subtype, record, serializersModule).encodeSerializableValue(serializer, value)
-        val bytes = if (record.expectedSize == 0) ByteArray(0) else buildByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST, record.expectedSize) { with(record) { build() } }
-        val lengthPrefix = binaryDescriptor.lengthPrefix
-        if (subtype.fieldName == binaryDescriptor.polymorphicFallback) {
-            val width = binaryDescriptor.polymorphicMap.values.first().array.size
-            binaryDescriptor.polymorphicMap.entries.firstOrNull { (_, discriminator) -> discriminator.array.contentEquals(bytes.copyOfRange(0, width)) }?.let { (name, _) ->
+        val discriminator = if (subtype.fieldName == binaryDescriptor.polymorphicFallback) RecordBinaryBuilder() else null
+        BinaryEncoder(subtype, record, serializersModule, discriminatorSink = discriminator).encodeSerializableValue(serializer, value)
+        val type = discriminator?.toByteArray()?.also { type ->
+            binaryDescriptor.polymorphicMap.entries.firstOrNull { (_, known) -> known.array.contentEquals(type) }?.let { (name, _) ->
                 throw IllegalArgumentException("@Fallback ${subtype.fieldName} has the discriminator of $name, so it would decode as that")
             }
-            lengthPrefix?.copyEncodedSizeInto(bytes, (bytes.size - width - lengthPrefix.expectedByteSize(0u)).toUInt(), binaryDescriptor.childByteOrder, width)
-            builder.addAction(bytes.size) { add(bytes) }
-            // Only a length bounds what an unsized last field of the subtype takes.
-            if (lengthPrefix == null && record.isUnconstrained) builder.makeUnconstrained()
-        } else {
-            val length = lengthPrefix!!.encodeSize(bytes.size.toUInt(), binaryDescriptor.childByteOrder)
-            builder.addAction(length.size + bytes.size) {
-                add(length)
-                add(bytes)
-            }
+        } ?: ByteArray(0)
+        val bytes = record.toByteArray()
+        val lengthPrefix = binaryDescriptor.lengthPrefix
+        val length = lengthPrefix?.encodeSize(bytes.size.toUInt(), binaryDescriptor.childByteOrder) ?: ByteArray(0)
+        builder.addAction(type.size + length.size + bytes.size) {
+            add(type)
+            add(length)
+            add(bytes)
         }
+        // Only a length bounds what an unsized last field of the subtype takes.
+        if (lengthPrefix == null && record.isUnconstrained) builder.makeUnconstrained()
     }
 
     override fun encodeShortElement(descriptor: SerialDescriptor, index: Int, value: Short) = withReserved(index) {
-        builder.encodeShortElement(value, getBinaryDescriptor(index))
+        builderAt(index).encodeShortElement(value, getBinaryDescriptor(index))
     }
 
     override fun encodeStringElement(descriptor: SerialDescriptor, index: Int, value: String) {
@@ -534,7 +538,7 @@ private class BinaryCompositeEncoder(
                 // Size-polymorphic: the payload size is the implicit discriminator — nothing to write.
                 return
             }
-            // A fallback writes the discriminator it holds itself.
+            // A fallback writes the discriminator its @Discriminator field holds with the rest of it.
             if (value == binaryDescriptor.polymorphicFallback) return
             // Byte-prefix-based: write the type identifier bytes.
             binaryDescriptor.polymorphicMap[value]?.array?.let {
@@ -552,7 +556,7 @@ private class BinaryCompositeEncoder(
     }
 }
 
-/** Collects the bytes of one subtype, which only nests the structure it encodes. */
+/** Collects the bytes of one subtype, which only nests the structure it encodes, or of the discriminator of a fallback. */
 private class RecordBinaryBuilder : BinaryBuilder {
     private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
     override var expectedSize: Int = 0
@@ -576,6 +580,8 @@ private class RecordBinaryBuilder : BinaryBuilder {
     override fun ByteArrayBuilder.build() {
         actions.forEach { it() }
     }
+
+    fun toByteArray(): ByteArray = if (expectedSize == 0) ByteArray(0) else buildByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST, expectedSize) { build() }
 }
 
 // A [LengthPrefix] collection count. The count VALUE is encoded in childByteOrder, but a [WithOverflow] sentinel is

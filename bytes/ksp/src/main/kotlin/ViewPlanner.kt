@@ -504,6 +504,8 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
                 Access.Text(type.settings.encoding, endMarking, child.byteOrder)
             }
 
+            is TypeLayout.Discriminator -> unsupported("@Discriminator properties", node)
+
             is TypeLayout.ListLayout, is TypeLayout.MapLayout -> unsupported("collections", node)
 
             is TypeLayout.Sealed, is TypeLayout.Open -> unsupported("polymorphic properties", node)

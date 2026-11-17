@@ -18,12 +18,14 @@
 package com.splendo.kaluga.bytes.serialization
 
 import com.splendo.kaluga.bytes.ByteOrder
+import com.splendo.kaluga.bytes.annotations.Discriminator
 import com.splendo.kaluga.bytes.annotations.Fallback
 import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.annotations.LengthPrefix
 import com.splendo.kaluga.bytes.annotations.Prefix
+import com.splendo.kaluga.bytes.annotations.Reserved
 import com.splendo.kaluga.bytes.annotations.SerializedByteValue
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.SizePolymorphic
@@ -62,9 +64,14 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
     @SerializedByteValue(0x40)
     data object Mark : Reading
 
+    // Laid out like the others after the type and the length: its flag header selects the size of its step.
     @Serializable
     @Fallback
-    data class Unknown(val type: UByte, @Unsized val value: List<UByte>) : Reading
+    data class Unknown(
+        @FlagIndex(0) @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) val step: Int,
+        @Discriminator val type: UByte,
+        @Unsized val value: List<UByte>,
+    ) : Reading
 
     @Serializable
     data class Chunk(@FlagIndex(0) @FlagWidth(4) val rewinds: UByte, @FlagIndex(4) val fill: Boolean, val first: UInt, @Unsized val readings: List<Reading>)
@@ -84,16 +91,24 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
     @Test
     fun keepsATypeNoSubtypeHasInTheFallback() {
-        validateEncoding(Unknown(0x99u, listOf(1u, 2u, 3u)), serializer, bytes(0x99, 0x03, 0x01, 0x02, 0x03))
-        validateEncoding(Unknown(0x98u, emptyList()), serializer, bytes(0x98, 0x00))
+        validateEncoding(Unknown(1000, 0x99u, listOf(1u, 2u, 3u)), serializer, bytes(0x99, 0x06, 0x01, 0xE8, 0x03, 0x01, 0x02, 0x03))
+        validateEncoding(Unknown(0, 0x98u, emptyList()), serializer, bytes(0x98, 0x02, 0x00, 0x00))
+    }
+
+    @Test
+    fun writesAnUnknownRecordBackAsItWas() {
+        val record = bytes(0x77, 0x07, 0x02, 0x00, 0x00, 0x01, 0x00, 0xAA, 0xBB)
+        val decoded = BytesFormat.decodeFromByteArray(serializer, record)
+        assertEquals(Unknown(65536, 0x77u, listOf(0xAAu, 0xBBu)), decoded)
+        assertContentEquals(record, BytesFormat.encodeToByteArray(serializer, decoded))
     }
 
     @Test
     fun readsRecordsBackToBackToTheEndOfTheirBound() {
-        val chunk = Chunk(1u, true, 256u, listOf(Note(0, "x"), Unknown(0x55u, listOf(9u)), Temperature(-2, 21), Mark))
+        val chunk = Chunk(1u, true, 256u, listOf(Note(0, "x"), Unknown(3, 0x55u, listOf(9u)), Temperature(-2, 21), Mark))
         val expected = bytes(0x11, 0x00, 0x01, 0x00, 0x00) +
             bytes(0x30, 0x03, 0x00, 0x00, 'x'.code) +
-            bytes(0x55, 0x01, 0x09) +
+            bytes(0x55, 0x03, 0x00, 0x03, 0x09) +
             bytes(0x20, 0x04, 0x00, 0xFE, 0x15, 0x00) +
             bytes(0x40, 0x00)
         validateEncoding(chunk, Chunk.serializer(), expected)
@@ -125,7 +140,8 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
     @Test
     fun rejectsAFallbackWithTheTypeOfAnotherSubtype() {
-        assertFailsWith<IllegalArgumentException> { BytesFormat.encodeToByteArray(serializer, Unknown(0x20u, listOf(1u))) }
+        assertFailsWith<IllegalArgumentException> { BytesFormat.encodeToByteArray(serializer, Unknown(0, 0x20u, listOf(1u))) }
+        assertFailsWith<IllegalArgumentException> { BytesFormat.encodeToByteArray(Command.serializer(), Unsupported(0x01u, emptyList())) }
     }
 
     @Serializable
@@ -143,7 +159,7 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
     @Serializable
     @Fallback
-    data class Other(val type: UShort, val first: Byte, @Unsized val rest: List<Byte>) : Message
+    data class Other(@Discriminator val type: UShort, val first: Byte, @Unsized val rest: List<Byte>) : Message
 
     @Test
     fun writesA16BitLengthInTheValueByteOrder() {
@@ -162,12 +178,32 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
     @Serializable
     @Fallback
-    data class Unsupported(val code: UByte, @Unsized val arguments: List<UByte>) : Command
+    data class Unsupported(@Discriminator val code: UByte, @Unsized val arguments: List<UByte>) : Command
 
     @Test
     fun readsAnyOtherDiscriminatorIntoTheFallbackWithoutALength() {
         validateEncoding(Start(3), Command.serializer(), bytes(0x01, 0x03))
         validateEncoding(Unsupported(0x07u, listOf(1u, 2u)), Command.serializer(), bytes(0x07, 0x01, 0x02))
+    }
+
+    @Serializable
+    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+    sealed interface Reversed
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class ReversedKnown(val value: Short) : Reversed
+
+    @Serializable
+    @Fallback
+    data class ReversedOther(val first: Short, @Discriminator val type: UByte, val second: Byte) : Reversed
+
+    @Test
+    fun putsTheDiscriminatorOfTheFallbackWhereAnyOtherGoesInAReversedFrame() {
+        listOf(ReversedKnown(0x0102) to bytes(0x01, 0x02, 0x01), ReversedOther(0x0304, 0x09u, 5) to bytes(0x05, 0x03, 0x04, 0x09)).forEach { (value, bytes) ->
+            assertContentEquals(bytes, BytesFormat.encodeToByteArray(Reversed.serializer(), value))
+            assertEquals(value, BytesFormat.decodeFromByteArray(Reversed.serializer(), bytes))
+        }
     }
 
     @Serializable
@@ -215,11 +251,11 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
     @Serializable
     @Fallback
-    data class TwoFallbacksB(val type: Byte) : TwoFallbacks
+    data class TwoFallbacksB(@Discriminator val type: Byte) : TwoFallbacks
 
     @Serializable
     @Fallback
-    data class TwoFallbacksC(val type: Byte) : TwoFallbacks
+    data class TwoFallbacksC(@Discriminator val type: Byte) : TwoFallbacks
 
     @Serializable
     sealed interface WideType
@@ -230,18 +266,58 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
     @Serializable
     @Fallback
-    data class WideTypeB(val type: Short) : WideType
+    data class WideTypeB(@Discriminator val type: Short) : WideType
 
     @Serializable
-    sealed interface FlaggedFallback
+    sealed interface Unmarked
 
     @Serializable
     @SerializedByteValue(0x01)
-    data class FlaggedFallbackA(val a: Byte) : FlaggedFallback
+    data class UnmarkedA(val a: Byte) : Unmarked
 
     @Serializable
     @Fallback
-    data class FlaggedFallbackB(val type: Byte, val maybe: Byte?) : FlaggedFallback
+    data class UnmarkedB(val type: Byte, @Unsized val rest: List<Byte>) : Unmarked
+
+    @Serializable
+    sealed interface TwiceMarked
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class TwiceMarkedA(val a: Byte) : TwiceMarked
+
+    @Serializable
+    @Fallback
+    data class TwiceMarkedB(@Discriminator val type: Byte, @Discriminator val again: Byte) : TwiceMarked
+
+    @Serializable
+    sealed interface MarkedKnown
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class MarkedKnownA(@Discriminator val a: Byte) : MarkedKnown
+
+    @Serializable
+    sealed interface OptionalType
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class OptionalTypeA(val a: Byte) : OptionalType
+
+    @Serializable
+    @Fallback
+    data class OptionalTypeB(@Discriminator val type: Byte?) : OptionalType
+
+    @Serializable
+    sealed interface PaddedType
+
+    @Serializable
+    @SerializedByteValue(0x01)
+    data class PaddedTypeA(val a: Byte) : PaddedType
+
+    @Serializable
+    @Fallback
+    data class PaddedTypeB(@Reserved(after = 1) @Discriminator val type: Byte) : PaddedType
 
     @Serializable
     @JvmInline
@@ -257,7 +333,7 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
 
     @Serializable
     @Fallback
-    data class FramedTypeB(val kind: FramedKind, @Unsized val rest: List<Byte>) : FramedType
+    data class FramedTypeB(@Discriminator val kind: FramedKind, @Unsized val rest: List<Byte>) : FramedType
 
     @Serializable
     @LengthPrefix
@@ -268,18 +344,6 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
     @SerializedByteValue(0x01)
     data class MirroredRecordA(val a: Byte) : MirroredRecord
 
-    @Serializable
-    @com.splendo.kaluga.bytes.annotations.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
-    sealed interface MirroredFallback
-
-    @Serializable
-    @SerializedByteValue(0x01)
-    data class MirroredFallbackA(val a: Byte) : MirroredFallback
-
-    @Serializable
-    @Fallback
-    data class MirroredFallbackB(val type: Byte) : MirroredFallback
-
     @Test
     fun rejectsRecordsAndFallbacksThatCannotApply() {
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(BySize.serializer(), SizeA(1)) }
@@ -287,16 +351,31 @@ class BytesFormatRecordsTest : BytesFormatTestBase(BytesFormatBackend.Factory) {
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(NotSealed.serializer(), NotSealed(1)) }
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(TwoFallbacks.serializer(), TwoFallbacksA(1)) }
         assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(WideType.serializer(), WideTypeA(1)) }
-        assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(FlaggedFallback.serializer(), FlaggedFallbackA(1)) }
+        assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(OptionalType.serializer(), OptionalTypeA(1)) }
+        assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(PaddedType.serializer(), PaddedTypeA(1)) }
+        assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(MarkedKnown.serializer(), MarkedKnownA(1)) }
+        val unmarked = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(Unmarked.serializer(), UnmarkedA(1)) }
+        assertEquals(
+            "@Fallback '${UnmarkedB.serializer().descriptor.serialName}' needs exactly one @Discriminator property to hold the discriminator it was read for, but has none",
+            unmarked.message,
+        )
+        val twice = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(TwiceMarked.serializer(), TwiceMarkedA(1)) }
+        assertEquals(
+            "@Fallback '${TwiceMarkedB.serializer().descriptor.serialName}' needs exactly one @Discriminator property to hold the discriminator it was read for, " +
+                "but has 'type', 'again'",
+            twice.message,
+        )
         val framed = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(FramedType.serializer(), FramedTypeA(1)) }
-        assertContains(framed.message.orEmpty(), "cannot have a prefix, a postfix, a checksum or byte stuffing around it")
+        assertEquals(
+            "The @Discriminator property 'kind' of @Fallback '${FramedTypeB.serializer().descriptor.serialName}' takes no bytes in it, " +
+                "so it cannot have a prefix, a postfix, a checksum or byte stuffing around it",
+            framed.message,
+        )
         val mirroredRecord = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(MirroredRecord.serializer(), MirroredRecordA(1)) }
         assertContains(
             mirroredRecord.message.orEmpty(),
             "@LengthPrefix on '${MirroredRecord.serializer().descriptor.serialName}' needs a frame accumulated LEAST_SIGNIFICANT_FIRST",
         )
-        val mirroredFallback = assertFailsWith<InvalidSealedLayout> { BytesFormat.encodeToByteArray(MirroredFallback.serializer(), MirroredFallbackA(1)) }
-        assertContains(mirroredFallback.message.orEmpty(), "needs a frame accumulated LEAST_SIGNIFICANT_FIRST")
     }
 
     private fun bytes(vararg values: Int): ByteArray = ByteArray(values.size) { values[it].toByte() }

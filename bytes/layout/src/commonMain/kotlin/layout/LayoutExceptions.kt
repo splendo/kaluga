@@ -46,8 +46,8 @@ class InconsistentDiscriminatorLength(message: String) : SerializationException(
 class InvalidSizePolymorphic(message: String) : SerializationException(message)
 
 /**
- * Thrown when a sealed type's `@LengthPrefix` or `@Fallback` cannot apply, such as a fallback whose first property
- * cannot hold the discriminator.
+ * Thrown when a sealed type's `@LengthPrefix` or `@Fallback` cannot apply, such as a fallback without a
+ * `@Discriminator` property to hold the discriminator.
  */
 class InvalidSealedLayout(message: String) : SerializationException(message)
 

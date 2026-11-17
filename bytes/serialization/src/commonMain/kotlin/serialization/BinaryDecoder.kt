@@ -60,6 +60,8 @@ internal class BinaryDecoder(
     // True only for the top-level frame. The root stuffed region spans the whole payload, so it is un-stuffed without a
     // terminator; a nested region (default `false`) is un-stuffed up to its terminator.
     private val isRootFrame: Boolean = false,
+    // The discriminator a @Fallback subtype was read for, which its @Discriminator field decodes.
+    private val discriminator: ByteArray? = null,
 ) : Decoder {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
@@ -77,8 +79,8 @@ internal class BinaryDecoder(
             val innerDescriptor = binaryDescriptor.copy(
                 structureSettings = binaryDescriptor.structureSettings.copy(prefix = null, postfix = null),
             )
-            BinaryCompositeDecoder.Class(binaryDescriptor, subDecoder.beginStructure(innerDescriptor), serializersModule)
-        } ?: BinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
+            BinaryCompositeDecoder.Class(binaryDescriptor, subDecoder.beginStructure(innerDescriptor), serializersModule, discriminator)
+        } ?: BinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule, discriminator)
     }
 
     // For a byte-stuffed structure, un-stuff its body + checksum into a fresh sub-decoder that then decodes it as a
@@ -242,8 +244,12 @@ internal class BinaryDecoder(
 
 private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: BinaryDescriptor, override val serializersModule: SerializersModule) : CompositeDecoder {
 
-    class Class(binaryDescriptor: BinaryDescriptor, private val decoder: BinaryDescriptorDecoder, serializersModule: SerializersModule) :
-        BinaryCompositeDecoder(binaryDescriptor, serializersModule) {
+    class Class(
+        binaryDescriptor: BinaryDescriptor,
+        private val decoder: BinaryDescriptorDecoder,
+        serializersModule: SerializersModule,
+        private val discriminator: ByteArray? = null,
+    ) : BinaryCompositeDecoder(binaryDescriptor, serializersModule) {
 
         var currentIndex = 0
 
@@ -268,10 +274,19 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
             decoder.endStructure()
         }
 
-        override fun decoderAtIndex(index: Int): BinaryDescriptorDecoder = decoder
+        override fun decoderAtIndex(index: Int): BinaryDescriptorDecoder = if (binaryDescriptor.children[index].isDiscriminator) {
+            RootBinaryDescriptorDecoder(checkNotNull(discriminator), ByteOrder.LEAST_SIGNIFICANT_FIRST, decoder.validateChecksum)
+        } else {
+            decoder
+        }
 
         // The bytes of a type-length-value record its discriminator was read for, which its subtype is decoded from.
         private var record: ByteArray? = null
+
+        // The discriminator the fallback subtype was read for.
+        private var fallbackDiscriminator: ByteArray? = null
+
+        override fun takeSubtypeDiscriminator(): ByteArray? = fallbackDiscriminator.also { fallbackDiscriminator = null }
 
         override fun subtypeDecoder(index: Int): BinaryDescriptorDecoder = record?.let {
             record = null
@@ -279,24 +294,22 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
         } ?: decoder
 
         /**
-         * The subtype the discriminator at the decoder names, its bytes kept for [subtypeDecoder] when a length
-         * bounds them: only the value for a known subtype, or the discriminator, length and value for the fallback,
-         * whose first field is the discriminator. Without a length the fallback reads the discriminator in place.
+         * The subtype the discriminator at the decoder names. A discriminator no other subtype has is kept for the
+         * fallback's `@Discriminator` field, and when a length bounds the value, its bytes are kept for
+         * [subtypeDecoder].
          */
         override fun decodeSubtypeName(descriptor: SerialDescriptor, index: Int): String {
             val name = binaryDescriptor.polymorphicMap.firstNotNullOfOrNull { (key, value) -> key.takeIf { decoder.peekNextIs(value.array, true) } }
             val fallback = binaryDescriptor.polymorphicFallback
-            val lengthPrefix = binaryDescriptor.lengthPrefix
             if (name == null && fallback == null) throw NoSuchElementException("No subtype of ${descriptor.serialName} has the discriminator at ${decoder.currentOffset}")
-            if (lengthPrefix == null) return name ?: fallback!!
-            val type = if (name == null) decoder.nextBytes(binaryDescriptor.polymorphicMap.values.first().array.size) else null
+            if (name == null) fallbackDiscriminator = decoder.nextBytes(binaryDescriptor.polymorphicMap.values.first().array.size)
+            val lengthPrefix = binaryDescriptor.lengthPrefix ?: return name ?: fallback!!
             val length = decoder.nextBytes(lengthPrefix.expectedByteSize(0u))
             val size = when (lengthPrefix) {
                 is StringEncodingSettings.LengthPrefix.ShortLength -> length.decodeUShort(0, binaryDescriptor.childByteOrder).toInt()
                 else -> length[0].toUByte().toInt()
             }
-            val value = decoder.nextBytes(size)
-            record = if (type == null) value else type + length + value
+            record = decoder.nextBytes(size)
             return name ?: fallback!!
         }
     }
@@ -436,6 +449,9 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
     /** The decoder of the subtype a sealed type holds at [index]. */
     protected open fun subtypeDecoder(index: Int): BinaryDescriptorDecoder = decoderAtIndex(index)
 
+    /** The discriminator the subtype a sealed type holds was read for, when it is the fallback. */
+    protected open fun takeSubtypeDiscriminator(): ByteArray? = null
+
     /** The serial name of the subtype whose discriminator is next, when it is not picked by size. */
     protected open fun decodeSubtypeName(descriptor: SerialDescriptor, index: Int): String = binaryDescriptor.polymorphicMap.firstNotNullOf { (key, value) ->
         val decoder = decoderAtIndex(index)
@@ -447,7 +463,7 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
             val binaryDescriptor = binaryDescriptorAtIndex(index).children.first { binaryDescriptor ->
                 binaryDescriptor.fieldName == deserializer.descriptor.serialName
             }
-            BinaryDecoder(binaryDescriptor, subtypeDecoder(index), serializersModule).decodeSerializableValue(deserializer)
+            BinaryDecoder(binaryDescriptor, subtypeDecoder(index), serializersModule, discriminator = takeSubtypeDiscriminator()).decodeSerializableValue(deserializer)
         }
 
         is PolymorphicKind.OPEN -> {

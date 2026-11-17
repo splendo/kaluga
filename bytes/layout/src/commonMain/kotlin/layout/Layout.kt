@@ -134,6 +134,14 @@ sealed interface TypeLayout {
         override val children: List<FieldLayout> get() = emptyList()
     }
 
+    /**
+     * The `@Discriminator` field of the fallback of a [Sealed] type: a number of [settings] that takes no bytes in the
+     * subtype, as it is the discriminator the sealed type read the subtype for, or writes before it.
+     */
+    data class Discriminator(val settings: NumericSettings.Natural) : TypeLayout {
+        override val children: List<FieldLayout> get() = emptyList()
+    }
+
     data class Text(val settings: StringSettings) : TypeLayout {
         override val children: List<FieldLayout> get() = emptyList()
     }
@@ -170,8 +178,8 @@ sealed interface TypeLayout {
      * @property elements the `type` and `value` elements; the latter is [Contextual] with the subtypes as its children.
      * @property lengthPrefix when non-null, every subtype is a type-length-value record: its discriminator, then the
      * number of bytes that follow in this marking, then the subtype, which those bytes bound.
-     * @property fallback the subtype decoded for a discriminator no other subtype has, which its first field holds.
-     * Under a [lengthPrefix] that field has the length bytes reserved after it.
+     * @property fallback the subtype decoded for a discriminator no other subtype has. It is laid out after the
+     * discriminator like any other subtype, and its [Discriminator] field holds the discriminator it was read for.
      */
     data class Sealed(
         val discriminators: Map<String, ByteArrayHolder>,

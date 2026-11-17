@@ -95,6 +95,21 @@ sealed interface com.splendo.kaluga.bytes.layout/TypeLayout { // com.splendo.kal
         final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/TypeLayout.Contextual.toString|toString(){}[0]
     }
 
+    final class Discriminator : com.splendo.kaluga.bytes.layout/TypeLayout { // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator|null[0]
+        constructor <init>(com.splendo.kaluga.bytes.layout/NumericSettings.Natural) // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.<init>|<init>(com.splendo.kaluga.bytes.layout.NumericSettings.Natural){}[0]
+
+        final val children // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.children|{}children[0]
+            final fun <get-children>(): kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout> // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.children.<get-children>|<get-children>(){}[0]
+        final val settings // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.settings|{}settings[0]
+            final fun <get-settings>(): com.splendo.kaluga.bytes.layout/NumericSettings.Natural // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.settings.<get-settings>|<get-settings>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.bytes.layout/NumericSettings.Natural // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.bytes.layout/NumericSettings.Natural = ...): com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.copy|copy(com.splendo.kaluga.bytes.layout.NumericSettings.Natural){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/TypeLayout.Discriminator.toString|toString(){}[0]
+    }
+
     final class Enumeration : com.splendo.kaluga.bytes.layout/TypeLayout { // com.splendo.kaluga.bytes.layout/TypeLayout.Enumeration|null[0]
         constructor <init>(kotlin.collections/Map<kotlin/Int, com.splendo.kaluga.bytes.layout/ByteArrayHolder>, kotlin.collections/List<com.splendo.kaluga.bytes.layout/FieldLayout>) // com.splendo.kaluga.bytes.layout/TypeLayout.Enumeration.<init>|<init>(kotlin.collections.Map<kotlin.Int,com.splendo.kaluga.bytes.layout.ByteArrayHolder>;kotlin.collections.List<com.splendo.kaluga.bytes.layout.FieldLayout>){}[0]
 
