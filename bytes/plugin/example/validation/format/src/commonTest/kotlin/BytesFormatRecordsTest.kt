@@ -112,6 +112,32 @@ abstract class RecordsSuite(backendFactory: ByteLayoutBackendFactory) : BytesFor
     }
 
     @Test
+    fun countsTheFrameOfASubtypeInItsLength() {
+        val framed = RecordFixturesFramedData.serializer()
+        val ended = RecordFixturesFramedEndedData(listOf(1, 2))
+        val endedBytes = bytes(0x10, 0x03, 0x01, 0x02, 0x55)
+        val summed = RecordFixturesFramedSummedData(7)
+        val summedBytes = bytes(0x11, 0x02, 0x07, 0x15)
+        assertEquals(ended, validateRecord(ended, framed, endedBytes))
+        assertEquals(summed, validateRecord(summed, framed, summedBytes))
+        val stream = RecordFixturesFramedStreamData(listOf(ended, RecordFixturesFramedEndedData(listOf(3)), summed, RecordFixturesFramedEndedData(emptyList())))
+        val streamBytes = endedBytes + bytes(0x10, 0x02, 0x03, 0x55) + summedBytes + bytes(0x10, 0x01, 0x55)
+        assertEquals(stream, validateRecord(stream, RecordFixturesFramedStreamData.serializer(), streamBytes))
+        val followed = RecordFixturesFramedFollowedData(summed, 9)
+        assertEquals(followed, validateRecord(followed, RecordFixturesFramedFollowedData.serializer(), summedBytes + bytes(0x09)))
+        // The checksum of a subtype of a fixed size follows its body, before the bytes a later version appended.
+        assertEquals(summed, createBackend().decode(framed, bytes(0x11, 0x03, 0x07, 0x15, 0xAA)))
+    }
+
+    @Test
+    fun rejectsALengthThatCutsOffTheFrameOfASubtype() {
+        val followed = RecordFixturesFramedFollowedData.serializer()
+        // The length leaves the checksum out of the record, where the field after it is.
+        assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> { createBackend().decode(followed, bytes(0x11, 0x01, 0x07, 0x15)) }
+        assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> { createBackend().decode(followed, bytes(0x10, 0x00, 0x55, 0x09)) }
+    }
+
+    @Test
     fun writesTwoByteTypesAndLengthsInTheirByteOrderInAFrame() {
         val message = RecordFixturesMessageData.serializer()
         for (value in listOf(RecordFixturesMessageValueData(0x0102), RecordFixturesMessageOtherData(0x0300u, listOf(4, 5)))) {

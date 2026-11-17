@@ -1535,7 +1535,26 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             return this
         }
 
-        fun leafLimit(index: Int, pos: CodeBlock): CodeBlock = if (record != null) CodeBlock.of("end") else nestedLimit(Access.Nested(plan.leaves[index].context), pos)
+        fun leafFooter(index: Int): Int = plan.leaves[index].context.plan!!.getOrThrow().footer
+
+        // The length counts the leaf's own checksum and postfix, so the leaf's body is bounded by the record less those.
+        fun leafLimit(index: Int, pos: CodeBlock): CodeBlock = when {
+            record == null -> nestedLimit(Access.Nested(plan.leaves[index].context), pos)
+            leafFooter(index) == 0 -> CodeBlock.of("end")
+            else -> CodeBlock.of("bodyLimit(%L, end, %L)", pos, leafFooter(index))
+        }
+        if (record != null && plan.leaves.indices.any { leafFooter(it) > 0 }) {
+            builder.addFunction(
+                FunSpec.builder("bodyLimit").addModifiers(KModifier.PRIVATE).returns(INT)
+                    .addKdoc("The limit of the body of a leaf at [start], leaving room for its [footer] before the record's [end]; throws when the footer does not fit.")
+                    .addParameter("start", INT)
+                    .addParameter("end", INT)
+                    .addParameter("footer", INT)
+                    .addStatement("%T.checkRange(start, footer, end)", VIEW_BYTES)
+                    .addStatement("return end - footer")
+                    .build(),
+            )
+        }
 
         builder.addFunction(
             bufferFunction("getValue").returns(layout.interfaceClassName)

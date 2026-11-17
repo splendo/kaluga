@@ -25,6 +25,7 @@ import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.annotations.LengthPrefix
+import com.splendo.kaluga.bytes.annotations.Postfix
 import com.splendo.kaluga.bytes.annotations.Prefix
 import com.splendo.kaluga.bytes.annotations.SerializedByteValue
 import com.splendo.kaluga.bytes.annotations.Size
@@ -105,6 +106,38 @@ object RecordFixtures {
     interface Followed {
         val reading: Reading
         val maybe: Reading?
+        val after: Byte
+    }
+
+    /** Records whose subtypes have a frame of their own, which the length counts. */
+    @BytesLayout
+    @LengthPrefix
+    sealed interface Framed {
+        @BytesLayout
+        @SerializedByteValue(0x10)
+        @Postfix([0x55])
+        interface Ended : Framed {
+            @Unsized
+            val data: List<Byte>
+        }
+
+        @BytesLayout
+        @SerializedByteValue(0x11)
+        @Checksum(8, 0x07u, 0x00u)
+        interface Summed : Framed {
+            val value: Byte
+        }
+    }
+
+    @BytesLayout
+    interface FramedStream {
+        @Unsized
+        val records: List<Framed>
+    }
+
+    @BytesLayout
+    interface FramedFollowed {
+        val record: Framed
         val after: Byte
     }
 

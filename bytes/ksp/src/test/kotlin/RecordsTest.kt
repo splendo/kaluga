@@ -208,6 +208,57 @@ class RecordsTest {
     }
 
     @Test
+    fun `counts the frame of a leaf in the length`() {
+        val framed = layoutSource(
+            """
+            @BytesLayout
+            @LengthPrefix
+            sealed interface Framed {
+                @BytesLayout
+                @SerializedByteValue(0x10)
+                @Postfix([0x55])
+                interface Ended : Framed {
+                    @Unsized val data: List<Byte>
+                }
+
+                @BytesLayout
+                @SerializedByteValue(0x11)
+                @Checksum(8, 0x07u, 0x00u)
+                interface Summed : Framed {
+                    val value: Byte
+                }
+            }
+
+            @BytesLayout
+            interface Followed {
+                val record: Framed
+                val after: Byte
+            }
+            """,
+        )
+        val check = SourceFile.kotlin(
+            "Check.kt",
+            """
+            package test
+
+            import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
+
+            fun check(): List<String> = buildList {
+                val ended = byteArrayOf(0x10, 3, 1, 2, 0x55)
+                if (FramedFrame.wrap(ended).toData() != FramedEndedData(listOf(1, 2))) add("ended " + FramedFrame(ended))
+                val cut = byteArrayOf(0x11, 1, 7, 0x15)
+                if (runCatching { FollowedView.wrap(cut) }.exceptionOrNull() !is ByteArrayEndedBeforeSerializationCompleted) add("cut checksum")
+            }
+            """.trimIndent(),
+        )
+        val compilation = BytesCompilation(framed, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems)
+    }
+
+    @Test
     fun `compiles records to the layout BytesFormat compiles`() {
         val parity = SourceFile.kotlin(
             "Parity.kt",
