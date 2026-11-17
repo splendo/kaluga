@@ -23,7 +23,11 @@ public abstract class com/splendo/kaluga/bytes/view/DeltaCodedList : kotlin/coll
 	public final fun getStep ()Lcom/splendo/kaluga/bytes/annotations/Length;
 	public final fun getWidth ()Lcom/splendo/kaluga/bytes/annotations/Length;
 	public fun iterator ()Ljava/util/Iterator;
+	public fun lastIndexOf (Ljava/lang/Object;)I
+	public fun listIterator ()Ljava/util/ListIterator;
+	public fun listIterator (I)Ljava/util/ListIterator;
 	public final fun next (IJ)J
+	public fun subList (II)Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/bytes/view/DeltaCodedShortList : com/splendo/kaluga/bytes/view/DeltaCodedList {

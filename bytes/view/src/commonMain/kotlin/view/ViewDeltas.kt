@@ -73,8 +73,10 @@ object ViewDeltas {
 /**
  * The items of a delta-coded view list, read from its bytes: the first item, then a step to every next one. Its
  * [size] follows from the bytes alone, but an item is only known from the one before it, so [get] adds up every step
- * before its index and takes time in proportion to it. Read the items in order instead, with an [iterator], or with
- * the `forEachShort`, `forEachInt` and `copyInto` of [DeltaCodedShortList] and [DeltaCodedIntList], which box none of them.
+ * before its index and takes time in proportion to it. Read the items in order instead, with an [iterator] or a
+ * [listIterator] going forward, which add one step per item, also over a [subList], or with the `forEachShort`,
+ * `forEachInt` and `copyInto` of [DeltaCodedShortList] and [DeltaCodedIntList], which box none of them. As a step
+ * cannot be taken back, a list iterator's `previous` adds up the steps from the first item again, as [get] does.
  */
 sealed class DeltaCodedList<T>(
     @PublishedApi internal val b: ByteArray,
@@ -98,25 +100,114 @@ sealed class DeltaCodedList<T>(
     /** [value] as the type of an item. */
     protected abstract fun item(value: Long): T
 
+    /** Item [index] as the Long an item reads as, adding up the steps up to it; 0 for the item before the first. */
+    private fun valueAt(index: Int): Long {
+        var value = 0L
+        for (at in 0..index) value = next(at, value)
+        return value
+    }
+
     /** Adds up the steps up to [index]. */
     override fun get(index: Int): T {
         if (index !in 0 until size) throw IndexOutOfBoundsException("Index $index is not in 0 until $size")
-        var value = 0L
-        for (at in 0..index) value = next(at, value)
-        return item(value)
+        return item(valueAt(index))
     }
 
-    override fun iterator(): Iterator<T> = object : Iterator<T> {
-        private var index = 0
-        private var value = 0L
+    override fun iterator(): Iterator<T> = Items(0, size, 0)
 
-        override fun hasNext(): Boolean = index < size
+    override fun listIterator(): ListIterator<T> = Items(0, size, 0)
+
+    /** Adds up the steps up to [index] once, then one step per item going forward. */
+    override fun listIterator(index: Int): ListIterator<T> {
+        if (index !in 0..size) throw IndexOutOfBoundsException("Index $index is not in 0..$size")
+        return Items(0, size, index)
+    }
+
+    override fun subList(fromIndex: Int, toIndex: Int): List<T> {
+        checkRange(fromIndex, toIndex, size)
+        return Range(fromIndex, toIndex)
+    }
+
+    /** Throws for a range [fromIndex] to [toIndex] of a list of [size] items as the standard library's lists do. */
+    private fun checkRange(fromIndex: Int, toIndex: Int, size: Int) {
+        if (fromIndex < 0 || toIndex > size) throw IndexOutOfBoundsException("Range [$fromIndex, $toIndex) is not in 0..$size")
+        require(fromIndex <= toIndex) { "fromIndex: $fromIndex > toIndex: $toIndex" }
+    }
+
+    /** Reads the items in order once, rather than back from the end, which would add up the steps for every item. */
+    override fun lastIndexOf(element: T): Int = lastIndexOf(element, 0, size)
+
+    /** The last index from [from] in the items up to [to] holding [element], counted from [from]; -1 when none does. */
+    private fun lastIndexOf(element: T, from: Int, to: Int): Int {
+        var found = -1
+        var value = if (from == 0) 0L else valueAt(from - 1)
+        for (index in from until to) {
+            value = next(index, value)
+            if (item(value) == element) found = index - from
+        }
+        return found
+    }
+
+    /**
+     * Iterates over the items from [from] up to [to], starting before item [start] and keeping the value of the item
+     * before the next one, so going forward adds one step per item.
+     */
+    private inner class Items(private val from: Int, private val to: Int, start: Int) : ListIterator<T> {
+        private var index = start
+        private var value = if (start == 0) 0L else valueAt(start - 1)
+
+        override fun hasNext(): Boolean = index < to
+
+        override fun hasPrevious(): Boolean = index > from
+
+        override fun nextIndex(): Int = index - from
+
+        override fun previousIndex(): Int = index - from - 1
 
         override fun next(): T {
-            if (index >= size) throw NoSuchElementException("A delta-coded list of $size items has no item $index")
+            if (index >= to) throw NoSuchElementException("A delta-coded list of ${to - from} items has no item ${index - from}")
             value = this@DeltaCodedList.next(index++, value)
             return item(value)
         }
+
+        override fun previous(): T {
+            if (index <= from) throw NoSuchElementException("A delta-coded list has no item before ${index - from}")
+            index--
+            var before = 0L
+            var current = 0L
+            for (at in 0..index) {
+                before = current
+                current = this@DeltaCodedList.next(at, current)
+            }
+            value = before
+            return item(current)
+        }
+    }
+
+    /** The items from [from] up to [to], read in order through the [Items] of the whole list. */
+    private inner class Range(private val from: Int, private val to: Int) : AbstractList<T>() {
+        override val size: Int get() = to - from
+
+        override fun get(index: Int): T {
+            if (index !in 0 until size) throw IndexOutOfBoundsException("Index $index is not in 0 until $size")
+            return this@DeltaCodedList[from + index]
+        }
+
+        override fun iterator(): Iterator<T> = Items(from, to, from)
+
+        override fun listIterator(): ListIterator<T> = Items(from, to, from)
+
+        override fun listIterator(index: Int): ListIterator<T> {
+            if (index !in 0..size) throw IndexOutOfBoundsException("Index $index is not in 0..$size")
+            return Items(from, to, from + index)
+        }
+
+        override fun subList(fromIndex: Int, toIndex: Int): List<T> {
+            checkRange(fromIndex, toIndex, size)
+            return Range(from + fromIndex, from + toIndex)
+        }
+
+        override fun lastIndexOf(element: T): Int = this@DeltaCodedList.lastIndexOf(element, from, to)
     }
 }
 
