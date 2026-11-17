@@ -102,6 +102,7 @@ object EncodeListFixtures {
     @BytesLayout
     interface Tailed {
         val header: Byte
+
         @Unsized val tail: List<Byte>
     }
 
