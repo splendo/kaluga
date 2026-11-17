@@ -38,6 +38,24 @@ object DeltaCodedFixtures {
         val samples: List<Short>
     }
 
+    /** Samples after a body Boolean, which starts a byte the samples do not share. */
+    @BytesLayout
+    interface Flagged {
+        val calibrated: Boolean
+
+        @DeltaCoded(Length.`8_BIT`)
+        val samples: List<Short>
+    }
+
+    /** Samples after an optional tag, whose presence is a bit of the flag header before them. */
+    @BytesLayout
+    interface Tagged {
+        val tag: UByte?
+
+        @DeltaCoded(Length.`8_BIT`)
+        val samples: List<Short>
+    }
+
     /** Samples with a marker after them that encodes only while absent, as nothing marks where the samples end. */
     @BytesLayout
     interface Marked {
