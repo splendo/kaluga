@@ -38,6 +38,14 @@ object DeltaCodedFixtures {
         val samples: List<Short>
     }
 
+    /** Samples with a marker after them that encodes only while absent, as nothing marks where the samples end. */
+    @BytesLayout
+    interface Marked {
+        @DeltaCoded(Length.`8_BIT`)
+        val samples: List<Short>
+        val marker: Byte?
+    }
+
     /** A delta-coded array after a header, its items and steps big-endian. */
     @BytesLayout
     interface Channel {

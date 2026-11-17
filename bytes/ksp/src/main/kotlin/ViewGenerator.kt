@@ -670,6 +670,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 .addStatement("return writeValues(%L)", (listOf(CodeBlock.of("b, s, lim")) + values).joinToCode(", "))
                 .build(),
         )
+        endsUnconstrained(context, plan)?.let { builder.addFunction(it) }
 
         val discriminator = plan.discriminator
         fun FunSpec.Builder.discriminated(): FunSpec.Builder = apply { discriminator?.let { addParameter(DISCRIMINATOR, it.typeName()) } }
@@ -908,7 +909,13 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     }
 
     private fun walk(walk: Walk, plan: ViewPlan, names: Map<FieldPlan, String>) {
+        // What makes the frame unconstrained so far, one list of conditions per property that can.
+        val unconstrained = mutableListOf<List<CodeBlock>>()
         plan.fields.forEach { field ->
+            if (unconstrained.isNotEmpty()) {
+                writesBody(field, CodeBlock.of("%N", names.getValue(field)))?.let { walk.refuseDataAfter(unconstrained, it) }
+            }
+            unconstrainedBy(field, CodeBlock.of("%N", names.getValue(field)))?.let { unconstrained += it }
             if (field.field.reservedBefore > 0) {
                 walk.align()
                 walk.advance(field.field.reservedBefore * Byte.SIZE_BITS)
@@ -934,6 +941,143 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 walk.advance(field.field.reservedAfter * Byte.SIZE_BITS)
             }
         }
+    }
+
+    /**
+     * Throws `DataAfterUnconstrainedData`, as `BytesFormat` does, when one of the [unconstrained] conditions holds
+     * and the property about to be written [writes] body data. The check is a call, so the compiler draws nothing
+     * from it about the values the property is then written from.
+     */
+    private fun Walk.refuseDataAfter(unconstrained: List<List<CodeBlock>>, writes: List<CodeBlock>) {
+        val before = if (unconstrained.any { it.isEmpty() }) {
+            null
+        } else {
+            unconstrained.map { it.joinToCode(" && ") }.joinToCode(" || ").let { if (unconstrained.size > 1 && writes.isNotEmpty()) CodeBlock.of("(%L)", it) else it }
+        }
+        val condition = (listOfNotNull(before) + writes).takeIf { it.isNotEmpty() }?.joinToCode(" && ") ?: CodeBlock.of("true")
+        code(CodeBlock.of("%T.checkNothingAfterUnconstrained(%L)", VIEW_BYTES, condition))
+    }
+
+    /**
+     * The conditions under which writing [field] from [value] leaves its frame unconstrained, as `BytesFormat` marks
+     * it: none when it always does, `null` when it never does. [value] is smart cast after a `null` check unless it
+     * is not [stable].
+     */
+    private fun unconstrainedBy(field: FieldPlan, value: CodeBlock, stable: Boolean = true): List<CodeBlock>? {
+        val access = field.access
+        val content = access.unconstrained(emptySet())
+        if (content == Unconstrained.NEVER) return null
+        fun condition(of: CodeBlock): CodeBlock? = if (content == Unconstrained.ALWAYS) {
+            null
+        } else {
+            when (access) {
+                is Access.Collection -> CodeBlock.of("%L.isNotEmpty()", of)
+                is Access.Nested -> CodeBlock.of("%T.endsUnconstrained(%L)", access.context.layoutName, of)
+                is Access.Sealed -> CodeBlock.of("%T.endsUnconstrained(%L)", access.context.layoutName, of)
+                else -> error("${access::class.simpleName} cannot leave a frame unconstrained only sometimes")
+            }
+        }
+        if (!field.nullable) return listOfNotNull(condition(value))
+        val present = condition(if (stable) value else CodeBlock.of("it")) ?: return listOf(CodeBlock.of("%L != null", value))
+        return if (stable) listOf(CodeBlock.of("%L != null", value), present) else listOf(CodeBlock.of("%L?.let { %L } == true", value, present))
+    }
+
+    /**
+     * The conditions under which writing [field] from [value] adds body data, which `BytesFormat` refuses after data
+     * of an unconstrained size: none when it always does, `null` when it never does.
+     */
+    private fun writesBody(field: FieldPlan, value: CodeBlock): List<CodeBlock>? {
+        val present = listOfNotNull(CodeBlock.of("%L != null", value).takeIf { field.nullable })
+        if (field.field.reservedBefore > 0 || field.field.reservedAfter > 0) return present
+        val notEmpty = CodeBlock.of("%L.isNotEmpty()", value)
+        val content = when (val access = field.access) {
+            is Access.HeaderBit, is Access.PackedNumber, is Access.PackedEnum -> return null
+
+            is Access.Collection -> when (val count = access.count) {
+                is Count.Unmarked, is Count.Flag, is Count.Delta -> notEmpty
+
+                // Another number of items throws for the count first, as it does in BytesFormat.
+                is Count.Fixed -> if (count.count == 0) return null else CodeBlock.of("%L.size == %L", value, count.count)
+
+                else -> notEmpty.takeIf { access.emptyBit != null }
+            }
+
+            else -> null
+        }
+        return present + listOfNotNull(content)
+    }
+
+    /** Whether writing a value can leave the frame holding it unconstrained, as `BytesFormat` marks it. */
+    private enum class Unconstrained { NEVER, SOMETIMES, ALWAYS }
+
+    /** Whether writing a present value of this access leaves its frame unconstrained; [walking] holds the layouts being looked into. */
+    private fun Access.unconstrained(walking: Set<ViewContext>): Unconstrained = when (this) {
+        is Access.Text -> if (endMarking is StringEncodingSettings.NoMarking) Unconstrained.ALWAYS else Unconstrained.NEVER
+
+        is Access.Collection -> when (count) {
+            is Count.Delta -> Unconstrained.ALWAYS
+            is Count.Unmarked -> if (emptyBit == null) Unconstrained.ALWAYS else Unconstrained.SOMETIMES
+            else -> Unconstrained.NEVER
+        }
+
+        is Access.Nested -> context.unconstrained(walking)
+
+        is Access.Sealed -> context.unconstrained(walking)
+
+        else -> Unconstrained.NEVER
+    }
+
+    private fun ViewContext.unconstrained(walking: Set<ViewContext> = emptySet()): Unconstrained {
+        // A layout holding itself adds nothing to what it holds otherwise.
+        if (this in walking) return Unconstrained.NEVER
+        val inner = walking + this
+        if (!layout.isSealed) {
+            return plan!!.getOrThrow().fields.maxOfOrNull { field ->
+                field.access.unconstrained(inner).let { if (field.nullable) minOf(it, Unconstrained.SOMETIMES) else it }
+            } ?: Unconstrained.NEVER
+        }
+        val sealed = sealedPlan!!.getOrThrow()
+        return when {
+            sealed.sizeDispatch != null -> Unconstrained.ALWAYS
+
+            // A length bounds whatever a record holds.
+            sealed.lengthPrefix != null -> Unconstrained.NEVER
+
+            sealed.leaves.any { it.context.unconstrained(inner) != Unconstrained.NEVER } -> Unconstrained.SOMETIMES
+
+            else -> Unconstrained.NEVER
+        }
+    }
+
+    /** `endsUnconstrained`, whether writing a value of a frame that only sometimes ends unconstrained does. */
+    private fun endsUnconstrained(context: ViewContext, plan: ViewPlan): FunSpec? {
+        if (context.unconstrained() != Unconstrained.SOMETIMES) return null
+        val conditions = plan.fields.mapNotNull { unconstrainedBy(it, CodeBlock.of("value.%N", it.name), stable = false)?.joinToCode(" && ") }
+        return FunSpec.builder("endsUnconstrained")
+            .addKdoc("Whether writing [value] leaves what holds it unconstrained, so that nothing may follow it.")
+            .addParameter("value", context.layout.interfaceClassName)
+            .returns(BOOLEAN)
+            .addStatement("return %L", conditions.joinToCode(" || "))
+            .build()
+    }
+
+    /** `endsUnconstrained` of a sealed frame, by the subtype of the value. */
+    private fun endsUnconstrained(context: ViewContext, plan: SealedPlan): FunSpec? {
+        if (context.unconstrained() != Unconstrained.SOMETIMES) return null
+        val function = FunSpec.builder("endsUnconstrained")
+            .addKdoc("Whether writing [value] leaves what holds it unconstrained, so that nothing may follow it.")
+            .addParameter("value", context.layout.interfaceClassName)
+            .returns(BOOLEAN)
+            .beginControlFlow("return when (value)")
+        plan.leaves.forEach { leaf ->
+            val ends = when (leaf.context.unconstrained()) {
+                Unconstrained.NEVER -> CodeBlock.of("false")
+                Unconstrained.ALWAYS -> CodeBlock.of("true")
+                Unconstrained.SOMETIMES -> CodeBlock.of("%T.endsUnconstrained(value)", leaf.context.layoutName)
+            }
+            function.addStatement("is %T -> %L", leaf.layout.interfaceClassName, ends)
+        }
+        return function.endControlFlow().build()
     }
 
     private fun walkContent(walk: Walk, field: FieldPlan, value: CodeBlock) {
@@ -1896,6 +2040,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         if (plan.postfix != null) write.addStatement("%T.write(b, $BODY_END + %L, %N, lim + %L)", VIEW_BYTES, crcWidth, FRAME_POSTFIX, plan.footer)
         write.addStatement(if (plan.footer == 0) "return $BODY_END" else "return $BODY_END + %L", plan.footer)
         builder.addFunction(write.build())
+        endsUnconstrained(context, plan)?.let { builder.addFunction(it) }
 
         if (root && record != null) {
             builder.addFunction(writeRecord(plan))

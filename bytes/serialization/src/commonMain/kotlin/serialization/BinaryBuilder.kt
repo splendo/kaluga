@@ -24,7 +24,6 @@ import com.splendo.kaluga.bytes.buildByteArray
 import com.splendo.kaluga.bytes.toByteArray
 import com.splendo.kaluga.bytes.annotations.Unsized
 import com.splendo.kaluga.bytes.layout.FrameSettings
-import kotlinx.serialization.SerializationException
 
 /**
  * Builder for creating a [ByteArray] from a [BinaryDescriptor]
@@ -44,8 +43,9 @@ internal interface BinaryBuilder {
 /**
  * Exception thrown if trying to add data after a collection of data marked with [Unsized].
  * Since [Unsized] elements do not indicate an end point, there is no way to know when to stop decoding them.
+ * Shared with the generated views.
  */
-class DataAfterUnconstrainedData(override val message: String?) : SerializationException()
+typealias DataAfterUnconstrainedData = com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
 
 /**
  * A [BinaryBuilder] to build data for a single [BinaryDescriptor] structure

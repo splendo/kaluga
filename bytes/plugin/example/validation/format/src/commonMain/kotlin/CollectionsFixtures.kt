@@ -90,6 +90,13 @@ object EncodeListFixtures {
     // A @BytesLayout with this configuration is rejected at compile time; kept as a kotlinx class for the runtime check.
     @Serializable
     data class ContentAfterUnsized(@Unsized val list: List<Byte>, val otherContent: Byte)
+
+    /** An unsized list with a property after it that encodes only while absent, which both backends check per value. */
+    @BytesLayout
+    interface OptionalAfterUnsized {
+        @Unsized val list: List<Byte>
+        val otherContent: Byte?
+    }
 }
 
 object EncodeNumericListFixtures {

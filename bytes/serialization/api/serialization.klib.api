@@ -6,13 +6,6 @@
 // - Show declarations: true
 
 // Library unique name: <com.splendo.kaluga.bytes:serialization>
-final class com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData|null[0]
-    constructor <init>(kotlin/String?) // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.<init>|<init>(kotlin.String?){}[0]
-
-    final val message // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.message|{}message[0]
-        final fun <get-message>(): kotlin/String? // com.splendo.kaluga.bytes.serialization/DataAfterUnconstrainedData.message.<get-message>|<get-message>(){}[0]
-}
-
 sealed class com.splendo.kaluga.bytes.serialization/BytesFormat : kotlinx.serialization/BinaryFormat { // com.splendo.kaluga.bytes.serialization/BytesFormat|null[0]
     open val serializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.serializersModule|{}serializersModule[0]
         open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.splendo.kaluga.bytes.serialization/BytesFormat.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]

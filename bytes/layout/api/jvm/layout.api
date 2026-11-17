@@ -135,6 +135,11 @@ public final class com/splendo/kaluga/bytes/layout/CollectionSettings$Unmarked :
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/bytes/layout/DataAfterUnconstrainedData : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/bytes/layout/DeltaCodec {
 	public static final field INSTANCE Lcom/splendo/kaluga/bytes/layout/DeltaCodec;
 	public final fun count (ILcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/annotations/Length;)I
