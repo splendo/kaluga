@@ -233,35 +233,53 @@ class LayoutValueTest {
         assertContains(explicit.generatedFile("RemoteMeasurementCharacteristic.kt"), "Flow<MeasurementView>")
     }
 
+    private fun sealedDefinitions() = bluetoothSource(
+        """
+        @BytesLayout
+        sealed interface Reading {
+            @BytesLayout
+            @SerializedByteValue(1)
+            interface Pulse : Reading {
+                @Size(Length.`8_BIT`)
+                @Unsigned
+                val bpm: Int
+            }
+        }
+
+        @BluetoothCharacteristic("2a38")
+        interface ReadingCharacteristic {
+            @Readable
+            @Writable
+            @Notifiable
+            val reading: Reading
+        }
+        """,
+    )
+
     @Test
     fun `a sealed layout is read through its frame`() {
-        val compilation = BluetoothCompilation(
-            bluetoothSource(
-                """
-                @BytesLayout
-                sealed interface Reading {
-                    @BytesLayout
-                    @SerializedByteValue(1)
-                    interface Pulse : Reading {
-                        @Size(Length.`8_BIT`)
-                        @Unsigned
-                        val bpm: Int
-                    }
-                }
-
-                @BluetoothCharacteristic("2a38")
-                interface ReadingCharacteristic {
-                    @Notifiable
-                    val reading: Reading
-                }
-                """,
-            ),
-        )
+        val compilation = BluetoothCompilation(sealedDefinitions())
         assertEquals(emptyList(), compilation.kspErrors)
         val remote = compilation.generatedFile("RemoteReadingCharacteristic.kt")
         assertContains(remote, "public val reading: Flow<ReadingFrame>")
         assertContains(remote, "get() = readingBytes.map { ReadingFrame(it) }")
         assertContains(remote, "override val readingBytes: Flow<ByteArray>\n        get() = characteristic.`value`()")
+    }
+
+    @Test
+    fun `the frame the code names is the one the bytes processor generates`() {
+        val compilation = BluetoothCompilation(sealedDefinitions(), processors = listOf(BytesSymbolProcessorProvider()))
+        assertEquals(emptyList(), compilation.kspErrors)
+        val remote = compilation.generatedFile("RemoteReadingCharacteristic.kt")
+        assertContains(remote, "ReadingCharacteristicReadResponse.Success(ReadingFrame(readResult.value))")
+        assertContains(remote, "characteristic.write(reading.bytes, WithResponse)")
+        assertContains(compilation.generatedFile("LocalReadingCharacteristic.kt"), "decode = { ReadingFrame.wrap(it) },")
+
+        assertContains(compilation.generatedSources, "public value class ReadingFrame(\n    public val bytes: ByteArray,\n)")
+        assertContains(compilation.generatedSources, "public fun wrap(bytes: ByteArray, validateChecksum: Boolean = true): ReadingFrame")
+        // The Bluetooth code fails to compile on the runtime missing here, but what it uses of the frame has to resolve.
+        val unresolved = Regex("Unresolved reference '(Reading\\w*|bytes|wrap)'")
+        assertEquals(emptyList(), compilation.compilerErrors.filter { unresolved.containsMatchIn(it) })
     }
 
     @Test

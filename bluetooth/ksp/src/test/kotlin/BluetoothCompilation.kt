@@ -30,7 +30,7 @@ import java.io.File
 
 /**
  * Runs [BluetoothSymbolProcessor] over [sources] with KSP2 and reads back what it generated. The Bluetooth runtime is
- * not on the JVM, so the generated code is not compiled here; the example build compiles it.
+ * not on the JVM, so the generated code does not compile here as a whole; the example build compiles it.
  */
 @OptIn(ExperimentalCompilerApi::class)
 internal class BluetoothCompilation(
@@ -61,6 +61,9 @@ internal class BluetoothCompilation(
 
     /** The errors KSP reported. */
     val kspErrors: List<String> get() = result.messages.lines().filter { it.startsWith("e: [ksp]") }
+
+    /** The errors the compiler reported on the sources and what KSP generated. */
+    val compilerErrors: List<String> get() = result.messages.lines().filter { it.startsWith("e: ") && !it.startsWith("e: [ksp]") }
 }
 
 /** A source file in package `test` with the imports every fixture here uses. */
