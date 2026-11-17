@@ -373,6 +373,12 @@ internal sealed class Count {
 
     /** Always [count] items, with nothing written before or after them. */
     data class Fixed(val count: Int) : Count()
+
+    /**
+     * A delta-coded list running to the end of the body, with no item frames: its first item of [width], read
+     * [signed], then a signed step of [step] per further item, all in [order]. [kind] is the primitive of an item.
+     */
+    data class Delta(val width: Length, val signed: Boolean, val step: Length, val order: ByteOrder, val kind: TypeKind) : Count()
 }
 
 /**

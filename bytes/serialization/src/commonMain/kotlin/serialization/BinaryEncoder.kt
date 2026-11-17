@@ -110,6 +110,7 @@ internal class BinaryEncoder(
         val collectionSettings =
             binaryDescriptor.collectionSettings
                 ?: CollectionSettings(CollectionSettings.NumericLength(setOf(Length.`8_BIT`)), false)
+        if (binaryDescriptor.isDeltaCoded) return DeltaCodedEncoder(binaryDescriptor, builder, serializersModule)
 
         if (binaryDescriptor.isNullable) {
             // Reaching here means the collection is not null, so it is only absent when [NullIfEmpty] turns an

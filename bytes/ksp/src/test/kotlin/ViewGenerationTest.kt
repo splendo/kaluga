@@ -1170,6 +1170,250 @@ class ViewGenerationTest {
     }
 
     @Test
+    fun `refuses data after data of an unconstrained size like BytesFormat`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            interface Stepped {
+                @DeltaCoded(Length.`8_BIT`) val samples: List<Short>
+                val extra: Byte?
+            }
+
+            @BytesLayout
+            interface Tail {
+                @Unsized val samples: List<Byte>
+                val extra: Byte?
+            }
+
+            @BytesLayout
+            interface Emptied {
+                @Unsized @NullIfEmpty val items: List<Byte>
+                val trailing: Byte
+            }
+
+            @BytesLayout
+            interface Inner {
+                val header: Byte
+                @Unsized val tail: List<Byte>?
+            }
+
+            @BytesLayout
+            interface Outer {
+                val inner: Inner
+                val extra: Byte
+            }
+
+            @BytesLayout
+            sealed interface Message {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface Text : Message {
+                    @Unsized val text: List<Byte>
+                }
+
+                @BytesLayout
+                @SerializedByteValue(0x02)
+                interface Level : Message {
+                    val level: Byte
+                }
+            }
+
+            @BytesLayout
+            interface Holder {
+                val message: Message
+                val extra: Byte?
+            }
+            """,
+        )
+        val check = refusalCheck(
+            "compare(SteppedData(listOf(16, 18, 15), 5), SteppedData.serializer(), true) { SteppedView.encode(it).bytes }",
+            "compare(SteppedData(emptyList(), 5), SteppedData.serializer(), true) { SteppedView.encode(it).bytes }",
+            "compare(SteppedData(listOf(16, 18, 15), 5), SteppedData.serializer(), true) { SteppedView(it.samples, it.extra).bytes }",
+            "compare(SteppedData(listOf(16, 18, 15), null), SteppedData.serializer(), false) { SteppedView.encode(it).bytes }",
+            "compare(TailData(listOf(1, 2), 5), TailData.serializer(), true) { TailView.encode(it).bytes }",
+            "compare(TailData(emptyList(), 5), TailData.serializer(), true) { TailView.encode(it).bytes }",
+            "compare(TailData(listOf(1, 2), null), TailData.serializer(), false) { TailView.encode(it).bytes }",
+            "compare(EmptiedData(listOf(1, 2), 5), EmptiedData.serializer(), true) { EmptiedView.encode(it).bytes }",
+            "compare(EmptiedData(emptyList(), 5), EmptiedData.serializer(), false) { EmptiedView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, listOf(2)), 5), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, emptyList()), 5), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, null), 5), OuterData.serializer(), false) { OuterView.encode(it).bytes }",
+            "compare(HolderData(MessageTextData(listOf(1)), 5), HolderData.serializer(), true) { HolderView.encode(it).bytes }",
+            "compare(HolderData(MessageTextData(listOf(1)), null), HolderData.serializer(), false) { HolderView.encode(it).bytes }",
+            "compare(HolderData(MessageLevelData(1), 5), HolderData.serializer(), false) { HolderView.encode(it).bytes }",
+        )
+        val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        assertEquals(emptyList(), compilation.generatedWarnings)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems)
+    }
+
+    @Test
+    fun `refuses an item after an item of an unconstrained size like BytesFormat`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            interface Tailed {
+                val header: Byte
+                @Unsized val tail: List<Byte>
+            }
+
+            @BytesLayout
+            interface Tails {
+                val items: List<Tailed>
+            }
+
+            @BytesLayout
+            interface HeldTails {
+                val tails: Tails
+                val extra: Byte
+            }
+
+            @BytesLayout
+            interface Inner {
+                val header: Byte
+                @Unsized val tail: List<Byte>?
+            }
+
+            @BytesLayout
+            interface Inners {
+                val items: List<Inner?>
+                val extra: Byte
+            }
+
+            @BytesLayout
+            sealed interface Message {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface Text : Message {
+                    @Unsized val text: List<Byte>
+                }
+
+                @BytesLayout
+                @SerializedByteValue(0x02)
+                interface Level : Message {
+                    val level: Byte
+                }
+            }
+
+            @BytesLayout
+            interface Messages {
+                val items: List<Message>
+                val extra: Byte?
+            }
+
+            @BytesLayout
+            interface Terminated {
+                @NullTerminated val items: List<Tailed>
+            }
+
+            @BytesLayout
+            interface Keyed {
+                val entries: Map<Tailed, Byte>
+            }
+
+            @BytesLayout
+            @LengthPrefix
+            sealed interface Record {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface Note : Record {
+                    @Unsized val text: List<Byte>
+                }
+            }
+
+            @BytesLayout
+            interface Records {
+                val items: List<Record>
+                val extra: Byte
+            }
+            """,
+        )
+        val check = refusalCheck(
+            "compare(TailsData(listOf(TailedData(1, listOf(2)))), TailsData.serializer(), false) { TailsView.encode(it).bytes }",
+            "compare(TailsData(listOf(TailedData(1, listOf(2)), TailedData(3, listOf(4)))), TailsData.serializer(), true) { TailsView.encode(it).bytes }",
+            "compare(TailsData(listOf(TailedData(1, emptyList()), TailedData(3, listOf(4)))), TailsData.serializer(), true) { TailsView.encode(it).bytes }",
+            "compare(TailsData(listOf(TailedData(1, listOf(2)), TailedData(3, listOf(4)))), TailsData.serializer(), true) { TailsView(it.items).bytes }",
+            "compare(HeldTailsData(TailsData(listOf(TailedData(1, listOf(2)))), 5), HeldTailsData.serializer(), true) { HeldTailsView.encode(it).bytes }",
+            "compare(HeldTailsData(TailsData(emptyList()), 5), HeldTailsData.serializer(), false) { HeldTailsView.encode(it).bytes }",
+            "compare(InnersData(listOf(InnerData(1, null), InnerData(3, listOf(4))), 5), InnersData.serializer(), true) { InnersView.encode(it).bytes }",
+            "compare(InnersData(listOf(InnerData(1, emptyList()), null), 5), InnersData.serializer(), true) { InnersView.encode(it).bytes }",
+            "compare(InnersData(listOf(InnerData(1, listOf(2)), InnerData(3, null)), 5), InnersData.serializer(), true) { InnersView.encode(it).bytes }",
+            "compare(InnersData(listOf(InnerData(1, null), null), 5), InnersData.serializer(), false) { InnersView.encode(it).bytes }",
+            "compare(InnersData(listOf(InnerData(1, null), InnerData(3, null)), 5), InnersData.serializer(), false) { InnersView.encode(it).bytes }",
+            "compare(MessagesData(listOf(MessageLevelData(1), MessageTextData(listOf(2))), null), MessagesData.serializer(), false) { MessagesView.encode(it).bytes }",
+            "compare(MessagesData(listOf(MessageTextData(listOf(2)), MessageLevelData(1)), null), MessagesData.serializer(), true) { MessagesView.encode(it).bytes }",
+            "compare(MessagesData(listOf(MessageLevelData(1), MessageTextData(listOf(2))), 5), MessagesData.serializer(), true) { MessagesView.encode(it).bytes }",
+            "compare(MessagesData(listOf(MessageTextData(listOf(2)), MessageLevelData(1)), 5), MessagesData.serializer(), true) { MessagesView.encode(it).bytes }",
+            "compare(MessagesData(listOf(MessageLevelData(1)), 5), MessagesData.serializer(), false) { MessagesView.encode(it).bytes }",
+            "compare(TerminatedData(listOf(TailedData(1, listOf(2)))), TerminatedData.serializer(), true) { TerminatedView.encode(it).bytes }",
+            "compare(TerminatedData(emptyList()), TerminatedData.serializer(), false) { TerminatedView.encode(it).bytes }",
+            "compare(KeyedData(mapOf(TailedData(1, listOf(2)) to 3)), KeyedData.serializer(), true) { KeyedView.encode(it).bytes }",
+            "compare(KeyedData(emptyMap()), KeyedData.serializer(), false) { KeyedView.encode(it).bytes }",
+            "compare(RecordsData(listOf(RecordNoteData(listOf(1)), RecordNoteData(listOf(2, 3))), 5), RecordsData.serializer(), false) { RecordsView.encode(it).bytes }",
+        )
+        val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        assertEquals(emptyList(), compilation.generatedWarnings)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems)
+    }
+
+    @Test
+    fun `refuses reserved bytes after data of an unconstrained size like BytesFormat`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout
+            interface Inner {
+                val header: Byte
+                @Unsized val tail: List<Byte>?
+            }
+
+            @BytesLayout
+            interface Outer {
+                @Reserved(after = 2) val inner: Inner
+            }
+
+            @BytesLayout
+            sealed interface Message {
+                @BytesLayout
+                @SerializedByteValue(0x01)
+                interface Text : Message {
+                    @Unsized val text: String
+                }
+
+                @BytesLayout
+                @SerializedByteValue(0x02)
+                interface Level : Message {
+                    val level: Byte
+                }
+            }
+
+            @BytesLayout
+            interface Holder {
+                @Reserved(after = 1) val message: Message
+            }
+            """,
+        )
+        val check = refusalCheck(
+            "compare(OuterData(InnerData(1, listOf(2))), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, emptyList())), OuterData.serializer(), true) { OuterView.encode(it).bytes }",
+            "compare(OuterData(InnerData(1, null)), OuterData.serializer(), false) { OuterView.encode(it).bytes }",
+            "compare(HolderData(MessageTextData(\"a\")), HolderData.serializer(), true) { HolderView.encode(it).bytes }",
+            "compare(HolderData(MessageLevelData(1)), HolderData.serializer(), false) { HolderView.encode(it).bytes }",
+        )
+        val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        assertEquals(emptyList(), compilation.generatedWarnings)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems)
+    }
+
+    @Test
     fun `reads and writes fixed counts like BytesFormat`() {
         val layouts = layoutSource(
             """
@@ -1324,6 +1568,40 @@ class ViewGenerationTest {
         val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
         assertEquals(emptyList<Any?>(), problems.take(10))
     }
+
+    /**
+     * `Check.kt`, whose `check()` lists where the views differ from `BytesFormat` in the [comparisons]: calls to
+     * `compare(data, serializer, refused) { encode }`, which also checks that `BytesFormat` refuses the data when
+     * `refused` is set.
+     */
+    private fun refusalCheck(vararg comparisons: String): SourceFile = SourceFile.kotlin(
+        "Check.kt",
+        """
+        package test
+
+        import com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
+        import com.splendo.kaluga.bytes.serialization.BytesFormat
+        import kotlinx.serialization.KSerializer
+
+        fun <T> compare(data: T, serializer: KSerializer<T>, refused: Boolean, encode: (T) -> ByteArray): String? {
+            val expected = runCatching { BytesFormat.encodeToByteArray(serializer, data) }
+            val actual = runCatching { encode(data) }
+            val failure = expected.exceptionOrNull()
+            if ((failure is DataAfterUnconstrainedData) != refused) return "BytesFormat " + data + ": " + failure
+            val viewFailure = actual.exceptionOrNull()
+            return when {
+                failure == null && viewFailure == null ->
+                    if (expected.getOrThrow().contentEquals(actual.getOrThrow())) null else "encode " + data + ": " + actual.getOrThrow().toList()
+                failure != null && viewFailure != null && failure::class == viewFailure::class && failure.message == viewFailure.message -> null
+                else -> "view " + data + ": " + viewFailure + " where BytesFormat throws " + failure
+            }
+        }
+
+        fun check(): List<String> = listOfNotNull(
+        """.trimIndent() + comparisons.joinToString("") {
+            "\n    $it,"
+        } + "\n)\n",
+    )
 
     private companion object {
         val GOLDEN = """

@@ -351,7 +351,13 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
         val end = if (content == null || (presence != null && content != 0)) {
             val aligned = when {
                 access is Access.BodyBit -> false
-                access is Access.Collection -> (presence == null && access.emptyBit == null && access.count !is Count.Flag && access.count !is Count.Unmarked) || start.isAligned
+
+                access is Access.Collection -> (
+                    presence == null && access.emptyBit == null && access.count !is Count.Flag && access.count !is Count.Unmarked &&
+                        access.count !is Count.Delta
+                    ) ||
+                    start.isAligned
+
                 else -> presence == null || start.isAligned
             }
             Anchor.End(name, aligned)
@@ -385,6 +391,7 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             is TypeLayout.MapLayout -> type.settings to listOf(type.key, type.value)
             else -> unsupported("a collection compiling to ${type::class.simpleName}", node)
         }
+        settings.deltaCoding?.let { return deltaAccess(value, items.single(), it, node) }
         // BytesFormat stuffs only collections it builds least significant first.
         if (settings.byteStuffing != null && (mirrored || child.valueByteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST)) {
             unsupported("byte-stuffed collections encoded MOST_SIGNIFICANT_FIRST", node)
@@ -435,6 +442,17 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             unsupported("a collection starting with bits after body Booleans", node)
         }
         return Access.Collection(count, frames, if (settings.nullIfEmpty) headerStart + child.bitIndex else null)
+    }
+
+    /** A delta-coded list, whose items the view reads from the steps rather than from frames of their own. */
+    private fun deltaAccess(value: ValueType.Collection, item: FieldLayout, deltaCoding: CollectionSettings.DeltaCoding, node: KSNode): Access.Collection {
+        val kind = (value.item as? ValueType.Primitive)?.leafKind
+        val listed = value.kind == ValueType.Collection.Kind.LIST || value.kind == ValueType.Collection.Kind.PRIMITIVE_ARRAY
+        if (!listed || (kind != TypeKind.SHORT && kind != TypeKind.INT)) {
+            unsupported("delta-coded items of type ${value.typeName}; use a List<Short>, ShortArray, List<Int> or IntArray", node)
+        }
+        val settings = (item.type as TypeLayout.Numeric).settings as NumericSettings.Natural
+        return Access.Collection(Count.Delta(settings.supportedLengths.single(), settings.signed, deltaCoding.step, item.valueByteOrder, kind), emptyList(), null)
     }
 
     private fun itemFrame(name: ClassName, role: String, item: FieldLayout, value: ValueType, nullable: Boolean, node: KSNode): ItemFrame {

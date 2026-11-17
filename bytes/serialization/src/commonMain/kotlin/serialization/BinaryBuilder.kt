@@ -24,7 +24,6 @@ import com.splendo.kaluga.bytes.buildByteArray
 import com.splendo.kaluga.bytes.toByteArray
 import com.splendo.kaluga.bytes.annotations.Unsized
 import com.splendo.kaluga.bytes.layout.FrameSettings
-import kotlinx.serialization.SerializationException
 
 /**
  * Builder for creating a [ByteArray] from a [BinaryDescriptor]
@@ -44,8 +43,9 @@ internal interface BinaryBuilder {
 /**
  * Exception thrown if trying to add data after a collection of data marked with [Unsized].
  * Since [Unsized] elements do not indicate an end point, there is no way to know when to stop decoding them.
+ * Shared with the generated views.
  */
-class DataAfterUnconstrainedData(override val message: String?) : SerializationException()
+typealias DataAfterUnconstrainedData = com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
 
 /**
  * A [BinaryBuilder] to build data for a single [BinaryDescriptor] structure
@@ -221,10 +221,16 @@ internal abstract class CollectionBinaryBuilder(
 ) : BinaryBuilder {
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
+    private var itemEndedUnconstrained = false
 
     override val expectedSize: Int get() = classBuilders.sumOf { it.expectedSize }
 
     fun setIndex(index: Int): BinaryDescriptor {
+        // Every item has a builder of its own, so one that ended unconstrained does not refuse the next item itself,
+        // which the decoder would read as part of it. For a map, a key and its value are items too.
+        if (index != currentIndex && itemEndedUnconstrained) {
+            throw DataAfterUnconstrainedData("Attempted to add an item after an item of an unconstrained size")
+        }
         currentIndex = index
         return currentClassBuilder.binaryDescriptor
     }
@@ -242,6 +248,7 @@ internal abstract class CollectionBinaryBuilder(
     }
 
     override fun makeUnconstrained() {
+        itemEndedUnconstrained = true
         currentClassBuilder.makeUnconstrained()
     }
 
