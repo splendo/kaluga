@@ -183,6 +183,9 @@ object LayoutCompiler {
         if (kind != TypeKind.LIST && kind != TypeKind.MAP && annotations.any { it is Count }) {
             throw InvalidCountLayout("@Count only applies to a collection, but '$fieldName' is ${shape.serialName}")
         }
+        if (kind != TypeKind.LIST && annotations.any { it is DeltaCoded }) {
+            throw InvalidDeltaCoding("@DeltaCoded only applies to a list of integers, but '$fieldName' is ${shape.serialName}")
+        }
 
         // A property whose presence is derived from other flag bits owns no bit of its own.
         val presenceFlagIndices = annotations.filterIsInstance<PresentWhenAllSet>().firstOrNull()?.indices?.toList().orEmpty()
@@ -292,7 +295,7 @@ object LayoutCompiler {
             else -> elementChildren(shape, valueByteOrder, bitIndex, byteOrder)
         }
 
-        collectionSettings?.deltaCoding?.let { checkDeltaCoded(fieldName, kind, isNullable, byteOrder, children, it) }
+        collectionSettings?.deltaCoding?.let { checkDeltaCoded(fieldName, isNullable, byteOrder, children, it) }
 
         if (kind == TypeKind.STRUCTURE && shape.annotations.any { it is LengthPrefix }) {
             throw InvalidSealedLayout("@LengthPrefix on '${shape.serialName}' only applies to a sealed class, whose subtypes it frames")
@@ -703,11 +706,10 @@ object LayoutCompiler {
         }
 
     /**
-     * Rejects a `@DeltaCoded` property [name] the encoding cannot apply to: anything but a list whose items are
+     * Rejects a `@DeltaCoded` list [name] the encoding cannot apply to: one that is nullable, or whose items are not
      * integers of one size, at least as wide as a step, laid out least significant first.
      */
-    private fun checkDeltaCoded(name: String, kind: TypeKind, isNullable: Boolean, byteOrder: ByteOrder, children: List<FieldLayout>, deltaCoding: CollectionSettings.DeltaCoding) {
-        if (kind != TypeKind.LIST) throw InvalidDeltaCoding("@DeltaCoded on '$name' only applies to a list of integers, not a map")
+    private fun checkDeltaCoded(name: String, isNullable: Boolean, byteOrder: ByteOrder, children: List<FieldLayout>, deltaCoding: CollectionSettings.DeltaCoding) {
         if (isNullable) throw InvalidDeltaCoding("@DeltaCoded '$name' cannot be nullable: it has no flag bit, and no bytes at all is an empty list")
         if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
             throw InvalidDeltaCoding(

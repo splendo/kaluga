@@ -202,6 +202,12 @@ class DeltaCodedTest {
             """ to "@DeltaCoded 'samples' cannot be nullable",
             """
             @BytesLayout
+            interface Single {
+                @DeltaCoded(Length.`8_BIT`) val sample: Int
+            }
+            """ to "@DeltaCoded only applies to a list of integers, but 'sample' is kotlin.Int",
+            """
+            @BytesLayout
             interface Floats {
                 @DeltaCoded(Length.`8_BIT`) val samples: List<Float>
             }
@@ -223,7 +229,7 @@ class DeltaCodedTest {
         cases.forEach { (source, message) ->
             listOf("DATA", "VIEW").forEach { generate ->
                 val compilation = BytesCompilation(layoutSource(source), generate = generate)
-                assertTrue(compilation.kspErrors.any { message in it }, "$generate: " + compilation.result.messages)
+                assertTrue(compilation.kspErrors.any { message in it }, "$generate, expecting \"$message\": " + compilation.result.messages)
             }
         }
     }
