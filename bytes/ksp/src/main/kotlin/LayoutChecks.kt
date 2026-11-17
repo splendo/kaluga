@@ -29,7 +29,7 @@ import com.splendo.kaluga.bytes.layout.TypeLayout
  * reports them as KSP errors instead:
  * - a root frame that is byte-stuffed but not accumulated least significant first;
  * - `DataAfterUnconstrainedData`: a property whose encoded size has no end marking (an `@Unsized` string or
- *   collection, a `@DeltaCoded` list, a `@SizePolymorphic` value, a byte-stuffed structure without a terminator, or a structure ending in one) followed by a sibling that always writes body
+ *   collection, a `@DeltaCoded` list, a `@SizePolymorphic` value, a byte-stuffed structure without a terminator, or a structure ending in one) followed by `@Reserved` bytes of its own or by a sibling that always writes body
  *   bytes, since a decoder could never tell where the first one ends. Only configurations that fail for every value
  *   are reported; a nullable or `@NullIfEmpty` unconstrained property, or a nullable sibling, is left to the check
  *   `BytesFormat` and the generated views make per value, as they encode fine while absent.
@@ -48,6 +48,13 @@ internal object LayoutChecks {
         if (type is TypeLayout.Structure) {
             type.fields.forEachIndexed { index, child ->
                 if (child.isAlwaysUnconstrained()) {
+                    if (child.reservedAfter > 0) {
+                        violations += if ((child.type as? TypeLayout.ListLayout)?.settings?.deltaCoding != null) {
+                            "'${child.name}' in '${field.name}' reserves bytes after it, but it is @DeltaCoded, so it runs to the end of what holds it and no data can follow it"
+                        } else {
+                            "'${child.name}' in '${field.name}' reserves bytes after it, but it has no end marking, so no data can follow it"
+                        }
+                    }
                     type.fields.drop(index + 1).firstOrNull { it.alwaysWritesBody() }?.let { follower ->
                         violations += if ((child.type as? TypeLayout.ListLayout)?.settings?.deltaCoding != null) {
                             "'${follower.name}' follows '${child.name}' in '${field.name}', but '${child.name}' is @DeltaCoded, so it runs to the end of what holds it; " +

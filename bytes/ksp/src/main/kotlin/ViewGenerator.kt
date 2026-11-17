@@ -915,7 +915,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             if (unconstrained.isNotEmpty()) {
                 writesBody(field, CodeBlock.of("%N", names.getValue(field)))?.let { walk.refuseDataAfter(unconstrained, it) }
             }
-            unconstrainedBy(field, CodeBlock.of("%N", names.getValue(field)))?.let { unconstrained += it }
+            val unconstrainedByField = unconstrainedBy(field, CodeBlock.of("%N", names.getValue(field)))
+            unconstrainedByField?.let { unconstrained += it }
             if (field.field.reservedBefore > 0) {
                 walk.align()
                 walk.advance(field.field.reservedBefore * Byte.SIZE_BITS)
@@ -937,6 +938,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 walkContent(walk, field, value)
             }
             if (field.field.reservedAfter > 0) {
+                unconstrainedByField?.let { walk.refuseDataAfter(listOf(it), emptyList()) }
                 walk.align()
                 walk.advance(field.field.reservedAfter * Byte.SIZE_BITS)
             }
@@ -945,7 +947,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
     /**
      * Throws `DataAfterUnconstrainedData`, as `BytesFormat` does, when one of the [unconstrained] conditions holds
-     * and the property about to be written [writes] body data. The check is a call, so the compiler draws nothing
+     * and what is about to be written [writes] body data. The check is a call, so the compiler draws nothing
      * from it about the values the property is then written from.
      */
     private fun Walk.refuseDataAfter(unconstrained: List<List<CodeBlock>>, writes: List<CodeBlock>) {
