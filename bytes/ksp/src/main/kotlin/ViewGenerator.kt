@@ -380,7 +380,11 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     private fun FieldPlan.deltaCodedList(): ClassName? {
         val count = (access as? Access.Collection)?.count as? Count.Delta ?: return null
         if ((value as ValueType.Collection).kind != ValueType.Collection.Kind.LIST) return null
-        return if (count.kind == TypeKind.SHORT) DELTA_CODED_SHORT_LIST else DELTA_CODED_INT_LIST
+        return when (count.kind) {
+            TypeKind.SHORT -> DELTA_CODED_SHORT_LIST
+            TypeKind.INT -> DELTA_CODED_INT_LIST
+            else -> DELTA_CODED_LONG_LIST
+        }
     }
 
     /**
@@ -2190,7 +2194,11 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             val list = CodeBlock.of(
                 "%T.%N(b, pos, lim, %L, %L, %L, %L)",
                 VIEW_DELTAS,
-                if (delta.kind == TypeKind.SHORT) "shorts" else "ints",
+                when (delta.kind) {
+                    TypeKind.SHORT -> "shorts"
+                    TypeKind.INT -> "ints"
+                    else -> "longs"
+                },
                 length(delta.width),
                 delta.signed,
                 length(delta.step),
@@ -3163,6 +3171,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val VIEW_DELTAS = ClassName("com.splendo.kaluga.bytes.view", "ViewDeltas")
         val DELTA_CODED_SHORT_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedShortList")
         val DELTA_CODED_INT_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedIntList")
+        val DELTA_CODED_LONG_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedLongList")
         val RUNTIME_EXCEPTION = ClassName("kotlin", "RuntimeException")
         val NO_SUCH_ELEMENT_EXCEPTION = ClassName("kotlin", "NoSuchElementException")
     }

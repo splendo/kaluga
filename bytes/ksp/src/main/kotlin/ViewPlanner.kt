@@ -448,8 +448,8 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
     private fun deltaAccess(value: ValueType.Collection, item: FieldLayout, deltaCoding: CollectionSettings.DeltaCoding, node: KSNode): Access.Collection {
         val kind = (value.item as? ValueType.Primitive)?.leafKind
         val listed = value.kind == ValueType.Collection.Kind.LIST || value.kind == ValueType.Collection.Kind.PRIMITIVE_ARRAY
-        if (!listed || (kind != TypeKind.SHORT && kind != TypeKind.INT)) {
-            unsupported("delta-coded items of type ${value.typeName}; use a List<Short>, ShortArray, List<Int> or IntArray", node)
+        if (!listed || (kind != TypeKind.SHORT && kind != TypeKind.INT && kind != TypeKind.LONG)) {
+            unsupported("delta-coded items of type ${value.typeName}; use a List or primitive array of Short, Int or Long", node)
         }
         val settings = (item.type as TypeLayout.Numeric).settings as NumericSettings.Natural
         return Access.Collection(Count.Delta(settings.supportedLengths.single(), settings.signed, deltaCoding.step, item.valueByteOrder, kind), emptyList(), null)

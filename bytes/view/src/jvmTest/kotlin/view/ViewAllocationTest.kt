@@ -204,18 +204,22 @@ class ViewAllocationTest {
         assertNone("delta-coded end") { long = ViewDeltas.end(3, 50, width, step).toLong() }
         val shorts = ViewDeltas.shorts(large, 3, 50, width, true, step, order)
         val ints = ViewDeltas.ints(large, 3, 50, width, false, step, order)
+        val longs = ViewDeltas.longs(large, 3, 50, width, false, step, order)
         val shortArray = ShortArray(shorts.size)
         val intArray = IntArray(ints.size)
+        val longArray = LongArray(longs.size)
         assertNone("delta-coded size") { long = shorts.size.toLong() }
         assertNone("delta-coded forEach") {
             var sum = 0L
             shorts.forEachShort { sum += it }
             ints.forEachInt { sum += it }
+            longs.forEachLong { sum += it }
             long = sum
         }
         assertNone("delta-coded copyInto") {
             shorts.copyInto(shortArray)
             ints.copyInto(intArray)
+            longs.copyInto(longArray)
         }
         val bytes = ByteArray(4)
         assertNone("delta-coded write") {

@@ -202,6 +202,12 @@ class ViewAllocationTest {
             int = sum
         }
         assertNone("delta-coded copyInto") { list.copyInto(array) }
+        val times = DeltaCodedFixturesTimestampsView.encode(DeltaCodedFixturesTimestampsData(List(50) { 4_000_000_000L + it * 30 })).times
+        assertNone("delta-coded forEachLong") {
+            var sum = 0L
+            times.forEachLong { sum += it }
+            long = sum
+        }
 
         val stream = DeltaCodedFixturesStreamView.encode(
             DeltaCodedFixturesStreamData(1u, listOf(DeltaCodedFixturesPacketBatteryData(5u), DeltaCodedFixturesPacketDeltaData(samples))),

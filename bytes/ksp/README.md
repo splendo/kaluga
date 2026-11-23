@@ -102,12 +102,12 @@ A `@DeltaCoded(step)` list is its first item, then a signed `step` from each ite
 
 In a view:
 
-- **Its type**: a `List<Short>` reads as a `DeltaCodedShortList` and a `List<Int>` as a `DeltaCodedIntList` of [view](../view/), the type the view and slice override the property with. A `ShortArray` or `IntArray` property reads as a new array, as arrays do.
-- **Reading**: `size` follows from the bytes alone, `(bytes - first item) / step + 1`. An item is only known from the one before it, so `get(i)` adds up the steps before it and takes time in proportion to `i`; read the items in order instead, with `forEachShort` or `forEachInt` or `copyInto(array, offset)`, none of which allocates or boxes, with `toShortArray()` or `toIntArray()`, or with an iterator or a list iterator going forward, also over a `subList`, which boxes each item as any `List` does. Only the list object itself is allocated, once per read of the property.
+- **Its type**: a `List<Short>` reads as a `DeltaCodedShortList`, a `List<Int>` as a `DeltaCodedIntList` and a `List<Long>` as a `DeltaCodedLongList` of [view](../view/), the type the view and slice override the property with. A `ShortArray`, `IntArray` or `LongArray` property reads as a new array, as arrays do.
+- **Reading**: `size` follows from the bytes alone, `(bytes - first item) / step + 1`. An item is only known from the one before it, so `get(i)` adds up the steps before it and takes time in proportion to `i`; read the items in order instead, with `forEachShort`, `forEachInt`, `forEachLong` or `copyInto(array, offset)`, none of which allocates or boxes, with `toShortArray()`, `toIntArray()` or `toLongArray()`, or with an iterator or a list iterator going forward, also over a `subList`, which boxes each item as any `List` does. Only the list object itself is allocated, once per read of the property.
 - **Checking**: `wrap` throws `ByteArrayEndedBeforeSerializationCompleted`, as `BytesFormat` does, when the bytes are not a first item and whole steps; no bytes is an empty list.
 - **Writing**: `encode` and the constructor-like `invoke` write the first item and the steps, and throw `IllegalArgumentException`, as `BytesFormat` does, for an item or a step that does not fit. The property has no setter, as its size depends on its items.
 
-VIEW reads `Short` and `Int` items; another item type, such as `Long` or `UShort`, is reported as not yet supported for VIEW and works with DATA.
+VIEW reads `Short`, `Int` and `Long` items; another item type, such as `Byte` or `UShort`, is reported as not yet supported for VIEW and works with DATA.
 
 The annotation takes only what the encoding cannot get elsewhere. The first item is described the way the items of any list are, by its type, `@ItemSize`, `@ItemUnsigned` and `@ItemByteOrder`, and the end comes from the bound, as for `@Unsized`, so a step size is all that is left. Whether a list holds items or differences is not the encoder's choice: a protocol that sends either has a record type for each, one of them `@DeltaCoded`.
 
@@ -154,7 +154,7 @@ Byte stuffing cannot read in place. For byte-stuffed layouts:
 
 ## Supported VIEW features
 
-Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, delta-coded lists of `Short` and `Int` items, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
+Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, delta-coded lists of `Short`, `Int` and `Long` items, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
 
 Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. A `@Count` collection of fixed-size items has a setter that rewrites its items in place and, like the constructors, refuses another number of items. Lists are read in place: `FixedStrideList` when all items are the same size, a `DeltaCodedShortList` or `DeltaCodedIntList` when `@DeltaCoded`, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
 

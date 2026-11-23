@@ -52,6 +52,16 @@ class DeltaCodedTest {
         }
 
         @BytesLayout
+        interface Longs {
+            @DeltaCoded(Length.`16_BIT`) @ItemSize(Length.`32_BIT`) @ItemUnsigned val samples: List<Long>
+        }
+
+        @BytesLayout
+        interface WideLongs {
+            @DeltaCoded(Length.`8_BIT`) val samples: LongArray
+        }
+
+        @BytesLayout
         @LengthPrefix
         sealed interface Packet {
             @BytesLayout
@@ -85,6 +95,7 @@ class DeltaCodedTest {
             import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
             import com.splendo.kaluga.bytes.serialization.BytesFormat
             import com.splendo.kaluga.bytes.view.DeltaCodedIntList
+            import com.splendo.kaluga.bytes.view.DeltaCodedLongList
             import com.splendo.kaluga.bytes.view.DeltaCodedShortList
 
             fun bytes(vararg values: Int) = ByteArray(values.size) { values[it].toByte() }
@@ -125,6 +136,19 @@ class DeltaCodedTest {
                 val wide = WideData(intArrayOf(0, 1000, -1000))
                 val wideBytes = BytesFormat.encodeToByteArray(WideData.serializer(), wide)
                 if (!WideView.encode(wide).bytes.contentEquals(wideBytes) || !WideView.wrap(wideBytes).samples.contentEquals(wide.samples)) add("wide")
+
+                val longs = LongsData(listOf(4294967295L, 0L, 2L))
+                val longsBytes = BytesFormat.encodeToByteArray(LongsData.serializer(), longs)
+                if (!longsBytes.contentEquals(bytes(0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x00, 0x02, 0x00))) add("unsigned long " + longsBytes.toList())
+                if (!LongsView.encode(longs).bytes.contentEquals(longsBytes)) add("encode unsigned long")
+                val longList: DeltaCodedLongList = LongsView.wrap(longsBytes).samples
+                if (longList != longs.samples) add("decode unsigned long " + longList)
+
+                val wideLongs = WideLongsData(longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE, Long.MIN_VALUE + 5))
+                val wideLongsBytes = BytesFormat.encodeToByteArray(WideLongsData.serializer(), wideLongs)
+                if (wideLongsBytes.size != 10) add("wide long size " + wideLongsBytes.size)
+                if (!WideLongsView.encode(wideLongs).bytes.contentEquals(wideLongsBytes)) add("encode wide long")
+                if (!WideLongsView.wrap(wideLongsBytes).samples.contentEquals(wideLongs.samples)) add("decode wide long")
 
                 val packets = listOf(PacketWaveformData(listOf(16, 18, 15)), PacketBatteryData(100u), PacketWaveformData(listOf(5000)), PacketWaveformData(emptyList()))
                 val chunk = ChunkData(1u, packets)
@@ -244,12 +268,12 @@ class DeltaCodedTest {
     fun `reports items a view does not read from steps yet`() {
         val source = """
             @BytesLayout
-            interface Longs {
-                @DeltaCoded(Length.`8_BIT`) val samples: List<Long>
+            interface Bytes {
+                @DeltaCoded(Length.`8_BIT`) val samples: List<Byte>
             }
             """
         val compilation = BytesCompilation(layoutSource(source), generate = "VIEW")
-        assertTrue(compilation.kspErrors.any { "VIEW not yet supported for delta-coded items of type kotlin.collections.List<kotlin.Long>" in it }, compilation.result.messages)
+        assertTrue(compilation.kspErrors.any { "VIEW not yet supported for delta-coded items of type kotlin.collections.List<kotlin.Byte>" in it }, compilation.result.messages)
         assertEquals(KotlinCompilation.ExitCode.OK, BytesCompilation(layoutSource(source)).result.exitCode)
     }
 }

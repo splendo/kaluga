@@ -64,6 +64,10 @@ object ViewDeltas {
     fun ints(b: ByteArray, first: Int, lim: Int, width: Length, signed: Boolean, step: Length, order: ByteOrder): DeltaCodedIntList =
         DeltaCodedIntList(b, first, count(first, lim, width, step), width, signed, step, order)
 
+    /** The `Long` items of the delta-coded list from [first] to [lim]. */
+    fun longs(b: ByteArray, first: Int, lim: Int, width: Length, signed: Boolean, step: Length, order: ByteOrder): DeltaCodedLongList =
+        DeltaCodedLongList(b, first, count(first, lim, width, step), width, signed, step, order)
+
     private fun count(first: Int, lim: Int, width: Length, step: Length): Int {
         ViewBytes.checkRange(first, 0, lim)
         return DeltaCodec.count(lim - first, width, step)
@@ -75,7 +79,8 @@ object ViewDeltas {
  * [size] follows from the bytes alone, but an item is only known from the one before it, so [get] adds up every step
  * before its index and takes time in proportion to it. Read the items in order instead, with an [iterator] or a
  * [listIterator] going forward, which add one step per item, also over a [subList], or with the `forEachShort`,
- * `forEachInt` and `copyInto` of [DeltaCodedShortList] and [DeltaCodedIntList], which box none of them. As a step
+ * `forEachInt`, `forEachLong` and `copyInto` of [DeltaCodedShortList], [DeltaCodedIntList] and [DeltaCodedLongList],
+ * which box none of them. As a step
  * cannot be taken back, a list iterator's `previous` adds up the steps from the first item again, as [get] does.
  */
 sealed class DeltaCodedList<T>(
@@ -267,4 +272,33 @@ class DeltaCodedIntList internal constructor(b: ByteArray, first: Int, size: Int
 
     /** The items as a new array. */
     fun toIntArray(): IntArray = copyInto(IntArray(size))
+}
+
+/** A [DeltaCodedList] of `Long` items. */
+class DeltaCodedLongList internal constructor(b: ByteArray, first: Int, size: Int, width: Length, signed: Boolean, step: Length, order: ByteOrder) :
+    DeltaCodedList<Long>(b, first, size, width, signed, step, order) {
+
+    override fun item(value: Long): Long = value
+
+    /** Calls [action] with every item in order, reading each step once and boxing none. */
+    inline fun forEachLong(action: (Long) -> Unit) {
+        var value = 0L
+        for (index in 0 until size) {
+            value = next(index, value)
+            action(value)
+        }
+    }
+
+    /** Copies every item into [destination] from [destinationOffset] on, and returns [destination]. */
+    fun copyInto(destination: LongArray, destinationOffset: Int = 0): LongArray {
+        if (destinationOffset < 0 || destinationOffset > destination.size - size) {
+            throw IndexOutOfBoundsException("$size items from $destinationOffset do not fit an array of ${destination.size}")
+        }
+        var index = destinationOffset
+        forEachLong { destination[index++] = it }
+        return destination
+    }
+
+    /** The items as a new array. */
+    fun toLongArray(): LongArray = copyInto(LongArray(size))
 }

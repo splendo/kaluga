@@ -90,6 +90,15 @@ object DeltaCodedFixtures {
         val values: IntArray
     }
 
+    /** Unsigned 32-bit timestamps read into Longs, with 16-bit steps, wrapping around from 4294967295 to 0. */
+    @BytesLayout
+    interface Timestamps {
+        @DeltaCoded(Length.`16_BIT`)
+        @ItemSize(Length.`32_BIT`)
+        @ItemUnsigned
+        val times: List<Long>
+    }
+
     /** A record of a sensor stream: samples raw or delta-coded by type, so the reader knows which by the type alone. */
     @BytesLayout
     @LengthPrefix

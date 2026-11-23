@@ -49,15 +49,32 @@ class ViewDeltasTest {
         assertEquals(5, ViewDeltas.end(1, 5, short, byte))
     }
 
-    // 5000, 5001, 5000, 4999 and 5002, as Shorts and as Ints.
+    @Test
+    fun wrapsLongItemsAroundTheWholeLongRange() {
+        val b = bytes(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F, 0x01, 0x05)
+        val list = ViewDeltas.longs(b, 0, b.size, Length.`64_BIT`, true, byte, lsb)
+        assertEquals(listOf(Long.MAX_VALUE, Long.MIN_VALUE, Long.MIN_VALUE + 5), list)
+        var sum = 0L
+        list.forEachLong { sum += it }
+        assertEquals(Long.MAX_VALUE + Long.MIN_VALUE + Long.MIN_VALUE + 5, sum)
+        assertContentEquals(longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE, Long.MIN_VALUE + 5), list.toLongArray())
+        assertFailsWith<IndexOutOfBoundsException> { list.copyInto(LongArray(3), 1) }
+    }
+
+    // 5000, 5001, 5000, 4999 and 5002, as Shorts, Ints and Longs.
     private fun lists(b: ByteArray): List<List<Number>> = listOf(
         ViewDeltas.shorts(b, 0, b.size, short, true, byte, lsb),
         ViewDeltas.ints(b, 0, b.size, short, true, byte, lsb),
+        ViewDeltas.longs(b, 0, b.size, short, true, byte, lsb),
     )
 
     private fun samples(): ByteArray = bytes(0x88, 0x13, 0x01, 0xFF, 0xFF, 0x03)
 
-    private fun List<Number>.expected(vararg values: Int): List<Number> = if (this is DeltaCodedShortList) values.map { it.toShort() } else values.toList()
+    private fun List<Number>.expected(vararg values: Int): List<Number> = when (this) {
+        is DeltaCodedShortList -> values.map { it.toShort() }
+        is DeltaCodedLongList -> values.map { it.toLong() }
+        else -> values.toList()
+    }
 
     @Test
     fun keepsTheListContract() {

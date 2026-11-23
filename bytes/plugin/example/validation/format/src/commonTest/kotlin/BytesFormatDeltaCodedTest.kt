@@ -21,6 +21,7 @@ import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationComplete
 import com.splendo.kaluga.bytes.layout.DataAfterUnconstrainedData
 import com.splendo.kaluga.bytes.toHexString
 import com.splendo.kaluga.bytes.view.DeltaCodedIntList
+import com.splendo.kaluga.bytes.view.DeltaCodedLongList
 import com.splendo.kaluga.bytes.view.DeltaCodedShortList
 import kotlinx.serialization.KSerializer
 import kotlin.test.Test
@@ -87,6 +88,11 @@ abstract class DeltaCodedSuite(backendFactory: ByteLayoutBackendFactory) : Bytes
             bytes(0xFF, 0x7F, 0x01, 0xFF),
         )
         validateEncoding(DeltaCodedFixturesCounterData(listOf(65534, 65535, 0, 1)), DeltaCodedFixturesCounterData.serializer(), bytes(0xFE, 0xFF, 0x01, 0x01, 0x01))
+        validateEncoding(
+            DeltaCodedFixturesTimestampsData(listOf(4294967295L, 0L, 1000L)),
+            DeltaCodedFixturesTimestampsData.serializer(),
+            bytes(0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x00, 0xE8, 0x03),
+        )
     }
 
     @Test
@@ -162,6 +168,8 @@ class ViewDeltaCodedTest : DeltaCodedSuite(ViewBackend.Factory) {
         assertContentEquals(shortArrayOf(0, 5000, 5001, 4999), samples.copyInto(ShortArray(4), 1))
         val counts: DeltaCodedIntList = DeltaCodedFixturesCounterView.wrap(bytes(0xFF, 0xFF, 0x01)).counts
         assertContentEquals(intArrayOf(65535, 0), counts.toIntArray())
+        val times: DeltaCodedLongList = DeltaCodedFixturesTimestampsView.wrap(bytes(0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x00)).times
+        assertContentEquals(longArrayOf(4294967295L, 0L), times.toLongArray())
     }
 
     @Test

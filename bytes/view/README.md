@@ -29,8 +29,8 @@ Views are zero-copy implementations of `@BytesLayout` interfaces that read and w
 ## Key components
 
 These helpers are marked `@InternalBytesApi` (from [layout](../layout/)): generated views opt in to them, and they follow
-the generated code rather than a compatibility promise. `FixedStrideList`, `ScannedList`, `DeltaCodedShortList` and
-`DeltaCodedIntList`, which list properties return, are public.
+the generated code rather than a compatibility promise. `FixedStrideList`, `ScannedList`, `DeltaCodedShortList`,
+`DeltaCodedIntList` and `DeltaCodedLongList`, which list properties return, are public.
 
 ### ViewBytes
 
@@ -64,7 +64,7 @@ Read collection counts and walk item frames:
 
 Read, size and write `@DeltaCoded` lists, the first item and then the step to each next one:
 
-- `DeltaCodedShortList` and `DeltaCodedIntList` — The items of such a list as a `List<Short>` or `List<Int>`. `size` follows from the bytes; `forEachShort`/`forEachInt` and `copyInto` read every item in order without allocating or boxing; `get(i)` adds up the steps before item `i`, so it takes time in proportion to `i`. An iterator, a list iterator going forward, `subList`, `lastIndexOf` and `==` read the items in order, one step each; a list iterator's `previous` adds up the steps from the first item again, like `get`
+- `DeltaCodedShortList`, `DeltaCodedIntList` and `DeltaCodedLongList` — The items of such a list as a `List<Short>`, `List<Int>` or `List<Long>`. `size` follows from the bytes; `forEachShort`/`forEachInt`/`forEachLong` and `copyInto` read every item in order without allocating or boxing; `get(i)` adds up the steps before item `i`, so it takes time in proportion to `i`. An iterator, a list iterator going forward, `subList`, `lastIndexOf` and `==` read the items in order, one step each; a list iterator's `previous` adds up the steps from the first item again, like `get`
 - Checks that the bytes are a first item and whole steps, and that what it writes fits, as `BytesFormat` does
 
 ### ViewChecksum
