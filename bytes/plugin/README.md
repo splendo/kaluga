@@ -41,7 +41,7 @@ kotlin {
 
 The plugin applies the Kotlin Multiplatform, KSP and Kotlin serialization (`org.jetbrains.kotlin.plugin.serialization`,
 unless it is already applied) plugins, and adds `bytes:annotations`, `bytes:serialization` and `bytes:view` to
-`commonMain`. Any interface can override the module-wide `generate`, so what a module generates is only known once KSP
+`commonMain` as `api` dependencies, since the generated classes expose their types to the module's consumers. Any interface can override the module-wide `generate`, so what a module generates is only known once KSP
 has read them all; that is why both runtimes and the serialization plugin are always there. Each KSP pass gets a
 `registryPrefix` from the project path and its source set, so the generated registry objects of different modules and
 source sets never clash.
@@ -109,7 +109,7 @@ val viewDecoded = HeartRateView.wrap(encoded)
 ```
 
 For a more complex example involving enums, sealed classes and nested structures, see [`example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt`](example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt).
-For a stream of type-length-value records, each a type, a length and that many bytes, read back to back with unknown types kept and their shared time step read, see [`RecordFixtures.kt`](example/validation/format/src/commonMain/kotlin/RecordFixtures.kt).
+For a stream of type-length-value records, each a type, a length and that many bytes, read back to back with unknown types kept and their shared time step read, see [`RecordFixtures.kt`](example/validation/format/src/commonMain/kotlin/RecordFixtures.kt). For records whose samples are delta-coded, the first sample and then the step to each next one, see [`DeltaCodedFixtures.kt`](example/validation/format/src/commonMain/kotlin/DeltaCodedFixtures.kt).
 
 ## SerialName note for sealed/enum class discriminators
 

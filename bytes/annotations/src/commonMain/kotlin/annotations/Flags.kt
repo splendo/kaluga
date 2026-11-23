@@ -258,7 +258,8 @@ annotation class Size(val length: Length)
 
 /**
  * When applied to a String or Collection, no end marking will be applied.
- * This will result in a [DataAfterUnconstrainedData] exception if data (besides checksum or postfix) is added after this element.
+ * This will result in a [DataAfterUnconstrainedData] exception if data (besides checksum or postfix) is added after this element,
+ * including a next item after an item of a collection that ends in this element.
  */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
@@ -291,6 +292,29 @@ annotation class NullIfEmpty
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class Count(val count: Int)
+
+/**
+ * Encodes a List or primitive array of integers as its first item, then a signed step of [step] per further item: the
+ * difference from the item before it. The first item has the size and signedness of an item, from its type,
+ * [@ItemSize][ItemSize] and [@ItemUnsigned][ItemUnsigned], in the items' byte order, and every further item is the
+ * one before it plus its step modulo 2 to the power of that size, so a step wraps around as the first item does.
+ *
+ * Nothing records how many items there are: like [Unsized] the list runs to the end of what holds it, the bytes the
+ * length of a type-length-value record counts (see [LengthPrefix] on a sealed class) or the whole value less any
+ * checksum and postfix, so nothing can follow it. It holds `1 + (bytes - first item) / step` items; no bytes at all is
+ * an empty list, and bytes that are not a first item and whole steps do not decode.
+ *
+ * Encoding throws when an item does not fit the size of an item or the step to it does not fit [step], so a list is
+ * never written truncated. It cannot be combined with another end marking or [NullIfEmpty], cannot be nullable, and
+ * needs items that are integers of one size, in a frame accumulated least significant first. It does not apply to a
+ * Set, which would drop the items a step of 0 repeats.
+ *
+ * @property step the size of every step, at most the size of an item.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class DeltaCoded(val step: Length)
 
 /**
  * When applied to a sealed polymorphic class, subtypes are identified by their remaining payload

@@ -55,7 +55,7 @@ class BytesPluginTest {
 
         assertEquals(
             listOf("$BYTES:annotations", "$BYTES:serialization", "$BYTES:view"),
-            project.dependencyNames("commonMainImplementation").filter { it.startsWith("$BYTES:") },
+            project.dependencyNames("commonMainApi").filter { it.startsWith("$BYTES:") },
         )
         assertTrue("$BYTES:ksp" in project.dependencyNames("kspCommonMainMetadata"))
         assertTrue("$BYTES:ksp" in project.dependencyNames("kspJvm") && "$BYTES:ksp" in project.dependencyNames("kspJs"))

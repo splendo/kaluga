@@ -296,8 +296,15 @@ data class StringSettings(val encoding: Encoding, val endMarking: StringEncoding
  * @property lengthMarking the [LengthMarking] to use when encoding the collection.
  * @property nullIfEmpty if the collection should be encoded as null if it is empty. When `true` an additional null flag will be added to the flags header.
  * @property byteStuffing when non-null (only with [TerminalMarked]), the collection body is byte-stuffed so its terminator stays unambiguous.
+ * @property deltaCoding when non-null (only with [Unmarked]), the items are the first one, then the step to each next one.
  */
-data class CollectionSettings(val lengthMarking: LengthMarking, val nullIfEmpty: Boolean, val byteStuffing: ByteStuffingScheme? = null) {
+data class CollectionSettings(val lengthMarking: LengthMarking, val nullIfEmpty: Boolean, val byteStuffing: ByteStuffingScheme? = null, val deltaCoding: DeltaCoding? = null) {
+
+    /**
+     * The list holds its first item, then the signed difference to every next item in [step], added modulo 2 to the
+     * power of the item's size; see [DeltaCodec].
+     */
+    data class DeltaCoding(val step: Length)
 
     sealed class LengthMarking
     data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix) : LengthMarking()

@@ -84,7 +84,7 @@ Control how strings are terminated and encoded.
 - `@Encoded(Encoding.UTF_8 | ASCII | ...)` — Specify the character encoding (default UTF-8). A `Char` has a fixed size, so it takes ASCII (the default for a `Char`), ISO-8859-1 (Latin-1) or UTF-16; UTF-8 is rejected for it, so use a `String` for UTF-8 text.
 - `@LengthPrefix(lengthAsShort, canOverflow, sentinel)` — Prefix the string with a length byte (or short if `lengthAsShort = true`). Supports overflow detection if `canOverflow = true`. On a sealed class it makes records of the subtypes, see [Enums and polymorphism](#enums-and-polymorphism).
 - `@NullTerminated` — Terminate the string with a null byte (0x00) instead of a length prefix. The string must not contain null bytes.
-- `@Unsized` — Consume all remaining bytes (except checksum/postfix). No other field may follow.
+- `@Unsized` — Consume all remaining bytes (except checksum/postfix). No other field may follow, and no other item may follow an item of a collection that ends in one, unless that item is a type-length-value record.
 - `@ByteStuffed` / `@ByteStuffedXor` / `@ByteStuffedSlip` / `@ByteStuffedCobs` — Byte-stuff the string so a delimiter never appears literally in the content. The delimiter schemes (`Xor`, `Slip`, `Cobs`) terminate with their own delimiter; `@ByteStuffed` has none and needs a `@Terminal`.
 - `@Terminal(terminator)` — Terminate with a custom byte instead of 0x00. With `@ByteStuffed` it must be one of the bytes the scheme escapes (`0xF0..0xF2` by default); a delimiter scheme rejects it, so choose its terminator through the scheme (`@ByteStuffedXor(delimiter = ...)`, `@ByteStuffedSlip(end = ...)`). Without stuffing the content must not contain it.
 
@@ -98,6 +98,7 @@ Control how lists and maps are prefixed, terminated and their items/keys/values 
 - `@NullIfEmpty` — Encode an empty list as null instead of encoding a zero count. Without it a nullable empty list is present, with a zero count.
 - `@NullTerminated` — Terminate with 0x00 instead of a length prefix.
 - `@Count(count)` — Always exactly `count` items (entries for a map), with no length prefix or terminator, so the collection can sit anywhere in a structure; with fixed-size items its size is fixed too. Encoding another number of items throws `UnexpectedItemCount`. Cannot be combined with another end marking, `@Size` or `@NullIfEmpty`.
+- `@DeltaCoded(step)` — Store a list of integers as its first item, then a signed `step`-sized difference from each item to the next, added modulo 2 to the power of an item's size, so a step wraps around as an item does. The first item has the size and signedness of an item (its type, `@ItemSize`, `@ItemUnsigned`), in the items' byte order. Like `@Unsized` it runs to the end of what holds it, a type-length-value record or the whole value, so nothing can follow it; no bytes is an empty list, and bytes that are not a first item and whole steps do not decode. Encoding throws when an item or a step does not fit, see [Delta-coded lists](#delta-coded-lists).
 - `@ByteStuffed` / `@ByteStuffedXor` / `@ByteStuffedSlip` / `@ByteStuffedCobs` — Byte-stuff the collection content.
 - `@Terminal(terminator)` — Terminate with a custom byte, under the same rules as for strings.
 - `@ItemSize(...)` — Fixed size for each item.
@@ -107,6 +108,34 @@ Control how lists and maps are prefixed, terminated and their items/keys/values 
 - `@KeyEncoded(encoding)` — Character encoding for string keys.
 - `@ValueNullTerminated` — Null-terminate string values in a map.
 
+### Delta-coded lists
+
+A sensor that samples faster than it can send stores most samples as the small difference from the sample before. Here a record of signed 16-bit samples holds the first one, then a signed byte per further sample, to the end of the bytes its length counts:
+
+```kotlin
+@BytesLayout
+@LengthPrefix
+sealed interface Packet {
+    @BytesLayout
+    @SerializedByteValue(0x01)
+    interface Raw : Packet {
+        @Unsized val samples: List<Short>
+    }
+
+    @BytesLayout
+    @SerializedByteValue(0x02)
+    interface Waveform : Packet {
+        @DeltaCoded(Length.`8_BIT`) val samples: List<Short>
+    }
+}
+
+// 02 04 10 00 02 FD is a Waveform of 16, 18 and 15: 0x0010, then +2, then -3.
+```
+
+`@DeltaCoded` takes the items from the `List` or primitive array it annotates as they are, so the encoder never decides on its own between differences and items: a protocol that sends either has a record type for each. The sample count follows from the bytes, `1 + (bytes - first item) / step`. With an `Int` list, ``@ItemSize(Length.`16_BIT`)`` makes the first item 16 bits, and `@ItemUnsigned` makes it count from 0 to 65535, a step past 65535 wrapping to 0.
+
+It applies to a `List`, `ShortArray`, `IntArray` or other array of integers of one size whose items are not nullable, not to a `Set`, which would drop the items a step of 0 repeats, in a frame accumulated least significant first (big-endian items take `@ItemByteOrder` or `@ByteOrder(excludeStructure = true)`), and cannot be nullable or combined with another end marking or `@NullIfEmpty`. Generated views read `List<Short>`, `List<Int>` and `List<Long>` items as they go, see [ksp](../ksp/#delta-coded-lists).
+
 ### Framing and structure
 
 Control the overall structure of the encoded bytes.
@@ -114,7 +143,7 @@ Control the overall structure of the encoded bytes.
 - `@Prefix(byteArray)` — Prepend these bytes (before any body fields).
 - `@Postfix(byteArray)` — Append these bytes (after any body fields, but after checksum).
 - `@Checksum(width, polynomial, init, xorOut, reflectIn, reflectOut)` — Compute a CRC over the body and append it (between body and postfix). On decode, validate if `BytesFormat.validateChecksum = true`.
-- `@Reserved(before, after)` — Skip/write padding bytes around this field. Unlike `@Postfix`, reserved bytes are not validated on decode — any content is silently discarded. An absent nullable field has no padding.
+- `@Reserved(before, after)` — Skip/write padding bytes around this field. Unlike `@Postfix`, reserved bytes are not validated on decode — any content is silently discarded. An absent nullable field has no padding. Padding after a field that runs to the end of what holds it, such as an `@Unsized` one, is data after it, which encoding refuses.
 - `@ByteOrder(ByteOrder.LEAST_SIGNIFICANT_FIRST | MOST_SIGNIFICANT_FIRST, excludeStructure)` — Specify byte order for this field or structure. When `excludeStructure = true` on a class, the byte order applies to field values but not the class's sequential accumulation direction.
 
 ### Enums and polymorphism

@@ -96,6 +96,28 @@ fun wrapValue(discriminator: UByte, bytes: ByteArray, from: Int = 0, to: Int = b
 
 The sealed layout itself still has no flag bits, cannot be `@SizePolymorphic`, and for VIEW its discriminators must all have the same size.
 
+### Delta-coded lists
+
+A `@DeltaCoded(step)` list is its first item, then a signed `step` from each item to the next, added modulo 2 to the power of an item's size; the [annotations](../annotations/#delta-coded-lists) README has the rules. Like `@Unsized` it runs to the end of what holds it, so it is the last property of a value or of a type-length-value record, whose length bounds it while further records follow; a property after it that is always written is a compile error saying so, and a view's `encode` throws `DataAfterUnconstrainedData` for one that may be absent, such as a nullable one, while it is present, as `BytesFormat` does. DATA needs nothing new: the data class carries `@DeltaCoded`, which `BytesFormat` reads.
+
+In a view:
+
+- **Its type**: a `List<Short>` reads as a `DeltaCodedShortList`, a `List<Int>` as a `DeltaCodedIntList` and a `List<Long>` as a `DeltaCodedLongList` of [view](../view/), the type the view and slice override the property with. A `ShortArray`, `IntArray` or `LongArray` property reads as a new array, as arrays do.
+- **Reading**: `size` follows from the bytes alone, `(bytes - first item) / step + 1`. An item is only known from the one before it, so `get(i)` adds up the steps before it and takes time in proportion to `i`; read the items in order instead, with `forEachShort`, `forEachInt`, `forEachLong` or `copyInto(array, offset)`, none of which allocates or boxes, with `toShortArray()`, `toIntArray()` or `toLongArray()`, or with an iterator or a list iterator going forward, also over a `subList`, which boxes each item as any `List` does. Only the list object itself is allocated, once per read of the property.
+- **Checking**: `wrap` throws `ByteArrayEndedBeforeSerializationCompleted`, as `BytesFormat` does, when the bytes are not a first item and whole steps; no bytes is an empty list.
+- **Writing**: `encode` and the constructor-like `invoke` write the first item and the steps, and throw `IllegalArgumentException`, as `BytesFormat` does, for an item or a step that does not fit. The property has no setter, as its size depends on its items.
+
+VIEW reads `Short`, `Int` and `Long` items; another item type, such as `Byte` or `UShort`, is reported as not yet supported for VIEW and works with DATA.
+
+The annotation takes only what the encoding cannot get elsewhere. The first item is described the way the items of any list are, by its type, `@ItemSize`, `@ItemUnsigned` and `@ItemByteOrder`, and the end comes from the bound, as for `@Unsized`, so a step size is all that is left. Whether a list holds items or differences is not the encoder's choice: a protocol that sends either has a record type for each, one of them `@DeltaCoded`.
+
+A second kind of delta frame is known and not supported yet: a reference value per channel, then blocks of a byte giving the bit width of its deltas and a byte giving its number of samples, followed by that many deltas per channel, sign-extended and packed least significant bit first, the channels interleaved and added without wrapping. `@DeltaCoded` grows into it without changing what today's parameter means:
+
+- **Channels**: a `channels` parameter, 1 by default, makes the first `channels` items the references and each further item a step from the item `channels` before it, so the list holds the samples interleaved as they are sent.
+- **Wrapping**: a `wrap` parameter, `true` by default, chooses between adding modulo the item size, as now, and plain addition, where an item that leaves the item's range does not decode and does not encode.
+- **Blocks and bit packing**: a block header with a bit width and a count is a different end marking from a fixed `step`, so it becomes an annotation of its own, such as ``@DeltaBlocks(width = Length.`8_BIT`, count = Length.`8_BIT`)``, used instead of `@DeltaCoded` and taking `channels` and `wrap` too. `CollectionSettings.DeltaCoding` gains the channels, the wrapping and the block header, with steps counted in bits, read least significant bit first like flag-packed numbers.
+- **Views**: the list API stays the same. The size of a blocked list is the sum of its block counts, found by stepping over the block headers once.
+
 ### <Prefix>BytesViews
 
 One internal object per package, listing every layout generated with both DATA and VIEW, keyed by DATA serial name, prefixed like `<Prefix>BytesLayouts`.
@@ -132,9 +154,9 @@ Byte stuffing cannot read in place. For byte-stuffed layouts:
 
 ## Supported VIEW features
 
-Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
+Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, delta-coded lists of `Short`, `Int` and `Long` items, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
 
-Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. A `@Count` collection of fixed-size items has a setter that rewrites its items in place and, like the constructors, refuses another number of items. Lists are read in place: `FixedStrideList` when all items are the same size, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
+Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. A `@Count` collection of fixed-size items has a setter that rewrites its items in place and, like the constructors, refuses another number of items. Lists are read in place: `FixedStrideList` when all items are the same size, a `DeltaCodedShortList` or `DeltaCodedIntList` when `@DeltaCoded`, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
 
 ## Unsupported VIEW features
 
@@ -142,7 +164,7 @@ Configurations using unsupported features generate a KSP error "VIEW not yet sup
 
 ## Layout constraints
 
-- Invalid layouts (ones `BytesFormat` would reject at first encoding) are compile errors
+- Invalid layouts (ones `BytesFormat` would reject at first encoding) are compile errors. Data after data of an unconstrained size, such as an `@Unsized` list, is one when it is written for every value; when the data before or after may be absent, a view's `encode` and constructor-like `invoke` throw `DataAfterUnconstrainedData` for the values `BytesFormat` throws it for. Bytes `@Reserved` after such data count as data after it, and so does an item of a collection after an item that ends in such data
 - Layouts cannot be generic; declare a concrete sub-interface instead
 - A sealed super-interface of a layout must itself be a `@BytesLayout`: extending a sealed interface is how a layout becomes a subtype that its parent dispatches by discriminator or size, so a sealed parent without the annotation is most likely one where it was forgotten, and generating the layout on its own would encode it without its discriminator. To only group layouts, or to share properties between them, extend an interface that is not sealed
 - Properties cannot declare default values, and none can be named `Companion`

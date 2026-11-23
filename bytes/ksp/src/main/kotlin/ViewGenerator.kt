@@ -373,6 +373,20 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
     private fun FieldPlan.typeName(): TypeName = value.typeName.copy(nullable = nullable)
 
+    /** The type a getter returns: the declared type, or the list a delta-coded `List` reads as. */
+    private fun FieldPlan.readTypeName(): TypeName = (deltaCodedList() ?: value.typeName).copy(nullable = nullable)
+
+    /** The list a delta-coded `List` reads as, which reads its items in order without boxing them. */
+    private fun FieldPlan.deltaCodedList(): ClassName? {
+        val count = (access as? Access.Collection)?.count as? Count.Delta ?: return null
+        if ((value as ValueType.Collection).kind != ValueType.Collection.Kind.LIST) return null
+        return when (count.kind) {
+            TypeKind.SHORT -> DELTA_CODED_SHORT_LIST
+            TypeKind.INT -> DELTA_CODED_INT_LIST
+            else -> DELTA_CODED_LONG_LIST
+        }
+    }
+
     /**
      * A property of a view or slice. A layout nested in it is given [parent] so it can report writes, and [afterSet]
      * runs after every write, both only when there is a checksum to keep up to date.
@@ -380,13 +394,14 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     private fun overrideProperty(field: FieldPlan, context: ViewContext, arguments: CodeBlock, parent: CodeBlock?, afterSet: CodeBlock?): PropertySpec {
         val name = field.name.capitalized()
         val getterArguments = if (parent != null && field.access.takesParent()) CodeBlock.of("%L, %L", arguments, parent) else arguments
-        return PropertySpec.builder(field.name, field.typeName(), KModifier.OVERRIDE)
+        val type = field.readTypeName()
+        return PropertySpec.builder(field.name, type, KModifier.OVERRIDE)
             .mutable(field.settable)
             .getter(FunSpec.getterBuilder().addStatement("return %T.get$name(%L)", context.layoutName, getterArguments).build())
             .apply {
                 if (field.settable) {
                     setter(
-                        FunSpec.setterBuilder().addParameter("value", field.typeName())
+                        FunSpec.setterBuilder().addParameter("value", type)
                             .addStatement("%T.set$name(%L, value)", context.layoutName, arguments)
                             .apply { afterSet?.let { addStatement("%L", it) } }
                             .build(),
@@ -498,7 +513,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
         plan.fields.forEach { field ->
             val name = field.name.capitalized()
-            val getter = bufferFunction("get$name").returns(field.typeName())
+            val getter = bufferFunction("get$name").returns(field.readTypeName())
             if (field.access.takesParent()) getter.addParameter(ParameterSpec.builder(PARENT, VIEW_PARENT.copy(nullable = true)).defaultValue("null").build())
             field.presence?.let { getter.addStatement("if (!(%L)) return null", frame.presence(it)) }
             val access = field.access
@@ -659,6 +674,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 .addStatement("return writeValues(%L)", (listOf(CodeBlock.of("b, s, lim")) + values).joinToCode(", "))
                 .build(),
         )
+        endsUnconstrained(context, plan)?.let { builder.addFunction(it) }
 
         val discriminator = plan.discriminator
         fun FunSpec.Builder.discriminated(): FunSpec.Builder = apply { discriminator?.let { addParameter(DISCRIMINATOR, it.typeName()) } }
@@ -897,7 +913,14 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
     }
 
     private fun walk(walk: Walk, plan: ViewPlan, names: Map<FieldPlan, String>) {
+        // What makes the frame unconstrained so far, one list of conditions per property that can.
+        val unconstrained = mutableListOf<List<CodeBlock>>()
         plan.fields.forEach { field ->
+            if (unconstrained.isNotEmpty()) {
+                writesBody(field, CodeBlock.of("%N", names.getValue(field)))?.let { walk.refuseDataAfter(unconstrained, it) }
+            }
+            val unconstrainedByField = unconstrainedBy(field, CodeBlock.of("%N", names.getValue(field)))
+            unconstrainedByField?.let { unconstrained += it }
             if (field.field.reservedBefore > 0) {
                 walk.align()
                 walk.advance(field.field.reservedBefore * Byte.SIZE_BITS)
@@ -919,10 +942,166 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 walkContent(walk, field, value)
             }
             if (field.field.reservedAfter > 0) {
+                unconstrainedByField?.let { walk.refuseDataAfter(listOf(it), emptyList()) }
                 walk.align()
                 walk.advance(field.field.reservedAfter * Byte.SIZE_BITS)
             }
         }
+    }
+
+    /**
+     * Throws `DataAfterUnconstrainedData`, as `BytesFormat` does, when one of the [unconstrained] conditions holds
+     * and what is about to be written [writes] body data. The check is a call, so the compiler draws nothing
+     * from it about the values the property is then written from.
+     */
+    private fun Walk.refuseDataAfter(unconstrained: List<List<CodeBlock>>, writes: List<CodeBlock>) {
+        val before = if (unconstrained.any { it.isEmpty() }) {
+            null
+        } else {
+            unconstrained.map { it.joinToCode(" && ") }.joinToCode(" || ").let { if (unconstrained.size > 1 && writes.isNotEmpty()) CodeBlock.of("(%L)", it) else it }
+        }
+        val condition = (listOfNotNull(before) + writes).takeIf { it.isNotEmpty() }?.joinToCode(" && ") ?: CodeBlock.of("true")
+        code(CodeBlock.of("%T.checkNothingAfterUnconstrained(%L)", VIEW_BYTES, condition))
+    }
+
+    /**
+     * The conditions under which writing [field] from [value] leaves its frame unconstrained, as `BytesFormat` marks
+     * it: none when it always does, `null` when it never does. [value] is smart cast after a `null` check unless it
+     * is not [stable], and is not checked for `null` unless [nullable].
+     */
+    private fun unconstrainedBy(field: FieldPlan, value: CodeBlock, stable: Boolean = true, nullable: Boolean = field.nullable): List<CodeBlock>? {
+        val access = field.access
+        val content = access.unconstrained(emptySet())
+        if (content == Unconstrained.NEVER) return null
+        fun condition(of: CodeBlock): CodeBlock? = if (content == Unconstrained.ALWAYS) {
+            null
+        } else {
+            when (access) {
+                is Access.Collection -> if (access.count is Count.Unmarked) CodeBlock.of("%L.isNotEmpty()", of) else lastItemEndsUnconstrained(field, access, of)
+                is Access.Nested -> CodeBlock.of("%T.endsUnconstrained(%L)", access.context.layoutName, of)
+                is Access.Sealed -> CodeBlock.of("%T.endsUnconstrained(%L)", access.context.layoutName, of)
+                else -> error("${access::class.simpleName} cannot leave a frame unconstrained only sometimes")
+            }
+        }
+        if (!nullable) return listOfNotNull(condition(value))
+        val present = condition(if (stable) value else CodeBlock.of("it")) ?: return listOf(CodeBlock.of("%L != null", value))
+        return if (stable) listOf(CodeBlock.of("%L != null", value), present) else listOf(CodeBlock.of("%L?.let { %L } == true", value, present))
+    }
+
+    /**
+     * Whether the last item of the collection [value] of [field] ends unconstrained, which leaves the collection so;
+     * only the last item can, as `BytesFormat` refuses an item after one that does. Of a map, that is the last value.
+     */
+    private fun lastItemEndsUnconstrained(field: FieldPlan, access: Access.Collection, value: CodeBlock): CodeBlock {
+        val items = if ((field.value as ValueType.Collection).kind == ValueType.Collection.Kind.MAP) CodeBlock.of("%L.values", value) else value
+        val item = access.items.last().field
+        val last = if (item.nullable) CodeBlock.of("%L.last()!!", items) else CodeBlock.of("%L.last()", items)
+        val ends = unconstrainedBy(item, last, nullable = false)
+        val present = if (item.nullable) CodeBlock.of("%L.lastOrNull() != null", items) else CodeBlock.of("%L.isNotEmpty()", items)
+        return (listOf(present) + ends.orEmpty()).joinToCode(" && ")
+    }
+
+    /**
+     * The conditions under which writing [field] from [value] adds body data, which `BytesFormat` refuses after data
+     * of an unconstrained size: none when it always does, `null` when it never does.
+     */
+    private fun writesBody(field: FieldPlan, value: CodeBlock): List<CodeBlock>? {
+        val present = listOfNotNull(CodeBlock.of("%L != null", value).takeIf { field.nullable })
+        if (field.field.reservedBefore > 0 || field.field.reservedAfter > 0) return present
+        val notEmpty = CodeBlock.of("%L.isNotEmpty()", value)
+        val content = when (val access = field.access) {
+            is Access.HeaderBit, is Access.PackedNumber, is Access.PackedEnum -> return null
+
+            is Access.Collection -> when (val count = access.count) {
+                is Count.Unmarked, is Count.Flag, is Count.Delta -> notEmpty
+
+                // Another number of items throws for the count first, as it does in BytesFormat.
+                is Count.Fixed -> if (count.count == 0) return null else CodeBlock.of("%L.size == %L", value, count.count)
+
+                else -> notEmpty.takeIf { access.emptyBit != null }
+            }
+
+            else -> null
+        }
+        return present + listOfNotNull(content)
+    }
+
+    /** Whether writing a value can leave the frame holding it unconstrained, as `BytesFormat` marks it. */
+    private enum class Unconstrained { NEVER, SOMETIMES, ALWAYS }
+
+    /** Whether writing a present value of this access leaves its frame unconstrained; [walking] holds the layouts being looked into. */
+    private fun Access.unconstrained(walking: Set<ViewContext>): Unconstrained = when (this) {
+        is Access.Text -> if (endMarking is StringEncodingSettings.NoMarking) Unconstrained.ALWAYS else Unconstrained.NEVER
+
+        is Access.Collection -> when (count) {
+            is Count.Delta -> Unconstrained.ALWAYS
+
+            is Count.Unmarked -> if (emptyBit == null) Unconstrained.ALWAYS else Unconstrained.SOMETIMES
+
+            // A terminator after an item that ends unconstrained is refused, so the collection never ends that way.
+            is Count.Terminated, is Count.Stuffed -> Unconstrained.NEVER
+
+            else -> if (items.last().field.access.unconstrained(walking) == Unconstrained.NEVER) Unconstrained.NEVER else Unconstrained.SOMETIMES
+        }
+
+        is Access.Nested -> context.unconstrained(walking)
+
+        is Access.Sealed -> context.unconstrained(walking)
+
+        else -> Unconstrained.NEVER
+    }
+
+    private fun ViewContext.unconstrained(walking: Set<ViewContext> = emptySet()): Unconstrained {
+        // A layout holding itself adds nothing to what it holds otherwise.
+        if (this in walking) return Unconstrained.NEVER
+        val inner = walking + this
+        if (!layout.isSealed) {
+            return plan!!.getOrThrow().fields.maxOfOrNull { field ->
+                field.access.unconstrained(inner).let { if (field.nullable) minOf(it, Unconstrained.SOMETIMES) else it }
+            } ?: Unconstrained.NEVER
+        }
+        val sealed = sealedPlan!!.getOrThrow()
+        return when {
+            sealed.sizeDispatch != null -> Unconstrained.ALWAYS
+
+            // A length bounds whatever a record holds.
+            sealed.lengthPrefix != null -> Unconstrained.NEVER
+
+            sealed.leaves.any { it.context.unconstrained(inner) != Unconstrained.NEVER } -> Unconstrained.SOMETIMES
+
+            else -> Unconstrained.NEVER
+        }
+    }
+
+    /** `endsUnconstrained`, whether writing a value of a frame that only sometimes ends unconstrained does. */
+    private fun endsUnconstrained(context: ViewContext, plan: ViewPlan): FunSpec? {
+        if (context.unconstrained() != Unconstrained.SOMETIMES) return null
+        val conditions = plan.fields.mapNotNull { unconstrainedBy(it, CodeBlock.of("value.%N", it.name), stable = false)?.joinToCode(" && ") }
+        return FunSpec.builder("endsUnconstrained")
+            .addKdoc("Whether writing [value] leaves what holds it unconstrained, so that nothing may follow it.")
+            .addParameter("value", context.layout.interfaceClassName)
+            .returns(BOOLEAN)
+            .addStatement("return %L", conditions.joinToCode(" || "))
+            .build()
+    }
+
+    /** `endsUnconstrained` of a sealed frame, by the subtype of the value. */
+    private fun endsUnconstrained(context: ViewContext, plan: SealedPlan): FunSpec? {
+        if (context.unconstrained() != Unconstrained.SOMETIMES) return null
+        val function = FunSpec.builder("endsUnconstrained")
+            .addKdoc("Whether writing [value] leaves what holds it unconstrained, so that nothing may follow it.")
+            .addParameter("value", context.layout.interfaceClassName)
+            .returns(BOOLEAN)
+            .beginControlFlow("return when (value)")
+        plan.leaves.forEach { leaf ->
+            val ends = when (leaf.context.unconstrained()) {
+                Unconstrained.NEVER -> CodeBlock.of("false")
+                Unconstrained.ALWAYS -> CodeBlock.of("true")
+                Unconstrained.SOMETIMES -> CodeBlock.of("%T.endsUnconstrained(value)", leaf.context.layoutName)
+            }
+            function.addStatement("is %T -> %L", leaf.layout.interfaceClassName, ends)
+        }
+        return function.endControlFlow().build()
     }
 
     private fun walkContent(walk: Walk, field: FieldPlan, value: CodeBlock) {
@@ -1228,8 +1407,15 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
                     is Access.Sealed -> addStatement("%T.validate(b, pos, %L, checkChecksum)", access.context.layoutName, sealedLimit(access))
 
-                    is Access.Collection -> forEachItem(field, access, plan.mirrored) { item, bytes, limit ->
-                        CodeBlock.of("%T.validate($bytes, item, $limit, checkChecksum)", item.objectName)
+                    is Access.Collection -> {
+                        val delta = access.count as? Count.Delta
+                        if (delta != null) {
+                            addStatement("%T.end(pos, lim, %L, %L)", VIEW_DELTAS, length(delta.width), length(delta.step))
+                        } else {
+                            forEachItem(field, access, plan.mirrored) { item, bytes, limit ->
+                                CodeBlock.of("%T.validate($bytes, item, $limit, checkChecksum)", item.objectName)
+                            }
+                        }
                     }
 
                     is Access.Framed -> {
@@ -1878,6 +2064,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         if (plan.postfix != null) write.addStatement("%T.write(b, $BODY_END + %L, %N, lim + %L)", VIEW_BYTES, crcWidth, FRAME_POSTFIX, plan.footer)
         write.addStatement(if (plan.footer == 0) "return $BODY_END" else "return $BODY_END + %L", plan.footer)
         builder.addFunction(write.build())
+        endsUnconstrained(context, plan)?.let { builder.addFunction(it) }
 
         if (root && record != null) {
             builder.addFunction(writeRecord(plan))
@@ -1982,6 +2169,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 addStatement("val first = pos")
             }
 
+            is Count.Delta -> error("A delta-coded list has no item frames to count")
+
             // The items are read from an unstuffed copy, up to its end.
             is Count.Stuffed -> {
                 addStatement("val body = %T.unstuff(b, pos, lim, %N, %L)", VIEW_STUFFING, "${field.name}Stuffing", count.terminator.literal())
@@ -2001,6 +2190,24 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         field.presence?.let { getter.addStatement("if (!(%L)) return null", frame.presence(it)) }
         access.emptyBit?.let { getter.addStatement("if (!%T.bit(b, s, %L, lim)) return %L", VIEW_BYTES, it, emptyCollection(value)) }
         getter.addStatement("val pos = %L", frame.bytePos(field.start))
+        (access.count as? Count.Delta)?.let { delta ->
+            val list = CodeBlock.of(
+                "%T.%N(b, pos, lim, %L, %L, %L, %L)",
+                VIEW_DELTAS,
+                when (delta.kind) {
+                    TypeKind.SHORT -> "shorts"
+                    TypeKind.INT -> "ints"
+                    else -> "longs"
+                },
+                length(delta.width),
+                delta.signed,
+                length(delta.step),
+                order(delta.order),
+            )
+            val conversion = if (value.kind == ValueType.Collection.Kind.PRIMITIVE_ARRAY) collectionConversion(value) else ""
+            getter.addStatement("return %L%L", list, conversion)
+            return
+        }
         getter.collectionCount(field, access, frame.mirrored)
         val terminator = terminator(access)
         val items = access.items.first()
@@ -2082,6 +2289,12 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         function.addStatement("val pos = %L", pos)
         (access.count as? Count.Stuffed)?.let { count ->
             function.addStatement("return (%T.end(b, pos, lim, %N, %L) - s) * 8", VIEW_STUFFING, "${field.name}Stuffing", count.terminator.literal())
+            return
+        }
+        (access.count as? Count.Delta)?.let { delta ->
+            function.addStatement("val end = %T.end(pos, lim, %L, %L)", VIEW_DELTAS, length(delta.width), length(delta.step))
+            // An empty list writes nothing, so it does not end a partly filled byte either.
+            function.addStatement("return if (end == pos) start else (end - s) * 8")
             return
         }
         function.collectionCount(field, access, mirrored)
@@ -2183,6 +2396,12 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
 
             is Count.Terminated, is Count.Unmarked -> Unit
 
+            is Count.Delta -> {
+                walkDelta(walk, name, count, value)
+                if (conditions.isNotEmpty()) walk.end()
+                return
+            }
+
             is Count.Stuffed -> {
                 walk.align()
                 if (walk.dry) {
@@ -2208,6 +2427,9 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val terminator = (access.count as? Count.Terminated)?.terminator
         val loopValues = if (collection.kind == ValueType.Collection.Kind.MAP) listOf("keyOf$name", "valueOf$name") else listOf("itemOf$name")
         if (terminator != null && !walk.dry) walk.code(CodeBlock.of("var indexOf$name = 0"))
+        val endsUnconstrained = access.items.mapIndexed { index, frame -> unconstrainedBy(frame.field, CodeBlock.of("%N", loopValues[index])) }
+        val unconstrainedItem = "unconstrainedItemOf$name".takeIf { endsUnconstrained.any { it != null } }
+        unconstrainedItem?.let { walk.code(CodeBlock.of("var $it = false")) }
         if (collection.kind ==
             ValueType.Collection.Kind.MAP
         ) {
@@ -2219,6 +2441,9 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
             val item = loopValues[index]
             val contents = contentsArgument(frame.plan.hasStuffed())
             val stride = frame.plan.staticSize
+            if (endsUnconstrained[(index + access.items.size - 1) % access.items.size] != null) {
+                walk.code(CodeBlock.of("%T.checkNoItemAfterUnconstrained($unconstrainedItem)", VIEW_BYTES))
+            }
             walk.align()
             val end = if (stride != null || walk.dry) {
                 walk.statement("%T.writeValues(b, %L, lim, $item$contents)", frame.objectName, walk.bytePos)
@@ -2241,9 +2466,11 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                 stride != null -> walk.advanceBytes(CodeBlock.of("%L", stride))
                 else -> walk.advanceBytes(CodeBlock.of("%T.sizeOfValues($item$contents)", frame.objectName))
             }
+            endsUnconstrained[index]?.let { walk.code(CodeBlock.of("$unconstrainedItem = %L", it.takeIf { it.isNotEmpty() }?.joinToCode(" && ") ?: "true")) }
         }
         walk.end()
         if (terminator != null) {
+            unconstrainedItem?.let { walk.code(CodeBlock.of("%T.checkNothingAfterUnconstrained($it)", VIEW_BYTES)) }
             walk.align()
             walk.statement("%T.write(b, %L, %N, %L)", VIEW_BYTES, walk.location.start(1), "${field.name}Terminator", if (walk.mirrored) "b.size" else "lim")
             walk.advance(Byte.SIZE_BITS)
@@ -2251,8 +2478,36 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         if (conditions.isNotEmpty()) walk.end()
     }
 
+    /** Writes the items of a delta-coded list in order, the first one and then the step to each next one. */
+    private fun walkDelta(walk: Walk, name: String, delta: Count.Delta, value: CodeBlock) {
+        walk.align()
+        if (walk.dry) {
+            walk.advanceBytes(CodeBlock.of("%T.sizeOf(%L.size, %L, %L)", VIEW_DELTAS, value, length(delta.width), length(delta.step)))
+            return
+        }
+        walk.goRuntime()
+        walk.code(CodeBlock.of("var previousOf$name = 0L"))
+        walk.code(CodeBlock.of("var indexOf$name = 0"))
+        walk.begin("for (itemOf$name in %L)", value)
+        walk.code(CodeBlock.of("val valueOf$name = %L", toLong(delta.kind, CodeBlock.of("itemOf$name"), !delta.signed)))
+        walk.code(
+            CodeBlock.of(
+                "$BIT_CURSOR += %T.write(b, %L, lim, indexOf$name++, previousOf$name, valueOf$name, %L, %L, %L, %L) * 8",
+                VIEW_DELTAS,
+                walk.bytePos,
+                length(delta.width),
+                delta.signed,
+                length(delta.step),
+                order(delta.order),
+            ),
+        )
+        walk.code(CodeBlock.of("previousOf$name = valueOf$name"))
+        walk.end()
+    }
+
     private fun collectionData(field: FieldPlan, access: Access.Collection, get: CodeBlock): CodeBlock {
         val value = field.value as ValueType.Collection
+        if (access.count is Count.Delta) return if (value.kind == ValueType.Collection.Kind.LIST) CodeBlock.of("%L.toList()", get) else get
         fun convert(frame: ItemFrame, item: String): CodeBlock {
             (frame.field.access as? Access.Sealed)?.let { sealed ->
                 val type = sealed.context.layout.interfaceClassName
@@ -2913,6 +3168,10 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val INVALID_CHECKSUM = ClassName("com.splendo.kaluga.bytes.layout", "InvalidChecksumException")
         val SERIALIZATION_EXCEPTION = ClassName("kotlinx.serialization", "SerializationException")
         val FIXED_STRIDE_LIST = ClassName("com.splendo.kaluga.bytes.view", "FixedStrideList")
+        val VIEW_DELTAS = ClassName("com.splendo.kaluga.bytes.view", "ViewDeltas")
+        val DELTA_CODED_SHORT_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedShortList")
+        val DELTA_CODED_INT_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedIntList")
+        val DELTA_CODED_LONG_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedLongList")
         val RUNTIME_EXCEPTION = ClassName("kotlin", "RuntimeException")
         val NO_SUCH_ELEMENT_EXCEPTION = ClassName("kotlin", "NoSuchElementException")
     }

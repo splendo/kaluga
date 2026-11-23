@@ -45,11 +45,55 @@ final class <#A: out kotlin/Any?> com.splendo.kaluga.bytes.view/ScannedList : ko
     final fun get(kotlin/Int): #A // com.splendo.kaluga.bytes.view/ScannedList.get|get(kotlin.Int){}[0]
 }
 
+final class com.splendo.kaluga.bytes.view/DeltaCodedIntList : com.splendo.kaluga.bytes.view/DeltaCodedList<kotlin/Int> { // com.splendo.kaluga.bytes.view/DeltaCodedIntList|null[0]
+    final fun copyInto(kotlin/IntArray, kotlin/Int = ...): kotlin/IntArray // com.splendo.kaluga.bytes.view/DeltaCodedIntList.copyInto|copyInto(kotlin.IntArray;kotlin.Int){}[0]
+    final fun toIntArray(): kotlin/IntArray // com.splendo.kaluga.bytes.view/DeltaCodedIntList.toIntArray|toIntArray(){}[0]
+    final inline fun forEachInt(kotlin/Function1<kotlin/Int, kotlin/Unit>) // com.splendo.kaluga.bytes.view/DeltaCodedIntList.forEachInt|forEachInt(kotlin.Function1<kotlin.Int,kotlin.Unit>){}[0]
+}
+
+final class com.splendo.kaluga.bytes.view/DeltaCodedLongList : com.splendo.kaluga.bytes.view/DeltaCodedList<kotlin/Long> { // com.splendo.kaluga.bytes.view/DeltaCodedLongList|null[0]
+    final fun copyInto(kotlin/LongArray, kotlin/Int = ...): kotlin/LongArray // com.splendo.kaluga.bytes.view/DeltaCodedLongList.copyInto|copyInto(kotlin.LongArray;kotlin.Int){}[0]
+    final fun toLongArray(): kotlin/LongArray // com.splendo.kaluga.bytes.view/DeltaCodedLongList.toLongArray|toLongArray(){}[0]
+    final inline fun forEachLong(kotlin/Function1<kotlin/Long, kotlin/Unit>) // com.splendo.kaluga.bytes.view/DeltaCodedLongList.forEachLong|forEachLong(kotlin.Function1<kotlin.Long,kotlin.Unit>){}[0]
+}
+
+final class com.splendo.kaluga.bytes.view/DeltaCodedShortList : com.splendo.kaluga.bytes.view/DeltaCodedList<kotlin/Short> { // com.splendo.kaluga.bytes.view/DeltaCodedShortList|null[0]
+    final fun copyInto(kotlin/ShortArray, kotlin/Int = ...): kotlin/ShortArray // com.splendo.kaluga.bytes.view/DeltaCodedShortList.copyInto|copyInto(kotlin.ShortArray;kotlin.Int){}[0]
+    final fun toShortArray(): kotlin/ShortArray // com.splendo.kaluga.bytes.view/DeltaCodedShortList.toShortArray|toShortArray(){}[0]
+    final inline fun forEachShort(kotlin/Function1<kotlin/Short, kotlin/Unit>) // com.splendo.kaluga.bytes.view/DeltaCodedShortList.forEachShort|forEachShort(kotlin.Function1<kotlin.Short,kotlin.Unit>){}[0]
+}
+
 final class com.splendo.kaluga.bytes.view/ViewContents { // com.splendo.kaluga.bytes.view/ViewContents|null[0]
     constructor <init>() // com.splendo.kaluga.bytes.view/ViewContents.<init>|<init>(){}[0]
 
     final fun add(kotlin/ByteArray) // com.splendo.kaluga.bytes.view/ViewContents.add|add(kotlin.ByteArray){}[0]
     final fun take(): kotlin/ByteArray? // com.splendo.kaluga.bytes.view/ViewContents.take|take(){}[0]
+}
+
+sealed class <#A: kotlin/Any?> com.splendo.kaluga.bytes.view/DeltaCodedList : kotlin.collections/AbstractList<#A> { // com.splendo.kaluga.bytes.view/DeltaCodedList|null[0]
+    final val b // com.splendo.kaluga.bytes.view/DeltaCodedList.b|{}b[0]
+        final fun <get-b>(): kotlin/ByteArray // com.splendo.kaluga.bytes.view/DeltaCodedList.b.<get-b>|<get-b>(){}[0]
+    final val first // com.splendo.kaluga.bytes.view/DeltaCodedList.first|{}first[0]
+        final fun <get-first>(): kotlin/Int // com.splendo.kaluga.bytes.view/DeltaCodedList.first.<get-first>|<get-first>(){}[0]
+    final val order // com.splendo.kaluga.bytes.view/DeltaCodedList.order|{}order[0]
+        final fun <get-order>(): com.splendo.kaluga.bytes/ByteOrder // com.splendo.kaluga.bytes.view/DeltaCodedList.order.<get-order>|<get-order>(){}[0]
+    final val signed // com.splendo.kaluga.bytes.view/DeltaCodedList.signed|{}signed[0]
+        final fun <get-signed>(): kotlin/Boolean // com.splendo.kaluga.bytes.view/DeltaCodedList.signed.<get-signed>|<get-signed>(){}[0]
+    final val size // com.splendo.kaluga.bytes.view/DeltaCodedList.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.splendo.kaluga.bytes.view/DeltaCodedList.size.<get-size>|<get-size>(){}[0]
+    final val step // com.splendo.kaluga.bytes.view/DeltaCodedList.step|{}step[0]
+        final fun <get-step>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.view/DeltaCodedList.step.<get-step>|<get-step>(){}[0]
+    final val width // com.splendo.kaluga.bytes.view/DeltaCodedList.width|{}width[0]
+        final fun <get-width>(): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.view/DeltaCodedList.width.<get-width>|<get-width>(){}[0]
+
+    abstract fun item(kotlin/Long): #A // com.splendo.kaluga.bytes.view/DeltaCodedList.item|item(kotlin.Long){}[0]
+    final fun next(kotlin/Int, kotlin/Long): kotlin/Long // com.splendo.kaluga.bytes.view/DeltaCodedList.next|next(kotlin.Int;kotlin.Long){}[0]
+    open fun get(kotlin/Int): #A // com.splendo.kaluga.bytes.view/DeltaCodedList.get|get(kotlin.Int){}[0]
+    open fun iterator(): kotlin.collections/Iterator<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.iterator|iterator(){}[0]
+    open fun lastIndexOf(#A): kotlin/Int // com.splendo.kaluga.bytes.view/DeltaCodedList.lastIndexOf|lastIndexOf(1:0){}[0]
+    open fun listIterator(): kotlin.collections/ListIterator<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.listIterator|listIterator(){}[0]
+    open fun listIterator(kotlin/Int): kotlin.collections/ListIterator<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.listIterator|listIterator(kotlin.Int){}[0]
+    open fun subList(kotlin/Int, kotlin/Int): kotlin.collections/List<#A> // com.splendo.kaluga.bytes.view/DeltaCodedList.subList|subList(kotlin.Int;kotlin.Int){}[0]
 }
 
 final object com.splendo.kaluga.bytes.view/ViewBatch : com.splendo.kaluga.bytes.view/ViewParent { // com.splendo.kaluga.bytes.view/ViewBatch|null[0]
@@ -61,6 +105,8 @@ final object com.splendo.kaluga.bytes.view/ViewBytes { // com.splendo.kaluga.byt
     final fun alignBits(kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.alignBits|alignBits(kotlin.Int){}[0]
     final fun bit(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Boolean // com.splendo.kaluga.bytes.view/ViewBytes.bit|bit(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
     final fun bits(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Long // com.splendo.kaluga.bytes.view/ViewBytes.bits|bits(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+    final fun checkNoItemAfterUnconstrained(kotlin/Boolean) // com.splendo.kaluga.bytes.view/ViewBytes.checkNoItemAfterUnconstrained|checkNoItemAfterUnconstrained(kotlin.Boolean){}[0]
+    final fun checkNothingAfterUnconstrained(kotlin/Boolean) // com.splendo.kaluga.bytes.view/ViewBytes.checkNothingAfterUnconstrained|checkNothingAfterUnconstrained(kotlin.Boolean){}[0]
     final fun checkRange(kotlin/Int, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkRange|checkRange(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
     final fun checkWrapRange(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkWrapRange|checkWrapRange(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
     final fun clear(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.clear|clear(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
@@ -122,6 +168,15 @@ final object com.splendo.kaluga.bytes.view/ViewCollections { // com.splendo.kalu
     final fun lengthPrefixSizeDown(kotlin/ByteArray, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.lengthPrefixSizeDown|lengthPrefixSizeDown(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix){}[0]
     final fun writeLengthPrefix(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix, com.splendo.kaluga.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.writeLengthPrefix|writeLengthPrefix(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix;com.splendo.kaluga.bytes.ByteOrder){}[0]
     final fun writeLengthPrefixDown(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.strings/StringEncodingSettings.LengthPrefix, com.splendo.kaluga.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.bytes.view/ViewCollections.writeLengthPrefixDown|writeLengthPrefixDown(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.strings.StringEncodingSettings.LengthPrefix;com.splendo.kaluga.bytes.ByteOrder){}[0]
+}
+
+final object com.splendo.kaluga.bytes.view/ViewDeltas { // com.splendo.kaluga.bytes.view/ViewDeltas|null[0]
+    final fun end(kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes.annotations/Length): kotlin/Int // com.splendo.kaluga.bytes.view/ViewDeltas.end|end(kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.annotations.Length){}[0]
+    final fun ints(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes/ByteOrder): com.splendo.kaluga.bytes.view/DeltaCodedIntList // com.splendo.kaluga.bytes.view/ViewDeltas.ints|ints(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.ByteOrder){}[0]
+    final fun longs(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes/ByteOrder): com.splendo.kaluga.bytes.view/DeltaCodedLongList // com.splendo.kaluga.bytes.view/ViewDeltas.longs|longs(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.ByteOrder){}[0]
+    final fun shorts(kotlin/ByteArray, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes/ByteOrder): com.splendo.kaluga.bytes.view/DeltaCodedShortList // com.splendo.kaluga.bytes.view/ViewDeltas.shorts|shorts(kotlin.ByteArray;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.ByteOrder){}[0]
+    final fun sizeOf(kotlin/Int, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes.annotations/Length): kotlin/Int // com.splendo.kaluga.bytes.view/ViewDeltas.sizeOf|sizeOf(kotlin.Int;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.annotations.Length){}[0]
+    final fun write(kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Long, kotlin/Long, com.splendo.kaluga.bytes.annotations/Length, kotlin/Boolean, com.splendo.kaluga.bytes.annotations/Length, com.splendo.kaluga.bytes/ByteOrder): kotlin/Int // com.splendo.kaluga.bytes.view/ViewDeltas.write|write(kotlin.ByteArray;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Long;kotlin.Long;com.splendo.kaluga.bytes.annotations.Length;kotlin.Boolean;com.splendo.kaluga.bytes.annotations.Length;com.splendo.kaluga.bytes.ByteOrder){}[0]
 }
 
 final object com.splendo.kaluga.bytes.view/ViewStrings { // com.splendo.kaluga.bytes.view/ViewStrings|null[0]

@@ -20,11 +20,6 @@ public final class com/splendo/kaluga/bytes/serialization/BytesFormat$Default : 
 	public static synthetic fun invoke$default (Lcom/splendo/kaluga/bytes/serialization/BytesFormat$Default;Lcom/splendo/kaluga/bytes/serialization/BytesFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/serialization/BytesFormat;
 }
 
-public final class com/splendo/kaluga/bytes/serialization/DataAfterUnconstrainedData : kotlinx/serialization/SerializationException {
-	public fun <init> (Ljava/lang/String;)V
-	public fun getMessage ()Ljava/lang/String;
-}
-
 public final class com/splendo/kaluga/bytes/serialization/LayoutDumpsKt {
 	public static final fun layoutDumpOf (Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/modules/SerializersModule;)Ljava/lang/String;
 	public static synthetic fun layoutDumpOf$default (Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/modules/SerializersModule;ILjava/lang/Object;)Ljava/lang/String;

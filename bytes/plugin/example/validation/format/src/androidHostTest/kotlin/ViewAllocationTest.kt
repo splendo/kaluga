@@ -188,6 +188,40 @@ class ViewAllocationTest {
     }
 
     @Test
+    fun readsDeltaCodedListsInPlace() {
+        val samples = List(50) { (it * 3 - 60).toShort() }
+        val view = DeltaCodedFixturesWaveformView.encode(DeltaCodedFixturesWaveformData(samples))
+        val large = DeltaCodedFixturesWaveformView.wrapRange(padded(view.bytes), 0, view.bytes.size) as DeltaCodedFixturesWaveformSlice
+        assertBounded("delta-coded list", 48, { any = view.samples }, { any = large.samples })
+        val list = view.samples
+        val array = ShortArray(list.size)
+        assertNone("delta-coded size") { int = list.size }
+        assertNone("delta-coded forEachShort") {
+            var sum = 0
+            list.forEachShort { sum += it }
+            int = sum
+        }
+        assertNone("delta-coded copyInto") { list.copyInto(array) }
+        val times = DeltaCodedFixturesTimestampsView.encode(DeltaCodedFixturesTimestampsData(List(50) { 4_000_000_000L + it * 30 })).times
+        assertNone("delta-coded forEachLong") {
+            var sum = 0L
+            times.forEachLong { sum += it }
+            long = sum
+        }
+
+        val stream = DeltaCodedFixturesStreamView.encode(
+            DeltaCodedFixturesStreamData(1u, listOf(DeltaCodedFixturesPacketBatteryData(5u), DeltaCodedFixturesPacketDeltaData(samples))),
+        )
+        val largeStream = DeltaCodedFixturesStreamView.wrapRange(padded(stream.bytes), 0, stream.bytes.size) as DeltaCodedFixtures.Stream
+        assertBounded(
+            "delta-coded list of a record",
+            224,
+            { int = (stream.packets[1] as DeltaCodedFixtures.Packet.Delta).samples.size },
+            { int = (largeStream.packets[1] as DeltaCodedFixtures.Packet.Delta).samples.size },
+        )
+    }
+
+    @Test
     fun updatesChecksumsInPlace() {
         val view = EncodeWithChecksumFixturesWithChecksumView(5, "hello")
         assertNone("checksummed setter") { view.index = int++ }

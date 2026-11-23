@@ -1,3 +1,63 @@
+public final class com/splendo/kaluga/bytes/view/DeltaCodedIntList : com/splendo/kaluga/bytes/view/DeltaCodedList {
+	public fun contains (I)Z
+	public final fun contains (Ljava/lang/Object;)Z
+	public final fun copyInto ([II)[I
+	public static synthetic fun copyInto$default (Lcom/splendo/kaluga/bytes/view/DeltaCodedIntList;[IIILjava/lang/Object;)[I
+	public final fun forEachInt (Lkotlin/jvm/functions/Function1;)V
+	public fun indexOf (I)I
+	public final fun indexOf (Ljava/lang/Object;)I
+	public synthetic fun item (J)Ljava/lang/Object;
+	public fun lastIndexOf (I)I
+	public final fun lastIndexOf (Ljava/lang/Object;)I
+	public final fun toIntArray ()[I
+}
+
+public abstract class com/splendo/kaluga/bytes/view/DeltaCodedList : kotlin/collections/AbstractList {
+	public synthetic fun <init> ([BIILcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/ByteOrder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun get (I)Ljava/lang/Object;
+	public final fun getB ()[B
+	public final fun getFirst ()I
+	public final fun getOrder ()Lcom/splendo/kaluga/bytes/ByteOrder;
+	public final fun getSigned ()Z
+	public final fun getSize ()I
+	public final fun getStep ()Lcom/splendo/kaluga/bytes/annotations/Length;
+	public final fun getWidth ()Lcom/splendo/kaluga/bytes/annotations/Length;
+	public fun iterator ()Ljava/util/Iterator;
+	public fun lastIndexOf (Ljava/lang/Object;)I
+	public fun listIterator ()Ljava/util/ListIterator;
+	public fun listIterator (I)Ljava/util/ListIterator;
+	public final fun next (IJ)J
+	public fun subList (II)Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/bytes/view/DeltaCodedLongList : com/splendo/kaluga/bytes/view/DeltaCodedList {
+	public fun contains (J)Z
+	public final fun contains (Ljava/lang/Object;)Z
+	public final fun copyInto ([JI)[J
+	public static synthetic fun copyInto$default (Lcom/splendo/kaluga/bytes/view/DeltaCodedLongList;[JIILjava/lang/Object;)[J
+	public final fun forEachLong (Lkotlin/jvm/functions/Function1;)V
+	public fun indexOf (J)I
+	public final fun indexOf (Ljava/lang/Object;)I
+	public synthetic fun item (J)Ljava/lang/Object;
+	public fun lastIndexOf (J)I
+	public final fun lastIndexOf (Ljava/lang/Object;)I
+	public final fun toLongArray ()[J
+}
+
+public final class com/splendo/kaluga/bytes/view/DeltaCodedShortList : com/splendo/kaluga/bytes/view/DeltaCodedList {
+	public final fun contains (Ljava/lang/Object;)Z
+	public fun contains (S)Z
+	public final fun copyInto ([SI)[S
+	public static synthetic fun copyInto$default (Lcom/splendo/kaluga/bytes/view/DeltaCodedShortList;[SIILjava/lang/Object;)[S
+	public final fun forEachShort (Lkotlin/jvm/functions/Function1;)V
+	public final fun indexOf (Ljava/lang/Object;)I
+	public fun indexOf (S)I
+	public synthetic fun item (J)Ljava/lang/Object;
+	public final fun lastIndexOf (Ljava/lang/Object;)I
+	public fun lastIndexOf (S)I
+	public final fun toShortArray ()[S
+}
+
 public final class com/splendo/kaluga/bytes/view/FixedStrideList : kotlin/collections/AbstractList {
 	public static final field Companion Lcom/splendo/kaluga/bytes/view/FixedStrideList$Companion;
 	public fun get (I)Ljava/lang/Object;
@@ -41,6 +101,8 @@ public final class com/splendo/kaluga/bytes/view/ViewBytes {
 	public final fun alignBits (I)I
 	public final fun bit ([BIII)Z
 	public final fun bits ([BIIII)J
+	public final fun checkNoItemAfterUnconstrained (Z)V
+	public final fun checkNothingAfterUnconstrained (Z)V
 	public final fun checkRange (III)V
 	public final fun checkWrapRange ([BII)V
 	public final fun clear ([BII)V
@@ -115,6 +177,16 @@ public final class com/splendo/kaluga/bytes/view/ViewContents {
 	public fun <init> ()V
 	public final fun add ([B)V
 	public final fun take ()[B
+}
+
+public final class com/splendo/kaluga/bytes/view/ViewDeltas {
+	public static final field INSTANCE Lcom/splendo/kaluga/bytes/view/ViewDeltas;
+	public final fun end (IILcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/annotations/Length;)I
+	public final fun ints ([BIILcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/ByteOrder;)Lcom/splendo/kaluga/bytes/view/DeltaCodedIntList;
+	public final fun longs ([BIILcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/ByteOrder;)Lcom/splendo/kaluga/bytes/view/DeltaCodedLongList;
+	public final fun shorts ([BIILcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/ByteOrder;)Lcom/splendo/kaluga/bytes/view/DeltaCodedShortList;
+	public final fun sizeOf (ILcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/annotations/Length;)I
+	public final fun write ([BIIIJJLcom/splendo/kaluga/bytes/annotations/Length;ZLcom/splendo/kaluga/bytes/annotations/Length;Lcom/splendo/kaluga/bytes/ByteOrder;)I
 }
 
 public abstract interface class com/splendo/kaluga/bytes/view/ViewParent {
