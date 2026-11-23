@@ -24,8 +24,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied, the encoded object will be prefixed by [value]
  * @property value the [ByteArray] to add as a Prefix
  */
@@ -35,8 +33,6 @@ import kotlinx.serialization.SerialInfo
 annotation class Prefix(val value: ByteArray)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied, the encoded object will be postfixed by [value]
  * @property value the [ByteArray] to add as a Postfix
  */
@@ -46,8 +42,6 @@ annotation class Prefix(val value: ByteArray)
 annotation class Postfix(val value: ByteArray)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a [Serializable] enum class, variants are encoded by their ordinal plus [offset], using [size]
  * bytes in the byte order of the enclosing structure.
  * This avoids annotating every variant individually with [@SerializedByteValue][SerializedByteValue].
@@ -64,8 +58,6 @@ annotation class Postfix(val value: ByteArray)
 annotation class ByOrdinal(val offset: Int = 0, val size: Length = Length.`8_BIT`)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a property, [before] reserved (padding) bytes are silently skipped before decoding this
  * property and zero-filled bytes are written before encoding it; [after] bytes are skipped/written after it.
  *
@@ -82,8 +74,6 @@ annotation class ByOrdinal(val offset: Int = 0, val size: Length = Length.`8_BIT
 annotation class Reserved(val before: Int = 0, val after: Int = 0)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied, the position of the header flag(s) to be used for storing headers will be set to [index].
  * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
  * If applied to an enum, its ordinal is stored in the flags starting at [index], across enough bits for all its
@@ -104,8 +94,6 @@ annotation class Reserved(val before: Int = 0, val after: Int = 0)
 annotation class FlagIndex(val index: Int)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Marks a nullable property whose presence is *derived* from the flag bits at [indices] rather than from a dedicated
  * flag bit of its own: it is present on the wire exactly when all of those bits are set, and reserves no flag bit
  * itself. The listed bits are owned (and reserved) by the properties or flags they belong to. Use for a field gated by
@@ -119,8 +107,6 @@ annotation class FlagIndex(val index: Int)
 annotation class PresentWhenAllSet(vararg val indices: Int)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied, the width of the flags to be used by this element will be at minimum [bits] bits
  *
  * @property bits the number of bits the flag for this property will take up at a minimum
@@ -131,8 +117,6 @@ annotation class PresentWhenAllSet(vararg val indices: Int)
 annotation class FlagWidth(val bits: Int = 1)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied, the [com.splendo.kaluga.bytes.ByteOrder] in which this element is encoded is set to [order].
  * When applied to a class or collection, a [InvalidByteOrderException] may be thrown if the byte order changed.
  *
@@ -148,8 +132,6 @@ annotation class FlagWidth(val bits: Int = 1)
 annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, val excludeStructure: Boolean = false)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a String, a [StringEncodingSettings.LengthPrefix] will be used as the [StringEncodingSettings.endMarking].
  * Similar encoding will be used to add a length to a List/Map.
  * Defaults to [StringEncodingSettings.LengthPrefix.ByteLength]
@@ -179,8 +161,6 @@ annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FI
 annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflow: Boolean = false, val sentinel: Byte = 0xFF.toByte())
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a [String] or [Char], [encoding] will be used for encoding each char.
  * A [Char] has a fixed size, so it takes [Encoding.ASCII] (one byte, the default for a Char), [Encoding.ISO_8859_1]
  * (Latin-1, one byte) or [Encoding.UTF_16] (two bytes). [Encoding.UTF_8] is rejected for a Char; use a [String] for UTF-8 text.
@@ -193,8 +173,6 @@ annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflo
 annotation class Encoded(val encoding: Encoding = Encoding.UTF_8)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a String or Collection, they will be marked with `0x00` to indicate completion.
  * Will throw an exception if:
  * - Encoding a String and it contains `\u0000`
@@ -207,8 +185,6 @@ annotation class Encoded(val encoding: Encoding = Encoding.UTF_8)
 annotation class NullTerminated
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a numeric value, will encode as an unsigned value.
  */
 @OptIn(ExperimentalSerializationApi::class)
@@ -217,8 +193,6 @@ annotation class NullTerminated
 annotation class Unsigned
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a numeric value, will calculate an integer using (`value * [multiplier] * 2.pow([binaryExponent]) * 10.pow([decimalExponent]) + [offset])`)
  *
  * Combine with any [Size] to set the preferred [Length] of the value to be encoded
@@ -234,8 +208,6 @@ annotation class Unsigned
 annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, val binaryExponent: Int = 0, val offset: Int = 0)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a numeric (Float or Double) field, encodes the value as a proportional mapping
  * across the full unsigned range of the wire integer:
  *   `wire = round((value − min) / (max − min) × (2^bits − 1))`
@@ -258,8 +230,6 @@ annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, v
 annotation class Range(val min: Double = 0.0, val max: Double = 1.0)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.bytes.medfloat.MedFloat16] or [com.splendo.kaluga.bytes.medfloat.MedFloat32], depending on [Size]
  * Can only add [Length.`16_BIT`] or [Length.`32_BIT`] using [Size].
  * Size defaults to:
@@ -272,8 +242,6 @@ annotation class Range(val min: Double = 0.0, val max: Double = 1.0)
 annotation class MedFloat
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a numeric value this will set [length] as the length to be encoded.
  * When applied to Double or Float, [length] must be either [Length.`32_BIT`] or [Length.`64_BIT`].
  * When combined with [MedFloat], [length] must be either [Length.`16_BIT`] or [Length.`32_BIT`].
@@ -289,8 +257,6 @@ annotation class MedFloat
 annotation class Size(val length: Length)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a String or Collection, no end marking will be applied.
  * This will result in a [DataAfterUnconstrainedData] exception if data (besides checksum or postfix) is added after this element.
  */
@@ -300,8 +266,6 @@ annotation class Size(val length: Length)
 annotation class Unsized
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a Collection, a null flag will be added and set to 0 if the list is empty (resulting in no length being encoded in the body).
  * Without it, a nullable Collection that is empty is present: its flag is set and its count is encoded.
  */
@@ -311,8 +275,6 @@ annotation class Unsized
 annotation class NullIfEmpty
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a Collection (a List, Set, Map, array, or primitive array such as a [ByteArray]), it is encoded as
  * exactly [count] items (entries for a Map) with no length prefix and no terminator, so it can sit anywhere in a
  * structure. When every item has a fixed size the collection has one too, and so does a structure holding it.
@@ -331,8 +293,6 @@ annotation class NullIfEmpty
 annotation class Count(val count: Int)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * When applied to a sealed polymorphic class, subtypes are identified by their remaining payload
  * byte count instead of a prefix byte identifier. The expected byte count for each subtype is
  * computed automatically from its field annotations — no manual size declaration is required.
@@ -353,8 +313,6 @@ annotation class Count(val count: Int)
 annotation class SizePolymorphic
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Marks the subtype of a sealed class that is decoded for any discriminator none of its other subtypes has, so a
  * reader can skip a type it does not know and keep going. It has no [@SerializedByteValue][SerializedByteValue]:
  * its [@Discriminator][Discriminator] property holds the discriminator it was read for, and an encoder writes that
@@ -374,8 +332,6 @@ annotation class SizePolymorphic
 annotation class Fallback
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Marks the property of a [@Fallback][Fallback] subtype that holds the discriminator it was read for. It is not laid
  * out in the subtype's bytes: it is read from, and written to, the discriminator of the sealed class, so it can be any
  * property of the subtype, one inherited from a shared interface included. It is an integer of the size of the other
@@ -389,8 +345,6 @@ annotation class Fallback
 annotation class Discriminator
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Adds a [com.splendo.kaluga.bytes.crc.CRC] value of size [width] to the end of the body (before any prefix)
  * If the decoded checksum does not match the calculated checksum of the body and BytesFormat.validateChecksum is `true` will result in a [InvalidChecksumException].
  *
@@ -409,8 +363,6 @@ annotation class Discriminator
 annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong, val xorOut: ULong = 0u, val reflectIn: Boolean = false, val reflectOut: Boolean = false)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Can be added to elements of an Enum or Polymorphic class. This replaces serializing using the encoded SerialName with [value].
  *
  * All entries in the same sealed class or enum must supply the same number of bytes.
@@ -425,8 +377,6 @@ annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong
 annotation class SerializedByteValue(vararg val value: Byte)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Applies CSafe-style byte stuffing so a delimiter never appears literally in the content, using a
  * [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.CSafe] scheme. Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST].
  *
@@ -449,8 +399,6 @@ annotation class SerializedByteValue(vararg val value: Byte)
 annotation class ByteStuffed(val escapeByte: Byte = 0xF3.toByte(), val mask: Byte = 0x03)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Terminates a String or Collection with [terminator] instead of the default `0x00`.
  *
  * - **With** [ByteStuffed] — the one scheme that has no delimiter of its own — it is required, and the content is
@@ -471,8 +419,6 @@ annotation class ByteStuffed(val escapeByte: Byte = 0xF3.toByte(), val mask: Byt
 annotation class Terminal(val terminator: Byte)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Applies PPP/HDLC-style byte stuffing, using a [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.Xor] scheme. Only for
  * [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]; because the delimiter is explicit,
  * this can protect a `0x00` terminator (use `delimiter = 0x00` on a String or Collection — no [NullTerminated] needed).
@@ -490,8 +436,6 @@ annotation class Terminal(val terminator: Byte)
 annotation class ByteStuffedXor(val escapeByte: Byte, val delimiter: Byte, val additionalEscapedBytes: ByteArray = [], val xorKey: Byte = 0x20)
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Applies SLIP-style byte stuffing (RFC 1055), using a [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.Slip] scheme.
  * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. Its delimiter is
  * [end] (`0xC0`), so on a String or Collection that is the terminator. Set [end] to use a different one — a [Terminal]
@@ -508,8 +452,6 @@ annotation class ByteStuffedXor(val escapeByte: Byte, val delimiter: Byte, val a
 annotation class ByteStuffedSlip(val end: Byte = 0xC0.toByte(), val escapeByte: Byte = 0xDB.toByte(), val escapedEnd: Byte = 0xDC.toByte(), val escapedEsc: Byte = 0xDD.toByte())
 
 /**
- * Annotation added for serializing using BytesFormat
- *
  * Applies COBS byte stuffing (Consistent Overhead Byte Stuffing), using [com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme.Cobs].
  * Only for [ByteOrder.LEAST_SIGNIFICANT_FIRST]. Applies in the same positions as [ByteStuffed]. COBS eliminates `0x00`
  * from the output with ~1 byte overhead per 254, so on a String or Collection it uses the default `0x00` terminator.
