@@ -134,6 +134,60 @@ class ViewAllocationTest {
     }
 
     @Test
+    fun readsRecordsInPlace() {
+        val readings = listOf(
+            RecordFixturesReadingTemperatureData(1000, -5),
+            RecordFixturesReadingOtherData(300, 0x99u, byteArrayOf(1, 2, 3)),
+            RecordFixturesReadingNoteData(0, "hi"),
+        )
+        val chunk = RecordFixturesChunkView.encode(RecordFixturesChunkData(1u, true, 256u, readings))
+        val large = RecordFixturesChunkView.wrapRange(padded(chunk.bytes), 0, chunk.bytes.size) as RecordFixtures.Chunk
+        val bytes = chunk.bytes
+        assertNone("record end") { int = RecordFixturesReadingFrame.end(bytes, 5) }
+        assertNone("record value bounds") { int = RecordFixturesReadingFrame.valueEnd(bytes, 5) - RecordFixturesReadingFrame.valueStart(bytes, 5) }
+        assertBounded(
+            "record list item",
+            160,
+            { int = (chunk.readings[2] as RecordFixtures.Reading.Note).step },
+            { int = (large.readings[2] as RecordFixtures.Reading.Note).step },
+        )
+        assertBounded(
+            "unknown record list item",
+            160,
+            { int = (chunk.readings[1] as RecordFixtures.Reading.Other).step },
+            { int = (large.readings[1] as RecordFixtures.Reading.Other).step },
+        )
+        // A record's value held apart from its type: viewed as a list item is, without the list.
+        val value = RecordFixturesReadingFrame.valueStart(bytes, 5)
+        val valueEnd = RecordFixturesReadingFrame.valueEnd(bytes, 5)
+        val largeBytes = padded(bytes)
+        assertBounded(
+            "record value",
+            48,
+            { int = (RecordFixturesReadingFrame.wrapValue(0x20u, bytes, value, valueEnd) as RecordFixtures.Reading.Temperature).step },
+            { int = (RecordFixturesReadingFrame.wrapValue(0x20u, largeBytes, value, valueEnd) as RecordFixtures.Reading.Temperature).step },
+        )
+        assertBounded(
+            "unknown record value",
+            48,
+            { int = (RecordFixturesReadingFrame.wrapValue(0x77u, bytes, value, valueEnd) as RecordFixtures.Reading.Other).step },
+            { int = (RecordFixturesReadingFrame.wrapValue(0x77u, largeBytes, value, valueEnd) as RecordFixtures.Reading.Other).step },
+        )
+        val target = ByteArray(64)
+        assertNone("record write") { int = RecordFixturesReadingFrame.writeRecord(target, 0, 0x77u, bytes, value, valueEnd) }
+        assertNone("record size") { int = RecordFixturesReadingFrame.recordSize(valueEnd - value) }
+        val followed = RecordFixturesFollowedView.encode(RecordFixturesFollowedData(readings[0], null, 7))
+        val largeFollowed = RecordFixturesFollowedView.wrapRange(padded(followed.bytes), 0, followed.bytes.size) as RecordFixtures.Followed
+        assertNone("number after a record") { int = followed.after.toInt() }
+        assertBounded(
+            "record property",
+            48,
+            { int = (followed.reading as RecordFixtures.Reading.Temperature).celsius.toInt() },
+            { int = (largeFollowed.reading as RecordFixtures.Reading.Temperature).celsius.toInt() },
+        )
+    }
+
+    @Test
     fun updatesChecksumsInPlace() {
         val view = EncodeWithChecksumFixturesWithChecksumView(5, "hello")
         assertNone("checksummed setter") { view.index = int++ }

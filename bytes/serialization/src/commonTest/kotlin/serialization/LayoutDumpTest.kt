@@ -21,6 +21,8 @@ import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.annotations.ByOrdinal
 import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
 import com.splendo.kaluga.bytes.annotations.Checksum
+import com.splendo.kaluga.bytes.annotations.Discriminator
+import com.splendo.kaluga.bytes.annotations.Fallback
 import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
 import com.splendo.kaluga.bytes.annotations.ItemSize
@@ -37,6 +39,7 @@ import com.splendo.kaluga.bytes.annotations.SerializedByteValue
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.SizePolymorphic
 import com.splendo.kaluga.bytes.annotations.Unsigned
+import com.splendo.kaluga.bytes.annotations.Unsized
 import com.splendo.kaluga.bytes.annotations.ValueSize
 import com.splendo.kaluga.bytes.layout.LayoutCompiler
 import com.splendo.kaluga.bytes.layout.dump
@@ -191,6 +194,42 @@ class LayoutDumpTest {
             0 0: string(UTF_8 prefix8) order=LSB/MSB bytes=?
             1 1: natural(8 signed) order=MSB/MSB bytes=1
           3 label: string(UTF_8 stuffed(xor(escape=7d delimiter=00 key=20) terminator=00)) order=LSB/MSB stuffing=xor(escape=7d delimiter=00 key=20) terminator=00 bytes=?
+        """,
+    )
+
+    @Serializable
+    @SerialName("Record")
+    @LengthPrefix
+    sealed interface Record
+
+    @Serializable
+    @SerialName("Temperature")
+    @SerializedByteValue(0x20)
+    data class Temperature(@FlagIndex(0) @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val step: Int, val celsius: Short) : Record
+
+    @Serializable
+    @SerialName("Unknown")
+    @Fallback
+    data class Unknown(@FlagIndex(0) @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val step: Int, @Discriminator val type: UByte, @Unsized val value: List<Byte>) : Record
+
+    @Test
+    fun recordsWithAFallbackLaidOutLikeAnySubtype() = assertDump(
+        Record.serializer(),
+        """
+        0 Record: sealed order=LSB/LSB static=?
+          = discriminator Temperature=20
+          = length prefix8
+          = discriminator * -> Unknown
+          0 type: string(UTF_8 prefix8) order=LSB/LSB bytes=?
+          1 value: contextual order=LSB/LSB bytes=?
+            0 Temperature: struct order=LSB/LSB header=1 bytes=?
+              0 step: natural(8,16 signed) order=LSB/LSB bits=0+1 bytes=?
+              1 celsius: natural(16 signed) order=LSB/LSB bytes=2
+            1 Unknown: struct order=LSB/LSB header=1 bytes=?
+              0 step: natural(8,16 signed) order=LSB/LSB bits=0+1 bytes=?
+              1 type: discriminator natural(8 unsigned) order=LSB/LSB bytes=0
+              2 value: list(unmarked) order=LSB/LSB bytes=?
+                0 0: natural(8 signed) order=LSB/LSB bytes=1
         """,
     )
 

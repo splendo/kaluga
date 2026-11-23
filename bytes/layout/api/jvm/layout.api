@@ -225,6 +225,10 @@ public final class com/splendo/kaluga/bytes/layout/InvalidPrefix : kotlinx/seria
 	public fun getMessage ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/bytes/layout/InvalidSealedLayout : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public final class com/splendo/kaluga/bytes/layout/InvalidSizePolymorphic : kotlinx/serialization/SerializationException {
 	public fun <init> (Ljava/lang/String;)V
 }
@@ -417,6 +421,18 @@ public final class com/splendo/kaluga/bytes/layout/TypeLayout$Contextual : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/bytes/layout/TypeLayout$Discriminator : com/splendo/kaluga/bytes/layout/TypeLayout {
+	public fun <init> (Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;
+	public final fun copy (Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Discriminator;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Discriminator;Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Discriminator;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildren ()Ljava/util/List;
+	public final fun getSettings ()Lcom/splendo/kaluga/bytes/layout/NumericSettings$Natural;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/bytes/layout/TypeLayout$Enumeration : com/splendo/kaluga/bytes/layout/TypeLayout {
 	public fun <init> (Ljava/util/Map;Ljava/util/List;)V
 	public final fun component1 ()Ljava/util/Map;
@@ -488,17 +504,22 @@ public final class com/splendo/kaluga/bytes/layout/TypeLayout$Open : com/splendo
 }
 
 public final class com/splendo/kaluga/bytes/layout/TypeLayout$Sealed : com/splendo/kaluga/bytes/layout/TypeLayout {
-	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;)V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/Map;
 	public final fun component2 ()Ljava/util/Map;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/util/List;
-	public final fun copy (Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;
+	public final fun component5 ()Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Ljava/lang/String;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/util/List;Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/bytes/layout/TypeLayout$Sealed;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getDiscriminators ()Ljava/util/Map;
 	public final fun getElements ()Ljava/util/List;
+	public final fun getFallback ()Ljava/lang/String;
+	public final fun getLengthPrefix ()Lcom/splendo/kaluga/bytes/strings/StringEncodingSettings$LengthPrefix;
 	public final fun getSizeDispatch ()Ljava/util/Map;
 	public final fun getSizeFallback ()Ljava/lang/String;
 	public fun hashCode ()I

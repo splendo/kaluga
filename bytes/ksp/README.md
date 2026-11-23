@@ -63,6 +63,38 @@ A `@JvmInline value class` over a `ByteArray` for sealed layout `X`. The `value`
 - `XFrame.encode(x)` — Creates a frame from any `X` subtype
 - `XFrame.wrap(bytes, validateChecksum)` and `XFrame.wrapRange(bytes, from, to, validateChecksum)` — Wraps an array, dispatching to the correct subtype
 - Does not implement `X` directly; the sealed hierarchy preserves exactly the subtypes you declared
+- For a sealed layout with `@LengthPrefix`: `XFrame.valueStart(bytes, from)`, `XFrame.valueEnd(bytes, from)` and `XFrame.end(bytes, from)`, the bounds of the record at `from`, and `XFrame.writeRecord`, `XFrame.recordSize`, `XFrame.encodeRecord` and `XFrame.wrapValue` for a type and a value held apart, see [Type-length-value records](#type-length-value-records)
+
+### Type-length-value records
+
+A sealed layout with `@LengthPrefix` writes each subtype as a record: its `@SerializedByteValue` discriminator, its length, then the bytes the length counts, which hold the subtype's frame. A `@Fallback` subtype reads every discriminator the others do not have and is laid out after it like any other subtype; its `@Discriminator` property holds the discriminator, which `LayoutCompiler` makes a field of no bytes (`TypeLayout.Discriminator`) wherever it is declared. The [annotations](../annotations/) README has the rules and an example. DATA needs nothing new for them: the sealed DATA interface carries `@LengthPrefix`, the fallback's data class `@Fallback` and its property `@Discriminator`, which is all `BytesFormat` reads.
+
+In a view:
+
+- **A typed view of the bytes**: a record property, list item or `XFrame.value` is the subtype's slice over exactly the bytes its length counts, read in place. An `@Unsized` last property ends there, and bytes beyond what the subtype reads, which a later version may have appended, are skipped, as `BytesFormat` skips them.
+- **Its type**: the class of the subtype, or, for a type no subtype has, the `@Fallback` subtype with the discriminator in its `@Discriminator` property. The discriminator is not in the bytes the slice covers, so the slice of a fallback, and only that slice, has one more field holding it, read from the frame when the frame dispatches to it; it is read-only, as writing it would change which subtype the record is.
+- **Its bounds**: the end of a record is read from its length alone, so a list of records, `@Unsized` to the end of what holds it, steps over records of every type, known or not, without reading them. To walk records by hand, `XFrame.valueStart(bytes, from)` and `XFrame.valueEnd(bytes, from)` give the bytes a length counts and `XFrame.end(bytes, from)` where the next record starts; none of them allocates.
+- **Writing**: a record's length is written once its subtype is, and one that does not fit the length throws, as in `BytesFormat`. A fallback writes its `@Discriminator` property to the discriminator, and throws when another subtype has it.
+- **A type and a value held apart**: `XFrame.writeRecord(target, at, discriminator, value, from, to)` writes a record from a discriminator and value bytes kept apart, as a store keeps them, into an array the caller sized with `XFrame.recordSize(valueLength)`: the discriminator, the length in the frame's marking and byte order and the value as it is, framed by the layout's prefix, checksum and postfix, returning where it ends. It writes any discriminator, known or not, reads nothing of the value and allocates nothing; `XFrame.encodeRecord` returns a new array instead. `XFrame.wrapValue(discriminator, bytes, from, to)` views such a value in place: the same slice a list of these records gives for it, or the fallback's slice holding the discriminator for a type no subtype has, or a `NoSuchElementException` without a fallback. Like a list item it checks only its range. The discriminator is typed as the fallback's `@Discriminator` property, or without a fallback as the unsigned number of the discriminators' size in the layout's byte order.
+
+A record's subtype is an ordinary layout within its bytes, so it composes with the rest of the vocabulary: its own flag header, flag-packed fields and numbers of several `@Size`s are laid out from the start of those bytes, and the generated code computes where everything after a number of several sizes starts from the size its flag bits record. Fields every subtype starts with, such as a time step, go in a plain interface each subtype extends, the fallback included:
+
+```kotlin
+interface Timed { @FlagIndex(0) @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) val step: Int }
+
+@BytesLayout @LengthPrefix sealed interface Record {
+    @BytesLayout @SerializedByteValue(0x20) interface Temperature : Record, Timed { val celsius: Short }
+    @BytesLayout @Fallback interface Unknown : Record, Timed { @Discriminator val type: UByte; @Unsized val value: ByteArray }
+}
+
+// The frame of Record then has, among the rest:
+fun recordSize(valueLength: Int): Int
+fun writeRecord(target: ByteArray, at: Int, discriminator: UByte, value: ByteArray, from: Int = 0, to: Int = value.size): Int
+fun encodeRecord(discriminator: UByte, value: ByteArray, from: Int = 0, to: Int = value.size): ByteArray
+fun wrapValue(discriminator: UByte, bytes: ByteArray, from: Int = 0, to: Int = bytes.size): Record
+```
+
+The sealed layout itself still has no flag bits, cannot be `@SizePolymorphic`, and for VIEW its discriminators must all have the same size.
 
 ### <Prefix>BytesViews
 
@@ -100,7 +132,7 @@ Byte stuffing cannot read in place. For byte-stuffed layouts:
 
 ## Supported VIEW features
 
-Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, sealed layouts and properties, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
+Numbers (including multiple `@Size`s), flag and body Booleans, flag-packed and byte-valued enums, chars, strings of every end marking, lists/sets/maps/arrays with every count marking, sealed layouts and properties, type-length-value records and `@Fallback` subtypes, nullable and `@PresentWhenAllSet` properties, `@Reserved`, nested layouts and value classes, prefixes, postfixes, and checksums.
 
 Positions depending on earlier properties' presence or size are computed from the flag header at read time; others are constants. String getters decode on every read; only fixed-length strings have setters. A `@Count` collection of fixed-size items has a setter that rewrites its items in place and, like the constructors, refuses another number of items. Lists are read in place: `FixedStrideList` when all items are the same size, otherwise `ScannedList`. Sets, maps and arrays are decoded when read.
 

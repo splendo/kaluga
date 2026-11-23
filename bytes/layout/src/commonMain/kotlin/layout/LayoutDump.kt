@@ -62,6 +62,8 @@ private fun StringBuilder.appendField(field: FieldLayout, depth: Int) {
             type.discriminators.forEach { (name, bytes) -> appendDetail(depth, "discriminator $name=${bytes.hex()}") }
             type.sizeDispatch.forEach { (size, name) -> appendDetail(depth, "size $size -> $name") }
             type.sizeFallback?.let { appendDetail(depth, "size * -> $it") }
+            type.lengthPrefix?.let { appendDetail(depth, "length ${it.describe()}") }
+            type.fallback?.let { appendDetail(depth, "discriminator * -> $it") }
         }
 
         is TypeLayout.Open -> type.discriminators.forEach { (name, bytes) -> appendDetail(depth, "discriminator $name=${bytes.hex()}") }
@@ -79,6 +81,7 @@ private fun StringBuilder.appendDetail(depth: Int, detail: String) {
 private fun TypeLayout.describe(): String = when (this) {
     is TypeLayout.Bool -> "bool"
     is TypeLayout.Numeric -> settings.describe()
+    is TypeLayout.Discriminator -> "discriminator ${settings.describe()}"
     is TypeLayout.Text -> "string(${settings.encoding} ${settings.endMarking.describe()})"
     is TypeLayout.Character -> "char($encoding)"
     is TypeLayout.Enumeration -> "enum"

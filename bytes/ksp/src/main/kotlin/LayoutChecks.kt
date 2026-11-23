@@ -78,6 +78,7 @@ internal object LayoutChecks {
         return when (val type = type) {
             is TypeLayout.Bool -> bitIndex < 0
             is TypeLayout.Numeric -> (type.settings as? NumericSettings.Natural)?.inFlagsBits == null
+            is TypeLayout.Discriminator -> false
             is TypeLayout.Text, is TypeLayout.Character -> true
             is TypeLayout.Enumeration -> bitIndex < 0
             is TypeLayout.ListLayout -> type.settings.lengthMarking.writesBody()

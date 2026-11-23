@@ -348,9 +348,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
     }
 
-    // Regression: a connected device's connect/disconnect events were dropped unless the scan repo was Enabled, but the
-    // repo is briefly (re)initializing (or deinitialized) whenever nothing observes scanned devices. connectableDevice
-    // must resolve the device in those states too, so the device still receives the event.
+    // The scan repo is briefly (re)initializing, or deinitialized, whenever nothing observes scanned devices.
+    // connectableDevice resolves a connected device in those states too, so its connect and disconnect events reach it.
     @Test
     fun testConnectableDeviceResolvedWhileNotEnabled() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
         test {

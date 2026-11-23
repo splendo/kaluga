@@ -30,7 +30,9 @@ import com.splendo.kaluga.bytes.annotations.ByteStuffedSlip
 import com.splendo.kaluga.bytes.annotations.ByteStuffedXor
 import com.splendo.kaluga.bytes.annotations.Checksum
 import com.splendo.kaluga.bytes.annotations.Count
+import com.splendo.kaluga.bytes.annotations.Discriminator
 import com.splendo.kaluga.bytes.annotations.Encoded
+import com.splendo.kaluga.bytes.annotations.Fallback
 import com.splendo.kaluga.bytes.annotations.FlagIndex
 import com.splendo.kaluga.bytes.annotations.FlagWidth
 import com.splendo.kaluga.bytes.annotations.ItemByteOrder
@@ -289,6 +291,10 @@ object LayoutCompiler {
             else -> elementChildren(shape, valueByteOrder, bitIndex, byteOrder)
         }
 
+        if (kind == TypeKind.STRUCTURE && shape.annotations.any { it is LengthPrefix }) {
+            throw InvalidSealedLayout("@LengthPrefix on '${shape.serialName}' only applies to a sealed class, whose subtypes it frames")
+        }
+
         val type = when (kind) {
             TypeKind.BOOLEAN -> TypeLayout.Bool
             TypeKind.BYTE, TypeKind.SHORT, TypeKind.INT, TypeKind.LONG, TypeKind.FLOAT, TypeKind.DOUBLE -> TypeLayout.Numeric(numericSettings!!)
@@ -298,7 +304,7 @@ object LayoutCompiler {
             TypeKind.STRUCTURE -> TypeLayout.Structure(children)
             TypeKind.LIST -> TypeLayout.ListLayout(collectionSettings!!, children.single())
             TypeKind.MAP -> TypeLayout.MapLayout(collectionSettings!!, children[0], children[1])
-            TypeKind.SEALED -> TypeLayout.Sealed(polymorphicMap, sizePolymorphicMap, sizePolymorphicFallback, children)
+            TypeKind.SEALED -> sealedType(shape, byteOrder, polymorphicMap, sizePolymorphicMap, sizePolymorphicFallback, children)
             TypeKind.OPEN -> TypeLayout.Open(polymorphicMap, children)
             TypeKind.CONTEXTUAL -> TypeLayout.Contextual(children)
         }
@@ -751,7 +757,8 @@ object LayoutCompiler {
         val (map, anyUsesClassName) = when (shape.kind) {
             TypeKind.SEALED -> {
                 val sealedShape = shape.element(1)
-                buildEntries((0..<sealedShape.elementsCount).map { sealedShape.element(it) })
+                // A fallback has no discriminator of its own; its @Discriminator field holds whichever one it was read for.
+                buildEntries((0..<sealedShape.elementsCount).map { sealedShape.element(it) }.filter { option -> option.annotations.none { it is Fallback } })
             }
 
             TypeKind.OPEN -> buildEntries(shape.openSubtypes())
@@ -760,6 +767,92 @@ object LayoutCompiler {
         }
         if (!anyUsesClassName) validateDiscriminatorLengths(shape.serialName, map.values)
         return map
+    }
+
+    /**
+     * The [TypeLayout.Sealed] of [shape], accumulated in [byteOrder]: with a class `@LengthPrefix` its subtypes are
+     * type-length-value records, and a `@Fallback` subtype reads every discriminator the others do not have. The
+     * fallback is laid out like any other subtype but for its `@Discriminator` field, which becomes a
+     * [TypeLayout.Discriminator] taking no bytes of its own.
+     */
+    private fun sealedType(
+        shape: TypeShape,
+        byteOrder: ByteOrder,
+        discriminators: Map<String, ByteArrayHolder>,
+        sizeDispatch: Map<Int, String>,
+        sizeFallback: String?,
+        children: List<FieldLayout>,
+    ): TypeLayout.Sealed {
+        val sealedShape = shape.element(1)
+        val name = shape.serialName
+        val sizePolymorphic = shape.annotations.any { it is SizePolymorphic }
+        val lengthPrefix = shape.annotations.filterIsInstance<LengthPrefix>().firstOrNull()?.let { annotation ->
+            if (sizePolymorphic) throw InvalidSealedLayout("@LengthPrefix on '$name' needs subtypes told apart by a discriminator, not by @SizePolymorphic")
+            if (annotation.canOverflow) throw InvalidSealedLayout("@LengthPrefix on '$name' has a byte or 16-bit length; canOverflow does not apply to it")
+            if (byteOrder != ByteOrder.LEAST_SIGNIFICANT_FIRST) {
+                throw InvalidSealedLayout(
+                    "@LengthPrefix on '$name' needs a frame accumulated LEAST_SIGNIFICANT_FIRST; use @ByteOrder(excludeStructure = true) for big-endian values",
+                )
+            }
+            annotation.asLengthPrefix()
+        }
+        val options = (0..<sealedShape.elementsCount).map { sealedShape.element(it) }
+        val fallbacks = options.filter { option -> option.annotations.any { it is Fallback } }
+        if (fallbacks.size > 1) throw InvalidSealedLayout("'$name' has more than one @Fallback subtype: ${fallbacks.joinToString { it.serialName }}")
+        val fallback = fallbacks.singleOrNull()
+        options.filter { it !== fallback }.forEach { option ->
+            option.discriminatorElements().firstOrNull()?.let { index ->
+                throw InvalidSealedLayout(
+                    "@Discriminator on '${option.elementName(index)}' of '${option.serialName}' only applies to a property of the @Fallback subtype of '$name'",
+                )
+            }
+        }
+        if (fallback == null) return TypeLayout.Sealed(discriminators, sizeDispatch, sizeFallback, children, lengthPrefix)
+
+        val fallbackName = fallback.serialName
+        if (sizePolymorphic) throw InvalidSealedLayout("@Fallback '$fallbackName' needs subtypes told apart by a discriminator, not by @SizePolymorphic")
+        if (fallback.annotations.any { it is SerializedByteValue }) {
+            throw InvalidSealedLayout("@Fallback '$fallbackName' reads the discriminators of other subtypes, so it has no @SerializedByteValue")
+        }
+        val width = discriminators.values.map { it.array.size }.distinct().singleOrNull()
+            ?: throw InvalidSealedLayout("@Fallback '$fallbackName' needs other subtypes of '$name' with discriminators of one size, which its @Discriminator property holds")
+        val marked = fallback.discriminatorElements()
+        if (marked.size != 1) {
+            throw InvalidSealedLayout(
+                "@Fallback '$fallbackName' needs exactly one @Discriminator property to hold the discriminator it was read for, " +
+                    if (marked.isEmpty()) "but has none" else "but has ${marked.joinToString { "'${fallback.elementName(it)}'" }}",
+            )
+        }
+        val value = children[1]
+        val option = value.type.children.first { it.name == fallbackName }
+        val fields = (option.type as TypeLayout.Structure).fields
+        val type = fields[marked.single()]
+        val numeric = (type.type as? TypeLayout.Numeric)?.settings as? NumericSettings.Natural
+        if (numeric == null || numeric.inFlagsBits != null || numeric.supportedLengths.singleOrNull()?.bytes != width || type.isNullable || type.bitIndex >= 0 ||
+            type.presenceFlagIndices.isNotEmpty()
+        ) {
+            throw InvalidSealedLayout(
+                "The @Discriminator property '${type.name}' of @Fallback '$fallbackName' holds the discriminator, so it must be a number of $width byte(s), " +
+                    "not nullable or in the flag header",
+            )
+        }
+        if (type.reservedBefore > 0 || type.reservedAfter > 0) {
+            throw InvalidSealedLayout("The @Discriminator property '${type.name}' of @Fallback '$fallbackName' takes no bytes in it, so it cannot have @Reserved bytes around it")
+        }
+        if (type.frame.prefix != null || type.frame.postfix != null || type.frame.checksum != null || type.frame.byteStuffing != null) {
+            throw InvalidSealedLayout(
+                "The @Discriminator property '${type.name}' of @Fallback '$fallbackName' takes no bytes in it, so it cannot have a prefix, a postfix, a checksum or byte stuffing around it",
+            )
+        }
+        val framed = option.copy(type = TypeLayout.Structure(fields.map { if (it === type) type.copy(type = TypeLayout.Discriminator(numeric)) else it }))
+        val valueField = value.copy(type = TypeLayout.Contextual(value.type.children.map { if (it.name == fallbackName) framed else it }))
+        return TypeLayout.Sealed(discriminators, sizeDispatch, sizeFallback, listOf(children[0], valueField), lengthPrefix, fallbackName)
+    }
+
+    private fun TypeShape.discriminatorElements(): List<Int> = if (kind == TypeKind.STRUCTURE) {
+        (0..<elementsCount).filter { index -> elementAnnotations(index).any { it is Discriminator } }
+    } else {
+        emptyList()
     }
 
     /**

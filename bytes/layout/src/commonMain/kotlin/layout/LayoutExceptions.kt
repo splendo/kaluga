@@ -46,6 +46,12 @@ class InconsistentDiscriminatorLength(message: String) : SerializationException(
 class InvalidSizePolymorphic(message: String) : SerializationException(message)
 
 /**
+ * Thrown when a sealed type's `@LengthPrefix` or `@Fallback` cannot apply, such as a fallback without a
+ * `@Discriminator` property to hold the discriminator.
+ */
+class InvalidSealedLayout(message: String) : SerializationException(message)
+
+/**
  * Thrown when an enum combines annotations that cannot apply to it, such as a checksum, or a prefix on a flag-packed enum.
  */
 class InvalidEnumLayout(message: String) : SerializationException(message)

@@ -28,7 +28,6 @@ class LengthTest {
     @Test
     fun testUnsigned32BitFitsFullUIntRange() {
         // Values above Int.MAX_VALUE still fit in an unsigned 32-bit value.
-        // Regression: the upper bound used to be Int.MAX_VALUE instead of UInt.MAX_VALUE.
         assertTrue(Length.`32_BIT`.fits(Int.MAX_VALUE.toLong() + 1L, signed = false))
         assertTrue(Length.`32_BIT`.fits(3_000_000_000L, signed = false))
         assertTrue(Length.`32_BIT`.fits(UInt.MAX_VALUE.toLong(), signed = false))

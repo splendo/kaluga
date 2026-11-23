@@ -64,6 +64,7 @@ final object com.splendo.kaluga.bytes.view/ViewBytes { // com.splendo.kaluga.byt
     final fun checkRange(kotlin/Int, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkRange|checkRange(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
     final fun checkWrapRange(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.checkWrapRange|checkWrapRange(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
     final fun clear(kotlin/ByteArray, kotlin/Int, kotlin/Int) // com.splendo.kaluga.bytes.view/ViewBytes.clear|clear(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun findIndex(kotlin/ByteArray, kotlin/Int, kotlin/Array<kotlin/ByteArray>, kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.findIndex|findIndex(kotlin.ByteArray;kotlin.Int;kotlin.Array<kotlin.ByteArray>;kotlin.Int){}[0]
     final fun hex(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/String // com.splendo.kaluga.bytes.view/ViewBytes.hex|hex(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
     final fun matchIndex(kotlin/ByteArray, kotlin/Int, kotlin/Array<kotlin/ByteArray>, kotlin/Int): kotlin/Int // com.splendo.kaluga.bytes.view/ViewBytes.matchIndex|matchIndex(kotlin.ByteArray;kotlin.Int;kotlin.Array<kotlin.ByteArray>;kotlin.Int){}[0]
     final fun matches(kotlin/ByteArray, kotlin/Int, kotlin/ByteArray, kotlin/Int): kotlin/Boolean // com.splendo.kaluga.bytes.view/ViewBytes.matches|matches(kotlin.ByteArray;kotlin.Int;kotlin.ByteArray;kotlin.Int){}[0]

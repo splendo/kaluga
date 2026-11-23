@@ -47,8 +47,14 @@ public abstract interface annotation class com/splendo/kaluga/bytes/annotations/
 	public abstract fun count ()I
 }
 
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Discriminator : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Encoded : java/lang/annotation/Annotation {
 	public abstract fun encoding ()Lcom/splendo/kaluga/bytes/strings/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Fallback : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/FlagIndex : java/lang/annotation/Annotation {
