@@ -332,7 +332,7 @@ class BluetoothDefinitionGeneratorTest {
         val value = generator.generateValueClass(characteristic("/gatt/sig_body_sensor_location.xml")).singleType()
         val enum = checkNotNull(value.nestedType("BodySensorLocation"))
         assertEquals(7, enum.enumConstants.size)
-        assertEquals("value = 1", checkNotNull(enum.enumConstants.getValue("CHEST").annotation("SerializedByteValue")).argument)
+        assertEquals("1", checkNotNull(enum.enumConstants.getValue("CHEST").annotation("SerializedByteValue")).argument)
         assertEquals("BodySensorLocation", checkNotNull(value.property("bodySensorLocation")).type.simpleName)
     }
 

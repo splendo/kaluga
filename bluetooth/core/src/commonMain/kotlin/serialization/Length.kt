@@ -42,16 +42,18 @@ enum class Length(val bytes: Int) {
     ;
 
     internal fun fits(number: Number, signed: Boolean) = when (this) {
+        // Widen through Long, never Int: a Long outside Int range would otherwise truncate to a value that
+        // wrongly looks like it fits (e.g. 1L shl 32 truncates to 0).
         `8_BIT` -> if (signed) {
-            number.toInt() in Byte.MIN_VALUE.toInt()..Byte.MAX_VALUE.toInt()
+            number.toLong() in Byte.MIN_VALUE.toLong()..Byte.MAX_VALUE.toLong()
         } else {
-            number.toInt().toUInt() in UByte.MIN_VALUE.toUInt()..UByte.MAX_VALUE.toUInt()
+            number.toLong().toULong() in UByte.MIN_VALUE.toULong()..UByte.MAX_VALUE.toULong()
         }
 
         `16_BIT` -> if (signed) {
-            number.toInt() in Short.MIN_VALUE.toInt()..Short.MAX_VALUE.toInt()
+            number.toLong() in Short.MIN_VALUE.toLong()..Short.MAX_VALUE.toLong()
         } else {
-            number.toInt().toUInt() in UShort.MIN_VALUE.toUInt()..UShort.MAX_VALUE.toUInt()
+            number.toLong().toULong() in UShort.MIN_VALUE.toULong()..UShort.MAX_VALUE.toULong()
         }
 
         `24_BIT` -> if (signed) {

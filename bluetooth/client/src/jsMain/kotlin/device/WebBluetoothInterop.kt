@@ -113,6 +113,8 @@ internal actual fun webShowDevicePicker(
 
     val overlay = document.createElement("div")
     overlay.className = "$cssClassPrefix-overlay"
+    overlay.style.position = "fixed"
+    overlay.style.zIndex = "1000"
 
     // A self-contained dismiss control so the overlay can always be closed even if it covers app UI.
     val closeButton = document.createElement("button")

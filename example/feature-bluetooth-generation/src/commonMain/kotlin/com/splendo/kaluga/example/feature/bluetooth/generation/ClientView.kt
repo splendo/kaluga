@@ -36,18 +36,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class ClientViewModel(private val client: DemoDeviceClient) : ViewModel() {
+class ClientViewModel(private val client: Flow<DemoDeviceClient?>) : ViewModel() {
 
     // Eagerly (not WhileSubscribed) so the notify/indicate subscription persists while this view is off-screen
     // — e.g. when the simulator's Server tab is shown — instead of being torn down on every tab switch.
-    val live = client.demoService.sensor.live.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    val status = client.demoService.config.status.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val live = mapClient { demoService.sensor.live }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val status = mapClient { demoService.config.status }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _reading = MutableStateFlow<Int?>(null)
     val reading = _reading.asStateFlow()
@@ -55,21 +60,27 @@ class ClientViewModel(private val client: DemoDeviceClient) : ViewModel() {
     val name = _name.asStateFlow()
 
     fun readReading() = viewModelScope.launch {
-        _reading.value = (client.demoService.sensor.readReading() as? SensorCharacteristicReadResponse.Success)?.response
+        _reading.value = (accessClient().demoService.sensor.readReading() as? SensorCharacteristicReadResponse.Success)?.response
     }
 
     fun readName() = viewModelScope.launch {
         // The Info descriptor is absent on peripherals that cannot expose custom descriptors (e.g. Apple servers).
         _name.value = try {
-            (client.demoService.config.info.readName() as? RemoteConfigCharacteristic.InfoReadResponse.Success)?.response
+            (accessClient().demoService.config.info.readName() as? RemoteConfigCharacteristic.InfoReadResponse.Success)?.response
         } catch (e: NoSuchElementException) {
             "unavailable"
         }
     }
 
     fun writeThreshold(threshold: Int) = viewModelScope.launch {
-        client.demoService.config.writeThreshold(threshold)
+        accessClient().demoService.config.writeThreshold(threshold)
     }
+
+    private fun <T> mapClient(block: DemoDeviceClient.() -> Flow<T>): Flow<T?> = client.flatMapLatest { client ->
+        client?.block() ?: flowOf(null)
+    }
+
+    private suspend fun accessClient() = client.filterNotNull().first()
 }
 
 @Composable

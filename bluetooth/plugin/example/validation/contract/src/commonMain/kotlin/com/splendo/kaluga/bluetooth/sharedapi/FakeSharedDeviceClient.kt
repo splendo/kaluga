@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.sharedcontract.RemoteSharedCharacteristic
 import com.splendo.kaluga.bluetooth.sharedcontract.RemoteSharedService
 import com.splendo.kaluga.bluetooth.sharedcontract.SharedCharacteristicReadResponse
 import com.splendo.kaluga.bluetooth.sharedcontract.SharedDeviceClient
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -33,6 +34,7 @@ class FakeSharedDeviceClient(private val level: Int = 0, private val states: Lis
     override val sharedService: RemoteSharedService = object : RemoteSharedService {
         override val sharedCharacteristic: RemoteSharedCharacteristic = object : RemoteSharedCharacteristic {
             override val state: Flow<Short> = flowOf(*states.toTypedArray())
+            override val isNotifying: Flow<Boolean> = flowOf(true)
             override suspend fun readLevel(): SharedCharacteristicReadResponse = SharedCharacteristicReadResponse.Success(level)
             override suspend fun writeTarget(target: Int): GattResponse.WriteResponse = GattResponse.WriteSuccess.Acknowledged
         }

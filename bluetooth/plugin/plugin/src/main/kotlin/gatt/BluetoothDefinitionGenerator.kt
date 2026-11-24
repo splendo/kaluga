@@ -416,7 +416,7 @@ class BluetoothDefinitionGenerator(private val packageName: String, private val 
     private fun flagWidth(bits: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "FlagWidth")).addMember("bits = %L", bits).build()
 
     private fun serializedByteValue(discriminator: Int) = AnnotationSpec.builder(ClassName(SERIALIZATION, "SerializedByteValue"))
-        .addMember("value = %L", discriminator)
+        .addMember("%L", discriminator)
         .build()
 
     private class Mapping(val type: TypeName, val annotations: List<AnnotationSpec>)

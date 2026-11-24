@@ -1,4 +1,7 @@
 import com.palantir.gradle.gitversion.VersionDetails
+import com.vanniktech.maven.publish.GradlePlugin
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SourcesJar
 import org.gradle.internal.extensions.core.extra
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -6,9 +9,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    `version-catalog`
-    `maven-publish`
     alias(libs.plugins.plugin.publish)
+    alias(libs.plugins.vanniktech.maven.publish)
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.palantir.git.version)
 }
@@ -31,6 +33,41 @@ gradlePlugin {
         displayName = "Kaluga Bluetooth code generation"
         description = "Generates typed Bluetooth clients and servers from annotated device definitions."
         tags = listOf("kotlin", "kotlin-multiplatform", "bluetooth", "ble", "ksp", "codegen")
+    }
+}
+
+mavenPublishing {
+    // `plugin-publish` already adds the javadoc and sources jars to the java component.
+    configure(GradlePlugin(javadocJar = JavadocJar.None(), sourcesJar = SourcesJar.None()))
+    coordinates(artifactId = "gradle-plugin")
+
+    pom {
+        name.set("Kaluga Bluetooth code generation")
+        description.set("Generates typed Bluetooth clients and servers from annotated device definitions.")
+        url.set("https://github.com/splendo/kaluga")
+
+        licenses {
+            license {
+                name.set("The Apache Software License, Version 2.0")
+                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("repo")
+            }
+        }
+        developers {
+            developer {
+                id.set("splendo")
+                name.set("Splendo Consulting BV")
+            }
+        }
+        scm {
+            url.set("https://github.com/splendo/kaluga")
+        }
+    }
+
+    publishToMavenCentral()
+    // Only sign when a signing key is configured, so `publishToMavenLocal` keeps working locally.
+    if (providers.gradleProperty("signingInMemoryKey").getOrNull() != null) {
+        signAllPublications()
     }
 }
 
@@ -59,15 +96,17 @@ val generatePluginVersion by tasks.registering {
     val outputDir = layout.buildDirectory.dir("generated/resources/main")
     val outputFile = outputDir.map { it.file("bluetooth.properties") }
     val version = kalugaVersion
+    val coroutinesVersion = libs.versions.kotlinx.coroutines.get()
 
     inputs.property("kalugaVersion", version)
+    inputs.property("coroutinesVersion", coroutinesVersion)
     outputs.file(outputFile)
 
     doLast {
         val file = outputFile.get().asFile
         file.parentFile.mkdirs()
 
-        file.writeText("kalugaVersion=$version\n")
+        file.writeText("kalugaVersion=$version\ncoroutinesVersion=$coroutinesVersion\n")
     }
 }
 

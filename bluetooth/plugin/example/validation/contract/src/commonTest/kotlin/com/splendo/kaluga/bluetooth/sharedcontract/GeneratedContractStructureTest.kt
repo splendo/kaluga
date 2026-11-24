@@ -33,6 +33,7 @@ class GeneratedContractStructureTest {
     // --- client API ---
     private object RemoteCharacteristic : RemoteSharedCharacteristic {
         override val state: Flow<Short> = flowOf(0.toShort())
+        override val isNotifying: Flow<Boolean> = flowOf(true)
         override suspend fun readLevel(): SharedCharacteristicReadResponse = SharedCharacteristicReadResponse.Success(0)
         override suspend fun writeTarget(target: Int): GattResponse.WriteResponse = GattResponse.WriteSuccess.Acknowledged
     }

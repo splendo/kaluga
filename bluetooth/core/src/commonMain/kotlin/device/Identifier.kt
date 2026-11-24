@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.bytes.sha1
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -48,6 +49,33 @@ expect fun identifierFromString(stringValue: String): Identifier?
  * Gets a string representation of an [Identifier]
  */
 expect val Identifier.stringValue: String
+
+/**
+ * Generates a UUID v5 [Identifier] (RFC 4122) from [namespace] and [name].
+ *
+ * Uses SHA-1 over `namespace + name` bytes, then stamps version 5 and the RFC 4122
+ * variant bits into the first 16 bytes of the digest, producing a standard UUID v5.
+ *
+ * [namespace] scopes the result so the same [name] in different applications does not
+ * collide. Choose a fixed, application-specific byte sequence and never change it,
+ * or existing identifiers will shift.
+ *
+ * The same namespace + name always produces the same identifier across sessions.
+ */
+fun nameBasedIdentifier(namespace: ByteArray, name: String): Identifier {
+    val identifier = namespace + name.encodeToByteArray()
+    val hash = identifier.sha1()
+    val bytes = hash.copyOf(16)
+    bytes[6] = ((bytes[6].toInt() and 0x0F) or 0x50).toByte() // version 5
+    bytes[8] = ((bytes[8].toInt() and 0x3F) or 0x80).toByte() // RFC 4122 variant
+    val uuid = buildString {
+        for (i in 0..15) {
+            if (i in intArrayOf(4, 6, 8, 10)) append('-')
+            append((bytes[i].toInt() and 0xFF).toString(16).padStart(2, '0'))
+        }
+    }
+    return requireNotNull(identifierFromString(uuid)) { "Could not create identifier from '$uuid'" }
+}
 
 /**
  * A [Identifier] that can be serialized

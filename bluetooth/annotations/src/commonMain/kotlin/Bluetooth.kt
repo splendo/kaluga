@@ -48,7 +48,7 @@ annotation class BluetoothServerName(val name: String)
  * @property uuid the service UUID, either 16-bit shorthand (e.g. `"180a"`) or the full 128-bit form.
  */
 @Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class BluetoothService(val uuid: String)
 
 /**
@@ -58,7 +58,7 @@ annotation class BluetoothService(val uuid: String)
  * @property uuid the characteristic UUID, either 16-bit shorthand or the full 128-bit form.
  */
 @Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class BluetoothCharacteristic(val uuid: String)
 
 /**
@@ -70,7 +70,7 @@ annotation class BluetoothCharacteristic(val uuid: String)
  * @property uuid the descriptor UUID, either 16-bit shorthand or the full 128-bit form.
  */
 @Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class BluetoothDescriptor(val uuid: String)
 
 /**
@@ -92,28 +92,28 @@ annotation class Advertising
  * Marks a characteristic or descriptor property as readable, generating a GATT read for it.
  */
 @Target(AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class Readable
 
 /**
  * Marks a characteristic or descriptor property as writable with a response, generating a GATT write for it.
  */
 @Target(AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class Writable
 
 /**
  * Marks a characteristic or descriptor property as writable without a response, generating a GATT write-without-response for it.
  */
 @Target(AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class WritableWithoutResponse
 
 /**
  * Marks a characteristic or descriptor property as writable with an authenticated signed write.
  */
 @Target(AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class WritableSigned
 
 /**
@@ -121,19 +121,19 @@ annotation class WritableSigned
  * acknowledgement, and the client can observe them.
  */
 @Target(AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class Notifiable
 
 /**
  * Marks a characteristic property as indicatable: like [Notifiable], but each pushed value change is acknowledged by the client.
  */
 @Target(AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class Indicatable
 
 /**
  * Marks a characteristic or descriptor property as requiring an encrypted (bonded) connection to access.
  */
 @Target(AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class Encrypted

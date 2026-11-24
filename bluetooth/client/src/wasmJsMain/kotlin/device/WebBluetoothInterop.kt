@@ -279,6 +279,8 @@ private fun jsShowDevicePicker(
         var reg = globalThis.__kbt;
         var overlay = document.createElement('div');
         overlay.className = prefix + '-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.zIndex = '1000';
         // A self-contained dismiss control so the overlay can always be closed even if it covers app UI.
         var closeButton = document.createElement('button');
         closeButton.className = prefix + '-close';

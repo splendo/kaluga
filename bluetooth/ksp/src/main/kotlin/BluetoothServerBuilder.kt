@@ -57,6 +57,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.VALUE
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateParameterName
+import com.splendo.kaluga.bluetooth.ksp.helpers.isNullable
 import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.optionalChainIfNullable
 import com.splendo.kaluga.bluetooth.ksp.helpers.withLetIfNull
@@ -98,12 +99,14 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
 
     override val needsNamedCompanion: Boolean get() = true
 
-    override fun factoryFor(generationType: GenerationType): FunSpec? = when (generationType) {
-        GenerationType.SERVER_BLUETOOTH -> generateBluetoothFactory()
-        GenerationType.SERVER_SIMULATOR -> generateSimulatorFactory()
-        GenerationType.SERVER_MOCK -> generateMockFactory()
-        else -> null
-    }
+    override fun factoryFor(generationType: GenerationType): List<FunSpec> = listOfNotNull(
+        when (generationType) {
+            GenerationType.SERVER_BLUETOOTH -> generateBluetoothFactory()
+            GenerationType.SERVER_SIMULATOR -> generateSimulatorFactory()
+            GenerationType.SERVER_MOCK -> generateMockFactory()
+            else -> null
+        },
+    )
 
     private fun generateMockFactory(): FunSpec = FunSpec.builder(MOCK).apply {
         val returnType = nameFor(declaration, GenerationType.SERVER_MOCK)
@@ -171,19 +174,24 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                     .beginControlFlow(ADVERTISE)
                     .apply {
                         addStatement("$LOCAL_NAME = $SERVER_NAME")
-                        val advertisingUUIDs = declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull {
-                            val resolvedDeclaration = it.type.resolve().declaration
+                        val serverDelegateParam = delegateParameter.name
+                        declarations.filterIsInstance<KSPropertyDeclaration>().forEach { prop ->
+                            val resolvedDeclaration = prop.type.resolve().declaration
                             if (resolvedDeclaration is KSClassDeclaration &&
                                 resolvedDeclaration.isAnnotationPresent(BluetoothService::class) &&
-                                it.isAnnotationPresent(Advertising::class)
+                                prop.isAnnotationPresent(Advertising::class)
                             ) {
-                                CodeBlock.of("%T.$UUID", nameFor(resolvedDeclaration, GenerationType.SERVER_API))
-                            } else {
-                                null
+                                val uuidBlock = CodeBlock.of("%T.$UUID", nameFor(resolvedDeclaration, GenerationType.SERVER_API))
+                                if (prop.isNullable) {
+                                    // Conditional: only advertise if the delegate is provided.
+                                    addStatement(
+                                        "$serverDelegateParam.${prop.delegateParameterName}?.let·{ $SERVICE_UUIDS(%L) }",
+                                        uuidBlock,
+                                    )
+                                } else {
+                                    addStatement("$SERVICE_UUIDS(%L)", uuidBlock)
+                                }
                             }
-                        }.toList()
-                        if (advertisingUUIDs.isNotEmpty()) {
-                            addStatement("$SERVICE_UUIDS(%L)", advertisingUUIDs.joinToCode(separator = ", "))
                         }
                     }
                     .endControlFlow()
@@ -458,26 +466,37 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
         )
     }
 
-    private fun generateServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
-        PropertySpec.builder(
-            propertyDeclaration.simpleName.asString(),
-            serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
-        ).addModifiers(*type.additionalModifiers.toTypedArray())
+    private fun generateServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
+        val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER)
+        val name = propertyDeclaration.simpleName.asString()
+        val serviceType = serverName(typeDeclaration, type)
+        val apiType = serverName(typeDeclaration, GenerationType.Type.API)
+
+        return PropertySpec.builder(name, serviceType.nullIfPropertyIsNull(propertyDeclaration))
+            .addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
-                val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
                 when (type) {
                     GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                     GenerationType.Type.BLUETOOTH -> {
-                        delegate(
-                            "$LAZY { %L }",
-                            CodeBlock.of(
-                                "%T($SERVER.$SERVICES.$VALUE.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
-                                serverName(typeDeclaration, type),
-                                References.Bluetooth.get,
-                                serverName(typeDeclaration, GenerationType.Type.API),
-                            ),
-                        )
+                        if (propertyDeclaration.isNullable) {
+                            delegate(
+                                "$LAZY { $SERVER.$SERVICES.$VALUE.%M(%T.$UUID)?.let·{ %T(it${serviceNeedsFormat.functionArgument}) } }",
+                                References.Bluetooth.getOrNull,
+                                apiType,
+                                serviceType,
+                            )
+                        } else {
+                            delegate(
+                                "$LAZY { %L }",
+                                CodeBlock.of(
+                                    "%T($SERVER.$SERVICES.$VALUE.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
+                                    serviceType,
+                                    References.Bluetooth.get,
+                                    apiType,
+                                ),
+                            )
+                        }
                     }
 
                     GenerationType.Type.SIMULATOR -> {
@@ -486,7 +505,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                                 .withLetIfNull("${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}", propertyDeclaration) { property ->
                                     addStatement(
                                         "%T($property, $COROUTINE_SCOPE, $IS_CLOSED)",
-                                        serverName(typeDeclaration, type),
+                                        serviceType,
                                     )
                                 }
                                 .build(),
@@ -495,4 +514,5 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: 
                 }
             }
             .build()
+    }
 }

@@ -43,7 +43,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
 
     companion object Companion {
         const val TAG = "KalugaBluetoothGattServerCallback"
-        private const val MTU_HEADER_SIZE = 3
+        const val MTU_HEADER_SIZE = 3
         const val DEFAULT_MTU_SIZE = 23
     }
 
