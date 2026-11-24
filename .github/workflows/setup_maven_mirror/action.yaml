@@ -1,0 +1,12 @@
+name: "route Maven Central through its mirror"
+description: "Installs the Gradle init script that resolves Maven Central through Google's EU mirror"
+
+runs:
+  using: "composite"
+  steps:
+    - name: install Maven Central mirror init script
+      shell: bash
+      run: |
+        init_dir="${GRADLE_USER_HOME:-$HOME/.gradle}/init.d"
+        mkdir -p "$init_dir"
+        cp "$GITHUB_WORKSPACE/.github/gradle/maven_central_mirror.gradle" "$init_dir/"
