@@ -24,8 +24,13 @@ fun ByteArray.decodeInt(octetIndex: Int, byteOrder: ByteOrder): Int {
             "Cannot convert ByteArray to Int. The byte with index ${octetIndex + offset} is not available in ByteArray."
         }
     }
-    return drop(octetIndex).take(Int.SIZE_BYTES).foldIndexed(0) { index, acc, byte ->
-        acc or ((byte.toInt() and 0xFF) shl byteOrder.shift(index, Int.SIZE_BITS))
+    return run {
+        var acc = 0
+        for (index in 0..<Int.SIZE_BYTES) {
+            val byte = this[octetIndex + index]
+            acc = acc or ((byte.toInt() and 0xFF) shl byteOrder.shift(index, Int.SIZE_BITS))
+        }
+        acc
     }
 }
 

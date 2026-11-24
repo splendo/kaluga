@@ -68,12 +68,20 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
     /**
      * Method used for marking the end of a String when encoding it to a [ByteArray]
      */
-    sealed class EndMarking
+    sealed interface EndMarking
+
+    /**
+     * An [EndMarking] that ends the String with a single [terminator] byte. Implemented by [NullTerminated],
+     * [Terminated] and [ByteStuffed], letting callers read the terminator uniformly.
+     */
+    sealed interface WithTerminal : EndMarking {
+        val terminator: Byte
+    }
 
     /**
      * An [EndMarking] where the length of the String is encoded as a prefix.
      */
-    sealed class LengthPrefix : EndMarking() {
+    sealed class LengthPrefix : EndMarking {
 
         /**
          * The expected number of [Byte]s required to encode the length of the String.
@@ -163,12 +171,14 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
     /**
      * An [EndMarking] where the end is marked by a final empty character `\u0000`. If the string contains this character encoding will fail.
      */
-    data object NullTerminated : EndMarking()
+    data object NullTerminated : WithTerminal {
+        override val terminator: Byte = 0x00
+    }
 
     /**
      * No [EndMarking] will be used, the entire array should be decoded
      */
-    data object NoMarking : EndMarking()
+    data object NoMarking : EndMarking
 
     /**
      * An [EndMarking] where the String is always encoded as a fixed length [length].
@@ -176,7 +186,39 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
      * If it is smaller, it will be padded with null characters.
      */
 
-    data class FixedLength(val length: Int) : EndMarking()
+    data class FixedLength(val length: Int) : EndMarking
+
+    /**
+     * An [EndMarking] where the end is marked by a single [terminator] byte, but the content is first byte-stuffed
+     * with [scheme] so the terminator value never appears literally in the content and stays unambiguous. This is the
+     * only end marking under which the string may itself contain the [terminator] value.
+     *
+     * Constructed as either [Delimited] (the scheme supplies the terminator) or [Explicit] (a terminator is given for a
+     * scheme that has no canonical one).
+     */
+    sealed class ByteStuffed : WithTerminal {
+        abstract val scheme: ByteStuffingScheme
+
+        /** Terminated by the [scheme]'s own [DelimiterByteStuffingScheme.delimiter], so no terminator is (or can be) chosen. */
+        data class Delimited(override val scheme: DelimiterByteStuffingScheme) : ByteStuffed() {
+            override val terminator: Byte get() = scheme.delimiter
+        }
+
+        /** Terminated by an explicit [terminator] that the [scheme] must escape. */
+        data class Explicit(override val scheme: NonDelimiterByteStuffingScheme, override val terminator: Byte) : ByteStuffed() {
+            init {
+                require(scheme.canTerminateWith(terminator)) { "A ByteStuffed end marking's scheme must escape its terminator byte and never emit it literally" }
+            }
+        }
+    }
+
+    /**
+     * An [EndMarking] where the end is marked by a single [terminator] byte, matched at the byte level. Unlike
+     * [NullTerminated] — which is `0x00` with UTF-16-aware handling — the encoded content must not contain the
+     * [terminator] byte, and encoding fails if it does. Use [ByteStuffed] when the content may legitimately contain it.
+     * @property terminator the byte marking the end of the string.
+     */
+    data class Terminated(override val terminator: Byte) : WithTerminal
 }
 
 /**
@@ -192,7 +234,9 @@ fun String.byteArraySize(settings: StringEncodingSettings): Int {
             stringSize + lengthSize
         }
 
-        is StringEncodingSettings.NullTerminated -> stringSize + 1
+        is StringEncodingSettings.ByteStuffed -> endMarking.scheme.stuffedSize(settings.encoding.encodeString(this, ByteOrder.LEAST_SIGNIFICANT_FIRST)) + 1
+
+        is StringEncodingSettings.WithTerminal -> stringSize + 1
 
         is StringEncodingSettings.NoMarking -> stringSize
 
@@ -204,28 +248,37 @@ fun String.byteArraySize(settings: StringEncodingSettings): Int {
  * Encodes a [String] to a [ByteArray] using the given [StringEncodingSettings] and [ByteOrder].
  * @param settings the [StringEncodingSettings] to apply to the encoding.
  * @param order the [ByteOrder] to use. When passing [ByteOrder.MOST_SIGNIFICANT_FIRST] the first character will be at the end of the array.
- * @throws IllegalArgumentException if the string contains a null character and [StringEncodingSettings.NullTerminated] is used,
+ * @throws IllegalArgumentException if the string cannot be terminated by a [StringEncodingSettings.WithTerminal] marking
+ * (see [StringEncodingSettings.NullTerminated] and [StringEncodingSettings.Terminated]),
  * or if the length of the string cannot be encoded by [StringEncodingSettings.LengthPrefix]
  * @return The encoded [ByteArray]
  */
-fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = copyIntoArray(ByteArray(byteArraySize(settings)), settings, order = order)
+fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = when (val endMarking = settings.endMarking) {
+    is StringEncodingSettings.ByteStuffed -> {
+        val stuffed = stuffedContent(settings.encoding, endMarking)
+        stuffed.copyTerminatedInto(ByteArray(stuffed.size + 1), endMarking.terminator, 0, order)
+    }
+
+    else -> copyIntoArray(ByteArray(byteArraySize(settings)), settings, order = order)
+}
 
 /**
  * Encodes a [String] using the given [StringEncodingSettings] and [ByteOrder] and copies it into a [ByteArray]
  * @param array the [ByteArray] to copy the encoded data into.
  * @param offset the offset at which to copy the encoded data.
  * @param order the [ByteOrder] to use. When passing [ByteOrder.MOST_SIGNIFICANT_FIRST] the first character will be at the end of the array.
- * @throws IllegalArgumentException if the string contains a null character and [StringEncodingSettings.NullTerminated] is used,
+ * @throws IllegalArgumentException if the string cannot be terminated by a [StringEncodingSettings.WithTerminal] marking
+ * (see [StringEncodingSettings.NullTerminated] and [StringEncodingSettings.Terminated]),
  * or if the length of the string cannot be encoded by [StringEncodingSettings.LengthPrefix]
  * @return The encoded [ByteArray]
  */
 fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, offset: Int = 0, order: ByteOrder): ByteArray {
-    val totalSize = byteArraySize(settings)
-    val stringSize = settings.encoding.byteSizeOf(this)
-    require(array.size >= offset + totalSize) { "Cannot copy into ByteArray. Must be at least ${offset + totalSize} long" }
+    fun requireRoom(totalSize: Int) = require(array.size >= offset + totalSize) { "Cannot copy into ByteArray. Must be at least ${offset + totalSize} long" }
     return when (val endMarking = settings.endMarking) {
         is StringEncodingSettings.LengthPrefix -> {
+            val stringSize = settings.encoding.byteSizeOf(this)
             val size = (stringSize / settings.encoding.byteSize).toUInt()
+            requireRoom(stringSize + endMarking.expectedByteSize(size))
             when (order) {
                 ByteOrder.MOST_SIGNIFICANT_FIRST -> {
                     settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
@@ -239,25 +292,56 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
             }
         }
 
-        is StringEncodingSettings.NullTerminated -> {
-            require(!contains('\u0000')) { "Null terminated string cannot contain null character" }
-            when (order) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> {
-                    array[offset] = 0x00.toByte()
-                    settings.encoding.copyEncodedStringIntoArray(this, array, offset + 1, order)
-                }
-
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
-                    settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
-                    array[offset + stringSize] = 0x00.toByte()
-                    array
-                }
-            }
+        is StringEncodingSettings.ByteStuffed -> {
+            val stuffed = stuffedContent(settings.encoding, endMarking)
+            requireRoom(stuffed.size + 1)
+            stuffed.copyTerminatedInto(array, endMarking.terminator, offset, order)
         }
 
-        is StringEncodingSettings.NoMarking -> settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
+        is StringEncodingSettings.WithTerminal -> {
+            val stringSize = settings.encoding.byteSizeOf(this)
+            requireRoom(stringSize + 1)
+            if (endMarking is StringEncodingSettings.NullTerminated) {
+                // The decoder reads a UTF-16 code unit low byte first and takes a 0x00 in that position as the
+                // terminator, so any character with a 0x00 low byte would end the string early.
+                val isNullByte: (Char) -> Boolean = if (settings.encoding == UTF_16) {
+                    { it.code and 0xFF == 0 }
+                } else {
+                    { it == '\u0000' }
+                }
+                require(none(isNullByte)) {
+                    "Null terminated string cannot contain a null character or, in UTF-16, a character with a 0x00 low byte; use a ByteStuffed end marking"
+                }
+            }
+            val contentOffset = when (order) {
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> offset + 1
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> offset
+            }
+            settings.encoding.copyEncodedStringIntoArray(this, array, contentOffset, order)
+            if (endMarking is StringEncodingSettings.Terminated) {
+                for (index in contentOffset until contentOffset + stringSize) {
+                    require(array[index] != endMarking.terminator) {
+                        "A string terminated by a byte cannot encode to bytes containing that terminator; use a ByteStuffed end marking"
+                    }
+                }
+            }
+            val terminatorOffset = when (order) {
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> offset
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> offset + stringSize
+            }
+            array[terminatorOffset] = endMarking.terminator
+            array
+        }
+
+        is StringEncodingSettings.NoMarking -> {
+            requireRoom(settings.encoding.byteSizeOf(this))
+            settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
+        }
 
         is StringEncodingSettings.FixedLength -> {
+            val totalSize = settings.encoding.byteSize * endMarking.length
+            val stringSize = settings.encoding.byteSizeOf(this)
+            requireRoom(totalSize)
             // FixedLength is a fixed BYTE length (totalSize). If the encoding of this string exceeds it,
             // drop whole trailing characters until the encoding fits within totalSize bytes. For fixed-width
             // encodings this equals take(length); for variable-width UTF-8 it may drop more characters (and,
@@ -280,6 +364,26 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
             array
         }
     }
+}
+
+private fun String.stuffedContent(encoding: Encoding, endMarking: StringEncodingSettings.ByteStuffed): ByteArray =
+    endMarking.scheme.stuff(encoding.encodeString(this, ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+// Stuffing is directional, so the stuffed bytes are produced least significant first and mirrored as a whole for
+// MOST_SIGNIFICANT_FIRST, the way the array decoder reads them back.
+private fun ByteArray.copyTerminatedInto(array: ByteArray, terminator: Byte, offset: Int, order: ByteOrder): ByteArray {
+    when (order) {
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+            array[offset] = terminator
+            for (index in indices) array[offset + size - index] = this[index]
+        }
+
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+            copyInto(array, offset)
+            array[offset + size] = terminator
+        }
+    }
+    return array
 }
 
 /**
@@ -378,12 +482,12 @@ fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteO
 private val REPLACEMENT_BYTE_SEQUENCE: ByteArray = byteArrayOf(0xEF.toByte(), 0xBF.toByte(), 0xBD.toByte())
 
 /**
- * Decodes a single UTF-8 code point from an [Iterator] of [Byte], advancing the iterator past all the
+ * Decodes a single UTF-8 code point from an [Iterator] of [Byte] into [result], advancing the iterator past all the
  * bytes of the sequence. The lead byte's high bits determine the sequence length (1/2/3/4 bytes) and the
  * continuation bytes are pulled from the iterator. A code point outside the Basic Multilingual Plane is
- * returned as a surrogate pair, hence the result is a [String] of one or two [Char]s.
+ * appended as a surrogate pair.
  */
-private fun Iterator<Byte>.decodeUTF8CodePoint(): String {
+private fun Iterator<Byte>.decodeUTF8CodePoint(result: StringBuilder) {
     val lead = next().toInt() and 0xFF
     val codePoint = when {
         lead < 0x80 -> lead
@@ -391,11 +495,11 @@ private fun Iterator<Byte>.decodeUTF8CodePoint(): String {
         lead < 0xF0 -> (lead and 0x0F) shl 12 or (continuationByte() shl 6) or continuationByte()
         else -> (lead and 0x07) shl 18 or (continuationByte() shl 12) or (continuationByte() shl 6) or continuationByte()
     }
-    return if (codePoint > 0xFFFF) {
+    if (codePoint > 0xFFFF) {
         val offset = codePoint - 0x10000
-        charArrayOf(((offset shr 10) + 0xD800).toChar(), ((offset and 0x3FF) + 0xDC00).toChar()).concatToString()
+        result.append(((offset shr 10) + 0xD800).toChar()).append(((offset and 0x3FF) + 0xDC00).toChar())
     } else {
-        codePoint.toChar().toString()
+        result.append(codePoint.toChar())
     }
 }
 
@@ -525,12 +629,13 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
                         require(encodedShort.size == 2) { "Did not include a Short as length" }
                         encodedShort.decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
                     } else {
-                        first
+                        // A one-byte length is unsigned: 128..255 must not read back as a negative Byte.
+                        first.toUByte().toInt()
                     }
                 }
 
-                else -> first()
-            }.toInt() * settings.encoding.byteSize
+                else -> first().toUByte().toInt()
+            } * settings.encoding.byteSize
             val stringBytes = take(length).toList()
             require(stringBytes.size == length) { "String size ${stringBytes.size} does not match encoded size $length" }
             stringBytes
@@ -543,14 +648,23 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
             stringBytes
         }
 
-        is StringEncodingSettings.NullTerminated -> {
-            var hasFoundNull = false
+        // Un-stuff on the fly: the terminator value is escaped in the content, so the only unescaped occurrence is
+        // the real terminator. (This also avoids the UTF-16 odd-index exception the plain path needs.)
+        is StringEncodingSettings.ByteStuffed.Delimited -> endMarking.scheme.unstuff(iterator()).toList()
+
+        is StringEncodingSettings.ByteStuffed.Explicit -> endMarking.scheme.unstuff(iterator()) { it == endMarking.terminator }.toList()
+
+        // A UTF-16 code unit arrives low byte first, so a 0x00 at an odd index is a high byte, not the terminator; the
+        // encoder rejects characters whose low byte is 0x00 for the same reason.
+        is StringEncodingSettings.WithTerminal -> {
+            val allowUtf16NullByte = endMarking is StringEncodingSettings.NullTerminated && settings.encoding == UTF_16
+            var hasFoundTerminator = false
             val stringBytes = withIndex().takeWhile { (index, byte) ->
-                val isCharacterByte = (settings.encoding == UTF_16 && index % 2 != 0) || byte != 0x00.toByte()
-                hasFoundNull = !isCharacterByte
+                val isCharacterByte = (allowUtf16NullByte && index % 2 != 0) || byte != endMarking.terminator
+                hasFoundTerminator = !isCharacterByte
                 isCharacterByte
             }.map { (_, byte) -> byte }.toList()
-            require(hasFoundNull) { "Does not end with a null marker" }
+            require(hasFoundTerminator) { "Does not end with the terminator byte" }
             stringBytes
         }
 
@@ -558,20 +672,47 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
             toList()
         }
     }
-    var result = ""
-    val iterator = stringBytes.iterator()
-    while (iterator.hasNext()) {
-        when (settings.encoding) {
-            UTF_8 -> result += iterator.decodeUTF8CodePoint()
-            UTF_16 -> result += listOf(iterator.next(), iterator.next()).toByteArray().decodeUTF16Char(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
-            ASCII -> result += iterator.next().decodeAsciiChar()
+    return stringBytes.iterator().decodeCharacters(settings.encoding, settings.endMarking is StringEncodingSettings.FixedLength)
+}
+
+/**
+ * Decodes the characters [encoding] encodes in `[from, to)` of this array, as [decodeString] decodes the characters
+ * of a string once it has found where they are: without its length prefix or terminator.
+ * @param trimTrailingNulls whether to drop the `0x00` characters padding a fixed length string.
+ * @throws NoSuchElementException when the last character is cut off.
+ * @throws IllegalArgumentException when a UTF-8 sequence is cut off.
+ */
+fun ByteArray.decodeCharacters(from: Int, to: Int, encoding: Encoding, trimTrailingNulls: Boolean = false): String {
+    require(from in 0..to && to <= size) { "Range [$from, $to) is not within an array of $size bytes" }
+    val array = this
+    return object : Iterator<Byte> {
+        var index = from
+        override fun hasNext(): Boolean = index < to
+        override fun next(): Byte = if (index < to) array[index++] else throw NoSuchElementException("No byte at $index")
+    }.decodeCharacters(encoding, trimTrailingNulls)
+}
+
+private fun Iterator<Byte>.decodeCharacters(encoding: Encoding, trimTrailingNulls: Boolean): String {
+    val result = StringBuilder()
+    while (hasNext()) {
+        when (encoding) {
+            UTF_8 -> decodeUTF8CodePoint(result)
+
+            UTF_16 -> {
+                val low = next().toInt() and 0xFF
+                val high = next().toInt() and 0xFF
+                result.append(Char(low or (high shl Byte.SIZE_BITS)))
+            }
+
+            ASCII -> result.append(next().decodeAsciiChar())
         }
     }
-    return if (settings.endMarking is StringEncodingSettings.FixedLength) {
-        result.dropLastWhile { it == 0x00.toChar() }
-    } else {
-        result
+    if (trimTrailingNulls) {
+        var length = result.length
+        while (length > 0 && result[length - 1] == 0x00.toChar()) length--
+        result.setLength(length)
     }
+    return result.toString()
 }
 
 /**

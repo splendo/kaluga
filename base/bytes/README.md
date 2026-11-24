@@ -34,6 +34,12 @@ dependencies {
 ## Bitwise Utilities
 Extensions such as `shl`, `shr`, `isBitSet` and `setBit` are available for `Byte`, `ByteArray` and the unsigned integer types.
 
+## Byte Stuffing
+A `ByteStuffingScheme` escapes bytes so that a delimiter can never appear literally inside the content, with `stuff(data)` and `unstuff(data)`. `ByteStuffingScheme.CSafe`, `Xor`, `Slip` and `Cobs` are provided.
+
+## SHA-1
+`sha1()` computes the 20-byte SHA-1 digest of a `ByteArray`.
+
 ## Data Converters
 - Convert a `ByteArray` to a hexadecimal String using `toHexString()`.
 
