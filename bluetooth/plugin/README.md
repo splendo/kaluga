@@ -186,6 +186,17 @@ val view = measurement.readHeartRate().valueOrNull      // HeartRateView?
 measurement.writeHeartRate(HeartRateView(bpm = 72))     // writes view.bytes
 ```
 
+Every collector of a notification is handed the same array, which the characteristic also keeps as the last value for
+a later subscriber, so these views are the read-only `XView`. To change a value, edit a copy and write that:
+
+```kotlin
+val edited = view.toMutable().apply { bpm = 80 }        // MutableHeartRateView over a copy
+measurement.writeHeartRate(edited.asView())             // asView() does not copy
+```
+
+A write is queued until the device takes it, and sends the array it was given, so change a `MutableXView` again only
+after its write returns.
+
 A view is a value class, so a `Flow` of views boxes each one it emits. To collect notifications without that, the
 client also has the undecoded notifications as `heartRateBytes`, and `collectHeartRate` wraps each one inside its
 inlined action:
