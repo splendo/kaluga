@@ -146,6 +146,7 @@ One internal object per package, listing every layout generated with both DATA a
 - Setters update checksums of the frame and any enclosing frames automatically
 - `MutableXView.edit { }` batches writes and updates checksums once at the end
 - Properties whose values affect positions of later fields are read-only
+- A property the interface declares `var` is a compile error for VIEW, as the read-only `XView` cannot override it, unless `@BytesLayout(readOnlySetters = ReadOnlySetters.THROW)` gives `XView` a setter that throws `UnsupportedOperationException`; a `var` that cannot be rewritten in place, being optional, of a varying size or gating other properties, is a compile error in both modes, as is a `var` `@Discriminator`
 - Nested views are `XSlice` instances; cast to it to write a nested property in place, whether it came from an `XView` or a `MutableXView`
 
 ### Byte order

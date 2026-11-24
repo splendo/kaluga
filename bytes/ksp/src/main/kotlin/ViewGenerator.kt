@@ -214,6 +214,8 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
                     if (checksummed) CodeBlock.of("%T { %L }", VIEW_PARENT, update) else null,
                     update.takeIf { checksummed },
                     settable = mutable && it.settable,
+                    // A var survives planning only when the layout lets the read-only view throw on a write.
+                    refusal = if (!mutable && it.isVar) "${view.simpleName} is read-only; set ${it.name} on a copy from toMutable()" else null,
                 ),
             )
         }
@@ -507,15 +509,18 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         parent: CodeBlock?,
         afterSet: CodeBlock?,
         settable: Boolean = field.settable,
+        refusal: String? = null,
     ): PropertySpec {
         val name = field.name.capitalized()
         val getterArguments = if (parent != null && field.access.takesParent()) CodeBlock.of("%L, %L", arguments, parent) else arguments
         val type = field.readTypeName()
         return PropertySpec.builder(field.name, type, KModifier.OVERRIDE)
-            .mutable(settable)
+            .mutable(settable || refusal != null)
             .getter(FunSpec.getterBuilder().addStatement("return %T.get$name(%L)", context.layoutName, getterArguments).build())
             .apply {
-                if (settable) {
+                if (refusal != null) {
+                    setter(FunSpec.setterBuilder().addParameter("value", type).addStatement("throw %T(%S)", UNSUPPORTED_OPERATION, refusal).build())
+                } else if (settable) {
                     setter(
                         FunSpec.setterBuilder().addParameter("value", type)
                             .addStatement("%T.set$name(%L, value)", context.layoutName, arguments)
@@ -3292,6 +3297,7 @@ internal class ViewGenerator(private val planner: ViewPlanner) {
         val DELTA_CODED_LONG_LIST = ClassName("com.splendo.kaluga.bytes.view", "DeltaCodedLongList")
         val RUNTIME_EXCEPTION = ClassName("kotlin", "RuntimeException")
         val NO_SUCH_ELEMENT_EXCEPTION = ClassName("kotlin", "NoSuchElementException")
+        val UNSUPPORTED_OPERATION = ClassName("kotlin", "UnsupportedOperationException")
     }
 }
 

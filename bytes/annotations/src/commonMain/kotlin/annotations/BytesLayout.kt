@@ -29,13 +29,26 @@ enum class Generate {
 }
 
 /**
+ * What the read-only VIEW of a [BytesLayout]-annotated interface does with a property the interface declares `var`.
+ * The writing VIEW and the DATA class write it either way.
+ */
+enum class ReadOnlySetters {
+    /** The processor reports the `var` as an error, naming this option; declare the property `val`. */
+    REJECT,
+
+    /** The read-only VIEW overrides it with a setter that throws an `UnsupportedOperationException`. */
+    THROW,
+}
+
+/**
  * Marks an interface as a byte-packed wire layout. The `com.splendo.kaluga.bytes.plugin` generates an
  * implementation for each entry in [generate] from the interface's properties and their `BytesFormat` annotations
  * ([Prefix], [Size], [ByteOrder], [Checksum], and the rest of this package).
  *
  * @property generate which implementations to generate for this interface. Defaults to the module-wide `bytes { }`
  *   DSL setting; set explicitly to override it for a single interface.
+ * @property readOnlySetters what the read-only VIEW does with a property declared `var`, which it cannot write.
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
-annotation class BytesLayout(val generate: Array<Generate> = [Generate.DATA, Generate.VIEW])
+annotation class BytesLayout(val generate: Array<Generate> = [Generate.DATA, Generate.VIEW], val readOnlySetters: ReadOnlySetters = ReadOnlySetters.REJECT)

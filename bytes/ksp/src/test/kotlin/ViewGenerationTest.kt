@@ -1591,6 +1591,81 @@ class ViewGenerationTest {
         assertEquals(emptyList<Any?>(), problems.take(10))
     }
 
+    @Test
+    fun `rejects a var property unless the read-only view may throw`() {
+        val rejected = BytesCompilation(
+            layoutSource(
+                """
+                @BytesLayout
+                interface Settings {
+                    var level: Byte
+                }
+                """,
+            ),
+            generate = "DATA,VIEW",
+        )
+        assertTrue(
+            rejected.kspErrors.any {
+                "test.Settings.level is a var, which the read-only SettingsView cannot override; declare it val, or give the read-only view a setter that throws " +
+                    "with @BytesLayout(readOnlySetters = ReadOnlySetters.THROW)" in it
+            },
+            rejected.result.messages,
+        )
+
+        // A DATA class writes a var as any data class does.
+        val dataOnly = BytesCompilation(layoutSource("@BytesLayout interface Settings { var level: Byte }"), generate = "DATA")
+        assertEquals(KotlinCompilation.ExitCode.OK, dataOnly.result.exitCode, dataOnly.result.messages)
+
+        val cases = listOf(
+            "var text: String" to "test.Unsettable.text is a var, but no view can rewrite it in place, as its size or presence moves what follows it",
+            "var maybe: Byte?" to "test.Unsettable.maybe is a var, but no view can rewrite it in place, as it is optional",
+        )
+        cases.forEach { (property, message) ->
+            val compilation = BytesCompilation(
+                layoutSource("@BytesLayout(readOnlySetters = ReadOnlySetters.THROW) interface Unsettable { $property }"),
+                generate = "DATA,VIEW",
+            )
+            assertTrue(compilation.kspErrors.any { message in it }, compilation.result.messages)
+        }
+    }
+
+    @Test
+    fun `gives the read-only view a throwing setter for a var when asked`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout(readOnlySetters = ReadOnlySetters.THROW)
+            interface Settings {
+                var level: Byte
+                val mode: Byte
+            }
+            """,
+        )
+        val check = SourceFile.kotlin(
+            "Check.kt",
+            """
+            package test
+
+            fun check(): List<String> = buildList {
+                val view = SettingsView(1, 2)
+                val refused = runCatching { (view as Settings).level = 3 }.exceptionOrNull()
+                if (refused !is UnsupportedOperationException || refused.message != "SettingsView is read-only; set level on a copy from toMutable()") add("refused " + refused)
+                if (view.level != 1.toByte()) add("written " + view)
+                val mutable = view.toMutable()
+                mutable.level = 4
+                if (mutable.level != 4.toByte() || view.level != 1.toByte()) add("mutable " + mutable)
+                val data = SettingsData(1, 2)
+                data.level = 5
+                if (data.level != 5.toByte()) add("data " + data)
+            }
+            """.trimIndent(),
+        )
+        val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems)
+    }
+
     /**
      * `Check.kt`, whose `check()` lists where the views differ from `BytesFormat` in the [comparisons]: calls to
      * `compare(data, serializer, refused) { encode }`, which also checks that `BytesFormat` refuses the data when
