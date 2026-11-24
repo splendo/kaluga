@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
@@ -116,7 +115,7 @@ open class RemoteCharacteristic internal constructor(
     }
 
     private val _isNotifying = MutableStateFlow(false)
-    private val subscriptions = concurrentMutableListOf<Subscription>()
+    private val subscriptions = atomic(emptyList<Subscription>())
     private var lastKnownValue: ByteArray? = null
 
     /**
@@ -138,7 +137,7 @@ open class RemoteCharacteristic internal constructor(
             lastKnownValue?.let {
                 subscription.onUpdate(it)
             }
-            subscriptions.add(subscription)
+            subscriptions.update { it + subscription }
             SubscriptionResult.DidSubscribe(subscription)
         }
 
@@ -243,11 +242,19 @@ open class RemoteCharacteristic internal constructor(
 
     internal fun notify(value: ByteArray) {
         lastKnownValue = value
-        subscriptions.forEach { it.onUpdate(value) }
+        val current = subscriptions.value
+        for (index in 0 until current.size) {
+            current[index].onUpdate(value)
+        }
     }
 
-    private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = subscriptions.synchronized {
-        if (remove(subscription) && isEmpty()) {
+    private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? {
+        var removed = false
+        val remaining = subscriptions.updateAndGet { current ->
+            removed = subscription in current
+            if (removed) current - subscription else current
+        }
+        return if (removed && remaining.isEmpty()) {
             lastKnownValue = null
             startDisableNotification()
         } else {

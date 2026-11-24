@@ -84,6 +84,10 @@ const val DECODE_FROM_BYTE_ARRAY = "decodeFromByteArray"
 const val ENCODE_TO_BYTE_ARRAY = "encodeToByteArray"
 const val FORMAT = "format"
 const val DESERIALIZATION_STRATEGY = "deserializationStrategy"
+const val DECODE = "decode"
+const val BYTES = "Bytes"
+const val COLLECT = "collect"
+const val ACTION_PARAMETER = "action"
 
 // Bluetooth
 const val BLUETOOTH = "bluetooth"

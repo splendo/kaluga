@@ -25,9 +25,7 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.annotations.Writable
-import com.squareup.kotlinpoet.BYTE_ARRAY
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
+import com.splendo.kaluga.bluetooth.ksp.Options
 
 internal object NeedsFormatterHelper {
 
@@ -42,12 +40,12 @@ internal object NeedsFormatterHelper {
         val functionArgument: String get() = if (needsFormatter) ", $FORMAT" else ""
     }
 
-    fun needsBluetoothFormatter(declaration: KSClassDeclaration, target: Target = Target.CLIENT): NeedsFormatter = when {
+    fun needsBluetoothFormatter(declaration: KSClassDeclaration, options: Options, target: Target = Target.CLIENT): NeedsFormatter = when {
         declaration.isAnnotationPresent(Bluetooth::class) ||
             declaration.isAnnotationPresent(BluetoothService::class) -> {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 (property.type.resolve().declaration as? KSClassDeclaration)?.let {
-                    needsBluetoothFormatter(it, target).needsFormatter
+                    needsBluetoothFormatter(it, options, target).needsFormatter
                 } ?: false
             }
         }
@@ -61,10 +59,10 @@ internal object NeedsFormatterHelper {
                                 property.isWritable
                             ) && target != Target.SERVER
                         ) ||
-                        property.isNotifiable -> property.type.resolve().toTypeName() != BYTE_ARRAY
+                        property.isNotifiable -> property.attributeValue(options).needsFormat
 
                     else -> (property.type.resolve().declaration as? KSClassDeclaration)?.let {
-                        needsBluetoothFormatter(it, target).needsFormatter
+                        needsBluetoothFormatter(it, options, target).needsFormatter
                     } ?: false
                 }
             }
@@ -76,7 +74,7 @@ internal object NeedsFormatterHelper {
                     target == Target.SERVER -> false
 
                     property.isReadable ||
-                        property.isAnnotationPresent(Writable::class) -> property.type.resolve().toTypeName() != ClassName("kotlin", "ByteArray")
+                        property.isAnnotationPresent(Writable::class) -> property.attributeValue(options).needsFormat
 
                     else -> false
                 }

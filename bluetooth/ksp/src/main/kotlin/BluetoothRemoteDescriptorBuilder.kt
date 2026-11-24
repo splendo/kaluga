@@ -26,11 +26,11 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
+import com.splendo.kaluga.bluetooth.ksp.helpers.attributeValue
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTOR
 import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTORS
-import com.splendo.kaluga.bluetooth.ksp.helpers.ENCODE_TO_BYTE_ARRAY
-import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.IT
 import com.splendo.kaluga.bluetooth.ksp.helpers.LET
@@ -41,11 +41,9 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
-import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
 import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
-import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -54,7 +52,6 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration, private val descriptor: BluetoothDescriptor, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
@@ -79,7 +76,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
         val className = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
         val interfaceName = nameFor(declaration, GenerationType.CLIENT_API)
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options)
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -175,7 +172,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                                 ParameterSpec(
                                     "${onWrite.onWriteMethodName}$ACTION",
                                     LambdaTypeName.get(
-                                        parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                        parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.attributeValue(options).typeName)),
                                         returnType = References.Bluetooth.writeResponse,
                                     ).copy(suspending = true),
                                 )
@@ -201,7 +198,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                         PropertySpec.builder(
                             "${onWrite.onWriteMethodName}$ACTION",
                             LambdaTypeName.get(
-                                parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.attributeValue(options).typeName)),
                                 returnType = References.Bluetooth.writeResponse,
                             ).copy(suspending = true),
                         )
@@ -273,7 +270,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
             writeMethod,
         ).addParameter(
             propertyDeclaration.simpleName.asString(),
-            propertyDeclaration.type.resolve().toTypeName(),
+            propertyDeclaration.attributeValue(options).typeName,
         ).addModifiers(KModifier.SUSPEND, *type.additionalModifiers.toTypedArray()).returns(
             References.Bluetooth.writeResponse,
         ).apply {
@@ -281,14 +278,10 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                 GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
                 GenerationType.Type.BLUETOOTH -> {
-                    if (propertyDeclaration.isByteArray) {
-                        addStatement("$RETURN $DESCRIPTOR.$WRITE(${propertyDeclaration.simpleName.asString()})")
-                    } else {
-                        addStatement(
-                            "$RETURN $DESCRIPTOR.$WRITE($FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, ${propertyDeclaration.simpleName.asString()}))",
-                            propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                        )
-                    }
+                    addStatement(
+                        "$RETURN $DESCRIPTOR.$WRITE(%L)",
+                        propertyDeclaration.attributeValue(options).encode(CodeBlock.of("%N", propertyDeclaration.simpleName.asString())),
+                    )
                 }
 
                 GenerationType.Type.SIMULATOR -> {

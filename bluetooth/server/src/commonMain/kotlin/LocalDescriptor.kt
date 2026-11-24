@@ -112,6 +112,27 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
             format: BytesFormat = BytesFormat,
             onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
             onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
+        ) = writable(encrypted, { format.decodeFromByteArray(deserializationStrategy, it) }, onFailedToWrite, onWrite)
+
+        /**
+         * Makes this [LocalDescriptor] writable by a [com.splendo.kaluga.bluetooth.server.ConnectedDevice]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param T the type of the data being written
+         * @param encrypted `true` if writing to the descriptor should be encrypted. This will result in [LocalCharacteristic.Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [LocalCharacteristic.Permission.WRITABLE]
+         * @param decode turns the [ByteArray] written so far into a [T]. It throws [ByteArrayEndedBeforeSerializationCompleted] while more of the value is still to be written,
+         * and any other [Exception] for a value it rejects
+         * @param onFailedToWrite the function to call when writing to the descriptor fails.
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice] and the exception [decode] threw and should return a [GattResponse.WriteResponse]
+         * @param onWrite the function to call when writing to the descriptor.
+         * This contains the [com.splendo.kaluga.bluetooth.server.ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+         * If the data being written is split over multiple offsets, this will only be called once [decode] accepts the data written so far
+         */
+        fun <T> writable(
+            encrypted: Boolean = false,
+            decode: (ByteArray) -> T,
+            onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+            onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
         ) {
             val cache = mutableMapOf<ConnectedDevice, ByteArray>()
             writable(encrypted) { device, value, offset ->
@@ -129,7 +150,7 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
                 }
                 valueToDeserialize?.let {
                     try {
-                        onWrite(device, format.decodeFromByteArray(deserializationStrategy, it))
+                        onWrite(device, decode(it))
                     } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
                         GattResponse.WriteSuccess.Acknowledged

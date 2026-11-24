@@ -26,6 +26,9 @@ import com.splendo.kaluga.bluetooth.annotations.Encrypted
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.AttributeValue
+import com.splendo.kaluga.bluetooth.ksp.helpers.DECODE
+import com.splendo.kaluga.bluetooth.ksp.helpers.attributeValue
 import com.splendo.kaluga.bluetooth.ksp.helpers.ALSO
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CONFIGURE
@@ -64,7 +67,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
 import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
-import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -76,7 +78,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
-import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, private val descriptor: BluetoothDescriptor, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
@@ -151,7 +152,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
 
         val onWriteFun = FunSpec.builder(writeMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
             .receiver(interfaceName)
-            .addParameter(propertyDeclaration.simpleName.asString(), propertyDeclaration.type.resolve().toTypeName())
+            .addParameter(propertyDeclaration.simpleName.asString(), propertyDeclaration.attributeValue(options).typeName)
             .apply {
                 if (propertyDeclaration.isByteArray) {
                     addParameter(OFFSET, INT)
@@ -213,7 +214,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                         delegateName,
                         interfaceName.nestedClass(DELEGATE),
                     )
-                    val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
+                    val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options, NeedsFormatterHelper.Target.SERVER_DSL)
                     if (needsFormatter.needsFormatter) {
                         addParameter(FORMAT, References.Bluetooth.Serialization.bytesFormat)
                     }
@@ -303,8 +304,18 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
             .addStatement("$WRITABLE(")
             .indent()
             .addStatement("$ENCRYPTED = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
-            .addStatement("$DESERIALIZATION_STRATEGY = %L,", propertyDeclaration.type.resolve().toTypeName().serializer(logger))
-            .addStatement("$FORMAT = $FORMAT,")
+            .apply {
+                when (val value = propertyDeclaration.attributeValue(options)) {
+                    is AttributeValue.View -> add("$DECODE = { %L },\n", value.wrap(CodeBlock.of(IT)))
+
+                    is AttributeValue.Serialized -> {
+                        addStatement("$DESERIALIZATION_STRATEGY = %L,", value.serializer)
+                        addStatement("$FORMAT = $FORMAT,")
+                    }
+
+                    AttributeValue.Bytes -> error("A ByteArray is written with its offset, undecoded")
+                }
+            }
             .addStatement("$ON_FAILED_TO_WRITE = { $DEVICE, $EXCEPTION ->")
             .indent()
             .beginControlFlow("$WITH($delegateName)")

@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.ksp
 
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.splendo.kaluga.bluetooth.ksp.helpers.LayoutViews
 
 data class Options(
     val generateClient: Boolean,
@@ -30,6 +31,8 @@ data class Options(
     val generatedPackage: String?,
     val apiPackage: String?,
     val externalSources: List<String>,
+    val layoutGenerate: Set<String> = LayoutViews.defaultGenerate(null),
+    val layoutViews: LayoutViews = LayoutViews.None,
 ) {
     constructor(environment: SymbolProcessorEnvironment) : this(
         environment.options["target"].orEmpty().split(",").contains("CLIENT"),
@@ -41,6 +44,7 @@ data class Options(
         environment.options["generatedPackage"]?.takeIf { it.isNotBlank() },
         environment.options["apiPackage"]?.takeIf { it.isNotBlank() },
         environment.options["externalSources"].orEmpty().split(":").filter { it.isNotBlank() },
+        LayoutViews.defaultGenerate(environment.options[LayoutViews.GENERATE_OPTION]),
     )
 
     /** The package in which generated code is placed, falling back to [defaultPackage] when not configured. */

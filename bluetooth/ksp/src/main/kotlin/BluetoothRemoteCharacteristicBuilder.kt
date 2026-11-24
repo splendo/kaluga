@@ -31,10 +31,14 @@ import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.annotations.WritableSigned
 import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.AttributeValue
+import com.splendo.kaluga.bluetooth.ksp.helpers.attributeValue
+import com.splendo.kaluga.bluetooth.ksp.helpers.BYTES
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
+import com.splendo.kaluga.bluetooth.ksp.helpers.COLLECT
+import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION_PARAMETER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTICS
 import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTORS
-import com.splendo.kaluga.bluetooth.ksp.helpers.ENCODE_TO_BYTE_ARRAY
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_SERVICE
@@ -49,7 +53,6 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
-import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isNotifiable
 import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
 import com.splendo.kaluga.bluetooth.ksp.helpers.isWritable
@@ -57,8 +60,8 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.orNullIfNullable
-import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.BYTE_ARRAY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -69,8 +72,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
+import com.squareup.kotlinpoet.UNIT
 
 internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclaration, private val characteristic: BluetoothCharacteristic, options: Options, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, options, logger) {
@@ -95,7 +97,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
         val className = nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
         val interfaceName = nameFor(declaration, GenerationType.CLIENT_API)
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, options)
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -191,7 +193,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                                 ParameterSpec(
                                     "${onWrite.onWriteMethodName}$ACTION",
                                     LambdaTypeName.get(
-                                        parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                        parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.attributeValue(options).typeName)),
                                         returnType = References.Bluetooth.writeResponse,
                                     ).copy(suspending = true),
                                 )
@@ -199,7 +201,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                             notifiableProperty?.let { notifiable ->
                                 ParameterSpec(
                                     notifiable.simpleName.asString(),
-                                    References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.type.resolve().toTypeName()),
+                                    References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.attributeValue(options).typeName),
                                 )
                             },
                         ) + properties.mapNotNull { propertyDeclaration ->
@@ -233,7 +235,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                         PropertySpec.builder(
                             "${onWrite.onWriteMethodName}$ACTION",
                             LambdaTypeName.get(
-                                parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.attributeValue(options).typeName)),
                                 returnType = References.Bluetooth.writeResponse,
                             ).copy(suspending = true),
                         )
@@ -244,7 +246,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     notifiableProperty?.let { notifiable ->
                         PropertySpec.builder(
                             "_${notifiable.simpleName.asString()}",
-                            References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.type.resolve().toTypeName()),
+                            References.KotlinX.Coroutines.Flow.flow.parameterizedBy(notifiable.attributeValue(options).typeName),
                         )
                             .addModifiers(KModifier.PRIVATE)
                             .initializer(notifiable.simpleName.asString())
@@ -305,7 +307,8 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 if (propertyDeclaration.isNotifiable) {
                     if (!hasNotifiableProperty) {
                         hasNotifiableProperty = true
-                        addProperty(generateNotifiableProperty(propertyDeclaration, type))
+                        generateNotifiableBytesProperty(propertyDeclaration, type)?.let { addProperty(it) }
+                        generateNotifiableProperty(propertyDeclaration, type)?.let { addProperty(it) }
                         addProperty(generateIsNotifyingProperty(type))
                     } else {
                         logOnlyOneProperty(Notifiable::class, Indicatable::class)
@@ -368,7 +371,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
         writeMethod,
     ).addParameter(
         propertyDeclaration.simpleName.asString(),
-        propertyDeclaration.type.resolve().toClassName(),
+        propertyDeclaration.attributeValue(options).typeName,
     ).addModifiers(KModifier.SUSPEND, *type.additionalModifiers.toTypedArray()).returns(
         References.Bluetooth.writeResponse,
     ).apply {
@@ -376,14 +379,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
             GenerationType.Type.BLUETOOTH -> {
-                val valueArgument = if (propertyDeclaration.isByteArray) {
-                    CodeBlock.of(propertyDeclaration.simpleName.asString())
-                } else {
-                    CodeBlock.of(
-                        "$FORMAT.$ENCODE_TO_BYTE_ARRAY(%L, ${propertyDeclaration.simpleName.asString()})",
-                        propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                    )
-                }
+                val valueArgument = propertyDeclaration.attributeValue(options).encode(CodeBlock.of("%N", propertyDeclaration.simpleName.asString()))
                 if (writeType != null) {
                     addStatement("$RETURN $CHARACTERISTIC.$WRITE(%L, %M)", valueArgument, writeType)
                 } else {
@@ -397,51 +393,101 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
         }
     }.build()
 
-    private fun generateNotifiableProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec = PropertySpec.builder(
-        propertyDeclaration.simpleName.asString(),
-        References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.type.resolve().toTypeName()),
-    ).addModifiers(
-        *type.additionalModifiers.toTypedArray(),
-    )
-        .apply {
-            when (type) {
-                GenerationType.Type.API, GenerationType.Type.MOCK -> {}
+    /**
+     * The notifications of [propertyDeclaration] as its value. A value read through a view is derived from the undecoded
+     * notifications of [generateNotifiableBytesProperty] by the API, so an implementation provides only those.
+     */
+    private fun generateNotifiableProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec? {
+        val value = propertyDeclaration.attributeValue(options)
+        val name = propertyDeclaration.simpleName.asString()
+        val builder = PropertySpec.builder(name, References.KotlinX.Coroutines.Flow.flow.parameterizedBy(value.typeName))
+        if (value is AttributeValue.View) {
+            if (type != GenerationType.Type.API) return null
+            return builder
+                .getter(FunSpec.getterBuilder().addStatement("$RETURN %N$BYTES.%M { %L }", name, References.KotlinX.Coroutines.Flow.map, value.decode(CodeBlock.of(IT))).build())
+                .build()
+        }
+        return builder.addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                when (type) {
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
 
-                GenerationType.Type.BLUETOOTH -> {
-                    getter(
-                        FunSpec.getterBuilder()
-                            .apply {
-                                val member = References.Bluetooth.value
-                                if (propertyDeclaration.isByteArray) {
-                                    addStatement("$RETURN $CHARACTERISTIC.%M()", member)
-                                } else {
-                                    addStatement(
-                                        "$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)",
-                                        member,
-                                        propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                                    )
+                    GenerationType.Type.BLUETOOTH -> {
+                        getter(
+                            FunSpec.getterBuilder()
+                                .apply {
+                                    val member = References.Bluetooth.value
+                                    when (value) {
+                                        AttributeValue.Bytes -> addStatement("$RETURN $CHARACTERISTIC.%M()", member)
+                                        is AttributeValue.Serialized -> addStatement("$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)", member, value.serializer)
+                                        is AttributeValue.View -> error("A view is derived from the bytes")
+                                    }
                                 }
-                            }
-                            .build(),
-                    )
-                }
+                                .build(),
+                        )
+                    }
 
-                GenerationType.Type.SIMULATOR -> {
-                    // Expose the backing flow wrapped with onStart/onCompletion so _isNotifying
-                    // reflects whether there is an active collector.
-                    getter(
-                        FunSpec.getterBuilder()
-                            .addStatement(
-                                "$RETURN _%L.%M { _isNotifying.value = true }.%M { _isNotifying.value = false }",
-                                propertyDeclaration.simpleName.asString(),
-                                References.KotlinX.Coroutines.Flow.onStart,
-                                References.KotlinX.Coroutines.Flow.onCompletion,
-                            )
-                            .build(),
+                    GenerationType.Type.SIMULATOR -> getter(simulatorNotifyingGetter(CodeBlock.of("%N", "_$name")))
+                }
+            }.build()
+    }
+
+    /**
+     * The undecoded notifications of a [propertyDeclaration] read through a view: the one flow an implementation
+     * provides, which [generateNotifiableProperty] wraps and [collectFunction] collects without boxing.
+     */
+    private fun generateNotifiableBytesProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec? {
+        val value = propertyDeclaration.attributeValue(options) as? AttributeValue.View ?: return null
+        val name = propertyDeclaration.simpleName.asString()
+        return PropertySpec.builder("$name$BYTES", References.KotlinX.Coroutines.Flow.flow.parameterizedBy(BYTE_ARRAY))
+            .addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                when (type) {
+                    GenerationType.Type.API, GenerationType.Type.MOCK -> {}
+
+                    GenerationType.Type.BLUETOOTH -> getter(FunSpec.getterBuilder().addStatement("$RETURN $CHARACTERISTIC.%M()", References.Bluetooth.value).build())
+
+                    GenerationType.Type.SIMULATOR -> getter(
+                        simulatorNotifyingGetter(CodeBlock.of("%N.%M { %L }", "_$name", References.KotlinX.Coroutines.Flow.map, value.encode(CodeBlock.of(IT)))),
                     )
                 }
             }
-        }.build()
+            .build()
+    }
+
+    /** Hands out the simulator's [backing] flow, setting `_isNotifying` while it has a collector. */
+    private fun simulatorNotifyingGetter(backing: CodeBlock): FunSpec = FunSpec.getterBuilder()
+        .addStatement(
+            "$RETURN %L.%M { _isNotifying.value = true }.%M { _isNotifying.value = false }",
+            backing,
+            References.KotlinX.Coroutines.Flow.onStart,
+            References.KotlinX.Coroutines.Flow.onCompletion,
+        )
+        .build()
+
+    override fun topLevelFunctions(generationType: GenerationType): List<FunSpec> = listOfNotNull(
+        declarations.filterIsInstance<KSPropertyDeclaration>().firstOrNull { it.isNotifiable }?.takeIf { generationType == GenerationType.CLIENT_API }?.let(::collectFunction),
+    )
+
+    /**
+     * Collects the notifications of a [notifiable] read through a view without boxing one per notification, which
+     * collecting its `Flow` of views does: the view is created inside the inlined action, from the undecoded bytes.
+     */
+    private fun collectFunction(notifiable: KSPropertyDeclaration): FunSpec? {
+        val view = notifiable.attributeValue(options) as? AttributeValue.View ?: return null
+        val name = notifiable.simpleName.asString()
+        return FunSpec.builder("$COLLECT${name.replaceFirstChar { it.uppercase() }}")
+            .addKdoc("Collects [%N] like `%N.collect(action)` does, without allocating a [%T] per notification.", name, name, view.typeName)
+            .addModifiers(KModifier.SUSPEND, KModifier.INLINE)
+            .receiver(nameFor(declaration, GenerationType.CLIENT_API))
+            .addParameter(
+                ParameterSpec.builder(ACTION_PARAMETER, LambdaTypeName.get(parameters = arrayOf(view.typeName), returnType = UNIT).copy(suspending = true))
+                    .addModifiers(KModifier.CROSSINLINE)
+                    .build(),
+            )
+            .addStatement("%N$BYTES.collect { $ACTION_PARAMETER(%L) }", name, view.decode(CodeBlock.of(IT)))
+            .build()
+    }
 
     private fun generateIsNotifyingProperty(type: GenerationType.Type): PropertySpec = PropertySpec.builder(
         "isNotifying",
@@ -471,7 +517,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
 
     private fun generateDescriptorProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec {
         val propertyType = clientName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration)
-        val formatArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument
+        val formatArg = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, options).functionArgument
         return PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
             propertyType,

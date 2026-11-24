@@ -149,6 +149,86 @@ The generated client and server APIs are implementation-agnostic: the same `Demo
 real `Bluetooth*` implementation, the `Simulated*` one (useful for previews), or the `Mock*` one (useful for stubbing and
 verifying interactions in tests of code that *consumes* the generated API).
 
+## Values typed by a `@BytesLayout`
+
+A value can be typed by a [`@BytesLayout`](../../bytes/plugin/) interface instead of a `@Serializable` class. Apply the
+bytes plugin next to this one, and a layout that generates a view is read, notified and written as that view: the
+zero-copy `XView` (`XFrame` for a sealed layout) over the very array the Bluetooth stack holds, so nothing is decoded,
+copied or serialized.
+
+```kotlin
+plugins {
+    id("com.splendo.kaluga.bytes.plugin")
+    id("com.splendo.kaluga.bluetooth.plugin")
+}
+```
+
+```kotlin
+@BytesLayout
+interface HeartRate {
+    @Size(Length.`8_BIT`)
+    @Unsigned
+    val bpm: Int
+}
+
+@BluetoothCharacteristic("2a37")
+interface MeasurementCharacteristic {
+    @Readable
+    @Writable
+    @Notifiable
+    val heartRate: HeartRate
+}
+```
+
+```kotlin
+measurement.heartRate.collect { view -> show(view.bpm) } // Flow<HeartRateView>
+val view = measurement.readHeartRate().valueOrNull      // HeartRateView?
+measurement.writeHeartRate(HeartRateView(bpm = 72))     // writes view.bytes
+```
+
+Every collector of a notification is handed the same array, which the characteristic also keeps as the last value for
+a later subscriber, so these views are the read-only `XView`. To change a value, edit a copy and write that:
+
+```kotlin
+val edited = view.toMutable().apply { bpm = 80 }        // MutableHeartRateView over a copy
+measurement.writeHeartRate(edited.asView())             // asView() does not copy
+```
+
+A write is queued until the device takes it, and sends the array it was given, so change a `MutableXView` again only
+after its write returns.
+
+A view is a value class, so a `Flow` of views boxes each one it emits. To collect notifications without that, the
+client also has the undecoded notifications as `heartRateBytes`, and `collectHeartRate` wraps each one inside its
+inlined action:
+
+```kotlin
+measurement.collectHeartRate { view -> show(view.bpm) } // no allocation per notification
+```
+
+`heartRateBytes` is the one notification flow an implementation provides; `heartRate` is derived from it by the API, so
+the two cannot drift apart and `collectHeartRate` stays allocation-free over any implementation. The Bluetooth
+implementation hands out the characteristic's value flow, the mock is driven through its `heartRateBytes`
+`MutableSharedFlow`, and the simulator is still given a `Flow<HeartRateView>`, from which it derives the bytes while
+keeping `isNotifying` in step with its collector. A hand-written implementation overrides `heartRateBytes` only. One
+that delegates to another with `by` forwards `heartRate` to the delegate as well, so it has to override `heartRate` too
+if its `heartRateBytes` differ from the delegate's.
+
+On the server the delegate is given a `HeartRateView` to write and answers reads with one. A write split over several
+offsets reaches it once `HeartRateView.wrap` accepts the bytes written so far, and one `wrap` rejects goes to
+`onFailedToWriteHeartRate`. A view the client reads or is notified of is not checked; call its `validate()` where a
+malformed value has to be caught before it is read.
+
+Whether a layout is read through its view follows what the bytes plugin generates for it: its own
+`@BytesLayout(generate = [...])`, else the module-wide `bytes { generate }`, which reaches this processor as the same KSP
+option. A layout of another module is read through its view when that module generated one. A layout that generates only
+DATA keeps its interface type and is serialized through its `XData.InterfaceSerializer`. A `@ByteStuffed` layout cannot
+be read in place and is reported; generate only DATA for it. The processor cannot see a view that
+`skipUnsupportedViews` skipped, so such a layout has to say `generate = [Generate.DATA]` itself.
+
+A type alias of a layout is read as the layout itself. A layout-typed value cannot be nullable, as the layout is the
+attribute's bytes and they hold no null, so `val heartRate: HeartRate?` is reported. A read that fails already yields null
+as its `valueOrNull`, and a part of the value that may be absent belongs in the layout.
+
 ## Sharing definitions across modules
 
 To split the API and implementation across modules — for example a shared API module consumed by both a client app and
