@@ -38,22 +38,30 @@ One internal object per package, listing every generated DATA serializer with it
 
 For a layout interface `X`, the processor generates:
 
-### XView
+### XView and MutableXView
 
-A `@JvmInline value class` over a `ByteArray` implementing `X`. Properties read and write directly to the byte array in place.
+Two `@JvmInline value class`es over a `ByteArray` implementing `X`. `XView` is a read-only zero-copy view: its properties read the byte array in place and have no setters, so one array can be handed to several consumers, such as every collector of a notification, without one of them changing it for the others. `MutableXView` is the same view reading and writing `bytes` in place, with setters for the properties that can be rewritten and `edit { }`.
 
-- `XView.encode(x)` — Creates a view from an `X` implementation, sized automatically
-- `XView(field1, field2, …)` — Creates a view from individual field values, one parameter per property
-- `XView.wrap(bytes, validateChecksum)` — Wraps an existing array, optionally validating prefixes, postfixes, checksums, lengths
-- `XView.wrapRange(bytes, from, to, validateChecksum)` — Views a slice of a larger array
+`XView` is read-only by its API, not enforced: `bytes` stays public, and a nested layout or list it returns is the writable `XSlice` or `FixedStrideList`, reachable by a cast, as a `List` can be cast to `MutableList`.
+
+- `XView.encode(x)` and `MutableXView.encode(x)` — Create a view from an `X` implementation, in an array sized exactly
+- `XView(field1, field2, …)` and `MutableXView(field1, field2, …)` — Create a view from individual field values, one parameter per property
+- `XView.wrap(bytes, validateChecksum)` and `MutableXView.wrap(bytes, validateChecksum)` — Wrap an existing array, optionally validating prefixes, postfixes, checksums, lengths
+- `XView.wrapRange(bytes, from, to, validateChecksum)` — Views a slice of a larger array; `MutableXView` has none, as it would return the same slice
+- `XView.SIZE_BYTES` and `MutableXView.SIZE_BYTES` — The size of every view of a layout of a fixed size
+- `xView.toMutable()` — A `MutableXView` over a copy of the bytes
+- `mutableXView.asView()` — An `XView` over the same bytes, without copying; the only conversion that shares them
 - `toData()` — Copies the view's bytes into an `XData` instance
-- `x.toXView()` — Converts any `X` implementation into a view
+- `x.toXView()` — Converts any `X` implementation into a read-only view: itself when it is one, a copy of the bytes of a `MutableXView`, otherwise a new encoding
+- `x.toMutableXView()` — Converts any `X` implementation into a new `MutableXView`, never sharing the bytes of a view: a copy of them, otherwise a new encoding
+
+`MutableXView`'s companion and its reading functions call `XView`'s, which costs nothing between value classes.
 - `contentEquals(other)` — Compares view content (value classes can't override `equals`, so `==` compares array references)
 
 ### XLayout and XSlice
 
 - `XLayout` — Internal object holding accessor functions for each field
-- `XSlice` — A public class implementing `X` over a range of a larger array, with an internal constructor: you get one from `XView.wrapRange`, from the getter of a property of layout type `X`, as the item of a list of `X`, or as the receiver of `edit { }`. Its settable properties write in place and update the enclosing checksums; it has `toData()`, content-based `equals`/`hashCode`, and a `toString` naming it `XSlice`. Cast to it to write through a nested view, as the property's own type is the read-only interface
+- `XSlice` — A public class implementing `X` over a range of a larger array, with an internal constructor: you get one from `XView.wrapRange`, from the getter of a property of layout type `X`, as the item of a list of `X`, or as the receiver of `MutableXView.edit { }`. Its settable properties write in place and update the enclosing checksums; it has `toData()`, content-based `equals`/`hashCode`, and a `toString` naming it `XSlice`. Cast to it to write through a nested view, as the property's own type is the read-only interface
 - Nested layouts whose encoding changes based on context (e.g., under `@ByteOrder(excludeStructure = true)`) get one layout/slice pair per distinct compiled form
 
 ### XFrame (for sealed layouts)
@@ -63,6 +71,7 @@ A `@JvmInline value class` over a `ByteArray` for sealed layout `X`. The `value`
 - `XFrame.encode(x)` — Creates a frame from any `X` subtype
 - `XFrame.wrap(bytes, validateChecksum)` and `XFrame.wrapRange(bytes, from, to, validateChecksum)` — Wraps an array, dispatching to the correct subtype
 - Does not implement `X` directly; the sealed hierarchy preserves exactly the subtypes you declared
+- Has no setters of its own, so it has no mutable form: `value` is the subtype's `XSlice`, which writes in place when cast to it
 - For a sealed layout with `@LengthPrefix`: `XFrame.valueStart(bytes, from)`, `XFrame.valueEnd(bytes, from)` and `XFrame.end(bytes, from)`, the bounds of the record at `from`, and `XFrame.writeRecord`, `XFrame.recordSize`, `XFrame.encodeRecord` and `XFrame.wrapValue` for a type and a value held apart, see [Type-length-value records](#type-length-value-records)
 
 ### Type-length-value records
@@ -133,10 +142,11 @@ One internal object per package, listing every layout generated with both DATA a
 
 ### Writing
 
+- `MutableXView` and `XSlice` write; `XView` only reads, and `toMutable()` copies it to write
 - Setters update checksums of the frame and any enclosing frames automatically
-- `edit { }` batches writes and updates checksums once at the end
+- `MutableXView.edit { }` batches writes and updates checksums once at the end
 - Properties whose values affect positions of later fields are read-only
-- Nested views are `XSlice` instances; cast to it to write a nested property in place
+- Nested views are `XSlice` instances; cast to it to write a nested property in place, whether it came from an `XView` or a `MutableXView`
 
 ### Byte order
 
@@ -146,9 +156,9 @@ Layouts with `@ByteOrder` without `excludeStructure` are accumulated MOST_SIGNIF
 
 Byte stuffing cannot read in place. For byte-stuffed layouts:
 
-- `XView.fromWire(wire)` — Unstuffs bytes and validates like `wrap()`
-- `toWire()` — Stuffs bytes again
-- `XView.encodeToWire(value)` — Encodes via `BytesFormat` (which does the stuffing)
+- `XView.fromWire(wire)` and `MutableXView.fromWire(wire)` — Unstuff bytes into a new array and validate like `wrap()`
+- `toWire()`, on both — Stuffs bytes again
+- `XView.encodeToWire(value)` and `MutableXView.encodeToWire(value)` — Encode and stuff, as `BytesFormat` does
 - Byte-stuffed string/collection properties are found by scanning for unescaped terminators; reading unstuffs a copy (no setters supported)
 - Only the root frame is stuffed; byte stuffing on nested layouts and value classes (which `BytesFormat` supports), on sealed layouts, and on MOST_SIGNIFICANT_FIRST frames is not supported yet
 
@@ -170,7 +180,7 @@ Configurations using unsupported features generate a KSP error "VIEW not yet sup
 - Properties cannot declare default values, and none can be named `Companion`
 - A layout generating VIEW cannot have a property named `bytes`, which would clash with the view's public `bytes` property holding its array, nor `sliceBytes`, `sliceStart`, `sliceLimit` or `sliceParent`, the slice's own properties. This is reported like an unsupported feature, so `skipUnsupportedViews` skips the view instead
 - A layout interface cannot carry a `@SerialName`: its serial name is its qualified name, which sealed dispatch and the layout dump parity rely on
-- Nested layouts flatten into one generated name (`Outer.Inner` generates `OuterInnerData`), so two layouts that flatten to the same name are both reported
+- Nested layouts flatten into one generated name (`Outer.Inner` generates `OuterInnerData`), and a writing view prefixes it with `Mutable` (`Foo` generates `MutableFooView`, as does a `MutableFoo` or `Mutable.Foo` that generates VIEW), so two layouts generating a class of the same name are both reported
 - Type aliases are expanded as kotlinx sees them, nullability and type arguments included
 - A `@Serializable` value class wrapping a layout must name the layout's serializer on its property, `@Serializable(with = XData.InterfaceSerializer::class)`; kotlinx otherwise serializes the interface polymorphically
 - `Int24`, `UInt24`, `Int40`, `UInt40`, `Int48`, `UInt48`, `MedFloat16` and `MedFloat32` have no kotlinx serializer, so only a VIEW-only layout can hold them

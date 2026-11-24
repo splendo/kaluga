@@ -24,7 +24,7 @@ dependencies {
 
 ## Overview
 
-Views are zero-copy implementations of `@BytesLayout` interfaces that read and write directly into a `ByteArray` without allocating intermediate objects. They use the same layout and numeric encoding as the DATA (`@Serializable`) classes, so a view and a DATA class decode to the same values.
+Views are zero-copy implementations of `@BytesLayout` interfaces that read directly from a `ByteArray` without allocating intermediate objects, and whose mutable form writes into it in place. They use the same layout and numeric encoding as the DATA (`@Serializable`) classes, so a view and a DATA class decode to the same values.
 
 ## Key components
 

@@ -20,7 +20,7 @@ The processor generates DATA classes (`@Serializable` data classes) and, unless 
 For a layout interface `X`:
 
 - **DATA:** `XData` (a `@Serializable` data class), `XData.LAYOUT_DUMP`, `XData.from()`, and `XData.InterfaceSerializer`
-- **VIEW:** `XView` (a `@JvmInline value class`), `XLayout`, and for sealed roots `XFrame`
+- **VIEW:** the read-only `XView` and the writing `MutableXView` (`@JvmInline value class`es), `toMutable()` and `asView()` between them, `x.toXView()` and `x.toMutableXView()`, `XLayout`, `XSlice`, and for sealed roots `XFrame`
 
 The generated code produces exactly the same bytes as `BytesFormat` for the same values on every platform. See [`example/validation/format`](example/validation/format) for the `BytesFormat` test suite running on the generated DATA classes and views, [`example/validation/parts`](example/validation/parts) for layouts that layouts of another module hold, and [`example/validation/core`](example/validation/core) for a minimal setup. The format and core suites run on the Android host, iOS, JS (Node and browser) and wasmJs; wasmJs browser tests need a headless Chrome.
 
@@ -88,11 +88,19 @@ data class HeartRateData(
     val bpm: Int,
 ) : HeartRate
 
-// Generated VIEW (zero-copy, @JvmInline value class)
+// Generated VIEW (zero-copy, @JvmInline value class), read-only
 @JvmInline
 value class HeartRateView(val bytes: ByteArray) : HeartRate {
     override val bpm: Int
         get() = /* read directly from bytes */
+}
+
+// Generated VIEW that also writes in place
+@JvmInline
+value class MutableHeartRateView(val bytes: ByteArray) : HeartRate {
+    override var bpm: Int
+        get() = /* read directly from bytes */
+        set(value) { /* write directly into bytes */ }
 }
 
 // Usage
@@ -106,6 +114,11 @@ val decoded = BytesFormat.decodeFromByteArray(HeartRateData.serializer(), encode
 val view = HeartRateView.encode(data)
 val sameBytes = view.bytes
 val viewDecoded = HeartRateView.wrap(encoded)
+
+// Writing: a mutable view, or a copy of a read-only one
+val mutable = MutableHeartRateView.encode(data)
+mutable.bpm = 80
+val edited = view.toMutable().apply { bpm = 90 }
 ```
 
 For a more complex example involving enums, sealed classes and nested structures, see [`example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt`](example/validation/format/src/commonMain/kotlin/EnumsPolymorphismFixtures.kt).
