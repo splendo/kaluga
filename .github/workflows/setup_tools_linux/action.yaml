@@ -29,6 +29,9 @@ runs:
           caches
           notifications
 
+    - name: route Maven Central through its mirror
+      uses: ./.github/workflows/setup_maven_mirror/
+
     - name: Make cache of workspace
       uses: actions/cache/restore@v5
       if: ${{ inputs.restore-workspace-cache != 'false' }}

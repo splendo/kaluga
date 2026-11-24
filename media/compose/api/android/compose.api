@@ -1,0 +1,4 @@
+public final class com/splendo/kaluga/media/compose/MediaSurfaceContainer_androidKt {
+	public static final fun MediaSurfaceContainer (Lcom/splendo/kaluga/media/MediaSurfaceBinder;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;II)V
+}
+

@@ -10,7 +10,11 @@ version = libs.versions.kaluga.get()
 
 android {
     namespace = "com.splendo.kaluga.example"
-    compileSdk = libs.versions.androidCompileSdk.get().toInt()
+    compileSdk {
+        version = release(libs.versions.androidCompileSdk.get().toInt()) {
+            minorApiLevel = libs.versions.androidCompileSdkMinor.get().toInt()
+        }
+    }
     defaultConfig {
         applicationId = "com.splendo.kaluga.example"
         minSdk = libs.versions.androidMinSdk.get().toInt()

@@ -1,0 +1,97 @@
+public final class com/splendo/kaluga/bluetooth/test/server/MockAttributeIdentity : com/splendo/kaluga/bluetooth/server/AttributeIdentity {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/bluetooth/test/server/MockBluetoothServer : com/splendo/kaluga/bluetooth/server/BluetoothServer {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/server/ServerStatus;Z)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/server/ServerStatus;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun add (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun advertise (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun close ()V
+	public final fun getAddMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getAdvertiseMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getCloseMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
+	public final fun getDescriptorReads ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+	public final fun getDescriptorWrites ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+	public final fun getReads ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+	public final fun getRemoveAllServicesMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getRemoveMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public fun getServices ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun getServicesState ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public fun getStatus ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun getStatusState ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public final fun getStopAdvertisingMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
+	public final fun getSubscribableCharacteristics ()Ljava/util/Set;
+	public final fun getWrites ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+	public fun isAdvertising ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun isAdvertisingState ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public fun remove (Lcom/splendo/kaluga/bluetooth/server/LocalService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeAllServices (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopAdvertising ()V
+	public final fun subscribe (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;)V
+	public static synthetic fun subscribe$default (Lcom/splendo/kaluga/bluetooth/test/server/MockBluetoothServer;Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILjava/lang/Object;)V
+	public final fun triggerDescriptorRead (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun triggerDescriptorRead$default (Lcom/splendo/kaluga/bluetooth/test/server/MockBluetoothServer;Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun triggerDescriptorWrite (Ljava/util/UUID;[BLcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun triggerDescriptorWrite$default (Lcom/splendo/kaluga/bluetooth/test/server/MockBluetoothServer;Ljava/util/UUID;[BLcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun triggerRead (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun triggerRead$default (Lcom/splendo/kaluga/bluetooth/test/server/MockBluetoothServer;Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun triggerWrite (Ljava/util/UUID;[BLcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun triggerWrite$default (Lcom/splendo/kaluga/bluetooth/test/server/MockBluetoothServer;Ljava/util/UUID;[BLcom/splendo/kaluga/bluetooth/server/ConnectedDevice;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/bluetooth/test/server/MockBluetoothServerBuilder : com/splendo/kaluga/bluetooth/server/BaseBluetoothServerBuilder {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun createServer (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getCreateServerMock ()Lcom/splendo/kaluga/base/test/mock/SuspendMethodMock;
+	public final fun getCreatedServers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+}
+
+public final class com/splendo/kaluga/bluetooth/test/server/MockConnectedDevice : com/splendo/kaluga/bluetooth/server/ConnectedDevice {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getDevice ()Landroid/bluetooth/BluetoothDevice;
+	public fun getIdentifier ()Ljava/lang/String;
+	public fun getMtu ()Ljava/lang/Integer;
+}
+
+public final class com/splendo/kaluga/bluetooth/test/server/MockLocalCharacteristicWrapper : com/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper {
+	public fun <init> (Ljava/util/UUID;Ljava/util/Set;Ljava/util/Set;)V
+	public fun addDescriptor (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;)V
+	public fun addToService (Landroid/bluetooth/BluetoothGattService;)V
+	public fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public fun getPermissions ()Ljava/util/Set;
+	public fun getProperties ()Ljava/util/Set;
+	public fun getUuid ()Ljava/util/UUID;
+	public fun notify (Landroid/bluetooth/BluetoothGattServer;Landroid/bluetooth/BluetoothDevice;[BZ)Z
+}
+
+public final class com/splendo/kaluga/bluetooth/test/server/MockLocalDescriptorWrapper : com/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper {
+	public fun <init> (Ljava/util/UUID;)V
+	public fun addToCharacteristic (Landroid/bluetooth/BluetoothGattCharacteristic;)V
+	public fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public fun getUuid ()Ljava/util/UUID;
+}
+
+public final class com/splendo/kaluga/bluetooth/test/server/MockLocalServiceWrapper : com/splendo/kaluga/bluetooth/server/LocalServiceWrapper {
+	public fun <init> (Ljava/util/UUID;)V
+	public fun addCharacteristic (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;)V
+	public fun addIncludedService (Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapper;)V
+	public fun addTo (Landroid/bluetooth/BluetoothGattServer;)Z
+	public fun addToParent (Landroid/bluetooth/BluetoothGattService;)V
+	public fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public fun getUuid ()Ljava/util/UUID;
+	public fun removeFrom (Landroid/bluetooth/BluetoothGattServer;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/test/server/MockLocalServiceWrapperBuilder : com/splendo/kaluga/bluetooth/server/LocalServiceWrapperBuilder {
+	public fun <init> ()V
+	public fun createCharacteristic (Ljava/util/UUID;Ljava/util/Set;ZLjava/util/Set;)Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;
+	public fun createDescriptor (Ljava/util/UUID;Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;
+	public fun createService (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/Service$Type;)Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapper;
+}
+

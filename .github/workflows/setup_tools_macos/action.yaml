@@ -36,6 +36,9 @@ runs:
           caches
           notifications
 
+    - name: route Maven Central through its mirror
+      uses: ./.github/workflows/setup_maven_mirror/
+
     # GitHub macOS runners are arm64-only, so the konan prebuilt path is fixed.
     - name: Konan cache
       uses: actions/cache@v5

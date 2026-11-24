@@ -1,0 +1,51 @@
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/Advertising : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/AdvertisingName : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/Bluetooth : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/BluetoothCharacteristic : java/lang/annotation/Annotation {
+	public abstract fun uuid ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/BluetoothClientName : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/BluetoothDescriptor : java/lang/annotation/Annotation {
+	public abstract fun uuid ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/BluetoothServerName : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/BluetoothService : java/lang/annotation/Annotation {
+	public abstract fun uuid ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/Encrypted : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/Indicatable : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/Notifiable : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/Readable : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/Writable : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/WritableSigned : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/annotations/WritableWithoutResponse : java/lang/annotation/Annotation {
+}
+

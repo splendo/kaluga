@@ -78,7 +78,11 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
     override fun Project.beforeEvaluated() {
         setupSubproject()
         libraryExtension.apply {
-            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+            compileSdk {
+                version = release(versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()) {
+                    minorApiLevel = versionCatalog.findVersion("androidCompileSdkMinor").get().displayName.toInt()
+                }
+            }
             buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
 
             defaultConfig {

@@ -1,0 +1,72 @@
+public abstract class com/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest : com/splendo/kaluga/base/test/BaseUIThreadTest {
+	public fun <init> ()V
+}
+
+public class com/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest$LazyViewModelTestContext : com/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest$ViewModelTestContext, kotlinx/coroutines/CoroutineScope {
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function0;)V
+	public fun dispose ()V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+}
+
+public abstract interface class com/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest$ViewModelTestContext : com/splendo/kaluga/base/test/BaseUIThreadTest$TestContext {
+	public fun dispose ()V
+	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+}
+
+public final class com/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest$ViewModelTestContext$DefaultImpls {
+	public static fun dispose (Lcom/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest$ViewModelTestContext;)V
+}
+
+public final class com/splendo/kaluga/architecture/test/MockNavigationException : com/splendo/kaluga/architecture/navigation/NavigationException {
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
+public class com/splendo/kaluga/architecture/test/MockNavigator : com/splendo/kaluga/architecture/navigation/Navigator {
+	public static final field Companion Lcom/splendo/kaluga/architecture/test/MockNavigator$Companion;
+	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getNavigateMock ()Lcom/splendo/kaluga/base/test/mock/MethodMock;
+	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
+public final class com/splendo/kaluga/architecture/test/MockNavigator$Companion {
+	public final fun navigatorThatThrows ()Lcom/splendo/kaluga/architecture/test/MockNavigator;
+}
+
+public abstract class com/splendo/kaluga/architecture/test/SimpleUIThreadViewModelTest : com/splendo/kaluga/architecture/test/UIThreadViewModelTest {
+	public fun <init> ()V
+	public abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+	public fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
+}
+
+public abstract class com/splendo/kaluga/architecture/test/UIThreadViewModelTest : com/splendo/kaluga/base/test/UIThreadTest {
+	public fun <init> ()V
+}
+
+public class com/splendo/kaluga/architecture/test/UIThreadViewModelTest$LazyViewModelTestContext : com/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest$LazyViewModelTestContext, com/splendo/kaluga/architecture/test/UIThreadViewModelTest$ViewModelTestContext {
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function0;)V
+}
+
+public abstract interface class com/splendo/kaluga/architecture/test/UIThreadViewModelTest$ViewModelTestContext : com/splendo/kaluga/architecture/test/BaseUIThreadViewModelTest$ViewModelTestContext, com/splendo/kaluga/base/test/UIThreadTest$TestContext {
+}
+
+public final class com/splendo/kaluga/architecture/test/UIThreadViewModelTest$ViewModelTestContext$DefaultImpls {
+	public static fun dispose (Lcom/splendo/kaluga/architecture/test/UIThreadViewModelTest$ViewModelTestContext;)V
+}
+
+public abstract class com/splendo/kaluga/architecture/test/ViewModelTest : com/splendo/kaluga/base/test/BaseTest {
+	public field viewModel Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+	public fun <init> ()V
+	public fun afterTest ()V
+	public fun beforeTest ()V
+	protected abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+	public final fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+	public final fun setViewModel (Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;)V
+}
+
+public final class com/splendo/kaluga/architecture/test/viewmodel/CleanUpKt {
+	public static final fun cleanUp (Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;)V
+}
+

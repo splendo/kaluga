@@ -722,7 +722,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     }
 
     fun KotlinMultiplatformAndroidLibraryExtension.configure() {
-        compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+        compileSdk {
+            version = release(versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()) {
+                minorApiLevel = versionCatalog.findVersion("androidCompileSdkMinor").get().displayName.toInt()
+            }
+        }
         buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
         minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
 

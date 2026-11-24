@@ -30,6 +30,9 @@ jobs:
           path: ~/.konan/*
           key: konan
 
+      - name: route Maven Central through its mirror
+        uses: ./.github/workflows/setup_maven_mirror/
+
       - name: Generate aggregated Dokka documentation
         run: ./gradlew :dokkaGeneratePublicationHtml
 

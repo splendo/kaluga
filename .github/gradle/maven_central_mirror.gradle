@@ -1,0 +1,85 @@
+// Resolves Maven Central artifacts from Google's EU mirror, falling back to Maven Central
+// itself for anything the mirror has not copied yet.
+
+def central = ~/^https:\/\/(repo\.maven\.apache\.org|repo1\.maven\.org)\/maven2\/?/
+def mirror = 'https://maven-central-eu.storage-download.googleapis.com/maven2/'
+def fallback = 'mavenCentralBehindMirror'
+
+def addFallback = { RepositoryHandler repositories ->
+    repositories.maven {
+        name = fallback
+        url = 'https://repo.maven.apache.org/maven2/'
+    }
+}
+
+def toMirror = { RepositoryHandler repositories ->
+    def hasFallback = false
+    repositories.all { repository ->
+        if (repository.name == fallback) {
+            return
+        }
+        if (repository instanceof MavenArtifactRepository) {
+            def url = repository.url.toString()
+            if (url =~ central) {
+                repository.url = url.replaceFirst(central, mirror)
+                if (!hasFallback) {
+                    hasFallback = true
+                    addFallback(repositories)
+                    return
+                }
+            }
+        }
+        def last = repositories.findByName(fallback)
+        if (hasFallback && !repositories.last().is(last)) {
+            repositories.remove(last)
+            repositories.add(last)
+        }
+    }
+}
+
+def mirrorBeforePortal = { RepositoryHandler repositories ->
+    def portal = repositories.findByName('Gradle Central Plugin Repository')
+    if (portal == null) {
+        return
+    }
+    def mirrored = repositories.find {
+        it instanceof MavenArtifactRepository && it.url.toString() == mirror
+    }
+    if (mirrored == null) {
+        repositories.maven { name = 'mavenCentralMirror'; url = mirror }
+        mirrored = repositories.findByName('mavenCentralMirror')
+    }
+    if (repositories.indexOf(mirrored) > repositories.indexOf(portal)) {
+        def at = repositories.indexOf(portal)
+        repositories.remove(mirrored)
+        repositories.add(at, mirrored)
+    }
+}
+
+beforeSettings { settings ->
+    toMirror(settings.buildscript.repositories)
+    toMirror(settings.pluginManagement.repositories)
+    toMirror(settings.dependencyResolutionManagement.repositories)
+}
+
+settingsEvaluated { settings ->
+    // The Gradle Plugin Portal redirects to Maven Central for artifacts it does not host, so the
+    // mirror has to be consulted before the portal.
+    def repositories = settings.pluginManagement.repositories
+    if (repositories.isEmpty()) {
+        repositories.maven { url = mirror }
+        addFallback(repositories)
+        repositories.gradlePluginPortal()
+    } else {
+        mirrorBeforePortal(repositories)
+    }
+}
+
+allprojects { project ->
+    toMirror(project.buildscript.repositories)
+    toMirror(project.repositories)
+    mirrorBeforePortal(project.buildscript.repositories)
+    project.afterEvaluate {
+        mirrorBeforePortal(project.repositories)
+    }
+}

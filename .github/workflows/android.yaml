@@ -17,6 +17,9 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
+      - name: route Maven Central through its mirror
+        uses: ./.github/workflows/setup_maven_mirror/
+
       - name: build example
         run: ./gradlew --stacktrace android:assembleDebug
         working-directory: example
@@ -34,6 +37,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
+
+      - name: route Maven Central through its mirror
+        uses: ./.github/workflows/setup_maven_mirror/
 
       # Validate that the Bluetooth code generation plugin produces code that compiles for Android.
       - name: validate bluetooth code generation
@@ -53,6 +59,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
+
+      - name: route Maven Central through its mirror
+        uses: ./.github/workflows/setup_maven_mirror/
 
       - name: run Android unit tests
         run: ./gradlew testDebugUnitTest testAndroidHostTest koverHtmlReport koverXmlReport
