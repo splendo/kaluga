@@ -25,7 +25,8 @@ import kotlin.test.assertEquals
 /**
  * What generated views allocate per call; run by the `androidHostAllocationTest` task, see [Allocations].
  *
- * Getters of primitives, flags, enums and nullable numbers and setters that rewrite in place allocate nothing. Getters
+ * Getters of primitives, flags, enums and nullable numbers, of read-only and writing views alike, setters that rewrite
+ * in place and `asView()` allocate nothing. Getters
  * that return an object (a string, a list, a nested view) and `toData` allocate the same for a frame alone in its array
  * as for the same frame at the start of a large array, so nothing copies the rest of the array.
  */
@@ -78,7 +79,7 @@ class ViewAllocationTest {
 
     @Test
     fun readsAndWritesAHeartRateMeasurementInPlace() {
-        val view = EncodeHeartRateFixturesHeartRateView(300, true, false, 1000, listOf(RRInterval(0.5), RRInterval(1.0)))
+        val view = MutableEncodeHeartRateFixturesHeartRateView(300, true, false, 1000, listOf(RRInterval(0.5), RRInterval(1.0)))
         val large = EncodeHeartRateFixturesHeartRateView.wrapRange(padded(view.bytes), 0, view.bytes.size) as EncodeHeartRateFixturesHeartRateSlice
         assertNone("heart rate of several sizes") { int = view.heartRate }
         assertNone("flag") { boolean = view.contactDetected }
@@ -90,14 +91,29 @@ class ViewAllocationTest {
     }
 
     @Test
-    fun readsAndWritesStaticFieldsInPlace() {
+    fun readsAReadOnlyViewAndSharesAWritingOneInPlace() {
+        val view = EncodeHeartRateFixturesHeartRateView(300, true, false, 1000, emptyList())
+        assertNone("read-only heart rate") { int = view.heartRate }
+        assertNone("read-only flag") { boolean = view.contactDetected }
         val packet = ReservedBytesAfterFixturesPacketView(1, 2)
+        assertNone("read-only static number") { int = packet.b }
+        val reading = EncodeEnumInFlagsFixturesReadingView(SensorContact.Detected, 5)
+        assertNone("read-only flag enum") { any = reading.contact }
+        val mutable = packet.toMutable()
+        assertNone("asView") { int = mutable.asView().b }
+        val mutableView = view.toMutable()
+        assertNone("asView flag") { boolean = mutableView.asView().contactDetected }
+    }
+
+    @Test
+    fun readsAndWritesStaticFieldsInPlace() {
+        val packet = MutableReservedBytesAfterFixturesPacketView(1, 2)
         assertNone("static number") { int = packet.b }
         assertNone("static number setter") { packet.b = int + 1 }
-        val holder = EncodeEnumFieldFixturesHolderView(SomeEnum.B)
+        val holder = MutableEncodeEnumFieldFixturesHolderView(SomeEnum.B)
         assertNone("enum") { any = holder.value }
         assertNone("enum setter") { holder.value = SomeEnum.A }
-        val reading = EncodeEnumInFlagsFixturesReadingView(SensorContact.Detected, 5)
+        val reading = MutableEncodeEnumInFlagsFixturesReadingView(SensorContact.Detected, 5)
         assertNone("flag enum") { any = reading.contact }
         assertNone("flag enum setter") { reading.contact = SensorContact.NotDetected }
     }
@@ -223,7 +239,7 @@ class ViewAllocationTest {
 
     @Test
     fun updatesChecksumsInPlace() {
-        val view = EncodeWithChecksumFixturesWithChecksumView(5, "hello")
+        val view = MutableEncodeWithChecksumFixturesWithChecksumView(5, "hello")
         assertNone("checksummed setter") { view.index = int++ }
         assertNone("checksum check") { boolean = view.isChecksumValid() }
     }

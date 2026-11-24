@@ -79,9 +79,10 @@ class ViewGenerationTest {
             fun check(): List<String> = buildList {
                 val data = StatusData(active = true, mode = Mode.AUTO, alarm = true, level = 0xBEEF, scale = Scale.FAHRENHEIT)
                 val expected = BytesFormat.encodeToByteArray(StatusData.serializer(), data)
-                val view = StatusView.encode(data)
+                val view = MutableStatusView.encode(data)
                 if (!view.bytes.contentEquals(expected)) add("encode " + view.bytes.toList() + " != " + expected.toList())
                 if (!StatusView(true, Mode.AUTO, true, 0xBEEF, Scale.FAHRENHEIT).contentEquals(view)) add("invoke")
+                if (!StatusView.encode(data).contentEquals(MutableStatusView(true, Mode.AUTO, true, 0xBEEF, Scale.FAHRENHEIT))) add("mutable invoke")
                 if (view.toData() != data) add("toData " + view.toData())
                 if (view.level != 0xBEEF || view.mode != Mode.AUTO || !view.active || !view.alarm || view.scale != Scale.FAHRENHEIT) add("getters " + view)
 
@@ -91,6 +92,18 @@ class ViewGenerationTest {
                 view.scale = Scale.CELSIUS
                 val changed = StatusData(active = true, mode = Mode.ON, alarm = false, level = 7, scale = Scale.CELSIUS)
                 if (!view.bytes.contentEquals(BytesFormat.encodeToByteArray(StatusData.serializer(), changed))) add("setters " + view.bytes.toList())
+
+                val shared = view.asView()
+                val copy = shared.toMutable()
+                copy.level = 8
+                if (shared.bytes !== view.bytes || shared.toStatusView().bytes !== view.bytes) add("shared " + shared)
+                if (shared.level != 7 || copy.level != 8 || shared.contentEquals(copy) || !shared.contentEquals(view)) add("copied " + copy)
+                if (view.toStatusView().bytes === view.bytes || !view.toStatusView().contentEquals(view)) add("toStatusView shares")
+                if (view.toMutableStatusView().bytes === view.bytes || shared.toMutableStatusView().bytes === view.bytes) add("toMutableStatusView shares")
+                if (changed.toMutableStatusView().toData() != changed || changed.toStatusView().toData() != changed) add("encoded " + changed.toStatusView())
+                if (MutableStatusView.SIZE_BYTES != StatusView.SIZE_BYTES || !MutableStatusView.wrap(expected).contentEquals(StatusView.wrap(expected))) add("mutable companion")
+                val registered = GeneratedBytesViews.views.single { it.serialName == "test.Status" }
+                if (registered.toData(view) != changed || registered.toData(shared) != changed || registered.toData(StatusView.wrapRange(expected, 0, expected.size)) != data) add("registry toData")
 
                 val framed = byteArrayOf(0x55) + view.bytes + 0x66
                 val slice = StatusView.wrapRange(framed, 1, framed.size - 1)
@@ -165,7 +178,7 @@ class ViewGenerationTest {
                             if (read.isSuccess && !DynamicView.wrapRange(framed, 2, framed.size).let { (it as DynamicSlice).toData() == decoded && view.contentEquals(it) }) add("slice " + data)
                             if (DynamicView(true, optional, sized, a, b, c, 5, inner, maybeInner, bit, decimal, med, 12.3f, -7).bytes.size != DynamicLayout.sizeOf(data.copy(first = true))) add("invoke " + data)
                         }
-                val view = DynamicView.encode(DynamicData(true, 1, 2u, 1, 2, 3, 5, inners[2], null, true, 0.5, null, 1f, 3))
+                val view = MutableDynamicView.encode(DynamicData(true, 1, 2u, 1, 2, 3, 5, inners[2], null, true, 0.5, null, 1f, 3))
                 view.last = 0x1234
                 view.first = false
                 val changed = DynamicData(false, 1, 2u, 1, 2, 3, 5, inners[2], null, true, 0.5, null, 1f, 0x1234)
@@ -236,7 +249,7 @@ class ViewGenerationTest {
                     if (decoded.isSuccess != read.isSuccess || (decoded.isSuccess && read.getOrNull() != decoded.getOrNull())) add("decode " + text + ": " + read + " != " + decoded)
                     if (decoded.isSuccess && TextsView(expected).count != 7.toByte()) add("count " + text)
                 }
-                val view = TextsView.encode(TextsData("a", "abcd", "ab", "s", "o", "t", "p", null, Name("n"), LabelData("l"), 1, "r"))
+                val view = MutableTextsView.encode(TextsData("a", "abcd", "ab", "s", "o", "t", "p", null, Name("n"), LabelData("l"), 1, "r"))
                 view.fixed = "z"
                 view.fixedWide = "w"
                 val changed = TextsData("a", "z", "w", "s", "o", "t", "p", null, Name("n"), LabelData("l"), 1, "r")
@@ -524,7 +537,7 @@ class ViewGenerationTest {
             fun check(): List<String> = buildList {
                 fun expected(data: OuterData) = BytesFormat.encodeToByteArray(OuterData.serializer(), data)
                 val data = OuterData(InnerData(3), Guarded(0x1234), "hi", 7)
-                val view = OuterView.encode(data)
+                val view = MutableOuterView.encode(data)
                 if (!view.bytes.contentEquals(expected(data))) add("encode " + view.bytes.toList() + " != " + expected(data).toList())
                 if (OuterView.wrap(view.bytes).toData() != data || !view.isChecksumValid()) add("wrap")
 
@@ -537,6 +550,9 @@ class ViewGenerationTest {
                     (inner as InnerSlice).count = 5
                 }
                 if (!view.bytes.contentEquals(expected(data.copy(inner = InnerData(5), last = 11)))) add("edit " + view.bytes.toList())
+                // A read-only view hands out the same slices, which still keep the checksums when cast to write.
+                (view.asView().inner as InnerSlice).count = 6
+                if (!view.bytes.contentEquals(expected(data.copy(inner = InnerData(6), last = 11)))) add("cast setter " + view.bytes.toList())
 
                 val corrupted = view.bytes.copyOf().also { it[it.size - 4] = (it[it.size - 4] + 1).toByte() }
                 if (OuterView(corrupted).isChecksumValid()) add("checksum not checked")
@@ -557,6 +573,9 @@ class ViewGenerationTest {
         val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
 
         assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        val generated = compilation.generatedFile("OuterView.kt")
+        val readOnly = generated.substringBefore("value class MutableOuterView")
+        assertTrue("fun edit(" !in readOnly && "override var" !in readOnly && "fun edit(" in generated.substringAfter("value class MutableOuterView"), generated)
         val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
         assertEquals(emptyList<Any?>(), problems.take(10))
     }
@@ -612,7 +631,7 @@ class ViewGenerationTest {
                     val padded = byteArrayOf(9, 9) + expected(data)
                     if (runCatching { MirroredView.wrap(padded).toData() }.getOrNull() != Format.decodeFromByteArray(MirroredData.serializer(), padded)) add("padded " + n)
                 }
-                val view = MirroredView.encode(MirroredData(1, 'a', Level.LOW, "x", listOf(1), emptyMap(), "y", 2.25))
+                val view = MutableMirroredView.encode(MirroredData(1, 'a', Level.LOW, "x", listOf(1), emptyMap(), "y", 2.25))
                 view.number = 0x0A0B0C0D
                 view.level = Level.HIGH
                 view.fixed = "abcd"
@@ -681,12 +700,15 @@ class ViewGenerationTest {
                 for (data in listOf(full, empty)) {
                     val wire = FrameView.encodeToWire(data)
                     if (!wire.contentEquals(expected(data))) add("encode " + wire.toList() + " != " + expected(data).toList())
-                    val view = FrameView.fromWire(wire)
+                    val view = MutableFrameView.fromWire(wire)
                     if (!view.toData().contentMatches(data)) add("fromWire " + view.toData())
                     if (!view.toWire().contentEquals(wire)) add("toWire")
                     if (!FrameView.encode(data).bytes.contentEquals(view.bytes)) add("unstuffed")
                     view.last = 0xF3.toByte()
                     if (!view.toWire().contentEquals(expected(data.copy(last = 0xF3.toByte())))) add("setter " + view.toWire().toList())
+                    if (!MutableFrameView.encodeToWire(data).contentEquals(wire)) add("mutable encodeToWire")
+                    val registered = GeneratedBytesViews.views.single { it.serialName == "test.Frame" }
+                    if (!(registered.toData(view) as FrameData).contentMatches(data.copy(last = 0xF3.toByte()))) add("registry toData " + registered.toData(view))
                     val badChecksum = expected(data).also { it[it.size - 2] = (it[it.size - 2] + 1).toByte() }
                     for (bytes in listOf(badChecksum, byteArrayOf(0xF1.toByte()), byteArrayOf(0xF1.toByte(), 0xF3.toByte(), 0xF2.toByte()), wire.copyOf(wire.size - 3) + 0xF2.toByte())) {
                         val decoded = runCatching { BytesFormat.decodeFromByteArray(FrameData.serializer(), bytes) }.exceptionOrNull()
@@ -1488,7 +1510,7 @@ class ViewGenerationTest {
                 val points = listOf(PointData(1, 2), PointData(3, 4))
                 val sample = SampleData(true, byteArrayOf(1, 2, 3, 4), 5, listOf(0x0102u, 0xFFFFu), points, byteArrayOf(7, 8, 9))
                 val expected = BytesFormat.encodeToByteArray(SampleData.serializer(), sample)
-                val view = SampleView.encode(sample)
+                val view = MutableSampleView.encode(sample)
                 if (!view.bytes.contentEquals(expected)) add("encode " + view.bytes.toList() + " != " + expected.toList())
                 if (SampleView.SIZE_BYTES != expected.size) add("size " + SampleView.SIZE_BYTES)
                 if (!SampleView(true, byteArrayOf(1, 2, 3, 4), 5, listOf(0x0102u, 0xFFFFu), points, byteArrayOf(7, 8, 9)).contentEquals(view)) add("invoke")
@@ -1521,7 +1543,7 @@ class ViewGenerationTest {
                 for (maybe in listOf(null, listOf<Byte>(1, 2))) {
                     val data = VaryingData(listOf("ab", ""), maybe, mapOf(1.toByte() to 0x0203.toShort(), 4.toByte() to 0x0506.toShort()), emptyList(), 9)
                     val bytes = BytesFormat.encodeToByteArray(VaryingData.serializer(), data)
-                    val varying = VaryingView.encode(data)
+                    val varying = MutableVaryingView.encode(data)
                     if (!varying.bytes.contentEquals(bytes)) add("encode varying " + varying.bytes.toList() + " != " + bytes.toList())
                     if (VaryingView.wrap(bytes).toData() != data) add("decode varying " + VaryingView(bytes).toData())
                     varying.pairs = mapOf(7.toByte() to 8.toShort(), 9.toByte() to 10.toShort())
@@ -1533,7 +1555,7 @@ class ViewGenerationTest {
 
                 val mirrored = MirroredData(0x0102, listOf(0x0304, 0x0506), byteArrayOf(7, 8, 9), 10)
                 val mirroredBytes = BytesFormat.encodeToByteArray(MirroredData.serializer(), mirrored)
-                val mirroredView = MirroredView.encode(mirrored)
+                val mirroredView = MutableMirroredView.encode(mirrored)
                 if (!mirroredView.bytes.contentEquals(mirroredBytes)) add("encode mirrored " + mirroredView.bytes.toList() + " != " + mirroredBytes.toList())
                 val mirroredRead = MirroredView.wrap(mirroredBytes)
                 if (mirroredRead.values != mirrored.values || !mirroredRead.raw.contentEquals(mirrored.raw) || mirroredRead.b != mirrored.b) add("decode mirrored")
@@ -1567,6 +1589,81 @@ class ViewGenerationTest {
         assertTrue("override val names: List<String>" in varying && "override val maybe: List<Byte>?" in varying && "override var pairs: Map<Byte, Short>" in varying, varying)
         val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
         assertEquals(emptyList<Any?>(), problems.take(10))
+    }
+
+    @Test
+    fun `rejects a var property unless the read-only view may throw`() {
+        val rejected = BytesCompilation(
+            layoutSource(
+                """
+                @BytesLayout
+                interface Settings {
+                    var level: Byte
+                }
+                """,
+            ),
+            generate = "DATA,VIEW",
+        )
+        assertTrue(
+            rejected.kspErrors.any {
+                "test.Settings.level is a var, which the read-only SettingsView cannot override; declare it val, or give the read-only view a setter that throws " +
+                    "with @BytesLayout(readOnlySetters = ReadOnlySetters.THROW)" in it
+            },
+            rejected.result.messages,
+        )
+
+        // A DATA class writes a var as any data class does.
+        val dataOnly = BytesCompilation(layoutSource("@BytesLayout interface Settings { var level: Byte }"), generate = "DATA")
+        assertEquals(KotlinCompilation.ExitCode.OK, dataOnly.result.exitCode, dataOnly.result.messages)
+
+        val cases = listOf(
+            "var text: String" to "test.Unsettable.text is a var, but no view can rewrite it in place, as its size or presence moves what follows it",
+            "var maybe: Byte?" to "test.Unsettable.maybe is a var, but no view can rewrite it in place, as it is optional",
+        )
+        cases.forEach { (property, message) ->
+            val compilation = BytesCompilation(
+                layoutSource("@BytesLayout(readOnlySetters = ReadOnlySetters.THROW) interface Unsettable { $property }"),
+                generate = "DATA,VIEW",
+            )
+            assertTrue(compilation.kspErrors.any { message in it }, compilation.result.messages)
+        }
+    }
+
+    @Test
+    fun `gives the read-only view a throwing setter for a var when asked`() {
+        val layouts = layoutSource(
+            """
+            @BytesLayout(readOnlySetters = ReadOnlySetters.THROW)
+            interface Settings {
+                var level: Byte
+                val mode: Byte
+            }
+            """,
+        )
+        val check = SourceFile.kotlin(
+            "Check.kt",
+            """
+            package test
+
+            fun check(): List<String> = buildList {
+                val view = SettingsView(1, 2)
+                val refused = runCatching { (view as Settings).level = 3 }.exceptionOrNull()
+                if (refused !is UnsupportedOperationException || refused.message != "SettingsView is read-only; set level on a copy from toMutable()") add("refused " + refused)
+                if (view.level != 1.toByte()) add("written " + view)
+                val mutable = view.toMutable()
+                mutable.level = 4
+                if (mutable.level != 4.toByte() || view.level != 1.toByte()) add("mutable " + mutable)
+                val data = SettingsData(1, 2)
+                data.level = 5
+                if (data.level != 5.toByte()) add("data " + data)
+            }
+            """.trimIndent(),
+        )
+        val compilation = BytesCompilation(layouts, check, generate = "DATA,VIEW")
+
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.result.exitCode, compilation.result.messages)
+        val problems = compilation.result.classLoader.loadClass("test.CheckKt").getMethod("check").invoke(null) as List<*>
+        assertEquals(emptyList<Any?>(), problems)
     }
 
     /**
@@ -1628,7 +1725,9 @@ class ViewGenerationTest {
             import kotlin.jvm.JvmInline
 
             /**
-             * The zero-copy VIEW implementation of [Status], reading and writing [bytes] in place.
+             * A read-only zero-copy VIEW implementation of [Status] over [bytes]; [toMutable] copies them into a [MutableStatusView] to write.
+             *
+             * It is read-only by its API only: [bytes] stay reachable, and a nested layout or list it returns can still be cast to the class that writes it.
              *
              * `==` compares the backing arrays by reference, since a value class cannot override `equals`; use [contentEquals] to compare content.
              */
@@ -1636,35 +1735,20 @@ class ViewGenerationTest {
             public value class StatusView(
                 public val bytes: ByteArray,
             ) : Status {
-                override var active: Boolean
+                override val active: Boolean
                     get() = StatusLayout.getActive(bytes, 0, bytes.size)
-                    set(`value`) {
-                        StatusLayout.setActive(bytes, 0, bytes.size, value)
-                    }
 
-                override var mode: Mode
+                override val mode: Mode
                     get() = StatusLayout.getMode(bytes, 0, bytes.size)
-                    set(`value`) {
-                        StatusLayout.setMode(bytes, 0, bytes.size, value)
-                    }
 
-                override var alarm: Boolean
+                override val alarm: Boolean
                     get() = StatusLayout.getAlarm(bytes, 0, bytes.size)
-                    set(`value`) {
-                        StatusLayout.setAlarm(bytes, 0, bytes.size, value)
-                    }
 
-                override var level: Int
+                override val level: Int
                     get() = StatusLayout.getLevel(bytes, 0, bytes.size)
-                    set(`value`) {
-                        StatusLayout.setLevel(bytes, 0, bytes.size, value)
-                    }
 
-                override var scale: Scale
+                override val scale: Scale
                     get() = StatusLayout.getScale(bytes, 0, bytes.size)
-                    set(`value`) {
-                        StatusLayout.setScale(bytes, 0, bytes.size, value)
-                    }
 
                 /**
                  * Checks these bytes the way `BytesFormat` decodes them, throwing its exception for the first problem found.
@@ -1672,6 +1756,11 @@ class ViewGenerationTest {
                 public fun validate(validateChecksum: Boolean = true) {
                     StatusLayout.validate(bytes, 0, bytes.size, validateChecksum)
                 }
+
+                /**
+                 * A [MutableStatusView] over a copy of these bytes, so writing it leaves this view as it is.
+                 */
+                public fun toMutable(): MutableStatusView = MutableStatusView(bytes.copyOf())
 
                 /**
                  * Copies this view into a [StatusData].
@@ -1721,7 +1810,7 @@ class ViewGenerationTest {
                     }
 
                     /**
-                     * A view of [Status] over `[from, to)` of [bytes], checked first like [wrap], reading and writing it in place.
+                     * A view of [Status] over `[from, to)` of [bytes], checked first like [wrap], reading it in place.
                      */
                     public fun wrapRange(
                         bytes: ByteArray,
@@ -1737,9 +1826,119 @@ class ViewGenerationTest {
             }
 
             /**
-             * This value as a [StatusView]: itself when it already is one, otherwise a new encoding of it.
+             * The zero-copy VIEW implementation of [Status], reading and writing [bytes] in place; [asView] hands them out read-only.
+             *
+             * `==` compares the backing arrays by reference, since a value class cannot override `equals`; use [contentEquals] to compare content.
              */
-            public fun Status.toStatusView(): StatusView = this as? StatusView ?: StatusView.encode(this)
+            @JvmInline
+            public value class MutableStatusView(
+                public val bytes: ByteArray,
+            ) : Status {
+                override var active: Boolean
+                    get() = StatusLayout.getActive(bytes, 0, bytes.size)
+                    set(`value`) {
+                        StatusLayout.setActive(bytes, 0, bytes.size, value)
+                    }
+
+                override var mode: Mode
+                    get() = StatusLayout.getMode(bytes, 0, bytes.size)
+                    set(`value`) {
+                        StatusLayout.setMode(bytes, 0, bytes.size, value)
+                    }
+
+                override var alarm: Boolean
+                    get() = StatusLayout.getAlarm(bytes, 0, bytes.size)
+                    set(`value`) {
+                        StatusLayout.setAlarm(bytes, 0, bytes.size, value)
+                    }
+
+                override var level: Int
+                    get() = StatusLayout.getLevel(bytes, 0, bytes.size)
+                    set(`value`) {
+                        StatusLayout.setLevel(bytes, 0, bytes.size, value)
+                    }
+
+                override var scale: Scale
+                    get() = StatusLayout.getScale(bytes, 0, bytes.size)
+                    set(`value`) {
+                        StatusLayout.setScale(bytes, 0, bytes.size, value)
+                    }
+
+                /**
+                 * Checks these bytes the way `BytesFormat` decodes them, throwing its exception for the first problem found.
+                 */
+                public fun validate(validateChecksum: Boolean = true) {
+                    asView().validate(validateChecksum)
+                }
+
+                /**
+                 * A read-only [StatusView] over these same bytes, without copying them, so it sees what this view writes later.
+                 */
+                public fun asView(): StatusView = StatusView(bytes)
+
+                /**
+                 * Copies this view into a [StatusData].
+                 */
+                public fun toData(): StatusData = asView().toData()
+
+                /**
+                 * Whether [other] is a view of [Status] holding the same bytes.
+                 */
+                public fun contentEquals(other: Status): Boolean = asView().contentEquals(other)
+
+                /**
+                 * A hash of the bytes of this view, consistent with [contentEquals].
+                 */
+                public fun contentHashCode(): Int = asView().contentHashCode()
+
+                override fun toString(): String = StatusLayout.describe("MutableStatusView", bytes, 0, bytes.size)
+
+                public companion object {
+                    /**
+                     * The size of every [MutableStatusView] in bytes.
+                     */
+                    public const val SIZE_BYTES: Int = StatusView.SIZE_BYTES
+
+                    /**
+                     * Encodes [value] into a new [MutableStatusView].
+                     */
+                    public fun encode(`value`: Status): MutableStatusView = MutableStatusView(StatusView.encode(value).bytes)
+
+                    /**
+                     * Encodes a new [MutableStatusView] from its property values.
+                     */
+                    public operator fun invoke(
+                        active: Boolean,
+                        mode: Mode,
+                        alarm: Boolean,
+                        level: Int,
+                        scale: Scale,
+                    ): MutableStatusView = MutableStatusView(StatusView.invoke(active, mode, alarm, level, scale).bytes)
+
+                    /**
+                     * A view of [bytes], checked first as `BytesFormat` checks what it decodes; the constructor checks nothing.
+                     */
+                    public fun wrap(bytes: ByteArray, validateChecksum: Boolean = true): MutableStatusView = MutableStatusView(StatusView.wrap(bytes, validateChecksum).bytes)
+                }
+            }
+
+            /**
+             * This value as a [StatusView]: itself when it already is one, otherwise a new array, a copy of the bytes of a [MutableStatusView] or a new encoding of it; only [MutableStatusView.asView] shares the bytes of a view that writes.
+             */
+            public fun Status.toStatusView(): StatusView = when (this) {
+                is StatusView -> this
+                is MutableStatusView -> StatusView(bytes.copyOf())
+                else -> StatusView.encode(this)
+            }
+
+            /**
+             * This value as a new [MutableStatusView], never sharing the bytes of a view: a copy of them, otherwise a new encoding of it.
+             */
+            public fun Status.toMutableStatusView(): MutableStatusView = when (this) {
+                is StatusView -> toMutable()
+                is MutableStatusView -> asView().toMutable()
+                else -> MutableStatusView.encode(this)
+            }
 
             /**
              * The accessors of [Status] as compiled here: property functions take the array, the frame start and the end of the body.
@@ -1920,6 +2119,7 @@ class ViewGenerationTest {
                     other: Any?,
                 ): Boolean = when (other) {
                     is StatusView -> ViewBytes.rangeEquals(b, s, s + 5, other.bytes, 0, 0 + 5)
+                    is MutableStatusView -> ViewBytes.rangeEquals(b, s, s + 5, other.bytes, 0, 0 + 5)
                     is StatusSlice -> ViewBytes.rangeEquals(b, s, s + 5, other.sliceBytes, other.sliceStart, other.sliceStart + 5)
                     else -> false
                 }

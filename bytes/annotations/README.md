@@ -45,6 +45,17 @@ interface DataOnly { /* ... */ }
 interface ViewOnly { /* ... */ }
 ```
 
+A generated view comes as a read-only `XView` and a writing `MutableXView`, so the read-only one cannot override a property the interface declares `var`. Such a property is a compile error unless the interface asks for a read-only view whose setter throws an `UnsupportedOperationException`:
+
+```kotlin
+@BytesLayout(readOnlySetters = ReadOnlySetters.THROW)
+interface Settings {
+    var level: Byte // XView.level = 1 throws; MutableXView and XData write it
+}
+```
+
+Either way a `var` must be a property every writing view can rewrite in place, of a fixed size, not optional and not deciding which other properties are present; a DATA-only layout can declare any property `var`.
+
 ## Annotations by purpose
 
 ### Sizing

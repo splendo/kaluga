@@ -41,6 +41,7 @@ import com.splendo.kaluga.bytes.annotations.Generate
 import com.splendo.kaluga.bytes.layout.FieldLayout
 import com.splendo.kaluga.bytes.layout.LayoutCompiler
 import com.splendo.kaluga.bytes.layout.dump
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.writeTo
 import kotlinx.serialization.SerializationException
 
@@ -195,14 +196,26 @@ class BytesSymbolProcessor(private val environment: SymbolProcessorEnvironment) 
         return found
     }
 
-    // Generated names flatten nesting, so Outer.Inner and OuterInner would both generate OuterInnerData.
+    // Generated names flatten nesting, so Outer.Inner and OuterInner would both generate OuterInnerData, and the writing
+    // view of Foo is named like the read-only view of MutableFoo.
     private fun withoutNameCollisions(layouts: List<Layout>): List<Layout> {
-        val colliding = layouts.groupBy { it.dataClassName.canonicalName }.values.filter { it.size > 1 }.flatten().toSet()
-        colliding.forEach { layout ->
-            val others = colliding.filter { it !== layout && it.dataClassName == layout.dataClassName }.joinToString { it.qualifiedName }
-            logger.error("@BytesLayout ${layout.qualifiedName} generates ${layout.dataClassName.simpleName}, as $others does; rename one of them", layout.declaration)
+        val clashes = layouts.flatMap { layout -> layout.generatedClassNames().map { it to layout } }
+            .groupBy({ it.first }, { it.second })
+            .filterValues { it.size > 1 }
+        clashes.forEach { (name, owners) ->
+            owners.forEach { layout ->
+                val others = owners.filter { it !== layout }.joinToString { it.qualifiedName }
+                logger.error("@BytesLayout ${layout.qualifiedName} generates ${name.simpleName}, as $others does; rename one of them", layout.declaration)
+            }
         }
+        val colliding = clashes.values.flatten().toSet()
         return layouts.filter { it !in colliding }
+    }
+
+    private fun Layout.generatedClassNames(): List<ClassName> = listOf(dataClassName) + when {
+        Generate.VIEW !in generate -> emptyList()
+        isSealed -> listOf(frameClassName)
+        else -> listOf(viewClassName, mutableViewClassName)
     }
 
     private fun generateViews(viewLayouts: List<Layout>, owned: Set<Layout>, compiled: Map<Layout, FieldLayout>, index: LayoutIndex, dataGenerated: Set<Layout>) {

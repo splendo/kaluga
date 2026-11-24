@@ -32,6 +32,7 @@ public abstract interface annotation class com/splendo/kaluga/bytes/annotations/
 
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/BytesLayout : java/lang/annotation/Annotation {
 	public abstract fun generate ()[Lcom/splendo/kaluga/bytes/annotations/Generate;
+	public abstract fun readOnlySetters ()Lcom/splendo/kaluga/bytes/annotations/ReadOnlySetters;
 }
 
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Checksum : java/lang/annotation/Annotation {
@@ -197,6 +198,14 @@ public abstract interface annotation class com/splendo/kaluga/bytes/annotations/
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Range : java/lang/annotation/Annotation {
 	public abstract fun max ()D
 	public abstract fun min ()D
+}
+
+public final class com/splendo/kaluga/bytes/annotations/ReadOnlySetters : java/lang/Enum {
+	public static final field REJECT Lcom/splendo/kaluga/bytes/annotations/ReadOnlySetters;
+	public static final field THROW Lcom/splendo/kaluga/bytes/annotations/ReadOnlySetters;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bytes/annotations/ReadOnlySetters;
+	public static fun values ()[Lcom/splendo/kaluga/bytes/annotations/ReadOnlySetters;
 }
 
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Reserved : java/lang/annotation/Annotation {

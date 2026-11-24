@@ -27,12 +27,14 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 /**
  * What generated views do beyond reading and writing a frame: keeping checksums up to date, validating, viewing part
- * of an array and converting stuffed frames from and to the wire. The bytes they produce are compared with
- * `BytesFormat`'s.
+ * of an array, converting stuffed frames from and to the wire, and sharing bytes between a writing view and a read-only
+ * one only through `asView()`. The bytes they produce are compared with `BytesFormat`'s.
  */
 class ViewBehaviourTest {
 
@@ -42,7 +44,7 @@ class ViewBehaviourTest {
 
     @Test
     fun updatesChecksumsAfterEverySetter() {
-        val view = NestedChecksumFixturesOuterView.encode(data)
+        val view = MutableNestedChecksumFixturesOuterView.encode(data)
         assertContentEquals(expected(data), view.bytes)
 
         view.last = 9
@@ -56,7 +58,7 @@ class ViewBehaviourTest {
 
     @Test
     fun updatesChecksumsOnceAfterAnEdit() {
-        val view = NestedChecksumFixturesOuterView.encode(data)
+        val view = MutableNestedChecksumFixturesOuterView.encode(data)
         view.edit {
             last = 11
             (inner as NestedChecksumFixturesInnerSlice).count = 5
@@ -105,12 +107,35 @@ class ViewBehaviourTest {
     }
 
     @Test
+    fun sharesOnlyThroughAsViewAndCopiesOtherwise() {
+        val mutable = MutableReservedBytesAfterFixturesPacketView(1, 2)
+        val shared = mutable.asView()
+        assertSame(mutable.bytes, shared.bytes)
+        mutable.b = 3
+        assertEquals(3, shared.b)
+        val snapshot = mutable.toReservedBytesAfterFixturesPacketView()
+        assertNotSame(mutable.bytes, snapshot.bytes)
+        assertTrue(snapshot.contentEquals(mutable))
+
+        val copy = shared.toMutableReservedBytesAfterFixturesPacketView()
+        assertNotSame(shared.bytes, copy.bytes)
+        assertNotSame(mutable.bytes, mutable.toMutableReservedBytesAfterFixturesPacketView().bytes)
+        copy.b = 4
+        assertEquals(3, shared.b)
+        assertTrue(shared.toMutable().contentEquals(mutable))
+        assertFalse(copy.contentEquals(shared))
+        assertSame(shared.bytes, shared.toReservedBytesAfterFixturesPacketView().bytes)
+        mutable.b = 5
+        assertEquals(3, snapshot.b)
+    }
+
+    @Test
     fun convertsStuffedFramesFromAndToTheWire() {
         val frame = CSafeChecksummedFrameData(command = 0xF1, value = 0x05)
         val wire = BytesFormat.encodeToByteArray(CSafeChecksummedFrameData.serializer(), frame)
         assertContentEquals(wire, CSafeChecksummedFrameView.encodeToWire(frame))
 
-        val view = CSafeChecksummedFrameView.fromWire(wire)
+        val view = MutableCSafeChecksummedFrameView.fromWire(wire)
         assertEquals(frame, view.toData())
         assertContentEquals(wire, view.toWire())
         view.value = 0xF2

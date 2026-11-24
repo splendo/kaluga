@@ -30,6 +30,7 @@ import com.splendo.kaluga.bytes.annotations.Generate
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.annotations.Postfix
 import com.splendo.kaluga.bytes.annotations.Prefix
+import com.splendo.kaluga.bytes.annotations.ReadOnlySetters
 import com.splendo.kaluga.bytes.layout.CollectionSettings
 import com.splendo.kaluga.bytes.layout.FieldLayout
 import com.splendo.kaluga.bytes.layout.FrameSettings
@@ -278,12 +279,19 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
             val type = child.type
             if (type is TypeLayout.Discriminator) {
                 if (value !is ValueType.Primitive && value !is ValueType.Unsigned) unsupported("a @Discriminator property of type ${value.typeName}", node)
+                if (property.isMutable) {
+                    throw LayoutDeclarationException(
+                        "${layout.qualifiedName}.${property.name} is a var, but no view can write a @Discriminator, as that would change which subtype the record is; declare it val",
+                        node,
+                    )
+                }
                 discriminator = discriminatorField(property.name, node, child, value, type.settings, child.valueByteOrder)
                 discriminatorIndex = index
                 return@mapIndexedNotNull null
             }
             val itemPrefix = context.layoutName.peerClass(context.layoutName.simpleName + property.name.capitalized())
             val (plan, next) = planField(property.name, node, child, value, property.type.isMarkedNullable, headerStart, gates, cursor, itemPrefix)
+            if (property.isMutable) checkVar(layout, plan)
             cursor = next
             plan
         }
@@ -297,6 +305,29 @@ internal class ViewPlanner(private val layouts: LayoutIndex, private val materia
      */
     fun discriminatorField(name: String, node: KSNode, field: FieldLayout, value: ValueType, settings: NumericSettings.Natural, order: ByteOrder): FieldPlan =
         FieldPlan(name, node, field, value, false, Access.Number(Width.Fixed(settings.supportedLengths.single()), settings, order, order), null, Cursor(null, 0), null, false)
+
+    /**
+     * A property declared `var` needs a setter on every view: one that writes in place on the writing view and the
+     * slices, and on the read-only view only when [Layout.readOnlySetters] lets it throw.
+     */
+    private fun checkVar(layout: Layout, field: FieldPlan) {
+        val name = "${layout.qualifiedName}.${field.name}"
+        if (layout.readOnlySetters == ReadOnlySetters.REJECT) {
+            throw LayoutDeclarationException(
+                "$name is a var, which the read-only ${layout.viewClassName.simpleName} cannot override; declare it val, or give the read-only view a " +
+                    "setter that throws with @BytesLayout(readOnlySetters = ReadOnlySetters.THROW)",
+                field.node,
+            )
+        }
+        if (!field.settable) {
+            val reason = when {
+                field.nullable -> "it is optional"
+                field.end != null -> "its size or presence moves what follows it"
+                else -> "its flag bits decide which other properties are present"
+            }
+            throw LayoutDeclarationException("$name is a var, but no view can rewrite it in place, as $reason; declare it val", field.node)
+        }
+    }
 
     /** What mirrored frames support so far: values at fixed or content-dependent sizes, no flag bits and no nested frames. */
     private fun checkMirrored(field: FieldPlan) {

@@ -27,7 +27,9 @@ import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Visibility
+import com.splendo.kaluga.bytes.annotations.BytesLayout
 import com.splendo.kaluga.bytes.annotations.Generate
+import com.splendo.kaluga.bytes.annotations.ReadOnlySetters
 import com.squareup.kotlinpoet.ClassName
 
 /** A declaration the processor cannot turn into a layout, reported as a KSP error on [node]. */
@@ -56,8 +58,20 @@ internal class Layout(val declaration: KSClassDeclaration, val generate: Set<Gen
     /** The zero-copy frame value class of a sealed layout, flattened like [dataClassName]. */
     val frameClassName: ClassName = ClassName(declaration.packageName.asString(), declaration.nestedSimpleNames().joinToString("") + "Frame")
 
-    /** The zero-copy VIEW value class, flattened like [dataClassName]. */
+    /** The read-only zero-copy VIEW value class, flattened like [dataClassName]. */
     val viewClassName: ClassName = ClassName(declaration.packageName.asString(), declaration.nestedSimpleNames().joinToString("") + "View")
+
+    /** The VIEW value class that writes in place, flattened like [dataClassName]. */
+    val mutableViewClassName: ClassName = ClassName(declaration.packageName.asString(), "Mutable" + declaration.nestedSimpleNames().joinToString("") + "View")
+
+    /** What the read-only view does with a property declared `var`, as [BytesLayout.readOnlySetters] says. */
+    val readOnlySetters: ReadOnlySetters by lazy {
+        declaration.annotations.firstOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == BytesLayout::class.qualifiedName }
+            ?.arguments?.find { it.name?.asString() == "readOnlySetters" }?.value
+            ?.let { (it as? KSType)?.declaration?.simpleName?.asString() ?: (it as? KSClassDeclaration)?.simpleName?.asString() }
+            ?.let(ReadOnlySetters::valueOf)
+            ?: ReadOnlySetters.REJECT
+    }
 
     val isSealed: Boolean = Modifier.SEALED in declaration.modifiers
 

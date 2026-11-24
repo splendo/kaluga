@@ -64,10 +64,12 @@ open annotation class com.splendo.kaluga.bytes.annotations/ByteStuffedXor : kotl
 }
 
 open annotation class com.splendo.kaluga.bytes.annotations/BytesLayout : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/BytesLayout|null[0]
-    constructor <init>(kotlin/Array<com.splendo.kaluga.bytes.annotations/Generate> = ...) // com.splendo.kaluga.bytes.annotations/BytesLayout.<init>|<init>(kotlin.Array<com.splendo.kaluga.bytes.annotations.Generate>){}[0]
+    constructor <init>(kotlin/Array<com.splendo.kaluga.bytes.annotations/Generate> = ..., com.splendo.kaluga.bytes.annotations/ReadOnlySetters = ...) // com.splendo.kaluga.bytes.annotations/BytesLayout.<init>|<init>(kotlin.Array<com.splendo.kaluga.bytes.annotations.Generate>;com.splendo.kaluga.bytes.annotations.ReadOnlySetters){}[0]
 
     final val generate // com.splendo.kaluga.bytes.annotations/BytesLayout.generate|{}generate[0]
         final fun <get-generate>(): kotlin/Array<com.splendo.kaluga.bytes.annotations/Generate> // com.splendo.kaluga.bytes.annotations/BytesLayout.generate.<get-generate>|<get-generate>(){}[0]
+    final val readOnlySetters // com.splendo.kaluga.bytes.annotations/BytesLayout.readOnlySetters|{}readOnlySetters[0]
+        final fun <get-readOnlySetters>(): com.splendo.kaluga.bytes.annotations/ReadOnlySetters // com.splendo.kaluga.bytes.annotations/BytesLayout.readOnlySetters.<get-readOnlySetters>|<get-readOnlySetters>(){}[0]
 }
 
 open annotation class com.splendo.kaluga.bytes.annotations/Checksum : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Checksum|null[0]
@@ -436,4 +438,15 @@ final enum class com.splendo.kaluga.bytes.annotations/Length : kotlin/Enum<com.s
 
     final fun valueOf(kotlin/String): com.splendo.kaluga.bytes.annotations/Length // com.splendo.kaluga.bytes.annotations/Length.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<com.splendo.kaluga.bytes.annotations/Length> // com.splendo.kaluga.bytes.annotations/Length.values|values#static(){}[0]
+}
+
+final enum class com.splendo.kaluga.bytes.annotations/ReadOnlySetters : kotlin/Enum<com.splendo.kaluga.bytes.annotations/ReadOnlySetters> { // com.splendo.kaluga.bytes.annotations/ReadOnlySetters|null[0]
+    enum entry REJECT // com.splendo.kaluga.bytes.annotations/ReadOnlySetters.REJECT|null[0]
+    enum entry THROW // com.splendo.kaluga.bytes.annotations/ReadOnlySetters.THROW|null[0]
+
+    final val entries // com.splendo.kaluga.bytes.annotations/ReadOnlySetters.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.bytes.annotations/ReadOnlySetters> // com.splendo.kaluga.bytes.annotations/ReadOnlySetters.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.splendo.kaluga.bytes.annotations/ReadOnlySetters // com.splendo.kaluga.bytes.annotations/ReadOnlySetters.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.splendo.kaluga.bytes.annotations/ReadOnlySetters> // com.splendo.kaluga.bytes.annotations/ReadOnlySetters.values|values#static(){}[0]
 }

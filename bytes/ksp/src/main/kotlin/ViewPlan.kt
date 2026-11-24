@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bytes.ksp
 
 import com.google.devtools.ksp.symbol.KSNode
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bytes.ByteOrder
 import com.splendo.kaluga.bytes.stuffing.ByteStuffingScheme
 import com.splendo.kaluga.bytes.strings.Encoding
@@ -232,7 +233,10 @@ internal class FieldPlan(
     val start: Cursor,
     val end: Anchor.End?,
     val settable: Boolean,
-)
+) {
+    /** Whether the layout interface declares it `var`. */
+    val isVar: Boolean get() = (node as? KSPropertyDeclaration)?.isMutable == true
+}
 
 /**
  * One compiled layout of [layout] in a particular context: its own root layout, or the layout it gets nested in a

@@ -40,7 +40,7 @@ class ViewSettersTest {
 
     @Test
     fun setsFlagPackedNumbers() {
-        val view = EncodeNumericInFlagsFixturesPackedView.encode(EncodeNumericInFlagsFixturesPackedData(nibble = 5, wide = 0x123))
+        val view = MutableEncodeNumericInFlagsFixturesPackedView.encode(EncodeNumericInFlagsFixturesPackedData(nibble = 5, wide = 0x123))
         view.nibble = 0xE
         view.wide = -2
         assertEncodes(EncodeNumericInFlagsFixturesPackedData.serializer(), EncodeNumericInFlagsFixturesPackedData(nibble = 0xE, wide = -2), view.bytes)
@@ -50,14 +50,14 @@ class ViewSettersTest {
 
     @Test
     fun rejectsAFlagPackedNumberThatDoesNotFit() {
-        val view = EncodeNumericInFlagsFixturesNibbleView(0xA)
+        val view = MutableEncodeNumericInFlagsFixturesNibbleView(0xA)
         assertFailsWith<IllegalArgumentException> { view.value = 16 }
         assertContentEquals(byteArrayOf(0x0A), view.bytes)
     }
 
     @Test
     fun setsNumbersBetweenReservedBytes() {
-        val view = ReservedBytesBeforeAndAfterFixturesPacketView(a = 1, b = 2)
+        val view = MutableReservedBytesBeforeAndAfterFixturesPacketView(a = 1, b = 2)
         view.b = 0xFFFF
         view.a = 0x1234
         assertEncodes(ReservedBytesBeforeAndAfterFixturesPacketData.serializer(), ReservedBytesBeforeAndAfterFixturesPacketData(a = 0x1234, b = 0xFFFF), view.bytes)
@@ -65,18 +65,18 @@ class ViewSettersTest {
 
     @Test
     fun setsEnumsAndScaledNumbers() {
-        val status = StatusFrameView(Status.OFF)
+        val status = MutableStatusFrameView(Status.OFF)
         status.status = Status.ON
         assertEncodes(StatusFrameData.serializer(), StatusFrameData(Status.ON), status.bytes)
 
-        val range = EncodeRangeFixturesWithHeaderView(header = 1, fraction = 0.0)
+        val range = MutableEncodeRangeFixturesWithHeaderView(header = 1, fraction = 0.0)
         range.fraction = 0.5
         assertEncodes(EncodeRangeFixturesWithHeaderData.serializer(), EncodeRangeFixturesWithHeaderData(header = 1, fraction = 0.5), range.bytes)
     }
 
     @Test
     fun replacesANestedLayout() {
-        val outer = ByteOrderExcludeStructureNestedInsideLsbParentAllowedFixturesOuterView.encode(
+        val outer = MutableByteOrderExcludeStructureNestedInsideLsbParentAllowedFixturesOuterView.encode(
             ByteOrderExcludeStructureNestedInsideLsbParentAllowedFixturesOuterData(ByteOrderExcludeStructureNestedInsideLsbParentAllowedFixturesBigEndianFieldsData(1)),
         )
         outer.inner = ByteOrderExcludeStructureNestedInsideLsbParentAllowedFixturesBigEndianFieldsView(0x0203)
@@ -91,7 +91,7 @@ class ViewSettersTest {
     @Test
     fun writesThroughALayoutOfAnotherModule() {
         val reading = SensorReadingData(channel = 1, value = 0x1234, calibrated = false)
-        val view = PartsDeviceView(BatteryChargeData(0x64), 0x0102, reading, listOf(reading), null)
+        val view = MutablePartsDeviceView(BatteryChargeData(0x64), 0x0102, reading, listOf(reading), null)
         view.charge = BatteryChargeData(0x10)
         (view.reading as PartsDeviceLayout.SensorReadingSlice).channel = 9
         (view.readings.single() as PartsDeviceLayout.SensorReadingSlice).calibrated = true
@@ -119,7 +119,8 @@ class ViewSettersTest {
         val slice = ReservedBytesAfterFixturesPacketView.wrapRange(framed, 1, framed.size)
         assertTrue(view.contentEquals(slice))
         assertEquals(slice, ReservedBytesAfterFixturesPacketView.wrapRange(framed.copyOf(), 1, framed.size))
-        same.b = 3
-        assertFalse(same.contentEquals(slice))
+        val edited = same.toMutable().apply { b = 3 }
+        assertFalse(edited.contentEquals(slice))
+        assertTrue(same.contentEquals(slice))
     }
 }
