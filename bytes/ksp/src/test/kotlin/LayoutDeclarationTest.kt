@@ -309,6 +309,31 @@ class LayoutDeclarationTest {
             }
             """ to "as test.Outer.Inner does; rename one of them",
             """
+            @BytesLayout(generate = [Generate.DATA, Generate.VIEW])
+            interface Foo {
+                val value: Byte
+            }
+
+            @BytesLayout(generate = [Generate.DATA, Generate.VIEW])
+            interface MutableFoo {
+                val value: Byte
+            }
+            """ to "@BytesLayout test.MutableFoo generates MutableFooView, as test.Foo does; rename one of them",
+            """
+            @BytesLayout(generate = [Generate.DATA, Generate.VIEW])
+            interface Mutable {
+                @BytesLayout(generate = [Generate.DATA, Generate.VIEW])
+                interface Foo {
+                    val value: Byte
+                }
+            }
+
+            @BytesLayout(generate = [Generate.DATA, Generate.VIEW])
+            interface Foo {
+                val value: Byte
+            }
+            """ to "@BytesLayout test.Foo generates MutableFooView, as test.Mutable.Foo does; rename one of them",
+            """
             @BytesLayout
             interface Named {
                 val Companion: Byte
@@ -332,6 +357,26 @@ class LayoutDeclarationTest {
             val compilation = BytesCompilation(layoutSource(source))
             assertTrue(compilation.kspErrors.any { message in it }, compilation.result.messages)
         }
+    }
+
+    @Test
+    fun `lets a layout named like the writing view of another when that one generates no view`() {
+        val compilation = BytesCompilation(
+            layoutSource(
+                """
+                @BytesLayout(generate = [Generate.DATA])
+                interface Foo {
+                    val value: Byte
+                }
+
+                @BytesLayout(generate = [Generate.DATA, Generate.VIEW])
+                interface MutableFoo {
+                    val value: Byte
+                }
+                """,
+            ),
+        )
+        assertEquals(emptyList(), compilation.kspErrors, compilation.result.messages)
     }
 
     @Test

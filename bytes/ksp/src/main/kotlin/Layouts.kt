@@ -56,8 +56,11 @@ internal class Layout(val declaration: KSClassDeclaration, val generate: Set<Gen
     /** The zero-copy frame value class of a sealed layout, flattened like [dataClassName]. */
     val frameClassName: ClassName = ClassName(declaration.packageName.asString(), declaration.nestedSimpleNames().joinToString("") + "Frame")
 
-    /** The zero-copy VIEW value class, flattened like [dataClassName]. */
+    /** The read-only zero-copy VIEW value class, flattened like [dataClassName]. */
     val viewClassName: ClassName = ClassName(declaration.packageName.asString(), declaration.nestedSimpleNames().joinToString("") + "View")
+
+    /** The VIEW value class that writes in place, flattened like [dataClassName]. */
+    val mutableViewClassName: ClassName = ClassName(declaration.packageName.asString(), "Mutable" + declaration.nestedSimpleNames().joinToString("") + "View")
 
     val isSealed: Boolean = Modifier.SEALED in declaration.modifiers
 
