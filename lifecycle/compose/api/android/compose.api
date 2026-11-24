@@ -1,0 +1,16 @@
+public final class com/splendo/kaluga/lifecycle/compose/LifecycleSubscribableCompose_androidKt {
+	public static final fun AttachToCompose (Lcom/splendo/kaluga/lifecycle/LifecycleSubscribable;Landroidx/compose/runtime/Composer;I)V
+}
+
+public abstract class com/splendo/kaluga/lifecycle/compose/LifecycleViewModel : androidx/lifecycle/ViewModel {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getSubscribables ()Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/lifecycle/compose/LifecycleViewModelKt {
+	public static final fun AttachToCompose (Lcom/splendo/kaluga/lifecycle/compose/LifecycleViewModel;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/lifecycle/compose/LifecycleViewModel;
+}
+

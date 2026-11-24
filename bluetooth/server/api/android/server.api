@@ -1,0 +1,432 @@
+public final class com/splendo/kaluga/bluetooth/server/AdapterNameKt {
+	public static final fun restoreBluetoothAdapterName (Landroid/content/Context;)Z
+}
+
+public final class com/splendo/kaluga/bluetooth/server/AdvertiseData {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;)Lcom/splendo/kaluga/bluetooth/server/AdvertiseData;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/server/AdvertiseData;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/server/AdvertiseData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLocalName ()Ljava/lang/String;
+	public final fun getServiceUUIDs ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/AdvertiseData$Builder {
+	public abstract fun getLocalName ()Ljava/lang/String;
+	public fun serviceUUIDs ([Ljava/lang/String;)V
+	public abstract fun serviceUUIDs ([Ljava/util/UUID;)V
+	public abstract fun setLocalName (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/AdvertiseData$Builder$DefaultImpls {
+	public static fun serviceUUIDs (Lcom/splendo/kaluga/bluetooth/server/AdvertiseData$Builder;[Ljava/lang/String;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/AttributeIdentity {
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/BaseBluetoothServerBuilder {
+	public abstract fun createServer (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun createServer$default (Lcom/splendo/kaluga/bluetooth/server/BaseBluetoothServerBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/BaseBluetoothServerBuilder$DefaultImpls {
+	public static synthetic fun createServer$default (Lcom/splendo/kaluga/bluetooth/server/BaseBluetoothServerBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/BluetoothServer : java/lang/AutoCloseable {
+	public abstract fun add (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun advertise (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getServices ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getStatus ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun isAdvertising ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun remove (Lcom/splendo/kaluga/bluetooth/server/LocalService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun removeAllServices (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopAdvertising ()V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/BluetoothServerBuilder : com/splendo/kaluga/bluetooth/server/BaseBluetoothServerBuilder {
+	public fun <init> ()V
+	public fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun createServer (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/BluetoothServerDSL {
+	public abstract fun advertise (Lkotlin/jvm/functions/Function1;)V
+	public fun service (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun service (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/BluetoothServerDSL$DefaultImpls {
+	public static fun service (Lcom/splendo/kaluga/bluetooth/server/BluetoothServerDSL;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/CapturedLocalService {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/server/LocalService;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;)V
+	public final fun getCharacteristicReads ()Ljava/util/Map;
+	public final fun getCharacteristicWrites ()Ljava/util/Map;
+	public final fun getDescriptorReads ()Ljava/util/Map;
+	public final fun getDescriptorWrites ()Ljava/util/Map;
+	public final fun getService ()Lcom/splendo/kaluga/bluetooth/server/LocalService;
+	public final fun getSubscribableCharacteristics ()Ljava/util/Set;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/CapturedLocalServiceKt {
+	public static final fun buildCapturingLocalService (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapperBuilder;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/bluetooth/server/CapturedLocalService;
+	public static synthetic fun buildCapturingLocalService$default (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapperBuilder;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/server/CapturedLocalService;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/ConnectedDevice : com/splendo/kaluga/bluetooth/device/Device {
+	public abstract fun getDevice ()Landroid/bluetooth/BluetoothDevice;
+	public abstract fun getMtu ()Ljava/lang/Integer;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/DefaultBluetoothServer : com/splendo/kaluga/bluetooth/server/BluetoothServer, kotlinx/coroutines/CoroutineScope {
+	public static final field Companion Lcom/splendo/kaluga/bluetooth/server/DefaultBluetoothServer$Companion;
+	public static final field TAG Ljava/lang/String;
+	public fun add (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun advertise (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun close ()V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getServices ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun getStatus ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun isAdvertising ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun remove (Lcom/splendo/kaluga/bluetooth/server/LocalService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeAllServices (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopAdvertising ()V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/DefaultBluetoothServer$Companion {
+}
+
+public final class com/splendo/kaluga/bluetooth/server/DefaultConnectedDevice : com/splendo/kaluga/bluetooth/server/ConnectedDevice {
+	public fun <init> (Landroid/bluetooth/BluetoothDevice;Ljava/lang/Integer;)V
+	public synthetic fun <init> (Landroid/bluetooth/BluetoothDevice;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDevice ()Landroid/bluetooth/BluetoothDevice;
+	public fun getIdentifier ()Ljava/lang/String;
+	public fun getMtu ()Ljava/lang/Integer;
+	public fun hashCode ()I
+}
+
+public final class com/splendo/kaluga/bluetooth/server/DefaultLocalCharacteristicWrapper : com/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper {
+	public fun <init> (Landroid/bluetooth/BluetoothGattCharacteristic;)V
+	public fun <init> (Ljava/util/UUID;Ljava/util/Set;ZLjava/util/Set;)V
+	public fun addDescriptor (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;)V
+	public fun addToService (Landroid/bluetooth/BluetoothGattService;)V
+	public fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public fun getPermissions ()Ljava/util/Set;
+	public fun getProperties ()Ljava/util/Set;
+	public fun getUuid ()Ljava/util/UUID;
+	public fun notify (Landroid/bluetooth/BluetoothGattServer;Landroid/bluetooth/BluetoothDevice;[BZ)Z
+}
+
+public final class com/splendo/kaluga/bluetooth/server/DefaultLocalDescriptorWrapper : com/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper {
+	public fun <init> (Landroid/bluetooth/BluetoothGattDescriptor;)V
+	public fun <init> (Ljava/util/UUID;Ljava/util/Set;)V
+	public fun addToCharacteristic (Landroid/bluetooth/BluetoothGattCharacteristic;)V
+	public fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public fun getUuid ()Ljava/util/UUID;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/DefaultLocalServiceWrapper : com/splendo/kaluga/bluetooth/server/LocalServiceWrapper {
+	public fun <init> (Landroid/bluetooth/BluetoothGattService;)V
+	public fun <init> (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/Service$Type;)V
+	public fun addCharacteristic (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;)V
+	public fun addIncludedService (Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapper;)V
+	public fun addTo (Landroid/bluetooth/BluetoothGattServer;)Z
+	public fun addToParent (Landroid/bluetooth/BluetoothGattService;)V
+	public fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public fun getUuid ()Ljava/util/UUID;
+	public fun removeFrom (Landroid/bluetooth/BluetoothGattServer;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/DefaultLocalServiceWrapperBuilder : com/splendo/kaluga/bluetooth/server/LocalServiceWrapperBuilder {
+	public fun <init> ()V
+	public fun createCharacteristic (Ljava/util/UUID;Ljava/util/Set;ZLjava/util/Set;)Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;
+	public fun createDescriptor (Ljava/util/UUID;Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;
+	public fun createService (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/Service$Type;)Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapper;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/GattCharacteristicIdentity : com/splendo/kaluga/bluetooth/server/AttributeIdentity {
+	public static final synthetic fun box-impl (Landroid/bluetooth/BluetoothGattCharacteristic;)Lcom/splendo/kaluga/bluetooth/server/GattCharacteristicIdentity;
+	public static fun constructor-impl (Landroid/bluetooth/BluetoothGattCharacteristic;)Landroid/bluetooth/BluetoothGattCharacteristic;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Landroid/bluetooth/BluetoothGattCharacteristic;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Landroid/bluetooth/BluetoothGattCharacteristic;Landroid/bluetooth/BluetoothGattCharacteristic;)Z
+	public final fun getCharacteristic ()Landroid/bluetooth/BluetoothGattCharacteristic;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Landroid/bluetooth/BluetoothGattCharacteristic;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Landroid/bluetooth/BluetoothGattCharacteristic;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Landroid/bluetooth/BluetoothGattCharacteristic;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/GattDescriptorIdentity : com/splendo/kaluga/bluetooth/server/AttributeIdentity {
+	public static final synthetic fun box-impl (Landroid/bluetooth/BluetoothGattDescriptor;)Lcom/splendo/kaluga/bluetooth/server/GattDescriptorIdentity;
+	public static fun constructor-impl (Landroid/bluetooth/BluetoothGattDescriptor;)Landroid/bluetooth/BluetoothGattDescriptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Landroid/bluetooth/BluetoothGattDescriptor;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Landroid/bluetooth/BluetoothGattDescriptor;Landroid/bluetooth/BluetoothGattDescriptor;)Z
+	public final fun getDescriptor ()Landroid/bluetooth/BluetoothGattDescriptor;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Landroid/bluetooth/BluetoothGattDescriptor;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Landroid/bluetooth/BluetoothGattDescriptor;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Landroid/bluetooth/BluetoothGattDescriptor;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/GattServiceIdentity : com/splendo/kaluga/bluetooth/server/AttributeIdentity {
+	public static final synthetic fun box-impl (Landroid/bluetooth/BluetoothGattService;)Lcom/splendo/kaluga/bluetooth/server/GattServiceIdentity;
+	public static fun constructor-impl (Landroid/bluetooth/BluetoothGattService;)Landroid/bluetooth/BluetoothGattService;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Landroid/bluetooth/BluetoothGattService;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Landroid/bluetooth/BluetoothGattService;Landroid/bluetooth/BluetoothGattService;)Z
+	public final fun getService ()Landroid/bluetooth/BluetoothGattService;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Landroid/bluetooth/BluetoothGattService;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Landroid/bluetooth/BluetoothGattService;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Landroid/bluetooth/BluetoothGattService;
+}
+
+public abstract class com/splendo/kaluga/bluetooth/server/LocalCharacteristic : com/splendo/kaluga/bluetooth/Characteristic {
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;Lcom/splendo/kaluga/bluetooth/server/LocalService;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getDescriptors ()Ljava/util/List;
+	public final fun getPermissions ()Ljava/util/Set;
+	public fun getProperties ()Ljava/util/Set;
+	public synthetic fun getService ()Lcom/splendo/kaluga/bluetooth/Service;
+	public fun getService ()Lcom/splendo/kaluga/bluetooth/server/LocalService;
+	public fun getUuid ()Ljava/util/UUID;
+	public final fun getWrapper ()Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL {
+	public fun collectTo (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/functions/Function1;)V
+	public fun collectTo (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public fun collectTo (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun collectTo$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun consumeTo (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public fun descriptor (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun descriptor (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun notifiable (Ljava/util/Set;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun notifiable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public abstract fun readable (ZLkotlin/jvm/functions/Function4;)V
+	public static synthetic fun readable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public fun readableAlwaysSuccess (ZLkotlin/jvm/functions/Function4;)V
+	public fun readableAlwaysSuccess (ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+	public abstract fun writable (Ljava/util/Set;ZLkotlin/jvm/functions/Function5;)V
+	public fun writable (Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public fun writableAlwaysSuccess (Ljava/util/Set;ZLkotlin/jvm/functions/Function5;)V
+	public fun writableAlwaysSuccess (Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$DefaultImpls {
+	public static fun collectTo (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/functions/Function1;)V
+	public static fun collectTo (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public static fun collectTo (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun collectTo$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static fun consumeTo (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public static fun descriptor (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun notifiable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static synthetic fun readable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static fun readableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlin/jvm/functions/Function4;)V
+	public static fun readableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+	public static fun writable (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static fun writableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;)V
+	public static fun writableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL {
+	public final fun getDsl ()Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;
+	public final fun getOnSubscribe ()Lkotlin/jvm/functions/Function3;
+	public final fun getOnUnsubscribe ()Lkotlin/jvm/functions/Function2;
+	public final fun triggerNotification (Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
+	public final fun triggerNotification (Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
+	public static synthetic fun triggerNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun triggerNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notifiable : com/splendo/kaluga/bluetooth/server/LocalCharacteristic, kotlinx/coroutines/flow/FlowCollector {
+	public synthetic fun emit (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun emit ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getDescriptors ()Ljava/util/List;
+	public final fun getSubscribedDevices ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun notify (Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun notify (Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun notify (Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun notify$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notifiable;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun notifyAll (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun notifyAll (Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun notifyAll ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun notifyAll$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notifiable;Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun subscribe (Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission : java/lang/Enum {
+	public static final field READABLE Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission;
+	public static final field READ_ENCRYPTION_REQUIRED Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission;
+	public static final field WRITABLE Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission;
+	public static final field WRITE_ENCRYPTION_REQUIRED Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission;
+	public static fun values ()[Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Static : com/splendo/kaluga/bluetooth/server/LocalCharacteristic {
+	public fun getDescriptors ()Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristicKt {
+	public static final fun triggerNotification (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;Z)V
+	public static synthetic fun triggerNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;ZILjava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper {
+	public abstract fun addDescriptor (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;)V
+	public abstract fun addToService (Landroid/bluetooth/BluetoothGattService;)V
+	public abstract fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public abstract fun getPermissions ()Ljava/util/Set;
+	public abstract fun getProperties ()Ljava/util/Set;
+	public abstract fun getUuid ()Ljava/util/UUID;
+	public abstract fun notify (Landroid/bluetooth/BluetoothGattServer;Landroid/bluetooth/BluetoothDevice;[BZ)Z
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalDescriptor : com/splendo/kaluga/bluetooth/Descriptor {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic;)V
+	public synthetic fun getCharacteristic ()Lcom/splendo/kaluga/bluetooth/Characteristic;
+	public fun getCharacteristic ()Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic;
+	public fun getUuid ()Ljava/util/UUID;
+	public final fun getWrapper ()Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL {
+	public abstract fun readable (ZLkotlin/jvm/functions/Function4;)V
+	public static synthetic fun readable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public fun readableAlwaysSuccess (ZLkotlin/jvm/functions/Function4;)V
+	public fun readableAlwaysSuccess (ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+	public abstract fun writable (ZLkotlin/jvm/functions/Function5;)V
+	public fun writable (ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public fun writableAlwaysSuccess (ZLkotlin/jvm/functions/Function5;)V
+	public fun writableAlwaysSuccess (ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL$DefaultImpls {
+	public static synthetic fun readable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static fun readableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function4;)V
+	public static fun readableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+	public static fun writable (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static fun writableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function5;)V
+	public static fun writableAlwaysSuccess (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions : java/lang/Enum {
+	public static final field READ Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions;
+	public static final field READ_ENCRYPTED Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions;
+	public static final field WRITE Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions;
+	public static final field WRITE_ENCRYPTED Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions;
+	public static fun values ()[Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper {
+	public abstract fun addToCharacteristic (Landroid/bluetooth/BluetoothGattCharacteristic;)V
+	public abstract fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public abstract fun getUuid ()Ljava/util/UUID;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalService : com/splendo/kaluga/bluetooth/Service {
+	public fun getCharacteristics ()Ljava/util/List;
+	public fun getIncludedServices ()Ljava/util/List;
+	public fun getType ()Lcom/splendo/kaluga/bluetooth/Service$Type;
+	public fun getUuid ()Ljava/util/UUID;
+	public final fun getWrapper ()Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapper;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/LocalService$DSL {
+	public fun characteristic (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun characteristic (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;)V
+	public fun includedService (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun includedService (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalService$DSL$DefaultImpls {
+	public static fun characteristic (Lcom/splendo/kaluga/bluetooth/server/LocalService$DSL;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static fun includedService (Lcom/splendo/kaluga/bluetooth/server/LocalService$DSL;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/LocalServiceWrapper {
+	public abstract fun addCharacteristic (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;)V
+	public abstract fun addIncludedService (Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapper;)V
+	public abstract fun addTo (Landroid/bluetooth/BluetoothGattServer;)Z
+	public abstract fun addToParent (Landroid/bluetooth/BluetoothGattService;)V
+	public abstract fun getIdentity ()Lcom/splendo/kaluga/bluetooth/server/AttributeIdentity;
+	public abstract fun getUuid ()Ljava/util/UUID;
+	public abstract fun removeFrom (Landroid/bluetooth/BluetoothGattServer;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/server/LocalServiceWrapperBuilder {
+	public abstract fun createCharacteristic (Ljava/util/UUID;Ljava/util/Set;ZLjava/util/Set;)Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper;
+	public abstract fun createDescriptor (Ljava/util/UUID;Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/server/LocalDescriptorWrapper;
+	public abstract fun createService (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/Service$Type;)Lcom/splendo/kaluga/bluetooth/server/LocalServiceWrapper;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/ServerSettings {
+	public fun <init> (Lcom/splendo/kaluga/permissions/base/Permissions;ZZLcom/splendo/kaluga/logging/Logger;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permissions;ZZLcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/permissions/base/Permissions;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun component4 ()Lcom/splendo/kaluga/logging/Logger;
+	public final fun copy (Lcom/splendo/kaluga/permissions/base/Permissions;ZZLcom/splendo/kaluga/logging/Logger;)Lcom/splendo/kaluga/bluetooth/server/ServerSettings;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/server/ServerSettings;Lcom/splendo/kaluga/permissions/base/Permissions;ZZLcom/splendo/kaluga/logging/Logger;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/server/ServerSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAutoEnableBluetooth ()Z
+	public final fun getAutoRequestPermission ()Z
+	public final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
+	public final fun getPermissions ()Lcom/splendo/kaluga/permissions/base/Permissions;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/ServerStatus : java/lang/Enum {
+	public static final field AVAILABLE Lcom/splendo/kaluga/bluetooth/server/ServerStatus;
+	public static final field AWAITING_BLUETOOTH_ENABLED Lcom/splendo/kaluga/bluetooth/server/ServerStatus;
+	public static final field AWAITING_PERMISSIONS Lcom/splendo/kaluga/bluetooth/server/ServerStatus;
+	public static final field CLOSED Lcom/splendo/kaluga/bluetooth/server/ServerStatus;
+	public static final field NOT_SUPPORTED Lcom/splendo/kaluga/bluetooth/server/ServerStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/server/ServerStatus;
+	public static fun values ()[Lcom/splendo/kaluga/bluetooth/server/ServerStatus;
+}
+

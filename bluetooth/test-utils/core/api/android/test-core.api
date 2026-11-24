@@ -1,0 +1,10 @@
+public final class com/splendo/kaluga/bluetooth/test/MockBluetoothMonitor : com/splendo/kaluga/service/test/MockServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
+	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
+	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
+	public fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;
+}
+
+public final class com/splendo/kaluga/bluetooth/test/RandomUUID_androidKt {
+	public static final fun randomUUID ()Ljava/util/UUID;
+}
+

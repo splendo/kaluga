@@ -1,0 +1,39 @@
+public final class com/splendo/kaluga/links/DefaultLinksManager : com/splendo/kaluga/links/LinksManager {
+	public fun <init> (Lcom/splendo/kaluga/links/handler/LinksHandler;)V
+	public fun handleIncomingLink (Ljava/lang/String;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public fun validateLink (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/links/DefaultLinksManager$Builder : com/splendo/kaluga/links/LinksManager$Builder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/links/handler/LinksHandler;)V
+	public fun create ()Lcom/splendo/kaluga/links/LinksManager;
+}
+
+public abstract interface class com/splendo/kaluga/links/LinksManager {
+	public abstract fun handleIncomingLink (Ljava/lang/String;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public abstract fun validateLink (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/links/LinksManager$Builder {
+	public abstract fun create ()Lcom/splendo/kaluga/links/LinksManager;
+}
+
+public final class com/splendo/kaluga/links/LinksManagerKt {
+	public static final fun handleIncomingLink (Lcom/splendo/kaluga/links/LinksManager;Landroid/net/Uri;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun handleIncomingLink (Lcom/splendo/kaluga/links/LinksManager;Ljava/net/URL;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun validateLink (Lcom/splendo/kaluga/links/LinksManager;Landroid/net/Uri;)Landroid/net/Uri;
+	public static final fun validateLink (Lcom/splendo/kaluga/links/LinksManager;Ljava/net/URL;)Ljava/net/URL;
+}
+
+public abstract interface class com/splendo/kaluga/links/handler/LinksHandler {
+	public abstract fun extractQueryAsMap (Ljava/lang/String;)Ljava/util/Map;
+	public abstract fun isValid (Ljava/lang/String;)Z
+}
+
+public final class com/splendo/kaluga/links/handler/PlatformLinksHandler : com/splendo/kaluga/links/handler/LinksHandler {
+	public fun <init> ()V
+	public fun extractQueryAsMap (Ljava/lang/String;)Ljava/util/Map;
+	public fun isValid (Ljava/lang/String;)Z
+}
+

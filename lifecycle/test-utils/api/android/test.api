@@ -1,0 +1,20 @@
+public final class com/splendo/kaluga/lifecycle/test/GetOrPutAndRemoveOnDestroyFromCacheKt {
+	public static final fun getLifecycleAwareActivityCache ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+}
+
+public final class com/splendo/kaluga/lifecycle/test/LifecycleManagerObserverKt {
+	public static final fun lifecycleManagerObserver (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/lifecycle/LifecycleManagerObserver;
+}
+
+public final class com/splendo/kaluga/lifecycle/test/MockActivityLifecycleSubscriber : com/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable {
+	public fun <init> ()V
+	public fun getManager ()Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun setManager (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun unsubscribe ()V
+}
+
+public final class com/splendo/kaluga/lifecycle/test/MockLifecycleSubscribable : com/splendo/kaluga/lifecycle/LifecycleSubscribable {
+	public fun <init> ()V
+}
+

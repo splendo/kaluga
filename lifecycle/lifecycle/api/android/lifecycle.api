@@ -1,0 +1,49 @@
+public abstract interface class com/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable : com/splendo/kaluga/lifecycle/LifecycleSubscribable {
+	public abstract fun getManager ()Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public abstract fun subscribe (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public abstract fun unsubscribe ()V
+}
+
+public final class com/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager {
+	public fun <init> (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
+	public synthetic fun <init> (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Landroid/app/Activity;
+	public final fun component2 ()Landroidx/lifecycle/LifecycleOwner;
+	public final fun component3 ()Landroidx/fragment/app/FragmentManager;
+	public final fun component4 ()Landroidx/fragment/app/FragmentManager;
+	public final fun copy (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILjava/lang/Object;)Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActivity ()Landroid/app/Activity;
+	public final fun getChildFragmentManager ()Landroidx/fragment/app/FragmentManager;
+	public final fun getFragmentManager ()Landroidx/fragment/app/FragmentManager;
+	public final fun getLifecycleOwner ()Landroidx/lifecycle/LifecycleOwner;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/lifecycle/ActivityLifecycleSubscribableKt {
+	public static final fun subscribe (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;)V
+	public static final fun subscribe (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
+	public static final fun subscribe (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable;Landroidx/appcompat/app/AppCompatActivity;)V
+	public static final fun subscribe (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable;Landroidx/fragment/app/Fragment;)V
+}
+
+public class com/splendo/kaluga/lifecycle/DefaultActivityLifecycleSubscribable : com/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable {
+	public fun <init> ()V
+	public fun getManager ()Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun setManager (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun unsubscribe ()V
+}
+
+public final class com/splendo/kaluga/lifecycle/LifecycleManagerObserver : com/splendo/kaluga/lifecycle/DefaultActivityLifecycleSubscribable {
+	public fun <init> ()V
+	public fun getManager ()Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public final fun getManagerState ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun setManager (Lcom/splendo/kaluga/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+}
+
+public abstract interface class com/splendo/kaluga/lifecycle/LifecycleSubscribable {
+}
+
