@@ -1,2 +1,3 @@
-bumble==0.0.236
+bumble[android]==0.0.236
 grpcio==1.85.4
+protobuf==7.36.2
