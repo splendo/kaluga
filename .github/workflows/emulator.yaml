@@ -1,5 +1,8 @@
 name: Android Emulator tests
 on:
+  push:
+    branches:
+      - feature/bluetooth-netsim-tests
   pull_request:
   workflow_dispatch:
     inputs:
@@ -24,7 +27,7 @@ jobs:
     uses: ./.github/workflows/setup_linux.yaml
     with:
       gradleTask: bundleLibRuntimeToJarDebug
-      project: ${{ inputs.project }}
+      project: bluetooth
       projectBlacklist: hud
 
   # Creates the AVDs fresh once per run and shares them with the test matrix through a
@@ -39,10 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [24, 36]
+        api-level: [36]
         include:
-          - api-level: 24
-            target: google_apis
           - api-level: 36
             target: google_apis
     steps:
@@ -87,12 +88,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [24, 36]
+        api-level: [36]
         project: ${{ fromJSON(needs.build.outputs.projects) }}
         # Keep targets in sync with the avd job (see comment there about google_atd).
         include:
-          - api-level: 24
-            target: google_apis
           - api-level: 36
             target: google_apis
     env:
@@ -107,6 +106,8 @@ jobs:
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_linux/
+        with:
+          project: bluetooth
 
       - name: Enable KVM group perms
         run: |
