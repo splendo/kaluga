@@ -298,13 +298,17 @@ internal sealed class AndroidServerState {
             callback::registerReadAction,
             callback::registerWriteAction,
             { encrypted ->
+                val deviceStatus = concurrentMutableMapOf<ConnectedDevice, ByteArray>()
+                callback.registerDisconnectAction(this) { device ->
+                    deviceStatus.remove(device)
+                    if (device in subscribedDevices.value) unsubscribe(device)
+                }
                 // Android Characteristics Notifications require the CCCD being set, so we do that here to enable subscribing to the characteristic.
                 LocalDescriptorDSL(
                     Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR,
                     callback::registerReadAction,
                     callback::registerWriteAction,
                 ).apply {
-                    val deviceStatus = concurrentMutableMapOf<ConnectedDevice, ByteArray>()
                     readable(encrypted) { device, offset ->
                         when {
                             offset != 0 -> GattResponse.InvalidOffset

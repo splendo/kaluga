@@ -68,6 +68,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
 
     private val readActions = mutableMapOf<AttributeIdentity, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
     private val writeActions = mutableMapOf<AttributeIdentity, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
+    private val disconnectActions = concurrentMutableMapOf<AttributeIdentity, (ConnectedDevice) -> Unit>()
 
     private val handlingScope = CoroutineScope(handlingContext + CoroutineName("BluetoothServerCallback"))
 
@@ -95,6 +96,14 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         }
     }
 
+    /**
+     * Registers [onDisconnect] to run for [characteristic] when a device disconnects. Android, unlike Apple, does not
+     * report the subscriptions a disconnect ends.
+     */
+    fun registerDisconnectAction(characteristic: LocalCharacteristic, onDisconnect: (ConnectedDevice) -> Unit) {
+        disconnectActions[characteristic.wrapper.identity] = onDisconnect
+    }
+
     fun registerSendResponse(sendResponse: SendResponse) {
         this.sendResponse = sendResponse
     }
@@ -104,6 +113,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         service.characteristics.forEach { characteristic ->
             readActions.remove(characteristic.wrapper.identity)
             writeActions.remove(characteristic.wrapper.identity)
+            disconnectActions.remove(characteristic.wrapper.identity)
             characteristic.descriptors.forEach { descriptor ->
                 readActions.remove(descriptor.wrapper.identity)
                 writeActions.remove(descriptor.wrapper.identity)
@@ -120,6 +130,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
     fun removeAllServices() {
         readActions.clear()
         writeActions.clear()
+        disconnectActions.clear()
     }
 
     override fun onCharacteristicReadRequest(device: BluetoothDevice, requestId: Int, offset: Int, characteristic: BluetoothGattCharacteristic) {
@@ -195,7 +206,11 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
             BluetoothProfile.STATE_DISCONNECTED -> {
                 logger.info(TAG) { "Device ${device.address} disconnected" }
                 mtu.remove(device.address)
-                connectedDevices.remove(device.address)
+                connectedDevices.remove(device.address)?.let { disconnected ->
+                    handlingScope.launch {
+                        disconnectActions.synchronized { values.toList() }.forEach { it(disconnected) }
+                    }
+                }
             }
 
             else -> logger.warn(TAG) { "Device ${device.address} connection changed to $newState with unexpected status $status" }
