@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.NetsimPeripheral.Command
+import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -35,12 +35,12 @@ import kotlin.time.TimeSource
 /**
  * Disconnects while requests are pending, requested by the client or caused by the peripheral.
  */
-class NetsimDisconnectTest : NetsimTest() {
+class PeripheralDisconnectTest : PeripheralTest() {
 
     @Test
-    fun readsWritesAndNotifies() = netsimTest {
+    fun readsWritesAndNotifies() = peripheralTest {
         val attributes = connectAndDiscover()
-        assertEquals<GattResponse>(GattResponse.ReadSuccess(NetsimPeripheral.initialValue), within(10.seconds, "read") { attributes.data.read() })
+        assertEquals<GattResponse>(GattResponse.ReadSuccess(TestPeripheral.initialValue), within(10.seconds, "read") { attributes.data.read() })
         assertEquals<GattResponse>(GattResponse.WriteSuccess.Acknowledged, within(10.seconds, "write") { attributes.data.write(byteArrayOf(4, 5)) })
         assertEquals<GattResponse>(GattResponse.ReadSuccess(byteArrayOf(4, 5)), within(10.seconds, "read back") { attributes.data.read() })
 
@@ -52,7 +52,7 @@ class NetsimDisconnectTest : NetsimTest() {
     }
 
     @Test
-    fun linkDropWithAReadInFlightAnswersEveryPendingAction() = netsimTest {
+    fun linkDropWithAReadInFlightAnswersEveryPendingAction() = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(Command.HoldRead())
         attributes.send(Command.DropWhenHeld(1.seconds))
@@ -80,7 +80,7 @@ class NetsimDisconnectTest : NetsimTest() {
     @Test
     fun requestedDisconnectWithAReadAnsweredBeforeTheLinkCloses() = requestedDisconnectWithAHeldRead(Command.HoldRead(releaseAfter = 700.milliseconds))
 
-    private fun requestedDisconnectWithAHeldRead(hold: Command) = netsimTest {
+    private fun requestedDisconnectWithAHeldRead(hold: Command) = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(hold)
         val inFlight = attributes.data.startRead()
@@ -100,13 +100,13 @@ class NetsimDisconnectTest : NetsimTest() {
         assertEquals<GattResponse>(GattResponse.DeviceUnavailable, queuedWriteResponse)
         assertEquals<GattResponse>(GattResponse.MTUDeviceUnavailable(100), queuedMtuResponse)
         assertTrue(
-            inFlightResponse == GattResponse.DeviceUnavailable || inFlightResponse == GattResponse.ReadSuccess(NetsimPeripheral.initialValue),
+            inFlightResponse == GattResponse.DeviceUnavailable || inFlightResponse == GattResponse.ReadSuccess(TestPeripheral.initialValue),
             "in-flight read answered $inFlightResponse",
         )
     }
 
     @Test
-    fun reconnectAfterADropGivesNewObjects() = netsimTest {
+    fun reconnectAfterADropGivesNewObjects() = peripheralTest {
         val old = connectAndDiscover()
         old.send(Command.Drop(200.milliseconds))
         awaitDisconnected()
@@ -134,7 +134,7 @@ class NetsimDisconnectTest : NetsimTest() {
     }
 
     @Test
-    fun linkDropWithAnEnableInFlightFailsTheSubscription() = netsimTest {
+    fun linkDropWithAnEnableInFlightFailsTheSubscription() = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(Command.HoldCccdWrite())
         attributes.send(Command.DropWhenHeld(1.seconds))
@@ -148,7 +148,7 @@ class NetsimDisconnectTest : NetsimTest() {
     }
 
     @Test
-    fun twoRequestsForTheSameMtuBothComplete() = netsimTest {
+    fun twoRequestsForTheSameMtuBothComplete() = peripheralTest {
         connectAndDiscover()
         val first = device.requestMtu(185)
         val second = device.requestMtu(185)

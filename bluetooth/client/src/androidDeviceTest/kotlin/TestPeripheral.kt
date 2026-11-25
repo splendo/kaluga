@@ -53,10 +53,10 @@ import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 /**
- * The GATT peripheral run by `src/androidDeviceTest/python/netsim_peripheral.py` on the emulator's netsim radio.
+ * The GATT peripheral run by `src/androidDeviceTest/python/peripheral.py` on the emulator's netsim radio.
  * The UUIDs and the control commands mirror that script.
  */
-object NetsimPeripheral {
+object TestPeripheral {
     val service: UUID = uuid("0000")
     val data: UUID = uuid("0001")
     val control: UUID = uuid("0002")
@@ -115,7 +115,7 @@ object NetsimPeripheral {
     private val Duration.millis get() = inWholeMilliseconds.toInt()
 }
 
-private const val TAG = "NetsimTest"
+private const val TAG = "PeripheralTest"
 
 /**
  * Android allows an app five scan starts in 30 seconds and silently returns no results after that. Every test that
@@ -138,13 +138,13 @@ object ScanBudget {
 }
 
 /**
- * A [BluetoothClient] for the [NetsimPeripheral], with a log of what the test saw and when.
+ * A [BluetoothClient] for the [TestPeripheral], with a log of what the test saw and when.
  * One session serves every test class of a run: a scan per class would soon hit the [ScanBudget].
  */
-class NetsimSession(context: Context) {
+class PeripheralSession(context: Context) {
 
     companion object {
-        val shared by lazy { NetsimSession(InstrumentationRegistry.getInstrumentation().targetContext) }
+        val shared by lazy { PeripheralSession(InstrumentationRegistry.getInstrumentation().targetContext) }
     }
 
     private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
@@ -168,14 +168,14 @@ class NetsimSession(context: Context) {
         private set
 
     class Attributes(val services: List<RemoteService>) {
-        val service = services.first { it.uuid == NetsimPeripheral.service }
-        val data = service.characteristic(NetsimPeripheral.data)
-        val control = service.characteristic(NetsimPeripheral.control)
-        val error get() = service.characteristic(NetsimPeripheral.error)
-        val indicate get() = service.characteristic(NetsimPeripheral.indicate)
-        val long get() = service.characteristic(NetsimPeripheral.long)
-        val sink get() = service.characteristic(NetsimPeripheral.sink)
-        val twins get() = services.first { it.uuid == NetsimPeripheral.twinService }.characteristics
+        val service = services.first { it.uuid == TestPeripheral.service }
+        val data = service.characteristic(TestPeripheral.data)
+        val control = service.characteristic(TestPeripheral.control)
+        val error get() = service.characteristic(TestPeripheral.error)
+        val indicate get() = service.characteristic(TestPeripheral.indicate)
+        val long get() = service.characteristic(TestPeripheral.long)
+        val sink get() = service.characteristic(TestPeripheral.sink)
+        val twins get() = services.first { it.uuid == TestPeripheral.twinService }.characteristics
 
         private fun RemoteService.characteristic(uuid: UUID) = characteristics.first { it.uuid == uuid }
     }
@@ -196,7 +196,7 @@ class NetsimSession(context: Context) {
         if (::device.isInitialized) return
         scope.launch { client.devices().collect { } }
         ScanBudget.take()
-        client.startScanning(setOf(NetsimPeripheral.service), connectionSettings = connectionSettings)
+        client.startScanning(setOf(TestPeripheral.service), connectionSettings = connectionSettings)
         device = within(30.seconds, "scan") { client.devices().first { it.isNotEmpty() }.first() }
         client.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
     }
@@ -206,7 +206,7 @@ class NetsimSession(context: Context) {
         return Attributes(within(30.seconds, "discover") { device.discoveredServices().first() })
     }
 
-    suspend fun Attributes.send(command: NetsimPeripheral.Command) {
+    suspend fun Attributes.send(command: TestPeripheral.Command) {
         assertEquals<GattResponse>(GattResponse.WriteSuccess.Acknowledged, within(10.seconds, "command $command") { control.write(command.bytes) })
     }
 
@@ -233,13 +233,13 @@ class NetsimSession(context: Context) {
 
 /**
  * Runs the client against the netsim peripheral on an emulator. Skipped unless the instrumentation argument
- * [NetsimPeripheral.ARGUMENT] is `true`, since the peripheral has to be started next to the emulator.
+ * [TestPeripheral.ARGUMENT] is `true`, since the peripheral has to be started next to the emulator.
  */
-abstract class NetsimTest {
+abstract class PeripheralTest {
 
     @Before
     fun requirePeripheral() {
-        assumeTrue(InstrumentationRegistry.getArguments().getString(NetsimPeripheral.ARGUMENT) == "true")
+        assumeTrue(InstrumentationRegistry.getArguments().getString(TestPeripheral.ARGUMENT) == "true")
         // Granted here rather than by a rule, which would run before the assumption on API levels that lack these permissions.
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         listOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT).forEach {
@@ -247,8 +247,8 @@ abstract class NetsimTest {
         }
     }
 
-    protected fun netsimTest(timeout: Duration = 120.seconds, block: suspend NetsimSession.() -> Unit) = runBlocking {
-        val session = NetsimSession.shared
+    protected fun peripheralTest(timeout: Duration = 120.seconds, block: suspend PeripheralSession.() -> Unit) = runBlocking {
+        val session = PeripheralSession.shared
         try {
             session.within(timeout, "test") {
                 session.scanOnce()

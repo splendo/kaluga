@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.NetsimPeripheral.Command
+import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -28,10 +28,10 @@ import kotlin.time.TimeSource
  * A peripheral that never answers a read. The client has no timeout of its own: the stack gives up after the 30 second
  * ATT timeout, and since a bearer that timed out may not be used again, it drops the link.
  */
-class NetsimUnansweredReadTest : NetsimTest() {
+class PeripheralUnansweredReadTest : PeripheralTest() {
 
     @Test
-    fun readThatIsNeverAnswered() = netsimTest(timeout = 150.seconds) {
+    fun readThatIsNeverAnswered() = peripheralTest(timeout = 150.seconds) {
         val attributes = connectAndDiscover()
         attributes.send(Command.HoldRead())
         val unanswered = attributes.data.startRead()
@@ -47,6 +47,6 @@ class NetsimUnansweredReadTest : NetsimTest() {
         assertTrue(attributes.data.invalidated.isCompleted)
 
         val reconnected = connectAndDiscover()
-        assertEquals<GattResponse>(GattResponse.ReadSuccess(NetsimPeripheral.initialValue), within(10.seconds, "read after reconnecting") { reconnected.data.read() })
+        assertEquals<GattResponse>(GattResponse.ReadSuccess(TestPeripheral.initialValue), within(10.seconds, "read after reconnecting") { reconnected.data.read() })
     }
 }

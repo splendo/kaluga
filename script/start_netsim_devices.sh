@@ -32,5 +32,5 @@ start() {
   exit 1
 }
 
-start bluetooth/client/src/androidDeviceTest/python/netsim_peripheral.py "$PERIPHERAL_LOG" advertising
-start bluetooth/server/src/androidDeviceTest/python/netsim_central.py "$CENTRAL_LOG" scanning
+start bluetooth/client/src/androidDeviceTest/python/peripheral.py "$PERIPHERAL_LOG" advertising
+start bluetooth/server/src/androidDeviceTest/python/central.py "$CENTRAL_LOG" scanning

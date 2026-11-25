@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.bluetooth.server.NetsimCentral.Instruction
+import com.splendo.kaluga.bluetooth.server.TestCentral.Instruction
 import kotlinx.coroutines.flow.first
 import org.junit.Test
 import kotlin.test.assertContentEquals
@@ -28,24 +28,24 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Notifications from the server to a subscribed central.
  */
-class NetsimServerNotificationTest : NetsimServerTest() {
+class CentralNotificationTest : CentralTest() {
 
     @Test
-    fun notifiesASubscribedCentral() = netsimServerTest {
-        assertEquals(0, status(Instruction.Subscribe(NetsimCentral.NOTIFY)))
+    fun notifiesASubscribedCentral() = centralTest {
+        assertEquals(0, status(Instruction.Subscribe(TestCentral.NOTIFY)))
         assertEquals(listOf(central), within(10.seconds, "subscribed") { notify.subscribedDevices.first { it.isNotEmpty() } })
         assertTrue(notify.notifyAll(byteArrayOf(0x21, 0x22)))
         val (target, value) = within(10.seconds, "notification at the central") { forwarded.receive() }
-        assertEquals(NetsimCentral.NOTIFY, target)
+        assertEquals(TestCentral.NOTIFY, target)
         assertContentEquals(byteArrayOf(0x21, 0x22), value)
 
-        assertEquals(0, status(Instruction.Unsubscribe(NetsimCentral.NOTIFY)))
+        assertEquals(0, status(Instruction.Unsubscribe(TestCentral.NOTIFY)))
         assertEquals(emptyList(), within(10.seconds, "unsubscribed") { notify.subscribedDevices.first { it.isEmpty() } })
     }
 
     @Test
-    fun disconnectEndsTheSubscription() = netsimServerTest {
-        assertEquals(0, status(Instruction.Subscribe(NetsimCentral.NOTIFY)))
+    fun disconnectEndsTheSubscription() = centralTest {
+        assertEquals(0, status(Instruction.Subscribe(TestCentral.NOTIFY)))
         within(10.seconds, "subscribed") { notify.subscribedDevices.first { it.isNotEmpty() } }
         assertEquals(0, status(Instruction.Disconnect))
         awaitCentralDisconnected()

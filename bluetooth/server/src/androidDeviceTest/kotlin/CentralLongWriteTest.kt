@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.bluetooth.server.NetsimCentral.Instruction
+import com.splendo.kaluga.bluetooth.server.TestCentral.Instruction
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -29,31 +29,31 @@ import kotlin.time.Duration.Companion.seconds
  * The central writes a typed value too long for one request, as a long write: a series of prepared writes, then an
  * execute. The central checks that each prepared part comes back as it sent it.
  */
-class NetsimLongWriteTest : NetsimServerTest() {
+class CentralLongWriteTest : CentralTest() {
 
     private val record = Record(0x0102u, "a label long enough to need several prepared writes", 0x1122334455667788u)
 
     @Test
-    fun longWriteOfATypedValue() = netsimServerTest {
-        assertTrue(record.bytes.size > 3 * NetsimCentral.STAGE_SIZE)
+    fun longWriteOfATypedValue() = centralTest {
+        assertTrue(record.bytes.size > 3 * TestCentral.STAGE_SIZE)
         stage(record.bytes)
-        assertEquals(0, status(Instruction.Write(NetsimCentral.TYPED)))
+        assertEquals(0, status(Instruction.Write(TestCentral.TYPED)))
         assertEquals(record, within(10.seconds, "typed write") { typedWrites.receive() })
     }
 
     @Test
-    fun longWriteOfATypedValueWithoutItsTail() = netsimServerTest {
+    fun longWriteOfATypedValueWithoutItsTail() = centralTest {
         val withoutTail = record.copy(serial = null)
         stage(withoutTail.bytes)
-        assertEquals(0, status(Instruction.Write(NetsimCentral.TYPED)))
+        assertEquals(0, status(Instruction.Write(TestCentral.TYPED)))
         assertEquals(withoutTail, within(10.seconds, "typed write") { typedWrites.receive() })
     }
 
     // Each Write Request starts the value over, so a value cut off inside its tail never reaches the delegate.
     @Test
-    fun valueEndingInsideItsTailIsNotWritten() = netsimServerTest {
+    fun valueEndingInsideItsTailIsNotWritten() = centralTest {
         stage(record.bytes.copyOf(record.bytes.size - 3))
-        assertEquals(0, status(Instruction.Write(NetsimCentral.TYPED)))
+        assertEquals(0, status(Instruction.Write(TestCentral.TYPED)))
         assertNull(withTimeoutOrNull(1.seconds) { typedWrites.receive() })
         assertNull(typedFailures.tryReceive().getOrNull())
     }

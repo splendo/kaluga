@@ -51,10 +51,10 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 /**
- * The service a [NetsimServerSession] serves to the GATT central run by `src/androidDeviceTest/python/netsim_central.py`
+ * The service a [CentralSession] serves to the GATT central run by `src/androidDeviceTest/python/central.py`
  * on the emulator's netsim radio. The UUIDs and the instructions mirror that script.
  */
-object NetsimCentral {
+object TestCentral {
     val service: UUID = uuid(0x00)
     val control: UUID = uuid(0x01)
     val result: UUID = uuid(0x02)
@@ -97,13 +97,13 @@ data class Record(val id: UShort, @LengthPrefix val label: String, @Trailing val
     val bytes: ByteArray get() = BytesFormat.encodeToByteArray(serializer(), this)
 }
 
-private const val TAG = "NetsimServerTest"
+private const val TAG = "CentralTest"
 
 /**
- * A [BluetoothServer] serving the [NetsimCentral] service, and the central connected to it.
+ * A [BluetoothServer] serving the [TestCentral] service, and the central connected to it.
  * The central reports each instruction's result, and every notification it receives, by writing to the result characteristic.
  */
-class NetsimServerSession(private val context: Context) {
+class CentralSession(private val context: Context) {
 
     private val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
     private val start = TimeSource.Monotonic.markNow()
@@ -149,9 +149,9 @@ class NetsimServerSession(private val context: Context) {
         ) {}
         val service = assertNotNull(
             within(10.seconds, "add the service") {
-                server.add(NetsimCentral.service) {
-                    characteristic(NetsimCentral.control) { notifiable(onSubscribe = {}, onUnsubscribe = {}) }
-                    characteristic(NetsimCentral.result) {
+                server.add(TestCentral.service) {
+                    characteristic(TestCentral.control) { notifiable(onSubscribe = {}, onUnsubscribe = {}) }
+                    characteristic(TestCentral.result) {
                         writable { _, value, _ ->
                             if (value.firstOrNull() == 0.toByte()) {
                                 forwarded.trySend(value[1].toInt() to value.copyOfRange(2, value.size))
@@ -161,7 +161,7 @@ class NetsimServerSession(private val context: Context) {
                             GattResponse.WriteSuccess.Acknowledged
                         }
                     }
-                    characteristic(NetsimCentral.typed) {
+                    characteristic(TestCentral.typed) {
                         writable(
                             decode = { BytesFormat.decodeFromByteArray(Record.serializer(), it) },
                             onFailedToWrite = { _, exception ->
@@ -173,30 +173,30 @@ class NetsimServerSession(private val context: Context) {
                             GattResponse.WriteSuccess.Acknowledged
                         }
                     }
-                    characteristic(NetsimCentral.raw) {
+                    characteristic(TestCentral.raw) {
                         writable { _, value, offset ->
                             rawWrites.trySend(value to offset)
                             GattResponse.WriteSuccess.Acknowledged
                         }
                     }
-                    characteristic(NetsimCentral.notify) { notifiable(onSubscribe = {}, onUnsubscribe = {}) }
+                    characteristic(TestCentral.notify) { notifiable(onSubscribe = {}, onUnsubscribe = {}) }
                 }
             },
         )
-        control = service.characteristics.first { it.uuid == NetsimCentral.control } as LocalCharacteristic.Notifiable
-        notify = service.characteristics.first { it.uuid == NetsimCentral.notify } as LocalCharacteristic.Notifiable
+        control = service.characteristics.first { it.uuid == TestCentral.control } as LocalCharacteristic.Notifiable
+        notify = service.characteristics.first { it.uuid == TestCentral.notify } as LocalCharacteristic.Notifiable
         awaitCentral()
     }
 
     /** Advertises until the central has connected and subscribed to the control characteristic. */
     suspend fun awaitCentral() {
-        assertEquals(true, within(10.seconds, "advertise") { server.advertise { serviceUUIDs(NetsimCentral.service) } })
+        assertEquals(true, within(10.seconds, "advertise") { server.advertise { serviceUUIDs(TestCentral.service) } })
         central = within(30.seconds, "central subscribed") { control.subscribedDevices.first { it.isNotEmpty() }.single() }
         server.stopAdvertising()
     }
 
     /** Sends [instruction] to the central and returns its status and data. */
-    suspend fun instruct(instruction: NetsimCentral.Instruction): Pair<Int, ByteArray> {
+    suspend fun instruct(instruction: TestCentral.Instruction): Pair<Int, ByteArray> {
         val id = nextId.also { nextId = nextId % 255 + 1 }
         val message = byteArrayOf(id.toByte(), instruction.code.toByte()) + instruction.arguments
         assertEquals(true, within(10.seconds, "send $instruction") { control.notifyAll(message) })
@@ -205,12 +205,12 @@ class NetsimServerSession(private val context: Context) {
         return (result[1].toInt() and 0xFF) to result.copyOfRange(2, result.size)
     }
 
-    suspend fun status(instruction: NetsimCentral.Instruction): Int = instruct(instruction).first
+    suspend fun status(instruction: TestCentral.Instruction): Int = instruct(instruction).first
 
     /** Stages [bytes] at the central, in as many instructions as it takes. */
     suspend fun stage(bytes: ByteArray) {
-        assertEquals(0, status(NetsimCentral.Instruction.Clear))
-        bytes.toList().chunked(NetsimCentral.STAGE_SIZE).forEach { assertEquals(0, status(NetsimCentral.Instruction.Stage(it.toByteArray()))) }
+        assertEquals(0, status(TestCentral.Instruction.Clear))
+        bytes.toList().chunked(TestCentral.STAGE_SIZE).forEach { assertEquals(0, status(TestCentral.Instruction.Stage(it.toByteArray()))) }
     }
 
     @SuppressLint("MissingPermission")
@@ -224,7 +224,7 @@ class NetsimServerSession(private val context: Context) {
         if (::server.isInitialized) {
             server.stopAdvertising()
             if (isCentralConnected()) {
-                withTimeoutOrNull(10.seconds) { instruct(NetsimCentral.Instruction.Disconnect) } ?: log("disconnect instruction timed out")
+                withTimeoutOrNull(10.seconds) { instruct(TestCentral.Instruction.Disconnect) } ?: log("disconnect instruction timed out")
                 awaitCentralDisconnected()
             }
             server.close()
@@ -236,13 +236,13 @@ class NetsimServerSession(private val context: Context) {
 
 /**
  * Runs a [BluetoothServer] against the netsim central on an emulator. Skipped unless the instrumentation argument
- * [NetsimCentral.ARGUMENT] is `true`, since the central has to be started next to the emulator.
+ * [TestCentral.ARGUMENT] is `true`, since the central has to be started next to the emulator.
  */
-abstract class NetsimServerTest {
+abstract class CentralTest {
 
     @Before
     fun requireCentral() {
-        assumeTrue(InstrumentationRegistry.getArguments().getString(NetsimCentral.ARGUMENT) == "true")
+        assumeTrue(InstrumentationRegistry.getArguments().getString(TestCentral.ARGUMENT) == "true")
         // Granted here rather than by a rule, which would run before the assumption on API levels that lack these permissions.
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         listOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT).forEach {
@@ -250,8 +250,8 @@ abstract class NetsimServerTest {
         }
     }
 
-    protected fun netsimServerTest(timeout: Duration = 120.seconds, block: suspend NetsimServerSession.() -> Unit) = runBlocking {
-        val session = NetsimServerSession(InstrumentationRegistry.getInstrumentation().targetContext)
+    protected fun centralTest(timeout: Duration = 120.seconds, block: suspend CentralSession.() -> Unit) = runBlocking {
+        val session = CentralSession(InstrumentationRegistry.getInstrumentation().targetContext)
         try {
             session.within(timeout, "test") {
                 session.open()

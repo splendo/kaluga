@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.NetsimPeripheral.Command
+import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import com.splendo.kaluga.bytes.annotations.Length
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.Trailing
@@ -36,7 +36,7 @@ import kotlin.time.Duration.Companion.seconds
  * it and in full. The value is read the way a generated client reads a layout without a view: decoded by [BytesFormat]
  * through [RemoteAttribute.read].
  */
-class NetsimTrailingLayoutTest : NetsimTest() {
+class PeripheralTrailingLayoutTest : PeripheralTest() {
 
     @Serializable
     data class DeviceStatus(@Size(Length.`8_BIT`) @Unsigned val battery: Int, val voltage: UShort, @Trailing val serviceVersion: UShort?, @Trailing val serial: ULong?) {
@@ -55,14 +55,14 @@ class NetsimTrailingLayoutTest : NetsimTest() {
     fun withTheWholeTail() = reads(status)
 
     @Test
-    fun endingInsideATrailingField() = netsimTest {
+    fun endingInsideATrailingField() = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(Command.SetLongValueTo(status.bytes.copyOf(status.bytes.size - 3)))
         assertFailsWith<ByteArrayEndedBeforeSerializationCompleted> { attributes.long.read(DeviceStatus.serializer()) }
         assertNull(attributes.long.readOrNull(DeviceStatus.serializer()))
     }
 
-    private fun reads(expected: DeviceStatus) = netsimTest {
+    private fun reads(expected: DeviceStatus) = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(Command.SetLongValueTo(expected.bytes))
         assertEquals(expected, within(10.seconds, "read") { attributes.long.read(DeviceStatus.serializer()) })

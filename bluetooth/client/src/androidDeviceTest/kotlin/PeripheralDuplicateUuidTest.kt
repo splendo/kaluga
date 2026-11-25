@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.NetsimPeripheral.Command
+import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Test
@@ -30,29 +30,29 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * A service holding two characteristics with the same UUID, each with its own value.
  */
-class NetsimDuplicateUuidTest : NetsimTest() {
+class PeripheralDuplicateUuidTest : PeripheralTest() {
 
     @Test
-    fun bothAreDiscovered() = netsimTest {
+    fun bothAreDiscovered() = peripheralTest {
         val twins = connectAndDiscover().twins
-        assertEquals(listOf(NetsimPeripheral.twin, NetsimPeripheral.twin), twins.map { it.uuid })
+        assertEquals(listOf(TestPeripheral.twin, TestPeripheral.twin), twins.map { it.uuid })
     }
 
     @Test
-    fun readsReachEachTwin() = netsimTest {
+    fun readsReachEachTwin() = peripheralTest {
         val twins = connectAndDiscover().twins
         assertEquals<List<GattResponse>>(
-            NetsimPeripheral.twinValues.map { GattResponse.ReadSuccess(it) },
+            TestPeripheral.twinValues.map { GattResponse.ReadSuccess(it) },
             twins.mapIndexed { index, twin -> within(10.seconds, "read twin $index") { twin.read() } },
         )
     }
 
     @Test
-    fun writesReachEachTwin() = netsimTest {
+    fun writesReachEachTwin() = peripheralTest {
         val twins = connectAndDiscover().twins
         assertEquals<GattResponse>(GattResponse.WriteSuccess.Acknowledged, within(10.seconds, "write twin 1") { twins[1].write(byteArrayOf(0x62)) })
         assertEquals<List<GattResponse>>(
-            listOf(GattResponse.ReadSuccess(NetsimPeripheral.twinValues[0]), GattResponse.ReadSuccess(byteArrayOf(0x62))),
+            listOf(GattResponse.ReadSuccess(TestPeripheral.twinValues[0]), GattResponse.ReadSuccess(byteArrayOf(0x62))),
             twins.mapIndexed { index, twin -> within(10.seconds, "read twin $index") { twin.read() } },
         )
     }
@@ -60,7 +60,7 @@ class NetsimDuplicateUuidTest : NetsimTest() {
     // The client routes a notification by the UUID of its characteristic, to the twin whose notifications were enabled
     // last, whichever twin sent it.
     @Test
-    fun notificationsOfBothTwinsReachTheTwinEnabledLast() = netsimTest {
+    fun notificationsOfBothTwinsReachTheTwinEnabledLast() = peripheralTest {
         val attributes = connectAndDiscover()
         val notifications = List(2) { Channel<ByteArray>(Channel.UNLIMITED) }
         attributes.twins.forEachIndexed { index, twin ->

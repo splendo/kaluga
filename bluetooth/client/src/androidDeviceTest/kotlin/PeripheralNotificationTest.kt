@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.NetsimPeripheral.Command
+import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Test
@@ -34,10 +34,10 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Notifications and indications from the peripheral, and the client's notification state machine.
  */
-class NetsimNotificationTest : NetsimTest() {
+class PeripheralNotificationTest : PeripheralTest() {
 
     @Test
-    fun indicateOnlyCharacteristicDeliversIndications() = netsimTest {
+    fun indicateOnlyCharacteristicDeliversIndications() = peripheralTest {
         val attributes = connectAndDiscover()
         assertEquals(setOf(CharacteristicProperty.Indicate), attributes.indicate.properties)
         val indications = Channel<ByteArray>(Channel.UNLIMITED)
@@ -50,7 +50,7 @@ class NetsimNotificationTest : NetsimTest() {
     }
 
     @Test
-    fun burstOfNotificationsArrivesInOrder() = netsimTest {
+    fun burstOfNotificationsArrivesInOrder() = peripheralTest {
         val attributes = connectAndDiscover()
         val notifications = Channel<ByteArray>(Channel.UNLIMITED)
         assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(within(10.seconds, "subscribe") { attributes.data.subscribe { notifications.trySend(it) } })
@@ -63,7 +63,7 @@ class NetsimNotificationTest : NetsimTest() {
     }
 
     @Test
-    fun notificationWhileAReadIsInFlight() = netsimTest {
+    fun notificationWhileAReadIsInFlight() = peripheralTest {
         val attributes = connectAndDiscover()
         val notifications = Channel<ByteArray>(Channel.UNLIMITED)
         assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(within(10.seconds, "subscribe") { attributes.data.subscribe { notifications.trySend(it) } })
@@ -77,7 +77,7 @@ class NetsimNotificationTest : NetsimTest() {
     }
 
     @Test
-    fun enableDirectlyFollowedByDisable() = netsimTest {
+    fun enableDirectlyFollowedByDisable() = peripheralTest {
         val attributes = connectAndDiscover()
         val enable = assertNotNull(attributes.data.startEnableNotification())
         val disable = assertNotNull(attributes.data.startDisableNotification())
@@ -92,7 +92,7 @@ class NetsimNotificationTest : NetsimTest() {
     }
 
     @Test
-    fun disableBetweenTwoEnablesIsSuperseded() = netsimTest {
+    fun disableBetweenTwoEnablesIsSuperseded() = peripheralTest {
         val attributes = connectAndDiscover()
         val enable = assertNotNull(attributes.data.startEnableNotification())
         val disable = assertNotNull(attributes.data.startDisableNotification())
