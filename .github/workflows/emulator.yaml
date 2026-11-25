@@ -26,7 +26,7 @@ jobs:
   build:
     uses: ./.github/workflows/setup_linux.yaml
     with:
-      gradleTask: bundleLibRuntimeToJarDebug
+      gradleTask: assembleAndroidTest
       project: bluetooth
       projectBlacklist: hud
 
