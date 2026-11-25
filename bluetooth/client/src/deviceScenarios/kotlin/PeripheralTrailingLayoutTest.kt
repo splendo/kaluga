@@ -25,7 +25,7 @@ import com.splendo.kaluga.bytes.annotations.Unsigned
 import com.splendo.kaluga.bytes.layout.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bytes.serialization.BytesFormat
 import kotlinx.serialization.Serializable
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull

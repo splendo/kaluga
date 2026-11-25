@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.server.TestCentral.Instruction
 import kotlinx.coroutines.flow.first
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

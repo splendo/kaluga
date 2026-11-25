@@ -24,7 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -100,7 +100,7 @@ class PeripheralScanTest : PeripheralTest() {
     }
 
     private suspend fun PeripheralSession.scan(filter: Set<UUID>, stopAfter: Boolean = true): List<ConnectableDevice> {
-        ScanBudget.take()
+        platform.awaitScanStart()
         client.startScanning(filter, BluetoothClient.CleanMode.RETAIN_ALL, connectionSettings)
         return try {
             within(30.seconds, "scan for $filter") { client.scannedDevices(filter).first { it.isNotEmpty() } }

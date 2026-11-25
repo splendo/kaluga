@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.server.TestCentral.Instruction
 import kotlinx.coroutines.withTimeoutOrNull
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.seconds
