@@ -95,6 +95,10 @@ jobs:
             target: google_apis
           - api-level: 36
             target: google_apis
+    env:
+      # The Bluetooth device tests talk to a simulated peripheral on the emulator's virtual radio,
+      # which older system images do not have.
+      NETSIM: ${{ matrix.project.name == 'bluetooth' && matrix.api-level == 36 }}
     steps:
       - name: checkout
         uses: actions/checkout@v7
@@ -145,13 +149,21 @@ jobs:
         if: inputs.video
         run: ./gradlew -p ${{ matrix.project.dir }} packageDebugAndroidTest
 
+      - name: install the simulated Bluetooth peripheral
+        if: env.NETSIM == 'true'
+        run: |
+          python3 -m venv "$RUNNER_TEMP/netsim"
+          "$RUNNER_TEMP/netsim/bin/pip" install -r bluetooth/client/src/androidDeviceTest/python/requirements.txt
+          echo "NETSIM_PYTHON=$RUNNER_TEMP/netsim/bin/python" >> "$GITHUB_ENV"
+
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
+          # Bluetooth does not come up on an emulator booted from a snapshot.
+          emulator-options: -no-window -gpu swiftshader_indirect ${{ env.NETSIM == 'true' && '-no-snapshot' || '-no-snapshot-save' }} -noaudio -no-boot-anim -camera-back none -camera-front none -no-metrics
           disable-animations: true
           arch: x86_64
           disk-size: 3G
@@ -161,7 +173,8 @@ jobs:
           cores: 4
           script: |
             ./script/check_emulator.sh
-            ./gradlew ${{ inputs.video && 'recordAndroid' }} -p ${{ matrix.project.dir }} connectedAndroidTest
+            ./script/start_netsim_peripheral.sh
+            ./gradlew ${{ inputs.video && 'recordAndroid' }} -p ${{ matrix.project.dir }} connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.netsimPeripheral=${{ env.NETSIM }}
 
       - name: Upload test reports on failure
         if: failure()
@@ -169,6 +182,16 @@ jobs:
         with:
           name: "Android UI tests for ${{ matrix.project.name }}"
           path: "${{ matrix.project.dir }}/**/build/reports/androidTests/connected/debug/**"
+
+      - name: Upload the simulated peripheral results on failure
+        if: failure() && env.NETSIM == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: "Simulated peripheral results for ${{ matrix.project.name }}"
+          path: |
+            netsim_peripheral.log
+            bluetooth/client/build/reports/androidTests/**
+            bluetooth/client/build/outputs/androidTest-results/**
 
       - name: rename video
         if: always() && inputs.video
