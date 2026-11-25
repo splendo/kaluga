@@ -17,16 +17,10 @@
 
 package com.splendo.kaluga.bluetooth
 
-import android.Manifest
-import androidx.test.platform.app.InstrumentationRegistry
 import com.splendo.kaluga.bluetooth.NetsimPeripheral.Command
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import org.junit.AfterClass
-import org.junit.Assume.assumeTrue
-import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -39,43 +33,9 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 /**
- * Runs the client against the netsim peripheral on an emulator. Skipped unless the instrumentation argument
- * [NetsimPeripheral.ARGUMENT] is `true`, since the peripheral has to be started next to the emulator.
+ * Disconnects while requests are pending, requested by the client or caused by the peripheral.
  */
-class NetsimDisconnectTest {
-
-    companion object {
-        private val session by lazy { NetsimSession(InstrumentationRegistry.getInstrumentation().targetContext) }
-        private var sessionStarted = false
-
-        @JvmStatic
-        @AfterClass
-        fun closeSession() {
-            if (sessionStarted) session.close()
-        }
-    }
-
-    @Before
-    fun requirePeripheral() {
-        assumeTrue(InstrumentationRegistry.getArguments().getString(NetsimPeripheral.ARGUMENT) == "true")
-        // Granted here rather than by a rule, which would run before the assumption on API levels that lack these permissions.
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        listOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT).forEach {
-            instrumentation.uiAutomation.grantRuntimePermission(instrumentation.targetContext.packageName, it)
-        }
-    }
-
-    private fun netsimTest(block: suspend NetsimSession.() -> Unit) = runBlocking {
-        sessionStarted = true
-        try {
-            session.within(120.seconds, "test") {
-                session.scanOnce()
-                session.block()
-            }
-        } finally {
-            session.disconnect()
-        }
-    }
+class NetsimDisconnectTest : NetsimTest() {
 
     @Test
     fun readsWritesAndNotifies() = netsimTest {
