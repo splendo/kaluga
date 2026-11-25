@@ -247,7 +247,8 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
             }
 
             if (responseNeeded) {
-                sendResponse?.invoke(device, requestId, response.statusCode, offset, null)
+                // A prepared write is answered with the part it queued, which the central checks against what it sent.
+                sendResponse?.invoke(device, requestId, response.statusCode, offset, value.takeIf { preparedWrite })
             }
         }
     }
