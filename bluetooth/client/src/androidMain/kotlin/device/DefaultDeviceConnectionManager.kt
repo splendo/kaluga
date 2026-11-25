@@ -250,11 +250,10 @@ internal actual class DefaultDeviceConnectionManager(
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
 
-            is DeviceAction.Write.Characteristic -> if (!readyGatt.writeCharacteristic(action.characteristic, action.newValue, action.writeType)) {
-                action.handleActionCompleted(GattResponse.DeviceUnavailable)
-            }
-
-            is DeviceAction.Write.Descriptor -> if (!readyGatt.writeDescriptor(action.descriptor, action.newValue)) {
+            // BluetoothGatt throws on a value longer than an attribute can hold instead of failing the request.
+            is DeviceAction.Write -> if (action.newValue.size > MAX_ATTRIBUTE_LENGTH) {
+                action.handleActionCompleted(GattResponse.InvalidAttributeValueLength)
+            } else if (!readyGatt.write(action)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
 
@@ -317,6 +316,11 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
+    private fun BluetoothGattWrapper.write(action: DeviceAction.Write): Boolean = when (action) {
+        is DeviceAction.Write.Characteristic -> writeCharacteristic(action.characteristic, action.newValue, action.writeType)
+        is DeviceAction.Write.Descriptor -> writeDescriptor(action.descriptor, action.newValue)
+    }
+
     private fun BluetoothGattWrapper.writeCharacteristic(characteristic: RemoteCharacteristic, value: ByteArray, writeType: WriteType?): Boolean {
         when (writeType) {
             WriteType.WithResponse -> characteristic.wrapper.writeType = RemoteCharacteristicWrapper.WriteType.DEFAULT
@@ -375,6 +379,8 @@ internal actual class DefaultDeviceConnectionManager(
         handleDescriptorRead(descriptor.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else GattResponse.Error.from(status))
     }
 }
+
+private const val MAX_ATTRIBUTE_LENGTH = 512
 
 private val Int.gattStatusAsString get() = when (this) {
     GATT_SUCCESS -> "SUCCESS"
