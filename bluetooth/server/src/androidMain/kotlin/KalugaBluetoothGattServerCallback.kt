@@ -60,7 +60,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
 
     private val mtu = mutableMapOf<String, Int>()
     private val connectedDevices = concurrentMutableMapOf<String, DefaultConnectedDevice>()
-    private val pendingWrites = concurrentMutableMapOf<String, Map<AttributeIdentity, ByteArray>>()
+    private val pendingWrites = concurrentMutableMapOf<String, Map<AttributeIdentity, List<Pair<Int, ByteArray>>>>()
 
     // One stable [DefaultConnectedDevice] per address, reused across callbacks. Its `mtu` reads the live [mtu] map.
     private fun connectedDevice(device: BluetoothDevice): DefaultConnectedDevice =
@@ -167,18 +167,27 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
 
     override fun onExecuteWrite(device: BluetoothDevice, requestId: Int, execute: Boolean) {
         handlingScope.launch {
-            val response = if (execute) {
-                pendingWrites[device.address]?.entries.orEmpty().map { (identifier, value) ->
+            val parts = pendingWrites.remove(device.address).orEmpty()
+            val values = parts.mapNotNull { (identifier, queued) -> queued.assembled()?.let { identifier to it } }
+            val response = when {
+                !execute -> GattResponse.WriteSuccess.Acknowledged
+
+                values.size < parts.size -> GattResponse.InvalidOffset
+
+                else -> values.map { (identifier, value) ->
                     writeActions[identifier]?.let { writeAction ->
                         writeAction(connectedDevice(device), value, 0)
                     }
                 }.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess.Acknowledged
-            } else {
-                GattResponse.WriteSuccess.Acknowledged
             }
-            pendingWrites.remove(device.address)
             sendResponse?.invoke(device, requestId, response.statusCode, 0, null)
         }
+    }
+
+    // A part may rewrite bytes queued before it, but one starting past their end leaves a gap.
+    private fun List<Pair<Int, ByteArray>>.assembled(): ByteArray? = fold(ByteArray(0)) { value, (offset, part) ->
+        if (offset > value.size) return null
+        value.copyOf(maxOf(value.size, offset + part.size)).also { part.copyInto(it, offset) }
     }
 
     override fun onMtuChanged(device: BluetoothDevice, mtu: Int) {
@@ -250,7 +259,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
                 logger.info(TAG) { "Device ${device.address} wrote $value (pending) for $identifier" }
                 pendingWrites.synchronized {
                     val pendingWritesForDevice = getOrElse(device.address) { emptyMap() }.toMutableMap()
-                    pendingWritesForDevice[identifier] = (pendingWritesForDevice[identifier] ?: byteArrayOf()) + value
+                    pendingWritesForDevice[identifier] = pendingWritesForDevice[identifier].orEmpty() + (offset to value)
                     put(device.address, pendingWritesForDevice)
                 }
                 GattResponse.WriteSuccess.Acknowledged
