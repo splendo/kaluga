@@ -150,7 +150,7 @@ jobs:
         if: inputs.video
         run: ./gradlew -p ${{ matrix.project.dir }} packageDebugAndroidTest
 
-      - name: install the simulated Bluetooth peripheral
+      - name: install the simulated Bluetooth devices
         if: env.NETSIM == 'true'
         run: |
           python3 -m venv "$RUNNER_TEMP/netsim"
@@ -175,7 +175,7 @@ jobs:
           script: |
             ./script/check_emulator.sh
             ./script/start_netsim_devices.sh
-            ./gradlew ${{ inputs.video && 'recordAndroid' }} -p ${{ matrix.project.dir }} connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.netsimPeripheral=${{ env.NETSIM }}
+            ./gradlew ${{ inputs.video && 'recordAndroid' }} -p ${{ matrix.project.dir }} connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.netsimPeripheral=${{ env.NETSIM }} -Pandroid.testInstrumentationRunnerArguments.netsimCentral=${{ env.NETSIM }}
 
       - name: Upload test reports on failure
         if: failure()
@@ -184,15 +184,18 @@ jobs:
           name: "Android UI tests for ${{ matrix.project.name }}"
           path: "${{ matrix.project.dir }}/**/build/reports/androidTests/connected/debug/**"
 
-      - name: Upload the simulated peripheral results on failure
+      - name: Upload the simulated device results on failure
         if: failure() && env.NETSIM == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: "Simulated peripheral results for ${{ matrix.project.name }}"
+          name: "Simulated device results for ${{ matrix.project.name }}"
           path: |
             netsim_peripheral.log
+            netsim_central.log
             bluetooth/client/build/reports/androidTests/**
             bluetooth/client/build/outputs/androidTest-results/**
+            bluetooth/server/build/reports/androidTests/**
+            bluetooth/server/build/outputs/androidTest-results/**
 
       - name: rename video
         if: always() && inputs.video
