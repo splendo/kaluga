@@ -51,7 +51,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 /**
- * The service a [CentralSession] serves to the GATT central run by `src/androidDeviceTest/python/central.py`
+ * The service a [CentralSession] serves to the GATT central run by `src/deviceScenarios/python/central.py`
  * on the emulator's netsim radio. The UUIDs and the instructions mirror that script.
  */
 object TestCentral {

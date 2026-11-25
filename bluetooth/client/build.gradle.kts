@@ -39,6 +39,11 @@ kaluga {
     }
 }
 
+// Scenarios against a simulated peer: only the test source sets that can run them include them, not commonTest.
+kotlin.sourceSets.matching { it.name == "androidDeviceTest" }.configureEach {
+    kotlin.srcDir("src/deviceScenarios/kotlin")
+}
+
 // C1 only: without escape analysis every allocation is counted, whatever the JIT has warmed up.
 val androidHostAllocationTest = tasks.register<Test>("androidHostAllocationTest") {
     description = "Checks what notifying a characteristic's subscribers allocates."

@@ -156,7 +156,7 @@ jobs:
         if: env.NETSIM == 'true'
         run: |
           python3 -m venv "$RUNNER_TEMP/netsim"
-          "$RUNNER_TEMP/netsim/bin/pip" install -r bluetooth/client/src/androidDeviceTest/python/requirements.txt
+          "$RUNNER_TEMP/netsim/bin/pip" install -r bluetooth/client/src/deviceScenarios/python/requirements.txt
           echo "NETSIM_PYTHON=$RUNNER_TEMP/netsim/bin/python" >> "$GITHUB_ENV"
 
       - name: run tests

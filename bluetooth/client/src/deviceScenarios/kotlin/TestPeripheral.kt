@@ -53,7 +53,7 @@ import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 /**
- * The GATT peripheral run by `src/androidDeviceTest/python/peripheral.py` on the emulator's netsim radio.
+ * The GATT peripheral run by `src/deviceScenarios/python/peripheral.py` on the emulator's netsim radio.
  * The UUIDs and the control commands mirror that script.
  */
 object TestPeripheral {
