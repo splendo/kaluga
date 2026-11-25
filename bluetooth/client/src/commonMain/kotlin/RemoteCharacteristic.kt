@@ -495,3 +495,12 @@ expect interface RemoteCharacteristicWrapper {
      */
     val properties: Set<CharacteristicProperty>
 }
+
+/**
+ * A [RemoteCharacteristicWrapper] that can be implemented in common code.
+ *
+ * The platform [RemoteCharacteristicWrapper] interfaces add members only Kaluga's own platform connection managers
+ * use. This class provides those, so a wrapper for another transport only implements the common members. See
+ * [PortableRemoteServiceWrapper].
+ */
+expect abstract class PortableRemoteCharacteristicWrapper() : RemoteCharacteristicWrapper

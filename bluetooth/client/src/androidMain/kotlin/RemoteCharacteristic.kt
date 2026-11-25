@@ -119,3 +119,16 @@ class DefaultRemoteCharacteristicWrapper(private val gattCharacteristic: Bluetoo
 
     override fun getDescriptor(uuid: java.util.UUID): RemoteDescriptorWrapper? = gattCharacteristic.getDescriptor(uuid)?.let { DefaultRemoteDescriptorWrapper(it) }
 }
+
+/**
+ * A [RemoteCharacteristicWrapper] that can be implemented in common code. Only the platform connection manager needs
+ * the Android-only members: [writeType] is just stored, [permissions] reports none and lookups search [descriptors].
+ */
+actual abstract class PortableRemoteCharacteristicWrapper actual constructor() : RemoteCharacteristicWrapper {
+
+    override val permissions: Int get() = 0
+
+    override var writeType: RemoteCharacteristicWrapper.WriteType = RemoteCharacteristicWrapper.WriteType.DEFAULT
+
+    override fun getDescriptor(uuid: java.util.UUID): RemoteDescriptorWrapper? = descriptors.firstOrNull { it.uuid == uuid }
+}

@@ -35,3 +35,8 @@ internal class WebCharacteristicWrapper(characteristic: WebCharacteristic, overr
     override val properties: Set<CharacteristicProperty> = CharacteristicProperty.fromInt(characteristic.properties)
     override val descriptors: List<RemoteDescriptorWrapper> = characteristic.descriptors.map { WebDescriptorWrapper(uuidFrom(it), this) }
 }
+
+/**
+ * A [RemoteCharacteristicWrapper] that can be implemented in common code.
+ */
+actual abstract class PortableRemoteCharacteristicWrapper actual constructor() : RemoteCharacteristicWrapper

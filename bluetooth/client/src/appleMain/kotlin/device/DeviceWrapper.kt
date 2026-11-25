@@ -49,3 +49,8 @@ class DefaultCBPeripheralWrapper(private val peripheral: CBPeripheral) : DeviceW
         return peripheral.identifier
     }
 }
+
+/**
+ * A [DeviceWrapper] that can be implemented in common code.
+ */
+actual abstract class PortableDeviceWrapper actual constructor() : DeviceWrapper

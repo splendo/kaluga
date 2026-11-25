@@ -204,5 +204,15 @@ There is a major difference when it comes to the reporting of scanned devices be
 
 To align the behaviour across platforms the [CBCentralManagerScanOptionAllowDuplicatesKey](https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey) option is enabled on iOS. It can be set to another value using `ScanSettings` as shown above.
 
+## Running the client over another transport
+The client does not depend on the platform Bluetooth stack: `DefaultBluetoothClient`, the device state machines and the generated service implementations only talk to a `Scanner`, a `DeviceConnectionManager` and the attribute wrappers. Another transport (an emulator reached over a socket, an in-process fake, a bridge to a different Bluetooth library) plugs in at that seam, in common code:
+
+- `PortableRemoteServiceWrapper`, `PortableRemoteCharacteristicWrapper`, `PortableRemoteDescriptorWrapper` and `PortableDeviceWrapper` are the attribute and device wrappers to extend. The platform `RemoteServiceWrapper` (etc.) interfaces add members only Kaluga's own connection managers use; these classes implement them, so a subclass written in common code implements just the common members (`uuid`, `type`, `characteristics`, `properties`, ...).
+- `BaseDeviceConnectionManager` is the connection manager to extend. Implement `connect`, `intentionalDisconnect`, `discoverServices`, `didStartPerformingAction` and the pairing/RSSI requests against the transport, and report results through the protected `handle…` methods: `handleConnect`/`handleDisconnect`, `createService` + `handleDiscoverCompleted` after discovery, `handleCharacteristicReadOrNotified`/`handleCharacteristicWritten`/`handleDescriptorRead`/`handleDescriptorWritten`, `handleNotificationStateChanged` for a notification action and `handleCharacteristicNotified` for a pushed value, `handleNewMtu` and `handleNewRssi`.
+- A `Scanner` (or `BaseScanner`) emits `Scanner.Event.PermissionChanged`, `BluetoothEnabled`/`BluetoothDisabled` and `DeviceDiscovered` events. Each `DeviceDiscovered` carries a device creator; build it with `ConnectableDeviceImpl` and `DeviceInfoImpl` around your `PortableDeviceWrapper` and a `DeviceConnectionManager.Builder` creating your manager.
+- `DefaultBluetoothClient(coroutineContext) { context -> ScanningStateImplRepo(createScanner, contextForIdentifier, context) }` wires that scanner into a regular `BluetoothClient`, so everything built on the client, including generated clients, runs unchanged over the new transport. A `BaseBluetoothClientBuilder` returning it slots into code that is handed a builder.
+
+`PortableWrapperTransportTest` in this module's common tests shows the whole loop over an in-process transport.
+
 ## Testing
 Use the [`test-utils/client` module](../test-utils/client/) to get mockable Bluetooth classes.

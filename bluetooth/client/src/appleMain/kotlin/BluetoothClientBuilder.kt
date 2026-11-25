@@ -42,7 +42,7 @@ actual class BluetoothClientBuilder(
             context,
         )
     },
-    private val scannerBuilder: DefaultScanner.Builder = DefaultScanner.Builder(),
+    private val scannerBuilder: BaseScanner.Builder = DefaultScanner.Builder(),
 ) : BaseBluetoothClientBuilder {
 
     actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): BluetoothClient = DefaultBluetoothClient(

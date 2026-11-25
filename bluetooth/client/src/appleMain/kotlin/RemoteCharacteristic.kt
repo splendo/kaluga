@@ -94,3 +94,16 @@ class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic,
         peripheral.setNotifyValue(enabled, characteristic)
     }
 }
+
+/**
+ * A [RemoteCharacteristicWrapper] that can be implemented in common code. Only the platform connection manager drives
+ * a [CBPeripheral] through the wrapper, so those operations are refused.
+ */
+actual abstract class PortableRemoteCharacteristicWrapper actual constructor() : RemoteCharacteristicWrapper {
+
+    override fun readValue(peripheral: CBPeripheral): Unit = throw UnsupportedOperationException("Not a platform characteristic wrapper")
+
+    override fun writeValue(value: NSData, peripheral: CBPeripheral, withResponse: Boolean): Unit = throw UnsupportedOperationException("Not a platform characteristic wrapper")
+
+    override fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral): Unit = throw UnsupportedOperationException("Not a platform characteristic wrapper")
+}

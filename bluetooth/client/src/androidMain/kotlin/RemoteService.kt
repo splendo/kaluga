@@ -99,3 +99,18 @@ class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) :
 
     override fun addService(service: BluetoothGattService): Boolean = gattService.addService(service)
 }
+
+/**
+ * A [RemoteServiceWrapper] that can be implemented in common code. Only the platform connection manager needs the
+ * Android-only members, so lookups search [characteristics] and the service cannot hold Android GATT objects.
+ */
+actual abstract class PortableRemoteServiceWrapper actual constructor() : RemoteServiceWrapper {
+
+    override val instanceId: Int get() = 0
+
+    override fun getCharacteristic(uuid: java.util.UUID): RemoteCharacteristicWrapper? = characteristics.firstOrNull { it.uuid == uuid }
+
+    override fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean = throw UnsupportedOperationException("Not a platform service wrapper")
+
+    override fun addService(service: BluetoothGattService): Boolean = throw UnsupportedOperationException("Not a platform service wrapper")
+}

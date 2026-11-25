@@ -25,7 +25,7 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.test.MockDeviceWrapper
+import com.splendo.kaluga.bluetooth.test.AndroidMockDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.createDeviceWrapper
 import com.splendo.kaluga.bluetooth.test.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.test.device.MockDeviceConnectionManager
@@ -68,7 +68,7 @@ class PairingUtilsTests : BaseTest() {
                 MockAdvertisementData(NAME),
             ),
             ConnectionSettings(),
-            { manager.create(MockDeviceWrapper(NAME, NAME, DeviceWrapper.BondState.NONE, true), ConnectionSettings(), coroutineScope) },
+            { manager.create(AndroidMockDeviceWrapper(NAME, NAME, DeviceWrapper.BondState.NONE, true), ConnectionSettings(), coroutineScope) },
             coroutineScope,
         )
     }

@@ -1183,6 +1183,10 @@ abstract class com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager :
     final fun handleDescriptorWritten(com.splendo.kaluga.bluetooth/UUID, com.splendo.kaluga.bluetooth/GattResponse.WriteResponse) // com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager.handleDescriptorWritten|handleDescriptorWritten(com.splendo.kaluga.bluetooth.UUID;com.splendo.kaluga.bluetooth.GattResponse.WriteResponse){}[0]
 }
 
+abstract class com.splendo.kaluga.bluetooth.device/PortableDeviceWrapper : com.splendo.kaluga.bluetooth.device/DeviceWrapper { // com.splendo.kaluga.bluetooth.device/PortableDeviceWrapper|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth.device/PortableDeviceWrapper.<init>|<init>(){}[0]
+}
+
 abstract class com.splendo.kaluga.bluetooth.scanner/BaseScanner : com.splendo.kaluga.bluetooth.scanner/Scanner, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.bluetooth.scanner/BaseScanner|null[0]
     constructor <init>(com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings, kotlinx.coroutines/CoroutineScope, kotlinx.coroutines/CoroutineDispatcher = ...) // com.splendo.kaluga.bluetooth.scanner/BaseScanner.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings;kotlinx.coroutines.CoroutineScope;kotlinx.coroutines.CoroutineDispatcher){}[0]
 
@@ -1282,6 +1286,33 @@ abstract class com.splendo.kaluga.bluetooth.scanner/BaseScanner : com.splendo.ka
 
 abstract class com.splendo.kaluga.bluetooth.scanner/BaseScanningStateRepo : com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.bluetooth.scanner/ScanningState> { // com.splendo.kaluga.bluetooth.scanner/BaseScanningStateRepo|null[0]
     constructor <init>(kotlin/Function0<com.splendo.kaluga.bluetooth.scanner/ScanningState.NotInitialized>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.bluetooth.scanner/ScanningState>, com.splendo.kaluga.bluetooth.scanner/ScanningState.Inactive, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState>>, kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.base.state/ColdStateFlowRepo<com.splendo.kaluga.bluetooth.scanner/ScanningState>, com.splendo.kaluga.bluetooth.scanner/ScanningState.Active, kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Deinitialized>>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.bluetooth.scanner/BaseScanningStateRepo.<init>|<init>(kotlin.Function0<com.splendo.kaluga.bluetooth.scanner.ScanningState.NotInitialized>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.bluetooth.scanner.ScanningState>,com.splendo.kaluga.bluetooth.scanner.ScanningState.Inactive,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.bluetooth.scanner.ScanningState>>;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.base.state.ColdStateFlowRepo<com.splendo.kaluga.bluetooth.scanner.ScanningState>,com.splendo.kaluga.bluetooth.scanner.ScanningState.Active,kotlin.coroutines.SuspendFunction0<com.splendo.kaluga.bluetooth.scanner.ScanningState.Deinitialized>>;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+abstract class com.splendo.kaluga.bluetooth/PortableRemoteCharacteristicWrapper : com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper { // com.splendo.kaluga.bluetooth/PortableRemoteCharacteristicWrapper|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth/PortableRemoteCharacteristicWrapper.<init>|<init>(){}[0]
+
+    // Targets: [apple]
+    open fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.bluetooth/PortableRemoteCharacteristicWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+
+    // Targets: [apple]
+    open fun setNotificationValue(kotlin/Boolean, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.bluetooth/PortableRemoteCharacteristicWrapper.setNotificationValue|setNotificationValue(kotlin.Boolean;platform.CoreBluetooth.CBPeripheral){}[0]
+
+    // Targets: [apple]
+    open fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral, kotlin/Boolean) // com.splendo.kaluga.bluetooth/PortableRemoteCharacteristicWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral;kotlin.Boolean){}[0]
+}
+
+abstract class com.splendo.kaluga.bluetooth/PortableRemoteDescriptorWrapper : com.splendo.kaluga.bluetooth/RemoteDescriptorWrapper { // com.splendo.kaluga.bluetooth/PortableRemoteDescriptorWrapper|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth/PortableRemoteDescriptorWrapper.<init>|<init>(){}[0]
+
+    // Targets: [apple]
+    open fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.bluetooth/PortableRemoteDescriptorWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+
+    // Targets: [apple]
+    open fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.bluetooth/PortableRemoteDescriptorWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral){}[0]
+}
+
+abstract class com.splendo.kaluga.bluetooth/PortableRemoteServiceWrapper : com.splendo.kaluga.bluetooth/RemoteServiceWrapper { // com.splendo.kaluga.bluetooth/PortableRemoteServiceWrapper|null[0]
+    constructor <init>() // com.splendo.kaluga.bluetooth/PortableRemoteServiceWrapper.<init>|<init>(){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth.device/AdvertisementData : com.splendo.kaluga.bluetooth.device/BaseAdvertisementData { // com.splendo.kaluga.bluetooth.device/AdvertisementData|null[0]
@@ -1603,7 +1634,7 @@ final class com.splendo.kaluga.bluetooth/BluetoothClientBuilder : com.splendo.ka
     final fun createClient(kotlin/Function1<com.splendo.kaluga.permissions.base/Permissions, com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings>, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.bluetooth/BluetoothClient // com.splendo.kaluga.bluetooth/BluetoothClientBuilder.createClient|createClient(kotlin.Function1<com.splendo.kaluga.permissions.base.Permissions,com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings>;kotlin.coroutines.CoroutineContext){}[0]
 
     // Targets: [apple]
-    constructor <init>(platform.Foundation/NSBundle = ..., kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions> = ..., com.splendo.kaluga.bluetooth.scanner/DefaultScanner.Builder = ...) // com.splendo.kaluga.bluetooth/BluetoothClientBuilder.<init>|<init>(platform.Foundation.NSBundle;kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>;com.splendo.kaluga.bluetooth.scanner.DefaultScanner.Builder){}[0]
+    constructor <init>(platform.Foundation/NSBundle = ..., kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions> = ..., com.splendo.kaluga.bluetooth.scanner/BaseScanner.Builder = ...) // com.splendo.kaluga.bluetooth/BluetoothClientBuilder.<init>|<init>(platform.Foundation.NSBundle;kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>;com.splendo.kaluga.bluetooth.scanner.BaseScanner.Builder){}[0]
 
     // Targets: [js, wasmJs]
     constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions> = ..., com.splendo.kaluga.bluetooth.scanner/BaseScanner.Builder = ...) // com.splendo.kaluga.bluetooth/BluetoothClientBuilder.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>;com.splendo.kaluga.bluetooth.scanner.BaseScanner.Builder){}[0]

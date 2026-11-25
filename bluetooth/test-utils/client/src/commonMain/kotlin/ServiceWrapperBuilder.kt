@@ -67,4 +67,4 @@ class ServiceWrapperBuilder {
     fun characteristics(builder: CharacteristicList.() -> Unit) = builder(_characteristics)
 }
 
-expect fun ServiceWrapperBuilder.build(): RemoteServiceWrapper
+fun ServiceWrapperBuilder.build(): RemoteServiceWrapper = MockServiceWrapper(this)

@@ -91,3 +91,12 @@ expect interface RemoteServiceWrapper {
      */
     val uuid: UUID
 }
+
+/**
+ * A [RemoteServiceWrapper] that can be implemented in common code.
+ *
+ * The platform [RemoteServiceWrapper] interfaces add members only Kaluga's own platform connection managers use. This
+ * class provides those, so a wrapper for another transport (an emulator, an in-process fake) only implements the common
+ * members and is driven by a [com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager] of its own.
+ */
+expect abstract class PortableRemoteServiceWrapper() : RemoteServiceWrapper

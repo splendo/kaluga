@@ -27,3 +27,8 @@ actual interface RemoteDescriptorWrapper {
 }
 
 internal class WebDescriptorWrapper(override val uuid: UUID, override val characteristic: RemoteCharacteristicWrapper) : RemoteDescriptorWrapper
+
+/**
+ * A [RemoteDescriptorWrapper] that can be implemented in common code.
+ */
+actual abstract class PortableRemoteDescriptorWrapper actual constructor() : RemoteDescriptorWrapper
