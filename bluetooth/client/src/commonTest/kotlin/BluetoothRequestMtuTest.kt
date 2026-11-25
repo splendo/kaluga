@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.base.test.mock.verify
 import com.splendo.kaluga.base.test.mock.verifyWithin
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceAction
@@ -27,9 +28,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.time.Duration.Companion.seconds
 
 class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithService, BluetoothFlowTest.ServiceContext, Int?>() {
 
@@ -63,6 +66,40 @@ class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
             connectionManager.handleCurrentAction()
         }
 
+        test {
+            assertEquals(newMtu, it)
+        }
+    }
+
+    @Test
+    fun testRequestSameMtuTwice() = testWithFlowAndTestContext(
+        Configuration.DeviceWithService(),
+    ) {
+        val newMtu = 512
+
+        mainAction {
+            bluetoothClient.startScanning()
+            scanDevice()
+            connectDevice()
+            device.state.filterIsInstance<ConnectableDeviceState.Connected.NoServices>().first().startDiscovering()
+            discoverService()
+            device.state.filterIsInstance<ConnectableDeviceState.Connected.Idle>().first()
+        }
+        test {
+            assertNull(it)
+        }
+        mainAction {
+            withTimeout(5.seconds) {
+                val first = device.requestMtu(newMtu)
+                val second = device.requestMtu(newMtu)
+                device.state.filterIsInstance<ConnectableDeviceState.Connected.HandlingAction>().first { it.nextActions.size == 1 }
+                connectionManager.handleCurrentAction()
+                assertEquals(GattResponse.MTUSuccess(newMtu), first.response.await())
+                connectionManager.handleCurrentAction()
+                assertEquals(GattResponse.MTUSuccess(newMtu), second.response.await())
+                connectionManager.performActionMock.verify(times = 2)
+            }
+        }
         test {
             assertEquals(newMtu, it)
         }
