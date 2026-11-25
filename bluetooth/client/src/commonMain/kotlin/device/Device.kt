@@ -355,14 +355,15 @@ class ConnectableDeviceImpl(
         }
     }
 
-    private fun DeviceConnectionManager.Event.CompletedAction<*>.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected.HandlingAction && state.action === action) {
-            debug(TAG) { "Action $action has received response: $response" }
-            complete()
+    private fun DeviceConnectionManager.Event.CompletedAction<*>.stateTransition(state: ConnectableDeviceState): suspend () -> ConnectableDeviceState {
+        debug(TAG) { "Action $action has received response: $response" }
+        complete()
+        return if (state is ConnectableDeviceState.Connected.HandlingAction && state.action === action) {
             state.actionCompleted(response)
         } else {
             state.remain()
         }
+    }
 }
 
 /**

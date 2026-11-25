@@ -156,6 +156,20 @@ class BluetoothDisconnectTest : BaseTest() {
     }
 
     @Test
+    fun actionCompletedWhileDisconnectingAnswersItsResponse() = test { connection ->
+        val characteristic = connection.connect().characteristics.first()
+        connection.manager.disconnectMock.on().doExecute { }
+        val write = async { characteristic.write(byteArrayOf(1)) }
+        connection.manager.awaitCurrentAction()
+        val disconnect = async { connection.device.disconnect() }
+        connection.device.state.filterIsInstance<ConnectableDeviceState.Disconnecting>().first()
+        connection.manager.handleCurrentAction()
+        assertEquals(GattResponse.WriteSuccess.Acknowledged, write.await())
+        connection.manager.handleDisconnect()
+        disconnect.await()
+    }
+
+    @Test
     fun lateCompletionOfAnActionAnsweredAtDisconnectClearsTheCurrentAction() = test { connection ->
         val characteristic = connection.connect().characteristics.first()
         // Queued ahead of the Disconnected event, so the read starts after the manager ended the connection and only
