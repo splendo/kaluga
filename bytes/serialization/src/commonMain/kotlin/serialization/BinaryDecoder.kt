@@ -236,7 +236,7 @@ internal class BinaryDecoder(
     override fun decodeLong(): Long = binaryDescriptor.decodeLongElement(decoder)
 
     @ExperimentalSerializationApi
-    override fun decodeNotNullMark(): Boolean = binaryDescriptor.isPresent(decoder.flags)
+    override fun decodeNotNullMark(): Boolean = binaryDescriptor.isPresent(decoder)
 
     @ExperimentalSerializationApi
     override fun decodeNull(): Nothing? = null
@@ -443,7 +443,7 @@ private sealed class BinaryCompositeDecoder(protected val binaryDescriptor: Bina
     @ExperimentalSerializationApi
     override fun <T : Any> decodeNullableSerializableElement(descriptor: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T?>, previousValue: T?): T? {
         val binaryDescriptor = binaryDescriptorAtIndex(index)
-        return if (binaryDescriptor.isPresent(decoderAtIndex(index).flags)) {
+        return if (binaryDescriptor.isPresent(decoderAtIndex(index))) {
             decodeSerializableElement(descriptor, index, deserializer, previousValue)
         } else {
             null

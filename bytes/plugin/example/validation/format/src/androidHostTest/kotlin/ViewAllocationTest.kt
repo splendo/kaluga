@@ -77,6 +77,10 @@ class ViewAllocationTest {
     // An Integer with compressed class pointers; a nullable number is boxed as any Int? is.
     private val integerBox = 16
 
+    // A kotlin.UShort and a kotlin.ULong boxed as UShort? and ULong? are, like an Integer: a header and the number.
+    private val ushortBox = 16
+    private val longBox = 24
+
     @Test
     fun readsAndWritesAHeartRateMeasurementInPlace() {
         val view = MutableEncodeHeartRateFixturesHeartRateView(300, true, false, 1000, listOf(RRInterval(0.5), RRInterval(1.0)))
@@ -147,6 +151,29 @@ class ViewAllocationTest {
         assertNone("number of several sizes after others") { int = view.variableSizeHighRange }
         assertNone("nullable number of several sizes in the Integer cache") { int = view.nullableVariableSizing ?: 0 }
         assertNone("number after numbers of several sizes") { int = view.mostSignificant }
+    }
+
+    @Test
+    fun readsATrailingTailInPlace() {
+        val full = TrailingFixturesStatusView(true, 300, null, 0x0304u, 0x0506u, 5)
+        val tailless = TrailingFixturesStatusView(full.bytes.copyOf(5))
+        val large = TrailingFixturesStatusView.wrapRange(padded(full.bytes), 0, full.bytes.size) as TrailingFixtures.Status
+        assertNone("absent trailing number") { int = tailless.serviceVersion?.toInt() ?: 0 }
+        assertNone("absent trailing number after an absent one") { int = tailless.uptime ?: 0 }
+        assertNone("number before an absent tail") { int = tailless.voltage.toInt() }
+        assertNone("trailing number in the Integer cache") { int = full.uptime ?: 0 }
+        assertBoxed("trailing UShort", ushortBox) { int = full.serviceVersion?.toInt() ?: 0 }
+        assertBoxed("trailing UShort of a slice", ushortBox) { int = large.serviceVersion?.toInt() ?: 0 }
+        val outside = TrailingFixturesStatusView(true, 300, null, 0x0304u, 0x0506u, 70000)
+        assertBoxed("trailing number outside the Integer cache", integerBox) { int = outside.uptime ?: 0 }
+
+        val infos = TrailingFixturesInfosView.encode(
+            TrailingFixturesInfosData(2, listOf(TrailingFixturesInfoDeviceData(7u, null, null), TrailingFixturesInfoDeviceData(8u, 0x1122334455667788u, 0x0A0Bu))),
+        )
+        val olderDevice = infos.infos[0] as TrailingFixtures.Info.Device
+        val newerDevice = infos.infos[1] as TrailingFixtures.Info.Device
+        assertNone("absent trailing number of a record") { long = olderDevice.serial?.toLong() ?: 0L }
+        assertBoxed("trailing ULong of a record", longBox) { long = newerDevice.serial?.toLong() ?: 0L }
     }
 
     @Test

@@ -67,6 +67,7 @@ import com.splendo.kaluga.bytes.annotations.SerializedByteValue
 import com.splendo.kaluga.bytes.annotations.Size
 import com.splendo.kaluga.bytes.annotations.SizePolymorphic
 import com.splendo.kaluga.bytes.annotations.Terminal
+import com.splendo.kaluga.bytes.annotations.Trailing
 import com.splendo.kaluga.bytes.annotations.Unsigned
 import com.splendo.kaluga.bytes.annotations.Unsized
 import com.splendo.kaluga.bytes.annotations.ValueByteOrder
@@ -335,17 +336,22 @@ object LayoutCompiler {
         val reservedSubIndices = mutableSetOf<Int>()
         // A regular structure has as many children as it has elements.
         // All children share the same header flag bytes.
-        return (0 until shape.elementsCount).map { i ->
+        val children = (0 until shape.elementsCount).map { i ->
             val elementName = shape.elementName(i)
             val elementAnnotations = shape.elementAnnotations(i)
             val elementShape = shape.element(i)
             val reserved = elementAnnotations.filterIsInstance<Reserved>().firstOrNull()
+            val trailing = elementAnnotations.any { it is Trailing }
+            if (trailing && !elementShape.isNullable) {
+                throw InvalidTrailingLayout("@Trailing '$elementName' of '${shape.serialName}' must be nullable: it is null when the value ends before it")
+            }
             val child = compileField(
                 elementShape,
                 elementName,
                 i,
                 elementAnnotations,
-                elementShape.isNullable,
+                // The end of the value, not a flag bit, says whether a trailing property is present.
+                elementShape.isNullable && !trailing,
                 nextBit,
                 byteOrder,
                 preferredBuilderByteOrder = preferredBuilderByteOrder,
@@ -358,7 +364,72 @@ object LayoutCompiler {
                     nextBit++
                 }
             }
-            if (reserved != null) child.copy(reservedBefore = reserved.before, reservedAfter = reserved.after) else child
+            val reservedChild = if (reserved != null) child.copy(reservedBefore = reserved.before, reservedAfter = reserved.after) else child
+            if (trailing) reservedChild.copy(isTrailing = true) else reservedChild
+        }
+        // The subtypes a sealed type holds are alternatives rather than a sequence. A @Discriminator takes no bytes, so it
+        // may be declared anywhere; it only becomes one once its sealed type is compiled.
+        if (shape.kind == TypeKind.STRUCTURE) checkTrailing(shape.serialName, children, shape.discriminatorElements().toSet())
+        return children
+    }
+
+    /**
+     * Rejects the `@Trailing` properties among the [children] of the structure [name] that a decoder could not tell
+     * apart from the end of the value, and a structure ending in them, which runs to the end of what holds it, where
+     * something follows it.
+     */
+    private fun checkTrailing(name: String, children: List<FieldLayout>, discriminators: Set<Int>) {
+        val first = children.indexOfFirst { it.isTrailing }
+        children.forEachIndexed { index, child ->
+            if (child.isTrailing) {
+                notWholeBytes(child)?.let { throw InvalidTrailingLayout("@Trailing '${child.name}' of '$name' is $it, so the end of the value cannot say whether it is there") }
+                if (child.runsToEnd()) {
+                    throw InvalidTrailingLayout(
+                        "@Trailing '${child.name}' of '$name' runs to the end of the value itself, so an empty one would read back as null; " +
+                            "declare its own optional fields @Trailing instead",
+                    )
+                }
+            } else if (first in 0..<index && index !in discriminators) {
+                throw InvalidTrailingLayout(
+                    "'${child.name}' of '$name' follows @Trailing '${children[first].name}', so it must be @Trailing too: only a tail of the properties can be optional",
+                )
+            }
+            if (child.runsToEnd()) {
+                children.drop(index + 1).firstOrNull { it.isTrailing || (child.hasTrailingTail() && it.index !in discriminators && it.mayWriteBody()) }?.let { follower ->
+                    throw InvalidTrailingLayout(
+                        if (follower.isTrailing) {
+                            "@Trailing '${follower.name}' of '$name' follows '${child.name}', which runs to the end of the value, so it could never be reached"
+                        } else {
+                            "'${follower.name}' of '$name' follows '${child.name}', whose @Trailing properties run to the end of what holds it; " +
+                                "make '${child.name}' the last property, or hold it in a type-length-value record whose length bounds it"
+                        },
+                    )
+                }
+            }
+        }
+    }
+
+    /** Why [field] is not written in whole bytes of the body, which `@Trailing` needs, or `null` when it is. */
+    private fun notWholeBytes(field: FieldLayout): String? {
+        val type = field.type
+        val settings = (type as? TypeLayout.ListLayout)?.settings ?: (type as? TypeLayout.MapLayout)?.settings
+        return when {
+            type is TypeLayout.Bool -> "a Boolean"
+            field.isPurelyFlagPacked() || settings?.lengthMarking is CollectionSettings.FlagIndexedLength -> "in the flag header"
+            field.presenceFlagIndices.isNotEmpty() -> "@PresentWhenAllSet"
+            settings?.nullIfEmpty == true -> "@NullIfEmpty"
+            field.reservedBefore > 0 || field.reservedAfter > 0 -> "@Reserved"
+            field.copy(isTrailing = false).staticFieldBytes == 0 -> "written as no bytes at all"
+            else -> null
+        }
+    }
+
+    /** Rejects items of the collection [name] ending in `@Trailing` properties, which nothing bounds there. */
+    private fun checkTrailingItem(name: String, item: FieldLayout) {
+        if (item.hasTrailingTail()) {
+            throw InvalidTrailingLayout(
+                "The items of '$name' end in @Trailing properties, which run to the end of what holds them; hold them in type-length-value records whose length bounds each",
+            )
         }
     }
 
@@ -366,7 +437,7 @@ object LayoutCompiler {
         val itemShape = shape.element(0)
         val reservedSubIndices = mutableSetOf<Int>()
         // For list elements, there is only one child, that does not reuse its parent's flag header.
-        return listOf(
+        val items = listOf(
             compileField(
                 itemShape,
                 shape.elementName(0),
@@ -383,6 +454,8 @@ object LayoutCompiler {
                 reservedSubIndices += flagIndicesToUse
             },
         )
+        items.forEach { checkTrailingItem(shape.serialName, it) }
+        return items
     }
 
     private fun mapChildren(shape: TypeShape, annotations: List<Annotation>, byteOrder: ByteOrder, preferredBuilderByteOrder: ByteOrder = byteOrder): List<FieldLayout> {
@@ -392,7 +465,7 @@ object LayoutCompiler {
         val reservedKeySubIndices = mutableSetOf<Int>()
         val reservedValueSubIndices = mutableSetOf<Int>()
         // For maps, there are only two children for key and value elements, that each have their own flag headers.
-        return listOf(
+        val entries = listOf(
             compileField(
                 keyShape,
                 shape.elementName(0),
@@ -424,6 +497,8 @@ object LayoutCompiler {
                 reservedValueSubIndices += flagIndicesToUse
             },
         )
+        entries.forEach { checkTrailingItem(shape.serialName, it) }
+        return entries
     }
 
     private fun openChildren(shape: TypeShape, byteOrder: ByteOrder, bitIndex: Int, preferredBuilderByteOrder: ByteOrder = byteOrder): List<FieldLayout> =
@@ -876,8 +951,8 @@ object LayoutCompiler {
         val fields = (option.type as TypeLayout.Structure).fields
         val type = fields[marked.single()]
         val numeric = (type.type as? TypeLayout.Numeric)?.settings as? NumericSettings.Natural
-        if (numeric == null || numeric.inFlagsBits != null || numeric.supportedLengths.singleOrNull()?.bytes != width || type.isNullable || type.bitIndex >= 0 ||
-            type.presenceFlagIndices.isNotEmpty()
+        if (numeric == null || numeric.inFlagsBits != null || numeric.supportedLengths.singleOrNull()?.bytes != width || type.isNullable || type.isTrailing ||
+            type.bitIndex >= 0 || type.presenceFlagIndices.isNotEmpty()
         ) {
             throw InvalidSealedLayout(
                 "The @Discriminator property '${type.name}' of @Fallback '$fallbackName' holds the discriminator, so it must be a number of $width byte(s), " +
@@ -1053,6 +1128,8 @@ internal fun FieldLayout.staticRootByteSize(): Int? {
 }
 
 internal fun FieldLayout.staticChildBodyBytes(): Int? {
+    // Present or not depending on how far the value runs.
+    if (isTrailing) return null
     val reserved = reservedBefore + reservedAfter
     val type = type
     val hasSettings = type is TypeLayout.Numeric || type is TypeLayout.Text || type is TypeLayout.Character ||
@@ -1128,6 +1205,31 @@ private fun FieldLayout.staticItemFrameBytes(): Int? {
     val headerBits = (bitIndex + bitWidth).coerceAtLeast(0)
     return (headerBits + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS + body
 }
+
+/**
+ * Whether where [this] ends is only known from the end of what holds it: an `@Unsized` or `@DeltaCoded` value, a
+ * byte-stuffed structure without a terminator, a value told apart by its size, or one ending in `@Trailing` properties.
+ */
+private fun FieldLayout.runsToEnd(): Boolean = when (val type = type) {
+    is TypeLayout.Text -> type.settings.endMarking is StringEncodingSettings.NoMarking
+    is TypeLayout.ListLayout -> type.settings.lengthMarking is CollectionSettings.Unmarked
+    is TypeLayout.MapLayout -> type.settings.lengthMarking is CollectionSettings.Unmarked
+    is TypeLayout.Structure -> (frame.byteStuffing != null && frame.byteStuffingTerminator == null) || type.fields.any { it.isTrailing || it.runsToEnd() }
+    is TypeLayout.Sealed -> type.sizeDispatch.isNotEmpty() || type.sizeFallback != null || (type.lengthPrefix == null && type.elements.getOrNull(1)?.runsToEnd() == true)
+    is TypeLayout.Open, is TypeLayout.Contextual -> type.children.any { it.runsToEnd() }
+    else -> false
+}
+
+/** Whether [this] ends in `@Trailing` properties of its own or of what it holds last, outside a type-length-value record. */
+private fun FieldLayout.hasTrailingTail(): Boolean = when (val type = type) {
+    is TypeLayout.Structure -> type.fields.any { it.isTrailing || it.hasTrailingTail() }
+    is TypeLayout.Sealed -> type.lengthPrefix == null && type.elements.getOrNull(1)?.hasTrailingTail() == true
+    is TypeLayout.Open, is TypeLayout.Contextual -> type.children.any { it.hasTrailingTail() }
+    else -> false
+}
+
+/** Whether [this] may write bytes in its parent's body, which a structure running to the end of the value cannot have after it. */
+private fun FieldLayout.mayWriteBody(): Boolean = type !is TypeLayout.Discriminator && !isPurelyFlagPacked()
 
 /** True when a field's entire encoding lives in the flag header and contributes no body bytes. */
 private fun FieldLayout.isPurelyFlagPacked(): Boolean {

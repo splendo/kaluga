@@ -143,10 +143,14 @@ internal data class Cursor(val anchor: Anchor?, val bits: Int) {
 
 internal fun alignBits(bits: Int): Int = (bits + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS * Byte.SIZE_BITS
 
-/** When a nullable property is present, following the decoder: its own flag bit, or all of the flag bits it names. */
+/**
+ * When a nullable property is present, following the decoder: its own flag bit, all of the flag bits it names, or, for
+ * a `@Trailing` one, whether the bytes of the frame reach its [start][Reached.start].
+ */
 internal sealed class Presence {
     data class Owned(val bitPos: Int) : Presence()
     data class AllSet(val bitPositions: List<Int>) : Presence()
+    data class Reached(val start: Cursor) : Presence()
 }
 
 /** The size of a number: fixed, or picked by the encoder from [lengths] and recorded in [bits] flag bits at [bitPos]. */
@@ -236,6 +240,7 @@ internal class FieldPlan(
 ) {
     /** Whether the layout interface declares it `var`. */
     val isVar: Boolean get() = (node as? KSPropertyDeclaration)?.isMutable == true
+    val isTrailing: Boolean get() = presence is Presence.Reached
 }
 
 /**

@@ -90,4 +90,6 @@ apart by their class:
 - `InvalidByteOrderException` — Nested structures with conflicting byte orders
 - `UnsupportedByteStuffing` — Byte stuffing applied to an unsupported encoding (e.g., most-significant-first)
 - `InvalidSizePolymorphic` — A `@SizePolymorphic` sealed type whose subtypes can't be told apart by their byte size
+- `InvalidTrailingLayout` — A `@Trailing` property the end of the value cannot tell apart, such as one followed by a property that is not trailing, or a layout ending in a tail where something follows it
+- `TrailingAfterAbsent` — A `@Trailing` property encoded after one that is `null`
 - `InvalidChecksumException` — A decoded checksum doesn't match the one computed over the body

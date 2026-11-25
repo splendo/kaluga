@@ -69,7 +69,7 @@ internal object LayoutChecks {
         type.children.forEach { collect(it, violations) }
     }
 
-    private fun FieldLayout.isAlwaysUnconstrained(): Boolean = !isNullable && presenceFlagIndices.isEmpty() && when (val type = type) {
+    private fun FieldLayout.isAlwaysUnconstrained(): Boolean = !isNullable && !isTrailing && presenceFlagIndices.isEmpty() && when (val type = type) {
         is TypeLayout.Text -> type.settings.endMarking is StringEncodingSettings.NoMarking
 
         is TypeLayout.ListLayout -> type.settings.lengthMarking is CollectionSettings.Unmarked
@@ -85,7 +85,7 @@ internal object LayoutChecks {
     }
 
     private fun FieldLayout.alwaysWritesBody(): Boolean {
-        if (isNullable || presenceFlagIndices.isNotEmpty()) return false
+        if (isNullable || isTrailing || presenceFlagIndices.isNotEmpty()) return false
         if (reservedBefore > 0 || reservedAfter > 0) return true
         return when (val type = type) {
             is TypeLayout.Bool -> bitIndex < 0

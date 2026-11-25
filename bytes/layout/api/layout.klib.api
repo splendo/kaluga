@@ -423,7 +423,7 @@ final class com.splendo.kaluga.bytes.layout/DataAfterUnconstrainedData : kotlinx
 }
 
 final class com.splendo.kaluga.bytes.layout/FieldLayout { // com.splendo.kaluga.bytes.layout/FieldLayout|null[0]
-    constructor <init>(kotlin/String, kotlin/Int, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes/ByteOrder, com.splendo.kaluga.bytes/ByteOrder, kotlin/Boolean, kotlin.collections/List<kotlin/Int> = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.bytes.layout/FrameSettings, com.splendo.kaluga.bytes.layout/TypeLayout) // com.splendo.kaluga.bytes.layout/FieldLayout.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean;kotlin.collections.List<kotlin.Int>;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.FrameSettings;com.splendo.kaluga.bytes.layout.TypeLayout){}[0]
+    constructor <init>(kotlin/String, kotlin/Int, kotlin/Int, kotlin/Int, com.splendo.kaluga.bytes/ByteOrder, com.splendo.kaluga.bytes/ByteOrder, kotlin/Boolean, kotlin.collections/List<kotlin/Int> = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.bytes.layout/FrameSettings, com.splendo.kaluga.bytes.layout/TypeLayout, kotlin/Boolean = ...) // com.splendo.kaluga.bytes.layout/FieldLayout.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean;kotlin.collections.List<kotlin.Int>;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.FrameSettings;com.splendo.kaluga.bytes.layout.TypeLayout;kotlin.Boolean){}[0]
 
     final val bitIndex // com.splendo.kaluga.bytes.layout/FieldLayout.bitIndex|{}bitIndex[0]
         final fun <get-bitIndex>(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.bitIndex.<get-bitIndex>|<get-bitIndex>(){}[0]
@@ -441,6 +441,8 @@ final class com.splendo.kaluga.bytes.layout/FieldLayout { // com.splendo.kaluga.
         final fun <get-index>(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.index.<get-index>|<get-index>(){}[0]
     final val isNullable // com.splendo.kaluga.bytes.layout/FieldLayout.isNullable|{}isNullable[0]
         final fun <get-isNullable>(): kotlin/Boolean // com.splendo.kaluga.bytes.layout/FieldLayout.isNullable.<get-isNullable>|<get-isNullable>(){}[0]
+    final val isTrailing // com.splendo.kaluga.bytes.layout/FieldLayout.isTrailing|{}isTrailing[0]
+        final fun <get-isTrailing>(): kotlin/Boolean // com.splendo.kaluga.bytes.layout/FieldLayout.isTrailing.<get-isTrailing>|<get-isTrailing>(){}[0]
     final val name // com.splendo.kaluga.bytes.layout/FieldLayout.name|{}name[0]
         final fun <get-name>(): kotlin/String // com.splendo.kaluga.bytes.layout/FieldLayout.name.<get-name>|<get-name>(){}[0]
     final val presenceFlagIndices // com.splendo.kaluga.bytes.layout/FieldLayout.presenceFlagIndices|{}presenceFlagIndices[0]
@@ -462,6 +464,7 @@ final class com.splendo.kaluga.bytes.layout/FieldLayout { // com.splendo.kaluga.
     final fun component10(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.component10|component10(){}[0]
     final fun component11(): com.splendo.kaluga.bytes.layout/FrameSettings // com.splendo.kaluga.bytes.layout/FieldLayout.component11|component11(){}[0]
     final fun component12(): com.splendo.kaluga.bytes.layout/TypeLayout // com.splendo.kaluga.bytes.layout/FieldLayout.component12|component12(){}[0]
+    final fun component13(): kotlin/Boolean // com.splendo.kaluga.bytes.layout/FieldLayout.component13|component13(){}[0]
     final fun component2(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.component2|component2(){}[0]
     final fun component3(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.component3|component3(){}[0]
     final fun component4(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.component4|component4(){}[0]
@@ -470,7 +473,7 @@ final class com.splendo.kaluga.bytes.layout/FieldLayout { // com.splendo.kaluga.
     final fun component7(): kotlin/Boolean // com.splendo.kaluga.bytes.layout/FieldLayout.component7|component7(){}[0]
     final fun component8(): kotlin.collections/List<kotlin/Int> // com.splendo.kaluga.bytes.layout/FieldLayout.component8|component8(){}[0]
     final fun component9(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.component9|component9(){}[0]
-    final fun copy(kotlin/String = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder = ..., com.splendo.kaluga.bytes/ByteOrder = ..., kotlin/Boolean = ..., kotlin.collections/List<kotlin/Int> = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.bytes.layout/FrameSettings = ..., com.splendo.kaluga.bytes.layout/TypeLayout = ...): com.splendo.kaluga.bytes.layout/FieldLayout // com.splendo.kaluga.bytes.layout/FieldLayout.copy|copy(kotlin.String;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean;kotlin.collections.List<kotlin.Int>;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.FrameSettings;com.splendo.kaluga.bytes.layout.TypeLayout){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.bytes/ByteOrder = ..., com.splendo.kaluga.bytes/ByteOrder = ..., kotlin/Boolean = ..., kotlin.collections/List<kotlin/Int> = ..., kotlin/Int = ..., kotlin/Int = ..., com.splendo.kaluga.bytes.layout/FrameSettings = ..., com.splendo.kaluga.bytes.layout/TypeLayout = ..., kotlin/Boolean = ...): com.splendo.kaluga.bytes.layout/FieldLayout // com.splendo.kaluga.bytes.layout/FieldLayout.copy|copy(kotlin.String;kotlin.Int;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.ByteOrder;com.splendo.kaluga.bytes.ByteOrder;kotlin.Boolean;kotlin.collections.List<kotlin.Int>;kotlin.Int;kotlin.Int;com.splendo.kaluga.bytes.layout.FrameSettings;com.splendo.kaluga.bytes.layout.TypeLayout;kotlin.Boolean){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.layout/FieldLayout.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/FieldLayout.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/FieldLayout.toString|toString(){}[0]
@@ -564,6 +567,10 @@ final class com.splendo.kaluga.bytes.layout/InvalidSizePolymorphic : kotlinx.ser
     constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/InvalidSizePolymorphic.<init>|<init>(kotlin.String){}[0]
 }
 
+final class com.splendo.kaluga.bytes.layout/InvalidTrailingLayout : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/InvalidTrailingLayout|null[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bytes.layout/InvalidTrailingLayout.<init>|<init>(kotlin.String){}[0]
+}
+
 final class com.splendo.kaluga.bytes.layout/StringSettings { // com.splendo.kaluga.bytes.layout/StringSettings|null[0]
     constructor <init>(com.splendo.kaluga.bytes.strings/Encoding, com.splendo.kaluga.bytes.strings/StringEncodingSettings.EndMarking) // com.splendo.kaluga.bytes.layout/StringSettings.<init>|<init>(com.splendo.kaluga.bytes.strings.Encoding;com.splendo.kaluga.bytes.strings.StringEncodingSettings.EndMarking){}[0]
 
@@ -578,6 +585,17 @@ final class com.splendo.kaluga.bytes.layout/StringSettings { // com.splendo.kalu
     final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bytes.layout/StringSettings.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.splendo.kaluga.bytes.layout/StringSettings.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.splendo.kaluga.bytes.layout/StringSettings.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.bytes.layout/TrailingAfterAbsent : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent|null[0]
+    constructor <init>(kotlin/String, kotlin/String) // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+    final val absent // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent.absent|{}absent[0]
+        final fun <get-absent>(): kotlin/String // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent.absent.<get-absent>|<get-absent>(){}[0]
+    final val message // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent.message.<get-message>|<get-message>(){}[0]
+    final val name // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.splendo.kaluga.bytes.layout/TrailingAfterAbsent.name.<get-name>|<get-name>(){}[0]
 }
 
 final class com.splendo.kaluga.bytes.layout/UnexpectedBytesRemaining : kotlinx.serialization/SerializationException { // com.splendo.kaluga.bytes.layout/UnexpectedBytesRemaining|null[0]

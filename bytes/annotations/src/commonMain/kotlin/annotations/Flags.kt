@@ -267,6 +267,29 @@ annotation class Size(val length: Length)
 annotation class Unsized
 
 /**
+ * Marks a nullable property as part of the optional tail of a structure, for a protocol that grows a value by
+ * appending fields to it: the property is present when the bytes of the value reach it, and `null` when they end
+ * before it. No flag bit records its presence, so the flag header is the same with or without it. Encoding writes no
+ * bytes for a `null` one, so the value ends before it.
+ *
+ * The bytes "reach" the property when at least one byte is left where it starts; bytes that end inside it are as
+ * short as any value that ends inside a property, and do not decode. The end of the value is the end of what bounds
+ * the structure: the length of a type-length-value record (see [LengthPrefix] on a sealed class) for a subtype, else
+ * the end of the whole value less any [Checksum] and [Postfix], so like [Unsized] such a structure is the last
+ * property of what holds it, and cannot be an item of a collection.
+ *
+ * Only a tail of the properties can be optional: every property after a [Trailing] one is [Trailing] too, and a
+ * non-`null` one after a `null` one is not encoded, as it would read back in the place of the `null` one. A [Trailing]
+ * property is written in whole bytes of the body: it cannot be a Boolean, in the flag header ([FlagIndex] on a
+ * Boolean, an enum or a flag-packed number, a collection counted in the flag header), [PresentWhenAllSet],
+ * [NullIfEmpty], [Reserved], [Unsized] or [DeltaCoded], nor follow a property that runs to the end of the value.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Trailing
+
+/**
  * When applied to a Collection, a null flag will be added and set to 0 if the list is empty (resulting in no length being encoded in the body).
  * Without it, a nullable Collection that is empty is present: its flag is set and its count is encoded.
  */

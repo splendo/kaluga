@@ -346,6 +346,10 @@ open annotation class com.splendo.kaluga.bytes.annotations/Terminal : kotlin/Ann
         final fun <get-terminator>(): kotlin/Byte // com.splendo.kaluga.bytes.annotations/Terminal.terminator.<get-terminator>|<get-terminator>(){}[0]
 }
 
+open annotation class com.splendo.kaluga.bytes.annotations/Trailing : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Trailing|null[0]
+    constructor <init>() // com.splendo.kaluga.bytes.annotations/Trailing.<init>|<init>(){}[0]
+}
+
 open annotation class com.splendo.kaluga.bytes.annotations/Unsigned : kotlin/Annotation { // com.splendo.kaluga.bytes.annotations/Unsigned|null[0]
     constructor <init>() // com.splendo.kaluga.bytes.annotations/Unsigned.<init>|<init>(){}[0]
 }

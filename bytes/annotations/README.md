@@ -77,6 +77,7 @@ Control how nullable fields and boolean flags are encoded in a packed flag heade
 
 An integer with `@FlagIndex` and `@FlagWidth` but no `@Size` is packed straight into the flag bits. Like any number it is signed unless its type is unsigned (`UByte`, `UShort`, `UInt`, `ULong`) or it carries `@Unsigned`, and a signed one is two's complement within its bits: `BytesFormat` sign-extends it when decoding, so a 2-bit `Byte` reads `2` back as `-2`, and refuses to encode a value outside `-2..1`. A field narrower than a byte is hardly ever meant that way, so a layout with a signed one is rejected, by `BytesFormat` when it first encodes or decodes the type and by the [bytes code generator](../ksp/) at compile time; declare it with the unsigned type or `@Unsigned`, which holds `0..3` in 2 bits. From 8 bits up a signed type is accepted and keeps its sign.
 - `@PresentWhenAllSet(vararg indices: Int)` — A nullable field is present only when all listed flag bit positions are set. The field reserves no flag bit itself; the listed bits belong to other properties or flags.
+- `@Trailing` — A nullable field at the end of a layout is present when the bytes of the value reach it, and `null` when they end before it, with no flag bit at all. See [Optional tails](#optional-tails).
 
 ### Numbers
 
@@ -147,6 +148,42 @@ sealed interface Packet {
 
 It applies to a `List`, `ShortArray`, `IntArray` or other array of integers of one size whose items are not nullable, not to a `Set`, which would drop the items a step of 0 repeats, in a frame accumulated least significant first (big-endian items take `@ItemByteOrder` or `@ByteOrder(excludeStructure = true)`), and cannot be nullable or combined with another end marking or `@NullIfEmpty`. Generated views read `List<Short>`, `List<Int>` and `List<Long>` items as they go, see [ksp](../ksp/#delta-coded-lists).
 
+### Optional tails
+
+A value may be sent with or without the fields at its end, both as a whole value and inside a type-length-value record, for example when a later version of a protocol appends fields that an earlier version does not send. Declare the appended properties nullable and `@Trailing`: each is present when the bytes of the value reach it, and `null` when they end before it.
+
+```kotlin
+@BytesLayout
+interface Status {
+    @FlagIndex(0) val charging: Boolean
+    @Size(Length.`8_BIT`) @Unsigned val battery: Int
+    val voltage: UShort
+    @Trailing val serviceVersion: UShort?
+}
+
+@BytesLayout
+@LengthPrefix
+sealed interface Info {
+    @BytesLayout
+    @SerializedByteValue(0x01)
+    interface Device : Info {
+        val model: UShort
+        @Trailing val serial: ULong?
+    }
+}
+
+// 01 50 E4 0C 02 01 is a charging Status at 80 % and 3300 mV of service version 0x0102; sent without its tail it is
+// 01 50 E4 0C, which reads with serviceVersion null.
+// 01 02 07 00 is a Device of model 7 without a serial, 01 0A 07 00 88 77 66 55 44 33 22 11 one with a serial.
+```
+
+- **Where the value ends**: a root value ends at the end of its bytes, less its `@Checksum` and `@Postfix`, which stay at the end of the value with or without the tail. A subtype of a sealed class with `@LengthPrefix` ends at the length of its record, so records with and without their tail follow each other in one list. Like `@Unsized`, a layout ending in a tail runs to the end of what holds it: it can be the last property of another layout, whose end then bounds it too, but nothing can follow it, and it cannot be the item of a collection unless a record's length bounds it.
+- **Reaching a property**: the bytes reach a trailing property when at least one byte is left where it starts. Bytes that end inside it are as short as a value that ends inside any other property, and throw `ByteArrayEndedBeforeSerializationCompleted`, as do bytes that end before the tail.
+- **Only a tail**: every property after a `@Trailing` one is `@Trailing` too, or the layout is rejected with `InvalidTrailingLayout` (a KSP error for a `@BytesLayout`). The `@Discriminator` of a `@Fallback` takes no bytes, so it may still be declared after the tail.
+- **The flag header**: a trailing property has no flag bit, so the header is the same with or without the tail. A trailing number of several `@Size`s keeps the bits that select its size in the header, which are ignored when the number is absent.
+- **Encoding**: a `null` trailing property writes nothing, so the value ends before it, and the length of a record counts what was written. A trailing property that is not `null` after one that is throws `TrailingAfterAbsent`, as it would read back in the place of the `null` one.
+- **What a trailing property can be**: any nullable value written in whole bytes of the body, such as a number, a string, a collection or a layout. It cannot be a Boolean, live in the flag header (an enum or number packed into it, a collection counted in it), be `@PresentWhenAllSet`, `@NullIfEmpty` or `@Reserved`, or be written as no bytes at all. It cannot run to the end of the value itself, such as an `@Unsized` or `@DeltaCoded` value or a layout with a tail of its own, as an empty one would read back as `null`, and it cannot follow such a property, which would take its bytes.
+
 ### Framing and structure
 
 Control the overall structure of the encoded bytes.
@@ -164,7 +201,7 @@ Control how enum and sealed class variants are identified on the wire.
 - `@SerializedByteValue(vararg value: Byte)` — Use a specific byte sequence (instead of the serialName) to identify this variant. All variants must use the same byte length.
 - `@ByOrdinal(offset, size)` — Encode an enum by its ordinal (optionally offset and with a custom byte length). Variants can still override with `@SerializedByteValue`.
 - `@SizePolymorphic` — Identify sealed class subtypes by their payload size instead of a discriminator byte. Subtypes are fixed-width, except at most one variable-size subtype is allowed as a catch-all fallback for sizes matching no fixed subtype.
-- `@LengthPrefix(lengthAsShort)` on a sealed class — Write every subtype as a type-length-value record: its discriminator, then its length, then its bytes. The length counts the bytes after it, the subtype's whole frame; it is a byte, or 16 bits in the class's byte order with `lengthAsShort`. Decoding bounds the subtype by the length: bytes it has beyond its fields are skipped, so a later version may append fields, an `@Unsized` last property ends at the length, and fields may follow the record. Not with `@SizePolymorphic` or `canOverflow`.
+- `@LengthPrefix(lengthAsShort)` on a sealed class — Write every subtype as a type-length-value record: its discriminator, then its length, then its bytes. The length counts the bytes after it, the subtype's whole frame; it is a byte, or 16 bits in the class's byte order with `lengthAsShort`. Decoding bounds the subtype by the length: bytes it has beyond its fields are skipped, so a later version may append fields, an `@Unsized` last property and a `@Trailing` tail end at the length, and fields may follow the record. Not with `@SizePolymorphic` or `canOverflow`.
 - `@Fallback` — The subtype of a sealed class decoded for a discriminator no other subtype has, so a reader keeps going past a type it does not know. It is laid out like any other subtype after the discriminator (and the length, with `@LengthPrefix`): it may have a flag header, a frame of its own, and extend the interfaces the other subtypes share, so the fields every record starts with read the same for a type nobody knows, and an `@Unsized` `ByteArray` keeps the rest as it was. At most one per sealed class, with no `@SerializedByteValue`. Encoding one that holds the discriminator of another subtype throws, as it would read back as that subtype.
 - `@Discriminator` — The one property of a `@Fallback` that holds the discriminator it was read for, an integer of the discriminators' size in its own byte order. It takes no bytes in the subtype: it is read from, and written to, the discriminator, so it may be declared anywhere among the properties, inherited ones included. It cannot be nullable or in the flag header, and as it takes no bytes it has no `@Reserved` bytes, nor the `@Prefix`, `@Postfix` or `@Checksum` of a value class, around it. Encoded on its own rather than through its sealed class, the fallback lays it out where it is declared, so it goes before an `@Unsized` last property.
 

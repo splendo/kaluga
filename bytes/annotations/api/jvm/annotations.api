@@ -239,6 +239,9 @@ public abstract interface annotation class com/splendo/kaluga/bytes/annotations/
 	public abstract fun terminator ()B
 }
 
+public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Trailing : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/splendo/kaluga/bytes/annotations/Unsigned : java/lang/annotation/Annotation {
 }
 

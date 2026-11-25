@@ -218,6 +218,11 @@ offsets reaches it once `HeartRateView.wrap` accepts the bytes written so far, a
 `onFailedToWriteHeartRate`. A view the client reads or is notified of is not checked; call its `validate()` where a
 malformed value has to be caught before it is read.
 
+A layout with a [`@Trailing`](../../bytes/annotations/#optional-tails) tail reads a value that a peripheral sends
+without its trailing fields, for example on a protocol version that did not have them yet: the client's view returns
+`null` for the trailing properties the bytes do not reach, without reading past them. On the server a written value
+that ends inside its tail is not complete yet, and reaches the delegate once a long write has delivered the rest.
+
 Whether a layout is read through its view follows what the bytes plugin generates for it: its own
 `@BytesLayout(generate = [...])`, else the module-wide `bytes { generate }`, which reaches this processor as the same KSP
 option. A layout of another module is read through its view when that module generated one. A layout that generates only
