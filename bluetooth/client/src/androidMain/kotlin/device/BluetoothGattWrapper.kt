@@ -22,6 +22,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothStatusCodes
+import com.splendo.kaluga.bluetooth.DefaultRemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
@@ -167,7 +168,9 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         return gatt.setCharacteristicNotification(characteristic, enable)
     }
 
-    private fun getCharacteristic(wrapper: RemoteCharacteristicWrapper): BluetoothGattCharacteristic? = gatt.getService(wrapper.service.uuid)?.getCharacteristic(wrapper.uuid)
+    // A lookup by UUID finds the first characteristic with that UUID, so a wrapped characteristic is used as it is.
+    private fun getCharacteristic(wrapper: RemoteCharacteristicWrapper): BluetoothGattCharacteristic? = (wrapper as? DefaultRemoteCharacteristicWrapper)?.gattCharacteristic
+        ?: gatt.getService(wrapper.service.uuid)?.getCharacteristic(wrapper.uuid)
 
     private fun getDescriptor(wrapper: RemoteDescriptorWrapper): BluetoothGattDescriptor? = getCharacteristic(wrapper.characteristic)?.getDescriptor(wrapper.uuid)
 }

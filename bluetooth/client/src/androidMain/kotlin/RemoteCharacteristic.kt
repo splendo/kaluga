@@ -86,7 +86,7 @@ actual interface RemoteCharacteristicWrapper {
  * Default implementation of [RemoteCharacteristicWrapper]
  * @param gattCharacteristic the [BluetoothGattCharacteristic] to wrap
  */
-class DefaultRemoteCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : RemoteCharacteristicWrapper {
+class DefaultRemoteCharacteristicWrapper(internal val gattCharacteristic: BluetoothGattCharacteristic) : RemoteCharacteristicWrapper {
 
     override val uuid: java.util.UUID
         get() {
