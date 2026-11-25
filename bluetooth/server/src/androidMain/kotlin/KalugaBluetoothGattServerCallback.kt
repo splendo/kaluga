@@ -215,6 +215,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
             BluetoothProfile.STATE_DISCONNECTED -> {
                 logger.info(TAG) { "Device ${device.address} disconnected" }
                 mtu.remove(device.address)
+                pendingWrites.remove(device.address)
                 connectedDevices.remove(device.address)?.let { disconnected ->
                     handlingScope.launch {
                         disconnectActions.synchronized { values.toList() }.forEach { it(disconnected) }
