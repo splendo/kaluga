@@ -1,6 +1,7 @@
 plugins {
     id("com.splendo.kaluga.plugin")
     id(libs.plugins.kotlinx.atomicfu.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kaluga {
