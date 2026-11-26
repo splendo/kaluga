@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
+import com.splendo.kaluga.bluetooth.server.TestCentral
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toKString
 import kotlinx.coroutines.CompletableDeferred
@@ -101,6 +102,6 @@ private class SystemConnections :
 
     suspend fun isConnected(device: ConnectableDevice): Boolean {
         poweredOn.await()
-        return manager.retrieveConnectedPeripheralsWithServices(listOf(TestPeripheral.service)).any { (it as CBPeripheral).identifier == device.identifier }
+        return manager.retrieveConnectedPeripheralsWithServices(listOf(TestPeripheral.service, TestCentral.service)).any { (it as CBPeripheral).identifier == device.identifier }
     }
 }
