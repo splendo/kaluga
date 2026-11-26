@@ -405,6 +405,8 @@ internal actual class DefaultDeviceConnectionManager(
     private fun BluetoothGatt?.connectionState(): Int? = this?.device?.let { bluetoothManager?.getConnectionState(it, BluetoothProfile.GATT) }
 }
 
+// 133 is GATT_ERROR, the stack's own generic failure, reported among others as a link goes down, and also an
+// application error (0x85) a peripheral may legally send; only the connection state tells them apart.
 private val Int.gattStatusAsString get() = when (this) {
     GATT_SUCCESS -> "SUCCESS"
     GATT_READ_NOT_PERMITTED -> "ERROR_READ_NOT_PERMITTED"
@@ -419,7 +421,7 @@ private val Int.gattStatusAsString get() = when (this) {
     GATT_CONNECTION_TIMEOUT -> "ERROR_CONNECTION_TIMEOUT"
     GATT_FAILURE -> "ERROR_FAILURE"
     19 -> "REMOTE_USER_TERMINATED_CONNECTION"
-    133 -> "DEVICE_NOT_FOUND"
+    133 -> "GATT_ERROR"
     else -> "ERROR_OTHER($this)"
 }
 
