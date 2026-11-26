@@ -1,7 +1,7 @@
 #!/bin/bash
 # Starts the simulated devices of the Bluetooth device tests on the virtual radio of the running emulator: the
 # peripheral the client tests connect to and the central that connects to the server tests. Returns once both run on
-# the emulator's radio. Does nothing unless NETSIM is true.
+# the emulator's radio. Also records logcat from here on. Does nothing unless NETSIM is true.
 set -euo pipefail
 
 [ "${NETSIM:-false}" = "true" ] || exit 0
@@ -9,7 +9,11 @@ set -euo pipefail
 PYTHON="${NETSIM_PYTHON:-python3}"
 PERIPHERAL_LOG="${NETSIM_LOG:-netsim_peripheral.log}"
 CENTRAL_LOG="${NETSIM_CENTRAL_LOG:-netsim_central.log}"
+LOGCAT="${NETSIM_LOGCAT:-netsim_logcat.txt}"
 ATTEMPTS=3
+
+nohup adb logcat -v threadtime > "$LOGCAT" 2>&1 &
+logcat=$!
 
 adb shell cmd bluetooth_manager enable || true
 adb shell cmd bluetooth_manager wait-for-state:STATE_ON
@@ -61,6 +65,7 @@ start() {
   done
   cat "$log"
   diagnose
+  kill "$logcat" 2>/dev/null || true
   exit 1
 }
 

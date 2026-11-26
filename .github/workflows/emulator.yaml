@@ -186,6 +186,10 @@ jobs:
           name: "Android UI tests for ${{ matrix.project.name }}"
           path: "${{ matrix.project.dir }}/**/build/reports/androidTests/connected/debug/**"
 
+      - name: Collect the netsimd logs on failure
+        if: failure() && env.NETSIM == 'true'
+        run: cp -r "${TMPDIR:-/tmp}/android-$USER/netsimd" netsimd || true
+
       - name: Upload the simulated device results on failure
         if: failure() && env.NETSIM == 'true'
         uses: actions/upload-artifact@v7
@@ -194,6 +198,8 @@ jobs:
           path: |
             netsim_peripheral.log
             netsim_central.log
+            netsim_logcat.txt
+            netsimd/
             bluetooth/client/build/reports/androidTests/**
             bluetooth/client/build/outputs/androidTest-results/**
             bluetooth/server/build/reports/androidTests/**
