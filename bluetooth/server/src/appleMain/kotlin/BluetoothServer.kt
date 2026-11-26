@@ -21,7 +21,10 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.stringValue
+import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -159,6 +162,13 @@ internal sealed class IOSServerState {
         }
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean {
+            val maximumLength = device.cbCentral.maximumUpdateValueLength.toInt()
+            if (value.size > maximumLength) {
+                logger.debug(DefaultBluetoothServer.TAG) {
+                    "Notification of ${value.size} bytes for characteristic ${characteristic.uuid.uuidString} is longer than the $maximumLength bytes " +
+                        "central ${device.identifier.stringValue} takes in one; CoreBluetooth truncates it to $maximumLength"
+                }
+            }
             // peripheralManagerIsReadyToUpdateSubscribers is manager-wide, so a single shared deferred is correct.
             // Retry in a loop (not recursion) until the value is queued.
             while (true) {

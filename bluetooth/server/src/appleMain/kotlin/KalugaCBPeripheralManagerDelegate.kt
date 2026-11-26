@@ -24,6 +24,7 @@ import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
 import kotlinx.atomicfu.locks.reentrantLock
@@ -48,6 +49,8 @@ import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "KalugaCBPeripheralManagerDelegate"
+private const val MAX_ATTRIBUTE_LENGTH = 512
+
 class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingContext: CoroutineContext) :
     NSObject(),
     CBPeripheralManagerDelegateProtocol {
@@ -172,6 +175,9 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
                 didReceiveReadRequest.offset.toInt(),
             ) ?: GattResponse.InvalidHandle
             if (response is GattResponse.ReadSuccess) {
+                if (didReceiveReadRequest.offset.toInt() == 0 && response.value.size > MAX_ATTRIBUTE_LENGTH) {
+                    logger.debug(TAG) { "Read of $identifier answered with ${response.value.size} bytes, longer than the $MAX_ATTRIBUTE_LENGTH bytes an attribute holds" }
+                }
                 didReceiveReadRequest.setValue(response.value.toNSData())
             }
 

@@ -27,6 +27,7 @@ import android.bluetooth.BluetoothProfile
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CoroutineName
@@ -235,6 +236,9 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
                 val response = readAction(connectedDevice(device), offset)
                 response to when (response) {
                     is GattResponse.ReadSuccess -> {
+                        if (offset == 0 && response.value.size > MAX_ATTRIBUTE_LENGTH) {
+                            logger.debug(TAG) { "Read of $identifier answered with ${response.value.size} bytes, longer than the $MAX_ATTRIBUTE_LENGTH bytes an attribute holds" }
+                        }
                         val sizeToSend = (mtu[device.address] ?: DEFAULT_MTU_SIZE) - MTU_HEADER_SIZE
                         response.value.sliceArray(0..<min(response.value.size, sizeToSend))
                     }
