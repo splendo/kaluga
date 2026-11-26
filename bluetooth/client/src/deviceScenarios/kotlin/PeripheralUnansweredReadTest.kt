@@ -43,10 +43,10 @@ class PeripheralUnansweredReadTest : PeripheralTest() {
         val start = TimeSource.Monotonic.markNow()
         val response = unanswered.response.answer("unanswered read", 60.seconds)
         log("unanswered read failed after ${start.elapsedNow()}")
-        // Android fails the read with its GATT_ERROR just before it reports the link as closed. CoreBluetooth closes the
-        // link without failing the read, so the disconnect answers it.
+        // Android fails the read with its GATT_ERROR just before it reports the link as closed, which makes it a lost link
+        // with that error as its cause. CoreBluetooth closes the link without failing the read, so the disconnect answers it.
         val expected = when (platform.stack) {
-            Stack.Android -> GattResponse.ApplicationError(0x85)
+            Stack.Android -> GattResponse.DeviceUnavailable(GattResponse.ApplicationError(0x85))
             Stack.CoreBluetooth -> GattResponse.DeviceUnavailable()
         }
         assertEquals<GattResponse>(expected, response)
