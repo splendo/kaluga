@@ -418,24 +418,29 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
             is GattResponse.DeviceUnavailable -> {
                 val cause = response.cause
-                if (cause == null) {
-                    logger.stateLogger.actionLogger.error { "Failed to start $this" }
-                } else {
-                    logger.stateLogger.actionLogger.error { "Failed to complete $this: the link went down as the platform failed it with $cause" }
-                    logUnknownStatus(cause, response)
-                }
+                if (cause == null) logger.stateLogger.actionLogger.error { "Failed to start $this" } else logLinkDown(cause, response)
             }
 
             is GattResponse.Superseded -> logger.stateLogger.actionLogger.error { "Failed to start $this" }
+
+            is GattResponse.MTUDeviceUnavailable -> {
+                val cause = response.cause
+                if (cause == null) logger.stateLogger.actionLogger.error { "Failed to update MTU. Set to $this" } else logLinkDown(cause, response)
+            }
 
             is GattResponse.MTUError -> logger.stateLogger.actionLogger.error { "Failed to update MTU. Set to $this" }
         }
         emitEvent(DeviceConnectionManager.Event.CompletedAction(this, response))
     }
 
+    private fun DeviceAction<*>.logLinkDown(cause: GattResponse.Error, response: GattResponse) {
+        logger.stateLogger.actionLogger.error { "Failed to complete $this: the link went down as the platform failed it with $cause" }
+        logUnknownStatus(cause, response)
+    }
+
     private fun DeviceAction<*>.logUnknownStatus(error: GattResponse.Error, response: GattResponse) {
         if (error is GattResponse.UnknownError) {
-            logger.stateLogger.actionLogger.debug { "$this failed with status 0x${error.statusCode.toString(16)}, which is no known error code; answered $response" }
+            logger.stateLogger.actionLogger.debug { "$this failed with status 0x${error.statusCode.toString(16)}, which no other error describes; answered $response" }
         }
     }
 

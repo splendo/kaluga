@@ -243,7 +243,7 @@ Where a value is cut, dropped or routed without the app being told, Kaluga logs 
 - a read that ends at or past 512 bytes;
 - a write longer than 512 bytes that Android does not send;
 - notifications enabled on a characteristic that shares its UUID with another notifying characteristic: notifications are routed by UUID, so those of both reach the one enabled last;
-- a status code that is no known error, answered as `UnknownError` or as the `cause` of a `DeviceUnavailable`;
+- a status no other error describes, answered as `UnknownError` or as the `cause` of a `DeviceUnavailable`;
 - on Android, a Service Changed indication, after which the services discovered before stay in use.
 
 The message is only built when the logger takes debug messages.
