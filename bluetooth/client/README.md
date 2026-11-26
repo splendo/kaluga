@@ -250,6 +250,17 @@ Android and CoreBluetooth answer some situations differently, and Kaluga passes 
 
 Web Bluetooth gives no status code: a failed request answers the error its `DOMException` name stands for, and Chrome uses `NotSupportedError` both for a request it fails as the link drops and for many error answers of a peripheral. A request rejected with it as the link drops answers `DeviceUnavailable(cause = RequestNotSupported)`, held for a short grace period to tell the two apart (see [A request failed as the link drops](#a-request-failed-as-the-link-drops)).
 
+The web client was observed on Chrome on macOS to answer these situations as follows:
+
+| Situation | Web Bluetooth (Chrome on macOS) |
+| --- | --- |
+| The peripheral answers a request with an ATT error | Chrome rejects the request with `NotSupportedError` whatever the code (application errors, `InvalidAttributeValueLength` and `ReadNotPermitted` were tried), so it answers `RequestNotSupported`, once `notSupportedDisconnectGrace` has passed without a disconnect |
+| MTU | The link ran at an ATT MTU of 517. `requestMtu` sends nothing and answers `MTUNotPermitted` |
+| Reading a value longer than 512 bytes | The read returns at most what the peripheral sends in one response at that MTU: a 600-byte value read as the 512 bytes the peripheral answered with |
+| Writing more than 512 bytes | The browser refuses the write before sending it, with or without response, and the write answers `InvalidAttributeValueLength` |
+| Write without response | `WriteSuccess.Acknowledged` as soon as the browser has taken the write |
+| Connecting again | `connect()` on the same device object connects without a new device picker while the peripheral keeps its address. If the peripheral changed its private address in the meantime, the connection never comes up, and `connect()` has no timeout of its own |
+
 An Android client stays at the default ATT MTU of 23 until the app calls `requestMtu`, so a value that does not fit one packet takes a long read or write. CoreBluetooth negotiates the MTU by itself when connecting and has no API to request one: `requestMtu` sends nothing and answers `MTUSuccess` with the longest write without response CoreBluetooth allows plus the 3 byte ATT header. That follows the ATT MTU, 23 at the default, but CoreBluetooth caps such a write at 512 bytes, so at the largest ATT MTU of 517 it reports 515.
 
 Where a value is cut, dropped or routed without the app being told, Kaluga logs it at debug level on the connection's state logger, set through `ConnectionSettings`:
