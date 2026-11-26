@@ -221,6 +221,31 @@ There is a major difference when it comes to the reporting of scanned devices be
 
 To align the behaviour across platforms the [CBCentralManagerScanOptionAllowDuplicatesKey](https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey) option is enabled on iOS. It can be set to another value using `ScanSettings` as shown above.
 
+## Platform differences
+Android and CoreBluetooth answer some situations differently, and Kaluga passes their answers on as they come:
+
+| Situation | Android | CoreBluetooth |
+| --- | --- | --- |
+| The peripheral answers a read with Insufficient Authentication | The stack tries to pair; when the peripheral refuses, the read fails with `ApplicationError(0x89)` (Android's `GATT_AUTH_FAIL`) | CoreBluetooth tries to pair; when the peripheral refuses, the read fails with `InsufficientEncryption` |
+| The same answer to a write | The stack tries to pair and never answers the write; it drops the link about three seconds later and the write answers `DeviceUnavailable` | The write fails with `InsufficientEncryption` and the link stays |
+| Reading a value longer than 512 bytes | The read succeeds with the first 512 bytes | The read stops after the response that passes 512 bytes and succeeds with all it read, so the value can run past 512 bytes (516 at an ATT MTU of 517, 528 at 23) |
+| Writing more than 512 bytes | Nothing is sent; the write answers `InvalidAttributeValueLength` | Sent as a long write; the answer is the peripheral's |
+| A notification longer than 512 bytes, possible at an MTU above 515 | Dropped by the stack; nothing reaches the app | Delivered whole |
+| Write without response | `WriteSuccess.Acknowledged` once the stack has taken the write | `WriteSuccess.Ready`: the peripheral was ready to take it, nothing confirms that it arrived |
+| A read the peripheral never answers | After 30 seconds the read fails with `ApplicationError(0x85)` (Android's `GATT_ERROR`) and the stack drops the link | After 30 seconds CoreBluetooth closes the link without failing the read, which answers `DeviceUnavailable` |
+
+An Android client stays at the default ATT MTU of 23 until the app calls `requestMtu`, so a value that does not fit one packet takes a long read or write. CoreBluetooth negotiates the MTU by itself when connecting and has no API to request one: `requestMtu` sends nothing and answers `MTUSuccess` with the longest write without response CoreBluetooth allows plus the 3 byte ATT header. That follows the ATT MTU, 23 at the default, but CoreBluetooth caps such a write at 512 bytes, so at the largest ATT MTU of 517 it reports 515.
+
+Where a value is cut, dropped or routed without the app being told, Kaluga logs it at debug level on the connection's state logger, set through `ConnectionSettings`:
+
+- a read that ends at or past 512 bytes;
+- a write longer than 512 bytes that Android does not send;
+- notifications enabled on a characteristic that shares its UUID with another notifying characteristic: notifications are routed by UUID, so those of both reach the one enabled last;
+- a status code that is no known error, answered as `UnknownError`;
+- on Android, a Service Changed indication, after which the services discovered before stay in use.
+
+The message is only built when the logger takes debug messages.
+
 ## Running the client over another transport
 The client does not depend on the platform Bluetooth stack: `DefaultBluetoothClient`, the device state machines and the generated service implementations only talk to a `Scanner`, a `DeviceConnectionManager` and the attribute wrappers. Another transport (an emulator reached over a socket, an in-process fake, a bridge to a different Bluetooth library) plugs in at that seam, in common code:
 
