@@ -1,0 +1,360 @@
+{
+  "format": "kaluga-bytes-layout",
+  "version": 1,
+  "source": "The @BytesLayout interfaces of ValidationProtocolCommonMain, exported by the Kaluga bytes KSP processor",
+  "layouts": {
+    "Command": {
+      "doc": "A command the client writes to the control characteristic: a command byte, then the command's fields. A command that\nholds back an answer has to be armed before the request it holds, as the client sends one ATT request at a time.",
+      "order": "lsb",
+      "type": {
+        "kind": "sealed",
+        "discriminators": {
+          "AnswerWithError": "06",
+          "CapMtu": "10",
+          "ChangeServices": "0b",
+          "Drop": "04",
+          "DropWhenHeld": "03",
+          "HoldCccdWrite": "02",
+          "HoldRead": "01",
+          "Indicate": "07",
+          "NotifyBurst": "08",
+          "Notify": "05",
+          "NotifyLength": "0e",
+          "NotifyTwin": "0a",
+          "Reset": "00",
+          "SetLongValue": "09",
+          "SetLongValueTo": "0f",
+          "StartBeacon": "0c",
+          "StopBeacon": "0d"
+        },
+        "options": [
+          {
+            "name": "AnswerWithError",
+            "doc": "Answers every read and write of the error characteristic with the ATT error code, or succeeds when 0.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "code", "type": { "kind": "natural", "lengths": [8] } }
+              ]
+            }
+          },
+          {
+            "name": "CapMtu",
+            "doc": "Answers the MTU exchange of the next connection with at most mtu.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "mtu", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "ChangeServices",
+            "doc": "Adds the extra service and indicates Service Changed afterMillis after answering this command.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "afterMillis", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "Drop",
+            "doc": "Ends the link afterMillis after answering this command.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "afterMillis", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "DropWhenHeld",
+            "doc": "Once a held request arrives, ends the link after afterMillis.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "afterMillis", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "HoldCccdWrite",
+            "doc": "Holds the answer to the next write of the data characteristic's CCCD for releaseMillis, or until the link ends when 0.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "releaseMillis", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "HoldRead",
+            "doc": "Holds the answer to the next read of the data characteristic for releaseMillis, or until the link ends when 0.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "releaseMillis", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "Indicate",
+            "doc": "Indicates value on the indicate characteristic afterMillis after answering this command.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "afterMillis", "type": { "kind": "natural", "lengths": [16] } },
+                {
+                  "name": "value",
+                  "order": "lsb",
+                  "type": { "kind": "list", "marking": { "kind": "unmarked" }, "item": { "name": "0", "type": { "kind": "natural", "lengths": [8] } } }
+                }
+              ]
+            }
+          },
+          {
+            "name": "NotifyBurst",
+            "doc": "Notifies count values on the data characteristic back to back, each its index as a little-endian u16.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "count", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "Notify",
+            "doc": "Notifies value on the data characteristic afterMillis after answering this command.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "afterMillis", "type": { "kind": "natural", "lengths": [16] } },
+                {
+                  "name": "value",
+                  "order": "lsb",
+                  "type": { "kind": "list", "marking": { "kind": "unmarked" }, "item": { "name": "0", "type": { "kind": "natural", "lengths": [8] } } }
+                }
+              ]
+            }
+          },
+          {
+            "name": "NotifyLength",
+            "doc": "Notifies length bytes counting up from 0 on the data characteristic.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "length", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "NotifyTwin",
+            "doc": "Notifies value on twin characteristic index (0 or 1) afterMillis after answering this command.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "afterMillis", "type": { "kind": "natural", "lengths": [16] } },
+                { "name": "index", "type": { "kind": "natural", "lengths": [8] } },
+                {
+                  "name": "value",
+                  "order": "lsb",
+                  "type": { "kind": "list", "marking": { "kind": "unmarked" }, "item": { "name": "0", "type": { "kind": "natural", "lengths": [8] } } }
+                }
+              ]
+            }
+          },
+          {
+            "name": "Reset",
+            "doc": "Disarms everything, releases held answers and restores the values every connection starts with.",
+            "type": { "kind": "struct", "fields": [] }
+          },
+          {
+            "name": "SetLongValue",
+            "doc": "Sets the value of the long characteristic to length bytes counting up from 0.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "length", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "SetLongValueTo",
+            "doc": "Sets the value of the long characteristic to value.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                {
+                  "name": "value",
+                  "order": "lsb",
+                  "type": { "kind": "list", "marking": { "kind": "unmarked" }, "item": { "name": "0", "type": { "kind": "natural", "lengths": [8] } } }
+                }
+              ]
+            }
+          },
+          {
+            "name": "StartBeacon",
+            "doc": "Starts advertising the beacon, a second device with a name, manufacturer data and service data.",
+            "type": { "kind": "struct", "fields": [] }
+          },
+          { "name": "StopBeacon", "type": { "kind": "struct", "fields": [] } }
+        ]
+      }
+    },
+    "Instruction": { "form": "Instruction" },
+    "Message": {
+      "doc": "An instruction as the server notifies it on the control characteristic, under an id the result carries back.",
+      "order": "lsb",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "id", "type": { "kind": "natural", "lengths": [8] } },
+          { "name": "instruction", "form": "Instruction" }
+        ]
+      }
+    },
+    "Report": {
+      "doc": "What the central writes to the result characteristic.",
+      "order": "lsb",
+      "type": {
+        "kind": "sealed",
+        "fallback": "Result",
+        "discriminators": { "Forwarded": "00" },
+        "options": [
+          {
+            "name": "Forwarded",
+            "doc": "A notification of target the central received.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "target", "type": { "kind": "natural", "lengths": [8] } },
+                {
+                  "name": "value",
+                  "order": "lsb",
+                  "type": { "kind": "list", "marking": { "kind": "unmarked" }, "item": { "name": "0", "type": { "kind": "natural", "lengths": [8] } } }
+                }
+              ]
+            }
+          },
+          {
+            "name": "Result",
+            "doc": "The result of the message with this id: status 0 for success, the ATT error code, E0 when an echoed part of a\nprepared write differed from what was sent, E1 for a missing target or E2 for anything else.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "id", "type": { "kind": "discriminator", "lengths": [8] } },
+                { "name": "status", "type": { "kind": "natural", "lengths": [8] } },
+                {
+                  "name": "data",
+                  "order": "lsb",
+                  "type": { "kind": "list", "marking": { "kind": "unmarked" }, "item": { "name": "0", "type": { "kind": "natural", "lengths": [8] } } }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "forms": {
+    "Instruction": {
+      "doc": "An instruction byte, then the instruction's fields. A target is the last byte of the UUID of a characteristic.",
+      "order": "lsb",
+      "type": {
+        "kind": "sealed",
+        "discriminators": {
+          "Clear": "02",
+          "Disconnect": "06",
+          "Execute": "05",
+          "Prepare": "04",
+          "RequestMtu": "09",
+          "Stage": "01",
+          "Subscribe": "07",
+          "Unsubscribe": "08",
+          "Write": "03"
+        },
+        "options": [
+          { "name": "Clear", "doc": "Clears the staged bytes.", "type": { "kind": "struct", "fields": [] } },
+          { "name": "Disconnect", "doc": "Disconnects, after answering.", "type": { "kind": "struct", "fields": [] } },
+          {
+            "name": "Execute",
+            "doc": "Sends an Execute Write Request with these flags: 1 writes the prepared queue, 0 cancels it.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "flags", "type": { "kind": "natural", "lengths": [8] } }
+              ]
+            }
+          },
+          {
+            "name": "Prepare",
+            "doc": "Sends one Prepare Write Request of length staged bytes from start at offset of target.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "target", "type": { "kind": "natural", "lengths": [8] } },
+                { "name": "offset", "type": { "kind": "natural", "lengths": [16] } },
+                { "name": "start", "type": { "kind": "natural", "lengths": [16] } },
+                { "name": "length", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "RequestMtu",
+            "doc": "Requests an MTU of mtu. The result holds the MTU the central then has as a little-endian u16.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "mtu", "type": { "kind": "natural", "lengths": [16] } }
+              ]
+            }
+          },
+          {
+            "name": "Stage",
+            "doc": "Stages bytes after what is staged already. The result holds the staged length as a little-endian u16.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                {
+                  "name": "bytes",
+                  "order": "lsb",
+                  "type": { "kind": "list", "marking": { "kind": "unmarked" }, "item": { "name": "0", "type": { "kind": "natural", "lengths": [8] } } }
+                }
+              ]
+            }
+          },
+          {
+            "name": "Subscribe",
+            "doc": "Subscribes to target and forwards each notification as a Forwarded report.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "target", "type": { "kind": "natural", "lengths": [8] } }
+              ]
+            }
+          },
+          {
+            "name": "Unsubscribe",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "target", "type": { "kind": "natural", "lengths": [8] } }
+              ]
+            }
+          },
+          {
+            "name": "Write",
+            "doc": "Writes the staged bytes to target with response, as a long write when they do not fit in one request.",
+            "type": {
+              "kind": "struct",
+              "fields": [
+                { "name": "target", "type": { "kind": "natural", "lengths": [8] } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

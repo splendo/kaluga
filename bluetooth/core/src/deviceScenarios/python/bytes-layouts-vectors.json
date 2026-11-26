@@ -1,0 +1,300 @@
+{
+  "doc": "Byte vectors of the control protocols in bytes-layouts.json, checked against the Kotlin classes and the python reader. Byte lists are hex.",
+  "vectors": [
+    {
+      "name": "Command.Reset",
+      "layout": "Command",
+      "hex": "00",
+      "value": {
+        "type": "Reset"
+      }
+    },
+    {
+      "name": "Command.HoldRead",
+      "layout": "Command",
+      "hex": "01 20 03",
+      "value": {
+        "type": "HoldRead",
+        "releaseMillis": 800
+      }
+    },
+    {
+      "name": "Command.HoldCccdWrite",
+      "layout": "Command",
+      "hex": "02 00 00",
+      "value": {
+        "type": "HoldCccdWrite",
+        "releaseMillis": 0
+      }
+    },
+    {
+      "name": "Command.DropWhenHeld",
+      "layout": "Command",
+      "hex": "03 e8 03",
+      "value": {
+        "type": "DropWhenHeld",
+        "afterMillis": 1000
+      }
+    },
+    {
+      "name": "Command.Drop",
+      "layout": "Command",
+      "hex": "04 c8 00",
+      "value": {
+        "type": "Drop",
+        "afterMillis": 200
+      }
+    },
+    {
+      "name": "Command.Notify",
+      "layout": "Command",
+      "hex": "05 2c 01 33",
+      "value": {
+        "type": "Notify",
+        "afterMillis": 300,
+        "value": "33"
+      }
+    },
+    {
+      "name": "Command.AnswerWithError",
+      "layout": "Command",
+      "hex": "06 85",
+      "value": {
+        "type": "AnswerWithError",
+        "code": 133
+      }
+    },
+    {
+      "name": "Command.Indicate",
+      "layout": "Command",
+      "hex": "07 00 00 11 22",
+      "value": {
+        "type": "Indicate",
+        "afterMillis": 0,
+        "value": "11 22"
+      }
+    },
+    {
+      "name": "Command.NotifyBurst",
+      "layout": "Command",
+      "hex": "08 c8 00",
+      "value": {
+        "type": "NotifyBurst",
+        "count": 200
+      }
+    },
+    {
+      "name": "Command.SetLongValue",
+      "layout": "Command",
+      "hex": "09 58 02",
+      "value": {
+        "type": "SetLongValue",
+        "length": 600
+      }
+    },
+    {
+      "name": "Command.NotifyTwin",
+      "layout": "Command",
+      "hex": "0a 00 00 01 71",
+      "value": {
+        "type": "NotifyTwin",
+        "afterMillis": 0,
+        "index": 1,
+        "value": "71"
+      }
+    },
+    {
+      "name": "Command.ChangeServices",
+      "layout": "Command",
+      "hex": "0b c8 00",
+      "value": {
+        "type": "ChangeServices",
+        "afterMillis": 200
+      }
+    },
+    {
+      "name": "Command.StartBeacon",
+      "layout": "Command",
+      "hex": "0c",
+      "value": {
+        "type": "StartBeacon"
+      }
+    },
+    {
+      "name": "Command.StopBeacon",
+      "layout": "Command",
+      "hex": "0d",
+      "value": {
+        "type": "StopBeacon"
+      }
+    },
+    {
+      "name": "Command.NotifyLength",
+      "layout": "Command",
+      "hex": "0e 02 02",
+      "value": {
+        "type": "NotifyLength",
+        "length": 514
+      }
+    },
+    {
+      "name": "Command.SetLongValueTo",
+      "layout": "Command",
+      "hex": "0f 01 02 03",
+      "value": {
+        "type": "SetLongValueTo",
+        "value": "01 02 03"
+      }
+    },
+    {
+      "name": "Command.CapMtu",
+      "layout": "Command",
+      "hex": "10 17 00",
+      "value": {
+        "type": "CapMtu",
+        "mtu": 23
+      }
+    },
+    {
+      "name": "Message.Stage",
+      "layout": "Message",
+      "hex": "01 01 01 02 03",
+      "value": {
+        "id": 1,
+        "instruction": {
+          "type": "Stage",
+          "bytes": "01 02 03"
+        }
+      }
+    },
+    {
+      "name": "Message.Clear",
+      "layout": "Message",
+      "hex": "02 02",
+      "value": {
+        "id": 2,
+        "instruction": {
+          "type": "Clear"
+        }
+      }
+    },
+    {
+      "name": "Message.Write",
+      "layout": "Message",
+      "hex": "03 03 03",
+      "value": {
+        "id": 3,
+        "instruction": {
+          "type": "Write",
+          "target": 3
+        }
+      }
+    },
+    {
+      "name": "Message.Prepare",
+      "layout": "Message",
+      "hex": "04 04 03 16 00 12 00 12 00",
+      "value": {
+        "id": 4,
+        "instruction": {
+          "type": "Prepare",
+          "target": 3,
+          "offset": 22,
+          "start": 18,
+          "length": 18
+        }
+      }
+    },
+    {
+      "name": "Message.Execute",
+      "layout": "Message",
+      "hex": "05 05 01",
+      "value": {
+        "id": 5,
+        "instruction": {
+          "type": "Execute",
+          "flags": 1
+        }
+      }
+    },
+    {
+      "name": "Message.Disconnect",
+      "layout": "Message",
+      "hex": "06 06",
+      "value": {
+        "id": 6,
+        "instruction": {
+          "type": "Disconnect"
+        }
+      }
+    },
+    {
+      "name": "Message.Subscribe",
+      "layout": "Message",
+      "hex": "07 07 05",
+      "value": {
+        "id": 7,
+        "instruction": {
+          "type": "Subscribe",
+          "target": 5
+        }
+      }
+    },
+    {
+      "name": "Message.Unsubscribe",
+      "layout": "Message",
+      "hex": "08 08 05",
+      "value": {
+        "id": 8,
+        "instruction": {
+          "type": "Unsubscribe",
+          "target": 5
+        }
+      }
+    },
+    {
+      "name": "Message.RequestMtu",
+      "layout": "Message",
+      "hex": "09 09 05 02",
+      "value": {
+        "id": 9,
+        "instruction": {
+          "type": "RequestMtu",
+          "mtu": 517
+        }
+      }
+    },
+    {
+      "name": "Report.Forwarded",
+      "layout": "Report",
+      "hex": "00 05 21 22",
+      "value": {
+        "type": "Forwarded",
+        "target": 5,
+        "value": "21 22"
+      }
+    },
+    {
+      "name": "Report.Result",
+      "layout": "Report",
+      "hex": "09 00 05 02",
+      "value": {
+        "type": "Result",
+        "id": 9,
+        "status": 0,
+        "data": "05 02"
+      }
+    },
+    {
+      "name": "Report.Result.Empty",
+      "layout": "Report",
+      "hex": "ff e0",
+      "value": {
+        "type": "Result",
+        "id": 255,
+        "status": 224,
+        "data": ""
+      }
+    }
+  ]
+}
