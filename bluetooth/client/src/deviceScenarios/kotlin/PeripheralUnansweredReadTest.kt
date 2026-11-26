@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -40,8 +41,13 @@ class PeripheralUnansweredReadTest : PeripheralTest() {
         val start = TimeSource.Monotonic.markNow()
         val response = unanswered.response.answer("unanswered read", 60.seconds)
         log("unanswered read failed after ${start.elapsedNow()}")
-        // Android fails the read with its GATT_ERROR just before it reports the link as closed.
-        assertEquals<GattResponse>(GattResponse.ApplicationError(0x85), response)
+        // Android fails the read with its GATT_ERROR just before it reports the link as closed. CoreBluetooth closes the
+        // link without failing the read, so the disconnect answers it.
+        val expected = when (platform.stack) {
+            Stack.Android -> GattResponse.ApplicationError(0x85)
+            Stack.CoreBluetooth -> GattResponse.DeviceUnavailable
+        }
+        assertEquals<GattResponse>(expected, response)
         assertEquals<GattResponse>(GattResponse.DeviceUnavailable, queued.response.answer("queued read"))
         awaitDisconnected()
         assertTrue(attributes.data.invalidated.isCompleted)
