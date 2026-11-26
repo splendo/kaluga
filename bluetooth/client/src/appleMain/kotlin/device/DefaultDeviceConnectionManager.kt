@@ -100,10 +100,11 @@ internal actual class DefaultDeviceConnectionManager(
         @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
             val action = currentAction
+            // Handled on the delegate's queue, not in a coroutine: a notification the peripheral sends right after
+            // acknowledging the enable arrives next on that queue, and is only delivered once the characteristic is
+            // registered as notifying.
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
-                launch {
-                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
-                }
+                action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
             }
         }
 
