@@ -78,3 +78,6 @@ google-services.json
 /non_dependent_projects.properties
 
 .kotlin/
+
+# python bytecode of the device scenario peers
+__pycache__/
