@@ -199,6 +199,12 @@ the removed `BluetoothBuilder` facade.
   its `cause`, instead of the bare error. The read a peripheral never answers is one: it answered
   `ApplicationError(0x85)` and now answers `DeviceUnavailable(cause = ApplicationError(0x85))`. The same
   status sent by a peripheral on a link that stays still answers as the plain error.
+- On Android, a request the stack fails with `GATT_ERROR` (0x85) while the platform still reports the
+  device as connected waits for the disconnect, for `gattErrorDisconnectGrace` on `DefaultScanner.Builder`
+  and `BluetoothClientBuilder`: if the link goes down within it, the request answers
+  `DeviceUnavailable(cause = ApplicationError(0x85))`, otherwise `ApplicationError(0x85)` that much later.
+  A peripheral that answers 0x85 on a live link is answered later by the grace period. Pass
+  `Duration.ZERO` to answer at once as before.
 - On Apple, a CoreBluetooth error is read by its domain. `CBATTErrorDomain` errors map to the ATT error of
   their code as before. `CBErrorDomain` errors used to be read as the ATT error with the same number; one
   saying the link is gone now answers `DeviceUnavailable(cause = UnknownError(code))`, the others

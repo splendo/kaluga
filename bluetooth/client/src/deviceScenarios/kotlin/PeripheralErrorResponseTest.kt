@@ -78,7 +78,8 @@ class PeripheralErrorResponseTest : PeripheralTest() {
     fun applicationError() = answersWith(0x80, GattResponse.ApplicationError(0x80))
 
     // The same value as Android's own GATT_ERROR, which it also reports when it fails a request as the link drops. Sent
-    // by the peripheral on a link that stays, it is the peripheral's answer.
+    // by the peripheral on a link that stays, it is the peripheral's answer, given on Android once the grace for a
+    // disconnect has passed.
     @Test
     fun applicationErrorWithTheCodeOfAnAndroidGattError() = answersWith(0x85, GattResponse.ApplicationError(0x85))
 
