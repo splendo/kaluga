@@ -26,7 +26,6 @@ import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.currentConnectionState
 import com.splendo.kaluga.bluetooth.dataValue
-import com.splendo.kaluga.bluetooth.gattCode
 import com.splendo.kaluga.bluetooth.mtu
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.warn
@@ -104,7 +103,7 @@ internal actual class DefaultDeviceConnectionManager(
             // acknowledging the enable arrives next on that queue, and is only delivered once the characteristic is
             // registered as notifying.
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
-                action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
+                action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess.Acknowledged else error.writeFailure())
             }
         }
 
@@ -112,7 +111,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
             handleCharacteristicReadOrNotified(
                 didUpdateValueForCharacteristic.UUID,
-                if (error == null) GattResponse.ReadSuccess(didUpdateValueForCharacteristic.value?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.gattCode),
+                if (error == null) GattResponse.ReadSuccess(didUpdateValueForCharacteristic.value?.asBytes ?: byteArrayOf()) else error.readFailure(),
             )
         }
 
@@ -120,13 +119,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
             handleCharacteristicWritten(
                 didWriteValueForCharacteristic.UUID,
-                if (error ==
-                    null
-                ) {
-                    GattResponse.WriteSuccess.Acknowledged
-                } else {
-                    GattResponse.Error.from(error.gattCode)
-                },
+                if (error == null) GattResponse.WriteSuccess.Acknowledged else error.writeFailure(),
             )
         }
 
@@ -134,13 +127,13 @@ internal actual class DefaultDeviceConnectionManager(
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
             handleDescriptorRead(
                 didUpdateValueForDescriptor.UUID,
-                if (error == null) GattResponse.ReadSuccess(didUpdateValueForDescriptor.dataValue?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.gattCode),
+                if (error == null) GattResponse.ReadSuccess(didUpdateValueForDescriptor.dataValue?.asBytes ?: byteArrayOf()) else error.readFailure(),
             )
         }
 
         @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
-            handleDescriptorWritten(didWriteValueForDescriptor.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else GattResponse.Error.from(error.gattCode))
+            handleDescriptorWritten(didWriteValueForDescriptor.UUID, if (error == null) GattResponse.WriteSuccess.Acknowledged else error.writeFailure())
         }
 
         @ObjCSignatureOverride

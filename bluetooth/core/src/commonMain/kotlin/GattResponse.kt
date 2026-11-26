@@ -369,8 +369,8 @@ sealed interface GattResponse {
     }
 
     /**
-     * An [Error] with a code no other [Error] has: one ATT reserves, which a peer may still send, or a status of the
-     * platform's own.
+     * An [Error] no other [Error] describes: a code ATT reserves, which a peer may still send, or a status of the
+     * platform's own, whose code may equal that of another [Error].
      * @property statusCode the status code of the error
      */
     data class UnknownError(override val statusCode: Int) : Error
