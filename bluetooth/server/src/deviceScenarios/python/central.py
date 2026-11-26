@@ -1,4 +1,7 @@
-"""Bumble GATT central on the Android emulator's netsim radio, steered by the server device test itself.
+"""Bumble GATT central for the Bluetooth server device tests, steered by the test itself.
+
+By default it runs on the Android emulator's netsim radio. With `--transport` it runs on any controller bumble can
+drive, such as a USB HCI controller (`serial:/dev/cu.usbmodem2101`) in range of the test's own radio.
 
 The central scans for the test server's service, connects, subscribes to its control characteristic and carries out
 every instruction the server notifies there. It answers each instruction by writing a result to the result

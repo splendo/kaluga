@@ -1,4 +1,8 @@
-"""Bumble GATT peripheral on the Android emulator's netsim radio, steered by the device test itself.
+"""Bumble GATT peripheral for the Bluetooth device tests, steered by the device test itself.
+
+By default it runs on the Android emulator's netsim radio. With `--transport` it runs on any controller bumble can
+drive, such as a USB HCI controller (`serial:/dev/cu.usbmodem2101`) in range of the test's own radio. The beacon
+takes a controller of its own: with `--beacon-transport ""` there is none, and the beacon commands only log.
 
 The device test writes commands to the control characteristic. A command that holds back an answer has to be
 armed before the request it holds: the client sends one ATT request at a time, so nothing can reach the
@@ -27,6 +31,7 @@ Everything armed by a command ends with the link, and the GATT table loses the e
 
 import argparse
 import asyncio
+import contextlib
 import logging
 import struct
 import sys
@@ -100,7 +105,7 @@ class RejectPairing(PairingDelegate):
 
 
 class Peripheral:
-    def __init__(self, device: Device, beacon: Device):
+    def __init__(self, device: Device, beacon: Device | None):
         self.device = device
         self.beacon = beacon
         self.value = INITIAL_VALUE
@@ -337,10 +342,15 @@ class Peripheral:
             log("removed the extra service")
 
     async def start_beacon(self):
+        if self.beacon is None:
+            log("no beacon to start")
+            return
         await self.beacon.start_advertising(advertising_type=AdvertisingType.UNDIRECTED_SCANNABLE)
         log("beacon advertising")
 
     async def stop_beacon(self):
+        if self.beacon is None:
+            return
         await self.beacon.stop_advertising()
         log("beacon stopped")
 
@@ -365,32 +375,41 @@ class Peripheral:
         connection.on("connection_att_mtu_update", lambda: log(f"ATT MTU {connection.att_mtu}"))
 
 
+def beacon_device(hci_transport, address, name):
+    beacon = Device.with_hci(name, Address(address), hci_transport.source, hci_transport.sink)
+    beacon.advertising_data = bytes(
+        AdvertisingData(
+            [
+                (AdvertisingData.COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, bytes(BEACON_SERVICE)),
+                (AdvertisingData.SERVICE_DATA_16_BIT_UUID, struct.pack("<H", BEACON_SERVICE_DATA_UUID) + BEACON_SERVICE_DATA),
+            ]
+        )
+    )
+    beacon.scan_response_data = bytes(
+        AdvertisingData(
+            [
+                (AdvertisingData.COMPLETE_LOCAL_NAME, name.encode()),
+                (AdvertisingData.MANUFACTURER_SPECIFIC_DATA, struct.pack("<H", BEACON_COMPANY) + BEACON_MANUFACTURER_DATA),
+            ]
+        )
+    )
+    return beacon
+
+
 async def main(transport, address, name, beacon_transport, beacon_address, beacon_name):
-    async with await open_transport(transport) as hci_transport, await open_transport(beacon_transport) as beacon_hci_transport:
+    async with contextlib.AsyncExitStack() as stack:
+        hci_transport = await stack.enter_async_context(await open_transport(transport))
         device = Device.with_hci(name, Address(address), hci_transport.source, hci_transport.sink)
-        beacon = Device.with_hci(beacon_name, Address(beacon_address), beacon_hci_transport.source, beacon_hci_transport.sink)
+        beacon = None
+        if beacon_transport:
+            beacon_hci_transport = await stack.enter_async_context(await open_transport(beacon_transport))
+            beacon = beacon_device(beacon_hci_transport, beacon_address, beacon_name)
+            await beacon.power_on()
         peripheral = Peripheral(device, beacon)
         # Legacy advertising data holds 31 bytes: the 128-bit service UUID fills most of it, so the name goes in the scan response.
         device.advertising_data = bytes(AdvertisingData([(AdvertisingData.COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, bytes(SERVICE))]))
         device.scan_response_data = bytes(AdvertisingData([(AdvertisingData.COMPLETE_LOCAL_NAME, name.encode())]))
-        beacon.advertising_data = bytes(
-            AdvertisingData(
-                [
-                    (AdvertisingData.COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, bytes(BEACON_SERVICE)),
-                    (AdvertisingData.SERVICE_DATA_16_BIT_UUID, struct.pack("<H", BEACON_SERVICE_DATA_UUID) + BEACON_SERVICE_DATA),
-                ]
-            )
-        )
-        beacon.scan_response_data = bytes(
-            AdvertisingData(
-                [
-                    (AdvertisingData.COMPLETE_LOCAL_NAME, beacon_name.encode()),
-                    (AdvertisingData.MANUFACTURER_SPECIFIC_DATA, struct.pack("<H", BEACON_COMPANY) + BEACON_MANUFACTURER_DATA),
-                ]
-            )
-        )
         device.on("connection", peripheral.on_connection)
-        await beacon.power_on()
         await device.power_on()
         await device.start_advertising(auto_restart=True)
         log(f"advertising {name} {address}")
