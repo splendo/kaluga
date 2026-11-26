@@ -131,6 +131,7 @@ val value = "".bind(device) {
 Whether the disconnect was requested or the link dropped, everything pending on the connection and everything discovered on it settles the same way; nothing throws and nothing stays pending.
 
 - Pending actions answer with a typed failure. `read()` and `write()` return `GattResponse.DeviceUnavailable`, `subscribe {}` returns `FailedToSubscribe(GattResponse.DeviceUnavailable)`, `enableNotification()`, `disableNotification()` and `Subscription.unsubscribe()` return `GattResponse.DeviceUnavailable`, and `requestMtu` returns `GattResponse.MTUDeviceUnavailable`. This covers the action in flight, the actions queued behind it and actions issued while the device is not in a discovered state. A requested disconnect answers the queued actions as it starts; the action in flight still gets the device's answer if it arrives before the link closes.
+- A failure the platform reports as the link drops is wrapped. Where Android fails the action in flight with an error status and already reports the device as disconnected at that moment, the action answers `DeviceUnavailable` (`MTUDeviceUnavailable` for `requestMtu`) with that error as its `cause`. The `cause` is `null` when the disconnect itself answered the action. Both are data classes, so one with a `cause` is not equal to one without: check for a lost link with `is GattResponse.DeviceUnavailable`.
 - Flows end. `value()` (and the notification flows of generated clients) complete normally, `isNotifying` becomes `false` and subscriptions are dropped.
 - Objects stay stale. A `RemoteService`, `RemoteCharacteristic` or `RemoteDescriptor` of the ended connection never becomes usable again; later calls on it answer with the same typed failures at once, without reaching the device. After reconnecting, `discoveredServices()` emits new objects.
 - `invalidated` tells you. Each of these objects has an `invalidated: Deferred<Unit>` completed when its connection ends (a `reset()` of the connection manager ends it too). Await it, or bound a collection with it:
@@ -222,7 +223,7 @@ There is a major difference when it comes to the reporting of scanned devices be
 To align the behaviour across platforms the [CBCentralManagerScanOptionAllowDuplicatesKey](https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey) option is enabled on iOS. It can be set to another value using `ScanSettings` as shown above.
 
 ## Platform differences
-Android and CoreBluetooth answer some situations differently, and Kaluga passes their answers on as they come:
+Android and CoreBluetooth answer some situations differently, and Kaluga passes their answers on as they come, apart from wrapping a failure reported as the link drops (see [Disconnecting](#disconnecting)):
 
 | Situation | Android | CoreBluetooth |
 | --- | --- | --- |
@@ -232,7 +233,8 @@ Android and CoreBluetooth answer some situations differently, and Kaluga passes 
 | Writing more than 512 bytes | Nothing is sent; the write answers `InvalidAttributeValueLength` | Sent as a long write; the answer is the peripheral's |
 | A notification longer than 512 bytes, possible at an MTU above 515 | Dropped by the stack; nothing reaches the app | Delivered whole |
 | Write without response | `WriteSuccess.Acknowledged` once the stack has taken the write | `WriteSuccess.Ready`: the peripheral was ready to take it, nothing confirms that it arrived |
-| A read the peripheral never answers | After 30 seconds the read fails with `ApplicationError(0x85)` (Android's `GATT_ERROR`) and the stack drops the link | After 30 seconds CoreBluetooth closes the link without failing the read, which answers `DeviceUnavailable` |
+| A read the peripheral never answers | After 30 seconds the stack fails the read with `GATT_ERROR` (0x85) as it drops the link, so the read answers `DeviceUnavailable(cause = ApplicationError(0x85))` | After 30 seconds CoreBluetooth closes the link without failing the read, so the disconnect answers it with `DeviceUnavailable` without a cause |
+| A request failed as the link drops | The stack fails the request with an error status some milliseconds before it reports the disconnect; as the platform already reports the device as disconnected, the request answers `DeviceUnavailable` with the mapped error as its `cause`. The same status sent by a peripheral on a link that stays answers as the plain error, such as `ApplicationError(0x85)` | The request answers the error code CoreBluetooth reports, read as an ATT error |
 
 An Android client stays at the default ATT MTU of 23 until the app calls `requestMtu`, so a value that does not fit one packet takes a long read or write. CoreBluetooth negotiates the MTU by itself when connecting and has no API to request one: `requestMtu` sends nothing and answers `MTUSuccess` with the longest write without response CoreBluetooth allows plus the 3 byte ATT header. That follows the ATT MTU, 23 at the default, but CoreBluetooth caps such a write at 512 bytes, so at the largest ATT MTU of 517 it reports 515.
 
@@ -241,7 +243,7 @@ Where a value is cut, dropped or routed without the app being told, Kaluga logs 
 - a read that ends at or past 512 bytes;
 - a write longer than 512 bytes that Android does not send;
 - notifications enabled on a characteristic that shares its UUID with another notifying characteristic: notifications are routed by UUID, so those of both reach the one enabled last;
-- a status code that is no known error, answered as `UnknownError`;
+- a status code that is no known error, answered as `UnknownError` or as the `cause` of a `DeviceUnavailable`;
 - on Android, a Service Changed indication, after which the services discovered before stay in use.
 
 The message is only built when the logger takes debug messages.
