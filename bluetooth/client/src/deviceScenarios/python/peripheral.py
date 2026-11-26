@@ -65,6 +65,16 @@ def log(message):
     print(f"{time.monotonic() - START:9.3f} {message}", flush=True)
 
 
+async def reach(device: Device, address: str):
+    """Asks the controller at the public `address` for its name. Only a controller on the same radio can answer."""
+    try:
+        name = await asyncio.wait_for(device.request_remote_name(Address(address, Address.PUBLIC_DEVICE_ADDRESS)), 5)
+    except Exception as error:
+        log(f"cannot reach {address}: {error!r}")
+        raise SystemExit(1)
+    log(f"reached {address} ({name})")
+
+
 def counting(length):
     return bytes(i & 0xFF for i in range(length))
 
@@ -381,7 +391,7 @@ def beacon_device(hci_transport, address, name):
     return beacon
 
 
-async def main(transport, address, name, beacon_transport, beacon_address, beacon_name):
+async def main(transport, address, name, beacon_transport, beacon_address, beacon_name, reach_address):
     async with contextlib.AsyncExitStack() as stack:
         hci_transport = await stack.enter_async_context(await open_transport(transport))
         device = Device.with_hci(name, Address(address), hci_transport.source, hci_transport.sink)
@@ -396,6 +406,8 @@ async def main(transport, address, name, beacon_transport, beacon_address, beaco
         device.scan_response_data = bytes(AdvertisingData([(AdvertisingData.COMPLETE_LOCAL_NAME, name.encode())]))
         device.on("connection", peripheral.on_connection)
         await device.power_on()
+        if reach_address:
+            await reach(device, reach_address)
         await device.start_advertising(auto_restart=True)
         log(f"advertising {name} {address}")
         await hci_transport.source.terminated
@@ -409,6 +421,7 @@ if __name__ == "__main__":
     parser.add_argument("--beacon-transport", default="android-netsim:name=kaluga-beacon")
     parser.add_argument("--beacon-address", default="F0:F1:F2:F3:F4:F7")
     parser.add_argument("--beacon-name", default="kaluga-beacon")
+    parser.add_argument("--reach", metavar="ADDRESS", help="exit unless the controller at this public address answers first")
     parser.add_argument("--verbose", action="store_true")
     arguments = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if arguments.verbose else logging.WARNING, stream=sys.stderr)
@@ -420,5 +433,6 @@ if __name__ == "__main__":
             arguments.beacon_transport,
             arguments.beacon_address,
             arguments.beacon_name,
+            arguments.reach,
         )
     )

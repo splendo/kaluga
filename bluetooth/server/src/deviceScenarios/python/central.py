@@ -45,6 +45,16 @@ def log(message):
     print(f"{time.monotonic() - START:9.3f} {message}", flush=True)
 
 
+async def reach(device: Device, address: str):
+    """Asks the controller at the public `address` for its name. Only a controller on the same radio can answer."""
+    try:
+        name = await asyncio.wait_for(device.request_remote_name(Address(address, Address.PUBLIC_DEVICE_ADDRESS)), 5)
+    except Exception as error:
+        log(f"cannot reach {address}: {error!r}")
+        raise SystemExit(1)
+    log(f"reached {address} ({name})")
+
+
 def target_uuid(target):
     return UUID(f"6b7b00{target:02x}-5d1c-4f0e-9a51-2f6f3c1d8e01")
 
@@ -228,10 +238,12 @@ class Session:
             log(f"disconnecting failed: {error!r}")
 
 
-async def main(transport, address, name):
+async def main(transport, address, name, reach_address):
     async with await open_transport(transport) as hci_transport:
         device = Device.with_hci(name, Address(address), hci_transport.source, hci_transport.sink)
         await device.power_on()
+        if reach_address:
+            await reach(device, reach_address)
         await Central(device).run()
 
 
@@ -240,7 +252,8 @@ if __name__ == "__main__":
     parser.add_argument("--transport", default="android-netsim:name=kaluga-central")
     parser.add_argument("--address", default="F0:F1:F2:F3:F4:F8")
     parser.add_argument("--name", default="kaluga-central")
+    parser.add_argument("--reach", metavar="ADDRESS", help="exit unless the controller at this public address answers first")
     parser.add_argument("--verbose", action="store_true")
     arguments = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if arguments.verbose else logging.WARNING, stream=sys.stderr)
-    asyncio.run(main(arguments.transport, arguments.address, arguments.name))
+    asyncio.run(main(arguments.transport, arguments.address, arguments.name, arguments.reach))
