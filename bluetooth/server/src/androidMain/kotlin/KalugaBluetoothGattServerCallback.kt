@@ -45,6 +45,7 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         const val TAG = "KalugaBluetoothGattServerCallback"
         const val MTU_HEADER_SIZE = 3
         const val DEFAULT_MTU_SIZE = 23
+        const val MAX_ATTRIBUTE_LENGTH = 512
     }
 
     data class ServiceAdded(val service: BluetoothGattService, val success: Boolean)

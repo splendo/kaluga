@@ -46,6 +46,7 @@ import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.service.EnableServiceActivity
+import kotlin.math.min
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -254,11 +255,15 @@ internal sealed class AndroidServerState {
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
             // Android silently truncates a notification larger than the negotiated ATT payload (mtu - 3),
-            // delivering a malformed frame with no error. Fail loudly instead of emitting corrupt data.
-            val maxPayloadSize = (device.mtu ?: KalugaBluetoothGattServerCallback.DEFAULT_MTU_SIZE) - KalugaBluetoothGattServerCallback.MTU_HEADER_SIZE
+            // delivering a malformed frame with no error, and throws on one longer than an attribute can hold, which
+            // a large MTU leaves room for. Fail loudly instead of emitting corrupt data or crashing.
+            val maxPayloadSize = min(
+                (device.mtu ?: KalugaBluetoothGattServerCallback.DEFAULT_MTU_SIZE) - KalugaBluetoothGattServerCallback.MTU_HEADER_SIZE,
+                KalugaBluetoothGattServerCallback.MAX_ATTRIBUTE_LENGTH,
+            )
             if (value.size > maxPayloadSize) {
                 logger.warn(TAG) {
-                    "Notification for characteristic ${characteristic.uuid.uuidString} is ${value.size} bytes but the negotiated MTU only allows $maxPayloadSize. " +
+                    "Notification for characteristic ${characteristic.uuid.uuidString} is ${value.size} bytes but at most $maxPayloadSize can be sent. " +
                         "Not sending to avoid a truncated frame."
                 }
                 return@coroutineScope false
