@@ -68,6 +68,7 @@ internal actual class DefaultDeviceConnectionManager(
     deviceWrapper: DeviceWrapper,
     private val connectionSettings: ConnectionSettings = ConnectionSettings(),
     coroutineScope: CoroutineScope,
+    private val connectionState: (BluetoothGatt?) -> Int? = context.gattConnectionState(),
 ) : BaseDeviceConnectionManager(deviceWrapper, connectionSettings, coroutineScope) {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : DeviceConnectionManager.Builder {
@@ -78,8 +79,6 @@ internal actual class DefaultDeviceConnectionManager(
     override val coroutineContext: CoroutineContext = coroutineScope.coroutineContext
 
     private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
-
-    private val bluetoothManager: BluetoothManager? by lazy { context.getSystemService(BluetoothManager::class.java) }
 
     private inner class Callback(private val logger: ConnectionSettings.ConnectionLogger) : BluetoothGattCallback() {
 
@@ -94,7 +93,7 @@ internal actual class DefaultDeviceConnectionManager(
                 if (status == GATT_SUCCESS) {
                     GattResponse.MTUSuccess(mtu)
                 } else {
-                    mtuFailure(mtu, status) { gatt.connectionState() }
+                    mtuFailure(mtu, status) { connectionState(gatt) }
                 },
             )
         }
@@ -125,7 +124,7 @@ internal actual class DefaultDeviceConnectionManager(
                 ) {
                     GattResponse.WriteSuccess.Acknowledged
                 } else {
-                    writeFailure(status) { gatt.connectionState() }
+                    writeFailure(status) { connectionState(gatt) }
                 },
             )
         }
@@ -175,7 +174,7 @@ internal actual class DefaultDeviceConnectionManager(
             logger.dataLogger[descriptor.characteristic.service.uuid][descriptor.characteristic.uuid][descriptor.uuid].info {
                 "onDescriptorWrite status ${status.gattStatusAsString}"
             }
-            val response = if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else writeFailure(status) { gatt.connectionState() }
+            val response = if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else writeFailure(status) { connectionState(gatt) }
             // Notification enable/disable done by client configuration descriptor write
             val action = currentAction
             if (descriptor.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR && action is DeviceAction.Notification) {
@@ -390,7 +389,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun readCharacteristic(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
-        handleCharacteristicRead(characteristic.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { gatt.connectionState() })
+        handleCharacteristicRead(characteristic.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { connectionState(gatt) })
     }
 
     private fun notifyCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray) {
@@ -398,11 +397,18 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun updateDescriptor(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
-        handleDescriptorRead(descriptor.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { gatt.connectionState() })
+        handleDescriptorRead(descriptor.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { connectionState(gatt) })
     }
+}
 
-    @SuppressLint("MissingPermission")
-    private fun BluetoothGatt?.connectionState(): Int? = this?.device?.let { bluetoothManager?.getConnectionState(it, BluetoothProfile.GATT) }
+/**
+ * Asks the platform for the GATT connection state of the device of a [BluetoothGatt], as a [BluetoothProfile] state, or
+ * `null` if it cannot be asked.
+ */
+@SuppressLint("MissingPermission")
+private fun Context.gattConnectionState(): (BluetoothGatt?) -> Int? {
+    val bluetoothManager: BluetoothManager? by lazy { getSystemService(BluetoothManager::class.java) }
+    return { gatt -> gatt?.device?.let { bluetoothManager?.getConnectionState(it, BluetoothProfile.GATT) } }
 }
 
 // 133 is GATT_ERROR, the stack's own generic failure, reported among others as a link goes down, and also an
