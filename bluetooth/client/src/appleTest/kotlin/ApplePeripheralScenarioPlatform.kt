@@ -45,6 +45,8 @@ object ApplePeripheralScenarioPlatform : PeripheralScenarioPlatform {
     const val VARIABLE = "KALUGA_BLUETOOTH_TEST_PERIPHERAL"
     const val BEACON_VARIABLE = "KALUGA_BLUETOOTH_TEST_BEACON"
 
+    override val stack = PeripheralScenarioPlatform.Stack.CoreBluetooth
+
     @OptIn(ExperimentalForeignApi::class)
     override val isEnabled: Boolean get() = getenv(VARIABLE)?.toKString() == "true"
 

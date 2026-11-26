@@ -25,6 +25,14 @@ import com.splendo.kaluga.bluetooth.device.ConnectableDevice
  */
 interface PeripheralScenarioPlatform {
 
+    /** The Bluetooth stacks the scenarios run on, for the scenarios where they answer differently. */
+    enum class Stack {
+        Android,
+        CoreBluetooth,
+    }
+
+    val stack: Stack
+
     /** Whether the [TestPeripheral] runs next to this test run. Without it the scenarios are skipped. */
     val isEnabled: Boolean
 

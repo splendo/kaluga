@@ -48,6 +48,8 @@ object AndroidPeripheralScenarioPlatform : PeripheralScenarioPlatform {
     private val context get() = instrumentation.targetContext
     private val bluetoothManager by lazy { context.getSystemService(BluetoothManager::class.java) }
 
+    override val stack = PeripheralScenarioPlatform.Stack.Android
+
     override val isEnabled: Boolean get() = InstrumentationRegistry.getArguments().getString(ARGUMENT) == "true"
 
     override val hasBeacon = true
