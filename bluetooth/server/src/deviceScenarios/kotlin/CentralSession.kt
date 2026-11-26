@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.bluetooth.AttMtu
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.logging.defaultLogger
@@ -125,6 +126,25 @@ class CentralSession(val platform: CentralScenarioPlatform) {
         server.stopAdvertising()
     }
 
+    /**
+     * Whether the link is at [mtu] once the central was asked for it: a large one is requested, the default one is
+     * there unless the central negotiated another on its own, which a CoreBluetooth central does.
+     */
+    suspend fun reachMtu(mtu: AttMtu): Boolean = when (mtu) {
+        AttMtu.Default -> central.mtu == AttMtu.Default.size
+
+        AttMtu.Large -> {
+            val (status, data) = instruct(TestCentral.Instruction.RequestMtu(mtu.size))
+            assertEquals(0, status, "MTU request")
+            log("the central has an MTU of ${(data[0].toInt() and 0xFF) or (data[1].toInt() and 0xFF shl 8)}")
+            within(5.seconds, "MTU at the server") {
+                while ((central.mtu ?: 0) <= AttMtu.Default.size) delay(50)
+                central.mtu
+            }
+            true
+        }
+    }
+
     /** Sends [instruction] to the central and returns its status and data. */
     suspend fun instruct(instruction: TestCentral.Instruction): Pair<Int, ByteArray> {
         val id = nextId.also { nextId = nextId % 255 + 1 }
@@ -166,11 +186,12 @@ class CentralSession(val platform: CentralScenarioPlatform) {
 
 /**
  * Runs a [BluetoothServer] against the [TestCentral]. Skipped unless the platform says the central is running, since it
- * has to be started next to the test run, and when its player lacks a capability the scenario [requires].
+ * has to be started next to the test run, when its player lacks a capability the scenario [requires], and when the
+ * link cannot be brought to the [mtu] the scenario runs at.
  */
 abstract class CentralTest {
 
-    protected fun centralTest(timeout: Duration = 120.seconds, requires: Set<TestCentral.Capability> = emptySet(), block: suspend CentralSession.() -> Unit) {
+    protected fun centralTest(timeout: Duration = 120.seconds, requires: Set<TestCentral.Capability> = emptySet(), mtu: AttMtu? = null, block: suspend CentralSession.() -> Unit) {
         val platform = centralScenarioPlatform
         val player = platform.player
         if (player == null) {
@@ -187,6 +208,10 @@ abstract class CentralTest {
             try {
                 session.within(timeout, "test") {
                     session.open()
+                    if (mtu != null && !session.reachMtu(mtu)) {
+                        platform.skip("the central negotiated an MTU of ${session.central.mtu} on its own")
+                        return@within
+                    }
                     session.block()
                 }
             } finally {

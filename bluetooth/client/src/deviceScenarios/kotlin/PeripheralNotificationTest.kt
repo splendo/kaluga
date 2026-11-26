@@ -50,8 +50,12 @@ class PeripheralNotificationTest : PeripheralTest() {
     }
 
     @Test
-    fun burstOfNotificationsArrivesInOrder() = peripheralTest {
-        val attributes = connectAndDiscover()
+    fun burstOfNotificationsArrivesInOrderAtTheDefaultMtu() = burstOfNotificationsArrivesInOrder(AttMtu.Default)
+
+    @Test
+    fun burstOfNotificationsArrivesInOrderAtALargeMtu() = burstOfNotificationsArrivesInOrder(AttMtu.Large)
+
+    private fun burstOfNotificationsArrivesInOrder(mtu: AttMtu) = peripheralTestAt(mtu) { attributes ->
         val notifications = Channel<ByteArray>(Channel.UNLIMITED)
         assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(within(10.seconds, "subscribe") { attributes.data.subscribe { notifications.trySend(it) } })
         val count = 200

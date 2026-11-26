@@ -95,6 +95,30 @@ class PeripheralSession(val platform: PeripheralScenarioPlatform) {
         client.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
     }
 
+    /**
+     * Connects at [mtu]. Android exchanges no MTU until the client requests one, so the default takes nothing and a
+     * large one a request. CoreBluetooth negotiates the largest on its own, so for the default the peripheral caps the
+     * next connection, and this connects again.
+     */
+    suspend fun connectAndDiscover(mtu: AttMtu): Attributes = when (platform.stack) {
+        PeripheralScenarioPlatform.Stack.Android -> connectAndDiscover().also {
+            if (mtu == AttMtu.Large) assertEquals<GattResponse>(GattResponse.MTUSuccess(mtu.size), device.requestMtu(mtu.size).response.answer("MTU request"))
+        }
+
+        PeripheralScenarioPlatform.Stack.CoreBluetooth -> {
+            if (mtu == AttMtu.Default) {
+                connectAndDiscover().send(TestPeripheral.Command.CapMtu(mtu.size))
+                disconnect()
+            }
+            connectAndDiscover().also {
+                // CoreBluetooth tells only the longest value the app may write without response, which it caps at the maximum
+                // attribute length.
+                val reported = minOf(mtu.size, AttMtu.MAX_ATTRIBUTE_LENGTH + 3)
+                assertEquals<GattResponse>(GattResponse.MTUSuccess(reported), device.requestMtu(mtu.size).response.answer("MTU request"))
+            }
+        }
+    }
+
     /** Connects and discovers, and resets the peripheral, which not every player can do on a link of its own. */
     suspend fun connectAndDiscover(): Attributes {
         assertTrue(within(30.seconds, "connect") { device.connect() })
@@ -152,5 +176,14 @@ abstract class PeripheralTest {
                 session.disconnect()
             }
         }
+    }
+
+    /**
+     * Runs a scenario connected at [mtu]. On CoreBluetooth the default MTU takes a peripheral that can cap it, see
+     * [PeripheralSession.connectAndDiscover].
+     */
+    protected fun peripheralTestAt(mtu: AttMtu, timeout: Duration = 120.seconds, block: suspend PeripheralSession.(PeripheralSession.Attributes) -> Unit) {
+        val capMtu = peripheralScenarioPlatform.stack == PeripheralScenarioPlatform.Stack.CoreBluetooth && mtu == AttMtu.Default
+        peripheralTest(timeout, if (capMtu) setOf(TestPeripheral.Capability.CapMtu) else emptySet()) { block(connectAndDiscover(mtu)) }
     }
 }

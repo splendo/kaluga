@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.bluetooth.AttMtu
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.server.TestCentral.Capability
 import com.splendo.kaluga.bluetooth.server.TestCentral.Instruction
@@ -38,7 +39,12 @@ class CentralPreparedWriteTest : CentralTest() {
     // A part whose offset leaves a gap is not appended to the parts before it: the server answers the execute with
     // an error, as validating the offsets is left to the execute.
     @Test
-    fun partAtTheWrongOffset() = centralTest(requires = setOf(Capability.PreparedWrites)) {
+    fun partAtTheWrongOffsetAtTheDefaultMtu() = partAtTheWrongOffset(AttMtu.Default)
+
+    @Test
+    fun partAtTheWrongOffsetAtALargeMtu() = partAtTheWrongOffset(AttMtu.Large)
+
+    private fun partAtTheWrongOffset(mtu: AttMtu) = centralTest(requires = setOf(Capability.PreparedWrites), mtu = mtu) {
         stage(first.bytes)
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 0, start = 0, length = 18)))
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 22, start = 18, length = 18)))
@@ -48,7 +54,12 @@ class CentralPreparedWriteTest : CentralTest() {
     }
 
     @Test
-    fun cancelledQueue() = centralTest(requires = setOf(Capability.PreparedWrites)) {
+    fun cancelledQueueAtTheDefaultMtu() = cancelledQueue(AttMtu.Default)
+
+    @Test
+    fun cancelledQueueAtALargeMtu() = cancelledQueue(AttMtu.Large)
+
+    private fun cancelledQueue(mtu: AttMtu) = centralTest(requires = setOf(Capability.PreparedWrites), mtu = mtu) {
         stage(first.bytes)
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 0, start = 0, length = 18)))
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 18, start = 18, length = 18)))
@@ -61,7 +72,12 @@ class CentralPreparedWriteTest : CentralTest() {
     }
 
     @Test
-    fun queueCutOffByADisconnect() = centralTest(requires = setOf(Capability.PreparedWrites)) {
+    fun queueCutOffByADisconnectAtTheDefaultMtu() = queueCutOffByADisconnect(AttMtu.Default)
+
+    @Test
+    fun queueCutOffByADisconnectAtALargeMtu() = queueCutOffByADisconnect(AttMtu.Large)
+
+    private fun queueCutOffByADisconnect(mtu: AttMtu) = centralTest(requires = setOf(Capability.PreparedWrites), mtu = mtu) {
         stage(first.bytes)
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 0, start = 0, length = 18)))
         assertEquals(0, status(Instruction.Disconnect))

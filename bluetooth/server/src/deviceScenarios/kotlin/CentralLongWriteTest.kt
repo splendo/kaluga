@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.bluetooth.AttMtu
 import com.splendo.kaluga.bluetooth.server.TestCentral.Instruction
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.test.Test
@@ -26,15 +27,21 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * The central writes a typed value too long for one request, as a long write: a series of prepared writes, then an
- * execute. The central checks that each prepared part comes back as it sent it.
+ * The central writes a typed value too long for one request at the default MTU, as a long write: a series of prepared
+ * writes, then an execute, whose parts the central checks come back as it sent them. At a large MTU the value fits in
+ * one request.
  */
 class CentralLongWriteTest : CentralTest() {
 
     private val record = Record(0x0102u, "a label long enough to need several prepared writes", 0x1122334455667788u)
 
     @Test
-    fun longWriteOfATypedValue() = centralTest {
+    fun longWriteOfATypedValueAtTheDefaultMtu() = longWriteOfATypedValue(AttMtu.Default)
+
+    @Test
+    fun longWriteOfATypedValueAtALargeMtu() = longWriteOfATypedValue(AttMtu.Large)
+
+    private fun longWriteOfATypedValue(mtu: AttMtu) = centralTest(mtu = mtu) {
         assertTrue(record.bytes.size > 3 * TestCentral.STAGE_SIZE)
         stage(record.bytes)
         assertEquals(0, status(Instruction.Write(TestCentral.TYPED)))
@@ -42,7 +49,12 @@ class CentralLongWriteTest : CentralTest() {
     }
 
     @Test
-    fun longWriteOfATypedValueWithoutItsTail() = centralTest {
+    fun longWriteOfATypedValueWithoutItsTailAtTheDefaultMtu() = longWriteOfATypedValueWithoutItsTail(AttMtu.Default)
+
+    @Test
+    fun longWriteOfATypedValueWithoutItsTailAtALargeMtu() = longWriteOfATypedValueWithoutItsTail(AttMtu.Large)
+
+    private fun longWriteOfATypedValueWithoutItsTail(mtu: AttMtu) = centralTest(mtu = mtu) {
         val withoutTail = record.copy(serial = null)
         stage(withoutTail.bytes)
         assertEquals(0, status(Instruction.Write(TestCentral.TYPED)))
@@ -51,7 +63,12 @@ class CentralLongWriteTest : CentralTest() {
 
     // Each Write Request starts the value over, so a value cut off inside its tail never reaches the delegate.
     @Test
-    fun valueEndingInsideItsTailIsNotWritten() = centralTest {
+    fun valueEndingInsideItsTailIsNotWrittenAtTheDefaultMtu() = valueEndingInsideItsTailIsNotWritten(AttMtu.Default)
+
+    @Test
+    fun valueEndingInsideItsTailIsNotWrittenAtALargeMtu() = valueEndingInsideItsTailIsNotWritten(AttMtu.Large)
+
+    private fun valueEndingInsideItsTailIsNotWritten(mtu: AttMtu) = centralTest(mtu = mtu) {
         stage(record.bytes.copyOf(record.bytes.size - 3))
         assertEquals(0, status(Instruction.Write(TestCentral.TYPED)))
         assertNull(withTimeoutOrNull(1.seconds) { typedWrites.receive() })
