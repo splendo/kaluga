@@ -72,6 +72,7 @@ class KalugaTestPeripheral {
         private companion object {
             val FIRST_REQUEST = 10.minutes
             val IDLE = 1.minutes
+            val LINK_CHECK = 200.milliseconds
             const val MAX_ATTRIBUTE_LENGTH = 512
         }
 
@@ -79,6 +80,7 @@ class KalugaTestPeripheral {
         private val job = SupervisorJob()
         private val scope = CoroutineScope(defaultBluetoothServerDispatcher + job)
         private val lastRequest = MutableStateFlow<TimeMark?>(null)
+        private var central: ConnectedDevice? = null
 
         private var value = TestPeripheral.initialValue
         private var longValue = byteArrayOf()
@@ -104,10 +106,18 @@ class KalugaTestPeripheral {
                 assertTrue(server.advertise { serviceUUIDs(TestPeripheral.service) }, "advertising did not start")
                 log(READY)
                 withTimeoutOrNull(FIRST_REQUEST) { lastRequest.filterNotNull().first() } ?: fail("no central made a request within $FIRST_REQUEST")
-                while (true) {
-                    val idle = lastRequest.value?.elapsedNow() ?: Duration.ZERO
-                    if (idle >= IDLE) break
-                    delay(IDLE - idle)
+                var linked = false
+                while ((lastRequest.value?.elapsedNow() ?: Duration.ZERO) < IDLE) {
+                    // A stack with a single advertising set ends advertising when a central connects and does not
+                    // resume it, so the next connection needs it started again. Where the platform tells no links, its
+                    // stack keeps advertising.
+                    val connected = central?.let { platform.isConnected(it) }
+                    if (connected == false && linked) {
+                        server.stopAdvertising()
+                        log("the link ended, advertising again -> ${server.advertise { serviceUUIDs(TestPeripheral.service) }}")
+                    }
+                    if (connected != null) linked = connected
+                    delay(LINK_CHECK)
                 }
                 log("no request for $IDLE")
             } finally {
@@ -117,7 +127,8 @@ class KalugaTestPeripheral {
             }
         }
 
-        private fun request() {
+        private fun request(device: ConnectedDevice) {
+            central = device
             lastRequest.value = TimeSource.Monotonic.markNow()
         }
 
@@ -125,38 +136,38 @@ class KalugaTestPeripheral {
             val service = assertNotNull(
                 server.add(TestPeripheral.service) {
                     characteristic(TestPeripheral.data) {
-                        readable { _, offset -> readData(offset) }
-                        writable { _, written, offset -> write(value, written, offset) { value = it } }
-                        notifiable(onSubscribe = { request() }, onUnsubscribe = { request() })
+                        readable { device, offset -> readData(device, offset) }
+                        writable { device, written, offset -> write(device, value, written, offset) { value = it } }
+                        notifiable(onSubscribe = { request(it) }, onUnsubscribe = { request(it) })
                     }
                     characteristic(TestPeripheral.control) {
-                        writable { _, bytes, _ ->
-                            request()
+                        writable { device, bytes, _ ->
+                            request(device)
                             obey(Command.decode(bytes))
                             GattResponse.WriteSuccess.Acknowledged
                         }
                     }
                     characteristic(TestPeripheral.error) {
-                        readable { _, _ ->
-                            request()
+                        readable { device, _ ->
+                            request(device)
                             if (errorCode != 0) GattResponse.Error.from(errorCode) else GattResponse.ReadSuccess(TestPeripheral.errorCharacteristicValue)
                         }
-                        writable { _, _, _ ->
-                            request()
+                        writable { device, _, _ ->
+                            request(device)
                             if (errorCode != 0) GattResponse.Error.from(errorCode) else GattResponse.WriteSuccess.Acknowledged
                         }
                     }
                     characteristic(TestPeripheral.indicate) {
-                        notifiable(properties = setOf(CharacteristicProperty.Indicate), onSubscribe = { request() }, onUnsubscribe = { request() })
+                        notifiable(properties = setOf(CharacteristicProperty.Indicate), onSubscribe = { request(it) }, onUnsubscribe = { request(it) })
                     }
                     characteristic(TestPeripheral.long) {
-                        readable { _, offset -> read(longValue, offset) }
-                        writable { _, written, offset -> write(longValue, written, offset) { longValue = it } }
+                        readable { device, offset -> read(device, longValue, offset) }
+                        writable { device, written, offset -> write(device, longValue, written, offset) { longValue = it } }
                     }
                     characteristic(TestPeripheral.sink) {
-                        readable { _, offset -> read(sink, offset) }
-                        writable(properties = setOf(CharacteristicProperty.WriteWithoutResponse)) { _, written, _ ->
-                            request()
+                        readable { device, offset -> read(device, sink, offset) }
+                        writable(properties = setOf(CharacteristicProperty.WriteWithoutResponse)) { device, written, _ ->
+                            request(device)
                             sink += written
                             GattResponse.WriteSuccess.Acknowledged
                         }
@@ -168,9 +179,9 @@ class KalugaTestPeripheral {
                 server.add(TestPeripheral.twinService) {
                     TestPeripheral.twinValues.indices.forEach { index ->
                         characteristic(TestPeripheral.twin) {
-                            readable { _, offset -> read(twinValues[index], offset) }
-                            writable { _, written, offset -> write(twinValues[index], written, offset) { twinValues[index] = it } }
-                            notifiable(onSubscribe = { request() }, onUnsubscribe = { request() })
+                            readable { device, offset -> read(device, twinValues[index], offset) }
+                            writable { device, written, offset -> write(device, twinValues[index], written, offset) { twinValues[index] = it } }
+                            notifiable(onSubscribe = { request(it) }, onUnsubscribe = { request(it) })
                         }
                     }
                 },
@@ -183,31 +194,31 @@ class KalugaTestPeripheral {
 
         private fun LocalService.notifiable(uuid: UUID) = characteristics.first { it.uuid == uuid } as LocalCharacteristic.Notifiable
 
-        private fun read(bytes: ByteArray, offset: Int): GattResponse.ReadResponse {
-            request()
+        private fun read(device: ConnectedDevice, bytes: ByteArray, offset: Int): GattResponse.ReadResponse {
+            request(device)
             return if (offset > bytes.size) GattResponse.InvalidOffset else GattResponse.ReadSuccess(bytes.copyOfRange(offset, bytes.size))
         }
 
         // A write at offset 0 starts the value over; the parts of a long write the stack hands over one by one follow it.
-        private fun write(current: ByteArray, part: ByteArray, offset: Int, store: (ByteArray) -> Unit): GattResponse.WriteResponse {
-            request()
+        private fun write(device: ConnectedDevice, current: ByteArray, part: ByteArray, offset: Int, store: (ByteArray) -> Unit): GattResponse.WriteResponse {
+            request(device)
             if (offset + part.size > MAX_ATTRIBUTE_LENGTH) return GattResponse.InvalidAttributeValueLength
             store(if (offset == 0) part else current.copyOf(offset) + part)
             return GattResponse.WriteSuccess.Acknowledged
         }
 
-        private suspend fun readData(offset: Int): GattResponse.ReadResponse {
-            request()
+        private suspend fun readData(device: ConnectedDevice, offset: Int): GattResponse.ReadResponse {
+            request(device)
             holdRead?.let { release ->
                 holdRead = null
                 val released = CompletableDeferred<Unit>()
                 log("holding the answer to a read" + if (release > Duration.ZERO) " for $release" else "")
-                // One held until the link ends stays unanswered: the player cannot tell when that link ended.
+                // One held until the link ends stays unanswered here, as the player cannot tell when that link ended.
                 if (release > Duration.ZERO) pending += scope.launch { delay(release).also { released.complete(Unit) } }
                 released.await()
                 log("answering the held read")
             }
-            return read(value, offset)
+            return read(device, value, offset)
         }
 
         private fun obey(command: Command) {
