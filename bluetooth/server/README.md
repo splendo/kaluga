@@ -68,3 +68,10 @@ server.close() // server must be closed when done
 ```
 
 For (de)serializing the data exchanged with clients, see the `BytesFormat` documentation in [`core`](../core/).
+
+## Platform differences
+A central that disconnects ends its subscriptions on both Android and Apple: `onUnsubscribe` runs for it as if it had unsubscribed, and it leaves `subscribedDevices`.
+
+Android sends at most 512 bytes of a value that is read, however long the value the server answers with. On Android, Kaluga fails a notification longer than the subscribed central's MTU allows (MTU - 3 bytes) or longer than 512 bytes, and logs a warning.
+
+A read answered with more than 512 bytes, and on Apple a notification longer than the subscribed central takes in one, are logged at debug level on the server's `logger`. The message is only built when the logger takes debug messages.
