@@ -5,6 +5,7 @@ on:
       - feature/bluetooth-netsim-tests
       - feature/bluetooth-netsim-coverage
       - feature/bluetooth-common-scenarios
+      - feature/bluetooth-radio-scenarios
   pull_request:
   workflow_dispatch:
     inputs:
