@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,24 +34,39 @@ class PeripheralErrorResponseTest : PeripheralTest() {
     @Test
     fun writeNotPermitted() = answersWith(0x03, GattResponse.WriteNotPermitted)
 
-    // Android answers this by encrypting the link and retrying, which needs pairing. The peripheral refuses to pair,
-    // and the read fails with Android's own GATT_AUTH_FAIL instead of the code the peripheral sent.
+    // Both stacks answer this by pairing to encrypt the link, which the peripheral refuses. Android then fails the read
+    // with its own GATT_AUTH_FAIL, CoreBluetooth with insufficient encryption, instead of the code the peripheral sent.
     @Test
     fun insufficientAuthenticationOnARead() = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(Command.AnswerWithError(0x05))
-        assertEquals<GattResponse>(GattResponse.ApplicationError(0x89), within(20.seconds, "read") { attributes.error.read() })
+        val expected = when (platform.stack) {
+            Stack.Android -> GattResponse.ApplicationError(0x89)
+            Stack.CoreBluetooth -> GattResponse.InsufficientEncryption
+        }
+        assertEquals<GattResponse>(expected, within(20.seconds, "read") { attributes.error.read() })
         assertEquals<GattResponse>(GattResponse.ReadSuccess(TestPeripheral.initialValue), within(10.seconds, "read after the error") { attributes.data.read() })
     }
 
     // On a write Android tries to pair the same way, but after the refusal it never answers the write: it drops the
-    // idle link about three seconds later, and the disconnect answers the write.
+    // idle link about three seconds later, and the disconnect answers the write. CoreBluetooth answers the write as it
+    // answers a read and keeps the link.
     @Test
     fun insufficientAuthenticationOnAWrite() = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(Command.AnswerWithError(0x05))
-        assertEquals<GattResponse>(GattResponse.DeviceUnavailable, within(20.seconds, "write") { attributes.error.write(byteArrayOf(1)) })
-        awaitDisconnected()
+        val response = within(20.seconds, "write") { attributes.error.write(byteArrayOf(1)) }
+        when (platform.stack) {
+            Stack.Android -> {
+                assertEquals<GattResponse>(GattResponse.DeviceUnavailable, response)
+                awaitDisconnected()
+            }
+
+            Stack.CoreBluetooth -> {
+                assertEquals<GattResponse>(GattResponse.InsufficientEncryption, response)
+                assertEquals<GattResponse>(GattResponse.ReadSuccess(TestPeripheral.initialValue), within(10.seconds, "read after the error") { attributes.data.read() })
+            }
+        }
     }
 
     @Test
