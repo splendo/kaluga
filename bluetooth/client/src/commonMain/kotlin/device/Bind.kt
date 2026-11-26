@@ -1622,7 +1622,7 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
         asResponse: ByteArray.() -> Response,
         onReadActions: List<T.(Response, Trigger) -> T>,
         onFailedToReadActions: List<T.(Trigger, GattResponse.ReadError) -> T>,
-    ) = when (val result = getAttribute()?.read() ?: GattResponse.DeviceUnavailable) {
+    ) = when (val result = getAttribute()?.read() ?: GattResponse.DeviceUnavailable()) {
         is GattResponse.ReadSuccess -> onReadActions.forEach { action ->
             callingScope.update { it.action(result.value.asResponse(), trigger) }
         }
@@ -1637,7 +1637,7 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
         asByte: Data.() -> ByteArray,
         onWriteActions: List<T.(Data) -> T>,
         onFailedToWriteActions: List<T.(Data, GattResponse.WriteError) -> T>,
-    ) = when (val result = getAttribute()?.write(value.asByte()) ?: GattResponse.DeviceUnavailable) {
+    ) = when (val result = getAttribute()?.write(value.asByte()) ?: GattResponse.DeviceUnavailable()) {
         is GattResponse.WriteSuccess -> onWriteActions.forEach { action ->
             callingScope.update { it.action(value) }
         }

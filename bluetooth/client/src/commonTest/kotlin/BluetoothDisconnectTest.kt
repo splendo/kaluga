@@ -115,7 +115,7 @@ class BluetoothDisconnectTest : BaseTest() {
         val characteristic = service.characteristics.first()
         val read = async { characteristic.read() }
         assertIs<DeviceAction.Read.Characteristic>(connection.manager.disconnectWhilePerformingAction())
-        assertEquals(GattResponse.DeviceUnavailable, read.await())
+        assertEquals(GattResponse.DeviceUnavailable(), read.await())
         connection.awaitDisconnected()
         service.invalidated.await()
         assertTrue(characteristic.invalidated.isCompleted)
@@ -133,9 +133,9 @@ class BluetoothDisconnectTest : BaseTest() {
         val mtu = async { connection.device.requestMtu(100).response.await() }
         connection.device.state.filterIsInstance<ConnectableDeviceState.Connected.HandlingAction>().first { it.nextActions.size == 3 }
         connection.manager.handleDisconnect()
-        assertEquals(GattResponse.DeviceUnavailable, write.await())
-        assertEquals(GattResponse.DeviceUnavailable, read.await())
-        assertEquals(GattResponse.DeviceUnavailable, descriptorWrite.await())
+        assertEquals(GattResponse.DeviceUnavailable(), write.await())
+        assertEquals(GattResponse.DeviceUnavailable(), read.await())
+        assertEquals(GattResponse.DeviceUnavailable(), descriptorWrite.await())
         assertEquals(GattResponse.MTUDeviceUnavailable(100), mtu.await())
         connection.awaitDisconnected()
     }
@@ -149,8 +149,8 @@ class BluetoothDisconnectTest : BaseTest() {
         val mtu = async { connection.device.requestMtu(100).response.await() }
         connection.device.state.filterIsInstance<ConnectableDeviceState.Connected.HandlingAction>().first { it.nextActions.size == 2 }
         connection.device.disconnect()
-        assertEquals(GattResponse.DeviceUnavailable, write.await())
-        assertEquals(GattResponse.DeviceUnavailable, read.await())
+        assertEquals(GattResponse.DeviceUnavailable(), write.await())
+        assertEquals(GattResponse.DeviceUnavailable(), read.await())
         assertEquals(GattResponse.MTUDeviceUnavailable(100), mtu.await())
         connection.manager.performActionMock.verify(times = 1)
     }
@@ -176,7 +176,7 @@ class BluetoothDisconnectTest : BaseTest() {
         // the event answers it.
         val read = characteristic.startRead()
         connection.manager.handleDisconnect()
-        assertEquals(GattResponse.DeviceUnavailable, read.response.await())
+        assertEquals(GattResponse.DeviceUnavailable(), read.response.await())
         connection.awaitDisconnected()
         assertIs<DeviceAction.Read.Characteristic>(connection.manager.awaitCurrentAction())
         connection.manager.handleCurrentAction()
@@ -215,7 +215,7 @@ class BluetoothDisconnectTest : BaseTest() {
 
         assertTrue(connection.device.connect())
         val beforeDiscovery = connection.manager.create(connection.serviceWrapper)
-        assertEquals(GattResponse.DeviceUnavailable, beforeDiscovery.characteristics.first().read())
+        assertEquals(GattResponse.DeviceUnavailable(), beforeDiscovery.characteristics.first().read())
         connection.manager.performActionMock.verify(times = 0)
     }
 
@@ -236,8 +236,8 @@ class BluetoothDisconnectTest : BaseTest() {
         assertIs<DeviceAction.Notification.Enable>(connection.manager.awaitCurrentAction())
         val disable = assertNotNull(characteristic.startDisableNotification())
         connection.manager.handleDisconnect()
-        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable), subscribe.await())
-        assertEquals(GattResponse.DeviceUnavailable, disable.response.await())
+        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable()), subscribe.await())
+        assertEquals(GattResponse.DeviceUnavailable(), disable.response.await())
         assertFalse(characteristic.isNotifying.value)
     }
 
@@ -254,10 +254,10 @@ class BluetoothDisconnectTest : BaseTest() {
         connection.manager.handleDisconnect()
         assertContentEquals(byteArrayOf(1), values.await().single())
         assertFalse(characteristic.isNotifying.value)
-        assertEquals(GattResponse.DeviceUnavailable, subscription.unsubscribe())
-        assertEquals(GattResponse.DeviceUnavailable, characteristic.enableNotification())
-        assertEquals(GattResponse.DeviceUnavailable, characteristic.disableNotification())
-        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable), characteristic.subscribe {})
+        assertEquals(GattResponse.DeviceUnavailable(), subscription.unsubscribe())
+        assertEquals(GattResponse.DeviceUnavailable(), characteristic.enableNotification())
+        assertEquals(GattResponse.DeviceUnavailable(), characteristic.disableNotification())
+        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable()), characteristic.subscribe {})
         assertTrue(characteristic.value().toList().isEmpty())
         // Only the enable reached the device: nothing is disabled on a connection that is gone.
         connection.manager.performActionMock.verify(times = 1)
@@ -295,13 +295,13 @@ class BluetoothDisconnectTest : BaseTest() {
         assertTrue(oldDescriptor.invalidated.isCompleted)
         assertFalse(newService.invalidated.isCompleted)
 
-        assertEquals(GattResponse.DeviceUnavailable, old.read())
-        assertEquals(GattResponse.DeviceUnavailable, old.write(byteArrayOf(1)))
-        assertEquals(GattResponse.DeviceUnavailable, old.write(byteArrayOf(1), WriteType.WithResponse))
-        assertEquals(GattResponse.DeviceUnavailable, oldDescriptor.read())
-        assertEquals(GattResponse.DeviceUnavailable, oldDescriptor.write(byteArrayOf(1)))
-        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable), old.subscribe {})
-        assertEquals(GattResponse.DeviceUnavailable, oldSubscription.unsubscribe())
+        assertEquals(GattResponse.DeviceUnavailable(), old.read())
+        assertEquals(GattResponse.DeviceUnavailable(), old.write(byteArrayOf(1)))
+        assertEquals(GattResponse.DeviceUnavailable(), old.write(byteArrayOf(1), WriteType.WithResponse))
+        assertEquals(GattResponse.DeviceUnavailable(), oldDescriptor.read())
+        assertEquals(GattResponse.DeviceUnavailable(), oldDescriptor.write(byteArrayOf(1)))
+        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable()), old.subscribe {})
+        assertEquals(GattResponse.DeviceUnavailable(), oldSubscription.unsubscribe())
         assertFalse(old.isNotifying.value)
         // The old subscription did not survive into the new connection.
         connection.manager.notify(old.uuid, byteArrayOf(9))
@@ -321,7 +321,7 @@ class BluetoothDisconnectTest : BaseTest() {
         val old = connection.connect().characteristics.first()
         val oldSubscribe = async { old.subscribe {} }
         val oldEnable = assertIs<DeviceAction.Notification.Enable>(connection.manager.disconnectWhilePerformingAction())
-        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable), oldSubscribe.await())
+        assertEquals(RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable()), oldSubscribe.await())
 
         val new = connection.discover().characteristics.first()
         val received = mutableListOf<ByteArray>()
@@ -346,10 +346,10 @@ class BluetoothDisconnectTest : BaseTest() {
         val read = async { characteristic.read() }
         connection.manager.awaitCurrentAction()
         connection.manager.reset()
-        assertEquals(GattResponse.DeviceUnavailable, read.await())
+        assertEquals(GattResponse.DeviceUnavailable(), read.await())
         assertTrue(service.invalidated.isCompleted)
         connection.awaitDisconnected()
-        assertEquals(GattResponse.DeviceUnavailable, characteristic.read())
+        assertEquals(GattResponse.DeviceUnavailable(), characteristic.read())
     }
 
     private class StartTogether(private val parties: Int) {

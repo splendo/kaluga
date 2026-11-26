@@ -248,11 +248,11 @@ internal actual class DefaultDeviceConnectionManager(
         val readyGatt = gatt.await()
         when (action) {
             is DeviceAction.Read.Characteristic -> if (!readyGatt.readCharacteristic(action.characteristic.wrapper)) {
-                action.handleActionCompleted(GattResponse.DeviceUnavailable)
+                action.handleActionCompleted(GattResponse.DeviceUnavailable())
             }
 
             is DeviceAction.Read.Descriptor -> if (!readyGatt.readDescriptor(action.descriptor.wrapper)) {
-                action.handleActionCompleted(GattResponse.DeviceUnavailable)
+                action.handleActionCompleted(GattResponse.DeviceUnavailable())
             }
 
             // BluetoothGatt throws on a value longer than an attribute can hold instead of failing the request.
@@ -262,15 +262,15 @@ internal actual class DefaultDeviceConnectionManager(
                 }
                 action.handleActionCompleted(GattResponse.InvalidAttributeValueLength)
             } else if (!readyGatt.write(action)) {
-                action.handleActionCompleted(GattResponse.DeviceUnavailable)
+                action.handleActionCompleted(GattResponse.DeviceUnavailable())
             }
 
             is DeviceAction.Notification.Enable -> if (!readyGatt.setNotification(action.characteristic, true)) {
-                action.handleActionCompleted(GattResponse.DeviceUnavailable)
+                action.handleActionCompleted(GattResponse.DeviceUnavailable())
             }
 
             is DeviceAction.Notification.Disable -> if (!readyGatt.setNotification(action.characteristic, false)) {
-                action.handleActionCompleted(GattResponse.DeviceUnavailable)
+                action.handleActionCompleted(GattResponse.DeviceUnavailable())
             }
 
             is DeviceAction.RequestMtu -> if (!readyGatt.requestMtu(action.mtu)) {

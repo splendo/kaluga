@@ -73,8 +73,8 @@ class GeneratedClientDisconnectTest : BaseTest() {
 
                 assertEquals(listOf<Short>(3), states.await())
                 assertFalse(characteristic.isNotifying.first())
-                assertEquals(GattResponse.DeviceUnavailable, assertIs<SharedCharacteristicReadResponse.Failure>(read.await()).error)
-                assertEquals(GattResponse.DeviceUnavailable, characteristic.writeTarget(7))
+                assertIs<GattResponse.DeviceUnavailable>(assertIs<SharedCharacteristicReadResponse.Failure>(read.await()).error)
+                assertIs<GattResponse.DeviceUnavailable>(characteristic.writeTarget(7))
                 assertTrue(characteristic.state.toList().isEmpty())
             } finally {
                 mock.close()

@@ -51,12 +51,12 @@ internal sealed class WebGattResult {
 
 internal fun WebGattResult.readResponse(): GattResponse.ReadResponse = when (this) {
     is WebGattResult.Success -> GattResponse.ReadSuccess(value ?: ByteArray(0))
-    is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable
+    is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable()
 }
 
 internal fun WebGattResult.writeResponse(): GattResponse.WriteResponse = when (this) {
     is WebGattResult.Success -> GattResponse.WriteSuccess.Acknowledged
-    is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable
+    is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable()
 }
 
 // Web Bluetooth collapses several ATT error codes onto each DOMException name, so this is necessarily a

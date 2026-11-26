@@ -142,7 +142,7 @@ open class RemoteCharacteristic internal constructor(
         val enableNotification = enableNotification()
     ) {
         is GattResponse.WriteSuccess -> if (invalidated.isCompleted) {
-            SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable)
+            SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable())
         } else {
             Subscription(
                 onUpdate,

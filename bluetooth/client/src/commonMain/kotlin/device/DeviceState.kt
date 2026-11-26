@@ -58,7 +58,7 @@ sealed class DeviceAction<Response : GattResponse> {
      */
     sealed class Read : DeviceAction<GattResponse.ReadResponse>() {
 
-        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable)
+        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable())
 
         /**
          * A [DeviceAction.Read] on a [RemoteCharacteristic]
@@ -84,7 +84,7 @@ sealed class DeviceAction<Response : GattResponse> {
      */
     sealed class Write(val newValue: ByteArray) : DeviceAction<GattResponse.WriteResponse>() {
 
-        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable)
+        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable())
 
         /**
          * A [DeviceAction.Write] on a [RemoteCharacteristic]
@@ -113,7 +113,7 @@ sealed class DeviceAction<Response : GattResponse> {
      */
     sealed class Notification(val characteristic: RemoteCharacteristic) : DeviceAction<GattResponse.WriteResponse>() {
 
-        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable)
+        override fun completeUnavailable() = complete(GattResponse.DeviceUnavailable())
 
         /**
          * A [Notification] that starts notifying

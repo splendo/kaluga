@@ -155,10 +155,13 @@ sealed interface GattResponse {
     }
 
     /**
-     * A [MTUError] given if the remote device could not be reached, so the request was never performed
+     * A [MTUError] given if the remote device could not be reached: the link was gone before the request was performed,
+     * or it went down while the request was pending.
      * @property mtu the [MTU] that was requested
+     * @property cause the [Error] the platform failed the request with as the link went down, or `null` if the request
+     * was answered by the disconnect itself
      */
-    data class MTUDeviceUnavailable(override val mtu: MTU) : MTUError {
+    data class MTUDeviceUnavailable(override val mtu: MTU, val cause: Error? = null) : MTUError {
         override val statusCode: Int = -1
     }
 
@@ -406,9 +409,15 @@ sealed interface GattResponse {
     }
 
     /**
-     * A [ReadError]/[WriteError] given if the remote device could not be reached
+     * A [ReadError]/[WriteError] given if the remote device could not be reached: the link was gone before the request
+     * was performed, or it went down while the request was pending.
+     * Check for it with `is`: two instances are only equal if their [cause] is.
+     * @property cause the [Error] the platform failed the request with as the link went down, or `null` if the request
+     * was answered by the disconnect itself
      */
-    data object DeviceUnavailable : WriteError, ReadError {
+    data class DeviceUnavailable(val cause: Error? = null) :
+        WriteError,
+        ReadError {
         override val statusCode: Int = -1
     }
 

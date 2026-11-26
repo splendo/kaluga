@@ -72,7 +72,7 @@ class PeripheralDisconnectTest : PeripheralTest() {
         assertTrue(attributes.data.invalidated.isCompleted)
         // Android may fail the action in flight itself, just before it reports the link as closed.
         assertIs<GattResponse.ReadError>(responses.first())
-        assertEquals(List<GattResponse>(2) { GattResponse.DeviceUnavailable }, responses.drop(1))
+        responses.drop(1).forEach { assertIs<GattResponse.DeviceUnavailable>(it) }
     }
 
     @Test
@@ -98,10 +98,10 @@ class PeripheralDisconnectTest : PeripheralTest() {
         val inFlightResponse = inFlight.response.answer("in-flight read")
         disconnect.answer("disconnect")
         awaitDisconnected()
-        assertEquals<GattResponse>(GattResponse.DeviceUnavailable, queuedWriteResponse)
-        assertEquals<GattResponse>(GattResponse.MTUDeviceUnavailable(100), queuedMtuResponse)
+        assertIs<GattResponse.DeviceUnavailable>(queuedWriteResponse)
+        assertEquals(100, assertIs<GattResponse.MTUDeviceUnavailable>(queuedMtuResponse).mtu)
         assertTrue(
-            inFlightResponse == GattResponse.DeviceUnavailable || inFlightResponse == GattResponse.ReadSuccess(TestPeripheral.initialValue),
+            inFlightResponse is GattResponse.DeviceUnavailable || inFlightResponse == GattResponse.ReadSuccess(TestPeripheral.initialValue),
             "in-flight read answered $inFlightResponse",
         )
     }
@@ -116,11 +116,10 @@ class PeripheralDisconnectTest : PeripheralTest() {
         assertFalse(old.data.isNotifying.value)
 
         val staleStart = TimeSource.Monotonic.markNow()
-        assertEquals<GattResponse>(GattResponse.DeviceUnavailable, within(1.seconds, "stale read") { old.data.read() })
-        assertEquals<GattResponse>(GattResponse.DeviceUnavailable, within(1.seconds, "stale write") { old.data.write(byteArrayOf(1)) })
-        assertEquals<RemoteCharacteristic.SubscriptionResult>(
-            RemoteCharacteristic.SubscriptionResult.FailedToSubscribe(GattResponse.DeviceUnavailable),
-            within(1.seconds, "stale subscribe") { old.data.subscribe { } },
+        assertIs<GattResponse.DeviceUnavailable>(within(1.seconds, "stale read") { old.data.read() })
+        assertIs<GattResponse.DeviceUnavailable>(within(1.seconds, "stale write") { old.data.write(byteArrayOf(1)) })
+        assertIs<GattResponse.DeviceUnavailable>(
+            assertIs<RemoteCharacteristic.SubscriptionResult.FailedToSubscribe>(within(1.seconds, "stale subscribe") { old.data.subscribe { } }).response,
         )
         log("stale calls answered in ${staleStart.elapsedNow()}")
 

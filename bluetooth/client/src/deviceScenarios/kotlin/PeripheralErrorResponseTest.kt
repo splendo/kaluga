@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -59,7 +60,7 @@ class PeripheralErrorResponseTest : PeripheralTest() {
         val response = within(20.seconds, "write") { attributes.error.write(byteArrayOf(1)) }
         when (platform.stack) {
             Stack.Android -> {
-                assertEquals<GattResponse>(GattResponse.DeviceUnavailable, response)
+                assertIs<GattResponse.DeviceUnavailable>(response)
                 awaitDisconnected()
             }
 

@@ -145,16 +145,34 @@ sealed interface com.splendo.kaluga.bluetooth/GattResponse { // com.splendo.kalu
         final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.ApplicationError.toString|toString(){}[0]
     }
 
-    final class MTUDeviceUnavailable : com.splendo.kaluga.bluetooth/GattResponse.MTUError { // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable|null[0]
-        constructor <init>(kotlin/Int) // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.<init>|<init>(kotlin.Int){}[0]
+    final class DeviceUnavailable : com.splendo.kaluga.bluetooth/GattResponse.ReadError, com.splendo.kaluga.bluetooth/GattResponse.WriteError { // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable|null[0]
+        constructor <init>(com.splendo.kaluga.bluetooth/GattResponse.Error? = ...) // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.<init>|<init>(com.splendo.kaluga.bluetooth.GattResponse.Error?){}[0]
 
+        final val cause // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.cause|{}cause[0]
+            final fun <get-cause>(): com.splendo.kaluga.bluetooth/GattResponse.Error? // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.cause.<get-cause>|<get-cause>(){}[0]
+        final val statusCode // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.statusCode|{}statusCode[0]
+            final fun <get-statusCode>(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.bluetooth/GattResponse.Error? // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.bluetooth/GattResponse.Error? = ...): com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.copy|copy(com.splendo.kaluga.bluetooth.GattResponse.Error?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.toString|toString(){}[0]
+    }
+
+    final class MTUDeviceUnavailable : com.splendo.kaluga.bluetooth/GattResponse.MTUError { // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable|null[0]
+        constructor <init>(kotlin/Int, com.splendo.kaluga.bluetooth/GattResponse.Error? = ...) // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.<init>|<init>(kotlin.Int;com.splendo.kaluga.bluetooth.GattResponse.Error?){}[0]
+
+        final val cause // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.cause|{}cause[0]
+            final fun <get-cause>(): com.splendo.kaluga.bluetooth/GattResponse.Error? // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.cause.<get-cause>|<get-cause>(){}[0]
         final val mtu // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.mtu|{}mtu[0]
             final fun <get-mtu>(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.mtu.<get-mtu>|<get-mtu>(){}[0]
         final val statusCode // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.statusCode|{}statusCode[0]
             final fun <get-statusCode>(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
 
         final fun component1(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.component1|component1(){}[0]
-        final fun copy(kotlin/Int = ...): com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.copy|copy(kotlin.Int){}[0]
+        final fun component2(): com.splendo.kaluga.bluetooth/GattResponse.Error? // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.component2|component2(){}[0]
+        final fun copy(kotlin/Int = ..., com.splendo.kaluga.bluetooth/GattResponse.Error? = ...): com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.copy|copy(kotlin.Int;com.splendo.kaluga.bluetooth.GattResponse.Error?){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.MTUDeviceUnavailable.toString|toString(){}[0]
@@ -271,15 +289,6 @@ sealed interface com.splendo.kaluga.bluetooth/GattResponse { // com.splendo.kalu
         final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.DatabaseOutOfSync.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.DatabaseOutOfSync.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.DatabaseOutOfSync.toString|toString(){}[0]
-    }
-
-    final object DeviceUnavailable : com.splendo.kaluga.bluetooth/GattResponse.ReadError, com.splendo.kaluga.bluetooth/GattResponse.WriteError { // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable|null[0]
-        final val statusCode // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.statusCode|{}statusCode[0]
-            final fun <get-statusCode>(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
-
-        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.equals|equals(kotlin.Any?){}[0]
-        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.hashCode|hashCode(){}[0]
-        final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.DeviceUnavailable.toString|toString(){}[0]
     }
 
     final object EncryptionKeySizeTooShort : com.splendo.kaluga.bluetooth/GattResponse.Error { // com.splendo.kaluga.bluetooth/GattResponse.EncryptionKeySizeTooShort|null[0]

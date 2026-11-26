@@ -424,9 +424,9 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
         .apply {
             val resultType = BluetoothResultTypeBuilder(declaration, readProperty, options, logger)
             val result = if (resultType.hasCustomResult) {
-                CodeBlock.of("%T.$FAILURE(%T)", resultType.responseClassName, References.Bluetooth.deviceUnavailable)
+                CodeBlock.of("%T.$FAILURE(%T())", resultType.responseClassName, References.Bluetooth.deviceUnavailable)
             } else {
-                CodeBlock.of("%T", References.Bluetooth.deviceUnavailable)
+                CodeBlock.of("%T()", References.Bluetooth.deviceUnavailable)
             }
             addStatement("$IS_CLOSED.$ON_AWAIT { %L }", result)
         }
@@ -451,7 +451,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
         .endControlFlow()
         .unindent()
         .addStatement("}.$ON_AWAIT { $IT }")
-        .addStatement("$IS_CLOSED.$ON_AWAIT { %T }", References.Bluetooth.deviceUnavailable)
+        .addStatement("$IS_CLOSED.$ON_AWAIT { %T() }", References.Bluetooth.deviceUnavailable)
         .endControlFlow()
         .addStatement(".$ALSO { $COROUTINE_CONTEXT.%M() }", References.KotlinX.Coroutines.cancelChildren)
         .endControlFlow()
