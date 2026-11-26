@@ -54,6 +54,7 @@ import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.extensions.printableString
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CompletableDeferred
@@ -169,6 +170,10 @@ internal actual class DefaultDeviceConnectionManager(
             handleDescriptorWritten(descriptor.uuid, response)
         }
 
+        override fun onServiceChanged(gatt: BluetoothGatt) {
+            logger.stateLogger.stateChangeLogger.debug { "Service Changed received; the services discovered before stay in use" }
+        }
+
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             logger.stateLogger.stateChangeLogger.info { "onConnectionStateChange status ${status.gattStatusAsString} newState ${newState.connectionStateAsString}" }
             lastKnownState = newState
@@ -252,6 +257,9 @@ internal actual class DefaultDeviceConnectionManager(
 
             // BluetoothGatt throws on a value longer than an attribute can hold instead of failing the request.
             is DeviceAction.Write -> if (action.newValue.size > MAX_ATTRIBUTE_LENGTH) {
+                logger.stateLogger.actionLogger.debug {
+                    "$action of ${action.newValue.size} bytes not sent: longer than the $MAX_ATTRIBUTE_LENGTH bytes an attribute holds"
+                }
                 action.handleActionCompleted(GattResponse.InvalidAttributeValueLength)
             } else if (!readyGatt.write(action)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
@@ -379,8 +387,6 @@ internal actual class DefaultDeviceConnectionManager(
         handleDescriptorRead(descriptor.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else GattResponse.Error.from(status))
     }
 }
-
-private const val MAX_ATTRIBUTE_LENGTH = 512
 
 private val Int.gattStatusAsString get() = when (this) {
     GATT_SUCCESS -> "SUCCESS"

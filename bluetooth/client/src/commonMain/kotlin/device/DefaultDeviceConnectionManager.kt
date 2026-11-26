@@ -410,8 +410,16 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         handleActionCompleted(response, this)
         when (response) {
             is GattResponse.Success -> logger.stateLogger.actionLogger.info { "Completed $this successfully" }
-            is GattResponse.Error -> logger.stateLogger.actionLogger.error { "Failed to complete $this" }
+
+            is GattResponse.Error -> {
+                logger.stateLogger.actionLogger.error { "Failed to complete $this" }
+                if (response is GattResponse.UnknownError) {
+                    logger.stateLogger.actionLogger.debug { "$this failed with status 0x${response.statusCode.toString(16)}, which is no known error code; answered UnknownError" }
+                }
+            }
+
             is GattResponse.DeviceUnavailable, is GattResponse.Superseded -> logger.stateLogger.actionLogger.error { "Failed to start $this" }
+
             is GattResponse.MTUError -> logger.stateLogger.actionLogger.error { "Failed to update MTU. Set to $this" }
         }
         emitEvent(DeviceConnectionManager.Event.CompletedAction(this, response))
@@ -423,7 +431,15 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         if (!this.response.isCompleted) {
             val uuid = characteristic.uuid.uuidString
             when (this) {
-                is DeviceAction.Notification.Enable -> notifyingCharacteristics[uuid] = characteristic
+                is DeviceAction.Notification.Enable -> {
+                    val previous = notifyingCharacteristics.put(uuid, characteristic)
+                    if (previous != null && previous !== characteristic) {
+                        logger.stateLogger.actionLogger.debug {
+                            "Enabled notifications of characteristic $uuid while another characteristic with that UUID notifies; notifications of both now reach this one"
+                        }
+                    }
+                }
+
                 is DeviceAction.Notification.Disable -> notifyingCharacteristics.remove(uuid)
             }
         }
@@ -459,6 +475,11 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     protected fun handleCharacteristicRead(uuid: UUID, response: GattResponse.ReadResponse) {
         val action = currentAction
         if (action is DeviceAction.Read.Characteristic && action.characteristic.uuid.uuidString == uuid.uuidString) {
+            if (response is GattResponse.ReadSuccess && response.value.size >= MAX_ATTRIBUTE_LENGTH) {
+                logger.stateLogger.actionLogger.debug {
+                    "$action read ${response.value.size} bytes, at or past the $MAX_ATTRIBUTE_LENGTH bytes an attribute holds; the stack reads no further"
+                }
+            }
             action.handleActionCompleted(response)
         }
     }

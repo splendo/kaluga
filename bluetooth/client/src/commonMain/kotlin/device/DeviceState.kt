@@ -144,6 +144,8 @@ sealed class DeviceAction<Response : GattResponse> {
     }
 }
 
+internal const val MAX_ATTRIBUTE_LENGTH = 512
+
 /**
  * The state of a [Device]
  */
