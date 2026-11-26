@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
+import com.splendo.kaluga.bluetooth.TestPeripheral.Capability
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,7 +33,7 @@ import kotlin.time.TimeSource
 class PeripheralUnansweredReadTest : PeripheralTest() {
 
     @Test
-    fun readThatIsNeverAnswered() = peripheralTest(timeout = 150.seconds) {
+    fun readThatIsNeverAnswered() = peripheralTest(timeout = 150.seconds, requires = setOf(Capability.HoldReadUntilLinkEnds)) {
         val attributes = connectAndDiscover()
         attributes.send(Command.HoldRead())
         val unanswered = attributes.data.startRead()

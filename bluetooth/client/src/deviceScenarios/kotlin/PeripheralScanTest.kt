@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.TestPeripheral.Capability
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
@@ -39,7 +40,7 @@ import kotlin.time.Duration.Companion.seconds
 class PeripheralScanTest : PeripheralTest() {
 
     @Test
-    fun advertisementFields() = peripheralTest {
+    fun advertisementFields() = peripheralTest(requires = setOf(Capability.Beacon)) {
         withBeacon {
             val beacon = scan(setOf(TestPeripheral.beaconService)).single()
             // Until the scan response arrives the advertisement has no name.
@@ -56,7 +57,7 @@ class PeripheralScanTest : PeripheralTest() {
     }
 
     @Test
-    fun filterByServiceUuid() = peripheralTest {
+    fun filterByServiceUuid() = peripheralTest(requires = setOf(Capability.Beacon)) {
         withBeacon {
             val beacons = scan(setOf(TestPeripheral.beaconService))
             assertEquals(listOf(TestPeripheral.BEACON_NAME), beacons.map { it.info.value.name })
@@ -68,7 +69,7 @@ class PeripheralScanTest : PeripheralTest() {
     }
 
     @Test
-    fun deviceThatStopsAdvertisingStaysListed() = peripheralTest {
+    fun deviceThatStopsAdvertisingStaysListed() = peripheralTest(requires = setOf(Capability.Beacon)) {
         withBeacon {
             val beacon = scan(setOf(TestPeripheral.beaconService), stopAfter = false).single()
             try {

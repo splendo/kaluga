@@ -63,10 +63,13 @@ object TestPeripheral {
     /** What a scenario may need from the peripheral beyond serving its attributes and the commands every player obeys. */
     enum class Capability(val description: String) {
         HoldCccdWrite("hold the answer to a CCCD write"),
+        HoldReadUntilLinkEnds("hold the answer to a read until the link ends"),
         EndLink("end the link"),
         ChangeServices("change its services while connected"),
         RefusePairing("refuse to pair"),
         CapMtu("cap the MTU of a connection"),
+        ExceedAttributeLength("send more than an attribute holds in one read response or notification"),
+        Beacon("advertise a beacon next to itself"),
     }
 
     /** Who plays the peripheral, and what it can do. */
@@ -75,7 +78,11 @@ object TestPeripheral {
         /** `peripheral.py` on bumble. */
         Script(Capability.entries.toSet()),
 
-        /** A kaluga server on another device, which has no say over the link and answers the stack's own requests through it. */
+        /**
+         * A kaluga server on another device, which has no say over the link. A read it leaves unanswered CoreBluetooth
+         * answers itself after about ten seconds, and Android sends at most an attribute's length in a read response or
+         * a notification.
+         */
         Kaluga(emptySet()),
         ;
 

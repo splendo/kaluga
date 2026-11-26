@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
 import com.splendo.kaluga.bluetooth.AttMtu.Companion.MAX_ATTRIBUTE_LENGTH
+import com.splendo.kaluga.bluetooth.TestPeripheral.Capability
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import com.splendo.kaluga.bluetooth.TestPeripheral.counting
 import kotlinx.coroutines.channels.Channel
@@ -65,11 +66,11 @@ class PeripheralLongValueTest : PeripheralTest() {
     fun readLongerThanTheMaximumAttributeLengthAtALargeMtu() = readLongerThanTheMaximumAttributeLength(AttMtu.Large)
 
     // The stack stops reading at the maximum length of an attribute and reports what it has as the whole value. Android
-    // cuts the value at that length; CoreBluetooth keeps every response it read, of MTU - 1 bytes each, so the last one
-    // reaches past it.
+    // cuts the value at that length; CoreBluetooth keeps every response it read, so the last one reaches past it when
+    // the peripheral answers with MTU - 1 bytes each.
     private fun readLongerThanTheMaximumAttributeLength(mtu: AttMtu) = peripheralTestAt(mtu) { attributes ->
         attributes.send(Command.SetLongValue(600))
-        val response = mtu.size - 1
+        val response = if (Capability.ExceedAttributeLength in player.capabilities) mtu.size - 1 else minOf(mtu.size - 1, MAX_ATTRIBUTE_LENGTH)
         val length = when (platform.stack) {
             Stack.Android -> MAX_ATTRIBUTE_LENGTH
             Stack.CoreBluetooth -> (MAX_ATTRIBUTE_LENGTH + response - 1) / response * response
@@ -124,11 +125,13 @@ class PeripheralLongValueTest : PeripheralTest() {
     fun notificationOfTheFullPayloadAtALargeMtu() = peripheralTestAt(AttMtu.Large) { attributes ->
         val notifications = Channel<ByteArray>(Channel.UNLIMITED)
         assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(within(10.seconds, "subscribe") { attributes.data.subscribe { notifications.trySend(it) } })
-        attributes.send(Command.NotifyLength(AttMtu.Large.size - 3))
-        val longest = withTimeoutOrNull(2.seconds) { notifications.receive() }
-        when (platform.stack) {
-            Stack.Android -> assertNull(longest, "a notification of ${AttMtu.Large.size - 3} bytes arrived")
-            Stack.CoreBluetooth -> assertContentEquals(counting(AttMtu.Large.size - 3), longest)
+        if (Capability.ExceedAttributeLength in player.capabilities) {
+            attributes.send(Command.NotifyLength(AttMtu.Large.size - 3))
+            val longest = withTimeoutOrNull(2.seconds) { notifications.receive() }
+            when (platform.stack) {
+                Stack.Android -> assertNull(longest, "a notification of ${AttMtu.Large.size - 3} bytes arrived")
+                Stack.CoreBluetooth -> assertContentEquals(counting(AttMtu.Large.size - 3), longest)
+            }
         }
         attributes.send(Command.NotifyLength(MAX_ATTRIBUTE_LENGTH))
         assertContentEquals(counting(MAX_ATTRIBUTE_LENGTH), within(10.seconds, "notification") { notifications.receive() })

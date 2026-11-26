@@ -47,6 +47,9 @@ class PeripheralSession(val platform: PeripheralScenarioPlatform) {
         val shared by lazy { PeripheralSession(peripheralScenarioPlatform) }
     }
 
+    /** Who plays the peripheral; only asked while a scenario runs, which it does only when somebody does. */
+    val player: TestPeripheral.Player get() = checkNotNull(platform.player)
+
     private val start = TimeSource.Monotonic.markNow()
     private val job = SupervisorJob()
     val scope = CoroutineScope(defaultBluetoothClientDispatcher + job)
