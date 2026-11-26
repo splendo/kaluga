@@ -21,7 +21,9 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toKString
 import platform.CoreBluetooth.CBManager
 import platform.CoreBluetooth.CBManagerAuthorizationAllowedAlways
+import platform.posix.fflush
 import platform.posix.getenv
+import platform.posix.stdout
 import kotlin.test.fail
 
 internal val centralScenarioPlatform: CentralScenarioPlatform = AppleCentralScenarioPlatform
@@ -61,7 +63,10 @@ object AppleCentralScenarioPlatform : CentralScenarioPlatform {
     // A peripheral manager is not told about links, only about subscriptions and requests.
     override fun isConnected(central: ConnectedDevice): Boolean? = null
 
+    // Flushed per line, as a runner reads the log of a peer while it plays.
+    @OptIn(ExperimentalForeignApi::class)
     override fun log(message: String) {
         println("[CentralTest] $message")
+        fflush(stdout)
     }
 }

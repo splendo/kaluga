@@ -31,7 +31,9 @@ import platform.CoreBluetooth.CBManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
 import platform.darwin.NSObject
 import platform.darwin.dispatch_queue_create
+import platform.posix.fflush
 import platform.posix.getenv
+import platform.posix.stdout
 import kotlin.test.fail
 
 internal val peripheralScenarioPlatform: PeripheralScenarioPlatform = ApplePeripheralScenarioPlatform
@@ -81,8 +83,11 @@ object ApplePeripheralScenarioPlatform : PeripheralScenarioPlatform {
         while (systemConnections.isConnected(device)) delay(100)
     }
 
+    // Flushed per line, as a runner reads the log of a peer while it plays.
+    @OptIn(ExperimentalForeignApi::class)
     override fun log(message: String) {
         println("[PeripheralTest] $message")
+        fflush(stdout)
     }
 
     private val systemConnections by lazy { SystemConnections() }
