@@ -413,16 +413,30 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
             is GattResponse.Error -> {
                 logger.stateLogger.actionLogger.error { "Failed to complete $this" }
-                if (response is GattResponse.UnknownError) {
-                    logger.stateLogger.actionLogger.debug { "$this failed with status 0x${response.statusCode.toString(16)}, which is no known error code; answered UnknownError" }
+                logUnknownStatus(response, response)
+            }
+
+            is GattResponse.DeviceUnavailable -> {
+                val cause = response.cause
+                if (cause == null) {
+                    logger.stateLogger.actionLogger.error { "Failed to start $this" }
+                } else {
+                    logger.stateLogger.actionLogger.error { "Failed to complete $this: the link went down as the platform failed it with $cause" }
+                    logUnknownStatus(cause, response)
                 }
             }
 
-            is GattResponse.DeviceUnavailable, is GattResponse.Superseded -> logger.stateLogger.actionLogger.error { "Failed to start $this" }
+            is GattResponse.Superseded -> logger.stateLogger.actionLogger.error { "Failed to start $this" }
 
             is GattResponse.MTUError -> logger.stateLogger.actionLogger.error { "Failed to update MTU. Set to $this" }
         }
         emitEvent(DeviceConnectionManager.Event.CompletedAction(this, response))
+    }
+
+    private fun DeviceAction<*>.logUnknownStatus(error: GattResponse.Error, response: GattResponse) {
+        if (error is GattResponse.UnknownError) {
+            logger.stateLogger.actionLogger.debug { "$this failed with status 0x${error.statusCode.toString(16)}, which is no known error code; answered $response" }
+        }
     }
 
     protected open fun <R : GattResponse> handleActionCompleted(response: R, deviceAction: DeviceAction<R>) {}
