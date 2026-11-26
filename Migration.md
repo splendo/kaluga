@@ -188,6 +188,29 @@ the removed `BluetoothBuilder` facade.
 
 `beacons` now lives under the bluetooth group: `com.splendo.kaluga.bluetooth:beacons`.
 
+#### `GattResponse` answers
+
+- `GattResponse.DeviceUnavailable` is now a data class instead of an object, and it and
+  `GattResponse.MTUDeviceUnavailable` take an optional `cause: GattResponse.Error?`. Create one with
+  `GattResponse.DeviceUnavailable()`, and check for a lost link with `is GattResponse.DeviceUnavailable`
+  rather than `==`: one with a `cause` does not equal one without.
+- On Android, a request the stack fails with an error status while the platform already reports the device
+  as disconnected answers `DeviceUnavailable` (`MTUDeviceUnavailable` for `requestMtu`) with the error as
+  its `cause`, instead of the bare error. The read a peripheral never answers is one: it answered
+  `ApplicationError(0x85)` and now answers `DeviceUnavailable(cause = ApplicationError(0x85))`. The same
+  status sent by a peripheral on a link that stays still answers as the plain error.
+- On Apple, a CoreBluetooth error is read by its domain. `CBATTErrorDomain` errors map to the ATT error of
+  their code as before. `CBErrorDomain` errors used to be read as the ATT error with the same number; one
+  saying the link is gone now answers `DeviceUnavailable(cause = UnknownError(code))`, the others
+  `InvalidHandle`, `InsufficientResources`, `RequestNotSupported` or `UnknownError(code)`.
+- `GattResponse.UnknownError` is new: `GattResponse.Error.from` returns it for a code without an error
+  type of its own, where it threw outside the application error range. A `when` over `GattResponse.Error`
+  needs a branch for it.
+- On Apple, `requestMtu` answers the MTU derived from the longest write without response, so a link at
+  the default ATT MTU answers 23 instead of 515.
+- On Android, the server refuses a notification longer than the 512 bytes an attribute holds, as it
+  refuses one longer than the MTU, instead of throwing.
+
 ### Permissions
 
 - The permissions base module was renamed **`base` → `core`**: `com.splendo.kaluga:base-permissions`
