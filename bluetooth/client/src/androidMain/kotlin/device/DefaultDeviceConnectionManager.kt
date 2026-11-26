@@ -94,7 +94,7 @@ internal actual class DefaultDeviceConnectionManager(
                 if (status == GATT_SUCCESS) {
                     GattResponse.MTUSuccess(mtu)
                 } else {
-                    gatt.failure(status, { GattResponse.MTUDeviceUnavailable(mtu, it) }) { GattResponse.MTUFailure(mtu, it) }
+                    mtuFailure(mtu, status) { gatt.connectionState() }
                 },
             )
         }
@@ -118,7 +118,16 @@ internal actual class DefaultDeviceConnectionManager(
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info { "onCharacteristicWrite status ${status.gattStatusAsString}" }
-            handleCharacteristicWritten(characteristic.uuid, if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else gatt.writeFailure(status))
+            handleCharacteristicWritten(
+                characteristic.uuid,
+                if (status ==
+                    GATT_SUCCESS
+                ) {
+                    GattResponse.WriteSuccess.Acknowledged
+                } else {
+                    writeFailure(status) { gatt.connectionState() }
+                },
+            )
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -166,7 +175,7 @@ internal actual class DefaultDeviceConnectionManager(
             logger.dataLogger[descriptor.characteristic.service.uuid][descriptor.characteristic.uuid][descriptor.uuid].info {
                 "onDescriptorWrite status ${status.gattStatusAsString}"
             }
-            val response = if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else gatt.writeFailure(status)
+            val response = if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else writeFailure(status) { gatt.connectionState() }
             // Notification enable/disable done by client configuration descriptor write
             val action = currentAction
             if (descriptor.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR && action is DeviceAction.Notification) {
@@ -381,7 +390,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun readCharacteristic(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
-        handleCharacteristicRead(characteristic.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else gatt.readFailure(status))
+        handleCharacteristicRead(characteristic.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { gatt.connectionState() })
     }
 
     private fun notifyCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray) {
@@ -389,26 +398,11 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun updateDescriptor(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
-        handleDescriptorRead(descriptor.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else gatt.readFailure(status))
+        handleDescriptorRead(descriptor.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { gatt.connectionState() })
     }
 
-    /**
-     * The answer to a request the stack failed with [status]: the [GattResponse.Error] it maps to, or
-     * [GattResponse.DeviceUnavailable] with that error as its cause when the platform already reports the device as
-     * disconnected. A failing link makes the stack fail the pending request a few milliseconds before it reports the
-     * disconnect, with codes such as `GATT_ERROR` (0x85) that a peripheral may also send as its own answer.
-     */
     @SuppressLint("MissingPermission")
-    private inline fun <R : GattResponse> BluetoothGatt?.failure(status: Int, linkDown: (GattResponse.Error) -> R, answered: (GattResponse.Error) -> R): R {
-        val error = GattResponse.Error.from(status)
-        val device = this?.device ?: return answered(error)
-        val state = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT) ?: return answered(error)
-        return if (state == BluetoothProfile.STATE_CONNECTED) answered(error) else linkDown(error)
-    }
-
-    private fun BluetoothGatt?.readFailure(status: Int): GattResponse.ReadError = failure(status, GattResponse::DeviceUnavailable) { it }
-
-    private fun BluetoothGatt?.writeFailure(status: Int): GattResponse.WriteError = failure(status, GattResponse::DeviceUnavailable) { it }
+    private fun BluetoothGatt?.connectionState(): Int? = this?.device?.let { bluetoothManager?.getConnectionState(it, BluetoothProfile.GATT) }
 }
 
 private val Int.gattStatusAsString get() = when (this) {
