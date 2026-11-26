@@ -233,13 +233,11 @@ class ConnectableDeviceImpl(
         sharedInfo.value = sharedInfo.value.copy(advertisementData = advertisementData)
     }
 
-    private fun createConnectionManagerIfNotCreated(): DeviceConnectionManager = if (connectionManager.isCompleted) {
-        connectionManager.getCompleted()
-    } else {
-        connectionManagerBuilder(connectionSettings).also {
-            connectionManager.complete(it)
+    private fun createConnectionManagerIfNotCreated(): DeviceConnectionManager = connectionManager.getCompletedOrNull()
+        ?: connectionManagerBuilder(connectionSettings).let { created ->
+            // Another thread may have created one meanwhile. Everything has to use the one whose events are collected.
+            if (connectionManager.complete(created)) created else connectionManager.getCompleted()
         }
-    }
 
     private fun createDeviceStateRepoIfNotCreated(): ConnectableDeviceStateFlowRepo? = deviceStateRepo.updateAndGet { repo ->
         repo ?: if (sharedInfo.value.advertisementData.isConnectable) {
