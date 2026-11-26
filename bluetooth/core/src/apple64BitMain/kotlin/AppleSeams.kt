@@ -18,13 +18,13 @@
 package com.splendo.kaluga.bluetooth
 
 import platform.CoreBluetooth.CBCentral
-import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
+import platform.CoreBluetooth.CBCharacteristicWriteWithoutResponse
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
 
 actual val CBCentral.mtu: MTU get() = maximumUpdateValueLength.toInt() + ATT_HEADER_SIZE
 
-actual val CBPeripheral.mtu: MTU get() = maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse).toInt() + ATT_HEADER_SIZE
+actual val CBPeripheral.mtu: MTU get() = maximumWriteValueLengthForType(CBCharacteristicWriteWithoutResponse).toInt() + ATT_HEADER_SIZE
 
 internal actual fun CBCentralManager.isPoweredOn(): Boolean = state == CBManagerStatePoweredOn

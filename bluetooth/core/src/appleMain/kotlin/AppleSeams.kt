@@ -35,7 +35,8 @@ internal const val ATT_HEADER_SIZE = 3
 expect val CBCentral.mtu: MTU
 
 /**
- * The ATT [MTU] negotiated with this [CBPeripheral], derived from its maximum write payload length.
+ * The ATT [MTU] negotiated with this [CBPeripheral], derived from the longest write without response it takes. The
+ * longest write with response is no measure of it: CoreBluetooth reports the longest long write there, whatever the MTU.
  */
 expect val CBPeripheral.mtu: MTU
 
