@@ -408,6 +408,27 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         }
         if (isAlreadyCompleted()) return
         handleActionCompleted(response, this)
+        logCompletion(response)
+        emitEvent(DeviceConnectionManager.Event.CompletedAction(this, response))
+    }
+
+    /**
+     * Completes this action, the one in flight, with [response] at once, for a transport about to call [handleDisconnect].
+     * The disconnect answers the action and, through its characteristic, a notification action as soon as it is reported,
+     * ahead of any [DeviceConnectionManager.Event.CompletedAction] still to be handled. Like an action the disconnect
+     * answers, it fires no such event, so the actions queued behind it are answered by the disconnect.
+     */
+    internal fun <R : GattResponse> DeviceAction<R>.completeBeforeDisconnect(response: R) {
+        if (currentAction === this) {
+            currentAction = null
+        }
+        if (isAlreadyCompleted()) return
+        handleActionCompleted(response, this)
+        logCompletion(response)
+        complete(response)
+    }
+
+    private fun <R : GattResponse> DeviceAction<R>.logCompletion(response: R) {
         when (response) {
             is GattResponse.Success -> logger.stateLogger.actionLogger.info { "Completed $this successfully" }
 
@@ -430,7 +451,6 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
             is GattResponse.MTUError -> logger.stateLogger.actionLogger.error { "Failed to update MTU. Set to $this" }
         }
-        emitEvent(DeviceConnectionManager.Event.CompletedAction(this, response))
     }
 
     private fun DeviceAction<*>.logLinkDown(cause: GattResponse.Error, response: GattResponse) {
