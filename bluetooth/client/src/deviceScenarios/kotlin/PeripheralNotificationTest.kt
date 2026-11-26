@@ -80,6 +80,37 @@ class PeripheralNotificationTest : PeripheralTest() {
         assertNull(withTimeoutOrNull(1.seconds) { notifications.receive() }, "the read answer reached the subscriber as a notification")
     }
 
+    /**
+     * Two notifications while a read is held, with the read answered by the second value, so each update can be told
+     * apart from the read response. Android reports a read response and a notification through different callbacks.
+     * CoreBluetooth reports both through `didUpdateValueFor` with nothing to tell them apart, so the first update after
+     * the read request answers the read: the first notification, while the read response reaches the subscriber.
+     */
+    @Test
+    fun twoNotificationsWhileAReadIsInFlight() = peripheralTest {
+        val attributes = connectAndDiscover()
+        val notifications = Channel<ByteArray>(Channel.UNLIMITED)
+        assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(within(10.seconds, "subscribe") { attributes.data.subscribe { notifications.trySend(it) } })
+        attributes.send(Command.HoldRead(releaseAfter = 1000.milliseconds))
+        attributes.send(Command.Notify(byteArrayOf(0x33), after = 300.milliseconds))
+        attributes.send(Command.Notify(byteArrayOf(0x44), after = 600.milliseconds))
+        val read = attributes.data.startRead()
+        val answer = read.response.answer("read")
+        val received = within(10.seconds, "two updates") { List(2) { notifications.receive().toList() } }
+        assertNull(withTimeoutOrNull(1.seconds) { notifications.receive() }, "a third update reached the subscriber")
+        when (platform.stack) {
+            PeripheralScenarioPlatform.Stack.Android -> {
+                assertEquals<GattResponse>(GattResponse.ReadSuccess(byteArrayOf(0x44)), answer)
+                assertEquals(listOf(listOf<Byte>(0x33), listOf<Byte>(0x44)), received)
+            }
+
+            PeripheralScenarioPlatform.Stack.CoreBluetooth -> {
+                assertEquals<GattResponse>(GattResponse.ReadSuccess(byteArrayOf(0x33)), answer)
+                assertEquals(listOf(listOf<Byte>(0x44), listOf<Byte>(0x44)), received)
+            }
+        }
+    }
+
     @Test
     fun enableDirectlyFollowedByDisable() = peripheralTest {
         val attributes = connectAndDiscover()
