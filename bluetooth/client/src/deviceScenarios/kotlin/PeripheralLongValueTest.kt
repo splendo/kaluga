@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import com.splendo.kaluga.bluetooth.TestPeripheral.counting
 import kotlinx.coroutines.channels.Channel
@@ -26,7 +27,6 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -38,6 +38,9 @@ class PeripheralLongValueTest : PeripheralTest() {
     private companion object {
         const val DEFAULT_MTU = 23
         const val MAX_ATTRIBUTE_LENGTH = 512
+
+        // Both stacks ask for the largest MTU ATT allows, and the peripheral accepts it.
+        const val NEGOTIATED_MTU = 517
     }
 
     @Test
@@ -54,12 +57,17 @@ class PeripheralLongValueTest : PeripheralTest() {
         assertEquals<GattResponse>(GattResponse.ReadSuccess(counting(MAX_ATTRIBUTE_LENGTH)), within(10.seconds, "long read") { attributes.long.read() })
     }
 
-    // The stack stops reading at the maximum length of an attribute and reports what it has as the whole value.
+    // The stack stops reading at the maximum length of an attribute and reports what it has as the whole value. Android
+    // cuts the value at that length; CoreBluetooth keeps the whole first read response, which already holds more.
     @Test
     fun readLongerThanTheMaximumAttributeLength() = peripheralTest {
         val attributes = connectAndDiscover()
         attributes.send(Command.SetLongValue(600))
-        assertEquals<GattResponse>(GattResponse.ReadSuccess(counting(MAX_ATTRIBUTE_LENGTH)), within(10.seconds, "long read") { attributes.long.read() })
+        val length = when (platform.stack) {
+            Stack.Android -> MAX_ATTRIBUTE_LENGTH
+            Stack.CoreBluetooth -> NEGOTIATED_MTU - 1
+        }
+        assertEquals<GattResponse>(GattResponse.ReadSuccess(counting(length)), within(10.seconds, "long read") { attributes.long.read() })
     }
 
     @Test
@@ -92,29 +100,43 @@ class PeripheralLongValueTest : PeripheralTest() {
         assertContentEquals(counting(DEFAULT_MTU - 3), within(10.seconds, "notification") { notifications.receive() })
     }
 
-    // A negotiated MTU leaves room for a notification longer than an attribute can hold. The stack drops such a
-    // notification without telling the app, so the longest one that arrives holds the maximum attribute length.
+    // A negotiated MTU leaves room for a notification longer than an attribute can hold. Android drops such a
+    // notification without telling the app; CoreBluetooth hands it over whole.
     @Test
     fun notificationLongerThanTheMaximumAttributeLength() = peripheralTest {
         val attributes = connectAndDiscover()
-        val mtu = assertIs<GattResponse.MTUSuccess>(device.requestMtu(517).response.answer("MTU request")).mtu
-        assertTrue(mtu - 3 > MAX_ATTRIBUTE_LENGTH, "negotiated MTU $mtu")
+        val mtu = assertIs<GattResponse.MTUSuccess>(device.requestMtu(NEGOTIATED_MTU).response.answer("MTU request")).mtu
+        // CoreBluetooth tells only the longest value the app may write, which it caps at the maximum attribute length.
+        val reportedMtu = when (platform.stack) {
+            Stack.Android -> NEGOTIATED_MTU
+            Stack.CoreBluetooth -> MAX_ATTRIBUTE_LENGTH + 3
+        }
+        assertEquals(reportedMtu, mtu)
         val notifications = Channel<ByteArray>(Channel.UNLIMITED)
         assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(within(10.seconds, "subscribe") { attributes.data.subscribe { notifications.trySend(it) } })
-        attributes.send(Command.NotifyLength(mtu - 3))
-        assertNull(withTimeoutOrNull(2.seconds) { notifications.receive() }, "a notification of ${mtu - 3} bytes arrived")
+        attributes.send(Command.NotifyLength(NEGOTIATED_MTU - 3))
+        val longest = withTimeoutOrNull(2.seconds) { notifications.receive() }
+        when (platform.stack) {
+            Stack.Android -> assertNull(longest, "a notification of ${NEGOTIATED_MTU - 3} bytes arrived")
+            Stack.CoreBluetooth -> assertContentEquals(counting(NEGOTIATED_MTU - 3), longest)
+        }
         attributes.send(Command.NotifyLength(MAX_ATTRIBUTE_LENGTH))
         assertContentEquals(counting(MAX_ATTRIBUTE_LENGTH), within(10.seconds, "notification") { notifications.receive() })
     }
 
-    // Android confirms a write without response once the stack has taken it, so it answers as acknowledged.
+    // Android confirms a write without response once the stack has taken it, so it answers as acknowledged. CoreBluetooth
+    // confirms nothing, so the answer tells that the peripheral was ready to take the write.
     @Test
     fun writesWithoutResponseInQuickSuccession() = peripheralTest {
         val attributes = connectAndDiscover()
         val count = 100
         val writes = List(count) { attributes.sink.startWrite(byteArrayOf(it.toByte()), WriteType.WithoutResponse) }
         val responses = writes.mapIndexed { index, write -> write.response.answer("write without response $index") }
-        assertEquals(List<GattResponse>(count) { GattResponse.WriteSuccess.Acknowledged }, responses)
+        val expected = when (platform.stack) {
+            Stack.Android -> GattResponse.WriteSuccess.Acknowledged
+            Stack.CoreBluetooth -> GattResponse.WriteSuccess.Ready
+        }
+        assertEquals(List<GattResponse>(count) { expected }, responses)
         assertEquals<GattResponse>(GattResponse.ReadSuccess(counting(count)), within(10.seconds, "read what arrived") { attributes.sink.read() })
     }
 }
