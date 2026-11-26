@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
 import com.splendo.kaluga.bluetooth.TestPeripheral.Capability
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlinx.coroutines.async
@@ -71,12 +70,9 @@ class PeripheralDisconnectTest : PeripheralTest() {
         )
         awaitDisconnected()
         assertTrue(attributes.data.invalidated.isCompleted)
-        // Android may fail the action in flight itself, just before it reports the link as closed: a lost link either way.
-        when (platform.stack) {
-            Stack.Android -> assertIs<GattResponse.DeviceUnavailable>(responses.first())
-            Stack.CoreBluetooth -> assertIs<GattResponse.ReadError>(responses.first())
-        }
-        responses.drop(1).forEach { assertIs<GattResponse.DeviceUnavailable>(it) }
+        // Android may fail the action in flight itself, just before it reports the link as closed, CoreBluetooth leaves it
+        // to the disconnect: a lost link either way.
+        responses.forEach { assertIs<GattResponse.DeviceUnavailable>(it) }
     }
 
     @Test
