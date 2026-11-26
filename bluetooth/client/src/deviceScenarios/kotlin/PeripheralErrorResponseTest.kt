@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.TestPeripheral.Capability
 import com.splendo.kaluga.bluetooth.PeripheralScenarioPlatform.Stack
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlin.test.Test
@@ -37,7 +38,7 @@ class PeripheralErrorResponseTest : PeripheralTest() {
     // Both stacks answer this by pairing to encrypt the link, which the peripheral refuses. Android then fails the read
     // with its own GATT_AUTH_FAIL, CoreBluetooth with insufficient encryption, instead of the code the peripheral sent.
     @Test
-    fun insufficientAuthenticationOnARead() = peripheralTest {
+    fun insufficientAuthenticationOnARead() = peripheralTest(requires = setOf(Capability.RefusePairing)) {
         val attributes = connectAndDiscover()
         attributes.send(Command.AnswerWithError(0x05))
         val expected = when (platform.stack) {
@@ -52,7 +53,7 @@ class PeripheralErrorResponseTest : PeripheralTest() {
     // idle link about three seconds later, and the disconnect answers the write. CoreBluetooth answers the write as it
     // answers a read and keeps the link.
     @Test
-    fun insufficientAuthenticationOnAWrite() = peripheralTest {
+    fun insufficientAuthenticationOnAWrite() = peripheralTest(requires = setOf(Capability.RefusePairing)) {
         val attributes = connectAndDiscover()
         attributes.send(Command.AnswerWithError(0x05))
         val response = within(20.seconds, "write") { attributes.error.write(byteArrayOf(1)) }

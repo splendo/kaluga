@@ -28,14 +28,19 @@ internal val centralScenarioPlatform: CentralScenarioPlatform = AppleCentralScen
 
 /**
  * Runs the scenarios against the [TestCentral] on this machine's own Bluetooth radio, with the central on another
- * controller in range. They run when the environment variable [VARIABLE] is `true`.
+ * controller in range. They run when the environment variable [VARIABLE] names a [TestCentral.Player], and
+ * [PLAY_PERIPHERAL_VARIABLE] `true` plays the test peripheral instead.
  */
 object AppleCentralScenarioPlatform : CentralScenarioPlatform {
 
     const val VARIABLE = "KALUGA_BLUETOOTH_TEST_CENTRAL"
+    const val PLAY_PERIPHERAL_VARIABLE = "KALUGA_BLUETOOTH_PLAY_TEST_PERIPHERAL"
 
     @OptIn(ExperimentalForeignApi::class)
-    override val isEnabled: Boolean get() = getenv(VARIABLE)?.toKString() == "true"
+    override val player get() = TestCentral.Player.named(getenv(VARIABLE)?.toKString())
+
+    @OptIn(ExperimentalForeignApi::class)
+    override val playsTestPeripheral get() = getenv(PLAY_PERIPHERAL_VARIABLE)?.toKString() == "true"
 
     // The test runner has no notion of a skipped test, so the scenario passes without running.
     override fun skip(reason: String) {

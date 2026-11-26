@@ -77,6 +77,16 @@ object TestPeripheral {
 
         /** A kaluga server on another device, which has no say over the link and answers the stack's own requests through it. */
         Kaluga(emptySet()),
+        ;
+
+        companion object {
+            /** The player a test run's switch names: `true` for the script, `kaluga` for kaluga, anything else for none. */
+            fun named(switch: String?): Player? = when (switch) {
+                "true" -> Script
+                "kaluga" -> Kaluga
+                else -> null
+            }
+        }
     }
 
     /**

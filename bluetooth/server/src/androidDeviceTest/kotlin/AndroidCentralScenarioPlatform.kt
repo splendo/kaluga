@@ -29,19 +29,22 @@ import org.junit.AssumptionViolatedException
 internal val centralScenarioPlatform: CentralScenarioPlatform = AndroidCentralScenarioPlatform
 
 /**
- * Runs the scenarios against the [TestCentral] on the emulator's netsim radio. They run when the instrumentation
- * argument [ARGUMENT] is `true`.
+ * Runs the scenarios against the [TestCentral] on the emulator's radio. They run when the instrumentation argument
+ * [ARGUMENT] names a [TestCentral.Player], and [PLAY_PERIPHERAL_ARGUMENT] `true` plays the test peripheral instead.
  */
 object AndroidCentralScenarioPlatform : CentralScenarioPlatform {
 
     const val ARGUMENT = "netsimCentral"
+    const val PLAY_PERIPHERAL_ARGUMENT = "playTestPeripheral"
     private const val TAG = "CentralTest"
 
     private val instrumentation get() = InstrumentationRegistry.getInstrumentation()
     private val context get() = instrumentation.targetContext
     private val bluetoothManager by lazy { context.getSystemService(BluetoothManager::class.java) }
 
-    override val isEnabled: Boolean get() = InstrumentationRegistry.getArguments().getString(ARGUMENT) == "true"
+    override val player get() = TestCentral.Player.named(InstrumentationRegistry.getArguments().getString(ARGUMENT))
+
+    override val playsTestPeripheral get() = InstrumentationRegistry.getArguments().getString(PLAY_PERIPHERAL_ARGUMENT) == "true"
 
     override fun skip(reason: String): Unit = throw AssumptionViolatedException(reason)
 

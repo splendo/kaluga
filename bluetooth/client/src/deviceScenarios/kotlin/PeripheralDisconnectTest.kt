@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.TestPeripheral.Capability
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -52,7 +53,7 @@ class PeripheralDisconnectTest : PeripheralTest() {
     }
 
     @Test
-    fun linkDropWithAReadInFlightAnswersEveryPendingAction() = peripheralTest {
+    fun linkDropWithAReadInFlightAnswersEveryPendingAction() = peripheralTest(requires = setOf(Capability.EndLink)) {
         val attributes = connectAndDiscover()
         attributes.send(Command.HoldRead())
         attributes.send(Command.DropWhenHeld(1.seconds))
@@ -106,7 +107,7 @@ class PeripheralDisconnectTest : PeripheralTest() {
     }
 
     @Test
-    fun reconnectAfterADropGivesNewObjects() = peripheralTest {
+    fun reconnectAfterADropGivesNewObjects() = peripheralTest(requires = setOf(Capability.EndLink)) {
         val old = connectAndDiscover()
         old.send(Command.Drop(200.milliseconds))
         awaitDisconnected()
@@ -134,7 +135,7 @@ class PeripheralDisconnectTest : PeripheralTest() {
     }
 
     @Test
-    fun linkDropWithAnEnableInFlightFailsTheSubscription() = peripheralTest {
+    fun linkDropWithAnEnableInFlightFailsTheSubscription() = peripheralTest(requires = setOf(Capability.HoldCccdWrite, Capability.EndLink)) {
         val attributes = connectAndDiscover()
         attributes.send(Command.HoldCccdWrite())
         attributes.send(Command.DropWhenHeld(1.seconds))

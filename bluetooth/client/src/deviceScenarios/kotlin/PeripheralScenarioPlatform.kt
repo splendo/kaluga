@@ -33,8 +33,11 @@ interface PeripheralScenarioPlatform {
 
     val stack: Stack
 
-    /** Whether the [TestPeripheral] runs next to this test run. Without it the scenarios are skipped. */
-    val isEnabled: Boolean
+    /** Who plays the [TestPeripheral] next to this test run, or `null` when nobody does: the scenarios are skipped then. */
+    val player: TestPeripheral.Player?
+
+    /** Whether this test run plays the [com.splendo.kaluga.bluetooth.server.TestCentral] for the server scenarios on another device. */
+    val playsTestCentral: Boolean
 
     /** Whether the beacon of the [TestPeripheral] can advertise next to it, which takes a second controller. */
     val hasBeacon: Boolean

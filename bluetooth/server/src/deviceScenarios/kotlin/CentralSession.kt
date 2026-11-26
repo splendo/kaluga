@@ -166,14 +166,19 @@ class CentralSession(val platform: CentralScenarioPlatform) {
 
 /**
  * Runs a [BluetoothServer] against the [TestCentral]. Skipped unless the platform says the central is running, since it
- * has to be started next to the test run.
+ * has to be started next to the test run, and when its player lacks a capability the scenario [requires].
  */
 abstract class CentralTest {
 
-    protected fun centralTest(timeout: Duration = 120.seconds, block: suspend CentralSession.() -> Unit) {
+    protected fun centralTest(timeout: Duration = 120.seconds, requires: Set<TestCentral.Capability> = emptySet(), block: suspend CentralSession.() -> Unit) {
         val platform = centralScenarioPlatform
-        if (!platform.isEnabled) {
+        val player = platform.player
+        if (player == null) {
             platform.skip("the test central is not running")
+            return
+        }
+        (requires - player.capabilities).firstOrNull()?.let {
+            platform.skip("the test central played by $player cannot ${it.description}")
             return
         }
         platform.setUp()

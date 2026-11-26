@@ -23,8 +23,11 @@ package com.splendo.kaluga.bluetooth.server
  */
 interface CentralScenarioPlatform {
 
-    /** Whether the [TestCentral] runs next to this test run. Without it the scenarios are skipped. */
-    val isEnabled: Boolean
+    /** Who plays the [TestCentral] next to this test run, or `null` when nobody does: the scenarios are skipped then. */
+    val player: TestCentral.Player?
+
+    /** Whether this test run plays the [com.splendo.kaluga.bluetooth.TestPeripheral] for the client scenarios on another device. */
+    val playsTestPeripheral: Boolean
 
     /** Ends a scenario that does not run here. A platform whose test runner knows skipped tests reports it as one. */
     fun skip(reason: String)

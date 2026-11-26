@@ -37,18 +37,23 @@ internal val peripheralScenarioPlatform: PeripheralScenarioPlatform = ApplePerip
 
 /**
  * Runs the scenarios against the [TestPeripheral] on this machine's own Bluetooth radio, with the peripheral on another
- * controller in range. They run when the environment variable [VARIABLE] is `true`, and the scenarios that need the
- * beacon when [BEACON_VARIABLE] is `true` as well.
+ * controller in range. They run when the environment variable [VARIABLE] names a [TestPeripheral.Player], and the
+ * scenarios that need the beacon when [BEACON_VARIABLE] is `true` as well. [PLAY_CENTRAL_VARIABLE] `true` plays the test
+ * central instead.
  */
 object ApplePeripheralScenarioPlatform : PeripheralScenarioPlatform {
 
     const val VARIABLE = "KALUGA_BLUETOOTH_TEST_PERIPHERAL"
     const val BEACON_VARIABLE = "KALUGA_BLUETOOTH_TEST_BEACON"
+    const val PLAY_CENTRAL_VARIABLE = "KALUGA_BLUETOOTH_PLAY_TEST_CENTRAL"
 
     override val stack = PeripheralScenarioPlatform.Stack.CoreBluetooth
 
     @OptIn(ExperimentalForeignApi::class)
-    override val isEnabled: Boolean get() = getenv(VARIABLE)?.toKString() == "true"
+    override val player get() = TestPeripheral.Player.named(getenv(VARIABLE)?.toKString())
+
+    @OptIn(ExperimentalForeignApi::class)
+    override val playsTestCentral get() = getenv(PLAY_CENTRAL_VARIABLE)?.toKString() == "true"
 
     @OptIn(ExperimentalForeignApi::class)
     override val hasBeacon: Boolean get() = getenv(BEACON_VARIABLE)?.toKString() == "true"

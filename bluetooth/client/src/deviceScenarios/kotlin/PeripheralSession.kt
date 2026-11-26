@@ -95,9 +95,10 @@ class PeripheralSession(val platform: PeripheralScenarioPlatform) {
         client.stopScanning(BluetoothClient.CleanMode.RETAIN_ALL)
     }
 
+    /** Connects and discovers, and resets the peripheral, which not every player can do on a link of its own. */
     suspend fun connectAndDiscover(): Attributes {
         assertTrue(within(30.seconds, "connect") { device.connect() })
-        return Attributes(within(30.seconds, "discover") { device.discoveredServices().first() })
+        return Attributes(within(30.seconds, "discover") { device.discoveredServices().first() }).also { it.send(TestPeripheral.Command.Reset) }
     }
 
     suspend fun Attributes.send(command: TestPeripheral.Command) {
@@ -124,14 +125,19 @@ class PeripheralSession(val platform: PeripheralScenarioPlatform) {
 
 /**
  * Runs the client against the [TestPeripheral]. Skipped unless the platform says the peripheral is running, since it
- * has to be started next to the test run.
+ * has to be started next to the test run, and when its player lacks a capability the scenario [requires].
  */
 abstract class PeripheralTest {
 
-    protected fun peripheralTest(timeout: Duration = 120.seconds, block: suspend PeripheralSession.() -> Unit) {
+    protected fun peripheralTest(timeout: Duration = 120.seconds, requires: Set<TestPeripheral.Capability> = emptySet(), block: suspend PeripheralSession.() -> Unit) {
         val platform = peripheralScenarioPlatform
-        if (!platform.isEnabled) {
+        val player = platform.player
+        if (player == null) {
             platform.skip("the test peripheral is not running")
+            return
+        }
+        (requires - player.capabilities).firstOrNull()?.let {
+            platform.skip("the test peripheral played by $player cannot ${it.description}")
             return
         }
         platform.setUp()

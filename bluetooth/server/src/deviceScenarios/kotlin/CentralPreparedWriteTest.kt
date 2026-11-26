@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.server.TestCentral.Capability
 import com.splendo.kaluga.bluetooth.server.TestCentral.Instruction
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.test.Test
@@ -37,7 +38,7 @@ class CentralPreparedWriteTest : CentralTest() {
     // A part whose offset leaves a gap is not appended to the parts before it: the server answers the execute with
     // an error, as validating the offsets is left to the execute.
     @Test
-    fun partAtTheWrongOffset() = centralTest {
+    fun partAtTheWrongOffset() = centralTest(requires = setOf(Capability.PreparedWrites)) {
         stage(first.bytes)
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 0, start = 0, length = 18)))
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 22, start = 18, length = 18)))
@@ -47,7 +48,7 @@ class CentralPreparedWriteTest : CentralTest() {
     }
 
     @Test
-    fun cancelledQueue() = centralTest {
+    fun cancelledQueue() = centralTest(requires = setOf(Capability.PreparedWrites)) {
         stage(first.bytes)
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 0, start = 0, length = 18)))
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 18, start = 18, length = 18)))
@@ -60,7 +61,7 @@ class CentralPreparedWriteTest : CentralTest() {
     }
 
     @Test
-    fun queueCutOffByADisconnect() = centralTest {
+    fun queueCutOffByADisconnect() = centralTest(requires = setOf(Capability.PreparedWrites)) {
         stage(first.bytes)
         assertEquals(0, status(Instruction.Prepare(TestCentral.TYPED, offset = 0, start = 0, length = 18)))
         assertEquals(0, status(Instruction.Disconnect))

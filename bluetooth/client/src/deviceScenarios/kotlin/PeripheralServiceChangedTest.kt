@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.TestPeripheral.Capability
 import com.splendo.kaluga.bluetooth.TestPeripheral.Command
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
@@ -37,7 +38,7 @@ class PeripheralServiceChangedTest : PeripheralTest() {
     // Android rediscovers the services itself and reports onServiceChanged, which the client does not handle: the
     // objects of the old table stay valid and the new service stays out of sight until the next connection.
     @Test
-    fun serviceChangedWhileConnectedLeavesTheOldTable() = peripheralTest {
+    fun serviceChangedWhileConnectedLeavesTheOldTable() = peripheralTest(requires = setOf(Capability.ChangeServices)) {
         val old = connectAndDiscover()
         old.send(Command.ChangeServices(after = 200.milliseconds))
         assertNull(withTimeoutOrNull(3.seconds) { old.service.invalidated.await() }, "the old table was invalidated")

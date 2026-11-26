@@ -66,6 +66,16 @@ object TestCentral {
 
         /** A kaluga client on another device, whose stack splits a long write itself. */
         Kaluga(emptySet()),
+        ;
+
+        companion object {
+            /** The player a test run's switch names: `true` for the script, `kaluga` for kaluga, anything else for none. */
+            fun named(switch: String?): Player? = when (switch) {
+                "true" -> Script
+                "kaluga" -> Kaluga
+                else -> null
+            }
+        }
     }
 
     /** An [instruction] as the server notifies it on the control characteristic, under an [id] the result carries back. */

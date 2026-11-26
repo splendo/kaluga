@@ -36,12 +36,13 @@ import kotlin.time.TimeSource
 internal val peripheralScenarioPlatform: PeripheralScenarioPlatform = AndroidPeripheralScenarioPlatform
 
 /**
- * Runs the scenarios against the [TestPeripheral] on the emulator's netsim radio. They run when the instrumentation
- * argument [ARGUMENT] is `true`.
+ * Runs the scenarios against the [TestPeripheral] on the emulator's radio. They run when the instrumentation argument
+ * [ARGUMENT] names a [TestPeripheral.Player], and [PLAY_CENTRAL_ARGUMENT] `true` plays the test central instead.
  */
 object AndroidPeripheralScenarioPlatform : PeripheralScenarioPlatform {
 
     const val ARGUMENT = "netsimPeripheral"
+    const val PLAY_CENTRAL_ARGUMENT = "playTestCentral"
     private const val TAG = "PeripheralTest"
 
     private val instrumentation get() = InstrumentationRegistry.getInstrumentation()
@@ -50,7 +51,9 @@ object AndroidPeripheralScenarioPlatform : PeripheralScenarioPlatform {
 
     override val stack = PeripheralScenarioPlatform.Stack.Android
 
-    override val isEnabled: Boolean get() = InstrumentationRegistry.getArguments().getString(ARGUMENT) == "true"
+    override val player get() = TestPeripheral.Player.named(InstrumentationRegistry.getArguments().getString(ARGUMENT))
+
+    override val playsTestCentral get() = InstrumentationRegistry.getArguments().getString(PLAY_CENTRAL_ARGUMENT) == "true"
 
     override val hasBeacon = true
 
