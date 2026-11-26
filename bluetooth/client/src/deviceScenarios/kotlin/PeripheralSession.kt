@@ -139,14 +139,17 @@ class PeripheralSession(val platform: PeripheralScenarioPlatform) {
     suspend fun awaitDisconnected(timeout: Duration = 20.seconds) = within(timeout, "disconnected") { device.state.filterIsInstance<ConnectableDeviceState.Disconnected>().first() }
 
     /**
-     * Disconnects and waits for the stack to close the link, which it may keep for a moment after the last client
-     * disconnected. A connection made before that reuses the link, along with any request still held on it, and service
-     * discovery then waits for the ATT timeout of that request.
+     * Waits for the stack to close the link, which it may keep for a moment after it reported the device disconnected. A
+     * connection made before that reuses the link, along with any request still held on it, and service discovery then
+     * waits for the ATT timeout of that request.
      */
+    suspend fun awaitLinkClosed() = within(20.seconds, "link closed") { platform.awaitLinkClosed(device) }
+
+    /** Disconnects and waits for the stack to close the link, see [awaitLinkClosed]. */
     suspend fun disconnect() {
         if (!::device.isInitialized) return
         withTimeoutOrNull(20.seconds) { device.disconnect() } ?: log("disconnect after the test timed out")
-        within(20.seconds, "link closed") { platform.awaitLinkClosed(device) }
+        awaitLinkClosed()
     }
 }
 

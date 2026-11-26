@@ -54,6 +54,8 @@ class PeripheralUnansweredReadTest : PeripheralTest() {
         awaitDisconnected()
         assertTrue(attributes.data.invalidated.isCompleted)
 
+        // The stack reports the link lost when it gives up on the read, before the link is down.
+        awaitLinkClosed()
         val reconnected = connectAndDiscover()
         assertEquals<GattResponse>(GattResponse.ReadSuccess(TestPeripheral.initialValue), within(10.seconds, "read after reconnecting") { reconnected.data.read() })
     }
