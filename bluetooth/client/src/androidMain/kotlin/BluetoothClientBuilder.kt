@@ -27,6 +27,7 @@ import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A default implementation of [BaseBluetoothClientBuilder]
@@ -37,17 +38,23 @@ import kotlin.coroutines.CoroutineContext
  */
 actual class BluetoothClientBuilder(
     private val applicationContext: Context = ApplicationHolder.applicationContext,
-    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
-        Permissions(
-            PermissionsBuilder(PermissionContext(applicationContext)).apply {
-                registerBluetoothPermissionIfNotRegistered()
-                registerLocationPermissionIfNotRegistered()
-            },
-            coroutineContext = context,
-        )
-    },
+    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = defaultPermissionsBuilder(applicationContext),
     private val scannerBuilder: BaseScanner.Builder = DefaultScanner.Builder(applicationContext = applicationContext),
 ) : BaseBluetoothClientBuilder {
+
+    /**
+     * Constructor that creates a [BaseBluetoothClientBuilder] with a [DefaultScanner]
+     * @param applicationContext the [Context] in which Bluetooth should run
+     * @param permissionsBuilder a method for creating the [Permissions] object to manage the Bluetooth permissions.
+     * Needs to have [com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder] and [com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder] registered.
+     * @param gattErrorDisconnectGrace how long a request the stack fails with `GATT_ERROR` (0x85) waits for the device to
+     * disconnect, answering [GattResponse.DeviceUnavailable] if it does; see [DefaultScanner.Builder]
+     */
+    constructor(
+        applicationContext: Context = ApplicationHolder.applicationContext,
+        permissionsBuilder: suspend (CoroutineContext) -> Permissions = defaultPermissionsBuilder(applicationContext),
+        gattErrorDisconnectGrace: Duration,
+    ) : this(applicationContext, permissionsBuilder, DefaultScanner.Builder(applicationContext = applicationContext, gattErrorDisconnectGrace = gattErrorDisconnectGrace))
 
     actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): BluetoothClient = DefaultBluetoothClient(
         { scannerContext ->
@@ -55,5 +62,15 @@ actual class BluetoothClientBuilder(
         },
         scannerBuilder,
         coroutineContext,
+    )
+}
+
+private fun defaultPermissionsBuilder(applicationContext: Context): suspend (CoroutineContext) -> Permissions = { context ->
+    Permissions(
+        PermissionsBuilder(PermissionContext(applicationContext)).apply {
+            registerBluetoothPermissionIfNotRegistered()
+            registerLocationPermissionIfNotRegistered()
+        },
+        coroutineContext = context,
     )
 }

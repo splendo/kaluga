@@ -58,27 +58,40 @@ import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 internal actual class DefaultDeviceConnectionManager(
     private val context: Context,
     deviceWrapper: DeviceWrapper,
     private val connectionSettings: ConnectionSettings = ConnectionSettings(),
     coroutineScope: CoroutineScope,
+    private val gattErrorDisconnectGrace: Duration = defaultGattErrorDisconnectGrace,
     private val connectionState: (BluetoothGatt?) -> Int? = context.gattConnectionState(),
 ) : BaseDeviceConnectionManager(deviceWrapper, connectionSettings, coroutineScope) {
 
-    class Builder(private val context: Context = ApplicationHolder.applicationContext) : DeviceConnectionManager.Builder {
+    class Builder(private val context: Context = ApplicationHolder.applicationContext, private val gattErrorDisconnectGrace: Duration = defaultGattErrorDisconnectGrace) :
+        DeviceConnectionManager.Builder {
         override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager =
-            DefaultDeviceConnectionManager(context, deviceWrapper, settings, coroutineScope = coroutineScope)
+            DefaultDeviceConnectionManager(context, deviceWrapper, settings, coroutineScope, gattErrorDisconnectGrace)
     }
 
     override val coroutineContext: CoroutineContext = coroutineScope.coroutineContext
 
     private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
+
+    /** A failure held back while waiting for the disconnect that may follow it. */
+    private class HeldFailure(val linkDown: () -> Unit, val asIs: () -> Unit) {
+        val released = CompletableDeferred<Unit>()
+    }
+
+    // Set by a request callback and taken by the disconnect callback or the end of the grace, which run on other threads.
+    private val heldFailure = atomic<HeldFailure?>(null)
 
     private inner class Callback(private val logger: ConnectionSettings.ConnectionLogger) : BluetoothGattCallback() {
 
@@ -89,13 +102,11 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
             logger.stateLogger.stateChangeLogger.info { "onMtuChanged mtu $mtu status ${status.gattStatusAsString}" }
-            handleNewMtu(
-                if (status == GATT_SUCCESS) {
-                    GattResponse.MTUSuccess(mtu)
-                } else {
-                    mtuFailure(mtu, status) { connectionState(gatt) }
-                },
-            )
+            if (status == GATT_SUCCESS) {
+                handleNewMtu(GattResponse.MTUSuccess(mtu))
+            } else {
+                (currentAction as? DeviceAction.RequestMtu).answer(mtuFailure(mtu, status, gattErrorDisconnectGrace) { connectionState(gatt) }, ::handleNewMtu)
+            }
         }
 
         @Suppress("OVERRIDE_DEPRECATION")
@@ -117,16 +128,12 @@ internal actual class DefaultDeviceConnectionManager(
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
             logger.dataLogger[characteristic.service.uuid][characteristic.uuid].info { "onCharacteristicWrite status ${status.gattStatusAsString}" }
-            handleCharacteristicWritten(
-                characteristic.uuid,
-                if (status ==
-                    GATT_SUCCESS
-                ) {
-                    GattResponse.WriteSuccess.Acknowledged
-                } else {
-                    writeFailure(status) { connectionState(gatt) }
-                },
-            )
+            if (status == GATT_SUCCESS) {
+                handleCharacteristicWritten(characteristic.uuid, GattResponse.WriteSuccess.Acknowledged)
+            } else {
+                val action = (currentAction as? DeviceAction.Write.Characteristic)?.takeIf { it.characteristic.uuid == characteristic.uuid }
+                action.answer(writeFailure(status, gattErrorDisconnectGrace) { connectionState(gatt) }) { handleCharacteristicWritten(characteristic.uuid, it) }
+            }
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -174,13 +181,18 @@ internal actual class DefaultDeviceConnectionManager(
             logger.dataLogger[descriptor.characteristic.service.uuid][descriptor.characteristic.uuid][descriptor.uuid].info {
                 "onDescriptorWrite status ${status.gattStatusAsString}"
             }
-            val response = if (status == GATT_SUCCESS) GattResponse.WriteSuccess.Acknowledged else writeFailure(status) { connectionState(gatt) }
             // Notification enable/disable done by client configuration descriptor write
-            val action = currentAction
-            if (descriptor.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR && action is DeviceAction.Notification) {
-                action.handleNotificationStateChanged(response)
+            val notification = (currentAction as? DeviceAction.Notification)?.takeIf { descriptor.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }
+            val handle: (GattResponse.WriteResponse) -> Unit = { response ->
+                notification?.handleNotificationStateChanged(response)
+                handleDescriptorWritten(descriptor.uuid, response)
             }
-            handleDescriptorWritten(descriptor.uuid, response)
+            if (status == GATT_SUCCESS) {
+                handle(GattResponse.WriteSuccess.Acknowledged)
+            } else {
+                val action = notification ?: (currentAction as? DeviceAction.Write.Descriptor)?.takeIf { it.descriptor.uuid == descriptor.uuid }
+                action.answer(writeFailure(status, gattErrorDisconnectGrace) { connectionState(gatt) }, handle)
+            }
         }
 
         override fun onServiceChanged(gatt: BluetoothGatt) {
@@ -190,6 +202,9 @@ internal actual class DefaultDeviceConnectionManager(
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             logger.stateLogger.stateChangeLogger.info { "onConnectionStateChange status ${status.gattStatusAsString} newState ${newState.connectionStateAsString}" }
             lastKnownState = newState
+            if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                releaseHeldFailure { linkDown() }
+            }
             launch {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
@@ -235,6 +250,8 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     actual override fun intentionalDisconnect() {
+        // The failure arrived before the link was asked to close, so it is the answer to the request.
+        releaseHeldFailure { asIs() }
         val gatt = gatt.getCompletedOrNull()
         if (gatt != null && lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
             gatt.disconnect()
@@ -389,7 +406,12 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun readCharacteristic(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
-        handleCharacteristicRead(characteristic.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { connectionState(gatt) })
+        if (status == GATT_SUCCESS) {
+            handleCharacteristicRead(characteristic.uuid, GattResponse.ReadSuccess(value))
+        } else {
+            val action = (currentAction as? DeviceAction.Read.Characteristic)?.takeIf { it.characteristic.uuid == characteristic.uuid }
+            action.answer(readFailure(status, gattErrorDisconnectGrace) { connectionState(gatt) }) { handleCharacteristicRead(characteristic.uuid, it) }
+        }
     }
 
     private fun notifyCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray) {
@@ -397,7 +419,46 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun updateDescriptor(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
-        handleDescriptorRead(descriptor.uuid, response = if (status == GATT_SUCCESS) GattResponse.ReadSuccess(value) else readFailure(status) { connectionState(gatt) })
+        if (status == GATT_SUCCESS) {
+            handleDescriptorRead(descriptor.uuid, GattResponse.ReadSuccess(value))
+        } else {
+            val action = (currentAction as? DeviceAction.Read.Descriptor)?.takeIf { it.descriptor.uuid == descriptor.uuid }
+            action.answer(readFailure(status, gattErrorDisconnectGrace) { connectionState(gatt) }) { handleDescriptorRead(descriptor.uuid, it) }
+        }
+    }
+
+    /**
+     * Answers this action, the one the failed request belongs to (`null` if none is), as [failure] says through [handle].
+     * A failure that awaits the disconnect is held until [releaseHeldFailure] answers it, or until
+     * [gattErrorDisconnectGrace] has passed, when [handle] answers it as the plain error.
+     */
+    private fun <R : GattResponse> DeviceAction<R>?.answer(failure: GattFailure<R>, handle: (R) -> Unit) {
+        val action = this
+        when (failure) {
+            is GattFailure.Answer -> handle(failure.response)
+            is GattFailure.AwaitDisconnect -> if (action == null || action.response.isCompleted) handle(failure.error) else hold(action, failure, handle)
+        }
+    }
+
+    private fun <R : GattResponse> hold(action: DeviceAction<R>, failure: GattFailure.AwaitDisconnect<R>, handle: (R) -> Unit) {
+        val held = HeldFailure(
+            linkDown = { action.completeBeforeDisconnect(failure.linkDown) },
+            asIs = { action.completeBeforeDisconnect(failure.error) },
+        )
+        heldFailure.value = held
+        logger.stateLogger.actionLogger.debug { "$action failed with ${failure.error}; waiting $gattErrorDisconnectGrace for the link to go down" }
+        launch {
+            withTimeoutOrNull(gattErrorDisconnectGrace) { held.released.await() }
+            if (heldFailure.compareAndSet(held, null)) {
+                handle(failure.error)
+            }
+        }
+    }
+
+    private fun releaseHeldFailure(answer: HeldFailure.() -> Unit) {
+        val held = heldFailure.getAndSet(null) ?: return
+        held.answer()
+        held.released.complete(Unit)
     }
 }
 

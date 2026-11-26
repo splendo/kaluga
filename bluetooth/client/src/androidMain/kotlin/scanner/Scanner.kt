@@ -33,10 +33,12 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
+import com.splendo.kaluga.bluetooth.device.defaultGattErrorDisconnectGrace
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
@@ -55,6 +57,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanFilter
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
+import kotlin.time.Duration
 
 /**
  * A default implementation of [BaseScanner]
@@ -63,6 +66,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings
  * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
  * @param scanSettings the [ScanSettings] to apply to the scanner
  * @param settings the [BaseScanner.Settings] to configure this scanner
+ * @param gattErrorDisconnectGrace see [DefaultScanner.Builder]
  * @param coroutineScope the [CoroutineScope] this scanner runs on
  * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
@@ -72,6 +76,7 @@ actual class DefaultScanner internal constructor(
     private val bluetoothAdapter: BluetoothAdapter?,
     private val scanSettings: ScanSettings,
     settings: Settings,
+    gattErrorDisconnectGrace: Duration,
     coroutineScope: CoroutineScope,
     scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
 ) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
@@ -82,16 +87,24 @@ actual class DefaultScanner internal constructor(
      * @param bluetoothScanner the [BluetoothLeScannerCompat] to use for scanning
      * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
      * @param scanSettings the [ScanSettings] to apply to the scanner
+     * @param gattErrorDisconnectGrace how long a request that the stack fails with `GATT_ERROR` (0x85) waits for the
+     * device to disconnect while the platform still reports it as connected. The stack fails a request in flight with that
+     * status as the link drops, a few milliseconds before it reports the disconnect, and a peripheral may send the same
+     * code as its own error answer. If the device disconnects within this time, the request answers
+     * [GattResponse.DeviceUnavailable] ([GattResponse.MTUDeviceUnavailable] for an MTU request) with the error as its
+     * `cause`; otherwise it answers [GattResponse.ApplicationError] of 0x85 this much later than the stack gave it. Other
+     * statuses answer at once. [Duration.ZERO] answers at once.
      */
     class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
         private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter,
         private val scanSettings: ScanSettings = defaultScanSettings,
+        private val gattErrorDisconnectGrace: Duration = defaultGattErrorDisconnectGrace,
     ) : BaseScanner.Builder {
 
         override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner =
-            DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope, scanningDispatcher)
+            DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, gattErrorDisconnectGrace, coroutineScope, scanningDispatcher)
     }
 
     companion object {
@@ -149,7 +162,7 @@ actual class DefaultScanner internal constructor(
     private val locationPermissionRepo get() = permissions[locationPermission]
 
     actual override val isSupported: Boolean = bluetoothAdapter != null
-    private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext)
+    private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext, gattErrorDisconnectGrace)
     actual override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
     private val locationEnabledMonitor by lazy { LocationMonitor.Builder(applicationContext).create() }
 

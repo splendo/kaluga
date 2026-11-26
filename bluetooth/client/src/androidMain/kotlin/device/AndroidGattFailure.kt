@@ -20,33 +20,72 @@ package com.splendo.kaluga.bluetooth.device
 import android.bluetooth.BluetoothProfile
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * The answer to a request the stack failed with [status]: the [GattResponse.Error] it maps to, answered through
- * [answered], or that error passed to [linkDown] when the platform no longer reports the device as connected. A failing
- * link makes the stack fail the pending request a few milliseconds before it reports the disconnect, with codes such as
- * `GATT_ERROR` (0x85) that a peripheral may also send as its own answer.
- * @param connectionState the device's GATT connection state as a [BluetoothProfile] state, or `null` if the platform
- * cannot be asked
+ * The stack's own generic failure. Android fails every request pending on a link that goes down with it, a few
+ * milliseconds before it reports the disconnect, and uses it for other failures of its own, such as a malformed
+ * response. A peripheral may also answer a request with application error 0x85.
  */
-private inline fun <R : GattResponse> failure(status: Int, connectionState: () -> Int?, linkDown: (GattResponse.Error) -> R, answered: (GattResponse.Error) -> R): R {
-    val error = GattResponse.Error.from(status)
-    val state = connectionState() ?: return answered(error)
-    return if (state == BluetoothProfile.STATE_CONNECTED) answered(error) else linkDown(error)
+private const val GATT_ERROR = 0x85
+
+internal val defaultGattErrorDisconnectGrace = 100.milliseconds
+
+/**
+ * How a request the stack failed with an error status is answered.
+ */
+internal sealed interface GattFailure<out R : GattResponse> {
+
+    /** Answered with [response] at once. */
+    data class Answer<out R : GattResponse>(val response: R) : GattFailure<R>
+
+    /**
+     * Held until the device disconnects, answering [linkDown], or until the grace period has passed, answering [error].
+     */
+    data class AwaitDisconnect<out R : GattResponse>(val error: R, val linkDown: R) : GattFailure<R>
 }
 
 /**
- * The [GattResponse.ReadError] a read the stack failed with [status] answers, see [failure].
+ * The answer to a request the stack failed with [status]: the [GattResponse.Error] it maps to, answered through
+ * [answered], or that error passed to [linkDown] when the platform no longer reports the device as connected. The stack
+ * fails a request pending on a failing link with `GATT_ERROR` (0x85) before the platform reports the link as down,
+ * so while it still reports the device as connected a request failed with that status waits for the disconnect, for
+ * [disconnectGrace]. The other statuses on a request callback are the peripheral's ATT errors and failures the stack does
+ * not report for a link going down, so they answer at once.
+ * @param connectionState the device's GATT connection state as a [BluetoothProfile] state, or `null` if the platform
+ * cannot be asked
  */
-internal fun readFailure(status: Int, connectionState: () -> Int?): GattResponse.ReadError = failure(status, connectionState, GattResponse::DeviceUnavailable) { it }
+private inline fun <R : GattResponse> failure(
+    status: Int,
+    disconnectGrace: Duration,
+    connectionState: () -> Int?,
+    linkDown: (GattResponse.Error) -> R,
+    answered: (GattResponse.Error) -> R,
+): GattFailure<R> {
+    val error = GattResponse.Error.from(status)
+    val state = connectionState() ?: return GattFailure.Answer(answered(error))
+    return when {
+        state != BluetoothProfile.STATE_CONNECTED -> GattFailure.Answer(linkDown(error))
+        status == GATT_ERROR && disconnectGrace > Duration.ZERO -> GattFailure.AwaitDisconnect(answered(error), linkDown(error))
+        else -> GattFailure.Answer(answered(error))
+    }
+}
 
 /**
- * The [GattResponse.WriteError] a write the stack failed with [status] answers, see [failure].
+ * How a read the stack failed with [status] is answered, see [failure].
  */
-internal fun writeFailure(status: Int, connectionState: () -> Int?): GattResponse.WriteError = failure(status, connectionState, GattResponse::DeviceUnavailable) { it }
+internal fun readFailure(status: Int, disconnectGrace: Duration, connectionState: () -> Int?): GattFailure<GattResponse.ReadError> =
+    failure(status, disconnectGrace, connectionState, GattResponse::DeviceUnavailable) { it }
 
 /**
- * The [GattResponse.MTUError] a request for [mtu] the stack failed with [status] answers, see [failure].
+ * How a write the stack failed with [status] is answered, see [failure].
  */
-internal fun mtuFailure(mtu: MTU, status: Int, connectionState: () -> Int?): GattResponse.MTUError =
-    failure(status, connectionState, { GattResponse.MTUDeviceUnavailable(mtu, it) }) { GattResponse.MTUFailure(mtu, it) }
+internal fun writeFailure(status: Int, disconnectGrace: Duration, connectionState: () -> Int?): GattFailure<GattResponse.WriteError> =
+    failure(status, disconnectGrace, connectionState, GattResponse::DeviceUnavailable) { it }
+
+/**
+ * How a request for [mtu] the stack failed with [status] is answered, see [failure].
+ */
+internal fun mtuFailure(mtu: MTU, status: Int, disconnectGrace: Duration, connectionState: () -> Int?): GattFailure<GattResponse.MTUError> =
+    failure(status, disconnectGrace, connectionState, { GattResponse.MTUDeviceUnavailable(mtu, it) }) { GattResponse.MTUFailure(mtu, it) }
