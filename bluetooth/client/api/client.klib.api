@@ -1609,7 +1609,7 @@ final class com.splendo.kaluga.bluetooth.scanner/DefaultScanner : com.splendo.ka
         constructor <init>(com.splendo.kaluga.bluetooth.scanner/DefaultScanner.ScanSettings = ...) // com.splendo.kaluga.bluetooth.scanner/DefaultScanner.Builder.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.DefaultScanner.ScanSettings){}[0]
 
         // Targets: [js, wasmJs]
-        constructor <init>(kotlin.collections/List<com.splendo.kaluga.bluetooth/UUID> = ..., com.splendo.kaluga.bluetooth.scanner/WebDevicePickerSettings = ...) // com.splendo.kaluga.bluetooth.scanner/DefaultScanner.Builder.<init>|<init>(kotlin.collections.List<com.splendo.kaluga.bluetooth.UUID>;com.splendo.kaluga.bluetooth.scanner.WebDevicePickerSettings){}[0]
+        constructor <init>(kotlin.collections/List<com.splendo.kaluga.bluetooth/UUID> = ..., com.splendo.kaluga.bluetooth.scanner/WebDevicePickerSettings = ..., kotlin.time/Duration = ...) // com.splendo.kaluga.bluetooth.scanner/DefaultScanner.Builder.<init>|<init>(kotlin.collections.List<com.splendo.kaluga.bluetooth.UUID>;com.splendo.kaluga.bluetooth.scanner.WebDevicePickerSettings;kotlin.time.Duration){}[0]
     }
 
     // Targets: [apple]
@@ -1644,7 +1644,7 @@ final class com.splendo.kaluga.bluetooth/BluetoothClientBuilder : com.splendo.ka
     constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions> = ..., com.splendo.kaluga.bluetooth.scanner/BaseScanner.Builder = ...) // com.splendo.kaluga.bluetooth/BluetoothClientBuilder.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>;com.splendo.kaluga.bluetooth.scanner.BaseScanner.Builder){}[0]
 
     // Targets: [js, wasmJs]
-    constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions> = ..., kotlin.collections/List<com.splendo.kaluga.bluetooth/UUID>, com.splendo.kaluga.bluetooth.scanner/WebDevicePickerSettings = ...) // com.splendo.kaluga.bluetooth/BluetoothClientBuilder.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>;kotlin.collections.List<com.splendo.kaluga.bluetooth.UUID>;com.splendo.kaluga.bluetooth.scanner.WebDevicePickerSettings){}[0]
+    constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.permissions.base/Permissions> = ..., kotlin.collections/List<com.splendo.kaluga.bluetooth/UUID>, com.splendo.kaluga.bluetooth.scanner/WebDevicePickerSettings = ..., kotlin.time/Duration = ...) // com.splendo.kaluga.bluetooth/BluetoothClientBuilder.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.permissions.base.Permissions>;kotlin.collections.List<com.splendo.kaluga.bluetooth.UUID>;com.splendo.kaluga.bluetooth.scanner.WebDevicePickerSettings;kotlin.time.Duration){}[0]
 }
 
 final class com.splendo.kaluga.bluetooth/DefaultBluetoothClient : com.splendo.kaluga.bluetooth/BluetoothClient, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.bluetooth/DefaultBluetoothClient|null[0]

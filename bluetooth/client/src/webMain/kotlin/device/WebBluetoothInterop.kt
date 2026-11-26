@@ -59,10 +59,15 @@ internal fun WebGattResult.writeResponse(): GattResponse.WriteResponse = when (t
     is WebGattResult.Failure -> gattError(errorName) ?: GattResponse.DeviceUnavailable()
 }
 
+/** `true` for the rejection Chrome gives both a request in flight as the link drops and a peripheral's error answer. */
+internal val WebGattResult.isNotSupported: Boolean get() = this is WebGattResult.Failure && errorName == NOT_SUPPORTED_ERROR
+
+private const val NOT_SUPPORTED_ERROR = "NotSupportedError"
+
 // Web Bluetooth collapses several ATT error codes onto each DOMException name, so this is necessarily a
 // best-effort translation; connection-loss / unknown names fall through to [GattResponse.DeviceUnavailable].
 private fun gattError(errorName: String?): GattResponse.Error? = when (errorName) {
-    "NotSupportedError" -> GattResponse.RequestNotSupported
+    NOT_SUPPORTED_ERROR -> GattResponse.RequestNotSupported
     "SecurityError" -> GattResponse.InsufficientAuthentication
     "InvalidModificationError" -> GattResponse.InvalidAttributeValueLength
     "NotFoundError" -> GattResponse.AttributeNotFound

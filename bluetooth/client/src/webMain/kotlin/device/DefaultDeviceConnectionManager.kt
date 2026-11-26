@@ -22,17 +22,31 @@ import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.WriteType
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.uuidString
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration
 
-internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope) :
-    BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
+internal actual class DefaultDeviceConnectionManager(
+    deviceWrapper: DeviceWrapper,
+    settings: ConnectionSettings,
+    coroutineScope: CoroutineScope,
+    private val notSupportedDisconnectGrace: Duration,
+) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
-    class Builder : DeviceConnectionManager.Builder {
+    class Builder(private val notSupportedDisconnectGrace: Duration) : DeviceConnectionManager.Builder {
         override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): DefaultDeviceConnectionManager =
-            DefaultDeviceConnectionManager(deviceWrapper, settings, coroutineScope)
+            DefaultDeviceConnectionManager(deviceWrapper, settings, coroutineScope, notSupportedDisconnectGrace)
     }
+
+    /** An answer held back while waiting for the disconnect that may follow it. */
+    private class HeldAnswer(val linkDown: () -> Unit, val asIs: () -> Unit) {
+        val released = CompletableDeferred<Unit>()
+    }
+
+    private var heldAnswer: HeldAnswer? = null
 
     private val identifier = deviceWrapper.identifier
 
@@ -47,7 +61,7 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
 
     actual override fun connect() {
         launch {
-            if (webGattConnect(identifier) { handleDisconnect() }) {
+            if (webGattConnect(identifier) { handleLinkDown() }) {
                 webSetNotificationHandler(identifier) { service, characteristic ->
                     val value = webCachedCharacteristicValue(identifier, service, characteristic) ?: return@webSetNotificationHandler
                     handleCharacteristicReadOrNotified(uuidFrom(characteristic), GattResponse.ReadSuccess(value))
@@ -60,8 +74,49 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
     }
 
     actual override fun intentionalDisconnect() {
+        // The answer arrived before the link was asked to close, so it is the device's answer.
+        releaseHeldAnswer { asIs() }
         webGattDisconnect(identifier)
         handleDisconnect()
+    }
+
+    private fun handleLinkDown() {
+        releaseHeldAnswer { linkDown() }
+        handleDisconnect()
+    }
+
+    private fun releaseHeldAnswer(answer: HeldAnswer.() -> Unit) {
+        val held = heldAnswer ?: return
+        heldAnswer = null
+        held.answer()
+        held.released.complete(Unit)
+    }
+
+    /**
+     * Answers this action with [result] through [handle]. Chrome rejects a request in flight as the link drops with
+     * `NotSupportedError` a few milliseconds before it reports the disconnect, and gives a peripheral's own error answer
+     * the same name. So that rejection is held for [notSupportedDisconnectGrace]: if the link goes down meanwhile, the
+     * action answers [GattResponse.DeviceUnavailable] with the error as its cause.
+     */
+    private suspend fun <R : GattResponse> DeviceAction<R>.answer(
+        result: WebGattResult,
+        response: WebGattResult.() -> R,
+        linkDown: (GattResponse.Error) -> R,
+        handle: (R) -> Unit,
+    ) {
+        val answer = result.response()
+        if (answer !is GattResponse.Error || !result.isNotSupported || notSupportedDisconnectGrace <= Duration.ZERO || this.response.isCompleted) {
+            handle(answer)
+            return
+        }
+        val held = HeldAnswer(linkDown = { completeBeforeDisconnect(linkDown(answer)) }, asIs = { completeBeforeDisconnect(answer) })
+        heldAnswer = held
+        val released = try {
+            withTimeoutOrNull(notSupportedDisconnectGrace) { held.released.await() } != null
+        } finally {
+            if (heldAnswer === held) heldAnswer = null
+        }
+        if (!released) handle(answer)
     }
 
     actual override suspend fun discoverServices() {
@@ -75,7 +130,7 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
                 // The awaited readValue() result is unambiguously the read response. readValue() also echoes
                 // through the characteristicvaluechanged handler, where the heuristic drops it (see connect()).
                 val result = webReadCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString)
-                handleCharacteristicRead(action.characteristic.uuid, result.readResponse())
+                action.answer(result, WebGattResult::readResponse, GattResponse::DeviceUnavailable) { handleCharacteristicRead(action.characteristic.uuid, it) }
             }
 
             is DeviceAction.Read.Descriptor -> {
@@ -85,7 +140,7 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
                     action.descriptor.characteristic.uuid.uuidString,
                     action.descriptor.uuid.uuidString,
                 )
-                handleDescriptorRead(action.descriptor.uuid, result.readResponse())
+                action.answer(result, WebGattResult::readResponse, GattResponse::DeviceUnavailable) { handleDescriptorRead(action.descriptor.uuid, it) }
             }
 
             is DeviceAction.Write.Characteristic -> {
@@ -96,7 +151,7 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
                 }
                 val result =
                     webWriteCharacteristic(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, action.newValue, withResponse)
-                handleCharacteristicWritten(action.characteristic.uuid, result.writeResponse())
+                action.answer(result, WebGattResult::writeResponse, GattResponse::DeviceUnavailable) { handleCharacteristicWritten(action.characteristic.uuid, it) }
             }
 
             is DeviceAction.Write.Descriptor -> {
@@ -107,17 +162,17 @@ internal actual class DefaultDeviceConnectionManager(deviceWrapper: DeviceWrappe
                     action.descriptor.uuid.uuidString,
                     action.newValue,
                 )
-                handleDescriptorWritten(action.descriptor.uuid, result.writeResponse())
+                action.answer(result, WebGattResult::writeResponse, GattResponse::DeviceUnavailable) { handleDescriptorWritten(action.descriptor.uuid, it) }
             }
 
             is DeviceAction.Notification.Enable -> {
                 val result = webSetNotifying(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, true)
-                action.handleNotificationStateChanged(result.writeResponse())
+                action.answer(result, WebGattResult::writeResponse, GattResponse::DeviceUnavailable) { action.handleNotificationStateChanged(it) }
             }
 
             is DeviceAction.Notification.Disable -> {
                 val result = webSetNotifying(identifier, action.characteristic.service.uuid.uuidString, action.characteristic.uuid.uuidString, false)
-                action.handleNotificationStateChanged(result.writeResponse())
+                action.answer(result, WebGattResult::writeResponse, GattResponse::DeviceUnavailable) { action.handleNotificationStateChanged(it) }
             }
 
             is DeviceAction.RequestMtu -> {

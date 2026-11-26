@@ -20,10 +20,12 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
 import com.splendo.kaluga.bluetooth.scanner.WebDevicePickerSettings
+import com.splendo.kaluga.bluetooth.scanner.defaultNotSupportedDisconnectGrace
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A default implementation of [BaseBluetoothClientBuilder]
@@ -50,6 +52,8 @@ actual class BluetoothClientBuilder(
      * @param optionalServices the advertisement-independent service access allowlist passed to `requestDevice`.
      * Services that are not advertised (or only available after connecting) must be listed here to be reachable.
      * @param pickerSettings the [WebDevicePickerSettings] configuring the "Add Device" overlay
+     * @param notSupportedDisconnectGrace how long a request rejected with `NotSupportedError` waits for the device to
+     * disconnect, answering [GattResponse.DeviceUnavailable] if it does; see [DefaultScanner.Builder]
      */
     constructor(
         permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
@@ -62,7 +66,8 @@ actual class BluetoothClientBuilder(
         },
         optionalServices: List<UUID>,
         pickerSettings: WebDevicePickerSettings = WebDevicePickerSettings(),
-    ) : this(permissionsBuilder, DefaultScanner.Builder(optionalServices, pickerSettings))
+        notSupportedDisconnectGrace: Duration = defaultNotSupportedDisconnectGrace,
+    ) : this(permissionsBuilder, DefaultScanner.Builder(optionalServices, pickerSettings, notSupportedDisconnectGrace))
 
     actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): BluetoothClient = DefaultBluetoothClient(
         { scannerContext ->

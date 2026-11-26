@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -29,6 +30,8 @@ import com.splendo.kaluga.bluetooth.device.webShowDevicePicker
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Configures the on-screen "Add Device" overlay rendered by the Web Bluetooth [DefaultScanner].
@@ -49,6 +52,8 @@ data class WebDevicePickerSettings(
     val containerId: String? = null,
 )
 
+internal val defaultNotSupportedDisconnectGrace = 100.milliseconds
+
 /**
  * A default implementation of [BaseScanner] backed by the Web Bluetooth API.
  *
@@ -59,6 +64,7 @@ data class WebDevicePickerSettings(
  * @param settings the [BaseScanner.Settings] to configure this scanner
  * @param optionalServices the advertisement-independent access allowlist applied to every picker invocation
  * @param pickerSettings the [WebDevicePickerSettings] configuring the "Add Device" overlay
+ * @param notSupportedDisconnectGrace see [DefaultScanner.Builder]
  * @param coroutineScope the [CoroutineScope] this scanner runs on
  * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched
  */
@@ -66,6 +72,7 @@ actual class DefaultScanner internal constructor(
     settings: Settings,
     private val optionalServices: List<UUID>,
     private val pickerSettings: WebDevicePickerSettings,
+    private val notSupportedDisconnectGrace: Duration,
     coroutineScope: CoroutineScope,
     scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
 ) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
@@ -75,11 +82,21 @@ actual class DefaultScanner internal constructor(
      * @param optionalServices the advertisement-independent access allowlist applied to every picker invocation.
      * Services that are not advertised (or only available after connecting) must be listed here to be reachable.
      * @param pickerSettings the [WebDevicePickerSettings] configuring the "Add Device" overlay
+     * @param notSupportedDisconnectGrace how long a request that Web Bluetooth rejects with `NotSupportedError` waits for
+     * the device to disconnect before it answers. Chrome rejects a request in flight with that error as the link drops,
+     * just before it reports the disconnect, and also when the peripheral answers the request with an error. If the
+     * device disconnects within this time, the request answers [GattResponse.DeviceUnavailable] with the error as its
+     * `cause`; otherwise it answers the error, [GattResponse.RequestNotSupported], this much later than Chrome gave it.
+     * The ordering was observed on Chrome on macOS. [Duration.ZERO] answers at once.
      */
-    class Builder(private val optionalServices: List<UUID> = emptyList(), private val pickerSettings: WebDevicePickerSettings = WebDevicePickerSettings()) : BaseScanner.Builder {
+    class Builder(
+        private val optionalServices: List<UUID> = emptyList(),
+        private val pickerSettings: WebDevicePickerSettings = WebDevicePickerSettings(),
+        private val notSupportedDisconnectGrace: Duration = defaultNotSupportedDisconnectGrace,
+    ) : BaseScanner.Builder {
 
         override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner =
-            DefaultScanner(settings, optionalServices, pickerSettings, coroutineScope, scanningDispatcher)
+            DefaultScanner(settings, optionalServices, pickerSettings, notSupportedDisconnectGrace, coroutineScope, scanningDispatcher)
     }
 
     actual override val isSupported: Boolean = webBluetoothSupported()
@@ -100,7 +117,7 @@ actual class DefaultScanner internal constructor(
                 WebDeviceWrapper(identifier, deviceName),
                 null,
                 AdvertisementData(deviceName, filter.toList()),
-                DefaultDeviceConnectionManager.Builder(),
+                DefaultDeviceConnectionManager.Builder(notSupportedDisconnectGrace),
             )
         }
     }
