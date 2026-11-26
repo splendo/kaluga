@@ -50,6 +50,8 @@ object AndroidPeripheralScenarioPlatform : PeripheralScenarioPlatform {
 
     override val isEnabled: Boolean get() = InstrumentationRegistry.getArguments().getString(ARGUMENT) == "true"
 
+    override val hasBeacon = true
+
     override fun skip(reason: String): Unit = throw AssumptionViolatedException(reason)
 
     // Granted here rather than by a rule, which would run before the skip on API levels that lack these permissions.

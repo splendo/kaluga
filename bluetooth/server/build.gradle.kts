@@ -34,6 +34,6 @@ kaluga {
 }
 
 // Scenarios against a simulated peer: only the test source sets that can run them include them, not commonTest.
-kotlin.sourceSets.matching { it.name == "androidDeviceTest" }.configureEach {
+kotlin.sourceSets.matching { it.name in setOf("androidDeviceTest", "appleTest") }.configureEach {
     kotlin.srcDir("src/deviceScenarios/kotlin")
 }

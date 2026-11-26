@@ -28,6 +28,9 @@ interface PeripheralScenarioPlatform {
     /** Whether the [TestPeripheral] runs next to this test run. Without it the scenarios are skipped. */
     val isEnabled: Boolean
 
+    /** Whether the beacon of the [TestPeripheral] can advertise next to it, which takes a second controller. */
+    val hasBeacon: Boolean
+
     /** Ends a scenario that does not run here. A platform whose test runner knows skipped tests reports it as one. */
     fun skip(reason: String)
 

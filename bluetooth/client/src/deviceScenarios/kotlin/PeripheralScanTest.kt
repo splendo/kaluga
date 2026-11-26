@@ -89,6 +89,10 @@ class PeripheralScanTest : PeripheralTest() {
     }
 
     private suspend fun PeripheralSession.withBeacon(block: suspend PeripheralSession.Attributes.() -> Unit) {
+        if (!platform.hasBeacon) {
+            platform.skip("the beacon is not running")
+            return
+        }
         val attributes = connectAndDiscover()
         attributes.send(Command.StartBeacon)
         try {
