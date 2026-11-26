@@ -224,6 +224,19 @@ sealed interface com.splendo.kaluga.bluetooth/GattResponse { // com.splendo.kalu
         }
     }
 
+    final class UnknownError : com.splendo.kaluga.bluetooth/GattResponse.Error { // com.splendo.kaluga.bluetooth/GattResponse.UnknownError|null[0]
+        constructor <init>(kotlin/Int) // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.<init>|<init>(kotlin.Int){}[0]
+
+        final val statusCode // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.statusCode|{}statusCode[0]
+            final fun <get-statusCode>(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
+
+        final fun component1(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.component1|component1(){}[0]
+        final fun copy(kotlin/Int = ...): com.splendo.kaluga.bluetooth/GattResponse.UnknownError // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.copy|copy(kotlin.Int){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth/GattResponse.UnknownError.toString|toString(){}[0]
+    }
+
     final object AttributeNotFound : com.splendo.kaluga.bluetooth/GattResponse.Error { // com.splendo.kaluga.bluetooth/GattResponse.AttributeNotFound|null[0]
         final val statusCode // com.splendo.kaluga.bluetooth/GattResponse.AttributeNotFound.statusCode|{}statusCode[0]
             final fun <get-statusCode>(): kotlin/Int // com.splendo.kaluga.bluetooth/GattResponse.AttributeNotFound.statusCode.<get-statusCode>|<get-statusCode>(){}[0]

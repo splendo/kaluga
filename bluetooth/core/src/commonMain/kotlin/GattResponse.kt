@@ -212,7 +212,8 @@ sealed interface GattResponse {
                 ClientCharacteristicConfigurationDescriptorImproperlyConfigured.statusCode -> ClientCharacteristicConfigurationDescriptorImproperlyConfigured
                 ProcedureAlreadyInProgress.statusCode -> ProcedureAlreadyInProgress
                 OutOfRange.statusCode -> OutOfRange
-                else -> ApplicationError(value)
+                in ApplicationError.CODES -> ApplicationError(value)
+                else -> UnknownError(value)
             }
         }
     }
@@ -356,9 +357,20 @@ sealed interface GattResponse {
      */
     data class ApplicationError(override val statusCode: Int = 0x80) : Error {
         init {
-            require(statusCode in 0x80..0x9F) { "Application Error codes must be in the range 0x80 - 0x9F" }
+            require(statusCode in CODES) { "Application Error codes must be in the range 0x80 - 0x9F" }
+        }
+
+        internal companion object {
+            val CODES = 0x80..0x9F
         }
     }
+
+    /**
+     * An [Error] with a code no other [Error] has: one ATT reserves, which a peer may still send, or a status of the
+     * platform's own.
+     * @property statusCode the status code of the error
+     */
+    data class UnknownError(override val statusCode: Int) : Error
 
     /**
      * An [Error] that is common for profiles and services to be sent
