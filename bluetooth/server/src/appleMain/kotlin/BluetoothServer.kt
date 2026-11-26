@@ -195,7 +195,11 @@ internal sealed class IOSServerState {
             DefaultLocalServiceWrapperBuilder(),
         )
 
+        // The system keeps publishing a manager's services until the manager is deallocated, which may be long after
+        // the server is closed.
         override fun close(): ServerState.Closed {
+            peripheralManager.stopAdvertising()
+            peripheralManager.removeAllServices()
             peripheralManager.delegate = null
             return ServerState.Closed
         }
