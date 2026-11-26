@@ -33,7 +33,9 @@ kaluga {
     }
 }
 
-// Scenarios against a simulated peer: only the test source sets that can run them include them, not commonTest.
+// Scenarios against a simulated peer: only the test source sets that can run them include them, not commonTest. The
+// protocols of the peers sit in core, as the client and the server scenarios both play the other's peer.
 kotlin.sourceSets.matching { it.name in setOf("androidDeviceTest", "appleTest") }.configureEach {
     kotlin.srcDir("src/deviceScenarios/kotlin")
+    kotlin.srcDir("../core/src/deviceScenarios/kotlin")
 }

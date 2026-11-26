@@ -45,7 +45,7 @@ class CentralSession(val platform: CentralScenarioPlatform) {
     private val job = SupervisorJob()
     val scope = CoroutineScope(defaultBluetoothServerDispatcher + job)
 
-    private val results = Channel<ByteArray>(Channel.UNLIMITED)
+    private val results = Channel<TestCentral.Report.Result>(Channel.UNLIMITED)
 
     /** Notifications the central received, as (target, value). */
     val forwarded = Channel<Pair<Int, ByteArray>>(Channel.UNLIMITED)
@@ -84,10 +84,9 @@ class CentralSession(val platform: CentralScenarioPlatform) {
                     characteristic(TestCentral.control) { notifiable(onSubscribe = {}, onUnsubscribe = {}) }
                     characteristic(TestCentral.result) {
                         writable { _, value, _ ->
-                            if (value.firstOrNull() == 0.toByte()) {
-                                forwarded.trySend(value[1].toInt() to value.copyOfRange(2, value.size))
-                            } else {
-                                results.trySend(value)
+                            when (val report = TestCentral.Report.decode(value)) {
+                                is TestCentral.Report.Forwarded -> forwarded.trySend(report.target.toInt() to report.value)
+                                is TestCentral.Report.Result -> results.trySend(report)
                             }
                             GattResponse.WriteSuccess.Acknowledged
                         }
@@ -129,11 +128,11 @@ class CentralSession(val platform: CentralScenarioPlatform) {
     /** Sends [instruction] to the central and returns its status and data. */
     suspend fun instruct(instruction: TestCentral.Instruction): Pair<Int, ByteArray> {
         val id = nextId.also { nextId = nextId % 255 + 1 }
-        val message = byteArrayOf(id.toByte(), instruction.code.toByte()) + instruction.arguments
-        assertEquals(true, within(10.seconds, "send $instruction") { control.notifyAll(message) })
+        val message = TestCentral.Message(id.toUByte(), instruction)
+        assertEquals(true, within(10.seconds, "send $instruction") { control.notifyAll(message.bytes) })
         val result = within(20.seconds, "result of $instruction") { results.receive() }
-        assertEquals(id, result[0].toInt() and 0xFF, "result for another instruction")
-        return (result[1].toInt() and 0xFF) to result.copyOfRange(2, result.size)
+        assertEquals(id, result.id.toInt(), "result for another instruction")
+        return result.status.toInt() to result.data
     }
 
     suspend fun status(instruction: TestCentral.Instruction): Int = instruct(instruction).first

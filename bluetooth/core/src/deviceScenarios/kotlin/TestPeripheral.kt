@@ -17,12 +17,17 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bytes.annotations.SerializedByteValue
+import com.splendo.kaluga.bytes.annotations.Unsized
+import com.splendo.kaluga.bytes.serialization.BytesFormat
 import com.splendo.kaluga.bytes.toHexString
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 /**
- * The GATT peripheral run by `src/deviceScenarios/python/peripheral.py`. The UUIDs and the control commands mirror
- * that script.
+ * The GATT peripheral the client scenarios run against: `peripheral.py` in the client module's
+ * `src/deviceScenarios/python`, or a kaluga server playing it. The UUIDs, the values and the [Command]s are what every
+ * player of it serves.
  */
 object TestPeripheral {
     val service: UUID = uuid("0000")
@@ -41,6 +46,7 @@ object TestPeripheral {
     val initialValue = byteArrayOf(1, 2, 3)
     val twinValues = listOf("A".encodeToByteArray(), "B".encodeToByteArray())
     val extraValue = "extra".encodeToByteArray()
+    val errorCharacteristicValue = "ok".encodeToByteArray()
 
     const val NAME = "kaluga-netsim"
     const val BEACON_NAME = "kaluga-beacon"
@@ -54,28 +60,150 @@ object TestPeripheral {
     /** [length] bytes counting up from 0, as the peripheral fills its long values. */
     fun counting(length: Int) = ByteArray(length) { it.toByte() }
 
-    sealed class Command(private val code: Int, private val argument: Int = 0, private val payload: ByteArray = byteArrayOf()) {
-        data object Reset : Command(0)
-        class HoldRead(releaseAfter: Duration = Duration.ZERO) : Command(1, releaseAfter.millis)
-        class HoldCccdWrite(releaseAfter: Duration = Duration.ZERO) : Command(2, releaseAfter.millis)
-        class DropWhenHeld(after: Duration) : Command(3, after.millis)
-        class Drop(after: Duration) : Command(4, after.millis)
-        class Notify(value: ByteArray, after: Duration = Duration.ZERO) : Command(5, after.millis, value)
-        class AnswerWithError(code: Int) : Command(6, code)
-        class Indicate(value: ByteArray, after: Duration = Duration.ZERO) : Command(7, after.millis, value)
-        class NotifyBurst(count: Int) : Command(8, count)
-        class SetLongValue(length: Int) : Command(9, length)
-        class NotifyTwin(index: Int, value: ByteArray, after: Duration = Duration.ZERO) : Command(10, after.millis, byteArrayOf(index.toByte()) + value)
-        class ChangeServices(after: Duration = Duration.ZERO) : Command(11, after.millis)
-        data object StartBeacon : Command(12)
-        data object StopBeacon : Command(13)
-        class NotifyLength(length: Int) : Command(14, length)
-        class SetLongValueTo(value: ByteArray) : Command(15, payload = value)
-
-        val bytes: ByteArray get() = byteArrayOf(code.toByte(), (argument and 0xFF).toByte(), (argument shr 8 and 0xFF).toByte()) + payload
-
-        override fun toString() = "${this::class.simpleName}(${bytes.toHexString()})"
+    /** What a scenario may need from the peripheral beyond serving its attributes and the commands every player obeys. */
+    enum class Capability(val description: String) {
+        HoldCccdWrite("hold the answer to a CCCD write"),
+        EndLink("end the link"),
+        ChangeServices("change its services while connected"),
+        RefusePairing("refuse to pair"),
+        CapMtu("cap the MTU of a connection"),
     }
 
-    private val Duration.millis get() = inWholeMilliseconds.toInt()
+    /** Who plays the peripheral, and what it can do. */
+    enum class Player(val capabilities: Set<Capability>) {
+
+        /** `peripheral.py` on bumble. */
+        Script(Capability.entries.toSet()),
+
+        /** A kaluga server on another device, which has no say over the link and answers the stack's own requests through it. */
+        Kaluga(emptySet()),
+    }
+
+    /**
+     * A command the client writes to the control characteristic: a command byte, then the command's fields. A command that
+     * holds back an answer has to be armed before the request it holds, as the client sends one ATT request at a time.
+     */
+    @Serializable
+    sealed class Command {
+
+        /** Disarms everything, releases held answers and restores the values every connection starts with. */
+        @Serializable
+        @SerializedByteValue(0x00)
+        data object Reset : Command()
+
+        /** Holds the answer to the next read of the data characteristic for [releaseMillis], or until the link ends when 0. */
+        @Serializable
+        @SerializedByteValue(0x01)
+        class HoldRead(val releaseMillis: UShort) : Command() {
+            constructor(releaseAfter: Duration = Duration.ZERO) : this(releaseAfter.millis)
+        }
+
+        /** Holds the answer to the next write of the data characteristic's CCCD for [releaseMillis], or until the link ends when 0. */
+        @Serializable
+        @SerializedByteValue(0x02)
+        class HoldCccdWrite(val releaseMillis: UShort) : Command() {
+            constructor(releaseAfter: Duration = Duration.ZERO) : this(releaseAfter.millis)
+        }
+
+        /** Once a held request arrives, ends the link after [afterMillis]. */
+        @Serializable
+        @SerializedByteValue(0x03)
+        class DropWhenHeld(val afterMillis: UShort) : Command() {
+            constructor(after: Duration) : this(after.millis)
+        }
+
+        /** Ends the link [afterMillis] after answering this command. */
+        @Serializable
+        @SerializedByteValue(0x04)
+        class Drop(val afterMillis: UShort) : Command() {
+            constructor(after: Duration) : this(after.millis)
+        }
+
+        /** Notifies [value] on the data characteristic [afterMillis] after answering this command. */
+        @Serializable
+        @SerializedByteValue(0x05)
+        class Notify(val afterMillis: UShort, @Unsized val value: ByteArray) : Command() {
+            constructor(value: ByteArray, after: Duration = Duration.ZERO) : this(after.millis, value)
+        }
+
+        /** Answers every read and write of the error characteristic with the ATT error [code], or succeeds when 0. */
+        @Serializable
+        @SerializedByteValue(0x06)
+        class AnswerWithError(val code: UByte) : Command() {
+            constructor(code: Int) : this(code.toUByte())
+        }
+
+        /** Indicates [value] on the indicate characteristic [afterMillis] after answering this command. */
+        @Serializable
+        @SerializedByteValue(0x07)
+        class Indicate(val afterMillis: UShort, @Unsized val value: ByteArray) : Command() {
+            constructor(value: ByteArray, after: Duration = Duration.ZERO) : this(after.millis, value)
+        }
+
+        /** Notifies [count] values on the data characteristic back to back, each its index as a little-endian u16. */
+        @Serializable
+        @SerializedByteValue(0x08)
+        class NotifyBurst(val count: UShort) : Command() {
+            constructor(count: Int) : this(count.toUShort())
+        }
+
+        /** Sets the value of the long characteristic to [length] bytes counting up from 0. */
+        @Serializable
+        @SerializedByteValue(0x09)
+        class SetLongValue(val length: UShort) : Command() {
+            constructor(length: Int) : this(length.toUShort())
+        }
+
+        /** Notifies [value] on twin characteristic [index] (0 or 1) [afterMillis] after answering this command. */
+        @Serializable
+        @SerializedByteValue(0x0A)
+        class NotifyTwin(val afterMillis: UShort, val index: UByte, @Unsized val value: ByteArray) : Command() {
+            constructor(index: Int, value: ByteArray, after: Duration = Duration.ZERO) : this(after.millis, index.toUByte(), value)
+        }
+
+        /** Adds the extra service and indicates Service Changed [afterMillis] after answering this command. */
+        @Serializable
+        @SerializedByteValue(0x0B)
+        class ChangeServices(val afterMillis: UShort) : Command() {
+            constructor(after: Duration = Duration.ZERO) : this(after.millis)
+        }
+
+        /** Starts advertising the beacon, a second device with a name, manufacturer data and service data. */
+        @Serializable
+        @SerializedByteValue(0x0C)
+        data object StartBeacon : Command()
+
+        @Serializable
+        @SerializedByteValue(0x0D)
+        data object StopBeacon : Command()
+
+        /** Notifies [length] bytes counting up from 0 on the data characteristic. */
+        @Serializable
+        @SerializedByteValue(0x0E)
+        class NotifyLength(val length: UShort) : Command() {
+            constructor(length: Int) : this(length.toUShort())
+        }
+
+        /** Sets the value of the long characteristic to [value]. */
+        @Serializable
+        @SerializedByteValue(0x0F)
+        class SetLongValueTo(@Unsized val value: ByteArray) : Command()
+
+        /** Answers the MTU exchange of the next connection with at most [mtu]. */
+        @Serializable
+        @SerializedByteValue(0x10)
+        class CapMtu(val mtu: UShort) : Command() {
+            constructor(mtu: Int) : this(mtu.toUShort())
+        }
+
+        val bytes: ByteArray get() = BytesFormat.encodeToByteArray(serializer(), this)
+
+        override fun toString() = "${this::class.simpleName}(${bytes.toHexString()})"
+
+        companion object {
+            fun decode(bytes: ByteArray): Command = BytesFormat.decodeFromByteArray(serializer(), bytes)
+        }
+    }
+
+    private val Duration.millis get() = inWholeMilliseconds.toUShort()
 }

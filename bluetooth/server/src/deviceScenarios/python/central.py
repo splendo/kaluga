@@ -7,26 +7,15 @@ The central scans for the test server's service, connects, subscribes to its con
 every instruction the server notifies there. It answers each instruction by writing a result to the result
 characteristic. When the link ends it scans again, so each test gets a fresh connection by advertising.
 
-Instructions (one notification each: an id byte, an instruction byte, then its arguments; u16 little-endian):
-  <id> 01 <bytes..>                          stage <bytes> after what is staged already
-  <id> 02                                    clear the staged bytes
-  <id> 03 <target>                           write the staged bytes to <target> with response, as a long write when
-                                             they do not fit in one request; every echoed part is checked
-  <id> 04 <target> <offset> <start> <length> send one Prepare Write Request of staged[start:start + length] at <offset>
-  <id> 05 <flags>                            send an Execute Write Request (1: write, 0: cancel)
-  <id> 06                                    disconnect, after answering
-  <id> 07 <target>                           subscribe to <target> and forward each notification as a result
-  <id> 08 <target>                           unsubscribe from <target>
-
-A target is the last byte of a characteristic UUID of the server's service.
-Results (one write each): <id> <status> [<data>..], status 0 for success, else the ATT error code, or
-  E0 when an echoed part did not match what was sent, E1 for a missing target, E2 for any other failure.
-A forwarded notification is written as 00 <target> <value..>.
+Each instruction is a `Message` notification and each answer a `Report` write, layouts of `bytes-layouts.json` in the
+core module's `src/deviceScenarios/python`, which this script reads at start-up. A target is the last byte of a
+characteristic UUID of the server's service.
 """
 
 import argparse
 import asyncio
 import logging
+import os
 import struct
 import sys
 import time
@@ -37,11 +26,16 @@ from bumble.device import Connection, Device, Peer
 from bumble.hci import Address
 from bumble.transport import open_transport
 
+PROTOCOLS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "core", "src", "deviceScenarios", "python")
+sys.path.insert(0, PROTOCOLS)
+from bytes_layout import Schema  # noqa: E402
+
+CONTROL_PROTOCOL = Schema.load(os.path.join(PROTOCOLS, "bytes-layouts.json"))
+
 SERVICE = UUID("6b7b0000-5d1c-4f0e-9a51-2f6f3c1d8e01")
 CONTROL = UUID("6b7b0001-5d1c-4f0e-9a51-2f6f3c1d8e01")
 RESULT = UUID("6b7b0002-5d1c-4f0e-9a51-2f6f3c1d8e01")
 
-STAGE, CLEAR, WRITE, PREPARE, EXECUTE, DISCONNECT, SUBSCRIBE, UNSUBSCRIBE = range(1, 9)
 ECHO_MISMATCH, NO_TARGET, FAILURE = 0xE0, 0xE1, 0xE2
 
 START = time.monotonic()
@@ -129,64 +123,69 @@ class Session:
 
     async def work(self):
         while True:
-            instruction = await self.instructions.get()
-            identifier, kind, arguments = instruction[0], instruction[1], instruction[2:]
-            log(f"instruction {instruction.hex()}")
+            message = await self.instructions.get()
+            log(f"instruction {message.hex()}")
             try:
-                status, data, after = await self.carry_out(kind, arguments)
+                decoded = CONTROL_PROTOCOL.decode("Message", message)
+            except Exception as error:
+                log(f"undecodable instruction: {error!r}")
+                continue
+            identifier, instruction = decoded["id"], decoded["instruction"]
+            try:
+                status, data, after = await self.carry_out(instruction)
             except att.ATT_Error as error:
                 status, data, after = error.error_code, b"", None
             except Exception as error:
                 log(f"instruction failed: {error!r}")
                 status, data, after = FAILURE, b"", None
-            await self.answer(bytes([identifier, status]) + data)
+            await self.answer({"type": "Result", "id": identifier, "status": status, "data": data})
             if after is not None:
                 await after()
 
-    async def answer(self, result):
+    async def answer(self, report):
+        result = CONTROL_PROTOCOL.encode("Report", report)
         log(f"result {result.hex()}")
         try:
             await self.client.write_value(self.result, result, with_response=True)
         except Exception as error:
             log(f"writing the result failed: {error!r}")
 
-    async def carry_out(self, kind, arguments):
-        if kind == STAGE:
-            self.staged += arguments
+    async def carry_out(self, instruction):
+        kind = instruction["type"]
+        if kind == "Stage":
+            self.staged += instruction["bytes"]
             return 0, struct.pack("<H", len(self.staged)), None
-        if kind == CLEAR:
+        if kind == "Clear":
             self.staged.clear()
             return 0, b"", None
-        if kind == DISCONNECT:
+        if kind == "Disconnect":
             return 0, b"", self.disconnect
-        target = self.characteristic(target_uuid(arguments[0])) if arguments else None
-        if kind == WRITE:
-            if target is None:
-                return NO_TARGET, b"", None
+        if kind == "Execute":
+            return await self.execute(instruction["flags"]), b"", None
+        if kind == "RequestMtu":
+            mtu = await self.client.request_mtu(instruction["mtu"])
+            log(f"ATT MTU {mtu}")
+            return 0, struct.pack("<H", mtu), None
+        target = self.characteristic(target_uuid(instruction["target"]))
+        if target is None:
+            return NO_TARGET, b"", None
+        if kind == "Write":
             return await self.write(target.handle, bytes(self.staged)), b"", None
-        if kind == PREPARE:
-            if target is None:
-                return NO_TARGET, b"", None
-            offset, start, length = struct.unpack_from("<HHH", arguments, 1)
-            return await self.prepare(target.handle, offset, bytes(self.staged[start : start + length])), b"", None
-        if kind == EXECUTE:
-            return await self.execute(arguments[0]), b"", None
-        if kind == SUBSCRIBE:
-            if target is None:
-                return NO_TARGET, b"", None
-            number = arguments[0]
+        if kind == "Prepare":
+            start, length = instruction["start"], instruction["length"]
+            return await self.prepare(target.handle, instruction["offset"], bytes(self.staged[start : start + length])), b"", None
+        if kind == "Subscribe":
+            number = instruction["target"]
             await self.peer.subscribe(target, lambda value: asyncio.get_running_loop().create_task(self.forward(number, bytes(value))))
             return 0, b"", None
-        if kind == UNSUBSCRIBE:
-            if target is None:
-                return NO_TARGET, b"", None
+        if kind == "Unsubscribe":
             await self.peer.unsubscribe(target)
             return 0, b"", None
-        return FAILURE, b"", None
+        raise ValueError(f"no handler for the instruction {kind}")
 
     async def forward(self, target, value):
         log(f"notification from 0x{target:02X}: {value.hex()}")
-        await self.answer(bytes([0, target]) + value)
+        await self.answer({"type": "Forwarded", "target": target, "value": value})
 
     async def write(self, handle, value):
         if len(value) <= self.client.mtu - 3:

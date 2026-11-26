@@ -39,3 +39,12 @@ kaluga {
         }
     }
 }
+
+// The protocols of the device scenarios' peers live here for the client and server scenarios; the host tests check
+// them against the byte vectors the peer scripts are checked against too.
+kotlin.sourceSets.matching { it.name == "androidHostTest" }.configureEach {
+    kotlin.srcDir("src/deviceScenarios/kotlin")
+    dependencies {
+        implementation(libs.kotlinx.serialization.json)
+    }
+}
